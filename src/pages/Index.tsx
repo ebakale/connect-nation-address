@@ -186,22 +186,52 @@ const Index = () => {
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm font-medium">Latitude</label>
-                      <Input 
-                        placeholder="3.7500" 
-                        value={formData.latitude}
-                        onChange={(e) => setFormData(prev => ({ ...prev, latitude: e.target.value }))}
-                      />
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium">Location Coordinates</label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(
+                              (position) => {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  latitude: position.coords.latitude.toString(),
+                                  longitude: position.coords.longitude.toString()
+                                }));
+                              },
+                              (error) => {
+                                console.error("Error getting location:", error);
+                                alert("Unable to get your current location. Please check your browser permissions.");
+                              }
+                            );
+                          } else {
+                            alert("Geolocation is not supported by this browser.");
+                          }
+                        }}
+                      >
+                        📍 Use Current Location
+                      </Button>
                     </div>
-                    <div>
-                      <label className="text-sm font-medium">Longitude</label>
-                      <Input 
-                        placeholder="8.7833" 
-                        value={formData.longitude}
-                        onChange={(e) => setFormData(prev => ({ ...prev, longitude: e.target.value }))}
-                      />
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-medium">Latitude</label>
+                        <Input 
+                          placeholder="3.7500" 
+                          value={formData.latitude}
+                          onChange={(e) => setFormData(prev => ({ ...prev, latitude: e.target.value }))}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium">Longitude</label>
+                        <Input 
+                          placeholder="8.7833" 
+                          value={formData.longitude}
+                          onChange={(e) => setFormData(prev => ({ ...prev, longitude: e.target.value }))}
+                        />
+                      </div>
                     </div>
                   </div>
 
