@@ -25,6 +25,7 @@ export type Database = {
           id: string
           latitude: number
           longitude: number
+          public: boolean
           region: string
           street: string
           uac: string
@@ -42,6 +43,7 @@ export type Database = {
           id?: string
           latitude: number
           longitude: number
+          public?: boolean
           region: string
           street: string
           uac: string
@@ -59,6 +61,7 @@ export type Database = {
           id?: string
           latitude?: number
           longitude?: number
+          public?: boolean
           region?: string
           street?: string
           uac?: string
@@ -106,7 +109,54 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      addresses_search: {
+        Row: {
+          address_type: string | null
+          building: string | null
+          city: string | null
+          country: string | null
+          created_at: string | null
+          description: string | null
+          latitude: number | null
+          longitude: number | null
+          public: boolean | null
+          region: string | null
+          street: string | null
+          uac: string | null
+          verified: boolean | null
+        }
+        Insert: {
+          address_type?: string | null
+          building?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: never
+          latitude?: never
+          longitude?: never
+          public?: boolean | null
+          region?: string | null
+          street?: string | null
+          uac?: string | null
+          verified?: boolean | null
+        }
+        Update: {
+          address_type?: string | null
+          building?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: never
+          latitude?: never
+          longitude?: never
+          public?: boolean | null
+          region?: string | null
+          street?: string | null
+          uac?: string | null
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
