@@ -11,10 +11,23 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Plus, MapPin, Search as SearchIcon, BarChart3 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useAddresses } from '@/hooks/useAddresses';
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
+  const [formData, setFormData] = useState({
+    country: '',
+    region: '',
+    city: '',
+    street: '',
+    building: '',
+    latitude: '',
+    longitude: '',
+    address_type: 'residential',
+    description: ''
+  });
   const { user, loading } = useAuth();
+  const { createAddress, addresses, loading: addressLoading } = useAddresses();
 
   if (loading) {
     return (
@@ -95,59 +108,124 @@ const Index = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium">Country</label>
-                      <Input placeholder="Equatorial Guinea" />
+                      <Input 
+                        placeholder="Equatorial Guinea" 
+                        value={formData.country}
+                        onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
+                      />
                     </div>
                     <div>
                       <label className="text-sm font-medium">Region/Province</label>
-                      <Input placeholder="Bioko Norte" />
+                      <Input 
+                        placeholder="Bioko Norte" 
+                        value={formData.region}
+                        onChange={(e) => setFormData(prev => ({ ...prev, region: e.target.value }))}
+                      />
                     </div>
                     <div>
                       <label className="text-sm font-medium">City/District</label>
-                      <Input placeholder="Malabo" />
+                      <Input 
+                        placeholder="Malabo" 
+                        value={formData.city}
+                        onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
+                      />
                     </div>
                     <div>
                       <label className="text-sm font-medium">Street/Area</label>
-                      <Input placeholder="Avenida de la Independencia" />
+                      <Input 
+                        placeholder="Avenida de la Independencia" 
+                        value={formData.street}
+                        onChange={(e) => setFormData(prev => ({ ...prev, street: e.target.value }))}
+                      />
                     </div>
                     <div>
                       <label className="text-sm font-medium">Building/House Number</label>
-                      <Input placeholder="House #42" />
+                      <Input 
+                        placeholder="House #42" 
+                        value={formData.building}
+                        onChange={(e) => setFormData(prev => ({ ...prev, building: e.target.value }))}
+                      />
                     </div>
                     <div>
                       <label className="text-sm font-medium">Property Type</label>
-                      <Input placeholder="Residential" />
+                      <Input 
+                        placeholder="residential" 
+                        value={formData.address_type}
+                        onChange={(e) => setFormData(prev => ({ ...prev, address_type: e.target.value }))}
+                      />
                     </div>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium">Latitude</label>
-                      <Input placeholder="3.7500" />
+                      <Input 
+                        placeholder="3.7500" 
+                        value={formData.latitude}
+                        onChange={(e) => setFormData(prev => ({ ...prev, latitude: e.target.value }))}
+                      />
                     </div>
                     <div>
                       <label className="text-sm font-medium">Longitude</label>
-                      <Input placeholder="8.7833" />
+                      <Input 
+                        placeholder="8.7833" 
+                        value={formData.longitude}
+                        onChange={(e) => setFormData(prev => ({ ...prev, longitude: e.target.value }))}
+                      />
                     </div>
                   </div>
 
                   <div>
                     <label className="text-sm font-medium">Description</label>
-                    <Input placeholder="Additional details about the location" />
+                    <Input 
+                      placeholder="Additional details about the location" 
+                      value={formData.description}
+                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                    />
                   </div>
 
                   <div className="flex gap-2 pt-4">
                     <Button 
                       variant="hero" 
                       className="flex-1"
-                      onClick={() => {
-                        // Generate a unique address code
-                        const timestamp = Date.now().toString(36);
-                        const random = Math.random().toString(36).substr(2, 5);
-                        const uac = `EG-${timestamp}-${random}`.toUpperCase();
-                        alert(`Address registered successfully!\nGenerated UAC: ${uac}`);
+                      disabled={addressLoading}
+                      onClick={async () => {
+                        // Validate required fields
+                        if (!formData.country || !formData.region || !formData.city || !formData.street || !formData.latitude || !formData.longitude) {
+                          alert('Please fill in all required fields (Country, Region, City, Street, Latitude, Longitude)');
+                          return;
+                        }
+
+                        // Create address in database
+                        const result = await createAddress({
+                          country: formData.country,
+                          region: formData.region,
+                          city: formData.city,
+                          street: formData.street,
+                          building: formData.building || undefined,
+                          latitude: parseFloat(formData.latitude),
+                          longitude: parseFloat(formData.longitude),
+                          address_type: formData.address_type || 'residential',
+                          description: formData.description || undefined,
+                        });
+
+                        if (result) {
+                          // Clear form after successful creation
+                          setFormData({
+                            country: '',
+                            region: '',
+                            city: '',
+                            street: '',
+                            building: '',
+                            latitude: '',
+                            longitude: '',
+                            address_type: 'residential',
+                            description: ''
+                          });
+                        }
                       }}
                     >
-                      Generate UAC & Register
+                      {addressLoading ? 'Creating...' : 'Generate UAC & Register'}
                     </Button>
                     <Button 
                       variant="outline"

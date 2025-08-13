@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Search, MapPin, Navigation } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAddresses, Address } from '@/hooks/useAddresses';
 
 interface SearchResult {
   uac: string;
@@ -21,36 +22,24 @@ interface AddressSearchProps {
   className?: string;
 }
 
-// Mock search results - in real implementation, this would call an API
-const mockResults: SearchResult[] = [
-  {
-    uac: "EG-BA-MB-004512",
-    readable: "Avenida de la Independencia, House #42, Malabo, Bioko Norte, Equatorial Guinea",
-    coordinates: { lat: 3.7500, lng: 8.7833 },
-    type: "Residential",
-    verified: true
-  },
-  {
-    uac: "EG-BA-MB-003847",
-    readable: "Calle de la República, Building #15, Malabo, Bioko Norte, Equatorial Guinea",
-    coordinates: { lat: 3.7520, lng: 8.7820 },
-    type: "Commercial",
-    verified: true
-  },
-  {
-    uac: "EG-BA-MB-005692",
-    readable: "Plaza de la Independencia, Malabo, Bioko Norte, Equatorial Guinea",
-    coordinates: { lat: 3.7530, lng: 8.7840 },
-    type: "Landmark",
-    verified: true
-  }
-];
-
 const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, className }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const { searchAddresses } = useAddresses();
+
+  // Convert Address to SearchResult format
+  const convertToSearchResult = (address: Address): SearchResult => ({
+    uac: address.uac,
+    readable: `${address.street}${address.building ? ', ' + address.building : ''}, ${address.city}, ${address.region}, ${address.country}`,
+    coordinates: {
+      lat: address.latitude,
+      lng: address.longitude,
+    },
+    type: address.address_type,
+    verified: address.verified,
+  });
 
   const handleSearch = async () => {
     if (!query.trim()) return;
@@ -58,15 +47,17 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
     setIsSearching(true);
     setShowResults(true);
     
-    // Simulate API delay
-    setTimeout(() => {
-      const filteredResults = mockResults.filter(result => 
-        result.readable.toLowerCase().includes(query.toLowerCase()) ||
-        result.uac.toLowerCase().includes(query.toLowerCase())
-      );
-      setResults(filteredResults);
+    try {
+      // Search addresses from database
+      const addresses = await searchAddresses(query);
+      const searchResults = addresses.map(convertToSearchResult);
+      setResults(searchResults);
+    } catch (error) {
+      console.error('Search error:', error);
+      setResults([]);
+    } finally {
       setIsSearching(false);
-    }, 800);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

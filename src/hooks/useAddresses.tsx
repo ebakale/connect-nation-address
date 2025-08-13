@@ -1,0 +1,225 @@
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from './useAuth';
+import { useToast } from '@/hooks/use-toast';
+
+export interface Address {
+  id: string;
+  user_id: string;
+  uac: string;
+  country: string;
+  region: string;
+  city: string;
+  street: string;
+  building?: string;
+  latitude: number;
+  longitude: number;
+  address_type: string;
+  description?: string;
+  verified: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateAddressData {
+  country: string;
+  region: string;
+  city: string;
+  street: string;
+  building?: string;
+  latitude: number;
+  longitude: number;
+  address_type: string;
+  description?: string;
+}
+
+export const useAddresses = () => {
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  // Generate a unique address code
+  const generateUAC = (country: string, region: string, city: string): string => {
+    const countryCode = country.substring(0, 2).toUpperCase();
+    const regionCode = region.substring(0, 2).toUpperCase();
+    const cityCode = city.substring(0, 2).toUpperCase();
+    const timestamp = Date.now().toString(36);
+    const random = Math.random().toString(36).substr(2, 5);
+    return `${countryCode}-${regionCode}-${cityCode}-${timestamp}${random}`.toUpperCase();
+  };
+
+  // Fetch user's addresses
+  const fetchAddresses = async () => {
+    if (!user) return;
+    
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('addresses')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setAddresses(data || []);
+    } catch (error) {
+      console.error('Error fetching addresses:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch addresses",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Create a new address
+  const createAddress = async (addressData: CreateAddressData) => {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to create addresses",
+        variant: "destructive",
+      });
+      return null;
+    }
+
+    setLoading(true);
+    try {
+      const uac = generateUAC(addressData.country, addressData.region, addressData.city);
+      
+      const { data, error } = await supabase
+        .from('addresses')
+        .insert({
+          ...addressData,
+          user_id: user.id,
+          uac,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Address registered successfully! UAC: ${uac}`,
+      });
+
+      // Refresh the addresses list
+      fetchAddresses();
+      return data;
+    } catch (error: any) {
+      console.error('Error creating address:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create address",
+        variant: "destructive",
+      });
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Search addresses (both user's own and verified public addresses)
+  const searchAddresses = async (query: string): Promise<Address[]> => {
+    if (!query.trim()) return [];
+
+    try {
+      const { data, error } = await supabase
+        .from('addresses')
+        .select('*')
+        .or(`uac.ilike.%${query}%,street.ilike.%${query}%,city.ilike.%${query}%,building.ilike.%${query}%`)
+        .limit(10);
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error searching addresses:', error);
+      toast({
+        title: "Error",
+        description: "Failed to search addresses",
+        variant: "destructive",
+      });
+      return [];
+    }
+  };
+
+  // Update address verification status (admin function)
+  const updateVerificationStatus = async (addressId: string, verified: boolean) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('addresses')
+        .update({ verified })
+        .eq('id', addressId)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Address ${verified ? 'verified' : 'unverified'} successfully`,
+      });
+
+      // Refresh the addresses list
+      fetchAddresses();
+    } catch (error: any) {
+      console.error('Error updating verification:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update verification status",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Delete an address
+  const deleteAddress = async (addressId: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('addresses')
+        .delete()
+        .eq('id', addressId)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Address deleted successfully",
+      });
+
+      // Refresh the addresses list
+      fetchAddresses();
+    } catch (error: any) {
+      console.error('Error deleting address:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete address",
+        variant: "destructive",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchAddresses();
+    }
+  }, [user]);
+
+  return {
+    addresses,
+    loading,
+    createAddress,
+    searchAddresses,
+    updateVerificationStatus,
+    deleteAddress,
+    fetchAddresses,
+  };
+};

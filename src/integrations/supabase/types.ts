@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      addresses: {
+        Row: {
+          address_type: string
+          building: string | null
+          city: string
+          country: string
+          created_at: string
+          description: string | null
+          id: string
+          latitude: number
+          longitude: number
+          region: string
+          street: string
+          uac: string
+          updated_at: string
+          user_id: string
+          verified: boolean
+        }
+        Insert: {
+          address_type?: string
+          building?: string | null
+          city: string
+          country: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          latitude: number
+          longitude: number
+          region: string
+          street: string
+          uac: string
+          updated_at?: string
+          user_id: string
+          verified?: boolean
+        }
+        Update: {
+          address_type?: string
+          building?: string | null
+          city?: string
+          country?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          latitude?: number
+          longitude?: number
+          region?: string
+          street?: string
+          uac?: string
+          updated_at?: string
+          user_id?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
