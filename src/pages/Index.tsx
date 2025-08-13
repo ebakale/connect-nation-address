@@ -20,6 +20,7 @@ const Index = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [editMode, setEditMode] = useState(false);
+  const [mapAddress, setMapAddress] = useState<Address | null>(null);
   const [formData, setFormData] = useState({
     country: '',
     region: '',
@@ -82,6 +83,11 @@ const Index = () => {
     setSelectedAddress(null);
     setEditMode(false);
     setCurrentPage('manage');
+  };
+
+  const handleViewOnMap = (address: Address) => {
+    setMapAddress(address);
+    setCurrentPage('map');
   };
 
   const renderPage = () => {
@@ -288,13 +294,55 @@ const Index = () => {
         );
 
       case 'map':
+        const mapLocations = mapAddress ? [{
+          uac: mapAddress.uac,
+          coordinates: [mapAddress.longitude, mapAddress.latitude] as [number, number],
+          name: `${mapAddress.street}${mapAddress.building ? ', ' + mapAddress.building : ''}`,
+          type: mapAddress.address_type as 'residential' | 'commercial' | 'landmark' | 'government',
+          verified: mapAddress.verified
+        }] : addresses.map(addr => ({
+          uac: addr.uac,
+          coordinates: [addr.longitude, addr.latitude] as [number, number],
+          name: `${addr.street}${addr.building ? ', ' + addr.building : ''}`,
+          type: addr.address_type as 'residential' | 'commercial' | 'landmark' | 'government',
+          verified: addr.verified
+        }));
+        
         return (
           <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold mb-2">Interactive Map</h2>
-              <p className="text-muted-foreground">View and explore all registered addresses</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold mb-2">Interactive Map</h2>
+                <p className="text-muted-foreground">
+                  {mapAddress 
+                    ? `Showing location: ${mapAddress.uac}` 
+                    : 'View and explore all registered addresses'
+                  }
+                </p>
+              </div>
+              {mapAddress && (
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setMapAddress(null);
+                    setCurrentPage('manage');
+                  }}
+                >
+                  Back to List
+                </Button>
+              )}
             </div>
-            <MapView />
+            <MapView 
+              locations={mapLocations}
+              center={mapAddress ? [mapAddress.longitude, mapAddress.latitude] : undefined}
+              zoom={mapAddress ? 16 : 12}
+              onLocationSelect={(location) => {
+                const address = addresses.find(addr => addr.uac === location.uac);
+                if (address) {
+                  handleViewAddress(address);
+                }
+              }}
+            />
           </div>
         );
 
@@ -373,6 +421,7 @@ const Index = () => {
               <AddressList
                 onEditAddress={handleEditAddress}
                 onViewAddress={handleViewAddress}
+                onViewOnMap={handleViewOnMap}
               />
             </div>
           );

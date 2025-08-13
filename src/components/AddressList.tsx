@@ -13,7 +13,9 @@ import {
   XCircle,
   Globe,
   Lock,
-  Filter
+  Filter,
+  Navigation,
+  Map
 } from 'lucide-react';
 import { useAddresses, Address } from '@/hooks/useAddresses';
 import { useToast } from '@/hooks/use-toast';
@@ -21,9 +23,10 @@ import { useToast } from '@/hooks/use-toast';
 interface AddressListProps {
   onEditAddress?: (address: Address) => void;
   onViewAddress?: (address: Address) => void;
+  onViewOnMap?: (address: Address) => void;
 }
 
-const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress }) => {
+const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress, onViewOnMap }) => {
   const { addresses, loading, updateAddressStatus, deleteAddress } = useAddresses();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
@@ -109,6 +112,22 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress 
     }
   };
 
+  const getDirections = (address: Address) => {
+    const destination = `${address.latitude},${address.longitude}`;
+    const label = encodeURIComponent(`${address.street}, ${address.city}`);
+    
+    // Check if user is on mobile
+    const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // For mobile, try to open native map apps
+      window.open(`https://maps.google.com/maps?q=${destination}&z=15&t=m`, '_blank');
+    } else {
+      // For desktop, open Google Maps in browser
+      window.open(`https://www.google.com/maps/search/?api=1&query=${destination}&query_place_id=${label}`, '_blank');
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -177,13 +196,16 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress 
       ) : (
         <div className="grid gap-4">
           {filteredAddresses.map((address) => (
-            <Card key={address.id} className="hover:shadow-md transition-shadow">
+            <Card key={address.id} className="hover:shadow-md transition-shadow cursor-pointer group">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0">
+                  <div 
+                    className="flex-1 min-w-0"
+                    onClick={() => onViewAddress?.(address)}
+                  >
                     {/* Header */}
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="font-mono text-lg font-bold text-primary">
+                      <span className="font-mono text-lg font-bold text-primary group-hover:text-primary/80">
                         {address.uac}
                       </span>
                       <Badge variant="outline" className={getTypeColor(address.address_type)}>
@@ -226,11 +248,45 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress 
 
                   {/* Action Buttons */}
                   <div className="flex flex-col gap-2 ml-4">
+                    {/* Main Actions */}
+                    <div className="grid grid-cols-2 gap-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onViewOnMap?.(address);
+                        }}
+                        title="View on Map"
+                        className="text-xs px-2"
+                      >
+                        <Map className="h-3 w-3 mr-1" />
+                        Map
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          getDirections(address);
+                        }}
+                        title="Get Directions"
+                        className="text-xs px-2"
+                      >
+                        <Navigation className="h-3 w-3 mr-1" />
+                        Route
+                      </Button>
+                    </div>
+                    
+                    {/* Edit/View/Delete Actions */}
                     <div className="flex gap-1">
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => onViewAddress?.(address)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onViewAddress?.(address);
+                        }}
                         title="View Details"
                       >
                         <Eye className="h-4 w-4" />
@@ -238,7 +294,10 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress 
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => onEditAddress?.(address)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEditAddress?.(address);
+                        }}
                         title="Edit Address"
                       >
                         <Edit className="h-4 w-4" />
@@ -246,7 +305,10 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress 
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleDelete(address)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(address);
+                        }}
                         title="Delete Address"
                         className="text-destructive hover:text-destructive"
                       >
@@ -259,7 +321,10 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress 
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleToggleVerified(address)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleVerified(address);
+                        }}
                         className={`text-xs ${address.verified ? 'border-success text-success' : 'border-warning text-warning'}`}
                       >
                         {address.verified ? 'Unverify' : 'Verify'}
@@ -267,7 +332,10 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress 
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleTogglePublic(address)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTogglePublic(address);
+                        }}
                         className={`text-xs ${address.public ? 'border-primary text-primary' : ''}`}
                       >
                         {address.public ? 'Make Private' : 'Make Public'}
