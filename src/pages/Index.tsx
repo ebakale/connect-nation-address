@@ -155,9 +155,9 @@ const Index = () => {
                           <SelectValue placeholder="Select region" />
                         </SelectTrigger>
                         <SelectContent>
+                          <SelectItem value="Annobon">Annobón</SelectItem>
                           <SelectItem value="Bioko Norte">Bioko Norte</SelectItem>
                           <SelectItem value="Bioko Sur">Bioko Sur</SelectItem>
-                          <SelectItem value="Annobon">Annobón</SelectItem>
                           <SelectItem value="Centro Sur">Centro Sur</SelectItem>
                           <SelectItem value="Djibloho">Djibloho</SelectItem>
                           <SelectItem value="Kie-Ntem">Kié-Ntem</SelectItem>
@@ -176,19 +176,19 @@ const Index = () => {
                           <SelectValue placeholder="Select city" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Malabo">Malabo</SelectItem>
-                          <SelectItem value="Bata">Bata</SelectItem>
-                          <SelectItem value="Ciudad de la Paz">Ciudad de la Paz</SelectItem>
-                          <SelectItem value="Ebebiyin">Ebebiyín</SelectItem>
                           <SelectItem value="Aconibe">Aconibe</SelectItem>
                           <SelectItem value="Akurenam">Akurenam</SelectItem>
                           <SelectItem value="Añisoc">Añisoc</SelectItem>
-                          <SelectItem value="Luba">Luba</SelectItem>
+                          <SelectItem value="Bata">Bata</SelectItem>
+                          <SelectItem value="Ciudad de la Paz">Ciudad de la Paz</SelectItem>
+                          <SelectItem value="Ebebiyin">Ebebiyín</SelectItem>
                           <SelectItem value="Evinayong">Evinayong</SelectItem>
-                          <SelectItem value="Mongomo">Mongomo</SelectItem>
+                          <SelectItem value="Luba">Luba</SelectItem>
+                          <SelectItem value="Malabo">Malabo</SelectItem>
                           <SelectItem value="Mikomeseng">Mikomeseng</SelectItem>
-                          <SelectItem value="Nsok">Nsok</SelectItem>
+                          <SelectItem value="Mongomo">Mongomo</SelectItem>
                           <SelectItem value="Niefang">Niefang</SelectItem>
+                          <SelectItem value="Nsok">Nsok</SelectItem>
                           <SelectItem value="San Antonio de Pale">San Antonio de Palé</SelectItem>
                         </SelectContent>
                       </Select>
@@ -219,16 +219,16 @@ const Index = () => {
                           <SelectValue placeholder="Select property type" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="residential">Residential</SelectItem>
+                          <SelectItem value="agricultural">Agricultural</SelectItem>
                           <SelectItem value="commercial">Commercial</SelectItem>
+                          <SelectItem value="educational">Educational</SelectItem>
+                          <SelectItem value="government">Government</SelectItem>
+                          <SelectItem value="healthcare">Healthcare</SelectItem>
                           <SelectItem value="industrial">Industrial</SelectItem>
                           <SelectItem value="institutional">Institutional</SelectItem>
-                          <SelectItem value="government">Government</SelectItem>
-                          <SelectItem value="educational">Educational</SelectItem>
-                          <SelectItem value="healthcare">Healthcare</SelectItem>
-                          <SelectItem value="religious">Religious</SelectItem>
                           <SelectItem value="recreational">Recreational</SelectItem>
-                          <SelectItem value="agricultural">Agricultural</SelectItem>
+                          <SelectItem value="religious">Religious</SelectItem>
+                          <SelectItem value="residential">Residential</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
