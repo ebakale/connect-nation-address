@@ -23,6 +23,7 @@ const Index = () => {
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [mapAddress, setMapAddress] = useState<Address | null>(null);
+  const [selectedSearchResult, setSelectedSearchResult] = useState<any>(null);
   const [formData, setFormData] = useState({
     country: 'Equatorial Guinea',
     region: '',
@@ -93,6 +94,24 @@ const Index = () => {
     setCurrentPage('map');
   };
 
+  // Convert search result to address format for displaying in AddressCard
+  const convertSearchResultToAddress = (result: any) => {
+    return {
+      uac: result.uac,
+      country: result.readable.split(', ').slice(-1)[0] || 'Equatorial Guinea',
+      region: result.readable.split(', ').slice(-2, -1)[0] || '',
+      city: result.readable.split(', ').slice(-3, -2)[0] || '',
+      street: result.readable.split(',')[0] || '',
+      building: result.readable.includes(', ') ? result.readable.split(',')[1]?.trim() : '',
+      coordinates: { lat: result.coordinates.lat, lng: result.coordinates.lng },
+      metadata: {
+        type: result.type,
+        description: `Selected from search results`,
+        verified: result.verified
+      }
+    };
+  };
+
   const renderPage = () => {
     switch (currentPage) {
       case 'search':
@@ -108,12 +127,13 @@ const Index = () => {
                 <AddressSearch 
                   onSelectAddress={(result) => {
                     console.log('Selected address:', result);
+                    setSelectedSearchResult(result);
                   }}
                 />
               </div>
               <div className="lg:w-96">
                 <AddressCard 
-                  address={sampleAddress}
+                  address={selectedSearchResult ? convertSearchResultToAddress(selectedSearchResult) : sampleAddress}
                   onViewMap={() => setCurrentPage('map')}
                 />
               </div>
