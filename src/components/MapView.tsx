@@ -33,8 +33,13 @@ const MapView: React.FC<MapViewProps> = ({
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const [mapboxToken, setMapboxToken] = useState<string>('');
-  const [isTokenSet, setIsTokenSet] = useState(false);
+  const [mapboxToken, setMapboxToken] = useState<string>(() => {
+    return localStorage.getItem('mapbox_token') || '';
+  });
+  const [isTokenSet, setIsTokenSet] = useState(() => {
+    const storedToken = localStorage.getItem('mapbox_token');
+    return !!(storedToken && storedToken.startsWith('pk.'));
+  });
 
   // Mock locations for demonstration
   const defaultLocations: MapLocation[] = [
@@ -155,6 +160,7 @@ const MapView: React.FC<MapViewProps> = ({
     if (mapboxToken.trim()) {
       // Validate token format (basic check)
       if (mapboxToken.startsWith('pk.')) {
+        localStorage.setItem('mapbox_token', mapboxToken);
         setIsTokenSet(true);
       } else {
         alert('Please enter a valid Mapbox public token (starts with "pk.")');
