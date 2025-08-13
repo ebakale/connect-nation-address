@@ -29,16 +29,16 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
   const [showResults, setShowResults] = useState(false);
   const { searchAddresses } = useAddresses();
 
-  // Convert Address to SearchResult format
-  const convertToSearchResult = (address: Partial<Address>): SearchResult => ({
-    uac: address.uac || '',
-    readable: `${address.street || ''}${address.building ? ', ' + address.building : ''}, ${address.city || ''}, ${address.region || ''}, ${address.country || ''}`,
+  // Convert search result to SearchResult format
+  const convertToSearchResult = (searchResult: any): SearchResult => ({
+    uac: searchResult.uac || '',
+    readable: `${searchResult.street || ''}${searchResult.building ? ', ' + searchResult.building : ''}, ${searchResult.city || ''}, ${searchResult.region || ''}, ${searchResult.country || ''}`,
     coordinates: {
-      lat: address.latitude || 0,
-      lng: address.longitude || 0,
+      lat: searchResult.latitude || 0,
+      lng: searchResult.longitude || 0,
     },
-    type: address.address_type || 'unknown',
-    verified: address.verified || false,
+    type: searchResult.address_type || 'unknown',
+    verified: searchResult.verified || false,
   });
 
   const handleSearch = async () => {
@@ -48,10 +48,12 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
     setShowResults(true);
     
     try {
-      // Search addresses from database
-      const addresses = await searchAddresses(query);
-      const searchResults = addresses.map(convertToSearchResult);
-      setResults(searchResults);
+      // Search addresses from database using the RPC function
+      const searchResults = await searchAddresses(query);
+      
+      // Convert the results to the SearchResult format
+      const formattedResults = searchResults.map(convertToSearchResult);
+      setResults(formattedResults);
     } catch (error) {
       console.error('Search error:', error);
       setResults([]);

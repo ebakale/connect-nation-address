@@ -126,7 +126,7 @@ export const useAddresses = () => {
   };
 
   // Search addresses using the secure function
-  const searchAddresses = async (query: string): Promise<Partial<Address>[]> => {
+  const searchAddresses = async (query: string): Promise<any[]> => {
     if (!query.trim()) return [];
 
     try {
@@ -135,26 +135,8 @@ export const useAddresses = () => {
 
       if (error) throw error;
       
-      // The function returns a subset of Address fields, so we return them as partial
-      return (data || []).map((item: any) => ({
-        uac: item.uac,
-        country: item.country,
-        region: item.region,
-        city: item.city,
-        street: item.street,
-        building: item.building,
-        latitude: item.latitude,
-        longitude: item.longitude,
-        address_type: item.address_type,
-        description: item.description,
-        verified: item.verified,
-        public: item.public,
-        created_at: item.created_at,
-        // Add default values for required fields not returned by the search function
-        id: '', // Not exposed in search for security
-        user_id: '', // Not exposed in search for security  
-        updated_at: item.created_at, // Use created_at as fallback
-      }));
+      // Return the raw data from the RPC function
+      return data || [];
     } catch (error) {
       console.error('Error searching addresses:', error);
       toast({
