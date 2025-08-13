@@ -11,9 +11,12 @@ import {
   Shield,
   Globe,
   Menu,
-  X
+  X,
+  LogOut,
+  User
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -23,6 +26,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, currentPage = 'dashboard', onNavigate }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   const navigation = [
     { name: 'Dashboard', id: 'dashboard', icon: Home },
@@ -70,9 +74,19 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage = 'dashboard', on
                 <Shield className="h-3 w-3 mr-1" />
                 Secure
               </Badge>
-              <div className="text-right hidden sm:block">
-                <p className="text-sm font-medium">Administrator</p>
-                <p className="text-xs text-muted-foreground">Equatorial Guinea Gov</p>
+              <div className="flex items-center gap-3">
+                <div className="text-right hidden sm:block">
+                  <p className="text-sm font-medium">{user?.email?.split('@')[0] || 'User'}</p>
+                  <p className="text-xs text-muted-foreground">Equatorial Guinea Gov</p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => signOut()}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           </div>
