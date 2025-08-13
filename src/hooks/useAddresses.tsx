@@ -19,6 +19,7 @@ export interface Address {
   description?: string;
   verified: boolean;
   public: boolean;
+  photo_url?: string;
   created_at: string;
   updated_at: string;
 }
@@ -34,6 +35,7 @@ export interface CreateAddressData {
   address_type: string;
   description?: string;
   public?: boolean;
+  photo?: File;
 }
 
 export const useAddresses = () => {
@@ -99,13 +101,40 @@ export const useAddresses = () => {
     setLoading(true);
     try {
       const uac = generateUAC(addressData.country, addressData.region, addressData.city);
+      let photoUrl: string | undefined = undefined;
+
+      // Upload photo if provided
+      if (addressData.photo) {
+        const fileExt = addressData.photo.name.split('.').pop();
+        const fileName = `${user.id}/${uac}.${fileExt}`;
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('address-photos')
+          .upload(fileName, addressData.photo);
+
+        if (uploadError) {
+          console.error('Photo upload error:', uploadError);
+          throw new Error('Failed to upload photo');
+        }
+
+        // Get the public URL for the uploaded photo
+        const { data: urlData } = supabase.storage
+          .from('address-photos')
+          .getPublicUrl(fileName);
+        
+        photoUrl = urlData.publicUrl;
+      }
+
+      // Prepare address data without the photo file
+      const { photo, ...addressDataWithoutPhoto } = addressData;
       
       const { data, error } = await supabase
         .from('addresses')
         .insert({
-          ...addressData,
+          ...addressDataWithoutPhoto,
           user_id: user.id,
           uac,
+          photo_url: photoUrl,
         })
         .select()
         .single();

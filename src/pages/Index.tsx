@@ -33,7 +33,8 @@ const Index = () => {
     longitude: '',
     address_type: 'residential',
     description: '',
-    public: false
+    public: false,
+    photo: null as File | null
   });
   const { user, loading } = useAuth();
   const { createAddress, addresses, loading: addressLoading } = useAddresses();
@@ -293,6 +294,22 @@ const Index = () => {
                     />
                   </div>
 
+                  <div>
+                    <label className="text-sm font-medium">Location Photo (Optional)</label>
+                    <Input 
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        setFormData(prev => ({ ...prev, photo: file || null }));
+                      }}
+                      className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/80"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Upload a photo of the location to help with identification
+                    </p>
+                  </div>
+
                   <div className="flex items-center gap-2">
                     <input
                       type="checkbox"
@@ -330,6 +347,7 @@ const Index = () => {
                           address_type: formData.address_type || 'residential',
                           description: formData.description || undefined,
                           public: formData.public,
+                          photo: formData.photo || undefined,
                         });
 
                         if (result) {
@@ -344,7 +362,8 @@ const Index = () => {
                             longitude: '',
                             address_type: 'residential',
                             description: '',
-                            public: false
+                            public: false,
+                            photo: null
                           });
                         }
                       }}

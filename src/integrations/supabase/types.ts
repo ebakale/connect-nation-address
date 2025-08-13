@@ -25,6 +25,7 @@ export type Database = {
           id: string
           latitude: number
           longitude: number
+          photo_url: string | null
           public: boolean
           region: string
           street: string
@@ -43,6 +44,7 @@ export type Database = {
           id?: string
           latitude: number
           longitude: number
+          photo_url?: string | null
           public?: boolean
           region: string
           street: string
@@ -61,6 +63,7 @@ export type Database = {
           id?: string
           latitude?: number
           longitude?: number
+          photo_url?: string | null
           public?: boolean
           region?: string
           street?: string
