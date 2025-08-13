@@ -179,6 +179,7 @@ const Index = () => {
                           <SelectItem value="Bata">Bata</SelectItem>
                           <SelectItem value="Ebebiyin">Ebebiyín</SelectItem>
                           <SelectItem value="Aconibe">Aconibe</SelectItem>
+                          <SelectItem value="Akurenam">Akurenam</SelectItem>
                           <SelectItem value="Añisoc">Añisoc</SelectItem>
                           <SelectItem value="Luba">Luba</SelectItem>
                           <SelectItem value="Evinayong">Evinayong</SelectItem>
