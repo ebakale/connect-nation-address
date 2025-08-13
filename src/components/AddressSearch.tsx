@@ -48,11 +48,14 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
     setShowResults(true);
     
     try {
+      console.log('Starting search for:', query);
       // Search addresses from database using the RPC function
       const searchResults = await searchAddresses(query);
+      console.log('Raw search results:', searchResults);
       
       // Convert the results to the SearchResult format
       const formattedResults = searchResults.map(convertToSearchResult);
+      console.log('Formatted results:', formattedResults);
       setResults(formattedResults);
     } catch (error) {
       console.error('Search error:', error);

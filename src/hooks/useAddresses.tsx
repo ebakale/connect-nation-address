@@ -130,8 +130,13 @@ export const useAddresses = () => {
     if (!query.trim()) return [];
 
     try {
+      console.log('Searching for:', query);
+      console.log('User authenticated:', !!user);
+      
       const { data, error } = await supabase
         .rpc('search_addresses_safely', { search_query: query });
+
+      console.log('Search response:', { data, error });
 
       if (error) throw error;
       
