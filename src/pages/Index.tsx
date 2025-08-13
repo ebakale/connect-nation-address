@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, MapPin, Search as SearchIcon, BarChart3 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAddresses, Address } from '@/hooks/useAddresses';
@@ -22,7 +23,7 @@ const Index = () => {
   const [editMode, setEditMode] = useState(false);
   const [mapAddress, setMapAddress] = useState<Address | null>(null);
   const [formData, setFormData] = useState({
-    country: '',
+    country: 'Equatorial Guinea',
     region: '',
     city: '',
     street: '',
@@ -139,26 +140,55 @@ const Index = () => {
                     <div>
                       <label className="text-sm font-medium">Country</label>
                       <Input 
-                        placeholder="Equatorial Guinea" 
-                        value={formData.country}
-                        onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
+                        value="Equatorial Guinea"
+                        disabled
+                        className="bg-muted"
                       />
                     </div>
                     <div>
                       <label className="text-sm font-medium">Region/Province</label>
-                      <Input 
-                        placeholder="Bioko Norte" 
-                        value={formData.region}
-                        onChange={(e) => setFormData(prev => ({ ...prev, region: e.target.value }))}
-                      />
+                      <Select 
+                        value={formData.region} 
+                        onValueChange={(value) => setFormData(prev => ({ ...prev, region: value }))}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select region" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Bioko Norte">Bioko Norte</SelectItem>
+                          <SelectItem value="Bioko Sur">Bioko Sur</SelectItem>
+                          <SelectItem value="Annobon">Annobón</SelectItem>
+                          <SelectItem value="Centro Sur">Centro Sur</SelectItem>
+                          <SelectItem value="Kie-Ntem">Kié-Ntem</SelectItem>
+                          <SelectItem value="Litoral">Litoral</SelectItem>
+                          <SelectItem value="Wele-Nzas">Wele-Nzas</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <label className="text-sm font-medium">City/District</label>
-                      <Input 
-                        placeholder="Malabo" 
-                        value={formData.city}
-                        onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
-                      />
+                      <Select 
+                        value={formData.city} 
+                        onValueChange={(value) => setFormData(prev => ({ ...prev, city: value }))}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select city" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Malabo">Malabo</SelectItem>
+                          <SelectItem value="Bata">Bata</SelectItem>
+                          <SelectItem value="Ebebiyin">Ebebiyín</SelectItem>
+                          <SelectItem value="Aconibe">Aconibe</SelectItem>
+                          <SelectItem value="Añisoc">Añisoc</SelectItem>
+                          <SelectItem value="Luba">Luba</SelectItem>
+                          <SelectItem value="Evinayong">Evinayong</SelectItem>
+                          <SelectItem value="Mongomo">Mongomo</SelectItem>
+                          <SelectItem value="Mikomeseng">Mikomeseng</SelectItem>
+                          <SelectItem value="Nsok">Nsok</SelectItem>
+                          <SelectItem value="Niefang">Niefang</SelectItem>
+                          <SelectItem value="San Antonio de Pale">San Antonio de Palé</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <label className="text-sm font-medium">Street/Area</label>
@@ -178,11 +208,26 @@ const Index = () => {
                     </div>
                     <div>
                       <label className="text-sm font-medium">Property Type</label>
-                      <Input 
-                        placeholder="residential" 
-                        value={formData.address_type}
-                        onChange={(e) => setFormData(prev => ({ ...prev, address_type: e.target.value }))}
-                      />
+                      <Select 
+                        value={formData.address_type} 
+                        onValueChange={(value) => setFormData(prev => ({ ...prev, address_type: value }))}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select property type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="residential">Residential</SelectItem>
+                          <SelectItem value="commercial">Commercial</SelectItem>
+                          <SelectItem value="industrial">Industrial</SelectItem>
+                          <SelectItem value="institutional">Institutional</SelectItem>
+                          <SelectItem value="government">Government</SelectItem>
+                          <SelectItem value="educational">Educational</SelectItem>
+                          <SelectItem value="healthcare">Healthcare</SelectItem>
+                          <SelectItem value="religious">Religious</SelectItem>
+                          <SelectItem value="recreational">Recreational</SelectItem>
+                          <SelectItem value="agricultural">Agricultural</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                   
@@ -286,7 +331,7 @@ const Index = () => {
                         if (result) {
                           // Clear form after successful creation
                           setFormData({
-                            country: '',
+                            country: 'Equatorial Guinea',
                             region: '',
                             city: '',
                             street: '',
