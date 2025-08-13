@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, QrCode, Copy, ExternalLink, Check } from 'lucide-react';
+import { MapPin, QrCode, Copy, ExternalLink, Check, Navigation } from 'lucide-react';
 import QRCode from 'qrcode';
 
 interface AddressData {
@@ -65,6 +65,42 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
 
   const formatCoordinates = (lat: number, lng: number) => {
     return `${lat.toFixed(6)}° N, ${lng.toFixed(6)}° E`;
+  };
+
+  const getDirections = () => {
+    const { lat, lng } = address.coordinates;
+    const addressString = `${address.street}, ${address.city}, ${address.region}, ${address.country}`;
+    
+    // Detect user's device/browser and open appropriate map app
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isAndroid = /Android/.test(navigator.userAgent);
+    
+    let url;
+    
+    if (isIOS) {
+      // iOS: Try Apple Maps first, fallback to Google Maps
+      url = `maps://maps.apple.com/?daddr=${lat},${lng}&dirflg=d`;
+      
+      // Fallback to Google Maps if Apple Maps fails
+      setTimeout(() => {
+        window.open(`https://maps.google.com/maps?daddr=${lat},${lng}&amp;ll=`);
+      }, 25);
+    } else if (isAndroid) {
+      // Android: Use Google Maps intent
+      url = `intent://navigate?q=${lat},${lng}#Intent;scheme=google.navigation;package=com.google.android.apps.maps;end`;
+      
+      // Fallback to web version
+      setTimeout(() => {
+        window.open(`https://maps.google.com/maps?daddr=${lat},${lng}&amp;ll=`);
+      }, 25);
+    } else {
+      // Desktop: Open Google Maps in new tab
+      url = `https://maps.google.com/maps?daddr=${lat},${lng}&amp;ll=`;
+    }
+    
+    if (url) {
+      window.open(url, '_blank');
+    }
   };
 
   return (
@@ -146,6 +182,15 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
           <Button variant="default" size="sm" onClick={onViewMap} className="flex-1">
             <ExternalLink className="h-4 w-4" />
             View on Map
+          </Button>
+          <Button 
+            variant="hero" 
+            size="sm" 
+            onClick={getDirections}
+            className="flex-1"
+          >
+            <Navigation className="h-4 w-4" />
+            Directions
           </Button>
           <Button 
             variant="outline" 
