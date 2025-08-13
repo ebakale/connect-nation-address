@@ -56,6 +56,8 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
     if (!query.trim()) return;
 
     setIsSearching(true);
+    setShowResults(true);
+    
     // Simulate API delay
     setTimeout(() => {
       const filteredResults = mockResults.filter(result => 
@@ -63,9 +65,8 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
         result.uac.toLowerCase().includes(query.toLowerCase())
       );
       setResults(filteredResults);
-      setShowResults(true);
       setIsSearching(false);
-    }, 500);
+    }, 800);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

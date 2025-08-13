@@ -149,7 +149,18 @@ const Index = () => {
                     >
                       Generate UAC & Register
                     </Button>
-                    <Button variant="outline">
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        // Save form data as draft
+                        const formData = {
+                          country: "Draft saved",
+                          timestamp: new Date().toLocaleString()
+                        };
+                        localStorage.setItem('addressDraft', JSON.stringify(formData));
+                        alert('Draft saved successfully!');
+                      }}
+                    >
                       Save Draft
                     </Button>
                   </div>

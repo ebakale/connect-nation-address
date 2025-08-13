@@ -153,7 +153,14 @@ const MapView: React.FC<MapViewProps> = ({
 
   const handleTokenSubmit = () => {
     if (mapboxToken.trim()) {
-      setIsTokenSet(true);
+      // Validate token format (basic check)
+      if (mapboxToken.startsWith('pk.')) {
+        setIsTokenSet(true);
+      } else {
+        alert('Please enter a valid Mapbox public token (starts with "pk.")');
+      }
+    } else {
+      alert('Please enter a Mapbox token');
     }
   };
 
