@@ -24,7 +24,8 @@ const Index = () => {
     latitude: '',
     longitude: '',
     address_type: 'residential',
-    description: ''
+    description: '',
+    public: false
   });
   const { user, loading } = useAuth();
   const { createAddress, addresses, loading: addressLoading } = useAddresses();
@@ -184,6 +185,19 @@ const Index = () => {
                     />
                   </div>
 
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="publicAddress"
+                      checked={formData.public}
+                      onChange={(e) => setFormData(prev => ({ ...prev, public: e.target.checked }))}
+                      className="rounded border-gray-300"
+                    />
+                    <label htmlFor="publicAddress" className="text-sm font-medium">
+                      Make this address publicly visible (for businesses, landmarks, etc.)
+                    </label>
+                  </div>
+
                   <div className="flex gap-2 pt-4">
                     <Button 
                       variant="hero" 
@@ -207,6 +221,7 @@ const Index = () => {
                           longitude: parseFloat(formData.longitude),
                           address_type: formData.address_type || 'residential',
                           description: formData.description || undefined,
+                          public: formData.public,
                         });
 
                         if (result) {
@@ -220,7 +235,8 @@ const Index = () => {
                             latitude: '',
                             longitude: '',
                             address_type: 'residential',
-                            description: ''
+                            description: '',
+                            public: false
                           });
                         }
                       }}

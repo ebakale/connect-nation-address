@@ -17,6 +17,7 @@ export interface Address {
   address_type: string;
   description?: string;
   verified: boolean;
+  public: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -31,6 +32,7 @@ export interface CreateAddressData {
   longitude: number;
   address_type: string;
   description?: string;
+  public?: boolean;
 }
 
 export const useAddresses = () => {
@@ -123,19 +125,36 @@ export const useAddresses = () => {
     }
   };
 
-  // Search addresses (both user's own and verified public addresses)
-  const searchAddresses = async (query: string): Promise<Address[]> => {
+  // Search addresses using the secure function
+  const searchAddresses = async (query: string): Promise<Partial<Address>[]> => {
     if (!query.trim()) return [];
 
     try {
       const { data, error } = await supabase
-        .from('addresses')
-        .select('*')
-        .or(`uac.ilike.%${query}%,street.ilike.%${query}%,city.ilike.%${query}%,building.ilike.%${query}%`)
-        .limit(10);
+        .rpc('search_addresses_safely', { search_query: query });
 
       if (error) throw error;
-      return data || [];
+      
+      // The function returns a subset of Address fields, so we return them as partial
+      return (data || []).map((item: any) => ({
+        uac: item.uac,
+        country: item.country,
+        region: item.region,
+        city: item.city,
+        street: item.street,
+        building: item.building,
+        latitude: item.latitude,
+        longitude: item.longitude,
+        address_type: item.address_type,
+        description: item.description,
+        verified: item.verified,
+        public: item.public,
+        created_at: item.created_at,
+        // Add default values for required fields not returned by the search function
+        id: '', // Not exposed in search for security
+        user_id: '', // Not exposed in search for security  
+        updated_at: item.created_at, // Use created_at as fallback
+      }));
     } catch (error) {
       console.error('Error searching addresses:', error);
       toast({
@@ -147,31 +166,38 @@ export const useAddresses = () => {
     }
   };
 
-  // Update address verification status (admin function)
-  const updateVerificationStatus = async (addressId: string, verified: boolean) => {
+  // Update address verification and public status (admin function)
+  const updateAddressStatus = async (addressId: string, updates: { verified?: boolean; public?: boolean }) => {
     if (!user) return;
 
     try {
       const { error } = await supabase
         .from('addresses')
-        .update({ verified })
+        .update(updates)
         .eq('id', addressId)
         .eq('user_id', user.id);
 
       if (error) throw error;
 
+      const statusText = updates.verified !== undefined 
+        ? `Address ${updates.verified ? 'verified' : 'unverified'}` 
+        : '';
+      const publicText = updates.public !== undefined 
+        ? `Address made ${updates.public ? 'public' : 'private'}` 
+        : '';
+      
       toast({
         title: "Success",
-        description: `Address ${verified ? 'verified' : 'unverified'} successfully`,
+        description: [statusText, publicText].filter(Boolean).join(' and ') + ' successfully',
       });
 
       // Refresh the addresses list
       fetchAddresses();
     } catch (error: any) {
-      console.error('Error updating verification:', error);
+      console.error('Error updating address status:', error);
       toast({
         title: "Error",
-        description: error.message || "Failed to update verification status",
+        description: error.message || "Failed to update address status",
         variant: "destructive",
       });
     }
@@ -218,7 +244,7 @@ export const useAddresses = () => {
     loading,
     createAddress,
     searchAddresses,
-    updateVerificationStatus,
+    updateAddressStatus,
     deleteAddress,
     fetchAddresses,
   };

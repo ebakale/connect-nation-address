@@ -30,15 +30,15 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
   const { searchAddresses } = useAddresses();
 
   // Convert Address to SearchResult format
-  const convertToSearchResult = (address: Address): SearchResult => ({
-    uac: address.uac,
-    readable: `${address.street}${address.building ? ', ' + address.building : ''}, ${address.city}, ${address.region}, ${address.country}`,
+  const convertToSearchResult = (address: Partial<Address>): SearchResult => ({
+    uac: address.uac || '',
+    readable: `${address.street || ''}${address.building ? ', ' + address.building : ''}, ${address.city || ''}, ${address.region || ''}, ${address.country || ''}`,
     coordinates: {
-      lat: address.latitude,
-      lng: address.longitude,
+      lat: address.latitude || 0,
+      lng: address.longitude || 0,
     },
-    type: address.address_type,
-    verified: address.verified,
+    type: address.address_type || 'unknown',
+    verified: address.verified || false,
   });
 
   const handleSearch = async () => {
