@@ -4,6 +4,9 @@ import Layout from '@/components/Layout';
 import Dashboard from '@/components/Dashboard';
 import AddressSearch from '@/components/AddressSearch';
 import AddressCard from '@/components/AddressCard';
+import AddressList from '@/components/AddressList';
+import AddressEditor from '@/components/AddressEditor';
+import AddressViewer from '@/components/AddressViewer';
 import MapView from '@/components/MapView';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,10 +14,12 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Plus, MapPin, Search as SearchIcon, BarChart3 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useAddresses } from '@/hooks/useAddresses';
+import { useAddresses, Address } from '@/hooks/useAddresses';
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+  const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
     country: '',
     region: '',
@@ -59,6 +64,24 @@ const Index = () => {
       description: "2-story building, near Shell Fuel Station",
       verified: true
     }
+  };
+
+  const handleEditAddress = (address: Address) => {
+    setSelectedAddress(address);
+    setEditMode(true);
+    setCurrentPage('manage');
+  };
+
+  const handleViewAddress = (address: Address) => {
+    setSelectedAddress(address);
+    setEditMode(false);
+    setCurrentPage('manage');
+  };
+
+  const handleBackToList = () => {
+    setSelectedAddress(null);
+    setEditMode(false);
+    setCurrentPage('manage');
   };
 
   const renderPage = () => {
@@ -319,6 +342,41 @@ const Index = () => {
             </div>
           </div>
         );
+
+      case 'manage':
+        if (selectedAddress && editMode) {
+          return (
+            <AddressEditor
+              address={selectedAddress}
+              onBack={handleBackToList}
+              onSave={(updatedAddress) => {
+                console.log('Address updated:', updatedAddress);
+                handleBackToList();
+              }}
+            />
+          );
+        } else if (selectedAddress && !editMode) {
+          return (
+            <AddressViewer
+              address={selectedAddress}
+              onBack={handleBackToList}
+              onEdit={handleEditAddress}
+            />
+          );
+        } else {
+          return (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold mb-2">Address Management</h2>
+                <p className="text-muted-foreground">View and manage all registered addresses</p>
+              </div>
+              <AddressList
+                onEditAddress={handleEditAddress}
+                onViewAddress={handleViewAddress}
+              />
+            </div>
+          );
+        }
 
       case 'settings':
         return (

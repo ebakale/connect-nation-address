@@ -13,7 +13,8 @@ import {
   Menu,
   X,
   LogOut,
-  User
+  User,
+  List
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
@@ -32,6 +33,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage = 'dashboard', on
     { name: 'Dashboard', id: 'dashboard', icon: Home },
     { name: 'Search Addresses', id: 'search', icon: Search },
     { name: 'Add Address', id: 'add', icon: Plus },
+    { name: 'Manage Addresses', id: 'manage', icon: List },
     { name: 'Map View', id: 'map', icon: MapPin },
     { name: 'Analytics', id: 'analytics', icon: BarChart3 },
     { name: 'Settings', id: 'settings', icon: Settings },

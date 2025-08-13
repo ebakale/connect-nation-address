@@ -1,0 +1,287 @@
+import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { 
+  MapPin, 
+  Edit, 
+  Trash2, 
+  Search, 
+  Eye,
+  CheckCircle,
+  XCircle,
+  Globe,
+  Lock,
+  Filter
+} from 'lucide-react';
+import { useAddresses, Address } from '@/hooks/useAddresses';
+import { useToast } from '@/hooks/use-toast';
+
+interface AddressListProps {
+  onEditAddress?: (address: Address) => void;
+  onViewAddress?: (address: Address) => void;
+}
+
+const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress }) => {
+  const { addresses, loading, updateAddressStatus, deleteAddress } = useAddresses();
+  const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'verified' | 'unverified' | 'public' | 'private'>('all');
+
+  // Filter addresses based on search query and status
+  const filteredAddresses = addresses.filter(address => {
+    const matchesSearch = !searchQuery || 
+      address.uac.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      address.street.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      address.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      address.building?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      address.address_type.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesFilter = filterStatus === 'all' ||
+      (filterStatus === 'verified' && address.verified) ||
+      (filterStatus === 'unverified' && !address.verified) ||
+      (filterStatus === 'public' && address.public) ||
+      (filterStatus === 'private' && !address.public);
+
+    return matchesSearch && matchesFilter;
+  });
+
+  const handleToggleVerified = async (address: Address) => {
+    await updateAddressStatus(address.id, { verified: !address.verified });
+  };
+
+  const handleTogglePublic = async (address: Address) => {
+    await updateAddressStatus(address.id, { public: !address.public });
+  };
+
+  const handleDelete = async (address: Address) => {
+    if (window.confirm(`Are you sure you want to delete address ${address.uac}?`)) {
+      await deleteAddress(address.id);
+    }
+  };
+
+  const getStatusBadges = (address: Address) => {
+    const badges = [];
+    
+    if (address.verified) {
+      badges.push(
+        <Badge key="verified" variant="outline" className="border-success text-success">
+          <CheckCircle className="h-3 w-3 mr-1" />
+          Verified
+        </Badge>
+      );
+    } else {
+      badges.push(
+        <Badge key="unverified" variant="outline" className="border-warning text-warning">
+          <XCircle className="h-3 w-3 mr-1" />
+          Unverified
+        </Badge>
+      );
+    }
+
+    if (address.public) {
+      badges.push(
+        <Badge key="public" variant="outline" className="border-primary text-primary">
+          <Globe className="h-3 w-3 mr-1" />
+          Public
+        </Badge>
+      );
+    } else {
+      badges.push(
+        <Badge key="private" variant="outline">
+          <Lock className="h-3 w-3 mr-1" />
+          Private
+        </Badge>
+      );
+    }
+
+    return badges;
+  };
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'government': return 'border-success text-success';
+      case 'commercial': return 'border-primary text-primary';
+      case 'residential': return 'border-warning text-warning';
+      case 'landmark': return 'border-destructive text-destructive';
+      default: return '';
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header and Controls */}
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold">Address Management</h2>
+          <p className="text-muted-foreground">View and manage all registered addresses</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Badge variant="outline">{filteredAddresses.length} addresses</Badge>
+        </div>
+      </div>
+
+      {/* Search and Filter Controls */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by UAC, street, city, building, or type..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-muted-foreground" />
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value as any)}
+                className="border rounded-md px-3 py-2 text-sm"
+              >
+                <option value="all">All Addresses</option>
+                <option value="verified">Verified Only</option>
+                <option value="unverified">Unverified Only</option>
+                <option value="public">Public Only</option>
+                <option value="private">Private Only</option>
+              </select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Address List */}
+      {filteredAddresses.length === 0 ? (
+        <Card>
+          <CardContent className="p-8 text-center">
+            <MapPin className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+            <h3 className="text-lg font-semibold mb-2">No addresses found</h3>
+            <p className="text-muted-foreground">
+              {searchQuery || filterStatus !== 'all' 
+                ? 'Try adjusting your search or filter criteria.' 
+                : 'Start by registering your first address.'}
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4">
+          {filteredAddresses.map((address) => (
+            <Card key={address.id} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1 min-w-0">
+                    {/* Header */}
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="font-mono text-lg font-bold text-primary">
+                        {address.uac}
+                      </span>
+                      <Badge variant="outline" className={getTypeColor(address.address_type)}>
+                        {address.address_type}
+                      </Badge>
+                      <div className="flex gap-1">
+                        {getStatusBadges(address)}
+                      </div>
+                    </div>
+
+                    {/* Address Details */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm">
+                          {address.street}
+                          {address.building && `, ${address.building}`}
+                        </span>
+                      </div>
+                      
+                      <div className="text-sm text-muted-foreground">
+                        {address.city}, {address.region}, {address.country}
+                      </div>
+
+                      <div className="text-xs text-muted-foreground">
+                        Coordinates: {address.latitude.toFixed(6)}, {address.longitude.toFixed(6)}
+                      </div>
+
+                      {address.description && (
+                        <div className="text-sm text-muted-foreground italic">
+                          {address.description}
+                        </div>
+                      )}
+
+                      <div className="text-xs text-muted-foreground">
+                        Created: {new Date(address.created_at).toLocaleDateString()}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-col gap-2 ml-4">
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onViewAddress?.(address)}
+                        title="View Details"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onEditAddress?.(address)}
+                        title="Edit Address"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDelete(address)}
+                        title="Delete Address"
+                        className="text-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    
+                    {/* Status Toggle Buttons */}
+                    <div className="flex flex-col gap-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleToggleVerified(address)}
+                        className={`text-xs ${address.verified ? 'border-success text-success' : 'border-warning text-warning'}`}
+                      >
+                        {address.verified ? 'Unverify' : 'Verify'}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleTogglePublic(address)}
+                        className={`text-xs ${address.public ? 'border-primary text-primary' : ''}`}
+                      >
+                        {address.public ? 'Make Private' : 'Make Public'}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AddressList;
