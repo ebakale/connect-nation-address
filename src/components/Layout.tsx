@@ -36,6 +36,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage = 'dashboard', on
     { name: 'Manage Addresses', id: 'manage', icon: List },
     { name: 'Map View', id: 'map', icon: MapPin },
     { name: 'Analytics', id: 'analytics', icon: BarChart3 },
+    { name: 'Admin Panel', id: 'admin', icon: Shield },
     { name: 'Settings', id: 'settings', icon: Settings },
   ];
 

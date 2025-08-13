@@ -8,12 +8,13 @@ import AddressList from '@/components/AddressList';
 import AddressEditor from '@/components/AddressEditor';
 import AddressViewer from '@/components/AddressViewer';
 import MapView from '@/components/MapView';
+import AdminPanel from '@/components/AdminPanel';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, MapPin, Search as SearchIcon, BarChart3 } from 'lucide-react';
+import { Plus, MapPin, Search as SearchIcon, BarChart3, Shield } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAddresses, Address } from '@/hooks/useAddresses';
 
@@ -504,6 +505,17 @@ const Index = () => {
             </div>
           );
         }
+
+      case 'admin':
+        return (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Admin Panel</h2>
+              <p className="text-muted-foreground">System administration and user role management</p>
+            </div>
+            <AdminPanel />
+          </div>
+        );
 
       case 'settings':
         return (
