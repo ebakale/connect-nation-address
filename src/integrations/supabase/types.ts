@@ -109,57 +109,27 @@ export type Database = {
       }
     }
     Views: {
-      addresses_search: {
-        Row: {
-          address_type: string | null
-          building: string | null
-          city: string | null
-          country: string | null
-          created_at: string | null
-          description: string | null
-          latitude: number | null
-          longitude: number | null
-          public: boolean | null
-          region: string | null
-          street: string | null
-          uac: string | null
-          verified: boolean | null
-        }
-        Insert: {
-          address_type?: string | null
-          building?: string | null
-          city?: string | null
-          country?: string | null
-          created_at?: string | null
-          description?: never
-          latitude?: never
-          longitude?: never
-          public?: boolean | null
-          region?: string | null
-          street?: string | null
-          uac?: string | null
-          verified?: boolean | null
-        }
-        Update: {
-          address_type?: string | null
-          building?: string | null
-          city?: string | null
-          country?: string | null
-          created_at?: string | null
-          description?: never
-          latitude?: never
-          longitude?: never
-          public?: boolean | null
-          region?: string | null
-          street?: string | null
-          uac?: string | null
-          verified?: boolean | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      search_addresses_safely: {
+        Args: { search_query: string }
+        Returns: {
+          uac: string
+          country: string
+          region: string
+          city: string
+          street: string
+          building: string
+          latitude: number
+          longitude: number
+          address_type: string
+          description: string
+          verified: boolean
+          public: boolean
+          created_at: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
