@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
+import { useUserRole } from './useUserRole';
 import { useToast } from '@/hooks/use-toast';
 
 export interface Address {
@@ -39,6 +40,7 @@ export const useAddresses = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
+  const { hasAdminAccess } = useUserRole();
   const { toast } = useToast();
 
   // Generate a unique address code
@@ -57,11 +59,17 @@ export const useAddresses = () => {
     
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('addresses')
         .select('*')
-        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
+
+      // If user is not admin, only fetch their own addresses
+      if (!hasAdminAccess) {
+        query = query.eq('user_id', user.id);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       setAddresses(data || []);
@@ -158,11 +166,17 @@ export const useAddresses = () => {
     if (!user) return;
 
     try {
-      const { error } = await supabase
+      let query = supabase
         .from('addresses')
         .update(updates)
-        .eq('id', addressId)
-        .eq('user_id', user.id);
+        .eq('id', addressId);
+
+      // If user is not admin, only allow updating their own addresses
+      if (!hasAdminAccess) {
+        query = query.eq('user_id', user.id);
+      }
+
+      const { error } = await query;
 
       if (error) throw error;
 
@@ -195,11 +209,17 @@ export const useAddresses = () => {
     if (!user) return;
 
     try {
-      const { error } = await supabase
+      let query = supabase
         .from('addresses')
         .delete()
-        .eq('id', addressId)
-        .eq('user_id', user.id);
+        .eq('id', addressId);
+
+      // If user is not admin, only allow deleting their own addresses
+      if (!hasAdminAccess) {
+        query = query.eq('user_id', user.id);
+      }
+
+      const { error } = await query;
 
       if (error) throw error;
 
@@ -221,10 +241,11 @@ export const useAddresses = () => {
   };
 
   useEffect(() => {
-    if (user) {
+    // Only fetch addresses if user is authenticated and role is loaded
+    if (user && hasAdminAccess !== undefined) {
       fetchAddresses();
     }
-  }, [user]);
+  }, [user, hasAdminAccess]);
 
   return {
     addresses,
