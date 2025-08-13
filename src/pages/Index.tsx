@@ -159,6 +159,7 @@ const Index = () => {
                           <SelectItem value="Bioko Sur">Bioko Sur</SelectItem>
                           <SelectItem value="Annobon">Annobón</SelectItem>
                           <SelectItem value="Centro Sur">Centro Sur</SelectItem>
+                          <SelectItem value="Djibloho">Djibloho</SelectItem>
                           <SelectItem value="Kie-Ntem">Kié-Ntem</SelectItem>
                           <SelectItem value="Litoral">Litoral</SelectItem>
                           <SelectItem value="Wele-Nzas">Wele-Nzas</SelectItem>
@@ -177,6 +178,7 @@ const Index = () => {
                         <SelectContent>
                           <SelectItem value="Malabo">Malabo</SelectItem>
                           <SelectItem value="Bata">Bata</SelectItem>
+                          <SelectItem value="Ciudad de la Paz">Ciudad de la Paz</SelectItem>
                           <SelectItem value="Ebebiyin">Ebebiyín</SelectItem>
                           <SelectItem value="Aconibe">Aconibe</SelectItem>
                           <SelectItem value="Akurenam">Akurenam</SelectItem>
