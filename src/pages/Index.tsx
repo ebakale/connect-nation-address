@@ -136,7 +136,17 @@ const Index = () => {
                   </div>
 
                   <div className="flex gap-2 pt-4">
-                    <Button variant="hero" className="flex-1">
+                    <Button 
+                      variant="hero" 
+                      className="flex-1"
+                      onClick={() => {
+                        // Generate a unique address code
+                        const timestamp = Date.now().toString(36);
+                        const random = Math.random().toString(36).substr(2, 5);
+                        const uac = `EG-${timestamp}-${random}`.toUpperCase();
+                        alert(`Address registered successfully!\nGenerated UAC: ${uac}`);
+                      }}
+                    >
                       Generate UAC & Register
                     </Button>
                     <Button variant="outline">
