@@ -110,6 +110,41 @@ export type Database = {
         }
         Relationships: []
       }
+      user_role_metadata: {
+        Row: {
+          created_at: string | null
+          id: string
+          scope_type: string
+          scope_value: string
+          updated_at: string | null
+          user_role_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          scope_type: string
+          scope_value: string
+          updated_at?: string | null
+          user_role_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          scope_type?: string
+          scope_value?: string
+          updated_at?: string | null
+          user_role_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_role_metadata_user_role_id_fkey"
+            columns: ["user_role_id"]
+            isOneToOne: false
+            referencedRelation: "user_roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -143,6 +178,15 @@ export type Database = {
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      has_role_with_scope: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _scope_type?: string
+          _scope_value?: string
           _user_id: string
         }
         Returns: boolean
