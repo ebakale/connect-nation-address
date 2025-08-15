@@ -3,6 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
 import { RoleManager } from './RoleManager';
+import { PermissionMatrix } from './PermissionMatrix';
+import { WorkflowManager } from './WorkflowManager';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Shield } from 'lucide-react';
 
 const AdminPanel: React.FC = () => {
@@ -49,7 +52,34 @@ const AdminPanel: React.FC = () => {
         </CardHeader>
       </Card>
       
-      <RoleManager />
+      <Tabs defaultValue="roles" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="roles">Role Management</TabsTrigger>
+          <TabsTrigger value="permissions">Permissions</TabsTrigger>
+          <TabsTrigger value="workflows">Workflows</TabsTrigger>
+          <TabsTrigger value="users">User Management</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="roles">
+          <RoleManager />
+        </TabsContent>
+        
+        <TabsContent value="permissions">
+          <PermissionMatrix />
+        </TabsContent>
+        
+        <TabsContent value="workflows">
+          <WorkflowManager />
+        </TabsContent>
+        
+        <TabsContent value="users">
+          <Card>
+            <CardContent className="p-6">
+              <p className="text-center text-muted-foreground">User management features coming soon</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

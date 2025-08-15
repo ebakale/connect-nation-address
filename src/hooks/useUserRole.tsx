@@ -86,10 +86,68 @@ export const useUserRole = () => {
   const hasRegistrarAccess = hasAdminAccess || role === 'registrar';
   const hasVerifierAccess = hasRegistrarAccess || role === 'verifier';
   const hasFieldAccess = hasVerifierAccess || role === 'field_agent';
-  const canViewPublicData = true; // All roles can view public data
-  const canCreateAddresses = hasFieldAccess || role === 'property_claimant';
-  const canVerifyAddresses = hasVerifierAccess;
+  
+  // Operational Permissions based on the permission map
+  const canSearchVerifiedAddresses = true; // All roles can search verified addresses
+  
+  const canCreateDraftAddress = 
+    role === 'field_agent' || 
+    hasVerifierAccess || // Verifiers can create for corrections
+    role === 'data_steward'; // Data stewards can create test sandboxes
+  
+  const canUploadEvidence = 
+    role === 'property_claimant' || 
+    role === 'field_agent' || 
+    hasVerifierAccess;
+  
+  // Evidence viewing permissions
+  const getEvidenceViewLevel = () => {
+    if (hasRegistrarAccess) return 'full'; // Full access
+    if (role === 'verifier') return 'full';
+    if (role === 'field_agent') return 'own'; // Own submissions only
+    if (role === 'property_claimant') return 'own'; // Own only
+    if (role === 'auditor') return 'redacted'; // Redacted view
+    if (role === 'data_steward') return 'redacted'; // Redacted QA view
+    if (role === 'citizen') return 'redacted'; // View redacted
+    if (role === 'partner') return 'none'; // No evidence access
+    return 'none';
+  };
+  
+  // Verification and publishing permissions
+  const canVerifyAddresses = role === 'verifier' || hasRegistrarAccess;
   const canPublishAddresses = hasRegistrarAccess;
+  const canRetireAddresses = hasRegistrarAccess;
+  const canOverrideDecisions = role === 'ndaa_admin';
+  
+  // Record management permissions
+  const canMergeRecords = role === 'verifier' || hasRegistrarAccess;
+  const canSplitRecords = role === 'verifier' || hasRegistrarAccess;
+  
+  // Hierarchy and boundary management
+  const canEditHierarchy = () => {
+    if (role === 'ndaa_admin') return 'national';
+    if (role === 'registrar') return 'province';
+    if (role === 'verifier') return 'district';
+    if (role === 'data_steward') return 'suggest'; // Can only suggest changes
+    return 'none';
+  };
+  
+  // API and webhook management
+  const canManageAPIKeys = role === 'ndaa_admin';
+  const canRequestAPIAccess = role === 'partner';
+  
+  // Audit log access levels
+  const getAuditLogAccess = () => {
+    if (role === 'ndaa_admin') return 'nation';
+    if (role === 'registrar') return 'province';
+    if (role === 'verifier') return 'district';
+    if (role === 'auditor') return 'read_only';
+    if (role === 'data_steward') return 'qa_only';
+    if (role === 'partner') return 'delivery_logs';
+    if (role === 'field_agent' || role === 'property_claimant') return 'own';
+    if (role === 'citizen') return 'status_only';
+    return 'none';
+  };
 
   // Get geographic scope
   const getGeographicScope = () => {
@@ -110,6 +168,32 @@ export const useUserRole = () => {
     return roleMetadata.some(m => 
       m.scope_type === scopeType && m.scope_value === scopeValue
     );
+  };
+
+  // ABAC (Attribute-Based Access Control) for geographic scoping
+  const canAccessLocation = (locationDistrict?: string, locationProvince?: string) => {
+    const geographicScopes = getGeographicScope();
+    
+    if (role === 'ndaa_admin') return true; // National access
+    if (role === 'registrar') {
+      // Province level access
+      return !locationProvince || geographicScopes.includes(locationProvince);
+    }
+    if (role === 'verifier') {
+      // District level access
+      return !locationDistrict || geographicScopes.includes(locationDistrict);
+    }
+    
+    return true; // Other roles have general access
+  };
+
+  // Workflow helper functions
+  const getWorkflowStage = () => {
+    if (role === 'citizen') return 'submit_request';
+    if (role === 'field_agent') return 'capture_draft';
+    if (role === 'verifier') return 'verify';
+    if (role === 'registrar') return 'publish';
+    return 'view_only';
   };
 
   return {
@@ -134,10 +218,24 @@ export const useUserRole = () => {
     hasRegistrarAccess,
     hasVerifierAccess,
     hasFieldAccess,
-    canViewPublicData,
-    canCreateAddresses,
+    // Operational permissions
+    canSearchVerifiedAddresses,
+    canCreateDraftAddress,
+    canUploadEvidence,
+    getEvidenceViewLevel,
     canVerifyAddresses,
     canPublishAddresses,
+    canRetireAddresses,
+    canOverrideDecisions,
+    canMergeRecords,
+    canSplitRecords,
+    canEditHierarchy,
+    canManageAPIKeys,
+    canRequestAPIAccess,
+    getAuditLogAccess,
+    // ABAC and workflow
+    canAccessLocation,
+    getWorkflowStage,
     // Scope functions
     getGeographicScope,
     getOrganizationScope,
