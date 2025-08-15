@@ -5,6 +5,7 @@ import { useUserRole } from '@/hooks/useUserRole';
 import { RoleManager } from './RoleManager';
 import { PermissionMatrix } from './PermissionMatrix';
 import { WorkflowManager } from './WorkflowManager';
+import UserManager from './UserManager';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Shield } from 'lucide-react';
 
@@ -73,11 +74,7 @@ const AdminPanel: React.FC = () => {
         </TabsContent>
         
         <TabsContent value="users">
-          <Card>
-            <CardContent className="p-6">
-              <p className="text-center text-muted-foreground">User management features coming soon</p>
-            </CardContent>
-          </Card>
+          <UserManager />
         </TabsContent>
       </Tabs>
     </div>
