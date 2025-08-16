@@ -7,6 +7,11 @@ import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import AdminDashboard from "./pages/AdminDashboard";
+import CitizenDashboard from "./pages/CitizenDashboard";
+import FieldAgentDashboard from "./pages/FieldAgentDashboard";
+import VerifierDashboard from "./pages/VerifierDashboard";
+import RegistrarDashboard from "./pages/RegistrarDashboard";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +25,11 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/citizen" element={<CitizenDashboard />} />
+            <Route path="/field-agent" element={<FieldAgentDashboard />} />
+            <Route path="/verifier" element={<VerifierDashboard />} />
+            <Route path="/registrar" element={<RegistrarDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

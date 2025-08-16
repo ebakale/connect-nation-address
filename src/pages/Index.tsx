@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Plus, MapPin, Search as SearchIcon, BarChart3, Shield } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAddresses, Address } from '@/hooks/useAddresses';
+import { RoleBasedRedirect } from '@/components/RoleBasedRedirect';
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -54,6 +55,9 @@ const Index = () => {
   if (!user) {
     return <Navigate to="/auth" replace />;
   }
+
+  // Role-based redirect component
+  const roleRedirect = <RoleBasedRedirect />;
 
   // Sample address data
   const sampleAddress = {
@@ -592,9 +596,12 @@ const Index = () => {
   };
 
   return (
-    <Layout currentPage={currentPage} onNavigate={setCurrentPage}>
-      {renderPage()}
-    </Layout>
+    <>
+      {roleRedirect}
+      <Layout currentPage={currentPage} onNavigate={setCurrentPage}>
+        {renderPage()}
+      </Layout>
+    </>
   );
 };
 
