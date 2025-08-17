@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Search, MapPin, Navigation } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useAddresses, Address } from '@/hooks/useAddresses';
+import { useAddresses } from '@/hooks/useAddresses';
 
 interface SearchResult {
   uac: string;
