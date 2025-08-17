@@ -3,9 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Shield, CheckCircle, AlertTriangle, FileText, Users } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
+import { AddressVerificationQueue } from "@/components/AddressVerificationQueue";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const VerifierDashboard = () => {
   const { role, loading, getGeographicScope } = useUserRole();
+  const [queueOpen, setQueueOpen] = useState(false);
 
   if (loading) {
     return (
@@ -92,9 +96,22 @@ const VerifierDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full">
-                Start Review
-              </Button>
+              <Dialog open={queueOpen} onOpenChange={setQueueOpen}>
+                <DialogTrigger asChild>
+                  <Button className="w-full">
+                    Start Review
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Address Verification Queue</DialogTitle>
+                    <DialogDescription>
+                      Review and verify pending address submissions
+                    </DialogDescription>
+                  </DialogHeader>
+                  <AddressVerificationQueue />
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </Card>
 

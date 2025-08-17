@@ -3,9 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Crown, Globe, FileCheck, BarChart3, Settings } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
+import { AddressPublishingQueue } from "@/components/AddressPublishingQueue";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const RegistrarDashboard = () => {
   const { role, loading, getGeographicScope } = useUserRole();
+  const [publishOpen, setPublishOpen] = useState(false);
 
   if (loading) {
     return (
@@ -92,9 +96,22 @@ const RegistrarDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full">
-                Publish Addresses
-              </Button>
+              <Dialog open={publishOpen} onOpenChange={setPublishOpen}>
+                <DialogTrigger asChild>
+                  <Button className="w-full">
+                    Publish Addresses
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Address Publishing Queue</DialogTitle>
+                    <DialogDescription>
+                      Publish verified addresses to the national registry
+                    </DialogDescription>
+                  </DialogHeader>
+                  <AddressPublishingQueue />
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </Card>
 

@@ -2,9 +2,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { MapPin, Search, FileText, AlertCircle } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
+import AddressSearch from "@/components/AddressSearch";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const CitizenDashboard = () => {
   const { role, loading } = useUserRole();
+  const [searchOpen, setSearchOpen] = useState(false);
 
   if (loading) {
     return (
@@ -34,9 +38,27 @@ const CitizenDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full">
-                Search Database
-              </Button>
+              <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
+                <DialogTrigger asChild>
+                  <Button className="w-full">
+                    Search Database
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>Search Verified Addresses</DialogTitle>
+                    <DialogDescription>
+                      Search for verified addresses in the national database
+                    </DialogDescription>
+                  </DialogHeader>
+                  <AddressSearch 
+                    onSelectAddress={(address) => {
+                      console.log('Selected address:', address);
+                      setSearchOpen(false);
+                    }}
+                  />
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </Card>
 

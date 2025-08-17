@@ -34,7 +34,7 @@ export const useUserRole = () => {
       }
 
       try {
-        // Fetch user role and metadata
+        // Fetch user roles and metadata (user can have multiple roles)
         const { data: roleData, error: roleError } = await supabase
           .from('user_roles')
           .select(`
@@ -44,16 +44,23 @@ export const useUserRole = () => {
               scope_value
             )
           `)
-          .eq('user_id', user.id)
-          .single();
+          .eq('user_id', user.id);
 
-        if (roleError) {
+        if (roleError || !roleData || roleData.length === 0) {
           console.error('Error fetching user role:', roleError);
           setRole('citizen'); // Default to 'citizen' if no role found
           setRoleMetadata([]);
         } else {
-          setRole(roleData.role as UserRole);
-          setRoleMetadata((roleData.user_role_metadata || []) as RoleMetadata[]);
+          // Get the highest priority role (admin > ndaa_admin > registrar > etc.)
+          const roles = roleData.map(r => r.role);
+          const priorityOrder: UserRole[] = ['admin', 'ndaa_admin', 'registrar', 'verifier', 'field_agent', 'property_claimant', 'citizen', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user'];
+          const highestRole = priorityOrder.find(role => roles.includes(role)) || 'citizen';
+          
+          setRole(highestRole as UserRole);
+          
+          // Collect all metadata from all roles
+          const allMetadata = roleData.flatMap(r => r.user_role_metadata || []);
+          setRoleMetadata(allMetadata as RoleMetadata[]);
         }
       } catch (error) {
         console.error('Error fetching user role:', error);

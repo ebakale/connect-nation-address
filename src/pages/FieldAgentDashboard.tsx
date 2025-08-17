@@ -1,11 +1,15 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Camera, FileText, CheckCircle, Clock } from "lucide-react";
+import { MapPin, FileText, Map, Clock, CheckCircle, TrendingUp, Target, Camera } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
+import { AddressCaptureForm } from "@/components/AddressCaptureForm";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const FieldAgentDashboard = () => {
   const { role, loading, getGeographicScope } = useUserRole();
+  const [captureOpen, setCaptureOpen] = useState(false);
 
   if (loading) {
     return (
@@ -92,9 +96,25 @@ const FieldAgentDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full">
-                Start Capture
-              </Button>
+              <Dialog open={captureOpen} onOpenChange={setCaptureOpen}>
+                <DialogTrigger asChild>
+                  <Button className="w-full">
+                    Start Capture
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Capture New Address</DialogTitle>
+                    <DialogDescription>
+                      Fill in the address details and capture GPS coordinates for verification
+                    </DialogDescription>
+                  </DialogHeader>
+                  <AddressCaptureForm 
+                    onSave={() => setCaptureOpen(false)}
+                    onCancel={() => setCaptureOpen(false)}
+                  />
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </Card>
 
