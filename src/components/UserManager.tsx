@@ -50,49 +50,53 @@ const UserManager: React.FC = () => {
     try {
       setLoading(true);
       
-      // Fetch profiles with their roles
+      // First, fetch all profiles
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
+        .select('*');
+
+      if (profilesError) throw profilesError;
+
+      // Then fetch all user roles with metadata
+      const { data: userRoles, error: rolesError } = await supabase
+        .from('user_roles')
         .select(`
-          *,
-          user_roles!inner(
-            role,
-            user_role_metadata(
-              scope_type,
-              scope_value
-            )
+          user_id,
+          role,
+          user_role_metadata(
+            scope_type,
+            scope_value
           )
         `);
 
-      if (profilesError) throw profilesError;
+      if (rolesError) throw rolesError;
 
       // Transform the data to group roles by user
       const usersMap = new Map<string, UserProfile>();
       
+      // First, create user entries from profiles
       profiles?.forEach((profile: any) => {
-        const userId = profile.user_id;
-        
-        if (!usersMap.has(userId)) {
-          usersMap.set(userId, {
-            id: profile.id,
-            user_id: profile.user_id,
-            email: profile.email || '',
-            full_name: profile.full_name || '',
-            organization: profile.organization || '',
-            phone: profile.phone || '',
-            created_at: profile.created_at,
-            roles: []
-          });
-        }
+        usersMap.set(profile.user_id, {
+          id: profile.id,
+          user_id: profile.user_id,
+          email: profile.email || '',
+          full_name: profile.full_name || '',
+          organization: profile.organization || '',
+          phone: profile.phone || '',
+          created_at: profile.created_at,
+          roles: []
+        });
+      });
 
-        const user = usersMap.get(userId)!;
-        
-        profile.user_roles.forEach((userRole: any) => {
+      // Then, add roles to the corresponding users
+      userRoles?.forEach((userRole: any) => {
+        const user = usersMap.get(userRole.user_id);
+        if (user) {
           user.roles.push({
             role: userRole.role,
             metadata: userRole.user_role_metadata || []
           });
-        });
+        }
       });
 
       setUsers(Array.from(usersMap.values()));
