@@ -11,17 +11,46 @@ export const AddressVerificationQueue = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    console.log('AddressVerificationQueue: Fetching addresses...');
     fetchAddresses();
-  }, []);
+  }, [fetchAddresses]);
 
   const pendingAddresses = addresses.filter(addr => !addr.verified);
 
   const handleVerify = async (addressId: string, verified: boolean) => {
-    await updateAddressStatus(addressId, { verified });
+    console.log('Verifying address:', addressId, 'verified:', verified);
+    try {
+      await updateAddressStatus(addressId, { verified });
+      toast({
+        title: "Success",
+        description: `Address ${verified ? 'verified' : 'rejected'} successfully`,
+      });
+    } catch (error) {
+      console.error('Verification failed:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update verification status",
+        variant: "destructive",
+      });
+    }
   };
 
   const handlePublish = async (addressId: string, isPublic: boolean) => {
-    await updateAddressStatus(addressId, { public: isPublic });
+    console.log('Publishing address:', addressId, 'public:', isPublic);
+    try {
+      await updateAddressStatus(addressId, { public: isPublic });
+      toast({
+        title: "Success",
+        description: `Address ${isPublic ? 'published' : 'made private'} successfully`,
+      });
+    } catch (error) {
+      console.error('Publishing failed:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update publishing status",
+        variant: "destructive",
+      });
+    }
   };
 
   if (loading) {

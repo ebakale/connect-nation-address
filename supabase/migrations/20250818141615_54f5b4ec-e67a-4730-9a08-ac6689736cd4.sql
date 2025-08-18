@@ -1,0 +1,61 @@
+-- Create sample addresses for testing verification tools
+INSERT INTO public.addresses (
+  user_id,
+  uac,
+  country,
+  region,
+  city,
+  street,
+  building,
+  latitude,
+  longitude,
+  address_type,
+  description,
+  verified,
+  public
+) VALUES 
+(
+  '00000000-0000-0000-0000-000000000001',
+  'AN-LU-LU-TEST001',
+  'Angola',
+  'Luanda',
+  'Luanda',
+  'Rua da Missao',
+  'Building 123',
+  -8.8168,
+  13.2314,
+  'residential',
+  'Test residential address in Luanda',
+  false,
+  false
+),
+(
+  '00000000-0000-0000-0000-000000000001',
+  'AN-BE-BE-TEST002',
+  'Angola',
+  'Benguela',
+  'Benguela',
+  'Avenida Norton de Matos',
+  'Commercial Center',
+  -12.5843,
+  13.4056,
+  'commercial',
+  'Test commercial address in Benguela',
+  false,
+  false
+),
+(
+  '00000000-0000-0000-0000-000000000001',
+  'AN-HU-LU-TEST003',
+  'Angola',
+  'Huila',
+  'Lubango',
+  'Rua Comandante Gika',
+  NULL,
+  -14.9176,
+  13.4925,
+  'industrial',
+  'Test industrial address in Lubango',
+  true,
+  true
+);
