@@ -19,6 +19,8 @@ import { AddressRequestStatus } from "@/components/AddressRequestStatus";
 import { AddressCaptureForm } from "@/components/AddressCaptureForm";
 import { AddressVerificationQueue } from "@/components/AddressVerificationQueue";
 import { AddressPublishingQueue } from "@/components/AddressPublishingQueue";
+import { ProvinceManagement } from "@/components/ProvinceManagement";
+import { AnalyticsReports } from "@/components/AnalyticsReports";
 
 interface SearchResult {
   uac: string;
@@ -57,6 +59,8 @@ const UnifiedDashboard = () => {
   const [captureOpen, setCaptureOpen] = useState(false);
   const [verificationQueueOpen, setVerificationQueueOpen] = useState(false);
   const [publishingQueueOpen, setPublishingQueueOpen] = useState(false);
+  const [showProvinceManagement, setShowProvinceManagement] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
 
   if (loading) {
     return (
@@ -425,11 +429,11 @@ const UnifiedDashboard = () => {
                     Manage provincial boundaries and hierarchy
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Button className="w-full" variant="outline">
-                    Manage Province
-                  </Button>
-                </CardContent>
+                 <CardContent>
+                   <Button className="w-full" variant="outline" onClick={() => setShowProvinceManagement(true)}>
+                     Manage Province
+                   </Button>
+                 </CardContent>
               </Card>
             </>
           )}
@@ -446,11 +450,11 @@ const UnifiedDashboard = () => {
                   View statistics and performance reports
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <Button className="w-full" variant="outline">
-                  View Reports
-                </Button>
-              </CardContent>
+               <CardContent>
+                 <Button className="w-full" variant="outline" onClick={() => setShowAnalytics(true)}>
+                   View Reports
+                 </Button>
+               </CardContent>
             </Card>
           )}
         </div>
@@ -502,11 +506,50 @@ const UnifiedDashboard = () => {
               <DialogTitle>Address Request Status</DialogTitle>
             </DialogHeader>
             <AddressRequestStatus />
-          </DialogContent>
-        </Dialog>
-      </div>
-    </div>
-  );
-};
+           </DialogContent>
+         </Dialog>
+
+         {/* Publishing Queue Dialog */}
+         <Dialog open={publishingQueueOpen} onOpenChange={setPublishingQueueOpen}>
+           <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+             <DialogHeader>
+               <DialogTitle>Address Publishing Queue</DialogTitle>
+               <DialogDescription>
+                 Review and publish verified addresses to make them publicly accessible
+               </DialogDescription>
+             </DialogHeader>
+             <AddressPublishingQueue />
+           </DialogContent>
+         </Dialog>
+
+         {/* Province Management Dialog */}
+         <Dialog open={showProvinceManagement} onOpenChange={setShowProvinceManagement}>
+           <DialogContent className="max-w-6xl max-h-[80vh] overflow-y-auto">
+             <DialogHeader>
+               <DialogTitle>Province Management</DialogTitle>
+               <DialogDescription>
+                 Manage administrative provinces and regions
+               </DialogDescription>
+             </DialogHeader>
+             <ProvinceManagement />
+           </DialogContent>
+         </Dialog>
+
+         {/* Analytics Dialog */}
+         <Dialog open={showAnalytics} onOpenChange={setShowAnalytics}>
+           <DialogContent className="max-w-6xl max-h-[80vh] overflow-y-auto">
+             <DialogHeader>
+               <DialogTitle>Reports & Analytics</DialogTitle>
+               <DialogDescription>
+                 View comprehensive reports and analytics
+               </DialogDescription>
+             </DialogHeader>
+             <AnalyticsReports />
+           </DialogContent>
+         </Dialog>
+       </div>
+     </div>
+   );
+ };
 
 export default UnifiedDashboard;
