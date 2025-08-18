@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,7 +12,9 @@ import {
   Search, 
   Copy,
   ExternalLink,
-  Target
+  Target,
+  Loader2,
+  CheckCircle
 } from 'lucide-react';
 import { useAddresses } from '@/hooks/useAddresses';
 import { useToast } from '@/hooks/use-toast';
@@ -38,8 +40,75 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
   const [uacQuery, setUacQuery] = useState('');
   const [originAddress, setOriginAddress] = useState<SearchResult | null>(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
   const { searchAddresses } = useAddresses();
   const { toast } = useToast();
+
+  // Get current location on component mount
+  useEffect(() => {
+    if (originType === 'current') {
+      getCurrentLocation();
+    }
+  }, [originType]);
+
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError('Geolocation is not supported by this browser');
+      toast({
+        title: "Location not supported",
+        description: "Your browser doesn't support location services",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGettingLocation(true);
+    setLocationError(null);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const coords = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        setCurrentLocation(coords);
+        setIsGettingLocation(false);
+        toast({
+          title: "Location found",
+          description: `Using your current location: ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`,
+        });
+      },
+      (error) => {
+        let errorMessage = 'Unable to get your location';
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = 'Location access denied. Please enable location permissions.';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = 'Location information unavailable.';
+            break;
+          case error.TIMEOUT:
+            errorMessage = 'Location request timed out.';
+            break;
+        }
+        setLocationError(errorMessage);
+        setIsGettingLocation(false);
+        toast({
+          title: "Location error",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000
+      }
+    );
+  };
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
@@ -49,57 +118,70 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
     });
   };
 
-  const searchOriginByUAC = async () => {
-    if (!uacQuery.trim()) return;
+  const searchOriginByUAC = async (query: string) => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
+    }
 
     setIsSearching(true);
     try {
-      const results = await searchAddresses(uacQuery);
-      if (results.length > 0) {
-        const result = results[0];
-        const formattedResult: SearchResult = {
-          uac: result.uac || '',
-          readable: `${result.street || ''}${result.building ? ', ' + result.building : ''}, ${result.city || ''}, ${result.region || ''}, ${result.country || ''}`,
-          coordinates: {
-            lat: result.latitude || 0,
-            lng: result.longitude || 0,
-          },
-          type: result.address_type || 'unknown',
-          verified: result.verified || false,
-        };
-        setOriginAddress(formattedResult);
-        toast({
-          title: "Origin address found",
-          description: `Using ${result.uac} as starting point`,
-        });
-      } else {
-        toast({
-          title: "Address not found",
-          description: "No address found with that UAC code",
-          variant: "destructive",
-        });
-      }
+      const results = await searchAddresses(query);
+      const formattedResults: SearchResult[] = results.map(result => ({
+        uac: result.uac || '',
+        readable: `${result.street || ''}${result.building ? ', ' + result.building : ''}, ${result.city || ''}, ${result.region || ''}, ${result.country || ''}`,
+        coordinates: {
+          lat: result.latitude || 0,
+          lng: result.longitude || 0,
+        },
+        type: result.address_type || 'unknown',
+        verified: result.verified || false,
+      }));
+      
+      setSearchResults(formattedResults);
     } catch (error) {
       toast({
         title: "Search failed",
         description: "Failed to search for address",
         variant: "destructive",
       });
+      setSearchResults([]);
     } finally {
       setIsSearching(false);
     }
   };
 
-  const getDirections = (fromCoords?: { lat: number; lng: number }) => {
+  const selectOriginAddress = (address: SearchResult) => {
+    setOriginAddress(address);
+    setUacQuery(address.uac);
+    setSearchResults([]);
+    toast({
+      title: "Origin address selected",
+      description: `Using ${address.uac} as starting point`,
+    });
+  };
+
+  // Debounced search effect
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (originType === 'uac') {
+        searchOriginByUAC(uacQuery);
+      }
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [uacQuery, originType]);
+
+  const getDirections = () => {
     const destLat = destination.coordinates.lat;
     const destLng = destination.coordinates.lng;
     
     let url = '';
     
-    if (fromCoords) {
+    if (originType === 'uac' && originAddress) {
       // Directions from specific address
-      const originLat = fromCoords.lat;
-      const originLng = fromCoords.lng;
+      const originLat = originAddress.coordinates.lat;
+      const originLng = originAddress.coordinates.lng;
       
       const userAgent = navigator.userAgent || navigator.vendor;
       
@@ -113,23 +195,44 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
         // Desktop - Google Maps
         url = `https://www.google.com/maps/dir/${originLat},${originLng}/${destLat},${destLng}`;
       }
-    } else {
-      // Directions from current location
-      const userAgent = navigator.userAgent || navigator.vendor;
-      
-      if (/iPad|iPhone|iPod/.test(userAgent)) {
-        // iOS - Apple Maps
-        url = `http://maps.apple.com/?daddr=${destLat},${destLng}&dirflg=d`;
-      } else if (/android/i.test(userAgent)) {
-        // Android - Google Maps
-        url = `https://www.google.com/maps/dir/current+location/${destLat},${destLng}`;
+    } else if (originType === 'current') {
+      // Directions from current location - use detected coordinates if available
+      if (currentLocation) {
+        const originLat = currentLocation.lat;
+        const originLng = currentLocation.lng;
+        
+        const userAgent = navigator.userAgent || navigator.vendor;
+        
+        if (/iPad|iPhone|iPod/.test(userAgent)) {
+          // iOS - Apple Maps
+          url = `http://maps.apple.com/?saddr=${originLat},${originLng}&daddr=${destLat},${destLng}&dirflg=d`;
+        } else if (/android/i.test(userAgent)) {
+          // Android - Google Maps
+          url = `https://www.google.com/maps/dir/${originLat},${originLng}/${destLat},${destLng}`;
+        } else {
+          // Desktop - Google Maps
+          url = `https://www.google.com/maps/dir/${originLat},${originLng}/${destLat},${destLng}`;
+        }
       } else {
-        // Desktop - Google Maps
-        url = `https://www.google.com/maps/dir/current+location/${destLat},${destLng}`;
+        // Fallback to current location detection by maps app
+        const userAgent = navigator.userAgent || navigator.vendor;
+        
+        if (/iPad|iPhone|iPod/.test(userAgent)) {
+          // iOS - Apple Maps
+          url = `http://maps.apple.com/?daddr=${destLat},${destLng}&dirflg=d`;
+        } else if (/android/i.test(userAgent)) {
+          // Android - Google Maps
+          url = `https://www.google.com/maps/dir/current+location/${destLat},${destLng}`;
+        } else {
+          // Desktop - Google Maps
+          url = `https://www.google.com/maps/dir/current+location/${destLat},${destLng}`;
+        }
       }
     }
     
-    window.open(url, '_blank');
+    if (url) {
+      window.open(url, '_blank');
+    }
   };
 
   return (
@@ -193,8 +296,15 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
               variant={originType === 'current' ? 'default' : 'outline'}
               onClick={() => setOriginType('current')}
               className="h-auto p-3 flex flex-col items-center gap-2"
+              disabled={isGettingLocation}
             >
-              <Target className="h-5 w-5" />
+              {isGettingLocation ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : currentLocation ? (
+                <CheckCircle className="h-5 w-5" />
+              ) : (
+                <Target className="h-5 w-5" />
+              )}
               <span className="text-sm">Current Location</span>
             </Button>
             <Button 
@@ -207,41 +317,130 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
             </Button>
           </div>
 
+          {originType === 'current' && (
+            <div className="space-y-2">
+              {isGettingLocation && (
+                <div className="p-3 bg-muted rounded-lg flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                  <span className="text-sm text-muted-foreground">Getting your location...</span>
+                </div>
+              )}
+              
+              {currentLocation && (
+                <div className="p-3 bg-muted rounded-lg">
+                  <div className="flex items-center gap-2 mb-1">
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    <span className="text-sm font-medium text-foreground">Current Location</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <MapPin className="h-3 w-3" />
+                    {currentLocation.lat.toFixed(4)}, {currentLocation.lng.toFixed(4)}
+                  </span>
+                </div>
+              )}
+              
+              {locationError && (
+                <div className="p-3 bg-destructive/10 rounded-lg">
+                  <p className="text-sm text-destructive">{locationError}</p>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={getCurrentLocation}
+                    className="mt-2"
+                  >
+                    Try Again
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+
           {originType === 'uac' && (
             <div className="space-y-3">
-              <div className="flex gap-2">
+              <div className="relative">
                 <Input
                   placeholder="Enter UAC code or search address..."
                   value={uacQuery}
                   onChange={(e) => setUacQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && searchOriginByUAC()}
                 />
-                <Button 
-                  onClick={searchOriginByUAC}
-                  disabled={isSearching || !uacQuery.trim()}
-                  variant="secondary"
-                >
-                  {isSearching ? "Searching..." : "Find"}
-                </Button>
+                {isSearching && (
+                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                  </div>
+                )}
               </div>
 
+              {/* Search Results */}
+              {searchResults.length > 0 && !originAddress && (
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  <Label className="text-xs text-muted-foreground">Search Results</Label>
+                  {searchResults.map((result, index) => (
+                    <div 
+                      key={index}
+                      className="p-3 bg-muted rounded-lg cursor-pointer hover:bg-muted/80 transition-colors"
+                      onClick={() => selectOriginAddress(result)}
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-sm font-mono font-semibold text-primary">
+                          {result.uac}
+                        </span>
+                        {result.verified && (
+                          <Badge variant="secondary" className="text-xs">
+                            Verified
+                          </Badge>
+                        )}
+                        <Badge variant="outline" className="text-xs">
+                          {result.type}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-foreground">{result.readable}</p>
+                      <span className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                        <MapPin className="h-3 w-3" />
+                        {result.coordinates.lat.toFixed(4)}, {result.coordinates.lng.toFixed(4)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Selected Origin Address */}
               {originAddress && (
                 <div className="p-3 bg-muted rounded-lg">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-sm font-mono font-semibold text-primary">
-                      {originAddress.uac}
-                    </span>
-                    {originAddress.verified && (
-                      <Badge variant="secondary" className="text-xs">
-                        Verified
-                      </Badge>
-                    )}
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-mono font-semibold text-primary">
+                        {originAddress.uac}
+                      </span>
+                      {originAddress.verified && (
+                        <Badge variant="secondary" className="text-xs">
+                          Verified
+                        </Badge>
+                      )}
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => {
+                        setOriginAddress(null);
+                        setUacQuery('');
+                        setSearchResults([]);
+                      }}
+                    >
+                      Change
+                    </Button>
                   </div>
                   <p className="text-sm text-foreground">{originAddress.readable}</p>
                   <span className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                     <MapPin className="h-3 w-3" />
                     {originAddress.coordinates.lat.toFixed(4)}, {originAddress.coordinates.lng.toFixed(4)}
                   </span>
+                </div>
+              )}
+
+              {/* No Results Message */}
+              {uacQuery.trim() && !isSearching && searchResults.length === 0 && !originAddress && (
+                <div className="p-3 bg-muted/50 rounded-lg text-center">
+                  <p className="text-sm text-muted-foreground">No addresses found matching "{uacQuery}"</p>
                 </div>
               )}
             </div>
@@ -253,8 +452,11 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
         {/* Action Buttons */}
         <div className="flex flex-col gap-3">
           <Button 
-            onClick={() => getDirections(originType === 'uac' ? originAddress?.coordinates : undefined)}
-            disabled={originType === 'uac' && !originAddress}
+            onClick={getDirections}
+            disabled={
+              (originType === 'uac' && !originAddress) || 
+              (originType === 'current' && !currentLocation && !locationError)
+            }
             className="w-full flex items-center gap-2"
             variant="hero"
           >
