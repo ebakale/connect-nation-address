@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { MapPin } from 'lucide-react';
+import { MapPin, Camera, Upload, X, Image } from 'lucide-react';
 
 interface AddressRequestFormProps {
   onCancel?: () => void;
@@ -28,6 +28,12 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     description: '',
     justification: ''
   });
+
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   // Regions and cities of Equatorial Guinea
   const regions = [
@@ -89,6 +95,75 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     }
   };
 
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        toast({
+          title: "File too large",
+          description: "Please select an image smaller than 5MB",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Invalid file type",
+          description: "Please select an image file",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      setPhoto(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPhotoPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const uploadPhoto = async (): Promise<string | null> => {
+    if (!photo || !user) return null;
+
+    setUploading(true);
+    try {
+      const fileExt = photo.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+      
+      const { data, error } = await supabase.storage
+        .from('address-photos')
+        .upload(fileName, photo);
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('address-photos')
+        .getPublicUrl(fileName);
+
+      return publicUrl;
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload photo. Please try again.",
+        variant: "destructive"
+      });
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removePhoto = () => {
+    setPhoto(null);
+    setPhotoPreview("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (cameraInputRef.current) cameraInputRef.current.value = "";
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -113,11 +188,19 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
 
     setLoading(true);
     try {
+      // Upload photo if selected
+      let photoUrl = null;
+      if (photo) {
+        photoUrl = await uploadPhoto();
+        if (!photoUrl) return; // Upload failed
+      }
+
       const requestData = {
         ...formData,
         user_id: user.id,
         latitude: formData.latitude ? parseFloat(formData.latitude) : null,
-        longitude: formData.longitude ? parseFloat(formData.longitude) : null
+        longitude: formData.longitude ? parseFloat(formData.longitude) : null,
+        photo_url: photoUrl
       };
 
       const { error } = await supabase
@@ -144,6 +227,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
         description: '',
         justification: ''
       });
+      setPhoto(null);
+      setPhotoPreview("");
 
       onSuccess?.();
     } catch (error: any) {
@@ -304,6 +389,81 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               placeholder="Additional details about the address or location"
               rows={3}
+            />
+          </div>
+
+          {/* Photo Upload Section */}
+          <div className="space-y-4">
+            <Label>Address Photo (Optional)</Label>
+            <div className="border-2 border-dashed border-border rounded-lg p-6">
+              {photoPreview ? (
+                <div className="space-y-4">
+                  <div className="relative">
+                    <img
+                      src={photoPreview}
+                      alt="Address preview"
+                      className="w-full max-h-64 object-cover rounded-lg"
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      className="absolute top-2 right-2"
+                      onClick={removePhoto}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <p className="text-sm text-muted-foreground text-center">
+                    Photo ready to upload with request
+                  </p>
+                </div>
+              ) : (
+                <div className="text-center space-y-4">
+                  <Image className="h-12 w-12 text-muted-foreground mx-auto" />
+                  <p className="text-muted-foreground">
+                    Add a photo of the address location
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => cameraInputRef.current?.click()}
+                    >
+                      <Camera className="mr-2 h-4 w-4" />
+                      Take Photo
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <Upload className="mr-2 h-4 w-4" />
+                      Upload Photo
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Max file size: 5MB. Supported formats: JPG, PNG, WEBP
+                  </p>
+                </div>
+              )}
+            </div>
+            
+            {/* Hidden file inputs */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleFileSelect}
+              className="hidden"
             />
           </div>
 
