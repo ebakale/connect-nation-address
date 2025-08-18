@@ -1,14 +1,16 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Globe, FileCheck, BarChart3, Settings } from "lucide-react";
+import { Crown, Globe, FileCheck, BarChart3, Settings, LogOut } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useAuth } from "@/hooks/useAuth";
 import { AddressPublishingQueue } from "@/components/AddressPublishingQueue";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const RegistrarDashboard = () => {
   const { role, loading, getGeographicScope } = useUserRole();
+  const { user, signOut } = useAuth();
   const [publishOpen, setPublishOpen] = useState(false);
 
   if (loading) {
@@ -25,17 +27,25 @@ const RegistrarDashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Registrar Dashboard</h1>
-          <p className="text-muted-foreground">Publish verified addresses and manage provincial operations</p>
-          {geographicScope.length > 0 && (
-            <div className="flex gap-2 mt-2">
-              {geographicScope.map((scope) => (
-                <Badge key={scope} variant="secondary">
-                  Province: {scope}
-                </Badge>
-              ))}
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground mb-2">Registrar Dashboard</h1>
+              <p className="text-muted-foreground">Publish verified addresses and manage provincial operations</p>
+              {geographicScope.length > 0 && (
+                <div className="flex gap-2 mt-2">
+                  {geographicScope.map((scope) => (
+                    <Badge key={scope} variant="secondary">
+                      Province: {scope}
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
+            <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
+              <LogOut className="h-4 w-4" />
+              Logout
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

@@ -18,6 +18,7 @@ import { Plus, MapPin, Search as SearchIcon, BarChart3, Shield } from 'lucide-re
 import { useAuth } from '@/hooks/useAuth';
 import { useAddresses, Address } from '@/hooks/useAddresses';
 import { RoleBasedRedirect } from '@/components/RoleBasedRedirect';
+import { LogOut } from 'lucide-react';
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -38,7 +39,7 @@ const Index = () => {
     public: false,
     photo: null as File | null
   });
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const { createAddress, addresses, loading: addressLoading } = useAddresses();
 
   if (loading) {
@@ -599,6 +600,16 @@ const Index = () => {
     <>
       {roleRedirect}
       <Layout currentPage={currentPage} onNavigate={setCurrentPage}>
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Address Management System</h1>
+            <p className="text-muted-foreground">Welcome, {user?.email}</p>
+          </div>
+          <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
+            <LogOut className="h-4 w-4" />
+            Logout
+          </Button>
+        </div>
         {renderPage()}
       </Layout>
     </>
