@@ -145,7 +145,7 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
   return (
     <>
       <div className={`relative w-full rounded-lg overflow-hidden transition-all duration-300 ${
-        isFullscreen ? 'fixed inset-4 z-50 h-[calc(100vh-2rem)]' : 'h-96'
+        isFullscreen ? 'fixed inset-0 z-50 h-screen w-screen' : 'h-96'
       }`}>
         {/* Control buttons */}
         <div className="absolute top-2 right-2 z-10 flex gap-2">
