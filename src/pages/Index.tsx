@@ -23,7 +23,7 @@ const Index = () => {
 
   // If user is logged in, redirect to their dashboard
   if (user) {
-    return <Navigate to="/citizen" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   const navigationItems = [
