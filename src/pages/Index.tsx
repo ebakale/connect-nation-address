@@ -21,10 +21,7 @@ const Index = () => {
     );
   }
 
-  // If user is logged in, redirect to their dashboard
-  if (user) {
-    return <Navigate to="/dashboard" replace />;
-  }
+  // Main page is always accessible regardless of authentication status
 
   const navigationItems = [
     { id: 'overview', label: 'Overview', icon: MapPin },
