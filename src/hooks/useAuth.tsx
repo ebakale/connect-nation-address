@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from "sonner";
 import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -54,16 +53,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     if (error) {
-      toast({
-        title: "Sign Up Error",
-        description: error.message,
-        variant: "destructive"
-      });
+      toast.error("Sign Up Error: " + error.message);
     } else {
-      toast({
-        title: "Success!",
-        description: "Please check your email to confirm your account.",
-      });
+      toast.success("Please check your email to confirm your account.");
     }
 
     return { error };
@@ -76,11 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     if (error) {
-      toast({
-        title: "Sign In Error",
-        description: error.message,
-        variant: "destructive"
-      });
+      toast.error("Sign In Error: " + error.message);
     }
 
     return { error };
@@ -89,11 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
-      toast({
-        title: "Sign Out Error",
-        description: error.message,
-        variant: "destructive"
-      });
+      toast.error("Sign Out Error: " + error.message);
     } else {
       // Redirect to main page after successful logout
       window.location.href = '/';

@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   Shield, Users, Settings, BarChart3, LogOut, Search, FileText, Clock, AlertCircle,
-  Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map
+  Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map, User
 } from "lucide-react";
 
 // Component imports
@@ -23,6 +23,7 @@ import { AddressPublishingQueue } from "@/components/AddressPublishingQueue";
 import { ProvinceManagement } from "@/components/ProvinceManagement";
 import { AnalyticsReports } from "@/components/AnalyticsReports";
 import { VerificationTools } from "@/components/VerificationTools";
+import { ProfileEditor } from "@/components/ProfileEditor";
 
 interface SearchResult {
   uac: string;
@@ -90,6 +91,7 @@ const UnifiedDashboard = () => {
   // Pending requests state
   const [pendingRequests, setPendingRequests] = useState<PendingRequest[]>([]);
   const [showPendingRequests, setShowPendingRequests] = useState(false);
+  const [userProfile, setUserProfile] = useState<{full_name: string; email: string} | null>(null);
 
   // Dialog states
   const [searchOpen, setSearchOpen] = useState(false);
@@ -98,6 +100,7 @@ const UnifiedDashboard = () => {
   const [submitRequestOpen, setSubmitRequestOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
   const [captureOpen, setCaptureOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [verificationQueueOpen, setVerificationQueueOpen] = useState(false);
   const [publishingQueueOpen, setPublishingQueueOpen] = useState(false);
   const [showProvinceManagement, setShowProvinceManagement] = useState(false);
@@ -186,9 +189,31 @@ const UnifiedDashboard = () => {
       }
     };
 
+    const fetchUserProfile = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('full_name, email')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (error && error.code !== 'PGRST116') {
+          throw error;
+        }
+
+        setUserProfile(data || { full_name: 'User', email: user.email || '' });
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+        setUserProfile({ full_name: 'User', email: user.email || '' });
+      }
+    };
+
     fetchStats();
     fetchPendingRequests();
-  }, [hasAdminAccess]);
+    fetchUserProfile();
+  }, [hasAdminAccess, user]);
 
   if (loading) {
     return (
@@ -233,6 +258,13 @@ const UnifiedDashboard = () => {
               <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard</h1>
               <p className="text-muted-foreground">Your unified portal for all system functions</p>
               
+              {/* User greeting */}
+              {userProfile && (
+                <p className="text-lg font-medium text-foreground mt-2">
+                  Welcome back, {userProfile.full_name}!
+                </p>
+              )}
+              
               {/* User roles display */}
               <div className="flex gap-2 mt-3">
                 {userRoles.map((roleLabel) => (
@@ -253,10 +285,21 @@ const UnifiedDashboard = () => {
                 </div>
               )}
             </div>
-            <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
-              <LogOut className="h-4 w-4" />
-              Logout
-            </Button>
+
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                onClick={() => setProfileOpen(true)}
+                className="flex items-center gap-2"
+              >
+                <User className="h-4 w-4" />
+                Edit Profile
+              </Button>
+              <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
+                <LogOut className="h-4 w-4" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -745,9 +788,22 @@ const UnifiedDashboard = () => {
                      </Card>
                    ))
                  )}
-               </div>
-             </DialogContent>
-           </Dialog>
+             </div>
+           </DialogContent>
+         </Dialog>
+
+         {/* Profile Editor Dialog */}
+         <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
+           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+             <DialogHeader>
+               <DialogTitle>Edit Profile</DialogTitle>
+               <DialogDescription>
+                 Update your personal information and account settings
+               </DialogDescription>
+             </DialogHeader>
+             <ProfileEditor />
+           </DialogContent>
+         </Dialog>
         </div>
       </div>
     );
