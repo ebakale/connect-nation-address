@@ -46,8 +46,7 @@ const DraftManager = ({ onClose }: DraftManagerProps) => {
         .from('addresses')
         .select('*')
         .eq('user_id', user.id)
-        .eq('verified', false)
-        .eq('public', false)
+        .or('verified.is.false,public.is.false')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
