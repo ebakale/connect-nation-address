@@ -17,7 +17,7 @@ interface AddressRequestFormProps {
 
 export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormProps) => {
   const [formData, setFormData] = useState({
-    country: '',
+    country: 'Equatorial Guinea',
     region: '',
     city: '',
     street: '',
@@ -28,6 +28,29 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     description: '',
     justification: ''
   });
+
+  // Regions and cities of Equatorial Guinea
+  const regions = [
+    'Annobón',
+    'Bioko Norte',
+    'Bioko Sur',
+    'Centro Sur',
+    'Kié-Ntem',
+    'Litoral',
+    'Wele-Nzas'
+  ];
+
+  const citiesByRegion: Record<string, string[]> = {
+    'Annobón': ['San Antonio de Palé'],
+    'Bioko Norte': ['Malabo', 'Rebola', 'Baney'],
+    'Bioko Sur': ['Luba', 'Riaba', 'Moca'],
+    'Centro Sur': ['Evinayong', 'Acurenam', 'Niefang'],
+    'Kié-Ntem': ['Ebebiyín', 'Mikomeseng', 'Ncue'],
+    'Litoral': ['Bata', 'Mbini', 'Kogo', 'Acalayong'],
+    'Wele-Nzas': ['Mongomo', 'Añisoc', 'Aconibe', 'Nsok']
+  };
+
+  const availableCities = formData.region ? citiesByRegion[formData.region] || [] : [];
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
@@ -77,7 +100,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     }
 
     // Validate required fields
-    if (!formData.country || !formData.region || !formData.city || !formData.street || !formData.justification) {
+    if (!formData.region || !formData.city || !formData.street || !formData.justification) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
@@ -108,7 +131,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
 
       // Reset form
       setFormData({
-        country: '',
+        country: 'Equatorial Guinea',
         region: '',
         city: '',
         street: '',
@@ -145,37 +168,55 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="country">Country *</Label>
+              <Label htmlFor="country">Country</Label>
               <Input
                 id="country"
                 value={formData.country}
-                onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
-                placeholder="e.g., Nigeria"
-                required
+                disabled
+                className="bg-muted"
               />
             </div>
             <div>
-              <Label htmlFor="region">State/Region *</Label>
-              <Input
-                id="region"
-                value={formData.region}
-                onChange={(e) => setFormData(prev => ({ ...prev, region: e.target.value }))}
-                placeholder="e.g., Lagos"
-                required
-              />
+              <Label htmlFor="region">Province/Region *</Label>
+              <Select 
+                value={formData.region} 
+                onValueChange={(value) => {
+                  setFormData(prev => ({ ...prev, region: value, city: '' }));
+                }}
+              >
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select a province" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border shadow-lg z-50">
+                  {regions.map((region) => (
+                    <SelectItem key={region} value={region}>
+                      {region}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="city">City *</Label>
-              <Input
-                id="city"
-                value={formData.city}
-                onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
-                placeholder="e.g., Ikeja"
-                required
-              />
+              <Select 
+                value={formData.city} 
+                onValueChange={(value) => setFormData(prev => ({ ...prev, city: value }))}
+                disabled={!formData.region}
+              >
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder={formData.region ? "Select a city" : "Select province first"} />
+                </SelectTrigger>
+                <SelectContent className="bg-background border shadow-lg z-50">
+                  {availableCities.map((city) => (
+                    <SelectItem key={city} value={city}>
+                      {city}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <Label htmlFor="street">Street Address *</Label>
@@ -183,7 +224,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
                 id="street"
                 value={formData.street}
                 onChange={(e) => setFormData(prev => ({ ...prev, street: e.target.value }))}
-                placeholder="e.g., 123 Allen Avenue"
+                placeholder="e.g., Calle de la Independencia 123"
                 required
               />
             </div>
@@ -195,17 +236,17 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
               id="building"
               value={formData.building}
               onChange={(e) => setFormData(prev => ({ ...prev, building: e.target.value }))}
-              placeholder="e.g., Apt 4B, Building C"
+              placeholder="e.g., Edificio Central, Apt 4B"
             />
           </div>
 
           <div>
             <Label htmlFor="address_type">Address Type</Label>
             <Select value={formData.address_type} onValueChange={(value) => setFormData(prev => ({ ...prev, address_type: value }))}>
-              <SelectTrigger>
+              <SelectTrigger className="bg-background">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background border shadow-lg z-50">
                 <SelectItem value="residential">Residential</SelectItem>
                 <SelectItem value="commercial">Commercial</SelectItem>
                 <SelectItem value="industrial">Industrial</SelectItem>
@@ -226,7 +267,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
                 step="any"
                 value={formData.latitude}
                 onChange={(e) => setFormData(prev => ({ ...prev, latitude: e.target.value }))}
-                placeholder="e.g., 6.5244"
+                placeholder="e.g., 1.5000"
               />
             </div>
             <div>
@@ -237,7 +278,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
                 step="any"
                 value={formData.longitude}
                 onChange={(e) => setFormData(prev => ({ ...prev, longitude: e.target.value }))}
-                placeholder="e.g., 3.3792"
+                placeholder="e.g., 9.7500"
               />
             </div>
             <div className="flex items-end">
