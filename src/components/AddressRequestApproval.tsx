@@ -8,6 +8,7 @@ import { CheckCircle, XCircle, MapPin, User, Calendar, Map } from "lucide-react"
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { generateUAC } from "@/lib/uacGenerator";
 import { AddressLocationMap } from "@/components/AddressLocationMap";
 
 interface AddressRequest {
@@ -96,14 +97,7 @@ export const AddressRequestApproval = () => {
     fetchPendingRequests();
   }, []);
 
-  const generateUAC = (): string => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = '';
-    for (let i = 0; i < 8; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-  };
+  // UAC generation is now handled by the centralized system
 
   const handleApproval = async (requestId: string, approved: boolean) => {
     if (!user) return;
@@ -115,12 +109,15 @@ export const AddressRequestApproval = () => {
 
     try {
       if (approved) {
+        // Generate UAC using the centralized system
+        const uac = await generateUAC(request.country, request.region, request.city);
+        
         // Create address entry
         const { error: addressError } = await supabase
           .from('addresses')
           .insert({
             user_id: request.user_id,
-            uac: generateUAC(),
+            uac,
             country: request.country,
             region: request.region,
             city: request.city,

@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { useUserRole } from './useUserRole';
 import { useToast } from '@/hooks/use-toast';
+import { generateUAC } from '@/lib/uacGenerator';
 
 export interface Address {
   id: string;
@@ -45,15 +46,7 @@ export const useAddresses = () => {
   const { hasAdminAccess, hasVerifierAccess, canVerifyAddresses, canPublishAddresses } = useUserRole();
   const { toast } = useToast();
 
-  // Generate a unique address code
-  const generateUAC = (country: string, region: string, city: string): string => {
-    const countryCode = country.substring(0, 2).toUpperCase();
-    const regionCode = region.substring(0, 2).toUpperCase();
-    const cityCode = city.substring(0, 2).toUpperCase();
-    const timestamp = Date.now().toString(36);
-    const random = Math.random().toString(36).substr(2, 5);
-    return `${countryCode}-${regionCode}-${cityCode}-${timestamp}${random}`.toUpperCase();
-  };
+  // UAC generation is now handled by the centralized UAC generator
 
   // Fetch user's addresses
   const fetchAddresses = useCallback(async () => {
@@ -100,7 +93,7 @@ export const useAddresses = () => {
 
     setLoading(true);
     try {
-      const uac = generateUAC(addressData.country, addressData.region, addressData.city);
+      const uac = await generateUAC(addressData.country, addressData.region, addressData.city);
       let photoUrl: string | undefined = undefined;
 
       // Upload photo if provided

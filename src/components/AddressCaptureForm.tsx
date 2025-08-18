@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAddresses } from "@/hooks/useAddresses";
 import { useToast } from "@/hooks/use-toast";
+import { generateUAC } from "@/lib/uacGenerator";
 import { MapPin, Camera, Save } from "lucide-react";
 
 interface AddressCaptureFormProps {
@@ -30,13 +31,7 @@ export const AddressCaptureForm = ({ onSave, onCancel }: AddressCaptureFormProps
   const { createAddress, loading } = useAddresses();
   const { toast } = useToast();
 
-  const generateUAC = () => {
-    // Generate a simple UAC format: AOL-[REGION]-[CITY]-[RANDOM]
-    const regionCode = formData.region.substring(0, 3).toUpperCase();
-    const cityCode = formData.city.substring(0, 3).toUpperCase();
-    const random = Math.random().toString(36).substring(2, 8).toUpperCase();
-    return `AOL-${regionCode}-${cityCode}-${random}`;
-  };
+  // UAC generation is now handled by the centralized system
 
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -77,7 +72,6 @@ export const AddressCaptureForm = ({ onSave, onCancel }: AddressCaptureFormProps
 
     const addressData = {
       ...formData,
-      uac: generateUAC(),
       latitude: parseFloat(formData.latitude),
       longitude: parseFloat(formData.longitude),
       verified: false,

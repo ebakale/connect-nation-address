@@ -6,8 +6,9 @@ import { RoleManager } from './RoleManager';
 import { PermissionMatrix } from './PermissionMatrix';
 import { WorkflowManager } from './WorkflowManager';
 import UserManager from './UserManager';
+import { UACManager } from './UACManager';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Shield } from 'lucide-react';
+import { Shield, Hash } from 'lucide-react';
 
 const AdminPanel: React.FC = () => {
   const { user } = useAuth();
@@ -54,11 +55,12 @@ const AdminPanel: React.FC = () => {
       </Card>
       
       <Tabs defaultValue="roles" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="roles">Role Management</TabsTrigger>
           <TabsTrigger value="permissions">Permissions</TabsTrigger>
           <TabsTrigger value="workflows">Workflows</TabsTrigger>
           <TabsTrigger value="users">User Management</TabsTrigger>
+          <TabsTrigger value="uac">UAC System</TabsTrigger>
         </TabsList>
         
         <TabsContent value="roles">
@@ -75,6 +77,10 @@ const AdminPanel: React.FC = () => {
         
         <TabsContent value="users">
           <UserManager />
+        </TabsContent>
+        
+        <TabsContent value="uac">
+          <UACManager />
         </TabsContent>
       </Tabs>
     </div>
