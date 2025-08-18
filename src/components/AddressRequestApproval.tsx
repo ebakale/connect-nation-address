@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, XCircle, MapPin, User, Calendar } from "lucide-react";
+import { CheckCircle, XCircle, MapPin, User, Calendar, Map } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { AddressLocationMap } from "@/components/AddressLocationMap";
 
 interface AddressRequest {
   id: string;
@@ -35,6 +36,7 @@ export const AddressRequestApproval = () => {
   const [requests, setRequests] = useState<AddressRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [reviewerNotes, setReviewerNotes] = useState<{ [key: string]: string }>({});
+  const [showMapView, setShowMapView] = useState<{ [key: string]: boolean }>({});
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -245,6 +247,45 @@ export const AddressRequestApproval = () => {
                   <p className="text-sm text-muted-foreground mt-1 p-2 bg-muted rounded">
                     {request.description}
                   </p>
+                </div>
+              )}
+
+              {/* Map View Section */}
+              {request.latitude && request.longitude && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-sm">Location Verification</span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowMapView(prev => ({
+                        ...prev,
+                        [request.id]: !prev[request.id]
+                      }))}
+                      className="flex items-center gap-1"
+                    >
+                      <Map className="h-3 w-3" />
+                      {showMapView[request.id] ? 'Hide Map' : 'View on Map'}
+                    </Button>
+                  </div>
+                  
+                  {showMapView[request.id] && (
+                    <AddressLocationMap
+                      latitude={request.latitude}
+                      longitude={request.longitude}
+                      address={{
+                        street: request.street,
+                        city: request.city,
+                        region: request.region,
+                        country: request.country,
+                        building: request.building
+                      }}
+                      onClose={() => setShowMapView(prev => ({
+                        ...prev,
+                        [request.id]: false
+                      }))}
+                    />
+                  )}
                 </div>
               )}
 
