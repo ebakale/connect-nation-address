@@ -1,10 +1,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   Shield, Users, Settings, BarChart3, LogOut, Search, FileText, Clock, AlertCircle,
   Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map
@@ -33,6 +34,15 @@ interface SearchResult {
   verified: boolean;
 }
 
+interface DashboardStats {
+  totalUsers: number;
+  activeRoles: number;
+  pendingApprovals: number;
+  totalAddresses: number;
+  verifiedAddresses: number;
+  publicAddresses: number;
+}
+
 const UnifiedDashboard = () => {
   const { 
     role, 
@@ -50,6 +60,16 @@ const UnifiedDashboard = () => {
   } = useUserRole();
   const { user, signOut } = useAuth();
 
+  // Stats state
+  const [stats, setStats] = useState<DashboardStats>({
+    totalUsers: 0,
+    activeRoles: 0,
+    pendingApprovals: 0,
+    totalAddresses: 0,
+    verifiedAddresses: 0,
+    publicAddresses: 0
+  });
+
   // Dialog states
   const [searchOpen, setSearchOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<SearchResult | null>(null);
@@ -61,6 +81,45 @@ const UnifiedDashboard = () => {
   const [publishingQueueOpen, setPublishingQueueOpen] = useState(false);
   const [showProvinceManagement, setShowProvinceManagement] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
+
+  // Fetch dashboard statistics
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!hasAdminAccess) return;
+      
+      try {
+        // Fetch all stats in parallel
+        const [
+          profilesResult,
+          rolesResult,
+          requestsResult,
+          addressesResult,
+          verifiedResult,
+          publicResult
+        ] = await Promise.all([
+          supabase.from('profiles').select('id', { count: 'exact', head: true }),
+          supabase.from('user_roles').select('role', { count: 'exact', head: true }),
+          supabase.from('address_requests').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
+          supabase.from('addresses').select('id', { count: 'exact', head: true }),
+          supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true),
+          supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('public', true)
+        ]);
+
+        setStats({
+          totalUsers: profilesResult.count || 0,
+          activeRoles: rolesResult.count || 0, 
+          pendingApprovals: requestsResult.count || 0,
+          totalAddresses: addressesResult.count || 0,
+          verifiedAddresses: verifiedResult.count || 0,
+          publicAddresses: publicResult.count || 0
+        });
+      } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+      }
+    };
+
+    fetchStats();
+  }, [hasAdminAccess]);
 
   if (loading) {
     return (
@@ -143,8 +202,8 @@ const UnifiedDashboard = () => {
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">1,234</div>
-                  <p className="text-xs text-muted-foreground">+12% from last month</p>
+                  <div className="text-2xl font-bold">{stats.totalUsers}</div>
+                  <p className="text-xs text-muted-foreground">Registered in system</p>
                 </CardContent>
               </Card>
 
@@ -154,8 +213,8 @@ const UnifiedDashboard = () => {
                   <Shield className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">13</div>
-                  <p className="text-xs text-muted-foreground">All system roles</p>
+                  <div className="text-2xl font-bold">{stats.activeRoles}</div>
+                  <p className="text-xs text-muted-foreground">User role assignments</p>
                 </CardContent>
               </Card>
 
@@ -165,19 +224,19 @@ const UnifiedDashboard = () => {
                   <Settings className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">8</div>
+                  <div className="text-2xl font-bold">{stats.pendingApprovals}</div>
                   <p className="text-xs text-muted-foreground">Requires attention</p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">System Health</CardTitle>
+                  <CardTitle className="text-sm font-medium">Public Addresses</CardTitle>
                   <BarChart3 className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">99.9%</div>
-                  <p className="text-xs text-muted-foreground">Uptime</p>
+                  <div className="text-2xl font-bold">{stats.publicAddresses}</div>
+                  <p className="text-xs text-muted-foreground">Of {stats.totalAddresses} total</p>
                 </CardContent>
               </Card>
             </div>
