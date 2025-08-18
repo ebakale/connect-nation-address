@@ -24,6 +24,7 @@ import { ProvinceManagement } from "@/components/ProvinceManagement";
 import { AnalyticsReports } from "@/components/AnalyticsReports";
 import { VerificationTools } from "@/components/VerificationTools";
 import { ProfileEditor } from "@/components/ProfileEditor";
+import { AddressRequestApproval } from "@/components/AddressRequestApproval";
 
 interface SearchResult {
   uac: string;
@@ -330,16 +331,29 @@ const UnifiedDashboard = () => {
                 </CardContent>
               </Card>
 
-              <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setShowPendingRequests(true)}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Pending Approvals</CardTitle>
-                  <Settings className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.pendingApprovals}</div>
-                  <p className="text-xs text-muted-foreground">Click to view requests</p>
-                </CardContent>
-              </Card>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Pending Approvals</CardTitle>
+                      <Settings className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{stats.pendingApprovals}</div>
+                      <p className="text-xs text-muted-foreground">Click to approve requests</p>
+                    </CardContent>
+                  </Card>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Address Request Approvals</DialogTitle>
+                    <DialogDescription>
+                      Review and approve citizen address requests
+                    </DialogDescription>
+                  </DialogHeader>
+                  <AddressRequestApproval />
+                </DialogContent>
+              </Dialog>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
