@@ -5,10 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useUserRole } from '@/hooks/useUserRole';
-import { Users, Search, UserCog } from 'lucide-react';
+import { Users, Search, UserCog, MapPin } from 'lucide-react';
 
 interface UserProfile {
   id: string;
@@ -32,12 +34,20 @@ const UserManager: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState<string>('');
+  const [selectedGeographicScope, setSelectedGeographicScope] = useState<string>('');
+  const [showScopeDialog, setShowScopeDialog] = useState(false);
+  const [pendingAssignment, setPendingAssignment] = useState<{userId: string, role: string} | null>(null);
   const { hasAdminAccess } = useUserRole();
   const { toast } = useToast();
 
   const roles = [
     'citizen', 'property_claimant', 'field_agent', 'verifier', 
     'registrar', 'ndaa_admin', 'partner', 'auditor', 'data_steward'
+  ] as const;
+
+  const geographicScopes = [
+    'Annobón', 'Bioko Norte', 'Bioko Sur', 'Centro Sur', 'Djibloho',
+    'Kié-Ntem', 'Litoral', 'Wele-Nzas'
   ] as const;
 
   useEffect(() => {
@@ -113,22 +123,51 @@ const UserManager: React.FC = () => {
   };
 
   const assignRole = async (userId: string, role: string) => {
+    // If role is field_agent, show dialog for geographic scope selection
+    if (role === 'field_agent') {
+      setPendingAssignment({ userId, role });
+      setShowScopeDialog(true);
+      return;
+    }
+
+    await assignRoleWithScope(userId, role, null);
+  };
+
+  const assignRoleWithScope = async (userId: string, role: string, geographicScope: string | null) => {
     try {
-      const { error } = await supabase
+      const { data: userRoleData, error: roleError } = await supabase
         .from('user_roles')
         .insert({
           user_id: userId,
           role: role as any
-        });
+        })
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (roleError) throw roleError;
+
+      // If geographic scope is provided, add metadata
+      if (geographicScope && userRoleData) {
+        const { error: metadataError } = await supabase
+          .from('user_role_metadata')
+          .insert({
+            user_role_id: userRoleData.id,
+            scope_type: 'geographic',
+            scope_value: geographicScope
+          });
+
+        if (metadataError) throw metadataError;
+      }
 
       toast({
         title: "Success",
-        description: "Role assigned successfully"
+        description: `Role assigned successfully${geographicScope ? ' with geographic scope' : ''}`
       });
 
       await fetchUsers();
+      setShowScopeDialog(false);
+      setPendingAssignment(null);
+      setSelectedGeographicScope('');
     } catch (error) {
       console.error('Error assigning role:', error);
       toast({
@@ -287,6 +326,7 @@ const UserManager: React.FC = () => {
                               ).map((role) => (
                                 <SelectItem key={role} value={role}>
                                   {role.replace('_', ' ')}
+                                  {role === 'field_agent' && <MapPin className="ml-1 h-3 w-3 inline" />}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -308,6 +348,67 @@ const UserManager: React.FC = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Geographic Scope Assignment Dialog */}
+      <Dialog open={showScopeDialog} onOpenChange={setShowScopeDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <MapPin className="h-5 w-5" />
+              Assign Geographic Scope
+            </DialogTitle>
+            <DialogDescription>
+              Field agents must be assigned to a specific geographic region in Equatorial Guinea.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="geographic-scope">Select Region</Label>
+              <Select
+                value={selectedGeographicScope}
+                onValueChange={setSelectedGeographicScope}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a region..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {geographicScopes.map((scope) => (
+                    <SelectItem key={scope} value={scope}>
+                      {scope}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowScopeDialog(false);
+                  setPendingAssignment(null);
+                  setSelectedGeographicScope('');
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  if (pendingAssignment && selectedGeographicScope) {
+                    assignRoleWithScope(
+                      pendingAssignment.userId,
+                      pendingAssignment.role,
+                      selectedGeographicScope
+                    );
+                  }
+                }}
+                disabled={!selectedGeographicScope}
+              >
+                Assign Role
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
