@@ -42,7 +42,7 @@ export const useAddresses = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
-  const { hasAdminAccess } = useUserRole();
+  const { hasAdminAccess, hasVerifierAccess, canVerifyAddresses, canPublishAddresses } = useUserRole();
   const { toast } = useToast();
 
   // Generate a unique address code
@@ -66,8 +66,8 @@ export const useAddresses = () => {
         .select('*')
         .order('created_at', { ascending: false });
 
-      // If user is not admin, only fetch their own addresses
-      if (!hasAdminAccess) {
+      // If user doesn't have staff access, only fetch their own addresses
+      if (!hasVerifierAccess) {
         query = query.eq('user_id', user.id);
       }
 
@@ -200,8 +200,28 @@ export const useAddresses = () => {
         .update(updates)
         .eq('id', addressId);
 
-      // If user is not admin, only allow updating their own addresses
-      if (!hasAdminAccess) {
+      // Verification updates require verifier access
+      if (updates.verified !== undefined && !canVerifyAddresses) {
+        toast({
+          title: "Error",
+          description: "You don't have permission to verify addresses",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Publishing updates require registrar access  
+      if (updates.public !== undefined && !canPublishAddresses) {
+        toast({
+          title: "Error", 
+          description: "You don't have permission to publish addresses",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // If user doesn't have staff access, only allow updating their own addresses
+      if (!hasVerifierAccess) {
         query = query.eq('user_id', user.id);
       }
 
@@ -243,8 +263,8 @@ export const useAddresses = () => {
         .delete()
         .eq('id', addressId);
 
-      // If user is not admin, only allow deleting their own addresses
-      if (!hasAdminAccess) {
+      // If user doesn't have staff access, only allow deleting their own addresses
+      if (!hasVerifierAccess) {
         query = query.eq('user_id', user.id);
       }
 
@@ -271,10 +291,10 @@ export const useAddresses = () => {
 
   useEffect(() => {
     // Only fetch addresses if user is authenticated and role is loaded
-    if (user && hasAdminAccess !== undefined) {
+    if (user && hasVerifierAccess !== undefined) {
       fetchAddresses();
     }
-  }, [user, hasAdminAccess]);
+  }, [user, hasVerifierAccess]);
 
   return {
     addresses,
