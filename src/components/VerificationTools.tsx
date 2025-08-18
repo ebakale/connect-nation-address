@@ -177,8 +177,9 @@ export const VerificationTools = () => {
       </div>
 
       <Tabs defaultValue="search" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="search">Address Search</TabsTrigger>
+          <TabsTrigger value="individual">Individual Verify</TabsTrigger>
           <TabsTrigger value="verify">Verification Tools</TabsTrigger>
           <TabsTrigger value="quality">Quality Control</TabsTrigger>
         </TabsList>
@@ -241,6 +242,190 @@ export const VerificationTools = () => {
                       </CardContent>
                     </Card>
                   ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="individual" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5" />
+                Individual Address Verification
+              </CardTitle>
+              <CardDescription>
+                Verify or reject individual addresses with detailed status updates
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {selectedAddress ? (
+                <>
+                  <div className="grid grid-cols-1 gap-4">
+                    <div>
+                      <Label>Address Details</Label>
+                      <div className="p-4 bg-muted rounded-md space-y-2">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="font-medium text-lg">{selectedAddress.uac}</p>
+                            <p className="text-muted-foreground">
+                              {selectedAddress.street}, {selectedAddress.city}, {selectedAddress.region}
+                            </p>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              Coordinates: {selectedAddress.latitude}, {selectedAddress.longitude}
+                            </p>
+                            {selectedAddress.description && (
+                              <p className="text-sm mt-2">{selectedAddress.description}</p>
+                            )}
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <Badge variant={selectedAddress.verified ? "default" : "secondary"}>
+                              {selectedAddress.verified ? "Verified" : "Pending"}
+                            </Badge>
+                            <Badge variant={selectedAddress.public ? "default" : "outline"}>
+                              {selectedAddress.public ? "Public" : "Private"}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {selectedAddress.photo_url && (
+                      <div>
+                        <Label>Address Photo</Label>
+                        <div className="p-2 bg-muted rounded-md">
+                          <img 
+                            src={selectedAddress.photo_url} 
+                            alt="Address photo" 
+                            className="w-full max-w-md h-48 object-cover rounded-md mx-auto"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={async () => {
+                        try {
+                          const { error } = await supabase
+                            .from('addresses')
+                            .update({ verified: true })
+                            .eq('id', selectedAddress.id);
+
+                          if (error) throw error;
+
+                          toast({
+                            title: "Address Verified",
+                            description: `Address ${selectedAddress.uac} has been verified successfully`,
+                          });
+
+                          // Update selected address state
+                          setSelectedAddress(prev => prev ? {...prev, verified: true} : null);
+                          
+                          // Refresh search results if we have a query
+                          if (searchQuery) {
+                            searchAddresses();
+                          }
+                        } catch (error) {
+                          console.error('Verification failed:', error);
+                          toast({
+                            title: "Error",
+                            description: "Failed to verify address",
+                            variant: "destructive",
+                          });
+                        }
+                      }}
+                      className="flex-1"
+                      disabled={selectedAddress.verified}
+                    >
+                      <CheckCircle2 className="h-4 w-4 mr-2" />
+                      {selectedAddress.verified ? "Already Verified" : "Verify Address"}
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      onClick={async () => {
+                        try {
+                          const { error } = await supabase
+                            .from('addresses')
+                            .update({ verified: false })
+                            .eq('id', selectedAddress.id);
+
+                          if (error) throw error;
+
+                          toast({
+                            title: "Address Rejected",
+                            description: `Address ${selectedAddress.uac} has been rejected`,
+                          });
+
+                          // Update selected address state
+                          setSelectedAddress(prev => prev ? {...prev, verified: false} : null);
+                          
+                          // Refresh search results if we have a query
+                          if (searchQuery) {
+                            searchAddresses();
+                          }
+                        } catch (error) {
+                          console.error('Rejection failed:', error);
+                          toast({
+                            title: "Error",
+                            description: "Failed to reject address",
+                            variant: "destructive",
+                          });
+                        }
+                      }}
+                      className="flex-1"
+                    >
+                      <AlertTriangle className="h-4 w-4 mr-2" />
+                      Reject Address
+                    </Button>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button
+                      variant="secondary"
+                      onClick={async () => {
+                        try {
+                          const { error } = await supabase
+                            .from('addresses')
+                            .update({ public: !selectedAddress.public })
+                            .eq('id', selectedAddress.id);
+
+                          if (error) throw error;
+
+                          toast({
+                            title: "Status Updated",
+                            description: `Address is now ${!selectedAddress.public ? 'public' : 'private'}`,
+                          });
+
+                          // Update selected address state
+                          setSelectedAddress(prev => prev ? {...prev, public: !prev.public} : null);
+                          
+                          // Refresh search results if we have a query
+                          if (searchQuery) {
+                            searchAddresses();
+                          }
+                        } catch (error) {
+                          console.error('Status update failed:', error);
+                          toast({
+                            title: "Error",
+                            description: "Failed to update status",
+                            variant: "destructive",
+                          });
+                        }
+                      }}
+                      className="w-full"
+                    >
+                      Make {selectedAddress.public ? 'Private' : 'Public'}
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center text-muted-foreground py-8">
+                  <AlertTriangle className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Select an address from the search results to verify individually</p>
                 </div>
               )}
             </CardContent>
