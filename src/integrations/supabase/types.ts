@@ -234,6 +234,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_unified_uac_unique: {
+        Args: {
+          p_address_id: string
+          p_city: string
+          p_country: string
+          p_region: string
+        }
+        Returns: string
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
