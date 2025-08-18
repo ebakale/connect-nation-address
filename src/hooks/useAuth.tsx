@@ -75,15 +75,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast.error("Sign Out Error: " + error.message);
-    } else {
-      // Redirect to main page after successful logout
+    // Gracefully handle cases where there is no active session
+    if (!session) {
       window.location.href = '/';
+      return;
     }
-  };
 
+    // Prefer local sign-out to avoid server errors when tokens are missing/expired
+    const { error } = await supabase.auth.signOut({ scope: 'local' });
+
+    // Ignore "Auth session missing" or "session_not_found" as we're already signed out locally
+    if (error && !/auth session missing/i.test(error.message) && !/session_not_found/i.test(error.message)) {
+      toast.error("Sign Out Error: " + error.message);
+    }
+
+    // Redirect to main page after logout (or if already signed out)
+    window.location.href = '/';
+  };
   return (
     <AuthContext.Provider value={{
       user,
