@@ -3,17 +3,48 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Search, FileText, AlertCircle } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
 import AddressSearch from "@/components/AddressSearch";
+import AddressMapViewer from "@/components/AddressMapViewer";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
+interface SearchResult {
+  uac: string;
+  readable: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+  type: string;
+  verified: boolean;
+}
 
 const CitizenDashboard = () => {
   const { role, loading } = useUserRole();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState<SearchResult | null>(null);
+  const [showMapView, setShowMapView] = useState(false);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 flex items-center justify-center">
         <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
+
+  // If showing map view for selected address
+  if (showMapView && selectedAddress) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
+        <div className="container mx-auto px-4 py-8">
+          <AddressMapViewer 
+            address={selectedAddress}
+            onBack={() => {
+              setShowMapView(false);
+              setSelectedAddress(null);
+            }}
+          />
+        </div>
       </div>
     );
   }
@@ -54,7 +85,9 @@ const CitizenDashboard = () => {
                   <AddressSearch 
                     onSelectAddress={(address) => {
                       console.log('Selected address:', address);
+                      setSelectedAddress(address);
                       setSearchOpen(false);
+                      setShowMapView(true);
                     }}
                   />
                 </DialogContent>
