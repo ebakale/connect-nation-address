@@ -5,6 +5,7 @@ import { Shield, CheckCircle, AlertTriangle, FileText, Users, LogOut } from "luc
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
 import { AddressVerificationQueue } from "@/components/AddressVerificationQueue";
+import { VerificationTools } from "@/components/VerificationTools";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -12,6 +13,7 @@ const VerifierDashboard = () => {
   const { role, loading, getGeographicScope } = useUserRole();
   const { user, signOut } = useAuth();
   const [queueOpen, setQueueOpen] = useState(false);
+  const [toolsOpen, setToolsOpen] = useState(false);
 
   if (loading) {
     return (
@@ -136,9 +138,22 @@ const VerifierDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full" variant="outline">
-                Open Tools
-              </Button>
+              <Dialog open={toolsOpen} onOpenChange={setToolsOpen}>
+                <DialogTrigger asChild>
+                  <Button className="w-full" variant="outline">
+                    Open Tools
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Verification Tools</DialogTitle>
+                    <DialogDescription>
+                      Advanced tools for address verification and quality control
+                    </DialogDescription>
+                  </DialogHeader>
+                  <VerificationTools />
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </Card>
 

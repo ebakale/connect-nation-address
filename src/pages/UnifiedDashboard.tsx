@@ -22,6 +22,7 @@ import { AddressVerificationQueue } from "@/components/AddressVerificationQueue"
 import { AddressPublishingQueue } from "@/components/AddressPublishingQueue";
 import { ProvinceManagement } from "@/components/ProvinceManagement";
 import { AnalyticsReports } from "@/components/AnalyticsReports";
+import { VerificationTools } from "@/components/VerificationTools";
 
 interface SearchResult {
   uac: string;
@@ -81,6 +82,7 @@ const UnifiedDashboard = () => {
   const [publishingQueueOpen, setPublishingQueueOpen] = useState(false);
   const [showProvinceManagement, setShowProvinceManagement] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
+  const [showVerificationTools, setShowVerificationTools] = useState(false);
 
   // Fetch dashboard statistics
   useEffect(() => {
@@ -437,7 +439,7 @@ const UnifiedDashboard = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button className="w-full" variant="outline">
+                  <Button className="w-full" variant="outline" onClick={() => setShowVerificationTools(true)}>
                     Open Tools
                   </Button>
                 </CardContent>
@@ -594,18 +596,31 @@ const UnifiedDashboard = () => {
            </DialogContent>
          </Dialog>
 
-         {/* Analytics Dialog */}
-         <Dialog open={showAnalytics} onOpenChange={setShowAnalytics}>
-           <DialogContent className="max-w-6xl max-h-[80vh] overflow-y-auto">
-             <DialogHeader>
-               <DialogTitle>Reports & Analytics</DialogTitle>
-               <DialogDescription>
-                 View comprehensive reports and analytics
-               </DialogDescription>
-             </DialogHeader>
-             <AnalyticsReports />
-           </DialogContent>
-         </Dialog>
+          {/* Analytics Dialog */}
+          <Dialog open={showAnalytics} onOpenChange={setShowAnalytics}>
+            <DialogContent className="max-w-6xl max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Reports & Analytics</DialogTitle>
+                <DialogDescription>
+                  View comprehensive reports and analytics
+                </DialogDescription>
+              </DialogHeader>
+              <AnalyticsReports />
+            </DialogContent>
+          </Dialog>
+
+          {/* Verification Tools Dialog */}
+          <Dialog open={showVerificationTools} onOpenChange={setShowVerificationTools}>
+            <DialogContent className="max-w-6xl max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Verification Tools</DialogTitle>
+                <DialogDescription>
+                  Advanced tools for address verification and quality control
+                </DialogDescription>
+              </DialogHeader>
+              <VerificationTools />
+            </DialogContent>
+          </Dialog>
        </div>
      </div>
    );
