@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
+import { X, Satellite, Map as MapIcon } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface AddressLocationMapProps {
@@ -27,6 +27,7 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [mapboxToken, setMapboxToken] = useState<string>('');
+  const [mapStyle, setMapStyle] = useState<'satellite' | 'streets'>('satellite');
 
   // Fetch Mapbox token from Supabase secrets
   useEffect(() => {
@@ -51,12 +52,18 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
   useEffect(() => {
     if (!mapContainer.current || !mapboxToken) return;
 
+    const getMapStyle = (style: 'satellite' | 'streets') => {
+      return style === 'satellite' 
+        ? 'mapbox://styles/mapbox/satellite-streets-v12'
+        : 'mapbox://styles/mapbox/streets-v12';
+    };
+
     // Initialize map
     mapboxgl.accessToken = mapboxToken;
     
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/satellite-streets-v12',
+      style: getMapStyle(mapStyle),
       center: [longitude, latitude],
       zoom: 16
     });
@@ -97,7 +104,20 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
     return () => {
       map.current?.remove();
     };
-  }, [mapboxToken, latitude, longitude, address]);
+  }, [mapboxToken, latitude, longitude, address, mapStyle]);
+
+  // Effect to handle map style changes
+  useEffect(() => {
+    if (!map.current || !mapboxToken) return;
+
+    const getMapStyle = (style: 'satellite' | 'streets') => {
+      return style === 'satellite' 
+        ? 'mapbox://styles/mapbox/satellite-streets-v12'
+        : 'mapbox://styles/mapbox/streets-v12';
+    };
+
+    map.current.setStyle(getMapStyle(mapStyle));
+  }, [mapStyle, mapboxToken]);
 
   if (!mapboxToken) {
     return (
@@ -109,14 +129,37 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
 
   return (
     <div className="relative w-full h-96 rounded-lg overflow-hidden">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={onClose}
-        className="absolute top-2 right-2 z-10 bg-background/90 backdrop-blur-sm"
-      >
-        <X className="h-4 w-4" />
-      </Button>
+      {/* Control buttons */}
+      <div className="absolute top-2 right-2 z-10 flex gap-2">
+        <div className="flex bg-background/90 backdrop-blur-sm rounded-md">
+          <Button
+            variant={mapStyle === 'satellite' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setMapStyle('satellite')}
+            className="rounded-r-none"
+          >
+            <Satellite className="h-4 w-4 mr-1" />
+            Satellite
+          </Button>
+          <Button
+            variant={mapStyle === 'streets' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setMapStyle('streets')}
+            className="rounded-l-none"
+          >
+            <MapIcon className="h-4 w-4 mr-1" />
+            Streets
+          </Button>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onClose}
+          className="bg-background/90 backdrop-blur-sm"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
       <div ref={mapContainer} className="absolute inset-0" />
     </div>
   );
