@@ -9,26 +9,39 @@ import { useAddresses } from "@/hooks/useAddresses";
 import { useToast } from "@/hooks/use-toast";
 import { generateUAC } from "@/lib/uacGenerator";
 import { MapPin, Camera, Save } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AddressCaptureFormProps {
   onSave?: () => void;
   onCancel?: () => void;
+  initialData?: {
+    id?: string;
+    country: string;
+    region: string;
+    city: string;
+    street: string;
+    building?: string;
+    address_type: string;
+    latitude: number;
+    longitude: number;
+    description?: string;
+  };
 }
 
-export const AddressCaptureForm = ({ onSave, onCancel }: AddressCaptureFormProps) => {
+export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCaptureFormProps) => {
   const [formData, setFormData] = useState({
-    country: "Angola",
-    region: "",
-    city: "",
-    street: "",
-    building: "",
-    latitude: "",
-    longitude: "",
-    address_type: "residential",
-    description: ""
+    country: initialData?.country || "Equatorial Guinea",
+    region: initialData?.region || "",
+    city: initialData?.city || "",
+    street: initialData?.street || "",
+    building: initialData?.building || "",
+    latitude: initialData?.latitude?.toString() || "",
+    longitude: initialData?.longitude?.toString() || "",
+    address_type: initialData?.address_type || "residential",
+    description: initialData?.description || ""
   });
   
-  const { createAddress, loading } = useAddresses();
+  const { createAddress, updateAddressStatus, loading } = useAddresses();
   const { toast } = useToast();
 
   // UAC generation is now handled by the centralized system
@@ -78,9 +91,32 @@ export const AddressCaptureForm = ({ onSave, onCancel }: AddressCaptureFormProps
       public: false
     };
 
-    const result = await createAddress(addressData);
-    if (result) {
-      onSave?.();
+    if (initialData?.id) {
+      // Update existing address
+      const { error } = await supabase
+        .from('addresses')
+        .update(addressData)
+        .eq('id', initialData.id);
+      
+      if (!error) {
+        toast({
+          title: "Address updated",
+          description: "Your draft has been updated successfully"
+        });
+        onSave?.();
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to update address",
+          variant: "destructive"
+        });
+      }
+    } else {
+      // Create new address
+      const result = await createAddress(addressData);
+      if (result) {
+        onSave?.();
+      }
     }
   };
 
@@ -89,10 +125,10 @@ export const AddressCaptureForm = ({ onSave, onCancel }: AddressCaptureFormProps
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MapPin className="h-5 w-5" />
-          Capture New Address
+          {initialData ? 'Edit Address' : 'Capture New Address'}
         </CardTitle>
         <CardDescription>
-          Fill in the address details and capture GPS coordinates
+          {initialData ? 'Update the address details' : 'Fill in the address details and capture GPS coordinates'}
         </CardDescription>
       </CardHeader>
       <CardContent>

@@ -5,6 +5,8 @@ import { MapPin, FileText, Map, Clock, CheckCircle, TrendingUp, Target, Camera, 
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
 import { AddressCaptureForm } from "@/components/AddressCaptureForm";
+import DraftManager from "@/components/DraftManager";
+import FieldMap from "@/components/FieldMap";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -12,6 +14,8 @@ const FieldAgentDashboard = () => {
   const { role, loading, getGeographicScope } = useUserRole();
   const { user, signOut } = useAuth();
   const [captureOpen, setCaptureOpen] = useState(false);
+  const [draftsOpen, setDraftsOpen] = useState(false);
+  const [mapOpen, setMapOpen] = useState(false);
 
   if (loading) {
     return (
@@ -139,9 +143,22 @@ const FieldAgentDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full" variant="outline">
-                View Drafts
-              </Button>
+              <Dialog open={draftsOpen} onOpenChange={setDraftsOpen}>
+                <DialogTrigger asChild>
+                  <Button className="w-full" variant="outline">
+                    View Drafts
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Draft Management</DialogTitle>
+                    <DialogDescription>
+                      Review, edit, and submit your draft addresses
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DraftManager onClose={() => setDraftsOpen(false)} />
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </Card>
 
@@ -156,9 +173,22 @@ const FieldAgentDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full" variant="outline">
-                Open Map
-              </Button>
+              <Dialog open={mapOpen} onOpenChange={setMapOpen}>
+                <DialogTrigger asChild>
+                  <Button className="w-full" variant="outline">
+                    Open Map
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Field Map</DialogTitle>
+                    <DialogDescription>
+                      View addresses and capture progress in your assigned area
+                    </DialogDescription>
+                  </DialogHeader>
+                  <FieldMap onClose={() => setMapOpen(false)} />
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </Card>
         </div>
