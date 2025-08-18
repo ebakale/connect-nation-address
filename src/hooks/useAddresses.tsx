@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { useUserRole } from './useUserRole';
@@ -56,7 +56,7 @@ export const useAddresses = () => {
   };
 
   // Fetch user's addresses
-  const fetchAddresses = async () => {
+  const fetchAddresses = useCallback(async () => {
     if (!user) return;
     
     setLoading(true);
@@ -85,7 +85,7 @@ export const useAddresses = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.id, hasVerifierAccess, toast]);
 
   // Create a new address
   const createAddress = async (addressData: CreateAddressData) => {
@@ -294,7 +294,7 @@ export const useAddresses = () => {
     if (user && hasVerifierAccess !== undefined) {
       fetchAddresses();
     }
-  }, [user, hasVerifierAccess]);
+  }, [fetchAddresses, user, hasVerifierAccess]);
 
   return {
     addresses,
