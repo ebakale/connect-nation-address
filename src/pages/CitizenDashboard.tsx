@@ -1,9 +1,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, FileText, AlertCircle } from "lucide-react";
+import { MapPin, Search, FileText, AlertCircle, Clock } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
 import AddressSearch from "@/components/AddressSearch";
 import AddressMapViewer from "@/components/AddressMapViewer";
+import { AddressRequestForm } from "@/components/AddressRequestForm";
+import { AddressRequestStatus } from "@/components/AddressRequestStatus";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -23,6 +25,8 @@ const CitizenDashboard = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<SearchResult | null>(null);
   const [showMapView, setShowMapView] = useState(false);
+  const [submitRequestOpen, setSubmitRequestOpen] = useState(false);
+  const [statusOpen, setStatusOpen] = useState(false);
 
   if (loading) {
     return (
@@ -102,11 +106,12 @@ const CitizenDashboard = () => {
                 Submit Request
               </CardTitle>
               <CardDescription>
-                Request address verification or corrections
+                Submit a new address registration request
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full" variant="outline">
+              <Button className="w-full" onClick={() => setSubmitRequestOpen(true)}>
+                <FileText className="mr-2 h-4 w-4" />
                 New Request
               </Button>
             </CardContent>
@@ -115,16 +120,17 @@ const CitizenDashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-primary" />
+                <Clock className="h-5 w-5 text-primary" />
                 Address Status
               </CardTitle>
               <CardDescription>
-                Check the status of your submitted requests
+                Track the status of your submitted requests
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full" variant="outline">
-                Track Status
+              <Button className="w-full" onClick={() => setStatusOpen(true)}>
+                <Clock className="mr-2 h-4 w-4" />
+                Check Status
               </Button>
             </CardContent>
           </Card>
@@ -146,6 +152,29 @@ const CitizenDashboard = () => {
             </ul>
           </CardContent>
         </Card>
+
+        {/* Submit Request Dialog */}
+        <Dialog open={submitRequestOpen} onOpenChange={setSubmitRequestOpen}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Submit Address Request</DialogTitle>
+            </DialogHeader>
+            <AddressRequestForm 
+              onCancel={() => setSubmitRequestOpen(false)}
+              onSuccess={() => setSubmitRequestOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
+
+        {/* Status Dialog */}
+        <Dialog open={statusOpen} onOpenChange={setStatusOpen}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Address Request Status</DialogTitle>
+            </DialogHeader>
+            <AddressRequestStatus />
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

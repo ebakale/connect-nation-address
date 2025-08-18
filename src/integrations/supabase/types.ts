@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      address_requests: {
+        Row: {
+          address_type: string
+          building: string | null
+          city: string
+          country: string
+          created_at: string
+          description: string | null
+          id: string
+          justification: string
+          latitude: number | null
+          longitude: number | null
+          region: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          reviewer_notes: string | null
+          status: string
+          street: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address_type?: string
+          building?: string | null
+          city: string
+          country: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          justification: string
+          latitude?: number | null
+          longitude?: number | null
+          region: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_notes?: string | null
+          status?: string
+          street: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address_type?: string
+          building?: string | null
+          city?: string
+          country?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          justification?: string
+          latitude?: number | null
+          longitude?: number | null
+          region?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_notes?: string | null
+          status?: string
+          street?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       addresses: {
         Row: {
           address_type: string
