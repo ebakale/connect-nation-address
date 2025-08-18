@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,8 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAddresses } from "@/hooks/useAddresses";
 import { useToast } from "@/hooks/use-toast";
 import { generateUAC } from "@/lib/uacGenerator";
-import { MapPin, Camera, Save } from "lucide-react";
+import { MapPin, Camera, Save, Upload, X, Image } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface AddressCaptureFormProps {
   onSave?: () => void;
@@ -25,10 +26,12 @@ interface AddressCaptureFormProps {
     latitude: number;
     longitude: number;
     description?: string;
+    photo_url?: string;
   };
 }
 
 export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCaptureFormProps) => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     country: initialData?.country || "Equatorial Guinea",
     region: initialData?.region || "",
@@ -40,6 +43,12 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
     address_type: initialData?.address_type || "residential",
     description: initialData?.description || ""
   });
+  
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string>(initialData?.photo_url || "");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   
   const { createAddress, updateAddressStatus, loading } = useAddresses();
   const { toast } = useToast();
@@ -96,6 +105,75 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
     }
   };
 
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        toast({
+          title: "File too large",
+          description: "Please select an image smaller than 5MB",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Invalid file type",
+          description: "Please select an image file",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      setPhoto(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPhotoPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const uploadPhoto = async (): Promise<string | null> => {
+    if (!photo || !user) return null;
+
+    setUploading(true);
+    try {
+      const fileExt = photo.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+      
+      const { data, error } = await supabase.storage
+        .from('address-photos')
+        .upload(fileName, photo);
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('address-photos')
+        .getPublicUrl(fileName);
+
+      return publicUrl;
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload photo. Please try again.",
+        variant: "destructive"
+      });
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removePhoto = () => {
+    setPhoto(null);
+    setPhotoPreview("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (cameraInputRef.current) cameraInputRef.current.value = "";
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -108,12 +186,20 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
       return;
     }
 
+    // Upload photo if selected
+    let photoUrl = photoPreview;
+    if (photo) {
+      photoUrl = await uploadPhoto();
+      if (!photoUrl) return; // Upload failed
+    }
+
     const addressData = {
       ...formData,
       latitude: parseFloat(formData.latitude),
       longitude: parseFloat(formData.longitude),
       verified: false,
-      public: false
+      public: false,
+      photo_url: photoUrl || null
     };
 
     if (initialData?.id) {
@@ -138,7 +224,12 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
       }
     } else {
       // Create new address
-      const result = await createAddress(addressData);
+      const createData: any = { ...addressData };
+      if (photo) {
+        createData.photo = photo; // Let useAddresses handle the upload
+        delete createData.photo_url; // Remove the preview URL
+      }
+      const result = await createAddress(createData);
       if (result) {
         onSave?.();
       }
@@ -284,6 +375,81 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
                 Capture Current Location
               </Button>
             </div>
+          </div>
+
+          {/* Photo Upload Section */}
+          <div className="space-y-4">
+            <Label>Address Photo (Optional)</Label>
+            <div className="border-2 border-dashed border-border rounded-lg p-6">
+              {photoPreview ? (
+                <div className="space-y-4">
+                  <div className="relative">
+                    <img
+                      src={photoPreview}
+                      alt="Address preview"
+                      className="w-full max-h-64 object-cover rounded-lg"
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      className="absolute top-2 right-2"
+                      onClick={removePhoto}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <p className="text-sm text-muted-foreground text-center">
+                    Photo ready to upload with address
+                  </p>
+                </div>
+              ) : (
+                <div className="text-center space-y-4">
+                  <Image className="h-12 w-12 text-muted-foreground mx-auto" />
+                  <p className="text-muted-foreground">
+                    Add a photo of the address location
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => cameraInputRef.current?.click()}
+                    >
+                      <Camera className="mr-2 h-4 w-4" />
+                      Take Photo
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <Upload className="mr-2 h-4 w-4" />
+                      Upload Photo
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Max file size: 5MB. Supported formats: JPG, PNG, WEBP
+                  </p>
+                </div>
+              )}
+            </div>
+            
+            {/* Hidden file inputs */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
           </div>
 
           <div>
