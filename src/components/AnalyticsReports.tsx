@@ -68,29 +68,30 @@ export const AnalyticsReports = () => {
     private: 0
   });
 
-  // Mock data for demonstration
+  // Data based on Equatorial Guinea sample addresses
   const mockRegionData: RegionStats[] = [
-    { region: "Luanda", addresses: 450, verified: 380, pending: 70 },
-    { region: "Benguela", addresses: 280, verified: 240, pending: 40 },
-    { region: "Huíla", addresses: 190, verified: 160, pending: 30 },
-    { region: "Namibe", addresses: 120, verified: 100, pending: 20 },
-    { region: "Cabinda", addresses: 95, verified: 80, pending: 15 }
+    { region: "Bioko Norte", addresses: 6, verified: 5, pending: 1 },
+    { region: "Litoral", addresses: 7, verified: 5, pending: 2 },
+    { region: "Bioko Sur", addresses: 3, verified: 2, pending: 1 },
+    { region: "Centro Sur", addresses: 3, verified: 2, pending: 1 },
+    { region: "Kié-Ntem", addresses: 4, verified: 3, pending: 1 },
+    { region: "Wele-Nzas", addresses: 3, verified: 2, pending: 1 },
+    { region: "Annobón", addresses: 3, verified: 2, pending: 1 }
   ];
 
   const mockTypeData: TypeStats[] = [
-    { type: "Residential", count: 520, percentage: 45 },
-    { type: "Commercial", count: 290, percentage: 25 },
-    { type: "Industrial", count: 175, percentage: 15 },
-    { type: "Public", count: 115, percentage: 10 },
-    { type: "Other", count: 58, percentage: 5 }
+    { type: "Commercial", count: 8, percentage: 28 },
+    { type: "Public", count: 12, percentage: 41 },
+    { type: "Residential", count: 4, percentage: 14 },
+    { type: "Industrial", count: 5, percentage: 17 }
   ];
 
   const mockTimeSeriesData: TimeSeriesData[] = [
-    { date: "2024-01-01", addresses: 50, verified: 45 },
-    { date: "2024-01-08", addresses: 65, verified: 58 },
-    { date: "2024-01-15", addresses: 78, verified: 70 },
-    { date: "2024-01-22", addresses: 92, verified: 85 },
-    { date: "2024-01-29", addresses: 105, verified: 98 }
+    { date: "2024-01-01", addresses: 2, verified: 2 },
+    { date: "2024-01-08", addresses: 5, verified: 4 },
+    { date: "2024-01-15", addresses: 8, verified: 6 },
+    { date: "2024-01-22", addresses: 12, verified: 9 },
+    { date: "2024-01-29", addresses: 15, verified: 12 }
   ];
 
   const pieColors = ["hsl(var(--primary))", "hsl(var(--secondary))", "hsl(var(--accent))", "hsl(var(--muted))", "hsl(var(--destructive))"];

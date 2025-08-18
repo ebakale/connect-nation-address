@@ -34,33 +34,69 @@ export const ProvinceManagement = () => {
   });
   const { toast } = useToast();
 
-  // Mock data for demonstration
+  // Data for Equatorial Guinea provinces
   const mockProvinces: Province[] = [
     {
       id: "1",
-      name: "Luanda",
-      code: "LUA",
-      region: "Central",
-      population: 8000000,
-      area: 2418,
+      name: "Bioko Norte",
+      code: "BN",
+      region: "Insular",
+      population: 334463,
+      area: 776,
       created_at: new Date().toISOString()
     },
     {
-      id: "2",
-      name: "Benguela",
-      code: "BGU",
-      region: "Central",
-      population: 2231000,
-      area: 31788,
+      id: "2", 
+      name: "Bioko Sur",
+      code: "BS",
+      region: "Insular",
+      population: 38200,
+      area: 1241,
       created_at: new Date().toISOString()
     },
     {
       id: "3",
-      name: "Huíla",
-      code: "HUI",
-      region: "South",
-      population: 2497000,
-      area: 75002,
+      name: "Litoral",
+      code: "LT", 
+      region: "Continental",
+      population: 367348,
+      area: 6665,
+      created_at: new Date().toISOString()
+    },
+    {
+      id: "4",
+      name: "Centro Sur",
+      code: "CS",
+      region: "Continental", 
+      population: 141986,
+      area: 9931,
+      created_at: new Date().toISOString()
+    },
+    {
+      id: "5",
+      name: "Kié-Ntem",
+      code: "KN",
+      region: "Continental",
+      population: 183331,
+      area: 3943,
+      created_at: new Date().toISOString()
+    },
+    {
+      id: "6",
+      name: "Wele-Nzas",
+      code: "WN", 
+      region: "Continental",
+      population: 192017,
+      area: 5478,
+      created_at: new Date().toISOString()
+    },
+    {
+      id: "7",
+      name: "Annobón",
+      code: "AN",
+      region: "Insular",
+      population: 5314,
+      area: 17,
       created_at: new Date().toISOString()
     }
   ];
@@ -239,7 +275,7 @@ export const ProvinceManagement = () => {
                   id="region"
                   value={formData.region}
                   onChange={(e) => setFormData({ ...formData, region: e.target.value })}
-                  placeholder="e.g., Central, North, South"
+                  placeholder="e.g., Insular, Continental"
                   required
                 />
               </div>
