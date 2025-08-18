@@ -25,6 +25,8 @@ import { AnalyticsReports } from "@/components/AnalyticsReports";
 import { VerificationTools } from "@/components/VerificationTools";
 import { ProfileEditor } from "@/components/ProfileEditor";
 import { AddressRequestApproval } from "@/components/AddressRequestApproval";
+import DraftManager from "@/components/DraftManager";
+import FieldMap from "@/components/FieldMap";
 
 interface SearchResult {
   uac: string;
@@ -107,6 +109,8 @@ const UnifiedDashboard = () => {
   const [showProvinceManagement, setShowProvinceManagement] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [showVerificationTools, setShowVerificationTools] = useState(false);
+  const [draftsOpen, setDraftsOpen] = useState(false);
+  const [mapOpen, setMapOpen] = useState(false);
 
   // Fetch dashboard statistics
   useEffect(() => {
@@ -533,9 +537,22 @@ const UnifiedDashboard = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button className="w-full" variant="outline">
-                    View Drafts
-                  </Button>
+                  <Dialog open={draftsOpen} onOpenChange={setDraftsOpen}>
+                    <DialogTrigger asChild>
+                      <Button className="w-full" variant="outline">
+                        View Drafts
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Draft Management</DialogTitle>
+                        <DialogDescription>
+                          Review, edit, and submit your draft addresses
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DraftManager onClose={() => setDraftsOpen(false)} />
+                    </DialogContent>
+                  </Dialog>
                 </CardContent>
               </Card>
 
@@ -550,9 +567,22 @@ const UnifiedDashboard = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button className="w-full" variant="outline">
-                    Open Map
-                  </Button>
+                  <Dialog open={mapOpen} onOpenChange={setMapOpen}>
+                    <DialogTrigger asChild>
+                      <Button className="w-full" variant="outline">
+                        Open Map
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Field Map</DialogTitle>
+                        <DialogDescription>
+                          View addresses and capture progress in your assigned area
+                        </DialogDescription>
+                      </DialogHeader>
+                      <FieldMap onClose={() => setMapOpen(false)} />
+                    </DialogContent>
+                  </Dialog>
                 </CardContent>
               </Card>
             </>

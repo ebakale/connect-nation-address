@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { MapPin, Navigation, Layers, Target } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { MapPin, Navigation, Layers, Target, Info } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { supabase } from "@/integrations/supabase/client";
@@ -248,6 +249,15 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
           ))}
         </div>
       </div>
+
+      {!mapboxToken && (
+        <Alert>
+          <AlertTitle>Map not configured</AlertTitle>
+          <AlertDescription>
+            Please add MAPBOX_PUBLIC_TOKEN in Supabase Edge Function Secrets to enable the map.
+          </AlertDescription>
+        </Alert>
+      )}
 
       <Card>
         <CardHeader>
