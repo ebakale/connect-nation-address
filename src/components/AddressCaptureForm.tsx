@@ -11,6 +11,8 @@ import { generateUAC } from "@/lib/uacGenerator";
 import { MapPin, Camera, Save, Upload, X, Image } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import CameraCapture from "@/components/CameraCapture";
 
 interface AddressCaptureFormProps {
   onSave?: () => void;
@@ -47,6 +49,7 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string>(initialData?.photo_url || "");
   const [uploading, setUploading] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   
@@ -413,7 +416,7 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => cameraInputRef.current?.click()}
+                      onClick={() => setCameraOpen(true)}
                     >
                       <Camera className="mr-2 h-4 w-4" />
                       Take Photo
@@ -475,6 +478,21 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
             )}
           </div>
         </form>
+        <Dialog open={cameraOpen} onOpenChange={setCameraOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Take Photo</DialogTitle>
+            </DialogHeader>
+            <CameraCapture
+              onCapture={(file, dataUrl) => {
+                setPhoto(file);
+                setPhotoPreview(dataUrl);
+                setCameraOpen(false);
+              }}
+              onClose={() => setCameraOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );

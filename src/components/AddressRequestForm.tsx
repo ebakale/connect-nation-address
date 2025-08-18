@@ -9,7 +9,8 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { MapPin, Camera, Upload, X, Image } from 'lucide-react';
-
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import CameraCapture from '@/components/CameraCapture';
 interface AddressRequestFormProps {
   onCancel?: () => void;
   onSuccess?: () => void;
@@ -32,6 +33,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string>("");
   const [uploading, setUploading] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
@@ -428,7 +430,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => cameraInputRef.current?.click()}
+                      onClick={() => setCameraOpen(true)}
                     >
                       <Camera className="mr-2 h-4 w-4" />
                       Take Photo
@@ -490,6 +492,21 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
             )}
           </div>
         </form>
+        <Dialog open={cameraOpen} onOpenChange={setCameraOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Take Photo</DialogTitle>
+            </DialogHeader>
+            <CameraCapture
+              onCapture={(file, dataUrl) => {
+                setPhoto(file);
+                setPhotoPreview(dataUrl);
+                setCameraOpen(false);
+              }}
+              onClose={() => setCameraOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );
