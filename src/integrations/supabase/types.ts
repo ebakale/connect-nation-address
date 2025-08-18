@@ -26,6 +26,7 @@ export type Database = {
           justification: string
           latitude: number | null
           longitude: number | null
+          photo_url: string | null
           region: string
           reviewed_at: string | null
           reviewed_by: string | null
@@ -46,6 +47,7 @@ export type Database = {
           justification: string
           latitude?: number | null
           longitude?: number | null
+          photo_url?: string | null
           region: string
           reviewed_at?: string | null
           reviewed_by?: string | null
@@ -66,6 +68,7 @@ export type Database = {
           justification?: string
           latitude?: number | null
           longitude?: number | null
+          photo_url?: string | null
           region?: string
           reviewed_at?: string | null
           reviewed_by?: string | null
