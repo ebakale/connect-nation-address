@@ -35,6 +35,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     'Bioko Norte',
     'Bioko Sur',
     'Centro Sur',
+    'Djibloho',
     'Kié-Ntem',
     'Litoral',
     'Wele-Nzas'
@@ -45,7 +46,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     'Bioko Norte': ['Malabo', 'Rebola', 'Baney'],
     'Bioko Sur': ['Luba', 'Riaba', 'Moca'],
     'Centro Sur': ['Evinayong', 'Acurenam', 'Niefang'],
-    'Kié-Ntem': ['Ebebiyín', 'Mikomeseng', 'Ncue'],
+    'Djibloho': ['Ciudad de la Paz'],
+    'Kié-Ntem': ['Ebebiyín', 'Mikomeseng', 'Ncue', 'Nsork Nsomo'],
     'Litoral': ['Bata', 'Mbini', 'Kogo', 'Acalayong'],
     'Wele-Nzas': ['Mongomo', 'Añisoc', 'Aconibe', 'Nsok']
   };
