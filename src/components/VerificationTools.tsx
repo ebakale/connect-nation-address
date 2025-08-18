@@ -43,9 +43,39 @@ export const VerificationTools = () => {
   const [coordinatesAccuracy, setCoordinatesAccuracy] = useState<number>(95);
   const [photoQualityScore, setPhotoQualityScore] = useState<number>(90);
   const [searchResults, setSearchResults] = useState<AddressDetails[]>([]);
+  const [pendingAddresses, setPendingAddresses] = useState<AddressDetails[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+
+  // Load pending addresses on component mount
+  useEffect(() => {
+    loadPendingAddresses();
+  }, []);
+
+  // Load addresses that need verification
+  const loadPendingAddresses = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('addresses')
+        .select('*')
+        .eq('verified', false)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setPendingAddresses(data || []);
+    } catch (error) {
+      console.error('Failed to load pending addresses:', error);
+      toast({
+        title: "Error",
+        description: "Unable to load pending addresses",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Search addresses for verification
   const searchAddresses = async () => {
@@ -148,7 +178,7 @@ export const VerificationTools = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-amber-600">
-              {searchResults.filter(addr => !addr.verified).length}
+              {pendingAddresses.length}
             </div>
           </CardContent>
         </Card>
@@ -178,7 +208,7 @@ export const VerificationTools = () => {
 
       <Tabs defaultValue="search" className="w-full">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="search">Address Search</TabsTrigger>
+          <TabsTrigger value="search">Pending Verification</TabsTrigger>
           <TabsTrigger value="individual">Individual Verify</TabsTrigger>
           <TabsTrigger value="verify">Verification Tools</TabsTrigger>
           <TabsTrigger value="quality">Quality Control</TabsTrigger>
@@ -189,28 +219,21 @@ export const VerificationTools = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Search className="h-5 w-5" />
-                Address Search & Review
+                Addresses Pending Verification
               </CardTitle>
               <CardDescription>
-                Search for addresses to review and verify
+                Review and select addresses that need verification
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Search by UAC, street, or city..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && searchAddresses()}
-                />
-                <Button onClick={searchAddresses} disabled={loading}>
-                  <Search className="h-4 w-4" />
-                </Button>
-              </div>
-
-              {searchResults.length > 0 && (
+              {loading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                  <p className="text-muted-foreground">Loading pending addresses...</p>
+                </div>
+              ) : pendingAddresses.length > 0 ? (
                 <div className="space-y-2 max-h-96 overflow-y-auto">
-                  {searchResults.map((address) => (
+                  {pendingAddresses.map((address) => (
                     <Card 
                       key={address.id} 
                       className={`cursor-pointer transition-colors ${
@@ -229,10 +252,13 @@ export const VerificationTools = () => {
                               <MapPin className="h-3 w-3" />
                               <span className="text-xs">{address.latitude}, {address.longitude}</span>
                             </div>
+                            <div className="text-xs text-muted-foreground mt-1">
+                              Created: {new Date(address.created_at).toLocaleDateString()}
+                            </div>
                           </div>
                           <div className="flex gap-1">
-                            <Badge variant={address.verified ? "default" : "secondary"}>
-                              {address.verified ? "Verified" : "Pending"}
+                            <Badge variant="secondary">
+                              Pending Verification
                             </Badge>
                             <Badge variant={address.public ? "default" : "outline"}>
                               {address.public ? "Public" : "Private"}
@@ -243,6 +269,24 @@ export const VerificationTools = () => {
                     </Card>
                   ))}
                 </div>
+              ) : (
+                <div className="text-center text-muted-foreground py-8">
+                  <CheckCircle2 className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No addresses pending verification</p>
+                  <p className="text-sm">All addresses have been verified!</p>
+                </div>
+              )}
+              
+              {pendingAddresses.length > 0 && (
+                <Button 
+                  onClick={loadPendingAddresses} 
+                  variant="outline" 
+                  className="w-full"
+                  disabled={loading}
+                >
+                  <Search className="h-4 w-4 mr-2" />
+                  Refresh List
+                </Button>
               )}
             </CardContent>
           </Card>
@@ -324,10 +368,8 @@ export const VerificationTools = () => {
                           // Update selected address state
                           setSelectedAddress(prev => prev ? {...prev, verified: true} : null);
                           
-                          // Refresh search results if we have a query
-                          if (searchQuery) {
-                            searchAddresses();
-                          }
+                          // Refresh pending addresses list
+                          loadPendingAddresses();
                         } catch (error) {
                           console.error('Verification failed:', error);
                           toast({
@@ -363,10 +405,8 @@ export const VerificationTools = () => {
                           // Update selected address state
                           setSelectedAddress(prev => prev ? {...prev, verified: false} : null);
                           
-                          // Refresh search results if we have a query
-                          if (searchQuery) {
-                            searchAddresses();
-                          }
+                          // Refresh pending addresses list
+                          loadPendingAddresses();
                         } catch (error) {
                           console.error('Rejection failed:', error);
                           toast({
@@ -403,10 +443,8 @@ export const VerificationTools = () => {
                           // Update selected address state
                           setSelectedAddress(prev => prev ? {...prev, public: !prev.public} : null);
                           
-                          // Refresh search results if we have a query
-                          if (searchQuery) {
-                            searchAddresses();
-                          }
+                          // Refresh pending addresses list
+                          loadPendingAddresses();
                         } catch (error) {
                           console.error('Status update failed:', error);
                           toast({
