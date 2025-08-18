@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 const Index = () => {
   const [activeSection, setActiveSection] = useState('overview');
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
   if (loading) {
     return (
@@ -435,7 +436,7 @@ const Index = () => {
                   with your existing credentials.
                 </p>
                 <Button 
-                  onClick={() => window.location.href = '/auth'} 
+                  onClick={() => navigate('/auth')} 
                   className="w-full"
                   variant="hero"
                 >
@@ -480,7 +481,7 @@ const Index = () => {
               <span className="text-xl font-bold">EG Address Registry</span>
             </div>
             <Button 
-              onClick={() => window.location.href = '/auth'} 
+              onClick={() => navigate('/auth')} 
               variant="outline"
             >
               <LogIn className="h-4 w-4 mr-2" />
