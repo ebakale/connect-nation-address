@@ -431,18 +431,25 @@ const Index = () => {
                 <CardTitle className="text-center">Login Required</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-center text-muted-foreground">
-                  To access the address registry features, you need to create an account or sign in 
-                  with your existing credentials.
-                </p>
-                <Button 
-                  onClick={() => navigate('/auth')} 
-                  className="w-full"
-                  variant="hero"
-                >
-                  <LogIn className="h-4 w-4 mr-2" />
-                  Go to Login Page
-                </Button>
+                {user ? (
+                  <Button 
+                    onClick={() => navigate('/dashboard')} 
+                    className="w-full"
+                    variant="hero"
+                  >
+                    <LogIn className="h-4 w-4 mr-2" />
+                    Go to Dashboard
+                  </Button>
+                ) : (
+                  <Button 
+                    onClick={() => navigate('/auth')} 
+                    className="w-full"
+                    variant="hero"
+                  >
+                    <LogIn className="h-4 w-4 mr-2" />
+                    Go to Login Page
+                  </Button>
+                )}
               </CardContent>
             </Card>
 
@@ -480,13 +487,23 @@ const Index = () => {
               <MapPin className="h-8 w-8 text-primary" />
               <span className="text-xl font-bold">EG Address Registry</span>
             </div>
-            <Button 
-              onClick={() => navigate('/auth')} 
-              variant="outline"
-            >
-              <LogIn className="h-4 w-4 mr-2" />
-              Login
-            </Button>
+            {user ? (
+              <Button 
+                onClick={() => navigate('/dashboard')} 
+                variant="outline"
+              >
+                <LogIn className="h-4 w-4 mr-2" />
+                Dashboard
+              </Button>
+            ) : (
+              <Button 
+                onClick={() => navigate('/auth')} 
+                variant="outline"
+              >
+                <LogIn className="h-4 w-4 mr-2" />
+                Login
+              </Button>
+            )}
           </div>
         </div>
       </header>
@@ -500,7 +517,13 @@ const Index = () => {
               return (
                 <button
                   key={item.id}
-                  onClick={() => setActiveSection(item.id)}
+                  onClick={() => {
+                    if (item.id === 'login') {
+                      user ? navigate('/dashboard') : navigate('/auth');
+                    } else {
+                      setActiveSection(item.id);
+                    }
+                  }}
                   className={`flex items-center gap-2 py-4 px-2 border-b-2 whitespace-nowrap transition-colors ${
                     activeSection === item.id
                       ? 'border-primary text-primary'
