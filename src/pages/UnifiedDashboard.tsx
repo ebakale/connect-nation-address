@@ -28,6 +28,7 @@ import { ProfileEditor } from "@/components/ProfileEditor";
 import { AddressRequestApproval } from "@/components/AddressRequestApproval";
 import DraftManager from "@/components/DraftManager";
 import FieldMap from "@/components/FieldMap";
+import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
 
 interface SearchResult {
   uac: string;
@@ -411,6 +412,28 @@ const UnifiedDashboard = () => {
                 </DialogContent>
               </Dialog>
             </div>
+
+            {/* System Documentation Card */}
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  System Documentation
+                </CardTitle>
+                <CardDescription>
+                  Generate comprehensive documentation for system roles and permissions
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    This document provides detailed explanations of all user roles in the National Digital Addressing Authority system, 
+                    including their permissions, geographic scope, workflow stages, and specific responsibilities.
+                  </p>
+                  <RolesDocumentGenerator />
+                </div>
+              </CardContent>
+            </Card>
           </div>
         )}
 
