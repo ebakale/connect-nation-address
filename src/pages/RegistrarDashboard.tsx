@@ -5,6 +5,7 @@ import { Crown, Globe, FileCheck, BarChart3, Settings, LogOut } from "lucide-rea
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
 import { AddressPublishingQueue } from "@/components/AddressPublishingQueue";
+import { AddressUnpublishingQueue } from "@/components/AddressUnpublishingQueue";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -12,6 +13,7 @@ const RegistrarDashboard = () => {
   const { role, loading, getGeographicScope } = useUserRole();
   const { user, signOut } = useAuth();
   const [publishOpen, setPublishOpen] = useState(false);
+  const [unpublishOpen, setUnpublishOpen] = useState(false);
 
   if (loading) {
     return (
@@ -120,6 +122,36 @@ const RegistrarDashboard = () => {
                     </DialogDescription>
                   </DialogHeader>
                   <AddressPublishingQueue />
+                </DialogContent>
+              </Dialog>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Globe className="h-5 w-5 text-orange-500" />
+                Published Addresses
+              </CardTitle>
+              <CardDescription>
+                Manage addresses in public registry
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Dialog open={unpublishOpen} onOpenChange={setUnpublishOpen}>
+                <DialogTrigger asChild>
+                  <Button className="w-full" variant="outline">
+                    Manage Published
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Published Addresses</DialogTitle>
+                    <DialogDescription>
+                      Remove addresses from the public registry
+                    </DialogDescription>
+                  </DialogHeader>
+                  <AddressUnpublishingQueue />
                 </DialogContent>
               </Dialog>
             </CardContent>

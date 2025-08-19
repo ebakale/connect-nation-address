@@ -20,6 +20,7 @@ import { AddressRequestStatus } from "@/components/AddressRequestStatus";
 import { AddressCaptureForm } from "@/components/AddressCaptureForm";
 import { AddressVerificationQueue } from "@/components/AddressVerificationQueue";
 import { AddressPublishingQueue } from "@/components/AddressPublishingQueue";
+import { AddressUnpublishingQueue } from "@/components/AddressUnpublishingQueue";
 import { ProvinceManagement } from "@/components/ProvinceManagement";
 import { AnalyticsReports } from "@/components/AnalyticsReports";
 import { VerificationTools } from "@/components/VerificationTools";
@@ -106,6 +107,7 @@ const UnifiedDashboard = () => {
   const [profileOpen, setProfileOpen] = useState(false);
   const [verificationQueueOpen, setVerificationQueueOpen] = useState(false);
   const [publishingQueueOpen, setPublishingQueueOpen] = useState(false);
+  const [unpublishingQueueOpen, setUnpublishingQueueOpen] = useState(false);
   const [showProvinceManagement, setShowProvinceManagement] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [showVerificationTools, setShowVerificationTools] = useState(false);
@@ -668,6 +670,36 @@ const UnifiedDashboard = () => {
                         </DialogDescription>
                       </DialogHeader>
                       <AddressPublishingQueue />
+                    </DialogContent>
+                  </Dialog>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Globe className="h-5 w-5 text-orange-500" />
+                    Published Addresses
+                  </CardTitle>
+                  <CardDescription>
+                    Manage addresses in public registry
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Dialog open={unpublishingQueueOpen} onOpenChange={setUnpublishingQueueOpen}>
+                    <DialogTrigger asChild>
+                      <Button className="w-full" variant="outline">
+                        Manage Published
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Published Addresses</DialogTitle>
+                        <DialogDescription>
+                          Remove addresses from the public registry
+                        </DialogDescription>
+                      </DialogHeader>
+                      <AddressUnpublishingQueue />
                     </DialogContent>
                   </Dialog>
                 </CardContent>
