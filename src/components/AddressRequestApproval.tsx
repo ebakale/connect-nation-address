@@ -112,7 +112,7 @@ export const AddressRequestApproval = () => {
     const notes = reviewerNotes[requestId] || '';
 
     // Validate required fields for property ownership claims
-    if (request.claimant_type === 'owner' && approved) {
+    if ((request.claimant_type === 'owner' || request.claimant_type === 'property_owner' || request.claimant_type === 'propertyOwner') && approved) {
       if (!request.proof_of_ownership_url) {
         toast({
           title: "Cannot approve property claim",
@@ -219,7 +219,7 @@ export const AddressRequestApproval = () => {
       ) : (
         requests.map((request) => (
           <Card key={request.id} className={`border-l-4 ${
-            request.claimant_type === 'owner' ? 'border-l-orange-500' : 'border-l-amber-500'
+            request.claimant_type === 'owner' || request.claimant_type === 'property_owner' || request.claimant_type === 'propertyOwner' ? 'border-l-orange-500' : 'border-l-amber-500'
           }`}>
             <CardHeader>
               <div className="flex justify-between items-start">
@@ -244,11 +244,11 @@ export const AddressRequestApproval = () => {
                     {request.status}
                   </Badge>
                   <Badge 
-                    variant={request.claimant_type === 'owner' ? 'default' : 'outline'}
-                    className={request.claimant_type === 'owner' ? 'bg-orange-500' : ''}
+                    variant={(request.claimant_type === 'owner' || request.claimant_type === 'property_owner' || request.claimant_type === 'propertyOwner') ? 'default' : 'outline'}
+                    className={(request.claimant_type === 'owner' || request.claimant_type === 'property_owner' || request.claimant_type === 'propertyOwner') ? 'bg-orange-500' : ''}
                   >
-                    {request.claimant_type === 'owner' && <AlertTriangle className="h-3 w-3 mr-1" />}
-                    {request.claimant_type === 'owner' ? 'Property Owner' : 
+                    {(request.claimant_type === 'owner' || request.claimant_type === 'property_owner' || request.claimant_type === 'propertyOwner') && <AlertTriangle className="h-3 w-3 mr-1" />}
+                    {(request.claimant_type === 'owner' || request.claimant_type === 'property_owner' || request.claimant_type === 'propertyOwner') ? 'Property Owner' : 
                      request.claimant_type === 'representative' ? 'Representative' :
                      request.claimant_type || 'Resident'}
                   </Badge>
@@ -265,8 +265,8 @@ export const AddressRequestApproval = () => {
                 </div>
                 <div>
                   <span className="font-medium">Claimant:</span> 
-                  <span className={`ml-1 ${request.claimant_type === 'owner' ? 'text-orange-600 font-medium' : ''}`}>
-                    {request.claimant_type === 'owner' ? 'Property Owner' : 
+                  <span className={`ml-1 ${(request.claimant_type === 'owner' || request.claimant_type === 'property_owner' || request.claimant_type === 'propertyOwner') ? 'text-orange-600 font-medium' : ''}`}>
+                    {(request.claimant_type === 'owner' || request.claimant_type === 'property_owner' || request.claimant_type === 'propertyOwner') ? 'Property Owner' : 
                      request.claimant_type === 'representative' ? 'Authorized Representative' :
                      request.claimant_type || 'Resident'}
                   </span>
@@ -296,7 +296,7 @@ export const AddressRequestApproval = () => {
               )}
 
               {/* Property Ownership Documentation - Critical for Property Claims */}
-              {request.claimant_type === 'owner' && (
+              {(request.claimant_type === 'owner' || request.claimant_type === 'property_owner' || request.claimant_type === 'propertyOwner') && (
                 <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
                   <div className="flex items-center gap-2 mb-3">
                     <AlertTriangle className="h-5 w-5 text-orange-600" />
@@ -415,14 +415,14 @@ export const AddressRequestApproval = () => {
               <div className="space-y-2">
                 <Label htmlFor={`notes-${request.id}`}>
                   Reviewer Notes 
-                  {request.claimant_type === 'owner' && 
+                  {(request.claimant_type === 'owner' || request.claimant_type === 'property_owner' || request.claimant_type === 'propertyOwner') && 
                     <span className="text-orange-600"> (Required for property claims)</span>
                   }
                 </Label>
                 <Textarea
                   id={`notes-${request.id}`}
                   placeholder={
-                    request.claimant_type === 'owner' 
+                    (request.claimant_type === 'owner' || request.claimant_type === 'property_owner' || request.claimant_type === 'propertyOwner') 
                       ? "Document verification status, ownership validation, concerns..." 
                       : "Add notes about your decision..."
                   }
