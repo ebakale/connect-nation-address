@@ -138,7 +138,17 @@ const translations = {
     uptime: 'Tiempo activo',
     systemDocumentation: 'Documentación del Sistema',
     generateDocumentation: 'Generar documentación integral para roles y permisos del sistema',
-    documentationDescription: 'Este documento proporciona explicaciones detalladas de todos los roles de usuario en el sistema de la Autoridad Nacional de Direccionamiento Digital, incluyendo sus permisos, alcance geográfico, etapas de flujo de trabajo y responsabilidades específicas.'
+    documentationDescription: 'Este documento proporciona explicaciones detalladas de todos los roles de usuario en el sistema de la Autoridad Nacional de Direccionamiento Digital, incluyendo sus permisos, alcance geográfico, etapas de flujo de trabajo y responsabilidades específicas.',
+    
+    // Smart Urban Planning
+    smartUrbanPlanning: 'Planificación Urbana Inteligente',
+    smartUrbanPlanningDesc: 'Habilitar decisiones basadas en datos para el desarrollo urbano, proyectos de infraestructura y asignación estratégica de recursos.',
+    dataDrivenDecisions: 'decisiones basadas en datos',
+    
+    // Data Excellence
+    dataExcellence: 'Excelencia de Datos',
+    dataExcellenceDesc: 'Mantener precisión de estándar de oro a través de protocolos de verificación avanzados y aseguramiento de calidad continuo.',
+    goldStandardAccuracy: 'precisión de estándar de oro'
   },
   en: {
     // Navigation
@@ -267,7 +277,17 @@ const translations = {
     uptime: 'Uptime',
     systemDocumentation: 'System Documentation',
     generateDocumentation: 'Generate comprehensive documentation for system roles and permissions',
-    documentationDescription: 'This document provides detailed explanations of all user roles in the National Digital Addressing Authority system, including their permissions, geographic scope, workflow stages, and specific responsibilities.'
+    documentationDescription: 'This document provides detailed explanations of all user roles in the National Digital Addressing Authority system, including their permissions, geographic scope, workflow stages, and specific responsibilities.',
+    
+    // Smart Urban Planning
+    smartUrbanPlanning: 'Smart Urban Planning',
+    smartUrbanPlanningDesc: 'Enable data-driven decisions for urban development, infrastructure projects, and strategic resource allocation.',
+    dataDrivenDecisions: 'data-driven decisions',
+    
+    // Data Excellence
+    dataExcellence: 'Data Excellence',
+    dataExcellenceDesc: 'Maintain gold-standard accuracy through advanced verification protocols and continuous quality assurance.',
+    goldStandardAccuracy: 'gold-standard accuracy'
   },
   fr: {
     // Navigation
@@ -396,7 +416,17 @@ const translations = {
     uptime: 'Temps de fonctionnement',
     systemDocumentation: 'Documentation Système',
     generateDocumentation: 'Générer une documentation complète pour les rôles et permissions du système',
-    documentationDescription: 'Ce document fournit des explications détaillées de tous les rôles d\'utilisateur dans le système de l\'Autorité Nationale d\'Adressage Numérique, y compris leurs permissions, portée géographique, étapes de flux de travail et responsabilités spécifiques.'
+    documentationDescription: 'Ce document fournit des explications détaillées de tous les rôles d\'utilisateur dans le système de l\'Autorité Nationale d\'Adressage Numérique, y compris leurs permissions, portée géographique, étapes de flux de travail et responsabilités spécifiques.',
+    
+    // Smart Urban Planning
+    smartUrbanPlanning: 'Planification Urbaine Intelligente',
+    smartUrbanPlanningDesc: 'Permettre des décisions basées sur les données pour le développement urbain, les projets d\'infrastructure et l\'allocation stratégique des ressources.',
+    dataDrivenDecisions: 'décisions basées sur les données',
+    
+    // Data Excellence
+    dataExcellence: 'Excellence des Données',
+    dataExcellenceDesc: 'Maintenir une précision de référence grâce à des protocoles de vérification avancés et une assurance qualité continue.',
+    goldStandardAccuracy: 'précision de référence'
   }
 };
 

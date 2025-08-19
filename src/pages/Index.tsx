@@ -302,13 +302,12 @@ const Index = () => {
                         <BarChart3 className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">Smart Urban Planning</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('smartUrbanPlanning')}</h3>
                         <div className="h-1 w-16 bg-gradient-to-r from-destructive to-destructive/60 rounded-full mb-3"></div>
                       </div>
                     </div>
                     <p className="text-muted-foreground leading-relaxed">
-                      Enable <span className="text-destructive font-semibold">data-driven decisions</span> for urban development, 
-                      infrastructure projects, and strategic resource allocation.
+                      {t('smartUrbanPlanningDesc')}
                     </p>
                   </div>
                   
@@ -318,13 +317,12 @@ const Index = () => {
                         <Shield className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">Data Excellence</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('dataExcellence')}</h3>
                         <div className="h-1 w-16 bg-gradient-to-r from-primary to-primary/60 rounded-full mb-3"></div>
                       </div>
                     </div>
                     <p className="text-muted-foreground leading-relaxed">
-                      Maintain <span className="text-primary font-semibold">gold-standard accuracy</span> through 
-                      advanced verification protocols and continuous quality assurance.
+                      {t('dataExcellenceDesc')}
                     </p>
                   </div>
                 </div>
