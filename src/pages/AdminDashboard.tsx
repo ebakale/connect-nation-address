@@ -5,15 +5,18 @@ import { useAuth } from "@/hooks/useAuth";
 import AdminPanel from "@/components/AdminPanel";
 import { Shield, Users, Settings, BarChart3, LogOut, FileText } from "lucide-react";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
+import { useLanguage } from '@/contexts/LanguageContext';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 const AdminDashboard = () => {
   const { role, loading } = useUserRole();
   const { user, signOut } = useAuth();
+  const { t } = useLanguage();
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
+        <div className="text-lg">{t('loading')}</div>
       </div>
     );
   }
@@ -24,58 +27,61 @@ const AdminDashboard = () => {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">Admin Dashboard</h1>
-              <p className="text-muted-foreground">Manage users, roles, and system settings</p>
+              <h1 className="text-3xl font-bold text-foreground mb-2">{t('adminDashboard')}</h1>
+              <p className="text-muted-foreground">{t('manageUsersRoles')}</p>
             </div>
-            <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
-              <LogOut className="h-4 w-4" />
-              Logout
-            </Button>
+            <div className="flex gap-2">
+              <LanguageSwitcher />
+              <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
+                <LogOut className="h-4 w-4" />
+                {t('logout')}
+              </Button>
+            </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('totalUsers')}</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">1,234</div>
-              <p className="text-xs text-muted-foreground">+12% from last month</p>
+              <p className="text-xs text-muted-foreground">{t('fromLastMonth')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Roles</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('activeRoles')}</CardTitle>
               <Shield className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">13</div>
-              <p className="text-xs text-muted-foreground">All system roles</p>
+              <p className="text-xs text-muted-foreground">{t('allSystemRoles')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pending Approvals</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('pendingApprovals')}</CardTitle>
               <Settings className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">8</div>
-              <p className="text-xs text-muted-foreground">Requires attention</p>
+              <p className="text-xs text-muted-foreground">{t('requiresAttention')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">System Health</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('systemHealth')}</CardTitle>
               <BarChart3 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">99.9%</div>
-              <p className="text-xs text-muted-foreground">Uptime</p>
+              <p className="text-xs text-muted-foreground">{t('uptime')}</p>
             </CardContent>
           </Card>
         </div>
@@ -85,17 +91,16 @@ const AdminDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5" />
-                System Documentation
+                {t('systemDocumentation')}
               </CardTitle>
               <CardDescription>
-                Generate comprehensive documentation for system roles and permissions
+                {t('generateDocumentation')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  This document provides detailed explanations of all user roles in the National Digital Addressing Authority system, 
-                  including their permissions, geographic scope, workflow stages, and specific responsibilities.
+                  {t('documentationDescription')}
                 </p>
                 <RolesDocumentGenerator />
               </div>

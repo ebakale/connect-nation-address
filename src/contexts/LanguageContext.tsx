@@ -77,7 +77,68 @@ const translations = {
     // Language names
     spanish: 'Español',
     english: 'English',
-    french: 'Français'
+    french: 'Français',
+    
+    // Authentication
+    secureAccess: 'Acceso Seguro',
+    accessNationalSystem: 'Acceder al sistema nacional de direccionamiento',
+    signIn: 'Iniciar Sesión',
+    signUp: 'Registrarse',
+    emailAddress: 'Dirección de Correo',
+    password: 'Contraseña',
+    fullName: 'Nombre Completo',
+    confirmPassword: 'Confirmar Contraseña',
+    enterEmail: 'Ingrese su correo',
+    enterPassword: 'Ingrese su contraseña',
+    enterFullName: 'Ingrese su nombre completo',
+    createPassword: 'Cree una contraseña',
+    confirmYourPassword: 'Confirme su contraseña',
+    signingIn: 'Iniciando Sesión...',
+    creatingAccount: 'Creando Cuenta...',
+    createAccount: 'Crear Cuenta',
+    governmentEG: 'Gobierno de Guinea Ecuatorial',
+    secureReliableNationwide: 'Seguro • Confiable • Nacional',
+    
+    // 404 Page
+    pageNotFound: 'Página no encontrada',
+    oopsPageNotFound: '¡Ups! Página no encontrada',
+    returnToHome: 'Regresar al Inicio',
+    
+    // Citizen Dashboard
+    citizenPortal: 'Portal Ciudadano',
+    searchVerifiedAddresses: 'Buscar direcciones verificadas y enviar solicitudes',
+    searchAddresses: 'Buscar Direcciones',
+    findVerifiedAddresses: 'Encuentre direcciones verificadas en la base de datos nacional',
+    searchDatabase: 'Buscar Base de Datos',
+    submitRequest: 'Enviar Solicitud',
+    submitNewRequest: 'Enviar una nueva solicitud de registro de dirección',
+    newRequest: 'Nueva Solicitud',
+    addressStatus: 'Estado de Dirección',
+    trackRequestStatus: 'Seguir el estado de sus solicitudes enviadas',
+    checkStatus: 'Verificar Estado',
+    importantInformation: 'Información Importante',
+    allSearchesVerified: '• Todas las búsquedas de direcciones muestran solo direcciones verificadas',
+    personalInfoProtected: '• La información personal está protegida y redactada',
+    coordinatesApproximate: '• Las coordenadas son aproximadas por privacidad',
+    submitRequestsNew: '• Envíe solicitudes para verificación de nuevas direcciones',
+    submitAddressRequest: 'Enviar Solicitud de Dirección',
+    addressRequestStatus: 'Estado de Solicitud de Dirección',
+    logout: 'Cerrar Sesión',
+    
+    // Admin Dashboard
+    adminDashboard: 'Panel de Administrador',
+    manageUsersRoles: 'Gestionar usuarios, roles y configuraciones del sistema',
+    totalUsers: 'Total de Usuarios',
+    fromLastMonth: '+12% desde el mes pasado',
+    activeRoles: 'Roles Activos',
+    allSystemRoles: 'Todos los roles del sistema',
+    pendingApprovals: 'Aprobaciones Pendientes',
+    requiresAttention: 'Requiere atención',
+    systemHealth: 'Salud del Sistema',
+    uptime: 'Tiempo activo',
+    systemDocumentation: 'Documentación del Sistema',
+    generateDocumentation: 'Generar documentación integral para roles y permisos del sistema',
+    documentationDescription: 'Este documento proporciona explicaciones detalladas de todos los roles de usuario en el sistema de la Autoridad Nacional de Direccionamiento Digital, incluyendo sus permisos, alcance geográfico, etapas de flujo de trabajo y responsabilidades específicas.'
   },
   en: {
     // Navigation
@@ -145,7 +206,68 @@ const translations = {
     // Language names
     spanish: 'Español',
     english: 'English',
-    french: 'Français'
+    french: 'Français',
+    
+    // Authentication
+    secureAccess: 'Secure Access',
+    accessNationalSystem: 'Access the national addressing system',
+    signIn: 'Sign In',
+    signUp: 'Sign Up',
+    emailAddress: 'Email Address',
+    password: 'Password',
+    fullName: 'Full Name',
+    confirmPassword: 'Confirm Password',
+    enterEmail: 'Enter your email',
+    enterPassword: 'Enter your password',
+    enterFullName: 'Enter your full name',
+    createPassword: 'Create a password',
+    confirmYourPassword: 'Confirm your password',
+    signingIn: 'Signing In...',
+    creatingAccount: 'Creating Account...',
+    createAccount: 'Create Account',
+    governmentEG: 'Government of Equatorial Guinea',
+    secureReliableNationwide: 'Secure • Reliable • Nationwide',
+    
+    // 404 Page
+    pageNotFound: 'Page not found',
+    oopsPageNotFound: 'Oops! Page not found',
+    returnToHome: 'Return to Home',
+    
+    // Citizen Dashboard
+    citizenPortal: 'Citizen Portal',
+    searchVerifiedAddresses: 'Search verified addresses and submit requests',
+    searchAddresses: 'Search Addresses',
+    findVerifiedAddresses: 'Find verified addresses in the national database',
+    searchDatabase: 'Search Database',
+    submitRequest: 'Submit Request',
+    submitNewRequest: 'Submit a new address registration request',
+    newRequest: 'New Request',
+    addressStatus: 'Address Status',
+    trackRequestStatus: 'Track the status of your submitted requests',
+    checkStatus: 'Check Status',
+    importantInformation: 'Important Information',
+    allSearchesVerified: '• All address searches show verified addresses only',
+    personalInfoProtected: '• Personal information is protected and redacted',
+    coordinatesApproximate: '• Coordinates are approximated for privacy',
+    submitRequestsNew: '• Submit requests for new address verification',
+    submitAddressRequest: 'Submit Address Request',
+    addressRequestStatus: 'Address Request Status',
+    logout: 'Logout',
+    
+    // Admin Dashboard
+    adminDashboard: 'Admin Dashboard',
+    manageUsersRoles: 'Manage users, roles, and system settings',
+    totalUsers: 'Total Users',
+    fromLastMonth: '+12% from last month',
+    activeRoles: 'Active Roles',
+    allSystemRoles: 'All system roles',
+    pendingApprovals: 'Pending Approvals',
+    requiresAttention: 'Requires attention',
+    systemHealth: 'System Health',
+    uptime: 'Uptime',
+    systemDocumentation: 'System Documentation',
+    generateDocumentation: 'Generate comprehensive documentation for system roles and permissions',
+    documentationDescription: 'This document provides detailed explanations of all user roles in the National Digital Addressing Authority system, including their permissions, geographic scope, workflow stages, and specific responsibilities.'
   },
   fr: {
     // Navigation
@@ -213,7 +335,68 @@ const translations = {
     // Language names
     spanish: 'Español',
     english: 'English',
-    french: 'Français'
+    french: 'Français',
+    
+    // Authentication
+    secureAccess: 'Accès Sécurisé',
+    accessNationalSystem: 'Accédez au système national d\'adressage',
+    signIn: 'Se Connecter',
+    signUp: 'S\'inscrire',
+    emailAddress: 'Adresse Email',
+    password: 'Mot de Passe',
+    fullName: 'Nom Complet',
+    confirmPassword: 'Confirmer le Mot de Passe',
+    enterEmail: 'Entrez votre email',
+    enterPassword: 'Entrez votre mot de passe',
+    enterFullName: 'Entrez votre nom complet',
+    createPassword: 'Créez un mot de passe',
+    confirmYourPassword: 'Confirmez votre mot de passe',
+    signingIn: 'Connexion...',
+    creatingAccount: 'Création du Compte...',
+    createAccount: 'Créer un Compte',
+    governmentEG: 'Gouvernement de Guinée Équatoriale',
+    secureReliableNationwide: 'Sécurisé • Fiable • National',
+    
+    // 404 Page
+    pageNotFound: 'Page non trouvée',
+    oopsPageNotFound: 'Oups ! Page non trouvée',
+    returnToHome: 'Retourner à l\'Accueil',
+    
+    // Citizen Dashboard
+    citizenPortal: 'Portail Citoyen',
+    searchVerifiedAddresses: 'Rechercher des adresses vérifiées et soumettre des demandes',
+    searchAddresses: 'Rechercher Adresses',
+    findVerifiedAddresses: 'Trouvez des adresses vérifiées dans la base de données nationale',
+    searchDatabase: 'Rechercher Base de Données',
+    submitRequest: 'Soumettre Demande',
+    submitNewRequest: 'Soumettre une nouvelle demande d\'enregistrement d\'adresse',
+    newRequest: 'Nouvelle Demande',
+    addressStatus: 'Statut d\'Adresse',
+    trackRequestStatus: 'Suivez le statut de vos demandes soumises',
+    checkStatus: 'Vérifier Statut',
+    importantInformation: 'Informations Importantes',
+    allSearchesVerified: '• Toutes les recherches d\'adresses ne montrent que des adresses vérifiées',
+    personalInfoProtected: '• Les informations personnelles sont protégées et rédigées',
+    coordinatesApproximate: '• Les coordonnées sont approximatives pour la confidentialité',
+    submitRequestsNew: '• Soumettez des demandes pour la vérification de nouvelles adresses',
+    submitAddressRequest: 'Soumettre Demande d\'Adresse',
+    addressRequestStatus: 'Statut de Demande d\'Adresse',
+    logout: 'Déconnexion',
+    
+    // Admin Dashboard
+    adminDashboard: 'Tableau de Bord Admin',
+    manageUsersRoles: 'Gérer les utilisateurs, rôles et paramètres système',
+    totalUsers: 'Total Utilisateurs',
+    fromLastMonth: '+12% depuis le mois dernier',
+    activeRoles: 'Rôles Actifs',
+    allSystemRoles: 'Tous les rôles système',
+    pendingApprovals: 'Approbations en Attente',
+    requiresAttention: 'Nécessite attention',
+    systemHealth: 'Santé du Système',
+    uptime: 'Temps de fonctionnement',
+    systemDocumentation: 'Documentation Système',
+    generateDocumentation: 'Générer une documentation complète pour les rôles et permissions du système',
+    documentationDescription: 'Ce document fournit des explications détaillées de tous les rôles d\'utilisateur dans le système de l\'Autorité Nationale d\'Adressage Numérique, y compris leurs permissions, portée géographique, étapes de flux de travail et responsabilités spécifiques.'
   }
 };
 

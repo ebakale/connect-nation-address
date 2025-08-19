@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Globe, Shield, Lock, Mail } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/contexts/LanguageContext';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 const Auth = () => {
   const [loading, setLoading] = useState(false);
@@ -16,6 +18,7 @@ const Auth = () => {
     confirmPassword: ''
   });
   const { signIn, signUp, user } = useAuth();
+  const { t } = useLanguage();
 
   if (user) {
     return <Navigate to="/dashboard" replace />;
@@ -51,14 +54,19 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
+        {/* Language Switcher */}
+        <div className="flex justify-end">
+          <LanguageSwitcher />
+        </div>
+        
         {/* Header */}
         <div className="text-center space-y-4">
-          <div className="mx-auto w-16 h-16 bg-gradient-to-r from-primary to-primary-light rounded-2xl flex items-center justify-center shadow-glow">
+          <div className="mx-auto w-16 h-16 bg-gradient-to-r from-primary to-secondary rounded-2xl flex items-center justify-center shadow-card">
             <Globe className="h-8 w-8 text-white" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-foreground">NDAS</h1>
-            <p className="text-sm text-muted-foreground">National Digital Address System</p>
+            <p className="text-sm text-muted-foreground">{t('nationalAddressRegistry')}</p>
           </div>
         </div>
 
@@ -67,29 +75,29 @@ const Auth = () => {
           <CardHeader className="text-center pb-4">
             <CardTitle className="flex items-center justify-center gap-2">
               <Shield className="h-5 w-5 text-primary" />
-              Secure Access
+              {t('secureAccess')}
             </CardTitle>
             <CardDescription>
-              Access the national addressing system
+              {t('accessNationalSystem')}
             </CardDescription>
           </CardHeader>
           
           <CardContent>
             <Tabs defaultValue="signin" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                <TabsTrigger value="signin">{t('signIn')}</TabsTrigger>
+                <TabsTrigger value="signup">{t('signUp')}</TabsTrigger>
               </TabsList>
               
               <TabsContent value="signin" className="space-y-4 mt-4">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Email Address</label>
+                    <label className="text-sm font-medium">{t('emailAddress')}</label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         type="email"
-                        placeholder="Enter your email"
+                        placeholder={t('enterEmail')}
                         className="pl-10"
                         value={formData.email}
                         onChange={(e) => handleInputChange('email', e.target.value)}
@@ -99,12 +107,12 @@ const Auth = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Password</label>
+                    <label className="text-sm font-medium">{t('password')}</label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         type="password"
-                        placeholder="Enter your password"
+                        placeholder={t('enterPassword')}
                         className="pl-10"
                         value={formData.password}
                         onChange={(e) => handleInputChange('password', e.target.value)}
@@ -117,9 +125,8 @@ const Auth = () => {
                     type="submit" 
                     className="w-full" 
                     disabled={loading}
-                    variant="hero"
                   >
-                    {loading ? 'Signing In...' : 'Sign In'}
+                    {loading ? t('signingIn') : t('signIn')}
                   </Button>
                 </form>
               </TabsContent>
@@ -127,9 +134,9 @@ const Auth = () => {
               <TabsContent value="signup" className="space-y-4 mt-4">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Full Name</label>
+                    <label className="text-sm font-medium">{t('fullName')}</label>
                     <Input
-                      placeholder="Enter your full name"
+                      placeholder={t('enterFullName')}
                       value={formData.fullName}
                       onChange={(e) => handleInputChange('fullName', e.target.value)}
                       required
@@ -137,12 +144,12 @@ const Auth = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Email Address</label>
+                    <label className="text-sm font-medium">{t('emailAddress')}</label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         type="email"
-                        placeholder="Enter your email"
+                        placeholder={t('enterEmail')}
                         className="pl-10"
                         value={formData.email}
                         onChange={(e) => handleInputChange('email', e.target.value)}
@@ -152,12 +159,12 @@ const Auth = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Password</label>
+                    <label className="text-sm font-medium">{t('password')}</label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         type="password"
-                        placeholder="Create a password"
+                        placeholder={t('createPassword')}
                         className="pl-10"
                         value={formData.password}
                         onChange={(e) => handleInputChange('password', e.target.value)}
@@ -167,12 +174,12 @@ const Auth = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Confirm Password</label>
+                    <label className="text-sm font-medium">{t('confirmPassword')}</label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         type="password"
-                        placeholder="Confirm your password"
+                        placeholder={t('confirmYourPassword')}
                         className="pl-10"
                         value={formData.confirmPassword}
                         onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
@@ -185,9 +192,8 @@ const Auth = () => {
                     type="submit" 
                     className="w-full" 
                     disabled={loading || formData.password !== formData.confirmPassword}
-                    variant="hero"
                   >
-                    {loading ? 'Creating Account...' : 'Create Account'}
+                    {loading ? t('creatingAccount') : t('createAccount')}
                   </Button>
                 </form>
               </TabsContent>
@@ -197,8 +203,8 @@ const Auth = () => {
 
         {/* Footer */}
         <div className="text-center text-xs text-muted-foreground">
-          <p>Government of Equatorial Guinea</p>
-          <p>Secure • Reliable • Nationwide</p>
+          <p>{t('governmentEG')}</p>
+          <p>{t('secureReliableNationwide')}</p>
         </div>
       </div>
     </div>

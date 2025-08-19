@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Search, FileText, AlertCircle, Clock, LogOut } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from '@/contexts/LanguageContext';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 import AddressSearch from "@/components/AddressSearch";
 import AddressMapViewer from "@/components/AddressMapViewer";
 import { AddressRequestForm } from "@/components/AddressRequestForm";
@@ -24,6 +26,7 @@ interface SearchResult {
 const CitizenDashboard = () => {
   const { role, loading } = useUserRole();
   const { user, signOut } = useAuth();
+  const { t } = useLanguage();
   const [searchOpen, setSearchOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<SearchResult | null>(null);
   const [showMapView, setShowMapView] = useState(false);
@@ -33,7 +36,7 @@ const CitizenDashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
+        <div className="text-lg">{t('loading')}</div>
       </div>
     );
   }
@@ -61,13 +64,16 @@ const CitizenDashboard = () => {
         <div className="mb-8">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">Citizen Portal</h1>
-              <p className="text-muted-foreground">Search verified addresses and submit requests</p>
+              <h1 className="text-3xl font-bold text-foreground mb-2">{t('citizenPortal')}</h1>
+              <p className="text-muted-foreground">{t('searchVerifiedAddresses')}</p>
             </div>
-            <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
-              <LogOut className="h-4 w-4" />
-              Logout
-            </Button>
+            <div className="flex gap-2">
+              <LanguageSwitcher />
+              <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
+                <LogOut className="h-4 w-4" />
+                {t('logout')}
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -76,24 +82,24 @@ const CitizenDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Search className="h-5 w-5 text-primary" />
-                Search Addresses
+                {t('searchAddresses')}
               </CardTitle>
               <CardDescription>
-                Find verified addresses in the national database
+                {t('findVerifiedAddresses')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
                 <DialogTrigger asChild>
                   <Button className="w-full">
-                    Search Database
+                    {t('searchDatabase')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
                   <DialogHeader>
-                    <DialogTitle>Search Verified Addresses</DialogTitle>
+                    <DialogTitle>{t('searchAddresses')}</DialogTitle>
                     <DialogDescription>
-                      Search for verified addresses in the national database
+                      {t('findVerifiedAddresses')}
                     </DialogDescription>
                   </DialogHeader>
                   <AddressSearch 
@@ -113,16 +119,16 @@ const CitizenDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5 text-primary" />
-                Submit Request
+                {t('submitRequest')}
               </CardTitle>
               <CardDescription>
-                Submit a new address registration request
+                {t('submitNewRequest')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Button className="w-full" onClick={() => setSubmitRequestOpen(true)}>
                 <FileText className="mr-2 h-4 w-4" />
-                New Request
+                {t('newRequest')}
               </Button>
             </CardContent>
           </Card>
@@ -131,16 +137,16 @@ const CitizenDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Clock className="h-5 w-5 text-primary" />
-                Address Status
+                {t('addressStatus')}
               </CardTitle>
               <CardDescription>
-                Track the status of your submitted requests
+                {t('trackRequestStatus')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Button className="w-full" onClick={() => setStatusOpen(true)}>
                 <Clock className="mr-2 h-4 w-4" />
-                Check Status
+                {t('checkStatus')}
               </Button>
             </CardContent>
           </Card>
@@ -150,15 +156,15 @@ const CitizenDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-amber-500" />
-              Important Information
+              {t('importantInformation')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>• All address searches show verified addresses only</li>
-              <li>• Personal information is protected and redacted</li>
-              <li>• Coordinates are approximated for privacy</li>
-              <li>• Submit requests for new address verification</li>
+              <li>{t('allSearchesVerified')}</li>
+              <li>{t('personalInfoProtected')}</li>
+              <li>{t('coordinatesApproximate')}</li>
+              <li>{t('submitRequestsNew')}</li>
             </ul>
           </CardContent>
         </Card>
@@ -167,7 +173,7 @@ const CitizenDashboard = () => {
         <Dialog open={submitRequestOpen} onOpenChange={setSubmitRequestOpen}>
           <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Submit Address Request</DialogTitle>
+              <DialogTitle>{t('submitAddressRequest')}</DialogTitle>
             </DialogHeader>
             <AddressRequestForm 
               onCancel={() => setSubmitRequestOpen(false)}
@@ -180,7 +186,7 @@ const CitizenDashboard = () => {
         <Dialog open={statusOpen} onOpenChange={setStatusOpen}>
           <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Address Request Status</DialogTitle>
+              <DialogTitle>{t('addressRequestStatus')}</DialogTitle>
             </DialogHeader>
             <AddressRequestStatus />
           </DialogContent>
