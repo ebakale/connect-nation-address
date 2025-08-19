@@ -24,13 +24,17 @@ All colors MUST be HSL.
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
     
-    /* Destructive */
-    --destructive: 0 84.2% 60.2%;
+    /* Destructive - Red */
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     
     /* Warning */
     --warning: 45 93% 58%;
     --warning-foreground: 26 83% 14%;
+
+    /* System red */
+    --system-red: 0 84% 60%;
+    --system-red-light: 0 84% 95%;
 
     /* Background colors - White */
     --background: 0 0% 100%;
@@ -53,19 +57,23 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 214 32% 15%;
     
-    /* System colors - Blue and Green */
+    /* System colors - Blue, Green, and Red */
     --system-blue: 214 100% 50%;
     --system-green: 142 76% 36%;
+    --system-red: 0 84% 60%;
     --system-blue-light: 214 100% 95%;
     --system-green-light: 142 76% 90%;
+    --system-red-light: 0 84% 95%;
     
     /* Gradient colors */
     --gradient-primary: linear-gradient(135deg, hsl(214 100% 50%), hsl(142 76% 36%));
+    --gradient-secondary: linear-gradient(135deg, hsl(0 84% 60%), hsl(214 100% 50%));
     --gradient-light: linear-gradient(135deg, hsl(214 100% 95%), hsl(142 76% 90%));
     
     /* Shadow effects */
     --shadow-blue: 0 4px 20px hsl(214 100% 50% / 0.15);
     --shadow-green: 0 4px 20px hsl(142 76% 36% / 0.15);
+    --shadow-red: 0 4px 20px hsl(0 84% 60% / 0.15);
     --shadow-card: 0 2px 10px hsl(214 32% 50% / 0.1);
 
     --radius: 0.75rem;
@@ -116,10 +124,12 @@ All colors MUST be HSL.
     --ring: 214 100% 50%;
 
     --gradient-primary: linear-gradient(135deg, hsl(214 100% 50%), hsl(142 76% 36%));
+    --gradient-secondary: linear-gradient(135deg, hsl(0 84% 60%), hsl(214 100% 50%));
     --gradient-light: linear-gradient(135deg, hsl(214 100% 95%), hsl(142 76% 90%));
     
     --shadow-blue: 0 4px 20px hsl(214 100% 50% / 0.15);
     --shadow-green: 0 4px 20px hsl(142 76% 36% / 0.15);
+    --shadow-red: 0 4px 20px hsl(0 84% 60% / 0.15);
     --shadow-card: 0 2px 10px hsl(214 32% 50% / 0.1);
 
     --sidebar-background: 0 0% 98%;
@@ -189,5 +199,17 @@ All colors MUST be HSL.
 
   .text-system-green {
     color: hsl(var(--system-green));
+  }
+
+  .bg-system-red {
+    background-color: hsl(var(--system-red));
+  }
+
+  .text-system-red {
+    color: hsl(var(--system-red));
+  }
+
+  .shadow-red {
+    box-shadow: var(--shadow-red);
   }
 }
