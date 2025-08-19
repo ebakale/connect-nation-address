@@ -2,13 +2,17 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAddresses } from "@/hooks/useAddresses";
 import { CheckCircle, XCircle, Eye, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { AddressLocationMap } from "@/components/AddressLocationMap";
 
 export const AddressVerificationQueue = () => {
   const { addresses, loading, updateAddressStatus, fetchAddresses } = useAddresses();
   const { toast } = useToast();
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [mapDialogOpen, setMapDialogOpen] = useState(false);
 
   useEffect(() => {
     console.log('AddressVerificationQueue: Fetching addresses...');
@@ -51,6 +55,11 @@ export const AddressVerificationQueue = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleViewOnMap = (address) => {
+    setSelectedAddress(address);
+    setMapDialogOpen(true);
   };
 
   if (loading) {
@@ -103,7 +112,7 @@ export const AddressVerificationQueue = () => {
                 <p className="text-sm text-muted-foreground mb-4">{address.description}</p>
               )}
 
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 <Button
                   size="sm"
                   onClick={() => handleVerify(address.id, true)}
@@ -130,11 +139,46 @@ export const AddressVerificationQueue = () => {
                   <Eye className="h-4 w-4" />
                   {address.public ? "Make Private" : "Make Public"}
                 </Button>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => handleViewOnMap(address)}
+                  className="flex items-center gap-1"
+                >
+                  <MapPin className="h-4 w-4" />
+                  View on Map
+                </Button>
               </div>
             </CardContent>
           </Card>
         ))
       )}
+
+      {/* Map Dialog */}
+      <Dialog open={mapDialogOpen} onOpenChange={setMapDialogOpen}>
+        <DialogContent className="max-w-4xl w-full h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>
+              Address Location: {selectedAddress?.uac}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedAddress && (
+            <AddressLocationMap
+              latitude={Number(selectedAddress.latitude)}
+              longitude={Number(selectedAddress.longitude)}
+              address={{
+                street: selectedAddress.street,
+                city: selectedAddress.city,
+                region: selectedAddress.region,
+                country: selectedAddress.country,
+                building: selectedAddress.building
+              }}
+              onClose={() => setMapDialogOpen(false)}
+              allowResize={false}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
