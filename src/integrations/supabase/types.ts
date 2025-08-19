@@ -19,6 +19,7 @@ export type Database = {
           address_type: string
           building: string | null
           city: string
+          claimant_type: string
           country: string
           created_at: string
           description: string | null
@@ -27,6 +28,7 @@ export type Database = {
           latitude: number | null
           longitude: number | null
           photo_url: string | null
+          proof_of_ownership_url: string | null
           region: string
           reviewed_at: string | null
           reviewed_by: string | null
@@ -40,6 +42,7 @@ export type Database = {
           address_type?: string
           building?: string | null
           city: string
+          claimant_type?: string
           country: string
           created_at?: string
           description?: string | null
@@ -48,6 +51,7 @@ export type Database = {
           latitude?: number | null
           longitude?: number | null
           photo_url?: string | null
+          proof_of_ownership_url?: string | null
           region: string
           reviewed_at?: string | null
           reviewed_by?: string | null
@@ -61,6 +65,7 @@ export type Database = {
           address_type?: string
           building?: string | null
           city?: string
+          claimant_type?: string
           country?: string
           created_at?: string
           description?: string | null
@@ -69,6 +74,7 @@ export type Database = {
           latitude?: number | null
           longitude?: number | null
           photo_url?: string | null
+          proof_of_ownership_url?: string | null
           region?: string
           reviewed_at?: string | null
           reviewed_by?: string | null
