@@ -1,0 +1,31 @@
+INSERT INTO address_requests (
+  user_id,
+  country,
+  region,  
+  city,
+  street,
+  building,
+  latitude,
+  longitude,
+  address_type,
+  description,
+  justification,
+  claimant_type,
+  proof_of_ownership_url,
+  status
+) VALUES (
+  'cda2bc97-76f0-4284-bb9d-9a803b5572da',
+  'Equatorial Guinea',
+  'Litoral',
+  'Bata',
+  'Calle de la Independencia',
+  'Edificio Comercial San Miguel',
+  1.8640,
+  9.7677,
+  'commercial',
+  'Commercial building in central Bata with retail spaces on ground floor and offices above',
+  'I own this commercial property and need a verified address for business registration and tax purposes. The building houses multiple businesses and requires proper addressing for postal services.',
+  'property_owner',
+  'https://calegudnfdbeznyiebbh.supabase.co/storage/v1/object/public/address-photos/dummy-ownership-deed.pdf',
+  'pending'
+)
