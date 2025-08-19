@@ -30,6 +30,8 @@ import {
   Calendar
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { Address } from "@/hooks/useAddresses";
 
 interface AddressStats {
   total: number;
@@ -68,33 +70,11 @@ export const AnalyticsReports = () => {
     public: 0,
     private: 0
   });
+  const [regionData, setRegionData] = useState<RegionStats[]>([]);
+  const [typeData, setTypeData] = useState<TypeStats[]>([]);
+  const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesData[]>([]);
+  const [addresses, setAddresses] = useState<Address[]>([]);
   const { toast } = useToast();
-
-  // Data based on Equatorial Guinea sample addresses
-  const mockRegionData: RegionStats[] = [
-    { region: "Bioko Norte", addresses: 6, verified: 5, pending: 1 },
-    { region: "Litoral", addresses: 7, verified: 5, pending: 2 },
-    { region: "Bioko Sur", addresses: 3, verified: 2, pending: 1 },
-    { region: "Centro Sur", addresses: 3, verified: 2, pending: 1 },
-    { region: "Kié-Ntem", addresses: 4, verified: 3, pending: 1 },
-    { region: "Wele-Nzas", addresses: 3, verified: 2, pending: 1 },
-    { region: "Annobón", addresses: 3, verified: 2, pending: 1 }
-  ];
-
-  const mockTypeData: TypeStats[] = [
-    { type: "Commercial", count: 8, percentage: 28 },
-    { type: "Public", count: 12, percentage: 41 },
-    { type: "Residential", count: 4, percentage: 14 },
-    { type: "Industrial", count: 5, percentage: 17 }
-  ];
-
-  const mockTimeSeriesData: TimeSeriesData[] = [
-    { date: "2024-01-01", addresses: 2, verified: 2 },
-    { date: "2024-01-08", addresses: 5, verified: 4 },
-    { date: "2024-01-15", addresses: 8, verified: 6 },
-    { date: "2024-01-22", addresses: 12, verified: 9 },
-    { date: "2024-01-29", addresses: 15, verified: 12 }
-  ];
 
   // Specific colors for each address type using semantic design tokens
   const typeColorMap: Record<string, string> = {
@@ -107,58 +87,171 @@ export const AnalyticsReports = () => {
   const getColorForType = (type: string) => typeColorMap[type] || "hsl(var(--muted))";
 
   useEffect(() => {
-    fetchAnalytics();
-  }, [selectedPeriod]);
+    fetchRealAddresses();
+  }, []);
 
-  const fetchAnalytics = async () => {
+  useEffect(() => {
+    if (addresses.length > 0) {
+      processAnalyticsData();
+    }
+  }, [selectedPeriod, addresses]);
+
+  const fetchRealAddresses = async () => {
     setLoading(true);
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 500));
+      const { data: addressData, error } = await supabase
+        .from('addresses')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
       
-      // Mock data that varies based on selected period
-      const multiplier = selectedPeriod === '7d' ? 0.3 : selectedPeriod === '30d' ? 1 : selectedPeriod === '90d' ? 2.5 : 4;
-      
-      const totalAddresses = Math.floor(mockRegionData.reduce((sum, region) => sum + region.addresses, 0) * multiplier);
-      const totalVerified = Math.floor(mockRegionData.reduce((sum, region) => sum + region.verified, 0) * multiplier);
-      const totalPending = Math.floor(mockRegionData.reduce((sum, region) => sum + region.pending, 0) * multiplier);
-      
-      setAddressStats({
-        total: totalAddresses,
-        verified: totalVerified,
-        pending: totalPending,
-        public: Math.floor(totalVerified * 0.7),
-        private: Math.floor(totalVerified * 0.3)
-      });
+      setAddresses(addressData || []);
     } catch (error) {
-      console.error("Error fetching analytics:", error);
+      console.error("Error fetching addresses:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch address data",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
   };
 
+  const getDateCutoff = () => {
+    const now = new Date();
+    switch (selectedPeriod) {
+      case '7d':
+        return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      case '30d':
+        return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      case '90d':
+        return new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+      case '1y':
+        return new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+      default:
+        return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    }
+  };
+
+  const processAnalyticsData = () => {
+    const cutoffDate = getDateCutoff();
+    const filteredAddresses = addresses.filter(addr => 
+      new Date(addr.created_at) >= cutoffDate
+    );
+
+    // Calculate basic stats
+    const totalAddresses = filteredAddresses.length;
+    const verifiedAddresses = filteredAddresses.filter(addr => addr.verified).length;
+    const pendingAddresses = totalAddresses - verifiedAddresses;
+    const publicAddresses = filteredAddresses.filter(addr => addr.public).length;
+    const privateAddresses = verifiedAddresses - publicAddresses;
+
+    setAddressStats({
+      total: totalAddresses,
+      verified: verifiedAddresses,
+      pending: pendingAddresses,
+      public: publicAddresses,
+      private: privateAddresses
+    });
+
+    // Process regional data
+    const regionStats: { [key: string]: RegionStats } = {};
+    filteredAddresses.forEach(addr => {
+      if (!regionStats[addr.region]) {
+        regionStats[addr.region] = {
+          region: addr.region,
+          addresses: 0,
+          verified: 0,
+          pending: 0
+        };
+      }
+      regionStats[addr.region].addresses++;
+      if (addr.verified) {
+        regionStats[addr.region].verified++;
+      } else {
+        regionStats[addr.region].pending++;
+      }
+    });
+    setRegionData(Object.values(regionStats));
+
+    // Process type data
+    const typeStats: { [key: string]: TypeStats } = {};
+    filteredAddresses.forEach(addr => {
+      if (!typeStats[addr.address_type]) {
+        typeStats[addr.address_type] = {
+          type: addr.address_type,
+          count: 0,
+          percentage: 0
+        };
+      }
+      typeStats[addr.address_type].count++;
+    });
+    
+    // Calculate percentages
+    Object.values(typeStats).forEach(type => {
+      type.percentage = Math.round((type.count / totalAddresses) * 100);
+    });
+    setTypeData(Object.values(typeStats));
+
+    // Process time series data
+    const timeGroups: { [key: string]: { addresses: number; verified: number } } = {};
+    const groupBy = selectedPeriod === '7d' ? 'day' : selectedPeriod === '30d' ? 'week' : 'month';
+    
+    filteredAddresses.forEach(addr => {
+      const date = new Date(addr.created_at);
+      let groupKey: string;
+      
+      if (groupBy === 'day') {
+        groupKey = date.toISOString().split('T')[0];
+      } else if (groupBy === 'week') {
+        const weekStart = new Date(date.setDate(date.getDate() - date.getDay()));
+        groupKey = weekStart.toISOString().split('T')[0];
+      } else {
+        groupKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      }
+      
+      if (!timeGroups[groupKey]) {
+        timeGroups[groupKey] = { addresses: 0, verified: 0 };
+      }
+      timeGroups[groupKey].addresses++;
+      if (addr.verified) {
+        timeGroups[groupKey].verified++;
+      }
+    });
+
+    const timeSeriesArray = Object.entries(timeGroups)
+      .map(([date, stats]) => ({ date, ...stats }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+    
+    setTimeSeriesData(timeSeriesArray);
+  };
+
   const exportReport = (type: string) => {
     try {
-      // Create CSV content
-      const csvContent = generateCSVReport();
+      const csvContent = generateEnhancedCSVReport();
       
-      // Create blob and download
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
       
+      const periodLabel = selectedPeriod === '7d' ? '7-days' : 
+                         selectedPeriod === '30d' ? '30-days' : 
+                         selectedPeriod === '90d' ? '90-days' : 'yearly';
+      
       link.setAttribute('href', url);
-      link.setAttribute('download', `address-analytics-${selectedPeriod}-${new Date().toISOString().split('T')[0]}.csv`);
+      link.setAttribute('download', `address-analytics-report-${periodLabel}-${new Date().toISOString().split('T')[0]}.csv`);
       link.style.visibility = 'hidden';
       
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      URL.revokeObjectURL(url);
       
-      // Show success message
       toast({
         title: "Export Successful",
-        description: `${type} report exported successfully for ${selectedPeriod}`,
+        description: `Analytics report exported for ${periodLabel} period`,
       });
     } catch (error) {
       toast({
@@ -169,31 +262,66 @@ export const AnalyticsReports = () => {
     }
   };
 
-  const generateCSVReport = () => {
-    const headers = ['Metric', 'Value', 'Period'];
-    const rows = [
-      ['Total Addresses', addressStats.total.toString(), selectedPeriod],
-      ['Verified Addresses', addressStats.verified.toString(), selectedPeriod],
-      ['Pending Addresses', addressStats.pending.toString(), selectedPeriod],
-      ['Public Addresses', addressStats.public.toString(), selectedPeriod],
-      ['Private Addresses', addressStats.private.toString(), selectedPeriod],
+  const generateEnhancedCSVReport = () => {
+    const periodLabel = selectedPeriod === '7d' ? 'Last 7 Days' : 
+                       selectedPeriod === '30d' ? 'Last 30 Days' : 
+                       selectedPeriod === '90d' ? 'Last 90 Days' : 'Last Year';
+    
+    const exportDate = new Date().toLocaleDateString();
+    const csvRows = [
+      // Header section
+      ['Address Analytics Report'],
+      [`Generated on: ${exportDate}`],
+      [`Period: ${periodLabel}`],
       [''],
-      ['Regional Breakdown', '', ''],
-      ...mockRegionData.map(region => [
+      
+      // Summary statistics
+      ['SUMMARY STATISTICS'],
+      ['Metric', 'Count', 'Percentage'],
+      ['Total Addresses', addressStats.total.toString(), '100%'],
+      ['Verified Addresses', addressStats.verified.toString(), `${Math.round((addressStats.verified/addressStats.total)*100)}%`],
+      ['Pending Verification', addressStats.pending.toString(), `${Math.round((addressStats.pending/addressStats.total)*100)}%`],
+      ['Public Addresses', addressStats.public.toString(), `${Math.round((addressStats.public/addressStats.total)*100)}%`],
+      ['Private Addresses', addressStats.private.toString(), `${Math.round((addressStats.private/addressStats.total)*100)}%`],
+      [''],
+      
+      // Regional breakdown
+      ['REGIONAL BREAKDOWN'],
+      ['Region', 'Total Addresses', 'Verified', 'Pending', 'Verification Rate'],
+      ...regionData.map(region => [
         region.region,
-        `${region.addresses} total, ${region.verified} verified, ${region.pending} pending`,
-        selectedPeriod
+        region.addresses.toString(),
+        region.verified.toString(),
+        region.pending.toString(),
+        `${Math.round((region.verified/region.addresses)*100)}%`
       ]),
       [''],
-      ['Address Types', '', ''],
-      ...mockTypeData.map(type => [
+      
+      // Address types
+      ['ADDRESS TYPES'],
+      ['Type', 'Count', 'Percentage of Total'],
+      ...typeData.map(type => [
         type.type,
-        `${type.count} (${type.percentage}%)`,
-        selectedPeriod
+        type.count.toString(),
+        `${type.percentage}%`
+      ]),
+      [''],
+      
+      // Time series data
+      ['REGISTRATION TRENDS'],
+      ['Date/Period', 'New Addresses', 'Verified Addresses'],
+      ...timeSeriesData.map(data => [
+        data.date,
+        data.addresses.toString(),
+        data.verified.toString()
       ])
     ];
     
-    return [headers, ...rows].map(row => row.join(',')).join('\n');
+    return csvRows.map(row => 
+      row.map(cell => 
+        typeof cell === 'string' && cell.includes(',') ? `"${cell}"` : cell
+      ).join(',')
+    ).join('\n');
   };
 
   if (loading) {
@@ -325,17 +453,17 @@ export const AnalyticsReports = () => {
                 <CardDescription>Total and verified addresses per region</CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={mockRegionData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="region" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="addresses" fill="hsl(var(--primary))" name="Total" />
-                    <Bar dataKey="verified" fill="hsl(var(--secondary))" name="Verified" />
-                  </BarChart>
-                </ResponsiveContainer>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={regionData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="region" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="addresses" fill="hsl(var(--primary))" name="Total" />
+                  <Bar dataKey="verified" fill="hsl(var(--success))" name="Verified" />
+                </BarChart>
+              </ResponsiveContainer>
               </CardContent>
             </Card>
             
@@ -346,7 +474,7 @@ export const AnalyticsReports = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {mockRegionData.map((region, index) => (
+                  {regionData.map((region, index) => (
                     <div key={region.region} className="flex items-center justify-between p-3 border rounded-lg">
                       <div>
                         <h4 className="font-medium">{region.region}</h4>
@@ -356,7 +484,7 @@ export const AnalyticsReports = () => {
                       </div>
                       <div className="text-right">
                         <Badge variant="default">
-                          {Math.round((region.verified / region.addresses) * 100)}% verified
+                          {region.addresses > 0 ? Math.round((region.verified / region.addresses) * 100) : 0}% verified
                         </Badge>
                         <p className="text-xs text-muted-foreground mt-1">
                           {region.pending} pending
@@ -364,6 +492,11 @@ export const AnalyticsReports = () => {
                       </div>
                     </div>
                   ))}
+                  {regionData.length === 0 && (
+                    <p className="text-center text-muted-foreground py-4">
+                      No data available for selected period
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -378,24 +511,24 @@ export const AnalyticsReports = () => {
                 <CardDescription>Breakdown by address type</CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={mockTypeData}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="count"
-                      label={({ type, percentage }) => `${type}: ${percentage}%`}
-                    >
-                      {mockTypeData.map((entry) => (
-                        <Cell key={`cell-${entry.type}`} fill={getColorForType(entry.type)} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={typeData}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="count"
+                    label={({ type, percentage }) => `${type}: ${percentage}%`}
+                  >
+                    {typeData.map((entry) => (
+                      <Cell key={`cell-${entry.type}`} fill={getColorForType(entry.type)} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
               </CardContent>
             </Card>
             
@@ -406,7 +539,7 @@ export const AnalyticsReports = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {mockTypeData.map((type, index) => (
+                  {typeData.map((type, index) => (
                     <div key={type.type} className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div 
@@ -421,6 +554,11 @@ export const AnalyticsReports = () => {
                       </div>
                     </div>
                   ))}
+                  {typeData.length === 0 && (
+                    <p className="text-center text-muted-foreground py-4">
+                      No data available for selected period
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -434,29 +572,29 @@ export const AnalyticsReports = () => {
               <CardDescription>Address registrations and verifications over time</CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={mockTimeSeriesData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line 
-                    type="monotone" 
-                    dataKey="addresses" 
-                    stroke="hsl(var(--primary))" 
-                    strokeWidth={2}
-                    name="New Addresses"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="verified" 
-                    stroke="hsl(var(--secondary))" 
-                    strokeWidth={2}
-                    name="Verifications"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={timeSeriesData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line 
+                  type="monotone" 
+                  dataKey="addresses" 
+                  stroke="hsl(var(--primary))" 
+                  strokeWidth={2}
+                  name="New Addresses"
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="verified" 
+                  stroke="hsl(var(--success))" 
+                  strokeWidth={2}
+                  name="Verifications"
+                />
+              </LineChart>
+            </ResponsiveContainer>
             </CardContent>
           </Card>
         </TabsContent>
