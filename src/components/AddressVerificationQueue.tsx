@@ -17,18 +17,23 @@ export const AddressVerificationQueue = () => {
   const [addressRequests, setAddressRequests] = useState<{[key: string]: any}>({});
 
   useEffect(() => {
-    console.log('AddressVerificationQueue: Fetching addresses...');
+    console.log('AddressVerificationQueue: Component mounted, fetching addresses...');
     fetchAddresses();
+  }, [fetchAddresses]);
+
+  useEffect(() => {
+    console.log('AddressVerificationQueue: addresses changed, length:', addresses.length);
     
     // Fetch associated address requests to get claimant type and proof documents
     const fetchAddressRequests = async () => {
-      if (addresses.length === 0) return;
-      
       try {
+        console.log('Fetching address requests...');
         const { data: requests, error } = await supabase
           .from('address_requests')
           .select('id, claimant_type, proof_of_ownership_url, user_id, street, city')
           .eq('status', 'approved');
+
+        console.log('Address requests fetched:', requests?.length || 0, 'requests');
 
         if (!error && requests) {
           const requestMap = requests.reduce((acc, req) => {
@@ -36,6 +41,7 @@ export const AddressVerificationQueue = () => {
             acc[key] = req;
             return acc;
           }, {});
+          console.log('Request map created with', Object.keys(requestMap).length, 'entries');
           setAddressRequests(requestMap);
         }
       } catch (error) {
@@ -44,7 +50,7 @@ export const AddressVerificationQueue = () => {
     };
 
     fetchAddressRequests();
-  }, [fetchAddresses, addresses]);
+  }, [addresses]); // Only depend on addresses, not fetchAddresses
 
   const pendingAddresses = addresses.filter(addr => !addr.verified);
 
@@ -95,7 +101,10 @@ export const AddressVerificationQueue = () => {
     setMapDialogOpen(true);
   };
 
+  console.log('AddressVerificationQueue: Rendering with', addresses.length, 'addresses,', pendingAddresses.length, 'pending');
+
   if (loading) {
+    console.log('AddressVerificationQueue: Still loading...');
     return <div className="p-4">Loading verification queue...</div>;
   }
 
