@@ -454,11 +454,13 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
           <Button 
             onClick={getDirections}
             disabled={originType === 'uac' && !originAddress}
-            className="w-full flex items-center gap-2"
-            variant="hero"
+            className="w-full flex items-center justify-center gap-2 h-12"
+            size="lg"
           >
-            <Navigation className="h-4 w-4" />
-            {originType === 'current' ? 'Get Directions from Current Location' : 'Get Directions from Selected Address'}
+            <Navigation className="h-5 w-5" />
+            <span className="font-semibold">
+              Navigate to {destination.uac}
+            </span>
           </Button>
 
           <div className="grid grid-cols-2 gap-2">
