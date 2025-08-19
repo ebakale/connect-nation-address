@@ -3,6 +3,8 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from "sonner";
 
+const AUTH_TOKEN_KEY = 'sb-calegudnfdbeznyiebbh-auth-token';
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
@@ -36,17 +38,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
     });
 
-    // Auto-logout when window is closed or page is refreshed
-    const handleBeforeUnload = async () => {
-      if (session && window.location.pathname.includes('/dashboard')) {
-        await supabase.auth.signOut({ scope: 'local' });
+    // Ensure session is cleared when window is closed or page is hidden on dashboard
+    const handleBeforeUnload = () => {
+      if (window.location.pathname.includes('/dashboard')) {
+        try { localStorage.removeItem(AUTH_TOKEN_KEY); } catch {}
       }
     };
 
-    // Auto-logout when navigating away from dashboard
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'hidden' && session && window.location.pathname.includes('/dashboard')) {
-        supabase.auth.signOut({ scope: 'local' });
+      if (document.visibilityState === 'hidden' && window.location.pathname.includes('/dashboard')) {
+        try { localStorage.removeItem(AUTH_TOKEN_KEY); } catch {}
       }
     };
 
@@ -58,7 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [session]);
+  }, []);
 
   const signUp = async (email: string, password: string, fullName?: string) => {
     const redirectUrl = `${window.location.origin}/`;
@@ -95,22 +96,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signOut = async () => {
-    // Gracefully handle cases where there is no active session
-    if (!session) {
+    try {
+      // Revoke refresh token and clear current session
+      await supabase.auth.signOut({ scope: 'global' });
+    } catch (error: any) {
+      if (!/auth session missing/i.test(error?.message) && !/session_not_found/i.test(error?.message)) {
+        toast.error("Sign Out Error: " + (error?.message ?? 'Unknown error'));
+      }
+    } finally {
+      // Hard clear local token to prevent auto re-login
+      try { localStorage.removeItem(AUTH_TOKEN_KEY); } catch {}
       window.location.href = '/';
-      return;
     }
-
-    // Prefer local sign-out to avoid server errors when tokens are missing/expired
-    const { error } = await supabase.auth.signOut({ scope: 'local' });
-
-    // Ignore "Auth session missing" or "session_not_found" as we're already signed out locally
-    if (error && !/auth session missing/i.test(error.message) && !/session_not_found/i.test(error.message)) {
-      toast.error("Sign Out Error: " + error.message);
-    }
-
-    // Redirect to main page after logout (or if already signed out)
-    window.location.href = '/';
   };
   return (
     <AuthContext.Provider value={{
