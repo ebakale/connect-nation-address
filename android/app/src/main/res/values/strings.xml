@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">connect-nation-address</string>
+    <string name="title_activity_main">connect-nation-address</string>
+    <string name="package_name">com.lovable.connectnationaddress</string>
+    <string name="custom_url_scheme">com.lovable.connectnationaddress</string>
+</resources>
