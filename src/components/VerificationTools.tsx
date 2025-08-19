@@ -6,10 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, Search, Image, MessageSquare, Clock, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { MapPin, Search, Image, MessageSquare, Clock, CheckCircle2, AlertTriangle, Map } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { AddressLocationMap } from "@/components/AddressLocationMap";
 
 interface VerificationRecord {
   id: string;
@@ -45,6 +47,7 @@ export const VerificationTools = () => {
   const [searchResults, setSearchResults] = useState<AddressDetails[]>([]);
   const [pendingAddresses, setPendingAddresses] = useState<AddressDetails[]>([]);
   const [loading, setLoading] = useState(false);
+  const [mapDialogOpen, setMapDialogOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -349,7 +352,7 @@ export const VerificationTools = () => {
                     )}
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap">
                     <Button
                       onClick={async () => {
                         try {
@@ -454,9 +457,18 @@ export const VerificationTools = () => {
                           });
                         }
                       }}
-                      className="w-full"
+                      className="flex-1"
                     >
                       Make {selectedAddress.public ? 'Private' : 'Public'}
+                    </Button>
+                    
+                    <Button
+                      variant="secondary"
+                      onClick={() => setMapDialogOpen(true)}
+                      className="flex-1"
+                    >
+                      <Map className="h-4 w-4 mr-2" />
+                      View on Map
                     </Button>
                   </div>
                 </>
@@ -621,6 +633,31 @@ export const VerificationTools = () => {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Map Dialog */}
+      <Dialog open={mapDialogOpen} onOpenChange={setMapDialogOpen}>
+        <DialogContent className="max-w-4xl w-full h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>
+              Address Verification - Location View
+            </DialogTitle>
+          </DialogHeader>
+          {selectedAddress && (
+            <AddressLocationMap
+              latitude={selectedAddress.latitude}
+              longitude={selectedAddress.longitude}
+              address={{
+                street: selectedAddress.street,
+                city: selectedAddress.city,
+                region: selectedAddress.region,
+                country: selectedAddress.country,
+              }}
+              onClose={() => setMapDialogOpen(false)}
+              allowResize={false}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
