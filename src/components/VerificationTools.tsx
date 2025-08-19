@@ -56,14 +56,13 @@ export const VerificationTools = () => {
     loadPendingAddresses();
   }, []);
 
-  // Load addresses that need verification
+  // Load all addresses in the system
   const loadPendingAddresses = async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
         .from('addresses')
         .select('*')
-        .eq('verified', false)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -177,10 +176,10 @@ export const VerificationTools = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Pending Reviews</CardTitle>
+            <CardTitle className="text-sm">Total Addresses</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-amber-600">
+            <div className="text-2xl font-bold text-blue-600">
               {pendingAddresses.length}
             </div>
           </CardContent>
@@ -211,7 +210,7 @@ export const VerificationTools = () => {
 
       <Tabs defaultValue="search" className="w-full">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="search">Pending Verification</TabsTrigger>
+          <TabsTrigger value="search">All Addresses</TabsTrigger>
           <TabsTrigger value="individual">Individual Verify</TabsTrigger>
           <TabsTrigger value="verify">Verification Tools</TabsTrigger>
           <TabsTrigger value="quality">Quality Control</TabsTrigger>
@@ -222,18 +221,18 @@ export const VerificationTools = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Search className="h-5 w-5" />
-                Addresses Pending Verification
+                All Addresses in System
               </CardTitle>
               <CardDescription>
-                Review and select addresses that need verification
+                Browse and select any address in the system for verification or management
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {loading ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                  <p className="text-muted-foreground">Loading pending addresses...</p>
-                </div>
+                  <div className="text-center py-8">
+                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                   <p className="text-muted-foreground">Loading addresses...</p>
+                 </div>
               ) : pendingAddresses.length > 0 ? (
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {pendingAddresses.map((address) => (
@@ -260,8 +259,8 @@ export const VerificationTools = () => {
                             </div>
                           </div>
                           <div className="flex gap-1">
-                            <Badge variant="secondary">
-                              Pending Verification
+                            <Badge variant={address.verified ? "default" : "secondary"}>
+                              {address.verified ? "Verified" : "Pending Verification"}
                             </Badge>
                             <Badge variant={address.public ? "default" : "outline"}>
                               {address.public ? "Public" : "Private"}
@@ -275,8 +274,8 @@ export const VerificationTools = () => {
               ) : (
                 <div className="text-center text-muted-foreground py-8">
                   <CheckCircle2 className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>No addresses pending verification</p>
-                  <p className="text-sm">All addresses have been verified!</p>
+                  <p>No addresses found</p>
+                  <p className="text-sm">No addresses exist in the system yet.</p>
                 </div>
               )}
               
