@@ -6,6 +6,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
 import { AddressVerificationQueue } from "@/components/AddressVerificationQueue";
 import { VerificationTools } from "@/components/VerificationTools";
+import { AddressRequestApproval } from "@/components/AddressRequestApproval";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -17,6 +18,7 @@ const VerifierDashboard = () => {
   const { t } = useLanguage();
   const [queueOpen, setQueueOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
+  const [requestsOpen, setRequestsOpen] = useState(false);
 
   if (loading) {
     return (
@@ -102,15 +104,45 @@ const VerifierDashboard = () => {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-blue-500" />
+                Address Requests
+              </CardTitle>
+              <CardDescription>
+                Approve or reject citizen address requests
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Dialog open={requestsOpen} onOpenChange={setRequestsOpen}>
+                <DialogTrigger asChild>
+                  <Button className="w-full">
+                    Review Requests
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Address Request Approval</DialogTitle>
+                    <DialogDescription>
+                      Review and approve pending address requests from citizens
+                    </DialogDescription>
+                  </DialogHeader>
+                  <AddressRequestApproval />
+                </DialogContent>
+              </Dialog>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5 text-amber-500" />
-                Review Queue
+                Verification Queue
               </CardTitle>
               <CardDescription>
-                Process pending address submissions
+                Verify approved addresses
               </CardDescription>
             </CardHeader>
             <CardContent>
