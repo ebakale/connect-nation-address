@@ -3,14 +3,14 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, Zap, Globe, Lock } from 'lucide-react';
+import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
-// Import futuristic images
-import heroBg from '@/assets/hero-bg.jpg';
-import featureSearch from '@/assets/feature-search.jpg';
-import featureRegistration from '@/assets/feature-registration.jpg';
-import featureVerification from '@/assets/feature-verification.jpg';
+// Import professional images
+import heroImage from '@/assets/hero-address-system.jpg';
+import featureSearch from '@/assets/feature-address-search.jpg';
+import featureRegistration from '@/assets/feature-address-registration.jpg';
+import featureVerification from '@/assets/feature-address-verification.jpg';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('overview');
@@ -42,51 +42,51 @@ const Index = () => {
     switch (activeSection) {
       case 'overview':
         return (
-          <div className="space-y-20">
+          <div className="space-y-16">
             {/* Hero Section */}
             <div 
-              className="relative min-h-[80vh] flex items-center justify-center text-center bg-cover bg-center rounded-3xl overflow-hidden"
-              style={{ backgroundImage: `url(${heroBg})` }}
+              className="relative min-h-[70vh] flex items-center justify-center text-center bg-cover bg-center rounded-2xl overflow-hidden"
+              style={{ backgroundImage: `url(${heroImage})` }}
             >
-              {/* Dark overlay for text readability */}
-              <div className="absolute inset-0 bg-black/60"></div>
+              {/* Light overlay for text readability */}
+              <div className="absolute inset-0 bg-white/20 backdrop-blur-sm"></div>
               
-              <div className="relative z-10 space-y-8 px-6 max-w-6xl">
+              <div className="relative z-10 space-y-8 px-6 max-w-5xl">
                 <div className="space-y-6 animate-fade-in">
-                  <Badge variant="secondary" className="px-6 py-3 text-lg glass glow-pulse">
-                    <Zap className="h-5 w-5 mr-2" />
-                    Next-Gen Address System
+                  <Badge className="px-6 py-2 text-base bg-system-blue text-white">
+                    <MapPin className="h-4 w-4 mr-2" />
+                    National Address Registry
                   </Badge>
                   
-                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-gradient float">
-                    Digital Address
+                  <h1 className="text-4xl md:text-6xl font-bold gradient-text">
+                    Equatorial Guinea
                     <br />
-                    <span className="text-neon text-cyan">Revolution</span>
+                    Address Registration System
                   </h1>
                   
-                  <p className="text-xl md:text-2xl text-cyan-light max-w-4xl mx-auto leading-relaxed">
-                    Experience the future of addressing with our advanced AI-powered platform. 
-                    Precision mapping, holographic verification, and quantum-secured data management 
-                    for Equatorial Guinea's digital transformation.
+                  <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto leading-relaxed">
+                    A comprehensive digital platform for registering, verifying, and managing 
+                    addresses across all provinces. Improving service delivery and supporting 
+                    national development through accurate location data.
                   </p>
                   
                   <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
                     <Button 
                       onClick={() => navigate('/auth')} 
-                      className="px-8 py-6 text-lg glass glow-pulse hover:shadow-neon transition-all duration-300"
+                      className="px-8 py-3 text-lg bg-system-blue hover:bg-system-blue/90"
                       size="lg"
                     >
                       <LogIn className="h-5 w-5 mr-2" />
-                      Enter the System
+                      Access System
                     </Button>
                     <Button 
                       onClick={() => setActiveSection('about')}
                       variant="outline" 
-                      className="px-8 py-6 text-lg glass border-primary hover:bg-primary/20"
+                      className="px-8 py-3 text-lg border-system-green text-system-green hover:bg-system-green hover:text-white"
                       size="lg"
                     >
                       <Globe className="h-5 w-5 mr-2" />
-                      Discover More
+                      Learn More
                     </Button>
                   </div>
                 </div>
@@ -96,112 +96,107 @@ const Index = () => {
             {/* Features Grid */}
             <div className="space-y-12">
               <div className="text-center space-y-4">
-                <h2 className="text-4xl md:text-5xl font-bold text-gradient">
-                  Futuristic Features
+                <h2 className="text-3xl md:text-4xl font-bold gradient-text">
+                  Key Features
                 </h2>
-                <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                  Powered by cutting-edge technology and advanced AI algorithms
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                  Modern tools and workflows for efficient address management
                 </p>
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <Card className="glass shadow-glow hover:shadow-neon transition-all duration-500 group animate-scale-in overflow-hidden">
+                <Card className="card-hover shadow-card overflow-hidden">
                   <div className="h-48 bg-cover bg-center" style={{ backgroundImage: `url(${featureSearch})` }}>
-                    <div className="h-full bg-gradient-to-t from-card to-transparent flex items-end p-6">
+                    <div className="h-full bg-gradient-to-t from-card/90 to-transparent flex items-end p-6">
                       <div className="flex items-center gap-3">
-                        <Search className="h-6 w-6 text-primary glow-pulse" />
-                        <span className="text-xl font-semibold text-neon">Neural Search</span>
+                        <Search className="h-6 w-6 text-system-blue" />
+                        <span className="text-xl font-semibold">Address Search</span>
                       </div>
                     </div>
                   </div>
                   <CardContent className="p-6">
                     <p className="text-muted-foreground">
-                      AI-powered quantum search algorithms that instantly locate and verify addresses 
-                      across the entire national grid with 99.9% accuracy.
+                      Quick and accurate address lookup with advanced filtering and 
+                      geolocation capabilities for efficient address management.
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="glass shadow-glow hover:shadow-neon transition-all duration-500 group animate-scale-in overflow-hidden" 
-                      style={{ animationDelay: '0.1s' }}>
+                <Card className="card-hover shadow-card overflow-hidden">
                   <div className="h-48 bg-cover bg-center" style={{ backgroundImage: `url(${featureRegistration})` }}>
-                    <div className="h-full bg-gradient-to-t from-card to-transparent flex items-end p-6">
+                    <div className="h-full bg-gradient-to-t from-card/90 to-transparent flex items-end p-6">
                       <div className="flex items-center gap-3">
-                        <MapPin className="h-6 w-6 text-primary glow-pulse" />
-                        <span className="text-xl font-semibold text-neon">Holographic Registration</span>
+                        <MapPin className="h-6 w-6 text-system-green" />
+                        <span className="text-xl font-semibold">Address Registration</span>
                       </div>
                     </div>
                   </div>
                   <CardContent className="p-6">
                     <p className="text-muted-foreground">
-                      Advanced 3D mapping technology with real-time coordinate validation 
-                      and blockchain-secured address certification.
+                      Streamlined registration process with GPS coordinates, 
+                      photo documentation, and standardized address formatting.
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="glass shadow-glow hover:shadow-neon transition-all duration-500 group animate-scale-in overflow-hidden"
-                      style={{ animationDelay: '0.2s' }}>
+                <Card className="card-hover shadow-card overflow-hidden">
                   <div className="h-48 bg-cover bg-center" style={{ backgroundImage: `url(${featureVerification})` }}>
-                    <div className="h-full bg-gradient-to-t from-card to-transparent flex items-end p-6">
+                    <div className="h-full bg-gradient-to-t from-card/90 to-transparent flex items-end p-6">
                       <div className="flex items-center gap-3">
-                        <Shield className="h-6 w-6 text-primary glow-pulse" />
-                        <span className="text-xl font-semibold text-neon">Quantum Security</span>
+                        <Shield className="h-6 w-6 text-system-blue" />
+                        <span className="text-xl font-semibold">Address Verification</span>
                       </div>
                     </div>
                   </div>
                   <CardContent className="p-6">
                     <p className="text-muted-foreground">
-                      Military-grade quantum encryption with multi-dimensional verification protocols 
-                      ensuring absolute data integrity and security.
+                      Multi-level verification process ensuring data accuracy 
+                      and compliance with national addressing standards.
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="glass shadow-glow hover:shadow-neon transition-all duration-500 group animate-scale-in"
-                      style={{ animationDelay: '0.3s' }}>
+                <Card className="card-hover shadow-card">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Users className="h-6 w-6 text-cyan glow-pulse" />
-                      <span className="text-neon">Multi-Tier Access</span>
+                      <Users className="h-6 w-6 text-system-green" />
+                      Role Management
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Advanced role-based permission matrix with biometric authentication 
-                      and real-time access monitoring across all system levels.
+                      Comprehensive role-based access control with different 
+                      permission levels for administrators, registrars, and field agents.
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="glass shadow-glow hover:shadow-neon transition-all duration-500 group animate-scale-in"
-                      style={{ animationDelay: '0.4s' }}>
+                <Card className="card-hover shadow-card">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <FileText className="h-6 w-6 text-success glow-pulse" />
-                      <span className="text-neon">Smart Documentation</span>
+                      <FileText className="h-6 w-6 text-system-blue" />
+                      Documentation
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      AI-generated official certificates with embedded QR codes, 
-                      digital signatures, and tamper-proof blockchain verification.
+                      Generate official certificates, reports, and documentation 
+                      with digital signatures and verification codes.
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="glass shadow-glow hover:shadow-neon transition-all duration-500 group animate-scale-in"
-                      style={{ animationDelay: '0.5s' }}>
+                <Card className="card-hover shadow-card">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Globe className="h-6 w-6 text-warning glow-pulse" />
-                      <span className="text-neon">National Grid</span>
+                      <BarChart3 className="h-6 w-6 text-system-green" />
+                      Analytics
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Complete coverage of all provinces with satellite integration, 
-                      IoT sensors, and real-time geographic data synchronization.
+                      Comprehensive analytics and reporting for tracking 
+                      registration progress and system performance metrics.
                     </p>
                   </CardContent>
                 </Card>
@@ -209,58 +204,58 @@ const Index = () => {
             </div>
 
             {/* Objectives Section */}
-            <Card className="glass shadow-elegant hover:shadow-glow transition-all duration-500 animate-fade-in">
+            <Card className="shadow-card">
               <CardHeader className="text-center pb-8">
-                <CardTitle className="text-3xl md:text-4xl font-bold text-gradient">
-                  Mission Objectives
+                <CardTitle className="text-3xl font-bold gradient-text">
+                  System Objectives
                 </CardTitle>
                 <p className="text-lg text-muted-foreground mt-4">
-                  Building tomorrow's infrastructure today
+                  Supporting national development through accurate addressing
                 </p>
               </CardHeader>
               <CardContent className="space-y-8">
                 <div className="grid md:grid-cols-2 gap-8">
-                  <div className="space-y-4 p-6 glass rounded-xl hover:shadow-glow transition-all duration-300">
+                  <div className="space-y-4 p-6 bg-system-blue/5 rounded-xl">
                     <div className="flex items-center gap-3">
-                      <Zap className="h-6 w-6 text-primary glow-pulse" />
-                      <h3 className="font-bold text-xl text-neon">Digital Infrastructure</h3>
+                      <CheckCircle className="h-6 w-6 text-system-blue" />
+                      <h3 className="font-bold text-xl">Improve Service Delivery</h3>
                     </div>
                     <p className="text-muted-foreground">
-                      Construct the world's most advanced digital addressing ecosystem, 
-                      powered by AI, blockchain, and quantum computing technologies.
+                      Enable better public service delivery through accurate 
+                      addressing for postal services, emergency response, and utilities.
                     </p>
                   </div>
                   
-                  <div className="space-y-4 p-6 glass rounded-xl hover:shadow-glow transition-all duration-300">
+                  <div className="space-y-4 p-6 bg-system-green/5 rounded-xl">
                     <div className="flex items-center gap-3">
-                      <Globe className="h-6 w-6 text-cyan glow-pulse" />
-                      <h3 className="font-bold text-xl text-neon">Service Excellence</h3>
+                      <Globe className="h-6 w-6 text-system-green" />
+                      <h3 className="font-bold text-xl">Support Economic Growth</h3>
                     </div>
                     <p className="text-muted-foreground">
-                      Revolutionize service delivery through precision addressing, 
-                      enabling instant logistics, emergency response, and citizen services.
+                      Facilitate business development and e-commerce through 
+                      reliable address infrastructure and location services.
                     </p>
                   </div>
                   
-                  <div className="space-y-4 p-6 glass rounded-xl hover:shadow-glow transition-all duration-300">
+                  <div className="space-y-4 p-6 bg-system-green/5 rounded-xl">
                     <div className="flex items-center gap-3">
-                      <Lock className="h-6 w-6 text-success glow-pulse" />
-                      <h3 className="font-bold text-xl text-neon">Economic Acceleration</h3>
+                      <BarChart3 className="h-6 w-6 text-system-green" />
+                      <h3 className="font-bold text-xl">Data-Driven Planning</h3>
                     </div>
                     <p className="text-muted-foreground">
-                      Catalyze economic growth through seamless e-commerce integration, 
-                      smart city development, and advanced analytics platforms.
+                      Provide accurate location data for urban planning, 
+                      infrastructure development, and resource allocation.
                     </p>
                   </div>
                   
-                  <div className="space-y-4 p-6 glass rounded-xl hover:shadow-glow transition-all duration-300">
+                  <div className="space-y-4 p-6 bg-system-blue/5 rounded-xl">
                     <div className="flex items-center gap-3">
-                      <Shield className="h-6 w-6 text-warning glow-pulse" />
-                      <h3 className="font-bold text-xl text-neon">Data Sovereignty</h3>
+                      <Shield className="h-6 w-6 text-system-blue" />
+                      <h3 className="font-bold text-xl">Ensure Data Quality</h3>
                     </div>
                     <p className="text-muted-foreground">
-                      Maintain absolute data security and sovereignty through quantum encryption, 
-                      distributed ledger technology, and advanced threat detection.
+                      Maintain high standards of data accuracy and integrity 
+                      through rigorous verification and validation processes.
                     </p>
                   </div>
                 </div>
