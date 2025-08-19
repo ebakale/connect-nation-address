@@ -29,6 +29,7 @@ import {
   Download,
   Calendar
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface AddressStats {
   total: number;
@@ -67,6 +68,7 @@ export const AnalyticsReports = () => {
     public: 0,
     private: 0
   });
+  const { toast } = useToast();
 
   // Data based on Equatorial Guinea sample addresses
   const mockRegionData: RegionStats[] = [
@@ -111,10 +113,15 @@ export const AnalyticsReports = () => {
   const fetchAnalytics = async () => {
     setLoading(true);
     try {
-      // Mock data for demonstration
-      const totalAddresses = mockRegionData.reduce((sum, region) => sum + region.addresses, 0);
-      const totalVerified = mockRegionData.reduce((sum, region) => sum + region.verified, 0);
-      const totalPending = mockRegionData.reduce((sum, region) => sum + region.pending, 0);
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Mock data that varies based on selected period
+      const multiplier = selectedPeriod === '7d' ? 0.3 : selectedPeriod === '30d' ? 1 : selectedPeriod === '90d' ? 2.5 : 4;
+      
+      const totalAddresses = Math.floor(mockRegionData.reduce((sum, region) => sum + region.addresses, 0) * multiplier);
+      const totalVerified = Math.floor(mockRegionData.reduce((sum, region) => sum + region.verified, 0) * multiplier);
+      const totalPending = Math.floor(mockRegionData.reduce((sum, region) => sum + region.pending, 0) * multiplier);
       
       setAddressStats({
         total: totalAddresses,
@@ -131,8 +138,62 @@ export const AnalyticsReports = () => {
   };
 
   const exportReport = (type: string) => {
-    // Mock export functionality
-    console.log(`Exporting ${type} report...`);
+    try {
+      // Create CSV content
+      const csvContent = generateCSVReport();
+      
+      // Create blob and download
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      
+      link.setAttribute('href', url);
+      link.setAttribute('download', `address-analytics-${selectedPeriod}-${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Show success message
+      toast({
+        title: "Export Successful",
+        description: `${type} report exported successfully for ${selectedPeriod}`,
+      });
+    } catch (error) {
+      toast({
+        title: "Export Failed", 
+        description: "There was an error exporting the report",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const generateCSVReport = () => {
+    const headers = ['Metric', 'Value', 'Period'];
+    const rows = [
+      ['Total Addresses', addressStats.total.toString(), selectedPeriod],
+      ['Verified Addresses', addressStats.verified.toString(), selectedPeriod],
+      ['Pending Addresses', addressStats.pending.toString(), selectedPeriod],
+      ['Public Addresses', addressStats.public.toString(), selectedPeriod],
+      ['Private Addresses', addressStats.private.toString(), selectedPeriod],
+      [''],
+      ['Regional Breakdown', '', ''],
+      ...mockRegionData.map(region => [
+        region.region,
+        `${region.addresses} total, ${region.verified} verified, ${region.pending} pending`,
+        selectedPeriod
+      ]),
+      [''],
+      ['Address Types', '', ''],
+      ...mockTypeData.map(type => [
+        type.type,
+        `${type.count} (${type.percentage}%)`,
+        selectedPeriod
+      ])
+    ];
+    
+    return [headers, ...rows].map(row => row.join(',')).join('\n');
   };
 
   if (loading) {
@@ -148,11 +209,20 @@ export const AnalyticsReports = () => {
         </div>
         
         <div className="flex gap-2">
-          <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-            <SelectTrigger className="w-[120px]">
-              <SelectValue />
+          <Select 
+            value={selectedPeriod} 
+            onValueChange={(value) => {
+              setSelectedPeriod(value);
+              toast({
+                title: "Period Updated",
+                description: `Analytics updated for ${value === '7d' ? 'last 7 days' : value === '30d' ? 'last 30 days' : value === '90d' ? 'last 90 days' : 'last year'}`,
+              });
+            }}
+          >
+            <SelectTrigger className="w-[140px] bg-background">
+              <SelectValue placeholder="Select period" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-background border shadow-lg z-50">
               <SelectItem value="7d">Last 7 days</SelectItem>
               <SelectItem value="30d">Last 30 days</SelectItem>
               <SelectItem value="90d">Last 90 days</SelectItem>
@@ -160,9 +230,13 @@ export const AnalyticsReports = () => {
             </SelectContent>
           </Select>
           
-          <Button variant="outline" onClick={() => exportReport("summary")}>
+          <Button 
+            variant="outline" 
+            onClick={() => exportReport("Analytics Summary")}
+            disabled={loading}
+          >
             <Download className="h-4 w-4 mr-2" />
-            Export
+            {loading ? "Loading..." : "Export CSV"}
           </Button>
         </div>
       </div>
