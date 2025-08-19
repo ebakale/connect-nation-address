@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +15,7 @@ import {
   Building,
   Home
 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface DashboardStats {
   totalAddresses: number;
@@ -30,14 +31,73 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
-  const [stats] = useState<DashboardStats>({
-    totalAddresses: 45678,
-    verifiedAddresses: 42341,
-    pendingVerification: 3337,
-    coveragePercentage: 78.5,
-    activeUsers: 2143,
-    recentActivity: 156
+  const [stats, setStats] = useState<DashboardStats>({
+    totalAddresses: 0,
+    verifiedAddresses: 0,
+    pendingVerification: 0,
+    coveragePercentage: 0,
+    activeUsers: 0,
+    recentActivity: 0
   });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchDashboardStats();
+  }, []);
+
+  const fetchDashboardStats = async () => {
+    setLoading(true);
+    try {
+      // Fetch address statistics
+      const { data: addressData, error: addressError } = await supabase
+        .from('addresses')
+        .select('verified, public, created_at');
+
+      if (addressError) throw addressError;
+
+      // Fetch user statistics (profiles count as active users)
+      const { count: usersCount, error: usersError } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+
+      if (usersError) throw usersError;
+
+      // Fetch recent activity (addresses created in last 7 days)
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      
+      const { count: recentCount, error: recentError } = await supabase
+        .from('addresses')
+        .select('*', { count: 'exact', head: true })
+        .gte('created_at', sevenDaysAgo.toISOString());
+
+      if (recentError) throw recentError;
+
+      // Calculate stats from real data
+      const totalAddresses = addressData?.length || 0;
+      const verifiedAddresses = addressData?.filter(addr => addr.verified).length || 0;
+      const pendingVerification = totalAddresses - verifiedAddresses;
+      const publicAddresses = addressData?.filter(addr => addr.public).length || 0;
+      
+      // Simple coverage calculation (verified addresses / total addresses * 100)
+      const coveragePercentage = totalAddresses > 0 ? (verifiedAddresses / totalAddresses) * 100 : 0;
+
+      setStats({
+        totalAddresses,
+        verifiedAddresses,
+        pendingVerification,
+        coveragePercentage: Math.round(coveragePercentage * 10) / 10, // Round to 1 decimal
+        activeUsers: usersCount || 0,
+        recentActivity: recentCount || 0
+      });
+
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error);
+      // Keep default values if error occurs
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const quickActions = [
     {

@@ -34,83 +34,17 @@ export const ProvinceManagement = () => {
   });
   const { toast } = useToast();
 
-  // Data for Equatorial Guinea provinces
-  const mockProvinces: Province[] = [
-    {
-      id: "1",
-      name: "Bioko Norte",
-      code: "BN",
-      region: "Insular",
-      population: 334463,
-      area: 776,
-      created_at: new Date().toISOString()
-    },
-    {
-      id: "2", 
-      name: "Bioko Sur",
-      code: "BS",
-      region: "Insular",
-      population: 38200,
-      area: 1241,
-      created_at: new Date().toISOString()
-    },
-    {
-      id: "3",
-      name: "Litoral",
-      code: "LT", 
-      region: "Continental",
-      population: 367348,
-      area: 6665,
-      created_at: new Date().toISOString()
-    },
-    {
-      id: "4",
-      name: "Centro Sur",
-      code: "CS",
-      region: "Continental", 
-      population: 141986,
-      area: 9931,
-      created_at: new Date().toISOString()
-    },
-    {
-      id: "5",
-      name: "Kié-Ntem",
-      code: "KN",
-      region: "Continental",
-      population: 183331,
-      area: 3943,
-      created_at: new Date().toISOString()
-    },
-    {
-      id: "6",
-      name: "Wele-Nzas",
-      code: "WN", 
-      region: "Continental",
-      population: 192017,
-      area: 5478,
-      created_at: new Date().toISOString()
-    },
-    {
-      id: "7",
-      name: "Annobón",
-      code: "AN",
-      region: "Insular",
-      population: 5314,
-      area: 17,
-      created_at: new Date().toISOString()
-    }
-  ];
-
-  useEffect(() => {
-    fetchProvinces();
-  }, []);
-
   const fetchProvinces = async () => {
     setLoading(true);
     try {
-      // For demo purposes, using mock data
-      // In a real application, you would fetch from your database
-      setProvinces(mockProvinces);
+      const { data, error } = await supabase
+        .from('provinces')
+        .select('*')
+        .order('name');
+
+      if (error) throw error;
+      
+      setProvinces(data || []);
     } catch (error) {
       console.error("Error fetching provinces:", error);
       toast({
@@ -123,9 +57,23 @@ export const ProvinceManagement = () => {
     }
   };
 
+  useEffect(() => {
+    fetchProvinces();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!formData.name || !formData.code || !formData.region) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setLoading(true);
     try {
       const provinceData = {
         name: formData.name,
@@ -137,12 +85,16 @@ export const ProvinceManagement = () => {
 
       if (editingProvince) {
         // Update existing province
-        const updatedProvinces = provinces.map(p => 
-          p.id === editingProvince.id 
-            ? { ...p, ...provinceData }
-            : p
-        );
-        setProvinces(updatedProvinces);
+        const { data, error } = await supabase
+          .from('provinces')
+          .update(provinceData)
+          .eq('id', editingProvince.id)
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        setProvinces(provinces.map(p => p.id === editingProvince.id ? data : p));
         
         toast({
           title: "Success",
@@ -150,12 +102,15 @@ export const ProvinceManagement = () => {
         });
       } else {
         // Add new province
-        const newProvince: Province = {
-          id: Date.now().toString(),
-          ...provinceData,
-          created_at: new Date().toISOString()
-        };
-        setProvinces([...provinces, newProvince]);
+        const { data, error } = await supabase
+          .from('provinces')
+          .insert([provinceData])
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        setProvinces([...provinces, data]);
         
         toast({
           title: "Success",
@@ -164,13 +119,44 @@ export const ProvinceManagement = () => {
       }
 
       resetForm();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving province:", error);
       toast({
         title: "Error",
-        description: "Failed to save province",
+        description: error.message || "Failed to save province",
         variant: "destructive"
       });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (provinceId: string) => {
+    if (!confirm("Are you sure you want to delete this province?")) return;
+    
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from('provinces')
+        .delete()
+        .eq('id', provinceId);
+
+      if (error) throw error;
+
+      setProvinces(provinces.filter(p => p.id !== provinceId));
+      toast({
+        title: "Success",
+        description: "Province deleted successfully"
+      });
+    } catch (error: any) {
+      console.error("Error deleting province:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete province",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -184,25 +170,6 @@ export const ProvinceManagement = () => {
       area: province.area?.toString() || ""
     });
     setIsAddDialogOpen(true);
-  };
-
-  const handleDelete = async (provinceId: string) => {
-    if (!confirm("Are you sure you want to delete this province?")) return;
-    
-    try {
-      setProvinces(provinces.filter(p => p.id !== provinceId));
-      toast({
-        title: "Success",
-        description: "Province deleted successfully"
-      });
-    } catch (error) {
-      console.error("Error deleting province:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete province",
-        variant: "destructive"
-      });
-    }
   };
 
   const resetForm = () => {

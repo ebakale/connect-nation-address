@@ -176,6 +176,39 @@ export type Database = {
         }
         Relationships: []
       }
+      provinces: {
+        Row: {
+          area: number | null
+          code: string
+          created_at: string
+          id: string
+          name: string
+          population: number | null
+          region: string
+          updated_at: string
+        }
+        Insert: {
+          area?: number | null
+          code: string
+          created_at?: string
+          id?: string
+          name: string
+          population?: number | null
+          region: string
+          updated_at?: string
+        }
+        Update: {
+          area?: number | null
+          code?: string
+          created_at?: string
+          id?: string
+          name?: string
+          population?: number | null
+          region?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_role_metadata: {
         Row: {
           created_at: string | null

@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Settings, Layers, Maximize2 } from 'lucide-react';
+import { supabase } from "@/integrations/supabase/client";
 
 interface MapLocation {
   uac: string;
@@ -33,6 +34,7 @@ const MapView: React.FC<MapViewProps> = ({
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const [realLocations, setRealLocations] = useState<MapLocation[]>([]);
   const [mapboxToken, setMapboxToken] = useState<string>(() => {
     return localStorage.getItem('mapbox_token') || '';
   });
@@ -41,39 +43,45 @@ const MapView: React.FC<MapViewProps> = ({
     return !!(storedToken && storedToken.startsWith('pk.'));
   });
 
-  // Mock locations for demonstration
-  const defaultLocations: MapLocation[] = [
-    {
-      uac: "EG-BA-MB-004512",
-      coordinates: [8.7833, 3.7500],
-      name: "Avenida de la Independencia, House #42",
-      type: "residential",
-      verified: true
-    },
-    {
-      uac: "EG-BA-MB-003847",
-      coordinates: [8.7820, 3.7520],
-      name: "Calle de la República, Building #15",
-      type: "commercial",
-      verified: true
-    },
-    {
-      uac: "EG-BA-MB-005692",
-      coordinates: [8.7840, 3.7530],
-      name: "Plaza de la Independencia",
-      type: "landmark",
-      verified: true
-    },
-    {
-      uac: "EG-BA-MB-006201",
-      coordinates: [8.7810, 3.7485],
-      name: "Ministry Building",
-      type: "government",
-      verified: true
-    }
-  ];
+  const fetchMapLocations = async () => {
+    try {
+      const { data: addresses, error } = await supabase
+        .from('addresses')
+        .select('uac, latitude, longitude, street, building, address_type, verified, public')
+        .eq('verified', true)
+        .eq('public', true);
 
-  const allLocations = locations.length > 0 ? locations : defaultLocations;
+      if (error) {
+        console.error("Error fetching addresses:", error);
+        return [];
+      }
+
+      return addresses.map(addr => ({
+        uac: addr.uac,
+        coordinates: [parseFloat(addr.longitude.toString()), parseFloat(addr.latitude.toString())] as [number, number],
+        name: `${addr.street}${addr.building ? `, ${addr.building}` : ''}`,
+        type: addr.address_type as 'residential' | 'commercial' | 'landmark' | 'government',
+        verified: addr.verified
+      })) as MapLocation[];
+    } catch (error) {
+      console.error("Error processing addresses:", error);
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    const loadMapLocations = async () => {
+      if (locations.length === 0) {
+        const fetchedLocations = await fetchMapLocations();
+        setRealLocations(fetchedLocations);
+      }
+    };
+    
+    loadMapLocations();
+  }, [locations]);
+
+  // Use real locations from database or passed locations
+  const allLocations = locations.length > 0 ? locations : realLocations;
 
   const initializeMap = () => {
     if (!mapContainer.current || !mapboxToken) return;
