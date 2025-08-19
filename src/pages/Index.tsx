@@ -669,7 +669,7 @@ const Index = () => {
       </header>
 
       {/* Navigation */}
-      <nav className="border-b border-primary/20 glass">
+      <nav className="border-b border-primary/20 glass relative z-50">
         <div className="container mx-auto px-4">
           <div className="flex space-x-8 overflow-x-auto">
             {navigationItems.map((item, index) => {
@@ -684,7 +684,7 @@ const Index = () => {
                       setActiveSection(item.id);
                     }
                   }}
-                  className={`flex items-center gap-2 py-6 px-4 border-b-2 whitespace-nowrap transition-all duration-300 animate-fade-in ${
+                  className={`flex items-center gap-2 py-6 px-4 border-b-2 whitespace-nowrap transition-all duration-300 animate-fade-in cursor-pointer hover:bg-primary/5 ${
                     activeSection === item.id
                       ? 'border-primary text-primary shadow-glow text-neon'
                       : 'border-transparent text-muted-foreground hover:text-cyan hover:border-cyan/50'

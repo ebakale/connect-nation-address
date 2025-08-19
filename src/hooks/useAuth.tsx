@@ -36,8 +36,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    // Auto-logout when window is closed or page is refreshed
+    const handleBeforeUnload = async () => {
+      if (session && window.location.pathname.includes('/dashboard')) {
+        await supabase.auth.signOut({ scope: 'local' });
+      }
+    };
+
+    // Auto-logout when navigating away from dashboard
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden' && session && window.location.pathname.includes('/dashboard')) {
+        supabase.auth.signOut({ scope: 'local' });
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [session]);
 
   const signUp = async (email: string, password: string, fullName?: string) => {
     const redirectUrl = `${window.location.origin}/`;
