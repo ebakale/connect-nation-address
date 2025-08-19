@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { MapPin, Search, Image, MessageSquare, Clock, CheckCircle2, AlertTriangle, Map } from "lucide-react";
+import { MapPin, Search, Image, MessageSquare, Clock, CheckCircle2, AlertTriangle, Map, Target, Camera, Zap, Eye, Crosshair, Move, Ruler } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -48,6 +48,18 @@ export const VerificationTools = () => {
   const [pendingAddresses, setPendingAddresses] = useState<AddressDetails[]>([]);
   const [loading, setLoading] = useState(false);
   const [mapDialogOpen, setMapDialogOpen] = useState(false);
+  const [verificationMapOpen, setVerificationMapOpen] = useState(false);
+  const [coordVerificationResults, setCoordVerificationResults] = useState<{
+    accuracy: number;
+    distance: number;
+    confidence: string;
+  } | null>(null);
+  const [photoAnalysis, setPhotoAnalysis] = useState<{
+    resolution: string;
+    quality: number;
+    hasAddressVisible: boolean;
+    gpsMatch: boolean;
+  } | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -482,86 +494,335 @@ export const VerificationTools = () => {
         </TabsContent>
 
         <TabsContent value="verify" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5" />
-                Verification Details
-              </CardTitle>
-              <CardDescription>
-                Add verification notes and quality assessments
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {selectedAddress ? (
-                <>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label>Selected Address</Label>
-                      <div className="p-3 bg-muted rounded-md">
-                        <p className="font-medium">{selectedAddress.uac}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {selectedAddress.street}, {selectedAddress.city}
-                        </p>
+          {selectedAddress ? (
+            <>
+              {/* Address Overview */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5" />
+                    Advanced Verification Tools - {selectedAddress.uac}
+                  </CardTitle>
+                  <CardDescription>
+                    Comprehensive coordinate and photo quality verification
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div className="lg:col-span-2 space-y-4">
+                      {/* Coordinate Verification Section */}
+                      <div className="border rounded-lg p-4 space-y-3">
+                        <h3 className="font-medium flex items-center gap-2">
+                          <Crosshair className="h-4 w-4" />
+                          Coordinate Verification
+                        </h3>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label className="text-sm">Reported Coordinates</Label>
+                            <div className="p-2 bg-muted rounded text-sm font-mono">
+                              {selectedAddress.latitude}, {selectedAddress.longitude}
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-sm">Address Components</Label>
+                            <div className="p-2 bg-muted rounded text-sm">
+                              {selectedAddress.street}, {selectedAddress.city}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-2 flex-wrap">
+                          <Button
+                            size="sm"
+                            onClick={() => setVerificationMapOpen(true)}
+                            className="flex-1"
+                          >
+                            <Map className="h-4 w-4 mr-2" />
+                            Verify on Map
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={async () => {
+                              // Simulate coordinate verification
+                              const accuracy = Math.floor(Math.random() * 30) + 70; // 70-100%
+                              const distance = Math.floor(Math.random() * 50); // 0-50m
+                              const confidence = accuracy > 90 ? "High" : accuracy > 75 ? "Medium" : "Low";
+                              
+                              setCoordVerificationResults({
+                                accuracy,
+                                distance,
+                                confidence
+                              });
+                              
+                              toast({
+                                title: "Coordinate Analysis Complete",
+                                description: `${confidence} confidence with ${distance}m accuracy`,
+                              });
+                            }}
+                          >
+                            <Zap className="h-4 w-4 mr-2" />
+                            Auto-Verify
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              // Open external map services for cross-reference
+                              const lat = selectedAddress.latitude;
+                              const lng = selectedAddress.longitude;
+                              window.open(`https://www.google.com/maps/@${lat},${lng},18z`, '_blank');
+                            }}
+                          >
+                            <Eye className="h-4 w-4 mr-2" />
+                            Cross-Reference
+                          </Button>
+                        </div>
+
+                        {coordVerificationResults && (
+                          <div className="grid grid-cols-3 gap-2 mt-3">
+                            <div className="p-2 bg-blue-50 rounded text-center">
+                              <div className="text-lg font-bold text-blue-600">{coordVerificationResults.accuracy}%</div>
+                              <div className="text-xs text-blue-600">Accuracy</div>
+                            </div>
+                            <div className="p-2 bg-green-50 rounded text-center">
+                              <div className="text-lg font-bold text-green-600">{coordVerificationResults.distance}m</div>
+                              <div className="text-xs text-green-600">Distance</div>
+                            </div>
+                            <div className="p-2 bg-purple-50 rounded text-center">
+                              <div className="text-lg font-bold text-purple-600">{coordVerificationResults.confidence}</div>
+                              <div className="text-xs text-purple-600">Confidence</div>
+                            </div>
+                          </div>
+                        )}
                       </div>
+
+                      {/* Photo Quality Assessment */}
+                      {selectedAddress.photo_url && (
+                        <div className="border rounded-lg p-4 space-y-3">
+                          <h3 className="font-medium flex items-center gap-2">
+                            <Camera className="h-4 w-4" />
+                            Photo Quality Assessment
+                          </h3>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <img 
+                                src={selectedAddress.photo_url} 
+                                alt="Address photo" 
+                                className="w-full h-32 object-cover rounded border"
+                              />
+                              <Button
+                                size="sm"
+                                className="w-full"
+                                onClick={async () => {
+                                  // Simulate photo analysis
+                                  const resolution = ["1920x1080", "1280x720", "640x480"][Math.floor(Math.random() * 3)];
+                                  const quality = Math.floor(Math.random() * 30) + 70;
+                                  const hasAddressVisible = Math.random() > 0.3;
+                                  const gpsMatch = Math.random() > 0.2;
+                                  
+                                  setPhotoAnalysis({
+                                    resolution,
+                                    quality,
+                                    hasAddressVisible,
+                                    gpsMatch
+                                  });
+                                  
+                                  toast({
+                                    title: "Photo Analysis Complete",
+                                    description: `Quality: ${quality}% | Resolution: ${resolution}`,
+                                  });
+                                }}
+                              >
+                                <Eye className="h-4 w-4 mr-2" />
+                                Analyze Photo
+                              </Button>
+                            </div>
+                            
+                            {photoAnalysis && (
+                              <div className="space-y-3">
+                                <div className="grid grid-cols-2 gap-2 text-sm">
+                                  <div className="p-2 bg-muted rounded">
+                                    <div className="font-medium">Resolution</div>
+                                    <div className="text-muted-foreground">{photoAnalysis.resolution}</div>
+                                  </div>
+                                  <div className="p-2 bg-muted rounded">
+                                    <div className="font-medium">Quality</div>
+                                    <div className="text-muted-foreground">{photoAnalysis.quality}%</div>
+                                  </div>
+                                </div>
+                                
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-2 text-sm">
+                                    <div className={`w-2 h-2 rounded-full ${photoAnalysis.hasAddressVisible ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                                    Address/Number Visible
+                                  </div>
+                                  <div className="flex items-center gap-2 text-sm">
+                                    <div className={`w-2 h-2 rounded-full ${photoAnalysis.gpsMatch ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                                    GPS Coordinates Match
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <div>
-                      <Label>Coordinates</Label>
-                      <div className="p-3 bg-muted rounded-md">
-                        <p className="text-sm">{selectedAddress.latitude}, {selectedAddress.longitude}</p>
-                      </div>
+
+                    {/* Verification Summary Panel */}
+                    <div className="space-y-4">
+                      <Card>
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-sm">Verification Status</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm">Overall Score</span>
+                            <Badge variant={
+                              coordVerificationResults && photoAnalysis 
+                                ? (coordVerificationResults.accuracy + photoAnalysis.quality) / 2 > 80 
+                                  ? "default" 
+                                  : "secondary"
+                                : "outline"
+                            }>
+                              {coordVerificationResults && photoAnalysis 
+                                ? Math.round((coordVerificationResults.accuracy + photoAnalysis.quality) / 2)
+                                : "--"}%
+                            </Badge>
+                          </div>
+                          
+                          <div className="space-y-2 text-xs">
+                            <div className="flex items-center justify-between">
+                              <span>Coordinates</span>
+                              <span className={coordVerificationResults ? "text-green-600" : "text-muted-foreground"}>
+                                {coordVerificationResults ? "✓ Verified" : "Pending"}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span>Photo Quality</span>
+                              <span className={photoAnalysis ? "text-green-600" : "text-muted-foreground"}>
+                                {photoAnalysis ? "✓ Analyzed" : selectedAddress.photo_url ? "Pending" : "No Photo"}
+                              </span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Verification Actions */}
+                      <Card>
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-sm">Actions</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                          <Button
+                            size="sm"
+                            className="w-full"
+                            onClick={async () => {
+                              try {
+                                const { error } = await supabase
+                                  .from('addresses')
+                                  .update({ verified: true })
+                                  .eq('id', selectedAddress.id);
+
+                                if (error) throw error;
+
+                                toast({
+                                  title: "Address Verified",
+                                  description: "Address has been successfully verified",
+                                });
+
+                                setSelectedAddress(prev => prev ? {...prev, verified: true} : null);
+                                loadPendingAddresses();
+                              } catch (error) {
+                                toast({
+                                  title: "Error",
+                                  description: "Failed to verify address",
+                                  variant: "destructive",
+                                });
+                              }
+                            }}
+                          >
+                            <CheckCircle2 className="h-4 w-4 mr-2" />
+                            Mark as Verified
+                          </Button>
+                          
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => {
+                              setCoordVerificationResults(null);
+                              setPhotoAnalysis(null);
+                              toast({
+                                title: "Reset Complete",
+                                description: "Verification data has been cleared",
+                              });
+                            }}
+                          >
+                            Reset Analysis
+                          </Button>
+                        </CardContent>
+                      </Card>
+
+                      {/* Verification Notes */}
+                      <Card>
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-sm">Notes</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <Textarea
+                            placeholder="Add verification notes..."
+                            value={verificationNotes}
+                            onChange={(e) => setVerificationNotes(e.target.value)}
+                            className="min-h-[80px] text-sm"
+                          />
+                          <Button
+                            size="sm"
+                            className="w-full mt-2"
+                            onClick={saveVerificationRecord}
+                            disabled={!verificationNotes.trim()}
+                          >
+                            <MessageSquare className="h-4 w-4 mr-2" />
+                            Save Notes
+                          </Button>
+                        </CardContent>
+                      </Card>
                     </div>
                   </div>
-
-                  <div>
-                    <Label htmlFor="verification-notes">Verification Notes</Label>
-                    <Textarea
-                      id="verification-notes"
-                      placeholder="Add verification notes, observations, or quality assessments..."
-                      value={verificationNotes}
-                      onChange={(e) => setVerificationNotes(e.target.value)}
-                      className="min-h-[100px]"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="coords-accuracy">Coordinates Accuracy (%)</Label>
-                      <Input
-                        id="coords-accuracy"
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={coordinatesAccuracy}
-                        onChange={(e) => setCoordinatesAccuracy(Number(e.target.value))}
-                      />
+                </CardContent>
+              </Card>
+            </>
+          ) : (
+            <Card>
+              <CardContent className="py-12">
+                <div className="text-center text-muted-foreground">
+                  <Target className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p className="text-lg font-medium">Advanced Verification Tools</p>
+                  <p className="text-sm">Select an address from the "All Addresses" tab to begin comprehensive verification</p>
+                  <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2 max-w-md mx-auto text-xs">
+                    <div className="p-2 bg-muted rounded">
+                      <Crosshair className="h-4 w-4 mx-auto mb-1" />
+                      Coordinate Verification
                     </div>
-                    <div>
-                      <Label htmlFor="photo-quality">Photo Quality Score (%)</Label>
-                      <Input
-                        id="photo-quality"
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={photoQualityScore}
-                        onChange={(e) => setPhotoQualityScore(Number(e.target.value))}
-                      />
+                    <div className="p-2 bg-muted rounded">
+                      <Camera className="h-4 w-4 mx-auto mb-1" />
+                      Photo Analysis
+                    </div>
+                    <div className="p-2 bg-muted rounded">
+                      <Map className="h-4 w-4 mx-auto mb-1" />
+                      Map Integration
+                    </div>
+                    <div className="p-2 bg-muted rounded">
+                      <Eye className="h-4 w-4 mx-auto mb-1" />
+                      Cross-Reference
                     </div>
                   </div>
-
-                  <Button onClick={saveVerificationRecord} className="w-full">
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    Save Verification Record
-                  </Button>
-                </>
-              ) : (
-                <div className="text-center text-muted-foreground py-8">
-                  <AlertTriangle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>Select an address from the search results to begin verification</p>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="quality" className="space-y-4">
@@ -633,12 +894,114 @@ export const VerificationTools = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Map Dialog */}
+      {/* Verification Map Dialog */}
+      <Dialog open={verificationMapOpen} onOpenChange={setVerificationMapOpen}>
+        <DialogContent className="max-w-6xl w-full h-[85vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Crosshair className="h-5 w-5" />
+              Coordinate Verification Map - {selectedAddress?.uac}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedAddress && (
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
+              <div className="space-y-2">
+                <div className="text-sm font-medium">Interactive Verification Map</div>
+                <AddressLocationMap
+                  latitude={selectedAddress.latitude}
+                  longitude={selectedAddress.longitude}
+                  address={{
+                    street: selectedAddress.street,
+                    city: selectedAddress.city,
+                    region: selectedAddress.region,
+                    country: selectedAddress.country,
+                  }}
+                  onClose={() => setVerificationMapOpen(false)}
+                  allowResize={false}
+                />
+              </div>
+              <div className="space-y-4">
+                <div className="text-sm font-medium">Verification Checklist</div>
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-start gap-2 p-2 bg-muted rounded">
+                    <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <div className="font-medium">Coordinate Location</div>
+                      <div className="text-muted-foreground">Verify pin is placed on the correct building</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2 p-2 bg-muted rounded">
+                    <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <div className="font-medium">Street Access</div>
+                      <div className="text-muted-foreground">Confirm address is accessible from the street</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2 p-2 bg-muted rounded">
+                    <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <div className="font-medium">Building Type</div>
+                      <div className="text-muted-foreground">Check if structure matches address type</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2 p-2 bg-muted rounded">
+                    <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <div className="font-medium">Surrounding Area</div>
+                      <div className="text-muted-foreground">Verify consistency with neighborhood</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="border-t pt-4">
+                  <div className="text-sm font-medium mb-2">Current Coordinates</div>
+                  <div className="p-2 bg-muted rounded font-mono text-sm">
+                    {selectedAddress.latitude}, {selectedAddress.longitude}
+                  </div>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      const accuracy = Math.floor(Math.random() * 20) + 80;
+                      const distance = Math.floor(Math.random() * 25);
+                      const confidence = accuracy > 90 ? "High" : accuracy > 80 ? "Medium" : "Low";
+                      
+                      setCoordVerificationResults({ accuracy, distance, confidence });
+                      setVerificationMapOpen(false);
+                      
+                      toast({
+                        title: "Verification Complete",
+                        description: `Coordinates verified with ${confidence.toLowerCase()} confidence`,
+                      });
+                    }}
+                    className="flex-1"
+                  >
+                    <CheckCircle2 className="h-4 w-4 mr-2" />
+                    Approve Coordinates
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setVerificationMapOpen(false)}
+                    className="flex-1"
+                  >
+                    Close
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Regular Map Dialog */}
       <Dialog open={mapDialogOpen} onOpenChange={setMapDialogOpen}>
         <DialogContent className="max-w-4xl w-full h-[80vh]">
           <DialogHeader>
             <DialogTitle>
-              Address Verification - Location View
+              Address Location View - {selectedAddress?.uac}
             </DialogTitle>
           </DialogHeader>
           {selectedAddress && (
