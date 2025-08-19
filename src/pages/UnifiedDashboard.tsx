@@ -10,6 +10,8 @@ import {
   Shield, Users, Settings, BarChart3, LogOut, Search, FileText, Clock, AlertCircle,
   Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map, User
 } from "lucide-react";
+import { useLanguage } from '@/contexts/LanguageContext';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 // Component imports
 import AdminPanel from "@/components/AdminPanel";
@@ -82,6 +84,7 @@ const UnifiedDashboard = () => {
     canPublishAddresses
   } = useUserRole();
   const { user, signOut } = useAuth();
+  const { t } = useLanguage();
 
   // Stats state
   const [stats, setStats] = useState<DashboardStats>({
@@ -225,8 +228,8 @@ const UnifiedDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center">
+        <div className="text-lg">{t('loading')}</div>
       </div>
     );
   }
@@ -257,19 +260,19 @@ const UnifiedDashboard = () => {
   if (isCitizen) userRoles.push('Citizen');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard</h1>
-              <p className="text-muted-foreground">Your unified portal for all system functions</p>
+              <h1 className="text-3xl font-bold text-foreground mb-2">{t('dashboard')}</h1>
+              <p className="text-muted-foreground">{t('unifiedPortal')}</p>
               
               {/* User greeting */}
               {userProfile && (
                 <p className="text-lg font-medium text-foreground mt-2">
-                  Welcome back, {userProfile.full_name}!
+                  {t('welcomeBack')}, {userProfile.full_name}!
                 </p>
               )}
               
@@ -295,17 +298,18 @@ const UnifiedDashboard = () => {
             </div>
 
             <div className="flex gap-2">
+              <LanguageSwitcher />
               <Button 
                 variant="outline" 
                 onClick={() => setProfileOpen(true)}
                 className="flex items-center gap-2"
               >
                 <User className="h-4 w-4" />
-                Edit Profile
+                {t('editProfile')}
               </Button>
               <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
                 <LogOut className="h-4 w-4" />
-                Logout
+                {t('logout')}
               </Button>
             </div>
           </div>
@@ -314,26 +318,26 @@ const UnifiedDashboard = () => {
         {/* Admin Metrics */}
         {hasAdminAccess && (
           <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">System Overview</h2>
+            <h2 className="text-xl font-semibold mb-4">{t('systemOverview')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
               <Dialog>
                 <DialogTrigger asChild>
                   <Card className="cursor-pointer hover:shadow-md transition-shadow">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                      <CardTitle className="text-sm font-medium">{t('totalUsers')}</CardTitle>
                       <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{stats.totalUsers}</div>
-                      <p className="text-xs text-muted-foreground">Click to manage users</p>
+                      <p className="text-xs text-muted-foreground">{t('clickToManageUsers')}</p>
                     </CardContent>
                   </Card>
                 </DialogTrigger>
                 <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>User Management</DialogTitle>
+                    <DialogTitle>{t('userManagement')}</DialogTitle>
                     <DialogDescription>
-                      View and manage system users
+                      {t('viewManageUsers')}
                     </DialogDescription>
                   </DialogHeader>
                   <AdminPanel />
@@ -344,20 +348,20 @@ const UnifiedDashboard = () => {
                 <DialogTrigger asChild>
                   <Card className="cursor-pointer hover:shadow-md transition-shadow">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Active Roles</CardTitle>
+                      <CardTitle className="text-sm font-medium">{t('activeRoles')}</CardTitle>
                       <Shield className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{stats.activeRoles}</div>
-                      <p className="text-xs text-muted-foreground">Click to manage roles</p>
+                      <p className="text-xs text-muted-foreground">{t('clickToManageRoles')}</p>
                     </CardContent>
                   </Card>
                 </DialogTrigger>
                 <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>Role Management</DialogTitle>
+                    <DialogTitle>{t('roleManagement')}</DialogTitle>
                     <DialogDescription>
-                      View and manage user role assignments
+                      {t('viewManageRoles')}
                     </DialogDescription>
                   </DialogHeader>
                   <AdminPanel />
@@ -368,20 +372,20 @@ const UnifiedDashboard = () => {
                 <DialogTrigger asChild>
                   <Card className="cursor-pointer hover:shadow-md transition-shadow">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Pending Approvals</CardTitle>
+                      <CardTitle className="text-sm font-medium">{t('pendingApprovals')}</CardTitle>
                       <Settings className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{stats.pendingApprovals}</div>
-                      <p className="text-xs text-muted-foreground">Click to approve requests</p>
+                      <p className="text-xs text-muted-foreground">{t('clickToApproveRequests')}</p>
                     </CardContent>
                   </Card>
                 </DialogTrigger>
                 <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>Address Request Approvals</DialogTitle>
+                    <DialogTitle>{t('addressRequestApprovals')}</DialogTitle>
                     <DialogDescription>
-                      Review and approve citizen address requests
+                      {t('reviewApproveCitizen')}
                     </DialogDescription>
                   </DialogHeader>
                   <AddressRequestApproval />
@@ -392,20 +396,20 @@ const UnifiedDashboard = () => {
                 <DialogTrigger asChild>
                   <Card className="cursor-pointer hover:shadow-md transition-shadow">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Public Addresses</CardTitle>
+                      <CardTitle className="text-sm font-medium">{t('publicAddresses')}</CardTitle>
                       <BarChart3 className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{stats.publicAddresses}</div>
-                      <p className="text-xs text-muted-foreground">Click to view addresses ({stats.totalAddresses} total)</p>
+                      <p className="text-xs text-muted-foreground">{t('clickToViewAddresses')} ({stats.totalAddresses} {t('total')})</p>
                     </CardContent>
                   </Card>
                 </DialogTrigger>
                 <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>Address Analytics</DialogTitle>
+                    <DialogTitle>{t('addressAnalytics')}</DialogTitle>
                     <DialogDescription>
-                      View detailed address statistics and analytics
+                      {t('viewDetailedStats')}
                     </DialogDescription>
                   </DialogHeader>
                   <AnalyticsReports />

@@ -8,10 +8,13 @@ import { AddressPublishingQueue } from "@/components/AddressPublishingQueue";
 import { AddressUnpublishingQueue } from "@/components/AddressUnpublishingQueue";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useLanguage } from '@/contexts/LanguageContext';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 const RegistrarDashboard = () => {
   const { role, loading, getGeographicScope } = useUserRole();
   const { user, signOut } = useAuth();
+  const { t } = useLanguage();
   const [publishOpen, setPublishOpen] = useState(false);
   const [unpublishOpen, setUnpublishOpen] = useState(false);
 
@@ -26,13 +29,13 @@ const RegistrarDashboard = () => {
   const geographicScope = getGeographicScope();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">Registrar Dashboard</h1>
-              <p className="text-muted-foreground">Publish verified addresses and manage provincial operations</p>
+              <h1 className="text-3xl font-bold text-foreground mb-2">{t('registrarDashboard')}</h1>
+              <p className="text-muted-foreground">{t('publishVerifiedAddresses')}</p>
               {geographicScope.length > 0 && (
                 <div className="flex gap-2 mt-2">
                   {geographicScope.map((scope) => (
@@ -43,10 +46,13 @@ const RegistrarDashboard = () => {
                 </div>
               )}
             </div>
-            <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
-              <LogOut className="h-4 w-4" />
-              Logout
-            </Button>
+            <div className="flex gap-2">
+              <LanguageSwitcher />
+              <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
+                <LogOut className="h-4 w-4" />
+                {t('logout')}
+              </Button>
+            </div>
           </div>
         </div>
 

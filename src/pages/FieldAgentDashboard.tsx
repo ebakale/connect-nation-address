@@ -9,18 +9,21 @@ import DraftManager from "@/components/DraftManager";
 import FieldMap from "@/components/FieldMap";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useLanguage } from '@/contexts/LanguageContext';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 const FieldAgentDashboard = () => {
   const { role, loading, getGeographicScope } = useUserRole();
   const { user, signOut } = useAuth();
+  const { t } = useLanguage();
   const [captureOpen, setCaptureOpen] = useState(false);
   const [draftsOpen, setDraftsOpen] = useState(false);
   const [mapOpen, setMapOpen] = useState(false);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center">
+        <div className="text-lg">{t('loading')}</div>
       </div>
     );
   }
@@ -28,13 +31,13 @@ const FieldAgentDashboard = () => {
   const geographicScope = getGeographicScope();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">Field Agent Dashboard</h1>
-              <p className="text-muted-foreground">Capture and draft address data in the field</p>
+              <h1 className="text-3xl font-bold text-foreground mb-2">{t('fieldAgentDashboard')}</h1>
+              <p className="text-muted-foreground">{t('captureAndDraftAddresses')}</p>
               {geographicScope.length > 0 && (
                 <div className="flex gap-2 mt-2">
                   {geographicScope.map((scope) => (
@@ -45,55 +48,58 @@ const FieldAgentDashboard = () => {
                 </div>
               )}
             </div>
-            <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
-              <LogOut className="h-4 w-4" />
-              Logout
-            </Button>
+            <div className="flex gap-2">
+              <LanguageSwitcher />
+              <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
+                <LogOut className="h-4 w-4" />
+                {t('logout')}
+              </Button>
+            </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Today's Captures</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('todaysCaptures')}</CardTitle>
               <Camera className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">12</div>
-              <p className="text-xs text-muted-foreground">+3 from yesterday</p>
+              <p className="text-xs text-muted-foreground">{t('fromYesterday')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pending Drafts</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('pendingDrafts')}</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">5</div>
-              <p className="text-xs text-muted-foreground">Awaiting submission</p>
+              <p className="text-xs text-muted-foreground">{t('awaitingSubmission')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Submitted</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('submitted')}</CardTitle>
               <CheckCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">147</div>
-              <p className="text-xs text-muted-foreground">This month</p>
+              <p className="text-xs text-muted-foreground">{t('thisMonth')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Accuracy Rate</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('accuracyRate')}</CardTitle>
               <MapPin className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">98.5%</div>
-              <p className="text-xs text-muted-foreground">Verification rate</p>
+              <p className="text-xs text-muted-foreground">{t('verificationRate')}</p>
             </CardContent>
           </Card>
         </div>
@@ -103,24 +109,24 @@ const FieldAgentDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Camera className="h-5 w-5 text-primary" />
-                Capture New Address
+                {t('captureNewAddress')}
               </CardTitle>
               <CardDescription>
-                Create a new draft address with photo evidence
+                {t('createNewDraft')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Dialog open={captureOpen} onOpenChange={setCaptureOpen}>
                 <DialogTrigger asChild>
                   <Button className="w-full">
-                    Start Capture
+                    {t('startCapture')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>Capture New Address</DialogTitle>
+                    <DialogTitle>{t('captureNewAddressTitle')}</DialogTitle>
                     <DialogDescription>
-                      Fill in the address details and capture GPS coordinates for verification
+                      {t('fillAddressDetails')}
                     </DialogDescription>
                   </DialogHeader>
                   <AddressCaptureForm 
@@ -136,24 +142,24 @@ const FieldAgentDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5 text-primary" />
-                My Drafts
+                {t('myDrafts')}
               </CardTitle>
               <CardDescription>
-                Review and submit pending address drafts
+                {t('reviewPendingDrafts')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Dialog open={draftsOpen} onOpenChange={setDraftsOpen}>
                 <DialogTrigger asChild>
                   <Button className="w-full" variant="outline">
-                    View Drafts
+                    {t('viewDrafts')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>Draft Management</DialogTitle>
+                    <DialogTitle>{t('draftManagement')}</DialogTitle>
                     <DialogDescription>
-                      Review, edit, and submit your draft addresses
+                      {t('reviewEditSubmit')}
                     </DialogDescription>
                   </DialogHeader>
                   <DraftManager onClose={() => setDraftsOpen(false)} />
@@ -166,24 +172,24 @@ const FieldAgentDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MapPin className="h-5 w-5 text-primary" />
-                Field Map
+                {t('fieldMap')}
               </CardTitle>
               <CardDescription>
-                View assigned areas and capture progress
+                {t('viewAssignedAreas')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Dialog open={mapOpen} onOpenChange={setMapOpen}>
                 <DialogTrigger asChild>
                   <Button className="w-full" variant="outline">
-                    Open Map
+                    {t('openMap')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>Field Map</DialogTitle>
+                    <DialogTitle>{t('fieldMapTitle')}</DialogTitle>
                     <DialogDescription>
-                      View addresses and capture progress in your assigned area
+                      {t('viewAddressesProgress')}
                     </DialogDescription>
                   </DialogHeader>
                   <FieldMap onClose={() => setMapOpen(false)} />
