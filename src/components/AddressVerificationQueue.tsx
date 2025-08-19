@@ -4,22 +4,55 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAddresses } from "@/hooks/useAddresses";
-import { CheckCircle, XCircle, Eye, MapPin } from "lucide-react";
+import { CheckCircle, XCircle, Eye, MapPin, FileText, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AddressLocationMap } from "@/components/AddressLocationMap";
+import { supabase } from "@/integrations/supabase/client";
 
 export const AddressVerificationQueue = () => {
   const { addresses, loading, updateAddressStatus, fetchAddresses } = useAddresses();
   const { toast } = useToast();
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [mapDialogOpen, setMapDialogOpen] = useState(false);
+  const [addressRequests, setAddressRequests] = useState<{[key: string]: any}>({});
 
   useEffect(() => {
     console.log('AddressVerificationQueue: Fetching addresses...');
     fetchAddresses();
-  }, [fetchAddresses]);
+    
+    // Fetch associated address requests to get claimant type and proof documents
+    const fetchAddressRequests = async () => {
+      if (addresses.length === 0) return;
+      
+      try {
+        const { data: requests, error } = await supabase
+          .from('address_requests')
+          .select('id, claimant_type, proof_of_ownership_url, user_id, street, city')
+          .eq('status', 'approved');
+
+        if (!error && requests) {
+          const requestMap = requests.reduce((acc, req) => {
+            const key = `${req.user_id}-${req.street}-${req.city}`;
+            acc[key] = req;
+            return acc;
+          }, {});
+          setAddressRequests(requestMap);
+        }
+      } catch (error) {
+        console.error('Failed to fetch address requests:', error);
+      }
+    };
+
+    fetchAddressRequests();
+  }, [fetchAddresses, addresses]);
 
   const pendingAddresses = addresses.filter(addr => !addr.verified);
+
+  // Helper function to get associated request data
+  const getRequestData = (address) => {
+    const key = `${address.user_id}-${address.street}-${address.city}`;
+    return addressRequests[key] || null;
+  };
 
   const handleVerify = async (addressId: string, verified: boolean) => {
     console.log('Verifying address:', addressId, 'verified:', verified);
@@ -77,8 +110,12 @@ export const AddressVerificationQueue = () => {
           </CardContent>
         </Card>
       ) : (
-        pendingAddresses.map((address) => (
-          <Card key={address.id}>
+        pendingAddresses.map((address) => {
+          const requestData = getRequestData(address);
+          const isPropertyClaim = requestData?.claimant_type === 'owner';
+          
+          return (
+          <Card key={address.id} className={`${isPropertyClaim ? 'border-l-4 border-l-orange-500' : ''}`}>
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
@@ -88,13 +125,19 @@ export const AddressVerificationQueue = () => {
                     {address.street}, {address.city}, {address.region}
                   </CardDescription>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   <Badge variant={address.verified ? "default" : "secondary"}>
                     {address.verified ? "Verified" : "Pending"}
                   </Badge>
                   <Badge variant={address.public ? "default" : "outline"}>
                     {address.public ? "Public" : "Private"}
                   </Badge>
+                  {isPropertyClaim && (
+                    <Badge variant="default" className="bg-orange-500">
+                      <AlertTriangle className="h-3 w-3 mr-1" />
+                      Property Claim
+                    </Badge>
+                  )}
                 </div>
               </div>
             </CardHeader>
@@ -106,10 +149,52 @@ export const AddressVerificationQueue = () => {
                 <div>
                   <span className="font-medium">Coordinates:</span> {address.latitude}, {address.longitude}
                 </div>
+                {isPropertyClaim && (
+                  <div className="col-span-2">
+                    <span className="font-medium">Claimant:</span> 
+                    <span className="ml-1 text-orange-600 font-medium">Property Owner</span>
+                  </div>
+                )}
               </div>
               
               {address.description && (
                 <p className="text-sm text-muted-foreground mb-4">{address.description}</p>
+              )}
+
+              {/* Property Ownership Alert for Verifiers */}
+              {isPropertyClaim && (
+                <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <AlertTriangle className="h-4 w-4 text-orange-600" />
+                    <span className="font-medium text-orange-900">Property Ownership Verification Required</span>
+                  </div>
+                  <p className="text-sm text-orange-800 mb-2">
+                    This address was claimed by a property owner. Verify ownership documentation and cross-check against official records.
+                  </p>
+                  {requestData?.proof_of_ownership_url && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => window.open(requestData.proof_of_ownership_url, '_blank')}
+                      className="flex items-center gap-1"
+                    >
+                      <FileText className="h-3 w-3" />
+                      View Ownership Document
+                    </Button>
+                  )}
+                </div>
+              )}
+
+              {/* Address Photo if available */}
+              {address.photo_url && (
+                <div className="mb-4">
+                  <span className="font-medium text-sm">Address Photo:</span>
+                  <img
+                    src={address.photo_url}
+                    alt="Address location"
+                    className="w-full max-h-32 object-cover border rounded mt-1"
+                  />
+                </div>
               )}
 
               <div className="flex gap-2 flex-wrap">
@@ -151,7 +236,8 @@ export const AddressVerificationQueue = () => {
               </div>
             </CardContent>
           </Card>
-        ))
+          );
+        })
       )}
 
       {/* Map Dialog */}

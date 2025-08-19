@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, XCircle, MapPin, User, Calendar, Map } from "lucide-react";
+import { CheckCircle, XCircle, MapPin, User, Calendar, Map, FileText, Eye, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -27,6 +27,9 @@ interface AddressRequest {
   status: string;
   created_at: string;
   reviewer_notes?: string;
+  claimant_type?: string;
+  proof_of_ownership_url?: string;
+  photo_url?: string;
   profiles: {
     full_name: string;
     email: string;
@@ -38,6 +41,7 @@ export const AddressRequestApproval = () => {
   const [loading, setLoading] = useState(true);
   const [reviewerNotes, setReviewerNotes] = useState<{ [key: string]: string }>({});
   const [showMapView, setShowMapView] = useState<{ [key: string]: boolean }>({});
+  const [showProofView, setShowProofView] = useState<{ [key: string]: boolean }>({});
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -107,6 +111,27 @@ export const AddressRequestApproval = () => {
 
     const notes = reviewerNotes[requestId] || '';
 
+    // Validate required fields for property ownership claims
+    if (request.claimant_type === 'owner' && approved) {
+      if (!request.proof_of_ownership_url) {
+        toast({
+          title: "Cannot approve property claim",
+          description: "Proof of ownership document is required for property claims",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!notes.trim()) {
+        toast({
+          title: "Reviewer notes required",
+          description: "Please add notes about the ownership document verification for property claims",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
     try {
       if (approved) {
         // Generate UAC using the centralized system
@@ -127,8 +152,10 @@ export const AddressRequestApproval = () => {
             latitude: request.latitude || 0,
             longitude: request.longitude || 0,
             description: request.description,
+            photo_url: request.photo_url,
             verified: false,
-            public: false
+            // Property owner addresses start as private for verification
+            public: request.claimant_type === 'owner' ? false : false
           });
 
         if (addressError) throw addressError;
@@ -191,7 +218,9 @@ export const AddressRequestApproval = () => {
         </Card>
       ) : (
         requests.map((request) => (
-          <Card key={request.id} className="border-l-4 border-l-amber-500">
+          <Card key={request.id} className={`border-l-4 ${
+            request.claimant_type === 'owner' ? 'border-l-orange-500' : 'border-l-amber-500'
+          }`}>
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
@@ -199,7 +228,7 @@ export const AddressRequestApproval = () => {
                     {request.building && `${request.building}, `}
                     {request.street}, {request.city}
                   </CardTitle>
-                  <CardDescription className="flex items-center gap-4 mt-2">
+                  <CardDescription className="flex items-center gap-4 mt-2 flex-wrap">
                     <span className="flex items-center gap-1">
                       <User className="h-3 w-3" />
                       {request.profiles?.full_name} ({request.profiles?.email})
@@ -210,9 +239,20 @@ export const AddressRequestApproval = () => {
                     </span>
                   </CardDescription>
                 </div>
-                <Badge variant="secondary">
-                  {request.status}
-                </Badge>
+                <div className="flex gap-2 flex-wrap">
+                  <Badge variant="secondary">
+                    {request.status}
+                  </Badge>
+                  <Badge 
+                    variant={request.claimant_type === 'owner' ? 'default' : 'outline'}
+                    className={request.claimant_type === 'owner' ? 'bg-orange-500' : ''}
+                  >
+                    {request.claimant_type === 'owner' && <AlertTriangle className="h-3 w-3 mr-1" />}
+                    {request.claimant_type === 'owner' ? 'Property Owner' : 
+                     request.claimant_type === 'representative' ? 'Representative' :
+                     request.claimant_type || 'Resident'}
+                  </Badge>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -223,8 +263,16 @@ export const AddressRequestApproval = () => {
                 <div>
                   <span className="font-medium">Region:</span> {request.region}, {request.country}
                 </div>
+                <div>
+                  <span className="font-medium">Claimant:</span> 
+                  <span className={`ml-1 ${request.claimant_type === 'owner' ? 'text-orange-600 font-medium' : ''}`}>
+                    {request.claimant_type === 'owner' ? 'Property Owner' : 
+                     request.claimant_type === 'representative' ? 'Authorized Representative' :
+                     request.claimant_type || 'Resident'}
+                  </span>
+                </div>
                 {request.latitude && request.longitude && (
-                  <div className="col-span-2 flex items-center gap-1">
+                  <div className="flex items-center gap-1">
                     <MapPin className="h-3 w-3" />
                     <span className="font-medium">Coordinates:</span> {request.latitude}, {request.longitude}
                   </div>
@@ -244,6 +292,84 @@ export const AddressRequestApproval = () => {
                   <p className="text-sm text-muted-foreground mt-1 p-2 bg-muted rounded">
                     {request.description}
                   </p>
+                </div>
+              )}
+
+              {/* Property Ownership Documentation - Critical for Property Claims */}
+              {request.claimant_type === 'owner' && (
+                <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                  <div className="flex items-center gap-2 mb-3">
+                    <AlertTriangle className="h-5 w-5 text-orange-600" />
+                    <span className="font-medium text-orange-900">Property Ownership Claim</span>
+                  </div>
+                  <p className="text-sm text-orange-800 mb-3">
+                    This request claims property ownership. Verify ownership documentation carefully.
+                  </p>
+                  
+                  {request.proof_of_ownership_url ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-sm">Proof of Ownership:</span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setShowProofView(prev => ({
+                            ...prev,
+                            [request.id]: !prev[request.id]
+                          }))}
+                          className="flex items-center gap-1"
+                        >
+                          <FileText className="h-3 w-3" />
+                          {showProofView[request.id] ? 'Hide Document' : 'View Document'}
+                        </Button>
+                      </div>
+                      
+                      {showProofView[request.id] && (
+                        <div className="mt-2">
+                          {request.proof_of_ownership_url.toLowerCase().includes('.pdf') ? (
+                            <iframe
+                              src={request.proof_of_ownership_url}
+                              className="w-full h-64 border rounded"
+                              title="Proof of Ownership Document"
+                            />
+                          ) : (
+                            <img
+                              src={request.proof_of_ownership_url}
+                              alt="Proof of Ownership"
+                              className="w-full max-h-64 object-contain border rounded bg-white"
+                            />
+                          )}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="mt-2"
+                            onClick={() => window.open(request.proof_of_ownership_url, '_blank')}
+                          >
+                            <Eye className="h-3 w-3 mr-1" />
+                            Open Full Size
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-red-600 font-medium">
+                      ⚠️ No proof of ownership document provided
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Address Photo Section */}
+              {request.photo_url && (
+                <div>
+                  <span className="font-medium text-sm">Address Photo:</span>
+                  <div className="mt-2">
+                    <img
+                      src={request.photo_url}
+                      alt="Address location"
+                      className="w-full max-h-48 object-cover border rounded"
+                    />
+                  </div>
                 </div>
               )}
 
@@ -287,10 +413,19 @@ export const AddressRequestApproval = () => {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor={`notes-${request.id}`}>Reviewer Notes (Optional)</Label>
+                <Label htmlFor={`notes-${request.id}`}>
+                  Reviewer Notes 
+                  {request.claimant_type === 'owner' && 
+                    <span className="text-orange-600"> (Required for property claims)</span>
+                  }
+                </Label>
                 <Textarea
                   id={`notes-${request.id}`}
-                  placeholder="Add notes about your decision..."
+                  placeholder={
+                    request.claimant_type === 'owner' 
+                      ? "Document verification status, ownership validation, concerns..." 
+                      : "Add notes about your decision..."
+                  }
                   value={reviewerNotes[request.id] || ''}
                   onChange={(e) => setReviewerNotes(prev => ({
                     ...prev,
