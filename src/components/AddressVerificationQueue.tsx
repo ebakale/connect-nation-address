@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAddresses } from "@/hooks/useAddresses";
-import { CheckCircle, XCircle, Eye, MapPin } from "lucide-react";
+import { CheckCircle, XCircle, Eye, MapPin, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AddressLocationMap } from "@/components/AddressLocationMap";
 
@@ -60,6 +60,22 @@ export const AddressVerificationQueue = () => {
   const handleViewOnMap = (address) => {
     setSelectedAddress(address);
     setMapDialogOpen(true);
+  };
+
+  const openMapInNewWindow = (address) => {
+    const params = new URLSearchParams({
+      lat: address.latitude.toString(),
+      lng: address.longitude.toString(),
+      street: address.street,
+      city: address.city,
+      region: address.region,
+      country: address.country,
+      uac: address.uac,
+      ...(address.building && { building: address.building })
+    });
+    
+    const mapUrl = `/map?${params.toString()}`;
+    window.open(mapUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
   };
 
   if (loading) {
@@ -147,6 +163,15 @@ export const AddressVerificationQueue = () => {
                 >
                   <MapPin className="h-4 w-4" />
                   View on Map
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => openMapInNewWindow(address)}
+                  className="flex items-center gap-1"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  Open in New Window
                 </Button>
               </div>
             </CardContent>
