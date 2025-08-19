@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.167d733c34b8469f89d0223c35eb3ba1',
+  appId: 'com.lovable.connectnationaddress',
   appName: 'connect-nation-address',
   webDir: 'dist',
   server: {
