@@ -35,13 +35,34 @@ const MapView: React.FC<MapViewProps> = ({
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [realLocations, setRealLocations] = useState<MapLocation[]>([]);
-  const [mapboxToken, setMapboxToken] = useState<string>(() => {
-    return localStorage.getItem('mapbox_token') || '';
-  });
-  const [isTokenSet, setIsTokenSet] = useState(() => {
-    const storedToken = localStorage.getItem('mapbox_token');
-    return !!(storedToken && storedToken.startsWith('pk.'));
-  });
+  const [mapboxToken, setMapboxToken] = useState<string>('');
+  const [isTokenSet, setIsTokenSet] = useState(false);
+  const [tokenError, setTokenError] = useState<string>('');
+
+  // Fetch Mapbox token from Supabase edge function
+  useEffect(() => {
+    const fetchMapboxToken = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('get-mapbox-token');
+        if (error) throw error;
+        if (data?.token) {
+          setMapboxToken(data.token);
+          setIsTokenSet(true);
+        }
+      } catch (error) {
+        console.error('Error fetching Mapbox token:', error);
+        setTokenError('Failed to fetch Mapbox token');
+        // Fallback: try localStorage
+        const storedToken = localStorage.getItem('mapbox_token');
+        if (storedToken && storedToken.startsWith('pk.')) {
+          setMapboxToken(storedToken);
+          setIsTokenSet(true);
+        }
+      }
+    };
+    
+    fetchMapboxToken();
+  }, []);
 
   const fetchMapLocations = async () => {
     try {
@@ -180,40 +201,44 @@ const MapView: React.FC<MapViewProps> = ({
 
   if (!isTokenSet) {
     return (
-      <Card className="w-full max-w-md mx-auto">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
-            Map Configuration
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            To display the interactive map, please enter your Mapbox public token.
-          </p>
-          <div className="space-y-2">
-            <Input
-              type="password"
-              placeholder="Enter Mapbox public token"
-              value={mapboxToken}
-              onChange={(e) => setMapboxToken(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleTokenSubmit()}
-            />
-            <Button onClick={handleTokenSubmit} className="w-full" variant="hero">
-              Initialize Map
-            </Button>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Get your token at{' '}
-            <a 
-              href="https://account.mapbox.com/access-tokens/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              mapbox.com
-            </a>
-          </p>
+      <Card className="w-full">
+        <CardContent className="pt-6">
+          {tokenError ? (
+            <div className="text-center space-y-4">
+              <div className="text-sm text-destructive">{tokenError}</div>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Please enter your Mapbox public token to display the map:
+                </p>
+                <Input
+                  type="password"
+                  placeholder="Enter Mapbox public token (pk.xxx)"
+                  value={mapboxToken}
+                  onChange={(e) => setMapboxToken(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleTokenSubmit()}
+                />
+                <Button onClick={handleTokenSubmit} className="w-full" variant="hero">
+                  Load Map
+                </Button>
+                <p className="text-xs text-muted-foreground">
+                  Get your token at{' '}
+                  <a 
+                    href="https://account.mapbox.com/access-tokens/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    mapbox.com
+                  </a>
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center space-y-2">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+              <p className="text-sm text-muted-foreground">Loading map...</p>
+            </div>
+          )}
         </CardContent>
       </Card>
     );
