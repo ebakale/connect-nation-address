@@ -58,20 +58,20 @@ All colors MUST be HSL.
     --popover-foreground: 214 32% 15%;
     
     /* System colors - Blue, Green, and Red */
-    --system-blue: 214 100% 50%;
+    --system-blue: 214 100% 35%;
     --system-green: 142 76% 36%;
     --system-red: 0 84% 60%;
-    --system-blue-light: 214 100% 95%;
+    --system-blue-light: 214 100% 85%;
     --system-green-light: 142 76% 90%;
     --system-red-light: 0 84% 95%;
     
     /* Gradient colors */
-    --gradient-primary: linear-gradient(135deg, hsl(214 100% 50%), hsl(142 76% 36%));
-    --gradient-secondary: linear-gradient(135deg, hsl(0 84% 60%), hsl(214 100% 50%));
+    --gradient-primary: linear-gradient(135deg, hsl(214 100% 35%), hsl(142 76% 36%));
+    --gradient-secondary: linear-gradient(135deg, hsl(0 84% 60%), hsl(214 100% 35%));
     --gradient-light: linear-gradient(135deg, hsl(214 100% 95%), hsl(142 76% 90%));
     
     /* Shadow effects */
-    --shadow-blue: 0 4px 20px hsl(214 100% 50% / 0.15);
+    --shadow-blue: 0 4px 20px hsl(214 100% 35% / 0.15);
     --shadow-green: 0 4px 20px hsl(142 76% 36% / 0.15);
     --shadow-red: 0 4px 20px hsl(0 84% 60% / 0.15);
     --shadow-card: 0 2px 10px hsl(214 32% 50% / 0.1);
@@ -123,11 +123,11 @@ All colors MUST be HSL.
     --input: 214 32% 88%;
     --ring: 214 100% 50%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(214 100% 50%), hsl(142 76% 36%));
-    --gradient-secondary: linear-gradient(135deg, hsl(0 84% 60%), hsl(214 100% 50%));
-    --gradient-light: linear-gradient(135deg, hsl(214 100% 95%), hsl(142 76% 90%));
+    --gradient-primary: linear-gradient(135deg, hsl(214 100% 35%), hsl(142 76% 36%));
+    --gradient-secondary: linear-gradient(135deg, hsl(0 84% 60%), hsl(214 100% 35%));
+    --gradient-light: linear-gradient(135deg, hsl(214 100% 85%), hsl(142 76% 90%));
     
-    --shadow-blue: 0 4px 20px hsl(214 100% 50% / 0.15);
+    --shadow-blue: 0 4px 20px hsl(214 100% 35% / 0.15);
     --shadow-green: 0 4px 20px hsl(142 76% 36% / 0.15);
     --shadow-red: 0 4px 20px hsl(0 84% 60% / 0.15);
     --shadow-card: 0 2px 10px hsl(214 32% 50% / 0.1);

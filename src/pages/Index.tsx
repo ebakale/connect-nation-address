@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/contexts/LanguageContext';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 // Import professional images
 import heroImage from '@/assets/hero-address-system.jpg';
@@ -15,6 +17,7 @@ import featureVerification from '@/assets/feature-address-verification.jpg';
 const Index = () => {
   const [activeSection, setActiveSection] = useState('overview');
   const { user, loading } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   if (loading) {
@@ -22,7 +25,7 @@ const Index = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground">{t('loading')}</p>
         </div>
       </div>
     );
@@ -31,11 +34,11 @@ const Index = () => {
   // Main page is always accessible regardless of authentication status
 
   const navigationItems = [
-    { id: 'overview', label: 'Overview', icon: MapPin },
-    { id: 'about', label: 'About Us', icon: Users },
-    { id: 'help', label: 'Help', icon: HelpCircle },
-    { id: 'manual', label: 'Manual', icon: Book },
-    { id: 'login', label: 'Login', icon: LogIn },
+    { id: 'overview', label: t('overview'), icon: MapPin },
+    { id: 'about', label: t('about'), icon: Users },
+    { id: 'help', label: t('help'), icon: HelpCircle },
+    { id: 'manual', label: t('manual'), icon: Book },
+    { id: 'login', label: t('login'), icon: LogIn },
   ];
 
   const renderContent = () => {
@@ -61,24 +64,24 @@ const Index = () => {
                   {/* Badge */}
                   <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white shadow-lg backdrop-blur-sm border border-white/20">
                     <MapPin className="h-5 w-5 mr-2" />
-                    <span className="font-semibold">National Address Registry System</span>
+                    <span className="font-semibold">{t('nationalAddressRegistry')}</span>
                   </div>
                   
                   {/* Main Heading */}
                   <div className="space-y-4">
                     <h1 className="text-5xl md:text-7xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent leading-tight">
-                      Equatorial Guinea
+                      {t('equatorialGuinea')}
                       <span className="block text-4xl md:text-6xl font-bold text-foreground/90 mt-2">
-                        Address Registration
+                        {t('addressRegistration')}
                       </span>
                     </h1>
                   </div>
                   
                   {/* Subtitle */}
                   <p className="text-xl md:text-2xl text-foreground/70 max-w-4xl mx-auto leading-relaxed font-light">
-                    Transforming address management with cutting-edge technology. 
-                    <span className="text-primary font-medium"> Secure, accurate, and accessible </span>
-                    for every citizen and business across all provinces.
+                    {t('heroSubtitle')} 
+                    <span className="text-primary font-medium"> {t('heroDescription')} </span>
+                    {t('heroDescriptionExtended')}
                   </p>
                   
                   {/* CTA Buttons */}
@@ -89,7 +92,7 @@ const Index = () => {
                       size="lg"
                     >
                       <LogIn className="h-6 w-6 mr-2" />
-                      Access System Now
+                      {t('accessSystemNow')}
                     </Button>
                     <Button 
                       onClick={() => setActiveSection('about')}
@@ -98,8 +101,13 @@ const Index = () => {
                       size="lg"
                     >
                       <Globe className="h-6 w-6 mr-2" />
-                      Discover More
+                      {t('discoverMore')}
                     </Button>
+                  </div>
+
+                  {/* Language Switcher */}
+                  <div className="pt-4">
+                    <LanguageSwitcher />
                   </div>
                 </div>
               </div>
@@ -111,14 +119,14 @@ const Index = () => {
                 <div className="inline-block p-3 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl">
                   <div className="flex items-center gap-2 px-4 py-2">
                     <div className="h-2 w-2 bg-primary rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium text-primary">PLATFORM CAPABILITIES</span>
+                    <span className="text-sm font-medium text-primary">{t('platformCapabilities')}</span>
                   </div>
                 </div>
                 <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent">
-                  Advanced Features
+                  {t('advancedFeatures')}
                 </h2>
                 <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                  Cutting-edge technology meets practical solutions for comprehensive address management across the nation
+                  {t('featuresSubtitle')}
                 </p>
               </div>
 
@@ -133,14 +141,13 @@ const Index = () => {
                         <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
                           <Search className="h-6 w-6 text-white" />
                         </div>
-                        <h3 className="text-2xl font-bold text-white">Smart Search</h3>
+                        <h3 className="text-2xl font-bold text-white">{t('smartSearch')}</h3>
                       </div>
                     </div>
                   </div>
                   <CardContent className="relative p-6">
                     <p className="text-muted-foreground leading-relaxed">
-                      AI-powered address lookup with <span className="text-primary font-semibold">real-time filtering</span> and 
-                      geolocation capabilities for lightning-fast address discovery.
+                      {t('smartSearchDesc')}
                     </p>
                   </CardContent>
                 </Card>
@@ -155,14 +162,13 @@ const Index = () => {
                         <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
                           <MapPin className="h-6 w-6 text-white" />
                         </div>
-                        <h3 className="text-2xl font-bold text-white">Quick Registration</h3>
+                        <h3 className="text-2xl font-bold text-white">{t('quickRegistration')}</h3>
                       </div>
                     </div>
                   </div>
                   <CardContent className="relative p-6">
                     <p className="text-muted-foreground leading-relaxed">
-                      <span className="text-secondary font-semibold">One-click registration</span> with GPS coordinates, 
-                      photo documentation, and automatic address standardization.
+                      {t('quickRegistrationDesc')}
                     </p>
                   </CardContent>
                 </Card>
@@ -177,14 +183,13 @@ const Index = () => {
                         <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
                           <Shield className="h-6 w-6 text-white" />
                         </div>
-                        <h3 className="text-2xl font-bold text-white">Secure Verification</h3>
+                        <h3 className="text-2xl font-bold text-white">{t('secureVerification')}</h3>
                       </div>
                     </div>
                   </div>
                   <CardContent className="relative p-6">
                     <p className="text-muted-foreground leading-relaxed">
-                      <span className="text-destructive font-semibold">Multi-layer verification</span> ensuring 
-                      100% accuracy and compliance with national standards.
+                      {t('secureVerificationDesc')}
                     </p>
                   </CardContent>
                 </Card>
@@ -196,13 +201,12 @@ const Index = () => {
                       <div className="p-3 bg-gradient-to-br from-secondary to-secondary/80 rounded-2xl">
                         <Users className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-xl font-bold">Advanced Role System</CardTitle>
+                      <CardTitle className="text-xl font-bold">{t('advancedRoleSystem')}</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground leading-relaxed">
-                      <span className="text-secondary font-semibold">Granular permissions</span> with 
-                      role-based access control for administrators, registrars, and field agents.
+                      {t('roleSystemDesc')}
                     </p>
                   </CardContent>
                 </Card>
@@ -213,13 +217,12 @@ const Index = () => {
                       <div className="p-3 bg-gradient-to-br from-primary to-primary/80 rounded-2xl">
                         <FileText className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-xl font-bold">Digital Documentation</CardTitle>
+                      <CardTitle className="text-xl font-bold">{t('digitalDocumentation')}</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground leading-relaxed">
-                      Generate <span className="text-primary font-semibold">official certificates</span> and 
-                      reports with digital signatures and QR verification codes.
+                      {t('digitalDocDesc')}
                     </p>
                   </CardContent>
                 </Card>
@@ -230,13 +233,12 @@ const Index = () => {
                       <div className="p-3 bg-gradient-to-br from-destructive to-destructive/80 rounded-2xl">
                         <BarChart3 className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-xl font-bold">Real-time Analytics</CardTitle>
+                      <CardTitle className="text-xl font-bold">{t('realtimeAnalytics')}</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground leading-relaxed">
-                      <span className="text-destructive font-semibold">Live dashboards</span> and 
-                      comprehensive reporting for tracking system performance metrics.
+                      {t('analyticsDesc')}
                     </p>
                   </CardContent>
                 </Card>
@@ -252,14 +254,14 @@ const Index = () => {
                   <div className="inline-block p-3 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl">
                     <div className="flex items-center gap-2 px-4 py-2">
                       <CheckCircle className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-medium text-primary">NATIONAL IMPACT</span>
+                      <span className="text-sm font-medium text-primary">{t('nationalImpact')}</span>
                     </div>
                   </div>
                   <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent">
-                    System Objectives
+                    {t('systemObjectives')}
                   </h2>
                   <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                    Driving transformation across Equatorial Guinea through innovative address infrastructure
+                    {t('objectivesSubtitle')}
                   </p>
                 </div>
 
@@ -270,13 +272,12 @@ const Index = () => {
                         <CheckCircle className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">Enhanced Service Delivery</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('enhancedServiceDelivery')}</h3>
                         <div className="h-1 w-16 bg-gradient-to-r from-primary to-primary/60 rounded-full mb-3"></div>
                       </div>
                     </div>
                     <p className="text-muted-foreground leading-relaxed">
-                      Revolutionize public services through <span className="text-primary font-semibold">precise addressing</span> for 
-                      postal delivery, emergency response, utilities, and government services nationwide.
+                      {t('serviceDeliveryDesc')}
                     </p>
                   </div>
                   
@@ -286,13 +287,12 @@ const Index = () => {
                         <Globe className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">Economic Acceleration</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('economicAcceleration')}</h3>
                         <div className="h-1 w-16 bg-gradient-to-r from-secondary to-secondary/60 rounded-full mb-3"></div>
                       </div>
                     </div>
                     <p className="text-muted-foreground leading-relaxed">
-                      Fuel <span className="text-secondary font-semibold">business growth</span> and e-commerce expansion 
-                      through reliable address infrastructure and location-based services.
+                      {t('economicDesc')}
                     </p>
                   </div>
                   
