@@ -94,7 +94,15 @@ export const AnalyticsReports = () => {
     { date: "2024-01-29", addresses: 15, verified: 12 }
   ];
 
-  const pieColors = ["hsl(var(--primary))", "hsl(var(--secondary))", "hsl(var(--accent))", "hsl(var(--muted))", "hsl(var(--destructive))"];
+  // Specific colors for each address type using semantic design tokens
+  const typeColorMap: Record<string, string> = {
+    "Commercial": "hsl(var(--chart-commercial))",
+    "Public": "hsl(var(--chart-public))", 
+    "Residential": "hsl(var(--chart-residential))",
+    "Industrial": "hsl(var(--chart-industrial))"
+  };
+
+  const getColorForType = (type: string) => typeColorMap[type] || "hsl(var(--muted))";
 
   useEffect(() => {
     fetchAnalytics();
@@ -307,8 +315,8 @@ export const AnalyticsReports = () => {
                       dataKey="count"
                       label={({ type, percentage }) => `${type}: ${percentage}%`}
                     >
-                      {mockTypeData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={pieColors[index % pieColors.length]} />
+                      {mockTypeData.map((entry) => (
+                        <Cell key={`cell-${entry.type}`} fill={getColorForType(entry.type)} />
                       ))}
                     </Pie>
                     <Tooltip />
@@ -329,7 +337,7 @@ export const AnalyticsReports = () => {
                       <div className="flex items-center gap-3">
                         <div 
                           className="w-3 h-3 rounded-full" 
-                          style={{ backgroundColor: pieColors[index % pieColors.length] }}
+                          style={{ backgroundColor: getColorForType(type.type) }}
                         />
                         <span className="font-medium">{type.type}</span>
                       </div>
