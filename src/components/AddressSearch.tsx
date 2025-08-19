@@ -160,11 +160,11 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={(e) => openDirectionsForResult(result, e)}
-                        aria-label="Get directions"
-                        title="Get directions"
+                        onClick={(e) => { e.stopPropagation(); handleSelectResult(result); }}
+                        aria-label="View on map"
+                        title="View on map"
                       >
-                        <Navigation className="h-4 w-4 text-muted-foreground" />
+                        <MapPin className="h-4 w-4 text-muted-foreground" />
                       </Button>
                     </div>
                   </div>
