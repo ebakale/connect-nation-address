@@ -648,9 +648,26 @@ const UnifiedDashboard = () => {
                     </DialogContent>
                   </Dialog>
                 </CardContent>
-              </Card>
+               </Card>
 
-              <Card>
+               <Card>
+                 <CardHeader>
+                   <CardTitle className="flex items-center gap-2">
+                     <FileText className="h-5 w-5 text-blue-500" />
+                     Address Requests
+                   </CardTitle>
+                   <CardDescription>
+                     Approve or reject citizen address requests
+                   </CardDescription>
+                 </CardHeader>
+                 <CardContent>
+                   <Button className="w-full" onClick={() => setShowPendingRequests(true)}>
+                     Review Requests
+                   </Button>
+                 </CardContent>
+               </Card>
+
+               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-green-500" />
@@ -878,61 +895,14 @@ const UnifiedDashboard = () => {
            <Dialog open={showPendingRequests} onOpenChange={setShowPendingRequests}>
              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                <DialogHeader>
-                 <DialogTitle>Pending Address Requests</DialogTitle>
+                 <DialogTitle>Address Request Approval</DialogTitle>
                  <DialogDescription>
-                   Citizens who have submitted address requests waiting for approval
+                   Review and approve pending address requests from citizens
                  </DialogDescription>
                </DialogHeader>
-               <div className="space-y-4 mt-4">
-                 {pendingRequests.length === 0 ? (
-                   <p className="text-center text-muted-foreground py-8">No pending requests found.</p>
-                 ) : (
-                   pendingRequests.map((request) => (
-                     <Card key={request.id}>
-                       <CardHeader>
-                         <div className="flex justify-between items-start">
-                           <div>
-                             <CardTitle className="text-lg">{request.profiles.full_name}</CardTitle>
-                             <CardDescription className="flex items-center gap-2">
-                               <span>{request.profiles.email}</span>
-                               <Badge variant="secondary">
-                                 {new Date(request.created_at).toLocaleDateString()}
-                               </Badge>
-                             </CardDescription>
-                           </div>
-                           <Badge variant="outline" className="text-orange-600 border-orange-600">
-                             {request.status}
-                           </Badge>
-                         </div>
-                       </CardHeader>
-                       <CardContent>
-                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                           <div>
-                             <h4 className="font-semibold mb-2">Address Details</h4>
-                             <div className="space-y-1 text-sm">
-                               <p><span className="font-medium">Country:</span> {request.country}</p>
-                               <p><span className="font-medium">Region:</span> {request.region}</p>
-                               <p><span className="font-medium">City:</span> {request.city}</p>
-                               <p><span className="font-medium">Street:</span> {request.street}</p>
-                               {request.building && (
-                                 <p><span className="font-medium">Building:</span> {request.building}</p>
-                               )}
-                             </div>
-                           </div>
-                           <div>
-                             <h4 className="font-semibold mb-2">Justification</h4>
-                             <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md">
-                               {request.justification}
-                             </p>
-                           </div>
-                         </div>
-                       </CardContent>
-                     </Card>
-                   ))
-                 )}
-             </div>
-           </DialogContent>
-         </Dialog>
+               <AddressRequestApproval />
+             </DialogContent>
+           </Dialog>
 
          {/* Profile Editor Dialog */}
          <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
