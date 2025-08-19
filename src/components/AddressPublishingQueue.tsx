@@ -14,7 +14,7 @@ export const AddressPublishingQueue = () => {
     fetchAddresses();
   }, []);
 
-  const verifiedAddresses = addresses.filter(addr => addr.verified);
+  const unpublishedAddresses = addresses.filter(addr => addr.verified && !addr.public);
 
   const handlePublish = async (addressId: string, isPublic: boolean) => {
     await updateAddressStatus(addressId, { public: isPublic });
@@ -24,22 +24,51 @@ export const AddressPublishingQueue = () => {
     });
   };
 
+  const handlePublishAll = async () => {
+    try {
+      const publishPromises = unpublishedAddresses.map(address => 
+        updateAddressStatus(address.id, { public: true })
+      );
+      
+      await Promise.all(publishPromises);
+      
+      toast({
+        title: "Success",
+        description: `${unpublishedAddresses.length} addresses published successfully`
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to publish some addresses",
+        variant: "destructive"
+      });
+    }
+  };
+
   if (loading) {
     return <div className="p-4">Loading publishing queue...</div>;
   }
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Publishing Queue ({verifiedAddresses.length})</h3>
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-semibold">Publishing Queue ({unpublishedAddresses.length})</h3>
+        {unpublishedAddresses.length > 0 && (
+          <Button onClick={handlePublishAll} className="flex items-center gap-1">
+            <Globe className="h-4 w-4" />
+            Publish All ({unpublishedAddresses.length})
+          </Button>
+        )}
+      </div>
       
-      {verifiedAddresses.length === 0 ? (
+      {unpublishedAddresses.length === 0 ? (
         <Card>
           <CardContent className="p-6 text-center">
-            <p className="text-muted-foreground">No verified addresses available for publishing</p>
+            <p className="text-muted-foreground">No addresses pending publication</p>
           </CardContent>
         </Card>
       ) : (
-        verifiedAddresses.map((address) => (
+        unpublishedAddresses.map((address) => (
           <Card key={address.id}>
             <CardHeader>
               <div className="flex justify-between items-start">
@@ -52,9 +81,7 @@ export const AddressPublishingQueue = () => {
                 </div>
                 <div className="flex gap-2">
                   <Badge variant="default">Verified</Badge>
-                  <Badge variant={address.public ? "default" : "outline"}>
-                    {address.public ? "Published" : "Private"}
-                  </Badge>
+                  <Badge variant="outline">Private</Badge>
                 </div>
               </div>
             </CardHeader>
@@ -69,26 +96,14 @@ export const AddressPublishingQueue = () => {
               </div>
 
               <div className="flex gap-2">
-                {!address.public ? (
-                  <Button
-                    size="sm"
-                    onClick={() => handlePublish(address.id, true)}
-                    className="flex items-center gap-1"
-                  >
-                    <Globe className="h-4 w-4" />
-                    Publish to National Registry
-                  </Button>
-                ) : (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handlePublish(address.id, false)}
-                    className="flex items-center gap-1"
-                  >
-                    <EyeOff className="h-4 w-4" />
-                    Remove from Public Registry
-                  </Button>
-                )}
+                <Button
+                  size="sm"
+                  onClick={() => handlePublish(address.id, true)}
+                  className="flex items-center gap-1"
+                >
+                  <Globe className="h-4 w-4" />
+                  Publish to National Registry
+                </Button>
               </div>
             </CardContent>
           </Card>
