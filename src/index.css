@@ -8,6 +8,91 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
+    /* Futuristic dark background */
+    --background: 222 47% 3%;
+    --foreground: 210 40% 98%;
+
+    --card: 224 71% 4%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Futuristic neon blue primary scheme */
+    --primary: 195 100% 60%;
+    --primary-foreground: 222 47% 3%;
+    --primary-light: 195 100% 70%;
+    --primary-glow: 195 100% 80%;
+    --primary-dark: 195 100% 45%;
+
+    /* Neon cyan accent */
+    --cyan: 190 100% 50%;
+    --cyan-foreground: 222 47% 3%;
+    --cyan-light: 190 100% 65%;
+
+    /* Success neon green */
+    --success: 120 100% 50%;
+    --success-foreground: 222 47% 3%;
+    --success-light: 120 100% 65%;
+
+    /* Warning neon orange */
+    --warning: 30 100% 60%;
+    --warning-foreground: 222 47% 3%;
+
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 217 32% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 195 100% 60%;
+
+    /* Chart colors for distinct visualization */
+    --chart-commercial: 30 100% 60%; /* Neon orange for commercial */
+    --chart-public: 195 100% 60%; /* Neon blue for public */
+    --chart-residential: 120 100% 50%; /* Neon green for residential */
+    --chart-industrial: 280 100% 70%; /* Neon purple for industrial */
+
+    /* Futuristic gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--cyan)) 100%);
+    --gradient-success: linear-gradient(135deg, hsl(var(--success)) 0%, hsl(var(--primary)) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(222 47% 3%) 0%, hsl(var(--primary-dark)) 50%, hsl(var(--cyan)) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(224 71% 4% / 0.8) 0%, hsl(217 32% 17% / 0.4) 100%);
+    
+    /* Neon glow shadows */
+    --shadow-elegant: 0 0 30px hsl(var(--primary) / 0.3), 0 0 60px hsl(var(--primary) / 0.1);
+    --shadow-card: 0 4px 20px hsl(var(--primary) / 0.15), 0 0 40px hsl(var(--primary) / 0.05);
+    --shadow-glow: 0 0 20px hsl(var(--primary) / 0.4), 0 0 40px hsl(var(--cyan) / 0.2);
+    --shadow-neon: 0 0 5px hsl(var(--primary)), 0 0 20px hsl(var(--primary)), 0 0 40px hsl(var(--primary));
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .light {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
@@ -17,18 +102,21 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    /* Government blue primary scheme */
+    /* Light mode keeps the government blue theme */
     --primary: 217 91% 25%;
     --primary-foreground: 0 0% 98%;
     --primary-light: 217 91% 35%;
     --primary-glow: 217 91% 45%;
+    --primary-dark: 217 91% 15%;
 
-    /* Success green for verified addresses */
+    --cyan: 190 100% 40%;
+    --cyan-foreground: 0 0% 98%;
+    --cyan-light: 190 100% 50%;
+
     --success: 142 76% 36%;
     --success-foreground: 0 0% 98%;
     --success-light: 142 69% 45%;
 
-    /* Warning amber for pending verification */
     --warning: 43 96% 56%;
     --warning-foreground: 0 0% 98%;
 
@@ -48,75 +136,23 @@ All colors MUST be HSL.
     --input: 214.3 31.8% 91.4%;
     --ring: 217 91% 25%;
 
-    /* Chart colors for distinct visualization */
-    --chart-commercial: 43 96% 56%; /* Amber for commercial */
-    --chart-public: 217 91% 25%; /* Government blue for public */
-    --chart-residential: 142 76% 36%; /* Green for residential */
-    --chart-industrial: 15 86% 53%; /* Orange for industrial */
-
-    /* Custom gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
     --gradient-success: linear-gradient(135deg, hsl(var(--success)), hsl(var(--success-light)));
     --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 100%);
-    
-    /* Shadows */
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.8) 0%, hsl(210 40% 96% / 0.4) 100%);
+
     --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.2);
     --shadow-card: 0 4px 20px -4px hsl(var(--primary) / 0.1);
-
-    --radius: 0.5rem;
+    --shadow-glow: 0 0 20px hsl(var(--primary) / 0.3);
+    --shadow-neon: 0 0 5px hsl(var(--primary) / 0.5);
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
@@ -128,5 +164,64 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Futuristic glass morphism effect */
+  .glass {
+    background: hsl(var(--card) / 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid hsl(var(--border) / 0.2);
+  }
+
+  /* Neon text glow effect */
+  .text-neon {
+    text-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 20px currentColor;
+  }
+
+  /* Pulsing glow animation */
+  .glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow-pulse {
+    from {
+      box-shadow: 0 0 5px hsl(var(--primary) / 0.5), 0 0 10px hsl(var(--primary) / 0.3);
+    }
+    to {
+      box-shadow: 0 0 10px hsl(var(--primary) / 0.8), 0 0 20px hsl(var(--primary) / 0.6), 0 0 30px hsl(var(--primary) / 0.4);
+    }
+  }
+
+  /* Floating animation */
+  .float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  /* Gradient text */
+  .text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+  }
+
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
   }
 }
