@@ -70,13 +70,32 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
       handleSearch();
     }
   };
+  const openDirectionsForResult = (result: SearchResult, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    const lat = result.coordinates.lat;
+    const lng = result.coordinates.lng;
+    const userAgent = navigator.userAgent || navigator.vendor;
+    let url = '';
+
+    if (/iPad|iPhone|iPod/.test(userAgent)) {
+      // iOS - Apple Maps
+      url = `http://maps.apple.com/?daddr=${lat},${lng}&dirflg=d`;
+    } else if (/android/i.test(userAgent)) {
+      // Android - Google Maps
+      url = `https://www.google.com/maps/dir/current+location/${lat},${lng}`;
+    } else {
+      // Desktop - Google Maps
+      url = `https://www.google.com/maps/dir/current+location/${lat},${lng}`;
+    }
+
+    window.open(url, '_blank');
+  };
 
   const handleSelectResult = (result: SearchResult) => {
     setShowResults(false);
     setQuery(result.readable);
     onSelectAddress?.(result);
   };
-
   return (
     <div className={cn("w-full max-w-2xl", className)}>
       <div className="flex gap-2">
@@ -138,7 +157,15 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
                           </span>
                         </div>
                       </div>
-                      <Navigation className="h-4 w-4 text-muted-foreground mt-1 flex-shrink-0" />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => openDirectionsForResult(result, e)}
+                        aria-label="Get directions"
+                        title="Get directions"
+                      >
+                        <Navigation className="h-4 w-4 text-muted-foreground" />
+                      </Button>
                     </div>
                   </div>
                 ))}
