@@ -453,10 +453,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
         <div className="flex flex-col gap-3">
           <Button 
             onClick={getDirections}
-            disabled={
-              (originType === 'uac' && !originAddress) || 
-              (originType === 'current' && !currentLocation && !locationError)
-            }
+            disabled={originType === 'uac' && !originAddress}
             className="w-full flex items-center gap-2"
             variant="hero"
           >

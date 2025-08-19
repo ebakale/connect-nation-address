@@ -29,10 +29,11 @@ interface SearchResult {
 interface AddressMapViewerProps {
   address: SearchResult;
   onBack: () => void;
+  autoShowDirections?: boolean;
 }
 
-const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack }) => {
-  const [showDirections, setShowDirections] = useState(false);
+const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack, autoShowDirections = false }) => {
+  const [showDirections, setShowDirections] = useState(!!autoShowDirections);
   const { toast } = useToast();
 
   const copyToClipboard = (text: string, label: string) => {
