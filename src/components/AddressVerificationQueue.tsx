@@ -156,7 +156,7 @@ export const AddressVerificationQueue = () => {
 
       {/* Map Dialog */}
       <Dialog open={mapDialogOpen} onOpenChange={setMapDialogOpen}>
-        <DialogContent className="max-w-4xl w-full h-[80vh]">
+        <DialogContent className="max-w-none w-screen h-screen p-0">
           <DialogHeader>
             <DialogTitle>
               Address Location: {selectedAddress?.uac}
