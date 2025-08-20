@@ -31,6 +31,7 @@ import { AddressRequestApproval } from "@/components/AddressRequestApproval";
 import DraftManager from "@/components/DraftManager";
 import FieldMap from "@/components/FieldMap";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
+import { SystemManualPDF } from "@/components/SystemManualPDF";
 
 interface SearchResult {
   uac: string;
@@ -435,6 +436,7 @@ const UnifiedDashboard = () => {
                     including their permissions, geographic scope, workflow stages, and specific responsibilities.
                   </p>
                   <RolesDocumentGenerator />
+                  <SystemManualPDF />
                 </div>
               </CardContent>
             </Card>
