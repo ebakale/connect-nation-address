@@ -3,13 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useAddresses } from "@/hooks/useAddresses";
 import { CheckCircle, XCircle, Eye, MapPin, FileText, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AddressLocationMap } from "@/components/AddressLocationMap";
+import { AddressRejectionDialog } from "@/components/AddressRejectionDialog";
 import { supabase } from "@/integrations/supabase/client";
 
 export const AddressVerificationQueue = () => {
@@ -17,12 +15,10 @@ export const AddressVerificationQueue = () => {
   const { toast } = useToast();
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [mapDialogOpen, setMapDialogOpen] = useState(false);
+  const [rejectionDialogOpen, setRejectionDialogOpen] = useState(false);
+  const [itemToReject, setItemToReject] = useState<any>(null);
   const [reviewItems, setReviewItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [rejectionDialogOpen, setRejectionDialogOpen] = useState(false);
-  const [rejectionItem, setRejectionItem] = useState<any>(null);
-  const [rejectionReason, setRejectionReason] = useState("");
-  const [rejectionNotes, setRejectionNotes] = useState("");
 
   useEffect(() => {
     console.log('AddressVerificationQueue: Component mounted, fetching review queue...');
@@ -53,8 +49,8 @@ export const AddressVerificationQueue = () => {
 
   const handleVerify = async (item: any, verified: boolean) => {
     if (!verified) {
-      // Open rejection dialog for detailed feedback
-      setRejectionItem(item);
+      // Open rejection dialog for rejections
+      setItemToReject(item);
       setRejectionDialogOpen(true);
       return;
     }
@@ -101,30 +97,26 @@ export const AddressVerificationQueue = () => {
     }
   };
 
-  const handleRejectWithFeedback = async () => {
-    if (!rejectionItem || !rejectionReason.trim()) {
-      toast({
-        title: "Error",
-        description: "Rejection reason is required",
-        variant: "destructive",
-      });
-      return;
-    }
+  const handleRejectWithFeedback = async (reason: string, notes: string) => {
+    if (!itemToReject) return;
 
+    console.log('Rejecting item with feedback:', itemToReject.id, 'reason:', reason);
     try {
-      if (rejectionItem.source_type === 'request') {
+      if (itemToReject.source_type === 'request') {
+        // Use the new rejection function for requests
         const { error } = await supabase.rpc('reject_address_request_with_feedback', {
-          p_request_id: rejectionItem.id,
-          p_rejection_reason: rejectionReason,
-          p_rejection_notes: rejectionNotes || null
+          p_request_id: itemToReject.id,
+          p_rejection_reason: reason,
+          p_rejection_notes: notes
         });
         
         if (error) throw error;
-      } else if (rejectionItem.source_type === 'flagged_address') {
+      } else if (itemToReject.source_type === 'flagged_address') {
+        // Use the new rejection function for flagged addresses
         const { error } = await supabase.rpc('reject_flagged_address_with_feedback', {
-          p_address_id: rejectionItem.id,
-          p_rejection_reason: rejectionReason,
-          p_rejection_notes: rejectionNotes || null
+          p_address_id: itemToReject.id,
+          p_rejection_reason: reason,
+          p_rejection_notes: notes
         });
         
         if (error) throw error;
@@ -132,14 +124,8 @@ export const AddressVerificationQueue = () => {
       
       toast({
         title: "Success",
-        description: `${rejectionItem.source_type === 'request' ? 'Request' : 'Address'} rejected with feedback`,
+        description: `${itemToReject.source_type === 'request' ? 'Request' : 'Address'} rejected with feedback. User has been notified.`,
       });
-      
-      // Reset form and close dialog
-      setRejectionReason("");
-      setRejectionNotes("");
-      setRejectionDialogOpen(false);
-      setRejectionItem(null);
       
       fetchReviewQueue(); // Refresh the queue
     } catch (error) {
@@ -439,73 +425,17 @@ export const AddressVerificationQueue = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Rejection Feedback Dialog */}
-      <Dialog open={rejectionDialogOpen} onOpenChange={setRejectionDialogOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>
-              Reject {rejectionItem?.source_type === 'request' ? 'Request' : 'Address'} with Feedback
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="p-3 bg-muted border rounded-lg">
-              <p className="text-sm">
-                <span className="font-medium">Address:</span> {rejectionItem?.building && `${rejectionItem.building}, `}
-                {rejectionItem?.street}, {rejectionItem?.city}, {rejectionItem?.region}
-              </p>
-              {rejectionItem?.uac && (
-                <p className="text-sm">
-                  <span className="font-medium">UAC:</span> {rejectionItem.uac}
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="rejectionReason">Rejection Reason *</Label>
-              <Input
-                id="rejectionReason"
-                value={rejectionReason}
-                onChange={(e) => setRejectionReason(e.target.value)}
-                placeholder="Brief reason for rejection (e.g., Invalid coordinates, Missing documentation)"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="rejectionNotes">Additional Notes (Optional)</Label>
-              <Textarea
-                id="rejectionNotes"
-                value={rejectionNotes}
-                onChange={(e) => setRejectionNotes(e.target.value)}
-                placeholder="Detailed explanation or specific instructions for resubmission..."
-                rows={4}
-              />
-            </div>
-
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setRejectionDialogOpen(false);
-                  setRejectionReason("");
-                  setRejectionNotes("");
-                  setRejectionItem(null);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={handleRejectWithFeedback}
-                disabled={!rejectionReason.trim()}
-              >
-                <XCircle className="h-4 w-4 mr-2" />
-                Reject with Feedback
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Rejection Dialog */}
+      <AddressRejectionDialog
+        isOpen={rejectionDialogOpen}
+        onClose={() => {
+          setRejectionDialogOpen(false);
+          setItemToReject(null);
+        }}
+        onReject={handleRejectWithFeedback}
+        itemType={itemToReject?.source_type || 'request'}
+        item={itemToReject}
+      />
     </div>
   );
 };
