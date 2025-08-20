@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
 import { 
   Zap, 
   CheckCircle, 
@@ -12,7 +13,8 @@ import {
   Clock,
   Target,
   Shield,
-  MapPin
+  MapPin,
+  CheckSquare
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -49,6 +51,18 @@ interface BatchResult {
   }>;
 }
 
+interface PendingRequest {
+  id: string;
+  street: string;
+  city: string;
+  region: string;
+  country: string;
+  latitude: number;
+  longitude: number;
+  created_at: string;
+  justification: string;
+}
+
 interface AutoVerificationToolsProps {
   onUpdate?: () => void;
 }
@@ -58,6 +72,9 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
   const [batchProcessing, setBatchProcessing] = useState(false);
   const [lastResult, setLastResult] = useState<AutoVerificationResult | null>(null);
   const [batchResult, setBatchResult] = useState<BatchResult | null>(null);
+  const [pendingRequests, setPendingRequests] = useState<PendingRequest[]>([]);
+  const [selectedRequests, setSelectedRequests] = useState<string[]>([]);
+  const [loadingRequests, setLoadingRequests] = useState(false);
 
   const handleSingleVerification = async (requestId: string) => {
     setProcessing(true);
@@ -79,17 +96,45 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
     }
   };
 
+  const loadPendingRequests = async () => {
+    setLoadingRequests(true);
+    try {
+      const { data, error } = await supabase
+        .from('address_requests')
+        .select('id, street, city, region, country, latitude, longitude, created_at, justification')
+        .eq('status', 'pending')
+        .is('auto_verified_at', null)
+        .order('created_at', { ascending: true })
+        .limit(20);
+
+      if (error) throw error;
+      setPendingRequests(data || []);
+    } catch (error) {
+      console.error('Failed to load pending requests:', error);
+      toast.error("Failed to load pending requests");
+    } finally {
+      setLoadingRequests(false);
+    }
+  };
+
+  useEffect(() => {
+    loadPendingRequests();
+  }, []);
+
   const handleBatchVerification = async () => {
     setBatchProcessing(true);
     try {
+      const requestIds = selectedRequests.length > 0 ? selectedRequests : undefined;
       const { data, error } = await supabase.functions.invoke('auto-verify-address', {
-        body: { mode: 'batch' }
+        body: { mode: 'batch', requestIds }
       });
 
       if (error) throw error;
 
       setBatchResult(data);
       toast.success(`Batch processed: ${data.approved} approved, ${data.flagged} flagged`);
+      setSelectedRequests([]);
+      loadPendingRequests();
       onUpdate?.();
     } catch (error) {
       console.error('Batch verification failed:', error);
@@ -97,6 +142,22 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
     } finally {
       setBatchProcessing(false);
     }
+  };
+
+  const handleSelectAll = () => {
+    if (selectedRequests.length === pendingRequests.length) {
+      setSelectedRequests([]);
+    } else {
+      setSelectedRequests(pendingRequests.map(req => req.id));
+    }
+  };
+
+  const handleSelectRequest = (requestId: string) => {
+    setSelectedRequests(prev => 
+      prev.includes(requestId) 
+        ? prev.filter(id => id !== requestId)
+        : [...prev, requestId]
+    );
   };
 
   const getScoreColor = (score: number) => {
@@ -130,7 +191,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Button
               onClick={handleBatchVerification}
-              disabled={batchProcessing}
+              disabled={batchProcessing || (pendingRequests.length === 0)}
               className="flex items-center gap-2"
             >
               {batchProcessing ? (
@@ -141,14 +202,19 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
               ) : (
                 <>
                   <Target className="h-4 w-4" />
-                  Run Batch Auto-Verification
+                  Run Auto-Verification {selectedRequests.length > 0 && `(${selectedRequests.length} selected)`}
                 </>
               )}
             </Button>
 
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Shield className="h-4 w-4" />
-              <span>Processes up to 10 pending requests</span>
+              <span>
+                {selectedRequests.length > 0 
+                  ? `Process ${selectedRequests.length} selected requests` 
+                  : `Process all ${pendingRequests.length} pending requests`
+                }
+              </span>
             </div>
           </div>
 
@@ -162,6 +228,84 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
           </div>
         </CardContent>
       </Card>
+
+      {/* Request Selection */}
+      {pendingRequests.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CheckSquare className="h-5 w-5 text-primary" />
+                Select Requests for Auto-Verification
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleSelectAll}
+                disabled={loadingRequests}
+              >
+                {selectedRequests.length === pendingRequests.length ? 'Deselect All' : 'Select All'}
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {loadingRequests ? (
+              <div className="flex items-center justify-center py-8">
+                <Clock className="h-6 w-6 animate-spin text-muted-foreground" />
+                <span className="ml-2 text-muted-foreground">Loading pending requests...</span>
+              </div>
+            ) : (
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {pendingRequests.map((request) => (
+                  <div 
+                    key={request.id} 
+                    className="flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50"
+                  >
+                    <Checkbox
+                      checked={selectedRequests.includes(request.id)}
+                      onCheckedChange={() => handleSelectRequest(request.id)}
+                      className="mt-1"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1">
+                          <p className="font-medium text-sm">
+                            {request.street}, {request.city}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {request.region}, {request.country}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Coordinates: {request.latitude}, {request.longitude}
+                          </p>
+                          {request.justification && (
+                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                              {request.justification}
+                            </p>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <Badge variant="outline" className="text-xs">
+                            {request.id.slice(0, 8)}...
+                          </Badge>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {new Date(request.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {pendingRequests.length === 0 && !loadingRequests && (
+              <div className="text-center py-8 text-muted-foreground">
+                No pending requests available for auto-verification
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Batch Results */}
       {batchResult && (

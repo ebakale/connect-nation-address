@@ -18,10 +18,10 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { requestId, mode = 'single' } = await req.json();
+    const { requestId, mode = 'single', requestIds } = await req.json();
 
     if (mode === 'batch') {
-      return await processBatchVerification(supabase);
+      return await processBatchVerification(supabase, requestIds);
     } else {
       return await processSingleVerification(supabase, requestId);
     }
@@ -86,14 +86,20 @@ async function processSingleVerification(supabase: any, requestId: string) {
   );
 }
 
-async function processBatchVerification(supabase: any) {
-  // Get pending requests that haven't been auto-verified
-  const { data: requests, error: fetchError } = await supabase
+async function processBatchVerification(supabase: any, requestIds?: string[]) {
+  let query = supabase
     .from('address_requests')
     .select('*')
     .eq('status', 'pending')
-    .is('auto_verified_at', null)
-    .limit(10);
+    .is('auto_verified_at', null);
+
+  if (requestIds && requestIds.length > 0) {
+    query = query.in('id', requestIds);
+  } else {
+    query = query.limit(10);
+  }
+
+  const { data: requests, error: fetchError } = await query;
 
   if (fetchError) throw fetchError;
 
