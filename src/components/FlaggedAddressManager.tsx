@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, User, Building, Calendar, Flag, CheckCircle } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { MapPin, User, Building, Calendar, Flag, CheckCircle, AlertTriangle, BarChart3, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AddressRejectionDialog } from "./AddressRejectionDialog";
@@ -24,6 +26,12 @@ interface FlaggedAddress {
   flagged_at?: string;
   status: string;
   justification?: string;
+  verification_analysis?: any;
+  verification_recommendations?: string[];
+  auto_verification_analysis?: any;
+  reviewer_notes?: string;
+  rejection_reason?: string;
+  rejection_notes?: string;
 }
 
 interface FlaggedAddressManagerProps {
@@ -112,7 +120,8 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
+              {/* Basic Address Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
@@ -122,6 +131,9 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                   <p className="text-sm pl-6">
                     {address.building && `${address.building}, `}
                     {address.street}, {address.city}, {address.region}, {address.country}
+                  </p>
+                  <p className="text-xs text-muted-foreground pl-6">
+                    Coordinates: {address.latitude}, {address.longitude}
                   </p>
                   <p className="text-xs text-muted-foreground pl-6">
                     Request ID: {address.id.slice(0, 8)}...
@@ -137,10 +149,11 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                 </div>
               </div>
 
+              {/* Justification and Description */}
               {address.justification && (
                 <div className="space-y-2">
                   <span className="text-sm font-medium">Justification</span>
-                  <p className="text-sm text-muted-foreground">{address.justification}</p>
+                  <p className="text-sm text-muted-foreground bg-muted p-3 rounded">{address.justification}</p>
                 </div>
               )}
 
@@ -151,23 +164,173 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                 </div>
               )}
 
+              {/* Flag Information */}
               {address.flag_reason && (
                 <div className="space-y-2">
                   <span className="text-sm font-medium">Flag Reason</span>
-                  <p className="text-sm text-red-600 bg-red-50 p-2 rounded">{address.flag_reason}</p>
+                  <p className="text-sm text-red-600 bg-red-50 p-3 rounded border border-red-200">{address.flag_reason}</p>
                 </div>
               )}
 
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Calendar className="h-3 w-3" />
-                <span>Flagged {address.flagged_at ? new Date(address.flagged_at).toLocaleDateString() : 'Unknown'}</span>
-                <User className="h-3 w-3 ml-4" />
-                <span>User ID: {address.user_id.slice(0, 8)}...</span>
-              </div>
+              {/* Manual Verification Analysis */}
+              {address.verification_analysis && (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <BarChart3 className="h-4 w-4 text-blue-600" />
+                    <span className="text-sm font-medium">Manual Verification Analysis</span>
+                  </div>
+                  <div className="bg-blue-50 border border-blue-200 rounded p-4 space-y-3">
+                    {address.verification_analysis.overallScore && (
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-medium">Overall Score</span>
+                          <span className="text-sm font-bold text-blue-700">
+                            {address.verification_analysis.overallScore}%
+                          </span>
+                        </div>
+                        <Progress value={address.verification_analysis.overallScore} className="h-2" />
+                      </div>
+                    )}
+                    
+                    {address.verification_analysis.accuracy && (
+                      <div className="grid grid-cols-2 gap-4 text-xs">
+                        <div>
+                          <span className="font-medium">Accuracy:</span>
+                          <p>{address.verification_analysis.accuracy.precision}</p>
+                          <p>Score: {address.verification_analysis.accuracy.score}%</p>
+                        </div>
+                        {address.verification_analysis.consistency && (
+                          <div>
+                            <span className="font-medium">Consistency:</span>
+                            <p>Score: {address.verification_analysis.consistency.score}%</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    {address.verification_analysis.reasoning && (
+                      <p className="text-xs text-blue-800">{address.verification_analysis.reasoning}</p>
+                    )}
+                  </div>
+                </div>
+              )}
 
+              {/* Auto-Verification Analysis */}
+              {address.auto_verification_analysis && (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-4 w-4 text-purple-600" />
+                    <span className="text-sm font-medium">Auto-Verification Analysis</span>
+                  </div>
+                  <div className="bg-purple-50 border border-purple-200 rounded p-4 space-y-3">
+                    {address.auto_verification_analysis.overallScore && (
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-medium">Overall Score</span>
+                          <span className="text-sm font-bold text-purple-700">
+                            {address.auto_verification_analysis.overallScore}%
+                          </span>
+                        </div>
+                        <Progress value={address.auto_verification_analysis.overallScore} className="h-2" />
+                      </div>
+                    )}
+                    
+                    <div className="grid grid-cols-2 gap-4 text-xs">
+                      {address.auto_verification_analysis.coordinateValidity && (
+                        <div>
+                          <span className="font-medium">Coordinate Validity:</span>
+                          <p>{address.auto_verification_analysis.coordinateValidity}%</p>
+                        </div>
+                      )}
+                      {address.auto_verification_analysis.addressConsistency && (
+                        <div>
+                          <span className="font-medium">Address Consistency:</span>
+                          <p>{address.auto_verification_analysis.addressConsistency}%</p>
+                        </div>
+                      )}
+                      {address.auto_verification_analysis.completeness && (
+                        <div>
+                          <span className="font-medium">Completeness:</span>
+                          <p>{address.auto_verification_analysis.completeness}%</p>
+                        </div>
+                      )}
+                      {address.auto_verification_analysis.fraudRisk && (
+                        <div>
+                          <span className="font-medium">Fraud Risk:</span>
+                          <p className="text-red-600">{address.auto_verification_analysis.fraudRisk}%</p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {address.auto_verification_analysis.reasoning && (
+                      <p className="text-xs text-purple-800">{address.auto_verification_analysis.reasoning}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Verification Recommendations */}
+              {address.verification_recommendations && address.verification_recommendations.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                    <span className="text-sm font-medium">Verification Recommendations</span>
+                  </div>
+                  <div className="bg-yellow-50 border border-yellow-200 rounded p-3">
+                    <ul className="text-sm space-y-1">
+                      {address.verification_recommendations.map((rec, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="text-yellow-600 mt-1">•</span>
+                          <span className="text-yellow-800">{rec}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+
+              {/* Auto-Verification Recommendations */}
+              {address.auto_verification_analysis?.recommendations && address.auto_verification_analysis.recommendations.length > 0 && (
+                <div className="space-y-2">
+                  <span className="text-sm font-medium">Auto-Verification Recommendations</span>
+                  <div className="bg-gray-50 border border-gray-200 rounded p-3">
+                    <ul className="text-sm space-y-1">
+                      {address.auto_verification_analysis.recommendations.map((rec: string, index: number) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="text-gray-600 mt-1">•</span>
+                          <span className="text-gray-800">{rec}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+
+              {/* Reviewer Notes */}
+              {address.reviewer_notes && (
+                <div className="space-y-2">
+                  <span className="text-sm font-medium">Reviewer Notes</span>
+                  <p className="text-sm text-muted-foreground bg-gray-50 p-3 rounded border">{address.reviewer_notes}</p>
+                </div>
+              )}
+
+              {/* Previous Rejection Information */}
+              {address.rejection_reason && (
+                <div className="space-y-2">
+                  <span className="text-sm font-medium">Previous Rejection</span>
+                  <div className="bg-red-50 border border-red-200 rounded p-3 space-y-2">
+                    <p className="text-sm text-red-700"><strong>Reason:</strong> {address.rejection_reason}</p>
+                    {address.rejection_notes && (
+                      <p className="text-sm text-red-600"><strong>Notes:</strong> {address.rejection_notes}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Photo */}
               {address.photo_url && (
                 <div className="space-y-2">
-                  <span className="text-sm font-medium">Photo</span>
+                  <span className="text-sm font-medium">Verification Photo</span>
                   <img 
                     src={address.photo_url} 
                     alt="Address verification photo"
@@ -176,6 +339,20 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                 </div>
               )}
 
+              {/* Metadata */}
+              <Separator />
+              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-3 w-3" />
+                  <span>Flagged {address.flagged_at ? new Date(address.flagged_at).toLocaleDateString() : 'Unknown'}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <User className="h-3 w-3" />
+                  <span>User ID: {address.user_id.slice(0, 8)}...</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
               <div className="flex gap-2 pt-4">
                 <Button
                   onClick={() => handleApprove(address.id)}

@@ -62,10 +62,18 @@ export function AddressVerificationQueue() {
 
   const fetchFlaggedAddresses = async () => {
     try {
-      // Get flagged requests instead of flagged addresses
+      // Get flagged requests with all verification data
       const { data, error } = await supabase
         .from('address_requests')
-        .select('*')
+        .select(`
+          *,
+          verification_analysis,
+          verification_recommendations,
+          auto_verification_analysis,
+          reviewer_notes,
+          rejection_reason,
+          rejection_notes
+        `)
         .eq('flagged', true)
         .order('flagged_at', { ascending: false });
       
