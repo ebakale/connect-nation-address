@@ -103,7 +103,6 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
         .from('address_requests')
         .select('id, street, city, region, country, latitude, longitude, created_at, justification')
         .eq('status', 'pending')
-        .is('auto_verified_at', null)
         .order('created_at', { ascending: true })
         .limit(20);
 
