@@ -20,9 +20,10 @@ interface FlaggedAddress {
   address_type: string;
   description?: string;
   photo_url?: string;
-  uac: string;
   flag_reason?: string;
   flagged_at?: string;
+  status: string;
+  justification?: string;
 }
 
 interface FlaggedAddressManagerProps {
@@ -36,20 +37,20 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [selectedAddress, setSelectedAddress] = useState<FlaggedAddress | null>(null);
 
-  const handleUnflag = async (addressId: string) => {
-    setProcessing(addressId);
+  const handleApprove = async (requestId: string) => {
+    setProcessing(requestId);
     try {
-      const { error } = await supabase.rpc('unflag_address', {
-        p_address_id: addressId
+      const { error } = await supabase.rpc('approve_address_request', {
+        p_request_id: requestId
       });
 
       if (error) throw error;
 
-      toast.success("Address unflagged successfully");
+      toast.success("Flagged request approved successfully");
       onUpdate();
     } catch (error) {
-      console.error('Error unflagging address:', error);
-      toast.error("Failed to unflag address");
+      console.error('Error approving flagged request:', error);
+      toast.error("Failed to approve flagged request");
     } finally {
       setProcessing(null);
     }
@@ -65,19 +66,19 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
     if (!selectedAddressId) return;
 
     try {
-      const { error } = await supabase.rpc('reject_flagged_address_with_feedback', {
-        p_address_id: selectedAddressId,
+      const { error } = await supabase.rpc('reject_address_request_with_feedback', {
+        p_request_id: selectedAddressId,
         p_rejection_reason: reason,
         p_rejection_notes: notes
       });
 
       if (error) throw error;
 
-      toast.success("Flagged address rejected with feedback");
+      toast.success("Flagged request rejected with feedback");
       onUpdate();
     } catch (error) {
-      console.error('Error rejecting flagged address:', error);
-      toast.error("Failed to reject flagged address");
+      console.error('Error rejecting flagged request:', error);
+      toast.error("Failed to reject flagged request");
     } finally {
       setRejectionDialogOpen(false);
       setSelectedAddressId(null);
@@ -88,8 +89,8 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
     return (
       <div className="text-center py-8">
         <CheckCircle className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-        <h3 className="text-lg font-medium">No flagged addresses</h3>
-        <p className="text-muted-foreground">All addresses are in good standing.</p>
+        <h3 className="text-lg font-medium">No flagged requests</h3>
+        <p className="text-muted-foreground">All address requests are clear for review.</p>
       </div>
     );
   }
@@ -101,11 +102,14 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
           <Card key={address.id} className="border-l-4 border-l-red-500">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Flagged Address</CardTitle>
-                <Badge variant="outline" className="bg-red-50 text-red-700">
-                  <Flag className="h-3 w-3 mr-1" />
-                  Flagged
-                </Badge>
+                <CardTitle className="text-lg">Flagged Address Request</CardTitle>
+                <div className="flex gap-2">
+                  <Badge variant="outline" className="bg-red-50 text-red-700">
+                    <Flag className="h-3 w-3 mr-1" />
+                    Flagged
+                  </Badge>
+                  <Badge variant="outline">{address.status}</Badge>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -120,7 +124,7 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                     {address.street}, {address.city}, {address.region}, {address.country}
                   </p>
                   <p className="text-xs text-muted-foreground pl-6">
-                    UAC: {address.uac}
+                    Request ID: {address.id.slice(0, 8)}...
                   </p>
                 </div>
 
@@ -132,6 +136,13 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                   <p className="text-sm pl-6 capitalize">{address.address_type}</p>
                 </div>
               </div>
+
+              {address.justification && (
+                <div className="space-y-2">
+                  <span className="text-sm font-medium">Justification</span>
+                  <p className="text-sm text-muted-foreground">{address.justification}</p>
+                </div>
+              )}
 
               {address.description && (
                 <div className="space-y-2">
@@ -167,11 +178,11 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
 
               <div className="flex gap-2 pt-4">
                 <Button
-                  onClick={() => handleUnflag(address.id)}
+                  onClick={() => handleApprove(address.id)}
                   disabled={processing === address.id}
                   className="flex-1"
                 >
-                  {processing === address.id ? "Unflagging..." : "Approve & Unflag"}
+                  {processing === address.id ? "Approving..." : "Approve Request"}
                 </Button>
                 <Button
                   variant="outline"
@@ -179,7 +190,7 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                   disabled={processing === address.id}
                   className="flex-1"
                 >
-                  Reject
+                  Reject Request
                 </Button>
               </div>
             </CardContent>
@@ -191,7 +202,7 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
         isOpen={rejectionDialogOpen}
         onClose={() => setRejectionDialogOpen(false)}
         onReject={handleRejectWithFeedback}
-        itemType="flagged_address"
+        itemType="flagged_request"
         item={selectedAddress}
       />
     </>

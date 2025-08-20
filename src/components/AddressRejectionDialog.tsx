@@ -10,7 +10,7 @@ interface AddressRejectionDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onReject: (reason: string, notes: string) => void;
-  itemType: 'request' | 'flagged_address';
+  itemType: 'request' | 'flagged_address' | 'flagged_request';
   item: any;
 }
 
@@ -33,6 +33,16 @@ const REJECTION_REASONS = {
     "Location inaccessible or does not exist",
     "Violates address standards",
     "Security or safety concerns",
+    "Other (specify in notes)"
+  ],
+  flagged_request: [
+    "Coordinates still inaccurate after flagging",
+    "Address information remains inconsistent",
+    "Location verification failed",
+    "Insufficient corrections made",
+    "Safety or accessibility concerns remain",
+    "Documentation still inadequate",
+    "Does not meet address standards",
     "Other (specify in notes)"
   ]
 };
@@ -70,7 +80,7 @@ export const AddressRejectionDialog = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-destructive">
             <FileX className="h-5 w-5" />
-            Reject {itemType === 'request' ? 'Address Request' : 'Flagged Address'}
+            Reject {itemType === 'request' ? 'Address Request' : itemType === 'flagged_request' ? 'Flagged Request' : 'Flagged Address'}
           </DialogTitle>
         </DialogHeader>
 
@@ -94,6 +104,8 @@ export const AddressRejectionDialog = ({
               <p className="text-yellow-700">
                 {itemType === 'request' 
                   ? "This request will be sent back to the user with your feedback for corrections and resubmission."
+                  : itemType === 'flagged_request'
+                  ? "This flagged request will be rejected. The user will need to submit a new corrected request."
                   : "This address will be marked as rejected with your feedback. The user can address the issues and request re-verification."
                 }
               </p>

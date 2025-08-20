@@ -38,9 +38,10 @@ interface FlaggedAddress {
   address_type: string;
   description?: string;
   photo_url?: string;
-  uac: string;
   flag_reason?: string;
   flagged_at?: string;
+  status: string;
+  justification?: string;
 }
 
 export function AddressVerificationQueue() {
@@ -61,7 +62,13 @@ export function AddressVerificationQueue() {
 
   const fetchFlaggedAddresses = async () => {
     try {
-      const { data, error } = await supabase.rpc('get_flagged_addresses_queue');
+      // Get flagged requests instead of flagged addresses
+      const { data, error } = await supabase
+        .from('address_requests')
+        .select('*')
+        .eq('flagged', true)
+        .order('flagged_at', { ascending: false });
+      
       if (error) throw error;
       setFlaggedAddresses(data || []);
     } catch (error) {
