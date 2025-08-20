@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, User, Building, Calendar, CheckCircle } from "lucide-react";
+import { MapPin, User, Building, Calendar, CheckCircle, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AddressRejectionDialog } from "./AddressRejectionDialog";
@@ -31,6 +31,7 @@ interface AddressRequestApprovalProps {
 
 export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApprovalProps) {
   const [processing, setProcessing] = useState<string | null>(null);
+  const [autoVerifying, setAutoVerifying] = useState<string | null>(null);
   const [rejectionDialogOpen, setRejectionDialogOpen] = useState(false);
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [selectedRequest, setSelectedRequest] = useState<AddressRequest | null>(null);
@@ -80,6 +81,25 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
     } finally {
       setRejectionDialogOpen(false);
       setSelectedRequestId(null);
+    }
+  };
+
+  const handleAutoVerify = async (requestId: string) => {
+    setAutoVerifying(requestId);
+    try {
+      const { data, error } = await supabase.functions.invoke('auto-verify-address', {
+        body: { requestId, mode: 'single' }
+      });
+
+      if (error) throw error;
+
+      toast.success(`Auto-verification: ${data.decision.action} (Score: ${data.analysis.overallScore}%)`);
+      onUpdate();
+    } catch (error) {
+      console.error('Auto-verification failed:', error);
+      toast.error("Auto-verification failed");
+    } finally {
+      setAutoVerifying(null);
     }
   };
 
@@ -163,16 +183,34 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
 
               <div className="flex gap-2 pt-4">
                 <Button
+                  onClick={() => handleAutoVerify(request.id)}
+                  disabled={processing === request.id || autoVerifying === request.id}
+                  variant="outline"
+                  className="flex items-center gap-1"
+                >
+                  {autoVerifying === request.id ? (
+                    <>
+                      <Zap className="h-4 w-4 animate-pulse" />
+                      Auto-Verifying...
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="h-4 w-4" />
+                      Auto-Verify
+                    </>
+                  )}
+                </Button>
+                <Button
                   onClick={() => handleApprove(request.id)}
-                  disabled={processing === request.id}
+                  disabled={processing === request.id || autoVerifying === request.id}
                   className="flex-1"
                 >
-                  {processing === request.id ? "Approving..." : "Approve & Create Address"}
+                  {processing === request.id ? "Approving..." : "Manual Approve"}
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => handleReject(request)}
-                  disabled={processing === request.id}
+                  disabled={processing === request.id || autoVerifying === request.id}
                   className="flex-1"
                 >
                   Reject

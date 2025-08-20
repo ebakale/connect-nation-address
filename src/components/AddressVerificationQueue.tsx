@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AddressRequestApproval } from "./AddressRequestApproval";
 import { FlaggedAddressManager } from "./FlaggedAddressManager";
+import { AutoVerificationTools } from "./AutoVerificationTools";
 import { toast } from "sonner";
 
 interface AddressRequest {
@@ -90,8 +91,11 @@ export function AddressVerificationQueue() {
           <CardTitle>Verification Queues</CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="requests" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+          <Tabs defaultValue="auto-verify" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="auto-verify">
+                Auto-Verify Tools
+              </TabsTrigger>
               <TabsTrigger value="requests" className="relative">
                 Address Requests
                 {addressRequests.length > 0 && (
@@ -115,6 +119,10 @@ export function AddressVerificationQueue() {
                 )}
               </TabsTrigger>
             </TabsList>
+            
+            <TabsContent value="auto-verify" className="mt-6">
+              <AutoVerificationTools onUpdate={fetchData} />
+            </TabsContent>
             
             <TabsContent value="requests" className="mt-6">
               <AddressRequestApproval 

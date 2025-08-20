@@ -17,6 +17,9 @@ export type Database = {
       address_requests: {
         Row: {
           address_type: string
+          auto_verification_analysis: Json | null
+          auto_verification_score: number | null
+          auto_verified_at: string | null
           building: string | null
           city: string
           claimant_type: string
@@ -38,6 +41,7 @@ export type Database = {
           rejected_by: string | null
           rejection_notes: string | null
           rejection_reason: string | null
+          requires_manual_review: boolean | null
           resubmission_count: number | null
           resubmission_of: string | null
           reviewed_at: string | null
@@ -52,6 +56,9 @@ export type Database = {
         }
         Insert: {
           address_type?: string
+          auto_verification_analysis?: Json | null
+          auto_verification_score?: number | null
+          auto_verified_at?: string | null
           building?: string | null
           city: string
           claimant_type?: string
@@ -73,6 +80,7 @@ export type Database = {
           rejected_by?: string | null
           rejection_notes?: string | null
           rejection_reason?: string | null
+          requires_manual_review?: boolean | null
           resubmission_count?: number | null
           resubmission_of?: string | null
           reviewed_at?: string | null
@@ -87,6 +95,9 @@ export type Database = {
         }
         Update: {
           address_type?: string
+          auto_verification_analysis?: Json | null
+          auto_verification_score?: number | null
+          auto_verified_at?: string | null
           building?: string | null
           city?: string
           claimant_type?: string
@@ -108,6 +119,7 @@ export type Database = {
           rejected_by?: string | null
           rejection_notes?: string | null
           rejection_reason?: string | null
+          requires_manual_review?: boolean | null
           resubmission_count?: number | null
           resubmission_of?: string | null
           reviewed_at?: string | null
