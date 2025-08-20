@@ -1,65 +1,43 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { AlertTriangle, CheckCircle2, X, Clock, MapPin, User, Calendar } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { MapPin, User, Building, Calendar, Flag, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { AddressLocationMap } from "@/components/AddressLocationMap";
+import { toast } from "sonner";
+import { AddressRejectionDialog } from "./AddressRejectionDialog";
 
 interface FlaggedAddress {
   id: string;
-  uac: string;
+  user_id: string;
+  latitude: number;
+  longitude: number;
   street: string;
   city: string;
   region: string;
   country: string;
-  latitude: number;
-  longitude: number;
-  flagged: boolean;
-  flag_reason: string;
-  flagged_at: string;
-  flagged_by: string;
-  verified: boolean;
+  building?: string;
+  address_type: string;
+  description?: string;
   photo_url?: string;
+  uac: string;
+  flag_reason?: string;
+  flagged_at?: string;
 }
 
-export const FlaggedAddressManager = () => {
-  const [flaggedAddresses, setFlaggedAddresses] = useState<FlaggedAddress[]>([]);
+interface FlaggedAddressManagerProps {
+  addresses: FlaggedAddress[];
+  onUpdate: () => void;
+}
+
+export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressManagerProps) {
+  const [processing, setProcessing] = useState<string | null>(null);
+  const [rejectionDialogOpen, setRejectionDialogOpen] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [selectedAddress, setSelectedAddress] = useState<FlaggedAddress | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [mapDialogOpen, setMapDialogOpen] = useState(false);
-  const { toast } = useToast();
 
-  useEffect(() => {
-    loadFlaggedAddresses();
-  }, []);
-
-  const loadFlaggedAddresses = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('addresses')
-        .select('*')
-        .eq('flagged', true)
-        .order('flagged_at', { ascending: false });
-
-      if (error) throw error;
-      setFlaggedAddresses(data || []);
-    } catch (error) {
-      console.error('Failed to load flagged addresses:', error);
-      toast({
-        title: "Error",
-        description: "Unable to load flagged addresses",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const unflagAddress = async (addressId: string) => {
+  const handleUnflag = async (addressId: string) => {
+    setProcessing(addressId);
     try {
       const { error } = await supabase.rpc('unflag_address', {
         p_address_id: addressId
@@ -67,241 +45,155 @@ export const FlaggedAddressManager = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Address Unflagged",
-        description: "Address has been removed from review queue",
-      });
-
-      loadFlaggedAddresses();
+      toast.success("Address unflagged successfully");
+      onUpdate();
     } catch (error) {
-      console.error('Failed to unflag address:', error);
-      toast({
-        title: "Error",
-        description: "Failed to unflag address",
-        variant: "destructive",
-      });
+      console.error('Error unflagging address:', error);
+      toast.error("Failed to unflag address");
+    } finally {
+      setProcessing(null);
     }
   };
 
-  const resolveAndVerify = async (addressId: string) => {
-    try {
-      const { error: unflagError } = await supabase.rpc('unflag_address', {
-        p_address_id: addressId
-      });
-
-      if (unflagError) throw unflagError;
-
-      const { error: verifyError } = await supabase
-        .from('addresses')
-        .update({ verified: true })
-        .eq('id', addressId);
-
-      if (verifyError) throw verifyError;
-
-      toast({
-        title: "Address Resolved",
-        description: "Address has been verified and unflagged",
-      });
-
-      loadFlaggedAddresses();
-    } catch (error) {
-      console.error('Failed to resolve address:', error);
-      toast({
-        title: "Error",
-        description: "Failed to resolve address",
-        variant: "destructive",
-      });
-    }
+  const handleReject = (address: FlaggedAddress) => {
+    setSelectedAddressId(address.id);
+    setSelectedAddress(address);
+    setRejectionDialogOpen(true);
   };
 
-  const deleteAddress = async (addressId: string) => {
-    if (!confirm("Are you sure you want to delete this address? This action cannot be undone.")) {
-      return;
-    }
+  const handleRejectWithFeedback = async (reason: string, notes?: string) => {
+    if (!selectedAddressId) return;
 
     try {
-      const { error } = await supabase
-        .from('addresses')
-        .delete()
-        .eq('id', addressId);
+      const { error } = await supabase.rpc('reject_flagged_address_with_feedback', {
+        p_address_id: selectedAddressId,
+        p_rejection_reason: reason,
+        p_rejection_notes: notes
+      });
 
       if (error) throw error;
 
-      toast({
-        title: "Address Deleted",
-        description: "Problematic address has been removed from the system",
-        variant: "destructive",
-      });
-
-      loadFlaggedAddresses();
+      toast.success("Flagged address rejected with feedback");
+      onUpdate();
     } catch (error) {
-      console.error('Failed to delete address:', error);
-      toast({
-        title: "Error",
-        description: "Failed to delete address",
-        variant: "destructive",
-      });
+      console.error('Error rejecting flagged address:', error);
+      toast.error("Failed to reject flagged address");
+    } finally {
+      setRejectionDialogOpen(false);
+      setSelectedAddressId(null);
     }
   };
 
-  if (loading) {
+  if (addresses.length === 0) {
     return (
       <div className="text-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-        <p className="text-muted-foreground">Loading flagged addresses...</p>
+        <CheckCircle className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+        <h3 className="text-lg font-medium">No flagged addresses</h3>
+        <p className="text-muted-foreground">All addresses are in good standing.</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Flagged Addresses</h2>
-          <p className="text-muted-foreground">
-            Manage addresses that require human review and attention
-          </p>
-        </div>
-        <Button onClick={loadFlaggedAddresses} variant="outline">
-          <AlertTriangle className="h-4 w-4 mr-2" />
-          Refresh ({flaggedAddresses.length})
-        </Button>
+    <>
+      <div className="space-y-4">
+        {addresses.map((address) => (
+          <Card key={address.id} className="border-l-4 border-l-red-500">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg">Flagged Address</CardTitle>
+                <Badge variant="outline" className="bg-red-50 text-red-700">
+                  <Flag className="h-3 w-3 mr-1" />
+                  Flagged
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm font-medium">Location</span>
+                  </div>
+                  <p className="text-sm pl-6">
+                    {address.building && `${address.building}, `}
+                    {address.street}, {address.city}, {address.region}, {address.country}
+                  </p>
+                  <p className="text-xs text-muted-foreground pl-6">
+                    UAC: {address.uac}
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Building className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm font-medium">Type</span>
+                  </div>
+                  <p className="text-sm pl-6 capitalize">{address.address_type}</p>
+                </div>
+              </div>
+
+              {address.description && (
+                <div className="space-y-2">
+                  <span className="text-sm font-medium">Description</span>
+                  <p className="text-sm text-muted-foreground">{address.description}</p>
+                </div>
+              )}
+
+              {address.flag_reason && (
+                <div className="space-y-2">
+                  <span className="text-sm font-medium">Flag Reason</span>
+                  <p className="text-sm text-red-600 bg-red-50 p-2 rounded">{address.flag_reason}</p>
+                </div>
+              )}
+
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Calendar className="h-3 w-3" />
+                <span>Flagged {address.flagged_at ? new Date(address.flagged_at).toLocaleDateString() : 'Unknown'}</span>
+                <User className="h-3 w-3 ml-4" />
+                <span>User ID: {address.user_id.slice(0, 8)}...</span>
+              </div>
+
+              {address.photo_url && (
+                <div className="space-y-2">
+                  <span className="text-sm font-medium">Photo</span>
+                  <img 
+                    src={address.photo_url} 
+                    alt="Address verification photo"
+                    className="w-full h-48 object-cover rounded-lg border"
+                  />
+                </div>
+              )}
+
+              <div className="flex gap-2 pt-4">
+                <Button
+                  onClick={() => handleUnflag(address.id)}
+                  disabled={processing === address.id}
+                  className="flex-1"
+                >
+                  {processing === address.id ? "Unflagging..." : "Approve & Unflag"}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => handleReject(address)}
+                  disabled={processing === address.id}
+                  className="flex-1"
+                >
+                  Reject
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      {flaggedAddresses.length === 0 ? (
-        <Card>
-          <CardContent className="py-12">
-            <div className="text-center text-muted-foreground">
-              <CheckCircle2 className="h-12 w-12 mx-auto mb-4 opacity-50 text-green-500" />
-              <p className="text-lg font-medium">No Flagged Addresses</p>
-              <p className="text-sm">All addresses are in good standing</p>
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-4">
-          {flaggedAddresses.map((address) => (
-            <Card key={address.id} className="border-orange-200 bg-orange-50/50">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <AlertTriangle className="h-5 w-5 text-orange-500" />
-                      {address.uac}
-                    </CardTitle>
-                    <CardDescription className="mt-1">
-                      {address.street}, {address.city}, {address.region}
-                    </CardDescription>
-                  </div>
-                  <Badge variant="destructive">
-                    Flagged for Review
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-mono">{address.latitude}, {address.longitude}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Calendar className="h-4 w-4" />
-                      Flagged: {new Date(address.flagged_at).toLocaleString()}
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="text-sm">
-                      <span className="font-medium">Reason:</span>
-                      <p className="text-muted-foreground mt-1 p-2 bg-orange-100 rounded text-xs">
-                        {address.flag_reason}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {address.photo_url && (
-                  <div className="mt-4">
-                    <img 
-                      src={address.photo_url} 
-                      alt="Address photo" 
-                      className="w-full max-w-md h-32 object-cover rounded border"
-                    />
-                  </div>
-                )}
-
-                <div className="flex gap-2 flex-wrap pt-4 border-t">
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      setSelectedAddress(address);
-                      setMapDialogOpen(true);
-                    }}
-                    variant="outline"
-                  >
-                    <MapPin className="h-4 w-4 mr-2" />
-                    View on Map
-                  </Button>
-                  
-                  <Button
-                    size="sm"
-                    onClick={() => resolveAndVerify(address.id)}
-                    className="bg-green-600 hover:bg-green-700"
-                  >
-                    <CheckCircle2 className="h-4 w-4 mr-2" />
-                    Resolve & Verify
-                  </Button>
-                  
-                  <Button
-                    size="sm"
-                    onClick={() => unflagAddress(address.id)}
-                    variant="secondary"
-                  >
-                    <X className="h-4 w-4 mr-2" />
-                    Unflag Only
-                  </Button>
-                  
-                  <Button
-                    size="sm"
-                    onClick={() => deleteAddress(address.id)}
-                    variant="destructive"
-                  >
-                    <AlertTriangle className="h-4 w-4 mr-2" />
-                    Delete Address
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
-
-      {/* Map Dialog */}
-      <Dialog open={mapDialogOpen} onOpenChange={setMapDialogOpen}>
-        <DialogContent className="max-w-4xl w-full h-[80vh]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-orange-500" />
-              Flagged Address Review - {selectedAddress?.uac}
-            </DialogTitle>
-          </DialogHeader>
-          {selectedAddress && (
-            <AddressLocationMap
-              latitude={selectedAddress.latitude}
-              longitude={selectedAddress.longitude}
-              address={{
-                street: selectedAddress.street,
-                city: selectedAddress.city,
-                region: selectedAddress.region,
-                country: selectedAddress.country,
-              }}
-              onClose={() => setMapDialogOpen(false)}
-              allowResize={false}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
-    </div>
+      <AddressRejectionDialog
+        isOpen={rejectionDialogOpen}
+        onClose={() => setRejectionDialogOpen(false)}
+        onReject={handleRejectWithFeedback}
+        itemType="flagged_address"
+        item={selectedAddress}
+      />
+    </>
   );
-};
+}

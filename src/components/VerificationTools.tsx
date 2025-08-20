@@ -944,7 +944,7 @@ export const VerificationTools = () => {
         </TabsContent>
 
         <TabsContent value="flagged" className="space-y-4">
-          <FlaggedAddressManager />
+          <FlaggedAddressManager addresses={[]} onUpdate={() => {}} />
         </TabsContent>
 
         <TabsContent value="quality" className="space-y-4">

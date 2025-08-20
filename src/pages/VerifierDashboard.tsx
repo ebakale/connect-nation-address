@@ -129,7 +129,7 @@ const VerifierDashboard = () => {
                       Review and approve pending address requests from citizens
                     </DialogDescription>
                   </DialogHeader>
-                  <AddressRequestApproval />
+                  <AddressRequestApproval requests={[]} onUpdate={() => {}} />
                 </DialogContent>
               </Dialog>
             </CardContent>

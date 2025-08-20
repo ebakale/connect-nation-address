@@ -350,6 +350,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      approve_address_request: {
+        Args: { p_approved_by?: string; p_request_id: string }
+        Returns: string
+      }
       flag_address_for_review: {
         Args:
           | {
@@ -374,6 +378,37 @@ export type Database = {
           p_region: string
         }
         Returns: string
+      }
+      get_flagged_addresses_queue: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          address_type: string
+          building: string
+          city: string
+          country: string
+          created_at: string
+          description: string
+          flag_reason: string
+          flagged: boolean
+          flagged_at: string
+          flagged_by: string
+          id: string
+          justification: string
+          latitude: number
+          longitude: number
+          photo_url: string
+          public: boolean
+          region: string
+          source_type: string
+          status: string
+          street: string
+          uac: string
+          updated_at: string
+          user_id: string
+          verification_analysis: Json
+          verification_recommendations: string[]
+          verified: boolean
+        }[]
       }
       get_review_queue: {
         Args: Record<PropertyKey, never>

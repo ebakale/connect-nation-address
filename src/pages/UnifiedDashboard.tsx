@@ -388,7 +388,7 @@ const UnifiedDashboard = () => {
                       {t('reviewApproveCitizen')}
                     </DialogDescription>
                   </DialogHeader>
-                  <AddressRequestApproval />
+                <AddressRequestApproval requests={[]} onUpdate={() => {}} />
                 </DialogContent>
               </Dialog>
 
@@ -900,7 +900,7 @@ const UnifiedDashboard = () => {
                    Review and approve pending address requests from citizens
                  </DialogDescription>
                </DialogHeader>
-               <AddressRequestApproval />
+               <AddressRequestApproval requests={[]} onUpdate={() => {}} />
              </DialogContent>
            </Dialog>
 

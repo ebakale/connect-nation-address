@@ -1,441 +1,137 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useAddresses } from "@/hooks/useAddresses";
-import { CheckCircle, XCircle, Eye, MapPin, FileText, AlertTriangle } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { AddressLocationMap } from "@/components/AddressLocationMap";
-import { AddressRejectionDialog } from "@/components/AddressRejectionDialog";
 import { supabase } from "@/integrations/supabase/client";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { AddressRequestApproval } from "./AddressRequestApproval";
+import { FlaggedAddressManager } from "./FlaggedAddressManager";
+import { toast } from "sonner";
 
-export const AddressVerificationQueue = () => {
-  const { updateAddressStatus } = useAddresses();
-  const { toast } = useToast();
-  const [selectedAddress, setSelectedAddress] = useState(null);
-  const [mapDialogOpen, setMapDialogOpen] = useState(false);
-  const [rejectionDialogOpen, setRejectionDialogOpen] = useState(false);
-  const [itemToReject, setItemToReject] = useState<any>(null);
-  const [reviewItems, setReviewItems] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+interface AddressRequest {
+  id: string;
+  user_id: string;
+  latitude: number;
+  longitude: number;
+  street: string;
+  city: string;
+  region: string;
+  country: string;
+  building?: string;
+  address_type: string;
+  description?: string;
+  photo_url?: string;
+  justification: string;
+  created_at: string;
+}
+
+interface FlaggedAddress {
+  id: string;
+  user_id: string;
+  latitude: number;
+  longitude: number;
+  street: string;
+  city: string;
+  region: string;
+  country: string;
+  building?: string;
+  address_type: string;
+  description?: string;
+  photo_url?: string;
+  uac: string;
+  flag_reason?: string;
+  flagged_at?: string;
+}
+
+export function AddressVerificationQueue() {
+  const [addressRequests, setAddressRequests] = useState<AddressRequest[]>([]);
+  const [flaggedAddresses, setFlaggedAddresses] = useState<FlaggedAddress[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchAddressRequests = async () => {
+    try {
+      const { data, error } = await supabase.rpc('get_review_queue');
+      if (error) throw error;
+      setAddressRequests(data || []);
+    } catch (error) {
+      console.error('Error fetching address requests:', error);
+      toast.error("Failed to load address requests");
+    }
+  };
+
+  const fetchFlaggedAddresses = async () => {
+    try {
+      const { data, error } = await supabase.rpc('get_flagged_addresses_queue');
+      if (error) throw error;
+      setFlaggedAddresses(data || []);
+    } catch (error) {
+      console.error('Error fetching flagged addresses:', error);
+      toast.error("Failed to load flagged addresses");
+    }
+  };
+
+  const fetchData = async () => {
+    setLoading(true);
+    await Promise.all([fetchAddressRequests(), fetchFlaggedAddresses()]);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    console.log('AddressVerificationQueue: Component mounted, fetching review queue...');
-    fetchReviewQueue();
+    fetchData();
   }, []);
 
-  const fetchReviewQueue = async () => {
-    setLoading(true);
-    try {
-      console.log('Fetching review queue...');
-      const { data, error } = await supabase.rpc('get_review_queue');
-      
-      if (error) throw error;
-      
-      console.log('Review queue fetched:', data?.length || 0, 'items');
-      setReviewItems(data || []);
-    } catch (error) {
-      console.error('Failed to fetch review queue:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load review queue",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleVerify = async (item: any, verified: boolean) => {
-    if (!verified) {
-      // Open rejection dialog for rejections
-      setItemToReject(item);
-      setRejectionDialogOpen(true);
-      return;
-    }
-
-    console.log('Verifying item:', item.id, 'source:', item.source_type, 'verified:', verified);
-    try {
-      if (item.source_type === 'request') {
-        // Handle address request verification
-        const { error } = await supabase
-          .from('address_requests')
-          .update({ status: 'approved' })
-          .eq('id', item.id);
-        
-        if (error) throw error;
-      } else if (item.source_type === 'flagged_address') {
-        // Handle flagged address verification - unflag and verify
-        const { error: unflagError } = await supabase.rpc('unflag_address', {
-          p_address_id: item.id
-        });
-        
-        if (unflagError) throw unflagError;
-        
-        const { error: verifyError } = await supabase
-          .from('addresses')
-          .update({ verified: true })
-          .eq('id', item.id);
-          
-        if (verifyError) throw verifyError;
-      }
-      
-      toast({
-        title: "Success",
-        description: `${item.source_type === 'request' ? 'Request' : 'Address'} verified successfully`,
-      });
-      
-      fetchReviewQueue(); // Refresh the queue
-    } catch (error) {
-      console.error('Verification failed:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update verification status",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleRejectWithFeedback = async (reason: string, notes: string) => {
-    if (!itemToReject) return;
-
-    console.log('Rejecting item with feedback:', itemToReject.id, 'reason:', reason);
-    try {
-      if (itemToReject.source_type === 'request') {
-        // Use the new rejection function for requests
-        const { error } = await supabase.rpc('reject_address_request_with_feedback', {
-          p_request_id: itemToReject.id,
-          p_rejection_reason: reason,
-          p_rejection_notes: notes
-        });
-        
-        if (error) throw error;
-      } else if (itemToReject.source_type === 'flagged_address') {
-        // Use the new rejection function for flagged addresses
-        const { error } = await supabase.rpc('reject_flagged_address_with_feedback', {
-          p_address_id: itemToReject.id,
-          p_rejection_reason: reason,
-          p_rejection_notes: notes
-        });
-        
-        if (error) throw error;
-      }
-      
-      toast({
-        title: "Success",
-        description: `${itemToReject.source_type === 'request' ? 'Request' : 'Address'} rejected with feedback. User has been notified.`,
-      });
-      
-      fetchReviewQueue(); // Refresh the queue
-    } catch (error) {
-      console.error('Rejection failed:', error);
-      toast({
-        title: "Error",
-        description: "Failed to reject with feedback",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handlePublish = async (item: any, isPublic: boolean) => {
-    if (item.source_type !== 'flagged_address') return;
-    
-    console.log('Publishing address:', item.id, 'public:', isPublic);
-    try {
-      const { error } = await supabase
-        .from('addresses')
-        .update({ public: isPublic })
-        .eq('id', item.id);
-        
-      if (error) throw error;
-      
-      toast({
-        title: "Success",
-        description: `Address ${isPublic ? 'published' : 'made private'} successfully`,
-      });
-      
-      fetchReviewQueue(); // Refresh the queue
-    } catch (error) {
-      console.error('Publishing failed:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update publishing status",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleViewOnMap = (item) => {
-    setSelectedAddress(item);
-    setMapDialogOpen(true);
-  };
-
-  console.log('AddressVerificationQueue: Rendering with', reviewItems.length, 'review items');
-
   if (loading) {
-    console.log('AddressVerificationQueue: Still loading...');
-    return <div className="p-4">Loading verification queue...</div>;
+    return <div>Loading verification queues...</div>;
   }
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Review Queue ({reviewItems.length})</h3>
-      
-      {reviewItems.length === 0 ? (
-        <Card>
-          <CardContent className="p-6 text-center">
-            <p className="text-muted-foreground">No items pending verification</p>
-          </CardContent>
-        </Card>
-      ) : (
-        reviewItems.map((item) => {
-          const isRequest = item.source_type === 'request';
-          const isFlagged = item.source_type === 'flagged_address';
-          const isPropertyClaim = item.claimant_type === 'owner';
-          
-          return (
-          <Card key={`${item.source_type}-${item.id}`} className={`${isPropertyClaim ? 'border-l-4 border-l-orange-500' : ''} ${isFlagged ? 'border-red-200 bg-red-50/30' : ''}`}>
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    {item.uac || `New ${isRequest ? 'Request' : 'Address'}`}
-                    {isFlagged && <AlertTriangle className="h-4 w-4 text-red-500" />}
-                  </CardTitle>
-                  <CardDescription>
-                    {item.building && `${item.building}, `}
-                    {item.street}, {item.city}, {item.region}
-                  </CardDescription>
-                </div>
-                <div className="flex gap-2 flex-wrap">
-                  <Badge variant={isRequest ? "secondary" : isFlagged ? "destructive" : "default"}>
-                    {isRequest ? "New Request" : isFlagged ? "Flagged for Review" : item.status}
-                  </Badge>
-                  {item.public !== null && (
-                    <Badge variant={item.public ? "default" : "outline"}>
-                      {item.public ? "Public" : "Private"}
-                    </Badge>
-                  )}
-                  {isPropertyClaim && (
-                    <Badge variant="default" className="bg-orange-500">
-                      <AlertTriangle className="h-3 w-3 mr-1" />
-                      Property Claim
-                    </Badge>
-                  )}
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4 text-sm mb-4">
-                <div>
-                  <span className="font-medium">Type:</span> {item.address_type}
-                </div>
-                <div>
-                  <span className="font-medium">Coordinates:</span> {item.latitude}, {item.longitude}
-                </div>
-                {isPropertyClaim && (
-                  <div className="col-span-2">
-                    <span className="font-medium">Claimant:</span> 
-                    <span className="ml-1 text-orange-600 font-medium">Property Owner</span>
-                  </div>
-                )}
-              </div>
-              
-              {item.description && (
-                <p className="text-sm text-muted-foreground mb-4">{item.description}</p>
-              )}
-              
-              {/* Flag reason and analysis for flagged addresses */}
-              {isFlagged && item.flag_reason && (
-                <div className="mb-4 space-y-3">
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                    <div className="flex items-center gap-2 mb-1">
-                      <AlertTriangle className="h-4 w-4 text-red-600" />
-                      <span className="font-medium text-red-900">🚩 FLAGGED FOR REVIEW</span>
-                    </div>
-                    <p className="text-sm text-red-800 font-medium">{item.flag_reason}</p>
-                    {item.flagged_at && (
-                      <p className="text-xs text-red-600 mt-1">
-                        Flagged: {new Date(item.flagged_at).toLocaleString()}
-                      </p>
-                    )}
-                  </div>
-                  
-                  {/* Display verification analysis if available */}
-                  {item.verification_analysis && (
-                    <div className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                      <h4 className="font-medium text-orange-900 mb-2">Verification Analysis Results</h4>
-                      <div className="grid grid-cols-2 gap-3 text-sm">
-                        {item.verification_analysis.overallScore && (
-                          <div>
-                            <span className="font-medium">Overall Score:</span>
-                            <span className={`ml-1 ${item.verification_analysis.overallScore < 70 ? 'text-red-600 font-bold' : 'text-green-600'}`}>
-                              {item.verification_analysis.overallScore}%
-                            </span>
-                          </div>
-                        )}
-                        {item.verification_analysis.accuracy && (
-                          <div>
-                            <span className="font-medium">Precision:</span>
-                            <span className="ml-1">{item.verification_analysis.accuracy.precision}</span>
-                          </div>
-                        )}
-                        {item.verification_analysis.consistency && (
-                          <div className="col-span-2">
-                            <span className="font-medium">Address Match:</span>
-                            <span className={`ml-1 ${item.verification_analysis.consistency.addressMatch ? 'text-green-600' : 'text-red-600'}`}>
-                              {item.verification_analysis.consistency.addressMatch ? '✓ Match' : '✗ No Match'}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Display recommendations */}
-                  {item.verification_recommendations && item.verification_recommendations.length > 0 && (
-                    <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <h4 className="font-medium text-yellow-900 mb-2">⚠️ Verification Recommendations</h4>
-                      <ul className="text-sm text-yellow-800 space-y-1">
-                        {item.verification_recommendations.map((rec, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <span className="text-yellow-600">•</span>
-                            <span>{rec}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Justification for requests */}
-              {isRequest && item.justification && (
-                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                  <span className="font-medium text-blue-900">Justification:</span>
-                  <p className="text-sm text-blue-800 mt-1">{item.justification}</p>
-                </div>
-              )}
-
-              {/* Property Ownership Alert for Verifiers */}
-              {isPropertyClaim && (
-                <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <AlertTriangle className="h-4 w-4 text-orange-600" />
-                    <span className="font-medium text-orange-900">Property Ownership Verification Required</span>
-                  </div>
-                  <p className="text-sm text-orange-800 mb-2">
-                    This address was claimed by a property owner. Verify ownership documentation and cross-check against official records.
-                  </p>
-                  {item.proof_of_ownership_url && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => window.open(item.proof_of_ownership_url, '_blank')}
-                      className="flex items-center gap-1"
-                    >
-                      <FileText className="h-3 w-3" />
-                      View Ownership Document
-                    </Button>
-                  )}
-                </div>
-              )}
-
-              {/* Address Photo if available */}
-              {item.photo_url && (
-                <div className="mb-4">
-                  <span className="font-medium text-sm">Address Photo:</span>
-                  <img
-                    src={item.photo_url}
-                    alt="Address location"
-                    className="w-full max-h-32 object-cover border rounded mt-1"
-                  />
-                </div>
-              )}
-
-              <div className="flex gap-2 flex-wrap">
-                <Button
-                  size="sm"
-                  onClick={() => handleVerify(item, true)}
-                  className="flex items-center gap-1"
-                >
-                  <CheckCircle className="h-4 w-4" />
-                  {isRequest ? 'Approve' : 'Verify'}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => handleVerify(item, false)}
-                  className="flex items-center gap-1"
-                >
-                  <XCircle className="h-4 w-4" />
-                  Reject with Feedback
-                </Button>
-                {isFlagged && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handlePublish(item, !item.public)}
-                    className="flex items-center gap-1"
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Verification Queues</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="requests" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="requests" className="relative">
+                Address Requests
+                {addressRequests.length > 0 && (
+                  <Badge 
+                    variant="secondary" 
+                    className="ml-2 h-5 w-5 rounded-full p-0 text-xs"
                   >
-                    <Eye className="h-4 w-4" />
-                    {item.public ? "Make Private" : "Make Public"}
-                  </Button>
+                    {addressRequests.length}
+                  </Badge>
                 )}
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => handleViewOnMap(item)}
-                  className="flex items-center gap-1"
-                >
-                  <MapPin className="h-4 w-4" />
-                  View on Map
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-          );
-        })
-      )}
-
-      {/* Map Dialog */}
-      <Dialog open={mapDialogOpen} onOpenChange={setMapDialogOpen}>
-        <DialogContent className="max-w-4xl w-full h-[80vh]">
-          <DialogHeader>
-            <DialogTitle>
-              Address Location: {selectedAddress?.uac}
-            </DialogTitle>
-          </DialogHeader>
-          {selectedAddress && (
-            <AddressLocationMap
-              latitude={Number(selectedAddress.latitude)}
-              longitude={Number(selectedAddress.longitude)}
-              address={{
-                street: selectedAddress.street,
-                city: selectedAddress.city,
-                region: selectedAddress.region,
-                country: selectedAddress.country,
-                building: selectedAddress.building
-              }}
-              onClose={() => setMapDialogOpen(false)}
-              allowResize={false}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Rejection Dialog */}
-      <AddressRejectionDialog
-        isOpen={rejectionDialogOpen}
-        onClose={() => {
-          setRejectionDialogOpen(false);
-          setItemToReject(null);
-        }}
-        onReject={handleRejectWithFeedback}
-        itemType={itemToReject?.source_type || 'request'}
-        item={itemToReject}
-      />
+              </TabsTrigger>
+              <TabsTrigger value="flagged" className="relative">
+                Flagged Addresses
+                {flaggedAddresses.length > 0 && (
+                  <Badge 
+                    variant="destructive" 
+                    className="ml-2 h-5 w-5 rounded-full p-0 text-xs"
+                  >
+                    {flaggedAddresses.length}
+                  </Badge>
+                )}
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="requests" className="mt-6">
+              <AddressRequestApproval 
+                requests={addressRequests} 
+                onUpdate={fetchAddressRequests} 
+              />
+            </TabsContent>
+            
+            <TabsContent value="flagged" className="mt-6">
+              <FlaggedAddressManager 
+                addresses={flaggedAddresses} 
+                onUpdate={fetchFlaggedAddresses} 
+              />
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
     </div>
   );
-};
+}
