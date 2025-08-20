@@ -23,6 +23,10 @@ export type Database = {
           country: string
           created_at: string
           description: string | null
+          flag_reason: string | null
+          flagged: boolean
+          flagged_at: string | null
+          flagged_by: string | null
           id: string
           justification: string
           latitude: number | null
@@ -46,6 +50,10 @@ export type Database = {
           country: string
           created_at?: string
           description?: string | null
+          flag_reason?: string | null
+          flagged?: boolean
+          flagged_at?: string | null
+          flagged_by?: string | null
           id?: string
           justification: string
           latitude?: number | null
@@ -69,6 +77,10 @@ export type Database = {
           country?: string
           created_at?: string
           description?: string | null
+          flag_reason?: string | null
+          flagged?: boolean
+          flagged_at?: string | null
+          flagged_by?: string | null
           id?: string
           justification?: string
           latitude?: number | null
@@ -94,6 +106,10 @@ export type Database = {
           country: string
           created_at: string
           description: string | null
+          flag_reason: string | null
+          flagged: boolean
+          flagged_at: string | null
+          flagged_by: string | null
           id: string
           latitude: number
           longitude: number
@@ -113,6 +129,10 @@ export type Database = {
           country: string
           created_at?: string
           description?: string | null
+          flag_reason?: string | null
+          flagged?: boolean
+          flagged_at?: string | null
+          flagged_by?: string | null
           id?: string
           latitude: number
           longitude: number
@@ -132,6 +152,10 @@ export type Database = {
           country?: string
           created_at?: string
           description?: string | null
+          flag_reason?: string | null
+          flagged?: boolean
+          flagged_at?: string | null
+          flagged_by?: string | null
           id?: string
           latitude?: number
           longitude?: number
@@ -276,6 +300,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      flag_address_for_review: {
+        Args: { p_address_id: string; p_flagged_by?: string; p_reason: string }
+        Returns: boolean
+      }
+      flag_address_request_for_review: {
+        Args: { p_flagged_by?: string; p_reason: string; p_request_id: string }
+        Returns: boolean
+      }
       generate_unified_uac_unique: {
         Args: {
           p_address_id: string
@@ -322,6 +354,10 @@ export type Database = {
           uac: string
           verified: boolean
         }[]
+      }
+      unflag_address: {
+        Args: { p_address_id: string; p_unflagged_by?: string }
+        Returns: boolean
       }
     }
     Enums: {

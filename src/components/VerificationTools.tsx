@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { AddressLocationMap } from "@/components/AddressLocationMap";
+import { FlaggedAddressManager } from "@/components/FlaggedAddressManager";
 
 interface VerificationRecord {
   id: string;
@@ -221,10 +222,11 @@ export const VerificationTools = () => {
       </div>
 
       <Tabs defaultValue="search" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="search">All Addresses</TabsTrigger>
           <TabsTrigger value="individual">Individual Verify</TabsTrigger>
           <TabsTrigger value="verify">Verification Tools</TabsTrigger>
+          <TabsTrigger value="flagged">Flagged Addresses</TabsTrigger>
           <TabsTrigger value="quality">Quality Control</TabsTrigger>
         </TabsList>
 
@@ -566,11 +568,36 @@ export const VerificationTools = () => {
                                   distance: data.accuracy.estimatedError,
                                   confidence: data.overallScore > 85 ? "High" : data.overallScore > 70 ? "Medium" : "Low"
                                 });
-                                
-                                toast({
-                                  title: "Coordinate Analysis Complete",
-                                  description: `${data.overallScore}% confidence with ±${data.accuracy.estimatedError}m accuracy`,
-                                });
+
+                                // Auto-flag if accuracy is below 70%
+                                if (data.overallScore < 70) {
+                                  const flagReason = `Low accuracy score: ${data.overallScore}%. Issues: ${data.recommendations.join(', ')}`;
+                                  
+                                  const { error: flagError } = await supabase.rpc('flag_address_for_review', {
+                                    p_address_id: selectedAddress.id,
+                                    p_reason: flagReason
+                                  });
+
+                                  if (flagError) {
+                                    console.error('Failed to flag address:', flagError);
+                                    toast({
+                                      title: "Analysis Complete - Manual Review Required",
+                                      description: `${data.overallScore}% accuracy detected issues. Please manually flag for review.`,
+                                      variant: "destructive",
+                                    });
+                                  } else {
+                                    toast({
+                                      title: "Address Flagged for Review",
+                                      description: `Low accuracy (${data.overallScore}%) detected. Address flagged for human review.`,
+                                      variant: "destructive",
+                                    });
+                                  }
+                                } else {
+                                  toast({
+                                    title: "Coordinate Analysis Complete",
+                                    description: `${data.overallScore}% confidence with ±${data.accuracy.estimatedError}m accuracy`,
+                                  });
+                                }
                               } catch (error) {
                                 console.error('Coordinate analysis failed:', error);
                                 toast({
@@ -784,6 +811,42 @@ export const VerificationTools = () => {
                           
                           <Button
                             size="sm"
+                            variant="destructive"
+                            className="w-full"
+                            onClick={async () => {
+                              try {
+                                const flagReason = prompt("Enter reason for flagging this address:");
+                                if (!flagReason) return;
+
+                                const { error } = await supabase.rpc('flag_address_for_review', {
+                                  p_address_id: selectedAddress.id,
+                                  p_reason: flagReason
+                                });
+
+                                if (error) throw error;
+
+                                toast({
+                                  title: "Address Flagged",
+                                  description: "Address has been flagged for human review",
+                                  variant: "destructive",
+                                });
+
+                                loadPendingAddresses();
+                              } catch (error) {
+                                toast({
+                                  title: "Error",
+                                  description: "Failed to flag address",
+                                  variant: "destructive",
+                                });
+                              }
+                            }}
+                          >
+                            <AlertTriangle className="h-4 w-4 mr-2" />
+                            Flag for Review
+                          </Button>
+                          
+                          <Button
+                            size="sm"
                             variant="outline"
                             className="w-full"
                             onClick={() => {
@@ -857,6 +920,10 @@ export const VerificationTools = () => {
               </CardContent>
             </Card>
           )}
+        </TabsContent>
+
+        <TabsContent value="flagged" className="space-y-4">
+          <FlaggedAddressManager />
         </TabsContent>
 
         <TabsContent value="quality" className="space-y-4">
