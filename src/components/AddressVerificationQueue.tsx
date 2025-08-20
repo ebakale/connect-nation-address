@@ -195,14 +195,67 @@ export const AddressVerificationQueue = () => {
                 <p className="text-sm text-muted-foreground mb-4">{item.description}</p>
               )}
               
-              {/* Flag reason for flagged addresses */}
+              {/* Flag reason and analysis for flagged addresses */}
               {isFlagged && item.flag_reason && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <div className="flex items-center gap-2 mb-1">
-                    <AlertTriangle className="h-4 w-4 text-red-600" />
-                    <span className="font-medium text-red-900">Flagged for Review</span>
+                <div className="mb-4 space-y-3">
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <div className="flex items-center gap-2 mb-1">
+                      <AlertTriangle className="h-4 w-4 text-red-600" />
+                      <span className="font-medium text-red-900">🚩 FLAGGED FOR REVIEW</span>
+                    </div>
+                    <p className="text-sm text-red-800 font-medium">{item.flag_reason}</p>
+                    {item.flagged_at && (
+                      <p className="text-xs text-red-600 mt-1">
+                        Flagged: {new Date(item.flagged_at).toLocaleString()}
+                      </p>
+                    )}
                   </div>
-                  <p className="text-sm text-red-800">{item.flag_reason}</p>
+                  
+                  {/* Display verification analysis if available */}
+                  {item.verification_analysis && (
+                    <div className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                      <h4 className="font-medium text-orange-900 mb-2">Verification Analysis Results</h4>
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        {item.verification_analysis.overallScore && (
+                          <div>
+                            <span className="font-medium">Overall Score:</span>
+                            <span className={`ml-1 ${item.verification_analysis.overallScore < 70 ? 'text-red-600 font-bold' : 'text-green-600'}`}>
+                              {item.verification_analysis.overallScore}%
+                            </span>
+                          </div>
+                        )}
+                        {item.verification_analysis.accuracy && (
+                          <div>
+                            <span className="font-medium">Precision:</span>
+                            <span className="ml-1">{item.verification_analysis.accuracy.precision}</span>
+                          </div>
+                        )}
+                        {item.verification_analysis.consistency && (
+                          <div className="col-span-2">
+                            <span className="font-medium">Address Match:</span>
+                            <span className={`ml-1 ${item.verification_analysis.consistency.addressMatch ? 'text-green-600' : 'text-red-600'}`}>
+                              {item.verification_analysis.consistency.addressMatch ? '✓ Match' : '✗ No Match'}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Display recommendations */}
+                  {item.verification_recommendations && item.verification_recommendations.length > 0 && (
+                    <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                      <h4 className="font-medium text-yellow-900 mb-2">⚠️ Verification Recommendations</h4>
+                      <ul className="text-sm text-yellow-800 space-y-1">
+                        {item.verification_recommendations.map((rec, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-yellow-600">•</span>
+                            <span>{rec}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )}
 

@@ -41,6 +41,8 @@ export type Database = {
           street: string
           updated_at: string
           user_id: string
+          verification_analysis: Json | null
+          verification_recommendations: string[] | null
         }
         Insert: {
           address_type?: string
@@ -68,6 +70,8 @@ export type Database = {
           street: string
           updated_at?: string
           user_id: string
+          verification_analysis?: Json | null
+          verification_recommendations?: string[] | null
         }
         Update: {
           address_type?: string
@@ -95,6 +99,8 @@ export type Database = {
           street?: string
           updated_at?: string
           user_id?: string
+          verification_analysis?: Json | null
+          verification_recommendations?: string[] | null
         }
         Relationships: []
       }
@@ -120,6 +126,8 @@ export type Database = {
           uac: string
           updated_at: string
           user_id: string
+          verification_analysis: Json | null
+          verification_recommendations: string[] | null
           verified: boolean
         }
         Insert: {
@@ -143,6 +151,8 @@ export type Database = {
           uac: string
           updated_at?: string
           user_id: string
+          verification_analysis?: Json | null
+          verification_recommendations?: string[] | null
           verified?: boolean
         }
         Update: {
@@ -166,6 +176,8 @@ export type Database = {
           uac?: string
           updated_at?: string
           user_id?: string
+          verification_analysis?: Json | null
+          verification_recommendations?: string[] | null
           verified?: boolean
         }
         Relationships: []
@@ -301,7 +313,15 @@ export type Database = {
     }
     Functions: {
       flag_address_for_review: {
-        Args: { p_address_id: string; p_flagged_by?: string; p_reason: string }
+        Args:
+          | {
+              p_address_id: string
+              p_analysis?: Json
+              p_flagged_by?: string
+              p_reason: string
+              p_recommendations?: string[]
+            }
+          | { p_address_id: string; p_flagged_by?: string; p_reason: string }
         Returns: boolean
       }
       flag_address_request_for_review: {
@@ -343,6 +363,8 @@ export type Database = {
           uac: string
           updated_at: string
           user_id: string
+          verification_analysis: Json
+          verification_recommendations: string[]
           verified: boolean
         }[]
       }
