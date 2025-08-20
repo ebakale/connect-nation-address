@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, User, Building, Calendar, CheckCircle, Zap } from "lucide-react";
+import { MapPin, User, Building, Calendar, CheckCircle, X, Zap, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AddressRejectionDialog } from "./AddressRejectionDialog";
+import { AddressMapDialog } from "./AddressMapDialog";
 
 interface AddressRequest {
   id: string;
@@ -35,6 +36,8 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
   const [rejectionDialogOpen, setRejectionDialogOpen] = useState(false);
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [selectedRequest, setSelectedRequest] = useState<AddressRequest | null>(null);
+  const [mapDialogOpen, setMapDialogOpen] = useState(false);
+  const [selectedMapAddress, setSelectedMapAddress] = useState<AddressRequest | null>(null);
 
   const handleApprove = async (requestId: string) => {
     setProcessing(requestId);
@@ -53,6 +56,11 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
     } finally {
       setProcessing(null);
     }
+  };
+
+  const handleViewOnMap = (request: AddressRequest) => {
+    setSelectedMapAddress(request);
+    setMapDialogOpen(true);
   };
 
   const handleReject = (request: AddressRequest) => {
@@ -183,10 +191,33 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
 
               <div className="flex gap-2 pt-4">
                 <Button
+                  onClick={() => handleApprove(request.id)}
+                  disabled={processing === request.id || autoVerifying === request.id}
+                  className="flex-1"
+                >
+                  {processing === request.id ? "Approving..." : "Approve"}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => handleReject(request)}
+                  disabled={processing === request.id || autoVerifying === request.id}
+                  className="flex-1"
+                >
+                  Reject
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => handleViewOnMap(request)}
+                  className="flex items-center gap-2"
+                >
+                  <Eye className="h-4 w-4" />
+                  View on Map
+                </Button>
+                <Button
+                  variant="outline"
                   onClick={() => handleAutoVerify(request.id)}
                   disabled={processing === request.id || autoVerifying === request.id}
-                  variant="outline"
-                  className="flex items-center gap-1"
+                  className="flex items-center gap-2"
                 >
                   {autoVerifying === request.id ? (
                     <>
@@ -199,21 +230,6 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                       Auto-Verify
                     </>
                   )}
-                </Button>
-                <Button
-                  onClick={() => handleApprove(request.id)}
-                  disabled={processing === request.id || autoVerifying === request.id}
-                  className="flex-1"
-                >
-                  {processing === request.id ? "Approving..." : "Manual Approve"}
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => handleReject(request)}
-                  disabled={processing === request.id || autoVerifying === request.id}
-                  className="flex-1"
-                >
-                  Reject
                 </Button>
               </div>
             </CardContent>
@@ -228,6 +244,14 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
         itemType="request"
         item={selectedRequest}
       />
+
+      {selectedMapAddress && (
+        <AddressMapDialog
+          isOpen={mapDialogOpen}
+          onClose={() => setMapDialogOpen(false)}
+          address={selectedMapAddress}
+        />
+      )}
     </>
   );
 }

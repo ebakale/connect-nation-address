@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { MapPin, User, Building, Calendar, Flag, CheckCircle, AlertTriangle, BarChart3, FileText } from "lucide-react";
+import { MapPin, User, Building, Calendar, Flag, CheckCircle, AlertTriangle, BarChart3, FileText, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AddressRejectionDialog } from "./AddressRejectionDialog";
+import { AddressMapDialog } from "./AddressMapDialog";
 
 interface FlaggedAddress {
   id: string;
@@ -44,6 +45,8 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
   const [rejectionDialogOpen, setRejectionDialogOpen] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [selectedAddress, setSelectedAddress] = useState<FlaggedAddress | null>(null);
+  const [mapDialogOpen, setMapDialogOpen] = useState(false);
+  const [selectedMapAddress, setSelectedMapAddress] = useState<FlaggedAddress | null>(null);
 
   const handleApprove = async (requestId: string) => {
     setProcessing(requestId);
@@ -62,6 +65,11 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
     } finally {
       setProcessing(null);
     }
+  };
+
+  const handleViewOnMap = (address: FlaggedAddress) => {
+    setSelectedMapAddress(address);
+    setMapDialogOpen(true);
   };
 
   const handleReject = (address: FlaggedAddress) => {
@@ -369,6 +377,14 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                 >
                   Reject Request
                 </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => handleViewOnMap(address)}
+                  className="flex items-center gap-2"
+                >
+                  <Eye className="h-4 w-4" />
+                  View on Map
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -382,6 +398,14 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
         itemType="flagged_request"
         item={selectedAddress}
       />
+
+      {selectedMapAddress && (
+        <AddressMapDialog
+          isOpen={mapDialogOpen}
+          onClose={() => setMapDialogOpen(false)}
+          address={selectedMapAddress}
+        />
+      )}
     </>
   );
 }
