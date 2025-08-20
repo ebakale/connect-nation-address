@@ -34,6 +34,12 @@ export type Database = {
           photo_url: string | null
           proof_of_ownership_url: string | null
           region: string
+          rejected_at: string | null
+          rejected_by: string | null
+          rejection_notes: string | null
+          rejection_reason: string | null
+          resubmission_count: number | null
+          resubmission_of: string | null
           reviewed_at: string | null
           reviewed_by: string | null
           reviewer_notes: string | null
@@ -63,6 +69,12 @@ export type Database = {
           photo_url?: string | null
           proof_of_ownership_url?: string | null
           region: string
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_notes?: string | null
+          rejection_reason?: string | null
+          resubmission_count?: number | null
+          resubmission_of?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           reviewer_notes?: string | null
@@ -92,6 +104,12 @@ export type Database = {
           photo_url?: string | null
           proof_of_ownership_url?: string | null
           region?: string
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_notes?: string | null
+          rejection_reason?: string | null
+          resubmission_count?: number | null
+          resubmission_of?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           reviewer_notes?: string | null
@@ -102,7 +120,15 @@ export type Database = {
           verification_analysis?: Json | null
           verification_recommendations?: string[] | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "address_requests_resubmission_of_fkey"
+            columns: ["resubmission_of"]
+            isOneToOne: false
+            referencedRelation: "address_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       addresses: {
         Row: {
@@ -122,6 +148,10 @@ export type Database = {
           photo_url: string | null
           public: boolean
           region: string
+          rejected_at: string | null
+          rejected_by: string | null
+          rejection_notes: string | null
+          rejection_reason: string | null
           street: string
           uac: string
           updated_at: string
@@ -147,6 +177,10 @@ export type Database = {
           photo_url?: string | null
           public?: boolean
           region: string
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_notes?: string | null
+          rejection_reason?: string | null
           street: string
           uac: string
           updated_at?: string
@@ -172,6 +206,10 @@ export type Database = {
           photo_url?: string | null
           public?: boolean
           region?: string
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_notes?: string | null
+          rejection_reason?: string | null
           street?: string
           uac?: string
           updated_at?: string
@@ -387,6 +425,42 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      reject_address_request_with_feedback: {
+        Args: {
+          p_rejected_by?: string
+          p_rejection_notes?: string
+          p_rejection_reason: string
+          p_request_id: string
+        }
+        Returns: boolean
+      }
+      reject_flagged_address_with_feedback: {
+        Args: {
+          p_address_id: string
+          p_rejected_by?: string
+          p_rejection_notes?: string
+          p_rejection_reason: string
+        }
+        Returns: boolean
+      }
+      resubmit_address_request: {
+        Args: {
+          p_address_type?: string
+          p_building?: string
+          p_city: string
+          p_country: string
+          p_description?: string
+          p_justification?: string
+          p_latitude: number
+          p_longitude: number
+          p_original_request_id: string
+          p_photo_url?: string
+          p_region: string
+          p_street: string
+          p_user_id: string
+        }
+        Returns: string
       }
       search_addresses_safely: {
         Args: { search_query: string }
