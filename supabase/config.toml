@@ -2,3 +2,9 @@ project_id = "calegudnfdbeznyiebbh"
 
 [functions.get-mapbox-token]
 verify_jwt = false
+
+[functions.analyze-photo-quality]
+verify_jwt = false
+
+[functions.analyze-coordinates]
+verify_jwt = false

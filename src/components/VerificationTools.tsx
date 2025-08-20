@@ -545,21 +545,40 @@ export const VerificationTools = () => {
                             size="sm"
                             variant="outline"
                             onClick={async () => {
-                              // Simulate coordinate verification
-                              const accuracy = Math.floor(Math.random() * 30) + 70; // 70-100%
-                              const distance = Math.floor(Math.random() * 50); // 0-50m
-                              const confidence = accuracy > 90 ? "High" : accuracy > 75 ? "Medium" : "Low";
-                              
-                              setCoordVerificationResults({
-                                accuracy,
-                                distance,
-                                confidence
-                              });
-                              
-                              toast({
-                                title: "Coordinate Analysis Complete",
-                                description: `${confidence} confidence with ${distance}m accuracy`,
-                              });
+                              try {
+                                const { data, error } = await supabase.functions.invoke('analyze-coordinates', {
+                                  body: {
+                                    latitude: selectedAddress.latitude,
+                                    longitude: selectedAddress.longitude,
+                                    address: {
+                                      street: selectedAddress.street,
+                                      city: selectedAddress.city,
+                                      region: selectedAddress.region,
+                                      country: selectedAddress.country
+                                    }
+                                  }
+                                });
+
+                                if (error) throw error;
+                                
+                                setCoordVerificationResults({
+                                  accuracy: data.overallScore,
+                                  distance: data.accuracy.estimatedError,
+                                  confidence: data.overallScore > 85 ? "High" : data.overallScore > 70 ? "Medium" : "Low"
+                                });
+                                
+                                toast({
+                                  title: "Coordinate Analysis Complete",
+                                  description: `${data.overallScore}% confidence with ±${data.accuracy.estimatedError}m accuracy`,
+                                });
+                              } catch (error) {
+                                console.error('Coordinate analysis failed:', error);
+                                toast({
+                                  title: "Analysis Failed",
+                                  description: "Could not analyze coordinates. Please try again.",
+                                  variant: "destructive",
+                                });
+                              }
                             }}
                           >
                             <Zap className="h-4 w-4 mr-2" />
@@ -617,23 +636,38 @@ export const VerificationTools = () => {
                                 size="sm"
                                 className="w-full"
                                 onClick={async () => {
-                                  // Simulate photo analysis
-                                  const resolution = ["1920x1080", "1280x720", "640x480"][Math.floor(Math.random() * 3)];
-                                  const quality = Math.floor(Math.random() * 30) + 70;
-                                  const hasAddressVisible = Math.random() > 0.3;
-                                  const gpsMatch = Math.random() > 0.2;
-                                  
-                                  setPhotoAnalysis({
-                                    resolution,
-                                    quality,
-                                    hasAddressVisible,
-                                    gpsMatch
-                                  });
-                                  
-                                  toast({
-                                    title: "Photo Analysis Complete",
-                                    description: `Quality: ${quality}% | Resolution: ${resolution}`,
-                                  });
+                                  try {
+                                    const { data, error } = await supabase.functions.invoke('analyze-photo-quality', {
+                                      body: {
+                                        imageUrl: selectedAddress.photo_url,
+                                        expectedLocation: {
+                                          latitude: selectedAddress.latitude,
+                                          longitude: selectedAddress.longitude
+                                        }
+                                      }
+                                    });
+
+                                    if (error) throw error;
+                                    
+                                    setPhotoAnalysis({
+                                      resolution: `${data.resolution.width}x${data.resolution.height}`,
+                                      quality: data.overallScore,
+                                      hasAddressVisible: data.content.hasBuilding || data.content.hasStreetSign,
+                                      gpsMatch: data.metadata.hasGPS && data.metadata.coordinates.latitude
+                                    });
+                                    
+                                    toast({
+                                      title: "Photo Analysis Complete",
+                                      description: `Quality: ${data.overallScore}% | ${data.resolution.width}x${data.resolution.height}`,
+                                    });
+                                  } catch (error) {
+                                    console.error('Photo analysis failed:', error);
+                                    toast({
+                                      title: "Analysis Failed", 
+                                      description: "Could not analyze photo quality. Please try again.",
+                                      variant: "destructive",
+                                    });
+                                  }
                                 }}
                               >
                                 <Eye className="h-4 w-4 mr-2" />
