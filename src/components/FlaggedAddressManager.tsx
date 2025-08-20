@@ -4,11 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { MapPin, User, Building, Calendar, Flag, CheckCircle, AlertTriangle, BarChart3, FileText, Eye } from "lucide-react";
+import { MapPin, User, Building, Calendar, Flag, CheckCircle, AlertTriangle, BarChart3, FileText, Eye, Edit } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AddressRejectionDialog } from "./AddressRejectionDialog";
 import { AddressMapDialog } from "./AddressMapDialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface FlaggedAddress {
   id: string;
@@ -35,6 +40,8 @@ interface FlaggedAddress {
   rejection_notes?: string;
 }
 
+interface EditableFlaggedAddress extends FlaggedAddress {}
+
 interface FlaggedAddressManagerProps {
   addresses: FlaggedAddress[];
   onUpdate: () => void;
@@ -47,10 +54,32 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
   const [selectedAddress, setSelectedAddress] = useState<FlaggedAddress | null>(null);
   const [mapDialogOpen, setMapDialogOpen] = useState(false);
   const [selectedMapAddress, setSelectedMapAddress] = useState<FlaggedAddress | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingAddress, setEditingAddress] = useState<EditableFlaggedAddress | null>(null);
 
-  const handleApprove = async (requestId: string) => {
+  const handleApprove = async (requestId: string, updatedData?: Partial<FlaggedAddress>) => {
     setProcessing(requestId);
     try {
+      // If there are updates, apply them first
+      if (updatedData) {
+        const { error: updateError } = await supabase
+          .from('address_requests')
+          .update({
+            street: updatedData.street,
+            city: updatedData.city,
+            region: updatedData.region,
+            country: updatedData.country,
+            building: updatedData.building,
+            address_type: updatedData.address_type,
+            description: updatedData.description,
+            latitude: updatedData.latitude,
+            longitude: updatedData.longitude,
+          })
+          .eq('id', requestId);
+
+        if (updateError) throw updateError;
+      }
+
       const { error } = await supabase.rpc('approve_address_request', {
         p_request_id: requestId
       });
@@ -70,6 +99,17 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
   const handleViewOnMap = (address: FlaggedAddress) => {
     setSelectedMapAddress(address);
     setMapDialogOpen(true);
+  };
+
+  const handleEdit = (address: FlaggedAddress) => {
+    setEditingAddress({ ...address });
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveEdit = (updatedAddress: EditableFlaggedAddress) => {
+    setEditDialogOpen(false);
+    // Approve with the updated data
+    handleApprove(updatedAddress.id, updatedAddress);
   };
 
   const handleReject = (address: FlaggedAddress) => {
@@ -371,6 +411,15 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                 </Button>
                 <Button
                   variant="outline"
+                  onClick={() => handleEdit(address)}
+                  disabled={processing === address.id}
+                  className="flex items-center gap-2"
+                >
+                  <Edit className="h-4 w-4" />
+                  Edit & Approve
+                </Button>
+                <Button
+                  variant="outline"
                   onClick={() => handleReject(address)}
                   disabled={processing === address.id}
                   className="flex-1"
@@ -406,6 +455,132 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
           address={selectedMapAddress}
         />
       )}
+
+      {editingAddress && (
+        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Edit Flagged Address Request</DialogTitle>
+            </DialogHeader>
+            <EditFlaggedAddressForm
+              address={editingAddress}
+              onSave={handleSaveEdit}
+              onCancel={() => setEditDialogOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </>
+  );
+}
+
+interface EditFlaggedAddressFormProps {
+  address: EditableFlaggedAddress;
+  onSave: (address: EditableFlaggedAddress) => void;
+  onCancel: () => void;
+}
+
+function EditFlaggedAddressForm({ address, onSave, onCancel }: EditFlaggedAddressFormProps) {
+  const [formData, setFormData] = useState<EditableFlaggedAddress>(address);
+
+  const handleSave = () => {
+    onSave(formData);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="country">Country</Label>
+          <Input
+            id="country"
+            value={formData.country}
+            onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="region">Region</Label>
+          <Input
+            id="region"
+            value={formData.region}
+            onChange={(e) => setFormData(prev => ({ ...prev, region: e.target.value }))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="city">City</Label>
+          <Input
+            id="city"
+            value={formData.city}
+            onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="street">Street</Label>
+          <Input
+            id="street"
+            value={formData.street}
+            onChange={(e) => setFormData(prev => ({ ...prev, street: e.target.value }))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="building">Building/House Number</Label>
+          <Input
+            id="building"
+            value={formData.building || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, building: e.target.value }))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="address_type">Address Type</Label>
+          <Select value={formData.address_type} onValueChange={(value) => setFormData(prev => ({ ...prev, address_type: value }))}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="residential">Residential</SelectItem>
+              <SelectItem value="commercial">Commercial</SelectItem>
+              <SelectItem value="government">Government</SelectItem>
+              <SelectItem value="landmark">Landmark</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label htmlFor="latitude">Latitude</Label>
+          <Input
+            id="latitude"
+            type="number"
+            step="any"
+            value={formData.latitude}
+            onChange={(e) => setFormData(prev => ({ ...prev, latitude: parseFloat(e.target.value) || 0 }))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="longitude">Longitude</Label>
+          <Input
+            id="longitude"
+            type="number"
+            step="any"
+            value={formData.longitude}
+            onChange={(e) => setFormData(prev => ({ ...prev, longitude: parseFloat(e.target.value) || 0 }))}
+          />
+        </div>
+      </div>
+      <div>
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          value={formData.description || ''}
+          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+        />
+      </div>
+      <div className="flex gap-2 pt-4">
+        <Button onClick={handleSave} className="flex-1">
+          Save & Approve
+        </Button>
+        <Button variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+      </div>
+    </div>
   );
 }

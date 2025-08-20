@@ -2,11 +2,16 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, User, Building, Calendar, CheckCircle, X, Zap, Eye } from "lucide-react";
+import { MapPin, User, Building, Calendar, CheckCircle, X, Zap, Eye, Edit } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AddressRejectionDialog } from "./AddressRejectionDialog";
 import { AddressMapDialog } from "./AddressMapDialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface AddressRequest {
   id: string;
@@ -25,6 +30,8 @@ interface AddressRequest {
   created_at: string;
 }
 
+interface EditableRequest extends AddressRequest {}
+
 interface AddressRequestApprovalProps {
   requests: AddressRequest[];
   onUpdate: () => void;
@@ -38,10 +45,32 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
   const [selectedRequest, setSelectedRequest] = useState<AddressRequest | null>(null);
   const [mapDialogOpen, setMapDialogOpen] = useState(false);
   const [selectedMapAddress, setSelectedMapAddress] = useState<AddressRequest | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingRequest, setEditingRequest] = useState<EditableRequest | null>(null);
 
-  const handleApprove = async (requestId: string) => {
+  const handleApprove = async (requestId: string, updatedData?: Partial<AddressRequest>) => {
     setProcessing(requestId);
     try {
+      // If there are updates, apply them first
+      if (updatedData) {
+        const { error: updateError } = await supabase
+          .from('address_requests')
+          .update({
+            street: updatedData.street,
+            city: updatedData.city,
+            region: updatedData.region,
+            country: updatedData.country,
+            building: updatedData.building,
+            address_type: updatedData.address_type,
+            description: updatedData.description,
+            latitude: updatedData.latitude,
+            longitude: updatedData.longitude,
+          })
+          .eq('id', requestId);
+
+        if (updateError) throw updateError;
+      }
+
       const { error } = await supabase.rpc('approve_address_request', {
         p_request_id: requestId
       });
@@ -61,6 +90,17 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
   const handleViewOnMap = (request: AddressRequest) => {
     setSelectedMapAddress(request);
     setMapDialogOpen(true);
+  };
+
+  const handleEdit = (request: AddressRequest) => {
+    setEditingRequest({ ...request });
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveEdit = (updatedRequest: EditableRequest) => {
+    setEditDialogOpen(false);
+    // Approve with the updated data
+    handleApprove(updatedRequest.id, updatedRequest);
   };
 
   const handleReject = (request: AddressRequest) => {
@@ -199,6 +239,15 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                 </Button>
                 <Button
                   variant="outline"
+                  onClick={() => handleEdit(request)}
+                  disabled={processing === request.id || autoVerifying === request.id}
+                  className="flex items-center gap-2"
+                >
+                  <Edit className="h-4 w-4" />
+                  Edit & Approve
+                </Button>
+                <Button
+                  variant="outline"
                   onClick={() => handleReject(request)}
                   disabled={processing === request.id || autoVerifying === request.id}
                   className="flex-1"
@@ -252,6 +301,132 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
           address={selectedMapAddress}
         />
       )}
+
+      {editingRequest && (
+        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Edit Address Request</DialogTitle>
+            </DialogHeader>
+            <EditRequestForm
+              request={editingRequest}
+              onSave={handleSaveEdit}
+              onCancel={() => setEditDialogOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </>
+  );
+}
+
+interface EditRequestFormProps {
+  request: EditableRequest;
+  onSave: (request: EditableRequest) => void;
+  onCancel: () => void;
+}
+
+function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
+  const [formData, setFormData] = useState<EditableRequest>(request);
+
+  const handleSave = () => {
+    onSave(formData);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="country">Country</Label>
+          <Input
+            id="country"
+            value={formData.country}
+            onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="region">Region</Label>
+          <Input
+            id="region"
+            value={formData.region}
+            onChange={(e) => setFormData(prev => ({ ...prev, region: e.target.value }))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="city">City</Label>
+          <Input
+            id="city"
+            value={formData.city}
+            onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="street">Street</Label>
+          <Input
+            id="street"
+            value={formData.street}
+            onChange={(e) => setFormData(prev => ({ ...prev, street: e.target.value }))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="building">Building/House Number</Label>
+          <Input
+            id="building"
+            value={formData.building || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, building: e.target.value }))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="address_type">Address Type</Label>
+          <Select value={formData.address_type} onValueChange={(value) => setFormData(prev => ({ ...prev, address_type: value }))}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="residential">Residential</SelectItem>
+              <SelectItem value="commercial">Commercial</SelectItem>
+              <SelectItem value="government">Government</SelectItem>
+              <SelectItem value="landmark">Landmark</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label htmlFor="latitude">Latitude</Label>
+          <Input
+            id="latitude"
+            type="number"
+            step="any"
+            value={formData.latitude}
+            onChange={(e) => setFormData(prev => ({ ...prev, latitude: parseFloat(e.target.value) || 0 }))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="longitude">Longitude</Label>
+          <Input
+            id="longitude"
+            type="number"
+            step="any"
+            value={formData.longitude}
+            onChange={(e) => setFormData(prev => ({ ...prev, longitude: parseFloat(e.target.value) || 0 }))}
+          />
+        </div>
+      </div>
+      <div>
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          value={formData.description || ''}
+          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+        />
+      </div>
+      <div className="flex gap-2 pt-4">
+        <Button onClick={handleSave} className="flex-1">
+          Save & Approve
+        </Button>
+        <Button variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+      </div>
+    </div>
   );
 }
