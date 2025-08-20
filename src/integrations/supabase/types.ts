@@ -317,6 +317,35 @@ export type Database = {
         }
         Returns: string
       }
+      get_review_queue: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          address_type: string
+          building: string
+          city: string
+          country: string
+          created_at: string
+          description: string
+          flag_reason: string
+          flagged: boolean
+          flagged_at: string
+          flagged_by: string
+          id: string
+          justification: string
+          latitude: number
+          longitude: number
+          photo_url: string
+          public: boolean
+          region: string
+          source_type: string
+          status: string
+          street: string
+          uac: string
+          updated_at: string
+          user_id: string
+          verified: boolean
+        }[]
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]

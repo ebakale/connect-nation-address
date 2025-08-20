@@ -10,64 +10,73 @@ import { AddressLocationMap } from "@/components/AddressLocationMap";
 import { supabase } from "@/integrations/supabase/client";
 
 export const AddressVerificationQueue = () => {
-  const { addresses, loading, updateAddressStatus, fetchAddresses } = useAddresses();
+  const { updateAddressStatus } = useAddresses();
   const { toast } = useToast();
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [mapDialogOpen, setMapDialogOpen] = useState(false);
-  const [addressRequests, setAddressRequests] = useState<{[key: string]: any}>({});
+  const [reviewItems, setReviewItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log('AddressVerificationQueue: Component mounted, fetching addresses...');
-    fetchAddresses();
-  }, [fetchAddresses]);
+    console.log('AddressVerificationQueue: Component mounted, fetching review queue...');
+    fetchReviewQueue();
+  }, []);
 
-  useEffect(() => {
-    console.log('AddressVerificationQueue: addresses changed, length:', addresses.length);
-    
-    // Fetch associated address requests to get claimant type and proof documents
-    const fetchAddressRequests = async () => {
-      try {
-        console.log('Fetching address requests...');
-        const { data: requests, error } = await supabase
-          .from('address_requests')
-          .select('id, claimant_type, proof_of_ownership_url, user_id, street, city')
-          .eq('status', 'approved');
-
-        console.log('Address requests fetched:', requests?.length || 0, 'requests');
-
-        if (!error && requests) {
-          const requestMap = requests.reduce((acc, req) => {
-            const key = `${req.user_id}-${req.street}-${req.city}`;
-            acc[key] = req;
-            return acc;
-          }, {});
-          console.log('Request map created with', Object.keys(requestMap).length, 'entries');
-          setAddressRequests(requestMap);
-        }
-      } catch (error) {
-        console.error('Failed to fetch address requests:', error);
-      }
-    };
-
-    fetchAddressRequests();
-  }, [addresses]); // Only depend on addresses, not fetchAddresses
-
-  const pendingAddresses = addresses.filter(addr => !addr.verified);
-
-  // Helper function to get associated request data
-  const getRequestData = (address) => {
-    const key = `${address.user_id}-${address.street}-${address.city}`;
-    return addressRequests[key] || null;
+  const fetchReviewQueue = async () => {
+    setLoading(true);
+    try {
+      console.log('Fetching review queue...');
+      const { data, error } = await supabase.rpc('get_review_queue');
+      
+      if (error) throw error;
+      
+      console.log('Review queue fetched:', data?.length || 0, 'items');
+      setReviewItems(data || []);
+    } catch (error) {
+      console.error('Failed to fetch review queue:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load review queue",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleVerify = async (addressId: string, verified: boolean) => {
-    console.log('Verifying address:', addressId, 'verified:', verified);
+  const handleVerify = async (item: any, verified: boolean) => {
+    console.log('Verifying item:', item.id, 'source:', item.source_type, 'verified:', verified);
     try {
-      await updateAddressStatus(addressId, { verified });
+      if (item.source_type === 'request') {
+        // Handle address request verification
+        const { error } = await supabase
+          .from('address_requests')
+          .update({ status: verified ? 'approved' : 'rejected' })
+          .eq('id', item.id);
+        
+        if (error) throw error;
+      } else if (item.source_type === 'flagged_address') {
+        // Handle flagged address verification - unflag and verify
+        const { error: unflagError } = await supabase.rpc('unflag_address', {
+          p_address_id: item.id
+        });
+        
+        if (unflagError) throw unflagError;
+        
+        const { error: verifyError } = await supabase
+          .from('addresses')
+          .update({ verified })
+          .eq('id', item.id);
+          
+        if (verifyError) throw verifyError;
+      }
+      
       toast({
         title: "Success",
-        description: `Address ${verified ? 'verified' : 'rejected'} successfully`,
+        description: `${item.source_type === 'request' ? 'Request' : 'Address'} ${verified ? 'verified' : 'rejected'} successfully`,
       });
+      
+      fetchReviewQueue(); // Refresh the queue
     } catch (error) {
       console.error('Verification failed:', error);
       toast({
@@ -78,14 +87,24 @@ export const AddressVerificationQueue = () => {
     }
   };
 
-  const handlePublish = async (addressId: string, isPublic: boolean) => {
-    console.log('Publishing address:', addressId, 'public:', isPublic);
+  const handlePublish = async (item: any, isPublic: boolean) => {
+    if (item.source_type !== 'flagged_address') return;
+    
+    console.log('Publishing address:', item.id, 'public:', isPublic);
     try {
-      await updateAddressStatus(addressId, { public: isPublic });
+      const { error } = await supabase
+        .from('addresses')
+        .update({ public: isPublic })
+        .eq('id', item.id);
+        
+      if (error) throw error;
+      
       toast({
         title: "Success",
         description: `Address ${isPublic ? 'published' : 'made private'} successfully`,
       });
+      
+      fetchReviewQueue(); // Refresh the queue
     } catch (error) {
       console.error('Publishing failed:', error);
       toast({
@@ -96,12 +115,12 @@ export const AddressVerificationQueue = () => {
     }
   };
 
-  const handleViewOnMap = (address) => {
-    setSelectedAddress(address);
+  const handleViewOnMap = (item) => {
+    setSelectedAddress(item);
     setMapDialogOpen(true);
   };
 
-  console.log('AddressVerificationQueue: Rendering with', addresses.length, 'addresses,', pendingAddresses.length, 'pending');
+  console.log('AddressVerificationQueue: Rendering with', reviewItems.length, 'review items');
 
   if (loading) {
     console.log('AddressVerificationQueue: Still loading...');
@@ -110,37 +129,43 @@ export const AddressVerificationQueue = () => {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Verification Queue ({pendingAddresses.length})</h3>
+      <h3 className="text-lg font-semibold">Review Queue ({reviewItems.length})</h3>
       
-      {pendingAddresses.length === 0 ? (
+      {reviewItems.length === 0 ? (
         <Card>
           <CardContent className="p-6 text-center">
-            <p className="text-muted-foreground">No addresses pending verification</p>
+            <p className="text-muted-foreground">No items pending verification</p>
           </CardContent>
         </Card>
       ) : (
-        pendingAddresses.map((address) => {
-          const requestData = getRequestData(address);
-          const isPropertyClaim = requestData?.claimant_type === 'owner';
+        reviewItems.map((item) => {
+          const isRequest = item.source_type === 'request';
+          const isFlagged = item.source_type === 'flagged_address';
+          const isPropertyClaim = item.claimant_type === 'owner';
           
           return (
-          <Card key={address.id} className={`${isPropertyClaim ? 'border-l-4 border-l-orange-500' : ''}`}>
+          <Card key={`${item.source_type}-${item.id}`} className={`${isPropertyClaim ? 'border-l-4 border-l-orange-500' : ''} ${isFlagged ? 'border-red-200 bg-red-50/30' : ''}`}>
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
-                  <CardTitle className="text-lg">{address.uac}</CardTitle>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    {item.uac || `New ${isRequest ? 'Request' : 'Address'}`}
+                    {isFlagged && <AlertTriangle className="h-4 w-4 text-red-500" />}
+                  </CardTitle>
                   <CardDescription>
-                    {address.building && `${address.building}, `}
-                    {address.street}, {address.city}, {address.region}
+                    {item.building && `${item.building}, `}
+                    {item.street}, {item.city}, {item.region}
                   </CardDescription>
                 </div>
                 <div className="flex gap-2 flex-wrap">
-                  <Badge variant={address.verified ? "default" : "secondary"}>
-                    {address.verified ? "Verified" : "Pending"}
+                  <Badge variant={isRequest ? "secondary" : isFlagged ? "destructive" : "default"}>
+                    {isRequest ? "New Request" : isFlagged ? "Flagged for Review" : item.status}
                   </Badge>
-                  <Badge variant={address.public ? "default" : "outline"}>
-                    {address.public ? "Public" : "Private"}
-                  </Badge>
+                  {item.public !== null && (
+                    <Badge variant={item.public ? "default" : "outline"}>
+                      {item.public ? "Public" : "Private"}
+                    </Badge>
+                  )}
                   {isPropertyClaim && (
                     <Badge variant="default" className="bg-orange-500">
                       <AlertTriangle className="h-3 w-3 mr-1" />
@@ -153,10 +178,10 @@ export const AddressVerificationQueue = () => {
             <CardContent>
               <div className="grid grid-cols-2 gap-4 text-sm mb-4">
                 <div>
-                  <span className="font-medium">Type:</span> {address.address_type}
+                  <span className="font-medium">Type:</span> {item.address_type}
                 </div>
                 <div>
-                  <span className="font-medium">Coordinates:</span> {address.latitude}, {address.longitude}
+                  <span className="font-medium">Coordinates:</span> {item.latitude}, {item.longitude}
                 </div>
                 {isPropertyClaim && (
                   <div className="col-span-2">
@@ -166,8 +191,27 @@ export const AddressVerificationQueue = () => {
                 )}
               </div>
               
-              {address.description && (
-                <p className="text-sm text-muted-foreground mb-4">{address.description}</p>
+              {item.description && (
+                <p className="text-sm text-muted-foreground mb-4">{item.description}</p>
+              )}
+              
+              {/* Flag reason for flagged addresses */}
+              {isFlagged && item.flag_reason && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-center gap-2 mb-1">
+                    <AlertTriangle className="h-4 w-4 text-red-600" />
+                    <span className="font-medium text-red-900">Flagged for Review</span>
+                  </div>
+                  <p className="text-sm text-red-800">{item.flag_reason}</p>
+                </div>
+              )}
+
+              {/* Justification for requests */}
+              {isRequest && item.justification && (
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <span className="font-medium text-blue-900">Justification:</span>
+                  <p className="text-sm text-blue-800 mt-1">{item.justification}</p>
+                </div>
               )}
 
               {/* Property Ownership Alert for Verifiers */}
@@ -180,11 +224,11 @@ export const AddressVerificationQueue = () => {
                   <p className="text-sm text-orange-800 mb-2">
                     This address was claimed by a property owner. Verify ownership documentation and cross-check against official records.
                   </p>
-                  {requestData?.proof_of_ownership_url && (
+                  {item.proof_of_ownership_url && (
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => window.open(requestData.proof_of_ownership_url, '_blank')}
+                      onClick={() => window.open(item.proof_of_ownership_url, '_blank')}
                       className="flex items-center gap-1"
                     >
                       <FileText className="h-3 w-3" />
@@ -195,11 +239,11 @@ export const AddressVerificationQueue = () => {
               )}
 
               {/* Address Photo if available */}
-              {address.photo_url && (
+              {item.photo_url && (
                 <div className="mb-4">
                   <span className="font-medium text-sm">Address Photo:</span>
                   <img
-                    src={address.photo_url}
+                    src={item.photo_url}
                     alt="Address location"
                     className="w-full max-h-32 object-cover border rounded mt-1"
                   />
@@ -209,34 +253,36 @@ export const AddressVerificationQueue = () => {
               <div className="flex gap-2 flex-wrap">
                 <Button
                   size="sm"
-                  onClick={() => handleVerify(address.id, true)}
+                  onClick={() => handleVerify(item, true)}
                   className="flex items-center gap-1"
                 >
                   <CheckCircle className="h-4 w-4" />
-                  Verify
+                  {isRequest ? 'Approve' : 'Verify'}
                 </Button>
                 <Button
                   size="sm"
                   variant="destructive"
-                  onClick={() => handleVerify(address.id, false)}
+                  onClick={() => handleVerify(item, false)}
                   className="flex items-center gap-1"
                 >
                   <XCircle className="h-4 w-4" />
                   Reject
                 </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handlePublish(address.id, !address.public)}
-                  className="flex items-center gap-1"
-                >
-                  <Eye className="h-4 w-4" />
-                  {address.public ? "Make Private" : "Make Public"}
-                </Button>
+                {isFlagged && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handlePublish(item, !item.public)}
+                    className="flex items-center gap-1"
+                  >
+                    <Eye className="h-4 w-4" />
+                    {item.public ? "Make Private" : "Make Public"}
+                  </Button>
+                )}
                 <Button
                   size="sm"
                   variant="secondary"
-                  onClick={() => handleViewOnMap(address)}
+                  onClick={() => handleViewOnMap(item)}
                   className="flex items-center gap-1"
                 >
                   <MapPin className="h-4 w-4" />
