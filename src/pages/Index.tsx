@@ -46,8 +46,8 @@ const Index = () => {
       case 'overview':
         return (
           <div className="space-y-16">
-            {/* Hero Section */}
-            <div className="relative min-h-[80vh] flex items-center justify-center overflow-hidden rounded-3xl bg-gradient-to-br from-primary/10 via-secondary/5 to-destructive/5">
+            {/* Mobile-optimized Hero Section */}
+            <div className="relative min-h-[60vh] sm:min-h-[70vh] lg:min-h-[80vh] flex items-center justify-center overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-primary/10 via-secondary/5 to-destructive/5">
               {/* Background Pattern */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,hsl(var(--system-blue)/0.1),transparent_50%),radial-gradient(circle_at_70%_60%,hsl(var(--system-green)/0.1),transparent_50%),radial-gradient(circle_at_40%_80%,hsl(var(--system-red)/0.05),transparent_50%)]"></div>
               
@@ -59,48 +59,48 @@ const Index = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20"></div>
               </div>
               
-              <div className="relative z-10 text-center px-6 max-w-6xl">
-                <div className="space-y-8 animate-fade-in">
+              <div className="relative z-10 text-center px-4 sm:px-6 max-w-6xl">
+                <div className="space-y-6 sm:space-y-8 animate-fade-in">
                   {/* Badge */}
-                  <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white shadow-lg backdrop-blur-sm border border-white/20">
-                    <MapPin className="h-5 w-5 mr-2" />
-                    <span className="font-semibold">{t('nationalAddressRegistry')}</span>
+                  <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white shadow-lg backdrop-blur-sm border border-white/20">
+                    <MapPin className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                    <span className="text-sm sm:text-base font-semibold">{t('nationalAddressRegistry')}</span>
                   </div>
                   
                   {/* Main Heading */}
-                  <div className="space-y-4">
-                    <h1 className="text-5xl md:text-7xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent leading-tight">
+                  <div className="space-y-3 sm:space-y-4">
+                    <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent leading-tight">
                       {t('equatorialGuinea')}
-                      <span className="block text-4xl md:text-6xl font-bold text-foreground/90 mt-2">
+                      <span className="block text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-foreground/90 mt-2">
                         {t('addressRegistration')}
                       </span>
                     </h1>
                   </div>
                   
                   {/* Subtitle */}
-                  <p className="text-xl md:text-2xl text-foreground/70 max-w-4xl mx-auto leading-relaxed font-light">
+                  <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-foreground/70 max-w-4xl mx-auto leading-relaxed font-light">
                     {t('heroSubtitle')} 
                     <span className="text-primary font-medium"> {t('heroDescription')} </span>
                     {t('heroDescriptionExtended')}
                   </p>
                   
                   {/* CTA Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
+                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center pt-6 sm:pt-8">
                     <Button 
                       onClick={() => navigate('/auth')} 
-                      className="px-10 py-4 text-lg font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-blue transform hover:scale-105 transition-all duration-200"
+                      className="px-6 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-blue transform hover:scale-105 transition-all duration-200"
                       size="lg"
                     >
-                      <LogIn className="h-6 w-6 mr-2" />
+                      <LogIn className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
                       {t('accessSystemNow')}
                     </Button>
                     <Button 
                       onClick={() => setActiveSection('about')}
                       variant="outline" 
-                      className="px-10 py-4 text-lg font-semibold border-2 border-secondary text-secondary hover:bg-secondary hover:text-white shadow-green transform hover:scale-105 transition-all duration-200"
+                      className="px-6 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-semibold border-2 border-secondary text-secondary hover:bg-secondary hover:text-white shadow-green transform hover:scale-105 transition-all duration-200"
                       size="lg"
                     >
-                      <Globe className="h-6 w-6 mr-2" />
+                      <Globe className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
                       {t('discoverMore')}
                     </Button>
                   </div>

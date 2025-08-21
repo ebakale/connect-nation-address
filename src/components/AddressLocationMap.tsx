@@ -145,28 +145,28 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
   return (
     <>
       <div className={`relative w-full rounded-lg overflow-hidden transition-all duration-300 ${
-        isFullscreen ? 'fixed inset-0 z-50 h-screen w-screen' : 'h-96'
+        isFullscreen ? 'fixed inset-0 z-50 h-screen w-screen safe-area-inset' : 'h-64 sm:h-80 md:h-96'
       }`}>
-        {/* Control buttons */}
-        <div className="absolute top-2 right-2 z-10 flex gap-2">
+        {/* Mobile-optimized Control buttons */}
+        <div className="absolute top-2 right-2 z-10 flex flex-col sm:flex-row gap-1 sm:gap-2">
           <div className="flex bg-background/90 backdrop-blur-sm rounded-md">
             <Button
               variant={mapStyle === 'satellite' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setMapStyle('satellite')}
-              className="rounded-r-none"
+              className="rounded-r-none text-xs sm:text-sm px-2 sm:px-3"
             >
-              <Satellite className="h-4 w-4 mr-1" />
-              Satellite
+              <Satellite className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
+              <span className="hidden sm:inline">Satellite</span>
             </Button>
             <Button
               variant={mapStyle === 'streets' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setMapStyle('streets')}
-              className="rounded-l-none"
+              className="rounded-l-none text-xs sm:text-sm px-2 sm:px-3"
             >
-              <MapIcon className="h-4 w-4 mr-1" />
-              Streets
+              <MapIcon className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
+              <span className="hidden sm:inline">Streets</span>
             </Button>
           </div>
           
@@ -176,19 +176,19 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
                 variant="outline"
                 size="sm"
                 onClick={openInNewWindow}
-                className="bg-background/90 backdrop-blur-sm"
+                className="bg-background/90 backdrop-blur-sm p-2"
                 title="Open in Google Maps"
               >
-                <ExternalLink className="h-4 w-4" />
+                <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={toggleFullscreen}
-                className="bg-background/90 backdrop-blur-sm"
+                className="bg-background/90 backdrop-blur-sm p-2"
                 title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
               >
-                <Maximize2 className="h-4 w-4" />
+                <Maximize2 className="h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
             </div>
           )}
@@ -197,9 +197,9 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
             variant="outline"
             size="sm"
             onClick={isFullscreen ? toggleFullscreen : onClose}
-            className="bg-background/90 backdrop-blur-sm"
+            className="bg-background/90 backdrop-blur-sm p-2"
           >
-            <X className="h-4 w-4" />
+            <X className="h-3 w-3 sm:h-4 sm:w-4" />
           </Button>
         </div>
         <div ref={mapContainer} className="absolute inset-0" />
