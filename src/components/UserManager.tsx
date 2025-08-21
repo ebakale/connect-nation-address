@@ -232,16 +232,8 @@ const UserManager: React.FC = () => {
     if (!selectedUser) return;
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('No session found');
-
-      const response = await fetch('/supabase/functions/v1/admin-user-operations', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke('admin-user-operations', {
+        body: {
           operation: 'updateUser',
           userId: selectedUser.user_id,
           data: {
@@ -251,13 +243,11 @@ const UserManager: React.FC = () => {
             phone: editForm.phone,
             password: editForm.password || undefined
           }
-        })
+        }
       });
 
-      const result = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to update user');
+      if (error) {
+        throw new Error(error.message || 'Failed to update user');
       }
 
       toast({
@@ -287,25 +277,15 @@ const UserManager: React.FC = () => {
     if (!selectedUser) return;
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('No session found');
-
-      const response = await fetch('/supabase/functions/v1/admin-user-operations', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke('admin-user-operations', {
+        body: {
           operation: 'deleteUser',
           userId: selectedUser.user_id
-        })
+        }
       });
 
-      const result = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to delete user');
+      if (error) {
+        throw new Error(error.message || 'Failed to delete user');
       }
 
       toast({
