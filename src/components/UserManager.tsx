@@ -8,9 +8,11 @@ import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
+import { Textarea } from '@/components/ui/textarea';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useUserRole } from '@/hooks/useUserRole';
-import { Users, Search, UserCog, MapPin } from 'lucide-react';
+import { Users, Search, UserCog, MapPin, Edit, Trash2 } from 'lucide-react';
 
 interface UserProfile {
   id: string;
@@ -37,6 +39,16 @@ const UserManager: React.FC = () => {
   const [selectedGeographicScope, setSelectedGeographicScope] = useState<string>('');
   const [showScopeDialog, setShowScopeDialog] = useState(false);
   const [pendingAssignment, setPendingAssignment] = useState<{userId: string, role: string} | null>(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
+  const [editForm, setEditForm] = useState({
+    full_name: '',
+    email: '',
+    organization: '',
+    phone: '',
+    password: ''
+  });
   const { hasAdminAccess } = useUserRole();
   const { toast } = useToast();
 
@@ -204,6 +216,95 @@ const UserManager: React.FC = () => {
     }
   };
 
+  const openEditDialog = (user: UserProfile) => {
+    setSelectedUser(user);
+    setEditForm({
+      full_name: user.full_name || '',
+      email: user.email || '',
+      organization: user.organization || '',
+      phone: user.phone || '',
+      password: ''
+    });
+    setShowEditDialog(true);
+  };
+
+  const updateUserProfile = async () => {
+    if (!selectedUser) return;
+
+    try {
+      // Update profile information
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          full_name: editForm.full_name,
+          email: editForm.email,
+          organization: editForm.organization,
+          phone: editForm.phone
+        })
+        .eq('user_id', selectedUser.user_id);
+
+      if (profileError) throw profileError;
+
+      // Update password if provided
+      if (editForm.password) {
+        const { error: passwordError } = await supabase.auth.admin.updateUserById(
+          selectedUser.user_id,
+          { password: editForm.password }
+        );
+
+        if (passwordError) throw passwordError;
+      }
+
+      toast({
+        title: "Success",
+        description: "User information updated successfully"
+      });
+
+      await fetchUsers();
+      setShowEditDialog(false);
+      setSelectedUser(null);
+    } catch (error) {
+      console.error('Error updating user:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update user information",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const openDeleteDialog = (user: UserProfile) => {
+    setSelectedUser(user);
+    setShowDeleteDialog(true);
+  };
+
+  const deleteUser = async () => {
+    if (!selectedUser) return;
+
+    try {
+      // Delete user from Supabase Auth (this will cascade delete related records)
+      const { error } = await supabase.auth.admin.deleteUser(selectedUser.user_id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "User deleted successfully"
+      });
+
+      await fetchUsers();
+      setShowDeleteDialog(false);
+      setSelectedUser(null);
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete user",
+        variant: "destructive"
+      });
+    }
+  };
+
   const filteredUsers = users.filter(user => 
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -317,7 +418,7 @@ const UserManager: React.FC = () => {
                               setSelectedRole('');
                             }}
                           >
-                            <SelectTrigger className="w-40">
+                            <SelectTrigger className="w-32">
                               <SelectValue placeholder="Assign role" />
                             </SelectTrigger>
                             <SelectContent>
@@ -331,6 +432,22 @@ const UserManager: React.FC = () => {
                               ))}
                             </SelectContent>
                           </Select>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openEditDialog(user)}
+                            className="p-2"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openDeleteDialog(user)}
+                            className="p-2 text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -409,6 +526,111 @@ const UserManager: React.FC = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Edit User Dialog */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Edit className="h-5 w-5" />
+              Edit User Information
+            </DialogTitle>
+            <DialogDescription>
+              Update user profile information and password.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-full-name">Full Name</Label>
+              <Input
+                id="edit-full-name"
+                value={editForm.full_name}
+                onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
+                placeholder="Enter full name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-email">Email</Label>
+              <Input
+                id="edit-email"
+                type="email"
+                value={editForm.email}
+                onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                placeholder="Enter email address"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-organization">Organization</Label>
+              <Input
+                id="edit-organization"
+                value={editForm.organization}
+                onChange={(e) => setEditForm({ ...editForm, organization: e.target.value })}
+                placeholder="Enter organization"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-phone">Phone</Label>
+              <Input
+                id="edit-phone"
+                value={editForm.phone}
+                onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                placeholder="Enter phone number"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-password">New Password (optional)</Label>
+              <Input
+                id="edit-password"
+                type="password"
+                value={editForm.password}
+                onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
+                placeholder="Leave empty to keep current password"
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowEditDialog(false);
+                  setSelectedUser(null);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button onClick={updateUserProfile}>
+                Update User
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete User Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <Trash2 className="h-5 w-5 text-destructive" />
+              Delete User
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete <strong>{selectedUser?.full_name || selectedUser?.email}</strong>? 
+              This action cannot be undone and will permanently remove the user and all associated data.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setSelectedUser(null)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={deleteUser}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete User
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
