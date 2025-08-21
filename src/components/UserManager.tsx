@@ -232,27 +232,32 @@ const UserManager: React.FC = () => {
     if (!selectedUser) return;
 
     try {
-      // Update profile information
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({
-          full_name: editForm.full_name,
-          email: editForm.email,
-          organization: editForm.organization,
-          phone: editForm.phone
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('No session found');
+
+      const response = await fetch('/supabase/functions/v1/admin-user-operations', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          operation: 'updateUser',
+          userId: selectedUser.user_id,
+          data: {
+            full_name: editForm.full_name,
+            email: editForm.email,
+            organization: editForm.organization,
+            phone: editForm.phone,
+            password: editForm.password || undefined
+          }
         })
-        .eq('user_id', selectedUser.user_id);
+      });
 
-      if (profileError) throw profileError;
-
-      // Update password if provided
-      if (editForm.password) {
-        const { error: passwordError } = await supabase.auth.admin.updateUserById(
-          selectedUser.user_id,
-          { password: editForm.password }
-        );
-
-        if (passwordError) throw passwordError;
+      const result = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to update user');
       }
 
       toast({
@@ -267,7 +272,7 @@ const UserManager: React.FC = () => {
       console.error('Error updating user:', error);
       toast({
         title: "Error",
-        description: "Failed to update user information",
+        description: error instanceof Error ? error.message : "Failed to update user information",
         variant: "destructive"
       });
     }
@@ -282,10 +287,26 @@ const UserManager: React.FC = () => {
     if (!selectedUser) return;
 
     try {
-      // Delete user from Supabase Auth (this will cascade delete related records)
-      const { error } = await supabase.auth.admin.deleteUser(selectedUser.user_id);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('No session found');
 
-      if (error) throw error;
+      const response = await fetch('/supabase/functions/v1/admin-user-operations', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          operation: 'deleteUser',
+          userId: selectedUser.user_id
+        })
+      });
+
+      const result = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to delete user');
+      }
 
       toast({
         title: "Success",
@@ -299,7 +320,7 @@ const UserManager: React.FC = () => {
       console.error('Error deleting user:', error);
       toast({
         title: "Error",
-        description: "Failed to delete user",
+        description: error instanceof Error ? error.message : "Failed to delete user",
         variant: "destructive"
       });
     }
