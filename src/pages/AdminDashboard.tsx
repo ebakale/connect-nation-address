@@ -40,75 +40,79 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
+          <Card className="min-w-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t('totalUsers')}</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium truncate">{t('totalUsers')}</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">1,234</div>
-              <p className="text-xs text-muted-foreground">{t('fromLastMonth')}</p>
+              <p className="text-xs text-muted-foreground truncate">{t('fromLastMonth')}</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="min-w-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t('activeRoles')}</CardTitle>
-              <Shield className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium truncate">{t('activeRoles')}</CardTitle>
+              <Shield className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">13</div>
-              <p className="text-xs text-muted-foreground">{t('allSystemRoles')}</p>
+              <p className="text-xs text-muted-foreground truncate">{t('allSystemRoles')}</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="min-w-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t('pendingApprovals')}</CardTitle>
-              <Settings className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium truncate">{t('pendingApprovals')}</CardTitle>
+              <Settings className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">8</div>
-              <p className="text-xs text-muted-foreground">{t('requiresAttention')}</p>
+              <p className="text-xs text-muted-foreground truncate">{t('requiresAttention')}</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="min-w-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t('systemHealth')}</CardTitle>
-              <BarChart3 className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium truncate">{t('systemHealth')}</CardTitle>
+              <BarChart3 className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">99.9%</div>
-              <p className="text-xs text-muted-foreground">{t('uptime')}</p>
+              <p className="text-xs text-muted-foreground truncate">{t('uptime')}</p>
             </CardContent>
           </Card>
         </div>
 
         <div className="mb-8">
-          <Card>
+          <Card className="max-w-full">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                {t('systemDocumentation')}
+              <CardTitle className="flex items-center gap-2 flex-wrap">
+                <FileText className="h-5 w-5 flex-shrink-0" />
+                <span className="break-words">{t('systemDocumentation')}</span>
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="break-words">
                 {t('generateDocumentation')}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="max-w-full overflow-hidden">
               <div className="space-y-4">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground break-words">
                   {t('documentationDescription')}
                 </p>
-                <RolesDocumentGenerator />
+                <div className="max-w-full">
+                  <RolesDocumentGenerator />
+                </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <AdminPanel />
+        <div className="max-w-full overflow-hidden">
+          <AdminPanel />
+        </div>
       </div>
     </div>
   );

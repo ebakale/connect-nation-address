@@ -75,27 +75,29 @@ export function ReviewQueuePanel() {
   }
 
   return (
-    <div className="space-y-6">
-      <Card>
+    <div className="space-y-6 max-w-full">
+      <Card className="max-w-full">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Flag className="h-5 w-5 text-red-600" />
-            Review Queue - Flagged Addresses
+          <CardTitle className="flex items-center gap-2 flex-wrap">
+            <Flag className="h-5 w-5 text-red-600 flex-shrink-0" />
+            <span className="break-words">Review Queue - Flagged Addresses</span>
             {flaggedAddresses.length > 0 && (
               <Badge 
                 variant="destructive" 
-                className="ml-2"
+                className="ml-2 flex-shrink-0"
               >
                 {flaggedAddresses.length}
               </Badge>
             )}
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <FlaggedAddressManager 
-            addresses={flaggedAddresses} 
-            onUpdate={fetchFlaggedAddresses} 
-          />
+        <CardContent className="max-w-full overflow-hidden">
+          <div className="max-h-[70vh] overflow-y-auto">
+            <FlaggedAddressManager 
+              addresses={flaggedAddresses} 
+              onUpdate={fetchFlaggedAddresses} 
+            />
+          </div>
         </CardContent>
       </Card>
     </div>

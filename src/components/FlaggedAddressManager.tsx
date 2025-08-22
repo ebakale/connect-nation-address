@@ -153,9 +153,9 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
 
   return (
     <>
-      <div className="space-y-4">
+      <div className="space-y-4 max-w-full">
         {addresses.map((address) => (
-          <Card key={address.id} className="border-l-4 border-l-red-500">
+          <Card key={address.id} className="border-l-4 border-l-red-500 max-w-full overflow-hidden">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">Flagged Address Request</CardTitle>
