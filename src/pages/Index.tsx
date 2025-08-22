@@ -47,7 +47,7 @@ const Index = () => {
         return (
           <div className="space-y-16">
             {/* Mobile-optimized Hero Section */}
-            <div className="relative min-h-[60vh] sm:min-h-[70vh] lg:min-h-[80vh] flex items-center justify-center overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-primary/10 via-secondary/5 to-destructive/5">
+            <div className="relative min-h-[50vh] sm:min-h-[60vh] lg:min-h-[70vh] flex items-center justify-center overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/5 to-destructive/5 mobile-container">
               {/* Background Pattern */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,hsl(var(--system-blue)/0.1),transparent_50%),radial-gradient(circle_at_70%_60%,hsl(var(--system-green)/0.1),transparent_50%),radial-gradient(circle_at_40%_80%,hsl(var(--system-red)/0.05),transparent_50%)]"></div>
               
@@ -59,7 +59,7 @@ const Index = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20"></div>
               </div>
               
-              <div className="relative z-10 text-center px-4 sm:px-6 max-w-6xl">
+              <div className="relative z-10 text-center mobile-spacing max-w-6xl mobile-container">
                 <div className="space-y-6 sm:space-y-8 animate-fade-in">
                   {/* Badge */}
                   <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white shadow-lg backdrop-blur-sm border border-white/20">
@@ -68,39 +68,39 @@ const Index = () => {
                   </div>
                   
                   {/* Main Heading */}
-                  <div className="space-y-3 sm:space-y-4">
-                    <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent leading-tight">
-                      {t('equatorialGuinea')}
-                      <span className="block text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-foreground/90 mt-2">
+                  <div className="space-y-2 sm:space-y-3">
+                    <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent leading-tight mobile-container">
+                      <span className="block">{t('equatorialGuinea')}</span>
+                      <span className="block text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-foreground/90 mt-1">
                         {t('addressRegistration')}
                       </span>
                     </h1>
                   </div>
                   
                   {/* Subtitle */}
-                  <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-foreground/70 max-w-4xl mx-auto leading-relaxed font-light">
+                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-foreground/70 max-w-4xl mx-auto leading-relaxed font-light mobile-text-responsive mobile-container">
                     {t('heroSubtitle')} 
                     <span className="text-primary font-medium"> {t('heroDescription')} </span>
                     {t('heroDescriptionExtended')}
                   </p>
                   
                   {/* CTA Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center pt-6 sm:pt-8">
+                  <div className="flex flex-col gap-3 sm:gap-4 justify-center pt-4 sm:pt-6 mobile-container">
                     <Button 
                       onClick={() => navigate('/auth')} 
-                      className="px-6 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-blue transform hover:scale-105 transition-all duration-200"
+                      className="touch-target px-6 py-3 text-sm sm:text-base font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-blue transition-all duration-200"
                       size="lg"
                     >
-                      <LogIn className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
+                      <LogIn className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                       {t('accessSystemNow')}
                     </Button>
                     <Button 
                       onClick={() => setActiveSection('about')}
                       variant="outline" 
-                      className="px-6 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-semibold border-2 border-secondary text-secondary hover:bg-secondary hover:text-white shadow-green transform hover:scale-105 transition-all duration-200"
+                      className="touch-target px-6 py-3 text-sm sm:text-base font-semibold border-2 border-secondary text-secondary hover:bg-secondary hover:text-white shadow-green transition-all duration-200"
                       size="lg"
                     >
-                      <Globe className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
+                      <Globe className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                       {t('discoverMore')}
                     </Button>
                   </div>

@@ -259,9 +259,48 @@ All colors MUST be HSL.
     overflow-x: hidden;
   }
 
-  /* Touch targets */
+  /* Touch targets - iOS Human Interface Guidelines */
   .touch-target {
     min-height: 44px;
     min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Mobile-first content constraints */
+  .mobile-container {
+    max-width: 100vw;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    hyphens: auto;
+  }
+
+  /* Mobile typography scaling */
+  .mobile-text-responsive {
+    font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+    line-height: 1.6;
+  }
+
+  /* Mobile-optimized spacing */
+  .mobile-spacing {
+    padding: max(env(safe-area-inset-top), 1rem) max(env(safe-area-inset-right), 1rem) max(env(safe-area-inset-bottom), 1rem) max(env(safe-area-inset-left), 1rem);
+  }
+
+  /* Prevent zoom on input focus */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  /* Mobile-friendly scrollbars */
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Fix for content jumping on mobile keyboards */
+  .mobile-viewport-stable {
+    height: 100vh;
+    height: -webkit-fill-available;
   }
 }

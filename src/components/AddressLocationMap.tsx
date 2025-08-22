@@ -144,29 +144,29 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
 
   return (
     <>
-      <div className={`relative w-full rounded-lg overflow-hidden transition-all duration-300 ${
-        isFullscreen ? 'fixed inset-0 z-50 h-screen w-screen safe-area-inset' : 'h-64 sm:h-80 md:h-96'
+      <div className={`relative w-full rounded-lg overflow-hidden transition-all duration-300 mobile-container ${
+        isFullscreen ? 'fixed inset-0 z-50 mobile-viewport-stable w-screen mobile-spacing' : 'h-64 sm:h-80 md:h-96'
       }`}>
         {/* Mobile-optimized Control buttons */}
-        <div className="absolute top-2 right-2 z-10 flex flex-col sm:flex-row gap-1 sm:gap-2">
-          <div className="flex bg-background/90 backdrop-blur-sm rounded-md">
+        <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
+          <div className="flex bg-background/95 backdrop-blur-sm rounded-md p-1">
             <Button
               variant={mapStyle === 'satellite' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setMapStyle('satellite')}
-              className="rounded-r-none text-xs sm:text-sm px-2 sm:px-3"
+              className="touch-target rounded-r-none text-xs px-2 py-1"
             >
-              <Satellite className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-              <span className="hidden sm:inline">Satellite</span>
+              <Satellite className="h-3 w-3" />
+              <span className="ml-1 text-xs">Sat</span>
             </Button>
             <Button
               variant={mapStyle === 'streets' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setMapStyle('streets')}
-              className="rounded-l-none text-xs sm:text-sm px-2 sm:px-3"
+              className="touch-target rounded-l-none text-xs px-2 py-1"
             >
-              <MapIcon className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-              <span className="hidden sm:inline">Streets</span>
+              <MapIcon className="h-3 w-3" />
+              <span className="ml-1 text-xs">Map</span>
             </Button>
           </div>
           
@@ -176,19 +176,19 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
                 variant="outline"
                 size="sm"
                 onClick={openInNewWindow}
-                className="bg-background/90 backdrop-blur-sm p-2"
+                className="touch-target bg-background/95 backdrop-blur-sm p-2"
                 title="Open in Google Maps"
               >
-                <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
+                <ExternalLink className="h-3 w-3" />
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={toggleFullscreen}
-                className="bg-background/90 backdrop-blur-sm p-2"
+                className="touch-target bg-background/95 backdrop-blur-sm p-2"
                 title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
               >
-                <Maximize2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                <Maximize2 className="h-3 w-3" />
               </Button>
             </div>
           )}
@@ -197,19 +197,20 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
             variant="outline"
             size="sm"
             onClick={isFullscreen ? toggleFullscreen : onClose}
-            className="bg-background/90 backdrop-blur-sm p-2"
+            className="touch-target bg-background/95 backdrop-blur-sm p-2"
           >
-            <X className="h-3 w-3 sm:h-4 sm:w-4" />
+            <X className="h-3 w-3" />
           </Button>
         </div>
-        <div ref={mapContainer} className="absolute inset-0" />
+        <div ref={mapContainer} className="absolute inset-0 mobile-container" />
       </div>
       
       {/* Fullscreen backdrop */}
       {isFullscreen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40"
+          className="fixed inset-0 bg-black/50 z-40 touch-target"
           onClick={toggleFullscreen}
+          onTouchEnd={toggleFullscreen}
         />
       )}
     </>
