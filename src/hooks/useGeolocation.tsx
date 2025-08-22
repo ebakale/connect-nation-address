@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Geolocation } from '@capacitor/geolocation';
 
 interface GeolocationState {
   latitude: number | null;
@@ -29,19 +30,17 @@ export const useGeolocation = (options: GeolocationOptions = {}) => {
     maximumAge = 60000,
   } = options;
 
-  const getCurrentPosition = () => {
-    if (!navigator.geolocation) {
-      setState(prev => ({
-        ...prev,
-        error: 'Geolocation is not supported by this browser',
-        loading: false,
-      }));
-      return;
-    }
-
+  const getCurrentPosition = async () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
-    const handleSuccess = (position: GeolocationPosition) => {
+    try {
+      // Try Capacitor Geolocation first (for mobile)
+      const position = await Geolocation.getCurrentPosition({
+        enableHighAccuracy,
+        timeout,
+        maximumAge,
+      });
+
       setState({
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
@@ -49,65 +48,97 @@ export const useGeolocation = (options: GeolocationOptions = {}) => {
         error: null,
         loading: false,
       });
-    };
-
-    const handleError = (error: GeolocationPositionError) => {
-      let errorMessage = 'Unable to retrieve location';
-      
-      switch (error.code) {
-        case error.PERMISSION_DENIED:
-          errorMessage = 'Location access denied by user. Please enable location services and try again.';
-          break;
-        case error.POSITION_UNAVAILABLE:
-          errorMessage = 'Location information is unavailable. Please check your connection.';
-          break;
-        case error.TIMEOUT:
-          errorMessage = 'Location request timed out. Please try again.';
-          break;
-        default:
-          errorMessage = 'An unknown location error occurred.';
-          break;
+    } catch (capacitorError) {
+      // Fallback to browser geolocation
+      if (!navigator.geolocation) {
+        setState(prev => ({
+          ...prev,
+          error: 'Geolocation is not supported by this device',
+          loading: false,
+        }));
+        return;
       }
 
-      setState(prev => ({
-        ...prev,
-        error: errorMessage,
-        loading: false,
-      }));
-    };
+      const handleSuccess = (position: GeolocationPosition) => {
+        setState({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy,
+          error: null,
+          loading: false,
+        });
+      };
 
-    navigator.geolocation.getCurrentPosition(
-      handleSuccess,
-      handleError,
-      {
-        enableHighAccuracy,
-        timeout,
-        maximumAge,
-      }
-    );
+      const handleError = (error: GeolocationPositionError) => {
+        let errorMessage = 'Unable to retrieve location';
+        
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = 'Location access denied. Please enable location services in your device settings and try again.';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = 'Location information is unavailable. Please check your connection.';
+            break;
+          case error.TIMEOUT:
+            errorMessage = 'Location request timed out. Please try again.';
+            break;
+          default:
+            errorMessage = 'An unknown location error occurred.';
+            break;
+        }
+
+        setState(prev => ({
+          ...prev,
+          error: errorMessage,
+          loading: false,
+        }));
+      };
+
+      navigator.geolocation.getCurrentPosition(
+        handleSuccess,
+        handleError,
+        {
+          enableHighAccuracy,
+          timeout,
+          maximumAge,
+        }
+      );
+    }
   };
 
   const requestPermission = async () => {
-    if ('permissions' in navigator) {
-      try {
-        const permission = await navigator.permissions.query({ name: 'geolocation' });
-        if (permission.state === 'granted') {
-          getCurrentPosition();
-        } else if (permission.state === 'prompt') {
-          getCurrentPosition();
-        } else {
-          setState(prev => ({
-            ...prev,
-            error: 'Location permission denied. Please enable location access in your browser settings.',
-            loading: false,
-          }));
-        }
-      } catch (error) {
-        // Fallback to direct geolocation request
-        getCurrentPosition();
+    try {
+      // Request permissions for Capacitor
+      const permissions = await Geolocation.requestPermissions();
+      if (permissions.location === 'granted') {
+        await getCurrentPosition();
+      } else {
+        setState(prev => ({
+          ...prev,
+          error: 'Location permission denied. Please enable location access in your device settings.',
+          loading: false,
+        }));
       }
-    } else {
-      getCurrentPosition();
+    } catch (error) {
+      // Fallback for web
+      if ('permissions' in navigator) {
+        try {
+          const permission = await navigator.permissions.query({ name: 'geolocation' });
+          if (permission.state === 'granted' || permission.state === 'prompt') {
+            await getCurrentPosition();
+          } else {
+            setState(prev => ({
+              ...prev,
+              error: 'Location permission denied. Please enable location access in your browser settings.',
+              loading: false,
+            }));
+          }
+        } catch (error) {
+          await getCurrentPosition();
+        }
+      } else {
+        await getCurrentPosition();
+      }
     }
   };
 

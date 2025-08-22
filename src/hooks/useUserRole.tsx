@@ -27,13 +27,18 @@ export const useUserRole = () => {
 
   useEffect(() => {
     const fetchUserRole = async () => {
-      if (!user) {
-        setRole(null);
+      if (!user?.id) {
+        // Only reset role if we don't have one cached
+        if (!role) {
+          setRole('citizen');
+          setRoleMetadata([]);
+        }
         setLoading(false);
         return;
       }
 
       try {
+        setLoading(true);
         // Fetch user roles and metadata (user can have multiple roles)
         const { data: roleData, error: roleError } = await supabase
           .from('user_roles')
@@ -46,11 +51,18 @@ export const useUserRole = () => {
           `)
           .eq('user_id', user.id);
 
-        if (roleError || !roleData || roleData.length === 0) {
+        if (roleError) {
           console.error('Error fetching user role:', roleError);
-          setRole('citizen'); // Default to 'citizen' if no role found
-          setRoleMetadata([]);
-        } else {
+          // Don't reset role if we already have one cached
+          if (!role) {
+            setRole('citizen');
+            setRoleMetadata([]);
+          }
+          return;
+        }
+
+        // Only update if we actually got data back
+        if (roleData && roleData.length > 0) {
           // Get the highest priority role (admin > ndaa_admin > registrar > etc.)
           const roles = roleData.map(r => r.role);
           const priorityOrder: UserRole[] = ['admin', 'ndaa_admin', 'registrar', 'verifier', 'field_agent', 'property_claimant', 'citizen', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user'];
@@ -61,18 +73,27 @@ export const useUserRole = () => {
           // Collect all metadata from all roles
           const allMetadata = roleData.flatMap(r => r.user_role_metadata || []);
           setRoleMetadata(allMetadata as RoleMetadata[]);
+        } else {
+          // Only set to citizen if we don't have a cached role
+          if (!role) {
+            setRole('citizen');
+            setRoleMetadata([]);
+          }
         }
       } catch (error) {
         console.error('Error fetching user role:', error);
-        setRole('citizen');
-        setRoleMetadata([]);
+        // Don't reset role if we already have one cached
+        if (!role) {
+          setRole('citizen');
+          setRoleMetadata([]);
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchUserRole();
-  }, [user]);
+  }, [user?.id]);
 
   // Role hierarchy checks
   const isAdmin = role === 'admin';

@@ -176,6 +176,16 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
     const destLat = destination.coordinates.lat;
     const destLng = destination.coordinates.lng;
     
+    // Validate coordinates
+    if (!destLat || !destLng || isNaN(destLat) || isNaN(destLng)) {
+      toast({
+        title: "Invalid coordinates",
+        description: "Invalid destination coordinates",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     let url = '';
     
     if (originType === 'uac' && originAddress) {
@@ -183,55 +193,80 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
       const originLat = originAddress.coordinates.lat;
       const originLng = originAddress.coordinates.lng;
       
+      if (!originLat || !originLng || isNaN(originLat) || isNaN(originLng)) {
+        toast({
+          title: "Invalid coordinates",
+          description: "Invalid origin coordinates",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       const userAgent = navigator.userAgent || navigator.vendor;
       
       if (/iPad|iPhone|iPod/.test(userAgent)) {
-        // iOS - Apple Maps
-        url = `http://maps.apple.com/?saddr=${originLat},${originLng}&daddr=${destLat},${destLng}&dirflg=d`;
+        // iOS - Use proper Apple Maps URL scheme
+        url = `maps://maps.apple.com/?saddr=${originLat},${originLng}&daddr=${destLat},${destLng}&dirflg=d`;
       } else if (/android/i.test(userAgent)) {
-        // Android - Google Maps
-        url = `https://www.google.com/maps/dir/${originLat},${originLng}/${destLat},${destLng}`;
+        // Android - Use Google Maps intent
+        url = `google.navigation:q=${destLat},${destLng}&mode=d`;
       } else {
-        // Desktop - Google Maps
+        // Desktop - Google Maps web
         url = `https://www.google.com/maps/dir/${originLat},${originLng}/${destLat},${destLng}`;
       }
     } else if (originType === 'current') {
-      // Directions from current location - use detected coordinates if available
-      if (currentLocation) {
-        const originLat = currentLocation.lat;
-        const originLng = currentLocation.lng;
-        
-        const userAgent = navigator.userAgent || navigator.vendor;
-        
-        if (/iPad|iPhone|iPod/.test(userAgent)) {
-          // iOS - Apple Maps
-          url = `http://maps.apple.com/?saddr=${originLat},${originLng}&daddr=${destLat},${destLng}&dirflg=d`;
-        } else if (/android/i.test(userAgent)) {
-          // Android - Google Maps
-          url = `https://www.google.com/maps/dir/${originLat},${originLng}/${destLat},${destLng}`;
+      // Directions from current location
+      const userAgent = navigator.userAgent || navigator.vendor;
+      
+      if (/iPad|iPhone|iPod/.test(userAgent)) {
+        // iOS - Apple Maps with current location
+        if (currentLocation && currentLocation.lat && currentLocation.lng) {
+          url = `maps://maps.apple.com/?saddr=${currentLocation.lat},${currentLocation.lng}&daddr=${destLat},${destLng}&dirflg=d`;
         } else {
-          // Desktop - Google Maps
-          url = `https://www.google.com/maps/dir/${originLat},${originLng}/${destLat},${destLng}`;
+          url = `maps://maps.apple.com/?daddr=${destLat},${destLng}&dirflg=d`;
         }
+      } else if (/android/i.test(userAgent)) {
+        // Android - Google Maps navigation
+        url = `google.navigation:q=${destLat},${destLng}&mode=d`;
       } else {
-        // Fallback to current location detection by maps app
-        const userAgent = navigator.userAgent || navigator.vendor;
-        
-        if (/iPad|iPhone|iPod/.test(userAgent)) {
-          // iOS - Apple Maps
-          url = `http://maps.apple.com/?daddr=${destLat},${destLng}&dirflg=d`;
-        } else if (/android/i.test(userAgent)) {
-          // Android - Google Maps
-          url = `https://www.google.com/maps/dir/current+location/${destLat},${destLng}`;
+        // Desktop - Google Maps web
+        if (currentLocation && currentLocation.lat && currentLocation.lng) {
+          url = `https://www.google.com/maps/dir/${currentLocation.lat},${currentLocation.lng}/${destLat},${destLng}`;
         } else {
-          // Desktop - Google Maps
-          url = `https://www.google.com/maps/dir/current+location/${destLat},${destLng}`;
+          url = `https://www.google.com/maps/dir/My+Location/${destLat},${destLng}`;
         }
       }
     }
     
     if (url) {
-      window.open(url, '_blank');
+      // For mobile apps, try the native scheme first, then fallback to web
+      const userAgent = navigator.userAgent || navigator.vendor;
+      
+      if (/iPad|iPhone|iPod/.test(userAgent) && url.startsWith('maps://')) {
+        // Try Apple Maps first, fallback to web
+        const webUrl = url.replace('maps://maps.apple.com', 'https://maps.apple.com');
+        try {
+          window.location.href = url;
+        } catch (error) {
+          window.open(webUrl, '_blank');
+        }
+      } else if (/android/i.test(userAgent) && url.startsWith('google.navigation')) {
+        // Try Google Maps app, fallback to web
+        const webUrl = `https://www.google.com/maps/dir//${destLat},${destLng}`;
+        try {
+          window.location.href = url;
+        } catch (error) {
+          window.open(webUrl, '_blank');
+        }
+      } else {
+        window.open(url, '_blank');
+      }
+    } else {
+      toast({
+        title: "Navigation error",
+        description: "Unable to generate directions URL",
+        variant: "destructive",
+      });
     }
   };
 
