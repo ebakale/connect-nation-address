@@ -13,6 +13,7 @@ import heroImage from '@/assets/hero-address-system.jpg';
 import featureSearch from '@/assets/feature-address-search.jpg';
 import featureRegistration from '@/assets/feature-address-registration.jpg';
 import featureVerification from '@/assets/feature-address-verification.jpg';
+import EmergencyAlertProcessor from '@/components/EmergencyAlertProcessor';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('overview');
@@ -33,9 +34,10 @@ const Index = () => {
 
   // Main page is always accessible regardless of authentication status
 
-  const navigationItems = [
+const navigationItems = [
     { id: 'overview', label: t('overview'), icon: MapPin },
     { id: 'about', label: t('about'), icon: Users },
+    { id: 'emergency', label: 'Emergency', icon: Shield },
     { id: 'help', label: t('help'), icon: HelpCircle },
     { id: 'manual', label: t('manual'), icon: Book },
     { id: 'login', label: t('login'), icon: LogIn },
@@ -565,6 +567,19 @@ const Index = () => {
           </div>
         );
 
+      case 'emergency':
+        return (
+          <div className="space-y-8">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl font-bold text-red-600">Emergency Alert System</h2>
+              <p className="text-lg text-muted-foreground">
+                Send emergency alerts directly to police and emergency services
+              </p>
+            </div>
+            <EmergencyAlertProcessor />
+          </div>
+        );
+        
       case 'login':
         return (
           <div className="max-w-md mx-auto space-y-8">

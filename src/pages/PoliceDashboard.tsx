@@ -294,7 +294,7 @@ const PoliceDashboard = () => {
         </div>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 mb-8 police-dashboard-stats">
           <Card className="border-red-200 bg-red-50">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium flex items-center gap-2">
@@ -357,7 +357,7 @@ const PoliceDashboard = () => {
         </div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 police-dashboard-grid">
           {/* Incident List */}
           <div className="lg:col-span-2">
             <IncidentList 

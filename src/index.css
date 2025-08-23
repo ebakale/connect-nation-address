@@ -303,4 +303,57 @@ All colors MUST be HSL.
     height: 100vh;
     height: -webkit-fill-available;
   }
+
+  /* Mobile-first responsive utilities for touch interfaces */
+  .mobile-container {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+
+  .mobile-spacing {
+    @apply p-3 sm:p-4 lg:p-6;
+  }
+
+  .mobile-text-responsive {
+    @apply text-sm sm:text-base;
+  }
+
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+
+  .mobile-viewport-stable {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Emergency alert specific styles */
+  .emergency-alert-pulse {
+    animation: emergencyPulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes emergencyPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+  }
+
+  /* Mobile responsiveness for police dashboard */
+  .police-dashboard-grid {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .police-dashboard-stats {
+    @apply grid-cols-2 gap-3;
+  }
+  
+  .incident-card {
+    @apply p-4;
+  }
+  
+  .incident-map {
+    @apply h-64;
+  }
 }
