@@ -232,6 +232,158 @@ export type Database = {
         }
         Relationships: []
       }
+      emergency_incident_logs: {
+        Row: {
+          action: string
+          details: Json | null
+          id: string
+          incident_id: string
+          timestamp: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          details?: Json | null
+          id?: string
+          incident_id: string
+          timestamp?: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          details?: Json | null
+          id?: string
+          incident_id?: string
+          timestamp?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_incident_logs_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "emergency_incidents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      emergency_incidents: {
+        Row: {
+          assigned_operator_id: string | null
+          assigned_units: string[] | null
+          closed_at: string | null
+          created_at: string
+          dispatch_system_id: string | null
+          dispatched_at: string | null
+          dispatcher_notes: string | null
+          emergency_type: string
+          encrypted_address: string | null
+          encrypted_contact_info: string | null
+          encrypted_latitude: string | null
+          encrypted_longitude: string | null
+          encrypted_message: string
+          external_case_id: string | null
+          id: string
+          incident_number: string
+          language_code: string | null
+          location_accuracy: number | null
+          priority_level: number
+          reported_at: string
+          reporter_id: string | null
+          resolved_at: string | null
+          responded_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_operator_id?: string | null
+          assigned_units?: string[] | null
+          closed_at?: string | null
+          created_at?: string
+          dispatch_system_id?: string | null
+          dispatched_at?: string | null
+          dispatcher_notes?: string | null
+          emergency_type: string
+          encrypted_address?: string | null
+          encrypted_contact_info?: string | null
+          encrypted_latitude?: string | null
+          encrypted_longitude?: string | null
+          encrypted_message: string
+          external_case_id?: string | null
+          id?: string
+          incident_number: string
+          language_code?: string | null
+          location_accuracy?: number | null
+          priority_level?: number
+          reported_at?: string
+          reporter_id?: string | null
+          resolved_at?: string | null
+          responded_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_operator_id?: string | null
+          assigned_units?: string[] | null
+          closed_at?: string | null
+          created_at?: string
+          dispatch_system_id?: string | null
+          dispatched_at?: string | null
+          dispatcher_notes?: string | null
+          emergency_type?: string
+          encrypted_address?: string | null
+          encrypted_contact_info?: string | null
+          encrypted_latitude?: string | null
+          encrypted_longitude?: string | null
+          encrypted_message?: string
+          external_case_id?: string | null
+          id?: string
+          incident_number?: string
+          language_code?: string | null
+          location_accuracy?: number | null
+          priority_level?: number
+          reported_at?: string
+          reporter_id?: string | null
+          resolved_at?: string | null
+          responded_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      emergency_operator_sessions: {
+        Row: {
+          active_incidents: string[] | null
+          created_at: string
+          id: string
+          operator_id: string
+          session_end: string | null
+          session_start: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          active_incidents?: string[] | null
+          created_at?: string
+          id?: string
+          operator_id: string
+          session_end?: string | null
+          session_start?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          active_incidents?: string[] | null
+          created_at?: string
+          id?: string
+          operator_id?: string
+          session_end?: string | null
+          session_start?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -298,6 +450,48 @@ export type Database = {
           population?: number | null
           region?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      sms_fallback_queue: {
+        Row: {
+          attempts: number | null
+          created_at: string
+          id: string
+          location_data: string | null
+          max_attempts: number | null
+          message_content: string
+          phone_number: string
+          priority: number
+          processed_at: string | null
+          provider_response: Json | null
+          status: string
+        }
+        Insert: {
+          attempts?: number | null
+          created_at?: string
+          id?: string
+          location_data?: string | null
+          max_attempts?: number | null
+          message_content: string
+          phone_number: string
+          priority?: number
+          processed_at?: string | null
+          provider_response?: Json | null
+          status?: string
+        }
+        Update: {
+          attempts?: number | null
+          created_at?: string
+          id?: string
+          location_data?: string | null
+          max_attempts?: number | null
+          message_content?: string
+          phone_number?: string
+          priority?: number
+          processed_at?: string | null
+          provider_response?: Json | null
+          status?: string
         }
         Relationships: []
       }
