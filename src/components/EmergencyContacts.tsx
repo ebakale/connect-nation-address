@@ -99,7 +99,18 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber }: Emerg
           {t('call')} {phoneNumber}
         </Button>
         
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <Dialog open={isOpen} onOpenChange={(open) => {
+          setIsOpen(open);
+          if (open) {
+            // Automatically get location when dialog opens
+            getCurrentPosition();
+          } else {
+            // Clear location when dialog closes
+            clearLocation();
+            setMessage('');
+            setSent(false);
+          }
+        }}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm" className="w-full border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground">
               <MapPin className="mr-2 h-4 w-4" />
@@ -118,7 +129,16 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber }: Emerg
             </DialogHeader>
             
             <div className="space-y-4">
-              {!latitude && !locationLoading && (
+              {locationLoading && (
+                <Alert>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <AlertDescription>
+                    {t('automaticallyGettingLocation')}
+                  </AlertDescription>
+                </Alert>
+              )}
+              
+              {!latitude && !locationLoading && !locationError && (
                 <Alert>
                   <MapPin className="h-4 w-4" />
                   <AlertDescription>
@@ -169,7 +189,7 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber }: Emerg
                   ) : (
                     <MapPin className="mr-2 h-4 w-4" />
                   )}
-                  {locationLoading ? t('gettingLocation') : t('getLocation')}
+                  {locationLoading ? t('gettingLocation') : t('retryLocation')}
                 </Button>
                 
                 <Button
