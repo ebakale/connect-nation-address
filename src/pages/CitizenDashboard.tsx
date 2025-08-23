@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, FileText, AlertCircle, Clock, LogOut } from "lucide-react";
+import { MapPin, Search, FileText, AlertCircle, Clock, LogOut, Phone } from "lucide-react";
+import EmergencyContacts from "@/components/EmergencyContacts";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -152,22 +153,39 @@ const CitizenDashboard = () => {
           </Card>
         </div>
 
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-amber-500" />
-              {t('importantInformation')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>{t('allSearchesVerified')}</li>
-              <li>{t('personalInfoProtected')}</li>
-              <li>{t('coordinatesApproximate')}</li>
-              <li>{t('submitRequestsNew')}</li>
-            </ul>
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Phone className="h-5 w-5 text-destructive" />
+                {t('emergencyContacts')}
+              </CardTitle>
+              <CardDescription>
+                {t('contactEmergencyServices')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <EmergencyContacts />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-amber-500" />
+                {t('importantInformation')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>{t('allSearchesVerified')}</li>
+                <li>{t('personalInfoProtected')}</li>
+                <li>{t('coordinatesApproximate')}</li>
+                <li>{t('submitRequestsNew')}</li>
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Submit Request Dialog */}
         <Dialog open={submitRequestOpen} onOpenChange={setSubmitRequestOpen}>
