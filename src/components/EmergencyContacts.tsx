@@ -43,8 +43,18 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber }: Emerg
     setIsSending(true);
     
     try {
-      // Simulate sending emergency alert with location
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Send emergency alert to police system
+      const { data, error } = await supabase.functions.invoke('process-emergency-alert', {
+        body: {
+          message,
+          latitude,
+          longitude,
+          emergencyType: type,
+          contactInfo: null
+        }
+      });
+
+      if (error) throw error;
       
       // In a real implementation, this would send the alert to emergency services
       console.log('Emergency alert sent:', {
