@@ -30,7 +30,7 @@ interface EmergencyIncident {
   assigned_operator_id?: string;
   assigned_units?: string[];
   dispatcher_notes?: string;
-  language_code: string;
+  language_code?: string;
 }
 
 interface DashboardStats {
@@ -65,8 +65,9 @@ const PoliceDashboard = () => {
   const [operatorSession, setOperatorSession] = useState<any>(null);
 
   // Check if user has police role
-  const hasPoliceRole = (userRoles: string[] | undefined): boolean => {
-    return userRoles?.some(r => ['police_operator', 'police_supervisor', 'police_dispatcher', 'admin'].includes(r)) || false;
+  const hasPoliceRole = (userRole: string | null): boolean => {
+    const policeRoles = ['police_operator', 'police_supervisor', 'police_dispatcher', 'admin'];
+    return userRole ? policeRoles.includes(userRole) : false;
   };
 
   // Initialize operator session
@@ -361,7 +362,7 @@ const PoliceDashboard = () => {
           <div className="lg:col-span-2">
             <IncidentList 
               incidents={incidents}
-              onSelectIncident={setSelectedIncident}
+              onSelectIncident={(incident) => setSelectedIncident(incident)}
               selectedIncident={selectedIncident}
             />
           </div>
@@ -409,7 +410,7 @@ const PoliceDashboard = () => {
                   <IncidentMap 
                     incidents={incidents}
                     selectedIncident={selectedIncident}
-                     onSelectIncident={(incident) => setSelectedIncident(incident)}
+                    onSelectIncident={(incident) => setSelectedIncident(incident)}
                   />
                 </CardContent>
               </Card>

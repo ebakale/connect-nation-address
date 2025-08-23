@@ -7,6 +7,7 @@ import { Phone, Shield, MapPin, AlertTriangle, Loader2, CheckCircle } from "luci
 import { useState } from "react";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface EmergencyContactProps {

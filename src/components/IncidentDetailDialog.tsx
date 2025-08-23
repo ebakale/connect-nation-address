@@ -24,7 +24,7 @@ interface EmergencyIncident {
   assigned_operator_id?: string;
   assigned_units?: string[];
   dispatcher_notes?: string;
-  language_code: string;
+  language_code?: string;
 }
 
 interface DecryptedIncident {
@@ -40,7 +40,7 @@ interface DecryptedIncident {
   assigned_operator_id?: string;
   assigned_units?: string[];
   dispatcher_notes?: string;
-  language_code: string;
+  language_code?: string;
   latitude?: number;
   longitude?: number;
   message?: string;

@@ -11,6 +11,7 @@ interface EmergencyIncident {
   priority_level: number;
   status: string;
   reported_at: string;
+  language_code?: string;
 }
 
 interface IncidentMapProps {

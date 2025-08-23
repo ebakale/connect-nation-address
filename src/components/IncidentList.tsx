@@ -27,7 +27,7 @@ interface EmergencyIncident {
   assigned_operator_id?: string;
   assigned_units?: string[];
   dispatcher_notes?: string;
-  language_code: string;
+  language_code?: string;
 }
 
 interface IncidentListProps {

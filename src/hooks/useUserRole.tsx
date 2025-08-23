@@ -6,7 +6,8 @@ export type UserRole =
   | 'admin' | 'moderator' | 'user' 
   | 'citizen' | 'property_claimant' | 'field_agent' 
   | 'verifier' | 'registrar' | 'ndaa_admin' 
-  | 'partner' | 'auditor' | 'data_steward' | 'support' 
+  | 'partner' | 'auditor' | 'data_steward' | 'support'
+  | 'police_operator' | 'police_supervisor' | 'police_dispatcher'
   | null;
 
 export interface RoleMetadata {
