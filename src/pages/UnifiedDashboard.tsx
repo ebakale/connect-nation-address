@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   Shield, Users, Settings, BarChart3, LogOut, Search, FileText, Clock, AlertCircle,
-  Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map, User
+  Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map, User, Phone
 } from "lucide-react";
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -32,6 +32,7 @@ import DraftManager from "@/components/DraftManager";
 import FieldMap from "@/components/FieldMap";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
 import { SystemManualPDF } from "@/components/SystemManualPDF";
+import EmergencyContacts from "@/components/EmergencyContacts";
 
 interface SearchResult {
   uac: string;
@@ -799,24 +800,42 @@ const UnifiedDashboard = () => {
           </div>
         )}
 
-        {/* Important Information */}
+        {/* Emergency Contacts */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-amber-500" />
-              Important Information
+              <Phone className="h-5 w-5 text-destructive" />
+              {t('emergencyContacts')}
             </CardTitle>
+            <CardDescription>
+              {t('contactEmergencyServices')}
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>• All address searches show verified addresses only</li>
-              <li>• Personal information is protected and redacted</li>
-              <li>• Coordinates are approximated for privacy</li>
-              <li>• Submit requests for new address verification</li>
-              {hasAdminAccess && <li>• Admin functions require elevated permissions</li>}
-            </ul>
+            <EmergencyContacts />
           </CardContent>
         </Card>
+
+        {/* Important Information */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-amber-500" />
+                Important Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>• All address searches show verified addresses only</li>
+                <li>• Personal information is protected and redacted</li>
+                <li>• Coordinates are approximated for privacy</li>
+                <li>• Submit requests for new address verification</li>
+                {hasAdminAccess && <li>• Admin functions require elevated permissions</li>}
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Submit Request Dialog */}
         <Dialog open={submitRequestOpen} onOpenChange={setSubmitRequestOpen}>
