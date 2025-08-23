@@ -576,6 +576,10 @@ export type Database = {
         Args: { p_flagged_by?: string; p_reason: string; p_request_id: string }
         Returns: boolean
       }
+      generate_incident_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       generate_unified_uac_unique: {
         Args: {
           p_address_id: string
