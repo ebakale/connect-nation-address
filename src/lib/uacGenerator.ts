@@ -30,7 +30,7 @@ const COUNTRY_CODES: Record<string, string> = {
   'Chad': 'TD'
 };
 
-// Standardized region codes for Equatorial Guinea
+// Standardized region codes for Equatorial Guinea (ISO 3166-2:GQ compliant)
 const REGION_CODES: Record<string, string> = {
   'Annobón': 'AN',
   'Bioko Norte': 'BN', 
@@ -38,7 +38,7 @@ const REGION_CODES: Record<string, string> = {
   'Centro Sur': 'CS',
   'Djibloho': 'DJ',
   'Kié-Ntem': 'KN',
-  'Litoral': 'LT',
+  'Litoral': 'LI',  // Fixed: LT -> LI per ISO 3166-2:GQ standard
   'Wele-Nzas': 'WN'
 };
 
