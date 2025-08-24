@@ -87,13 +87,16 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
 
       // Fetch all police officers for unassigned count
       const { data: allOfficers, error: officersError } = await supabase
-        .from('profiles')
+        .from('user_roles')
         .select(`
           user_id,
-          full_name,
-          user_roles!inner(role)
+          role,
+          profiles!inner(
+            user_id,
+            full_name
+          )
         `)
-        .in('user_roles.role', ['police_operator', 'police_dispatcher', 'police_supervisor']);
+        .in('role', ['police_operator', 'police_dispatcher', 'police_supervisor']);
 
       if (officersError) throw officersError;
 
