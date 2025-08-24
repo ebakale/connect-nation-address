@@ -88,10 +88,10 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
   const [availableOfficers, setAvailableOfficers] = useState<{id: string, label: string}[]>([]);
   const [decryptedInfo, setDecryptedInfo] = useState<Record<string, { message: string; address: string; coordinates?: { lat: number; lng: number }; uac?: string }>>({});
 
-  // Fetch available officers and units for assignment
+  // Fetch available emergency units for assignment
   const fetchAvailableOfficers = async () => {
     try {
-      // Get emergency units with their members
+      // Get emergency units (available ones)
       const { data: units, error: unitsError } = await supabase
         .from('emergency_units')
         .select(`
@@ -100,21 +100,24 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
           unit_name,
           unit_type,
           status,
-          emergency_unit_members!inner(
+          emergency_unit_members(
             officer_id,
             role,
             is_lead,
-            profiles!inner(full_name)
+            profiles(full_name)
           )
         `)
         .eq('status', 'available');
 
       if (unitsError) throw unitsError;
 
-      const unitOptions = units?.map(unit => ({
-        id: unit.id,
-        label: `${unit.unit_code} - ${unit.unit_name} (${unit.unit_type.toUpperCase()}) - ${unit.emergency_unit_members?.length || 0} officers`
-      })) || [];
+      const unitOptions = units?.map(unit => {
+        const memberCount = unit.emergency_unit_members?.length || 0;
+        return {
+          id: unit.id,
+          label: `${unit.unit_code} - ${unit.unit_name} (${unit.unit_type.toUpperCase()}) - ${memberCount} officers`
+        };
+      }) || [];
 
       setAvailableOfficers(unitOptions);
     } catch (error) {
