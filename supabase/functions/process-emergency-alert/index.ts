@@ -51,17 +51,17 @@ serve(async (req) => {
     // Set default priority to medium - operators should assign final priority
     const priority = 3; // Default medium priority - operators will adjust as needed
 
-    // Check for nearby addresses within 10 meters and generate proper UAC
+    // Check for nearby addresses within 25 meters and generate proper UAC
     const findNearbyAddressAndGenerateUAC = async (latitude: number, longitude: number, incidentId: string) => {
       try {
-        // Search for addresses within approximately 10 meters (0.0001 degrees ≈ 11 meters)
+        // Search for addresses within approximately 25 meters (0.00025 degrees ≈ 28 meters)
         const { data: nearbyAddresses, error } = await supabase
           .from('addresses')
           .select('uac, latitude, longitude, building, street, city, region, country')
-          .gte('latitude', latitude - 0.0001)
-          .lte('latitude', latitude + 0.0001)
-          .gte('longitude', longitude - 0.0001)
-          .lte('longitude', longitude + 0.0001)
+          .gte('latitude', latitude - 0.00025)
+          .lte('latitude', latitude + 0.00025)
+          .gte('longitude', longitude - 0.00025)
+          .lte('longitude', longitude + 0.00025)
           .limit(5);
 
         if (!error && nearbyAddresses && nearbyAddresses.length > 0) {
@@ -75,7 +75,7 @@ serve(async (req) => {
               Math.pow((longitude - parseFloat(addr.longitude.toString())) * 111000, 2)
             ); // Distance in meters
 
-            if (distance <= 10 && distance < minDistance) {
+            if (distance <= 25 && distance < minDistance) {
               minDistance = distance;
               closestAddress = addr;
             }
