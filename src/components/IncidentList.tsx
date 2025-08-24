@@ -85,7 +85,33 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [assignDialog, setAssignDialog] = useState<string | null>(null);
   const [assigningUnit, setAssigningUnit] = useState('');
+  const [availableOfficers, setAvailableOfficers] = useState<{id: string, label: string}[]>([]);
   const [decryptedInfo, setDecryptedInfo] = useState<Record<string, { message: string; address: string; coordinates?: { lat: number; lng: number }; uac?: string }>>({});
+
+  // Fetch available officers for assignment
+  const fetchAvailableOfficers = async () => {
+    try {
+      const { data: officers, error } = await supabase
+        .from('profiles')
+        .select(`
+          user_id,
+          full_name,
+          user_roles!inner(role)
+        `)
+        .in('user_roles.role', ['police_operator', 'police_supervisor', 'police_dispatcher']);
+
+      if (error) throw error;
+
+      const officerOptions = officers?.map(officer => ({
+        id: officer.user_id,
+        label: `${officer.full_name || 'Unknown Officer'} (${(officer.user_roles as any)?.[0]?.role?.replace('police_', '').toUpperCase() || 'OFFICER'})`
+      })) || [];
+
+      setAvailableOfficers(officerOptions);
+    } catch (error) {
+      console.error('Error fetching officers:', error);
+    }
+  };
 
   // Process incident info for display - prefer unencrypted data
   useEffect(() => {
@@ -132,6 +158,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
     };
 
     processIncidentInfo();
+    fetchAvailableOfficers();
   }, [incidents]);
 
   const getPriorityColor = (priority: number) => {
@@ -426,16 +453,22 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
                         </DialogDescription>
                       </DialogHeader>
                       
-                      <div className="space-y-4">
-                        <div>
-                          <label className="text-sm font-medium">Unit/Officer ID</label>
-                          <Textarea
-                            placeholder="Enter unit ID or officer badge number..."
-                            value={assigningUnit}
-                            onChange={(e) => setAssigningUnit(e.target.value)}
-                            rows={2}
-                          />
-                        </div>
+                       <div className="space-y-4">
+                         <div>
+                           <label className="text-sm font-medium">Select Officer/Unit</label>
+                           <Select onValueChange={setAssigningUnit} value={assigningUnit}>
+                             <SelectTrigger>
+                               <SelectValue placeholder="Choose an officer or unit..." />
+                             </SelectTrigger>
+                             <SelectContent>
+                               {availableOfficers.map((officer) => (
+                                 <SelectItem key={officer.id} value={officer.id}>
+                                   {officer.label}
+                                 </SelectItem>
+                               ))}
+                             </SelectContent>
+                           </Select>
+                         </div>
                         
                         <div className="flex gap-2">
                           <Button 
