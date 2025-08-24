@@ -19,12 +19,12 @@ const Auth = () => {
     confirmPassword: ''
   });
   const { signIn, signUp, user } = useAuth();
-  const { hasPoliceAccess, loading: roleLoading } = useUserRole();
+  const { isPoliceRole, loading: roleLoading } = useUserRole();
   const { t } = useLanguage();
 
   if (user) {
     if (roleLoading) return null;
-    return <Navigate to={hasPoliceAccess ? '/police' : '/dashboard'} replace />;
+    return <Navigate to={isPoliceRole ? '/police' : '/dashboard'} replace />;
   }
 
   const handleInputChange = (field: string, value: string) => {

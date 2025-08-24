@@ -85,7 +85,8 @@ const UnifiedDashboard = () => {
     canCreateDraftAddress,
     canVerifyAddresses,
     canPublishAddresses,
-    hasPoliceAccess
+    hasPoliceAccess,
+    isPoliceRole
   } = useUserRole();
   const { user, signOut } = useAuth();
   const { t } = useLanguage();
@@ -93,10 +94,10 @@ const UnifiedDashboard = () => {
 
   // Redirect police roles to dedicated dashboard if they land here
   useEffect(() => {
-    if (!loading && hasPoliceAccess) {
+    if (!loading && isPoliceRole) {
       navigate('/police', { replace: true });
     }
-  }, [loading, hasPoliceAccess, navigate]);
+  }, [loading, isPoliceRole, navigate]);
 
   // Stats state
   const [stats, setStats] = useState<DashboardStats>({

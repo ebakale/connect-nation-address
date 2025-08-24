@@ -118,6 +118,7 @@ export const useUserRole = () => {
   const isPoliceOperator = role === 'police_operator';
   const isPoliceSupervisor = role === 'police_supervisor';
   const isPoliceDispatcher = role === 'police_dispatcher';
+  const isPoliceRole = isPoliceOperator || isPoliceSupervisor || isPoliceDispatcher;
 
   // Access level checks
   const hasAdminAccess = role === 'admin' || role === 'ndaa_admin';
@@ -258,6 +259,7 @@ export const useUserRole = () => {
     isPoliceOperator,
     isPoliceSupervisor,
     isPoliceDispatcher,
+    isPoliceRole,
     // Access checks
     hasAdminAccess,
     hasRegistrarAccess,
