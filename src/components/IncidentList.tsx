@@ -34,9 +34,10 @@ interface IncidentListProps {
   incidents: EmergencyIncident[];
   onSelectIncident: (incident: EmergencyIncident | null) => void;
   selectedIncident: EmergencyIncident | null;
+  onUpdate?: () => void;
 }
 
-const IncidentList = ({ incidents, onSelectIncident, selectedIncident }: IncidentListProps) => {
+const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate }: IncidentListProps) => {
   const { user } = useAuth();
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
@@ -248,7 +249,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident }: Inciden
                 </div>
 
                 <div className="flex gap-2">
-                  <IncidentDetailDialog incident={incident} />
+                  <IncidentDetailDialog incident={incident} onUpdate={onUpdate} />
                   
                   <Dialog open={assignDialog === incident.id} onOpenChange={(open) => setAssignDialog(open ? incident.id : null)}>
                     <DialogTrigger asChild>

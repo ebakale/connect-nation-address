@@ -386,6 +386,25 @@ const PoliceDashboard = () => {
               incidents={incidents}
               onSelectIncident={(incident) => setSelectedIncident(incident)}
               selectedIncident={selectedIncident}
+              onUpdate={() => {
+                // Refresh incidents data
+                const fetchData = async () => {
+                  if (!hasPoliceAccess) return;
+                  try {
+                    const { data: incidentsData, error: incidentsError } = await supabase
+                      .from('emergency_incidents')
+                      .select('*')
+                      .order('reported_at', { ascending: false })
+                      .limit(50);
+
+                    if (incidentsError) throw incidentsError;
+                    setIncidents(incidentsData || []);
+                  } catch (error) {
+                    console.error('Error refreshing incidents:', error);
+                  }
+                };
+                fetchData();
+              }}
             />
           </div>
 
