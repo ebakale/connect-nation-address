@@ -7,6 +7,7 @@ import { Phone, Shield, MapPin, AlertTriangle, Loader2, CheckCircle } from "luci
 import { useState } from "react";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -24,6 +25,7 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber }: Emerg
   const [isSending, setIsSending] = useState(false);
   const [sent, setSent] = useState(false);
   const { t } = useLanguage();
+  const { user } = useAuth();
   
   const {
     latitude,
@@ -51,7 +53,8 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber }: Emerg
           latitude,
           longitude,
           emergencyType: type,
-          contactInfo: null
+          contactInfo: null,
+          reporterId: user?.id,
         }
       });
 

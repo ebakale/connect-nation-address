@@ -87,7 +87,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   const [newUnit, setNewUnit] = useState('');
   const [unitNames, setUnitNames] = useState<Record<string, string>>({});
   const [userNames, setUserNames] = useState<Record<string, string>>({});
-
+  const [reporterInfo, setReporterInfo] = useState<{ name?: string; email?: string; contact?: string }>({});
   // Load unit names for display
   const loadUnitNames = async () => {
     try {
@@ -142,14 +142,25 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   };
 
   const getActorDisplay = (log: any) => {
-    // Show the reporter's identity for the creation event
+    const ZERO_UUID = '00000000-0000-0000-0000-000000000000';
+    const reporterDisplay =
+      incident.reporter_name || incident.reporter_email || incident.reporter_contact_info ||
+      reporterInfo.name || reporterInfo.email || reporterInfo.contact;
+
+    // Prefer reporter identity for creation events
     if (log?.action === 'incident_created') {
-      const nameOrContact = incident.reporter_name || incident.reporter_email || incident.reporter_contact_info;
-      if (nameOrContact) return nameOrContact;
+      if (reporterDisplay) return reporterDisplay;
       if (typeof log.user_id === 'string' && userNames[log.user_id]) return userNames[log.user_id];
       if (typeof log.user_id === 'string' && isUUID(log.user_id)) return `User ${log.user_id.slice(0,8)}`;
       return 'Reporter';
     }
+
+    // If logs used a system/zero UUID, fall back to reporter info when available
+    if (typeof log?.user_id === 'string' && log.user_id === ZERO_UUID) {
+      if (reporterDisplay) return reporterDisplay;
+      return 'Reporter';
+    }
+
     const actor = log?.details?.updated_by || log?.details?.assigned_by || log?.user_id || 'System';
     if (typeof actor === 'string' && userNames[actor]) return userNames[actor];
     if (typeof actor === 'string' && actor.includes('@')) return actor;
@@ -177,6 +188,30 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     loadIncidentLogs();
     loadUnitNames();
   }, [incident.id]);
+
+  // Ensure reporter info is available even if the log has a system user_id
+  useEffect(() => {
+    const loadReporter = async () => {
+      try {
+        if (incident.reporter_id && !incident.reporter_name && !incident.reporter_email) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('user_id, full_name, email')
+            .eq('user_id', incident.reporter_id)
+            .maybeSingle();
+          if (profile) {
+            setReporterInfo({ name: profile.full_name || undefined, email: profile.email || undefined, contact: incident.reporter_contact_info });
+            return;
+          }
+        }
+        // Fallback to any info already on the incident
+        setReporterInfo({ name: incident.reporter_name, email: incident.reporter_email, contact: incident.reporter_contact_info });
+      } catch (e) {
+        setReporterInfo({ name: incident.reporter_name, email: incident.reporter_email, contact: incident.reporter_contact_info });
+      }
+    };
+    loadReporter();
+  }, [incident.reporter_id, incident.reporter_name, incident.reporter_email, incident.reporter_contact_info]);
 
   const handleEdit = () => {
     setEditData({
@@ -473,29 +508,29 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                 )}
                 
                 {/* Reporter Information */}
-                {(incident.reporter_name || incident.reporter_email || incident.reporter_contact_info) && (
+                {(incident.reporter_name || incident.reporter_email || incident.reporter_contact_info || reporterInfo.name || reporterInfo.email || reporterInfo.contact) && (
                   <div>
                     <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                       <User className="h-4 w-4" />
                       Reporter Information
                     </label>
                     <div className="mt-1 space-y-1">
-                      {incident.reporter_name && (
+                      {(incident.reporter_name || reporterInfo.name) && (
                         <p className="flex items-center gap-2">
                           <span className="text-sm font-medium">Name:</span>
-                          <span>{incident.reporter_name}</span>
+                          <span>{incident.reporter_name || reporterInfo.name}</span>
                         </p>
                       )}
-                      {incident.reporter_email && (
+                      {(incident.reporter_email || reporterInfo.email) && (
                         <p className="flex items-center gap-2">
                           <span className="text-sm font-medium">Email:</span>
-                          <span className="font-mono">{incident.reporter_email}</span>
+                          <span className="font-mono">{incident.reporter_email || reporterInfo.email}</span>
                         </p>
                       )}
-                      {incident.reporter_contact_info && (
+                      {(incident.reporter_contact_info || reporterInfo.contact) && (
                         <p className="flex items-center gap-2">
                           <span className="text-sm font-medium">Contact:</span>
-                          <span className="font-mono">{incident.reporter_contact_info}</span>
+                          <span className="font-mono">{incident.reporter_contact_info || reporterInfo.contact}</span>
                         </p>
                       )}
                     </div>
