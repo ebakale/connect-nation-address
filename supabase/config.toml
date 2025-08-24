@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.analyze-coordinates]
 verify_jwt = false
+
+[functions.process-backup-request]
+verify_jwt = true

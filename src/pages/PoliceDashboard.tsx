@@ -21,6 +21,7 @@ import { UnitStatusManager } from '@/components/UnitStatusManager';
 import { ResponseTimeTracker } from '@/components/ResponseTimeTracker';
 import { UnitFieldDashboard } from '@/components/UnitFieldDashboard';
 import { UnitsOverview } from '@/components/UnitsOverview';
+import { BackupNotificationManager } from '@/components/BackupNotificationManager';
 import { toast } from "sonner";
 
 interface EmergencyIncident {
@@ -747,6 +748,9 @@ const PoliceDashboard = () => {
 
                 {/* Quick Actions for Supervisors */}
                 <div className="space-y-6">
+                  {(isPoliceSupervisor || isPoliceDispatcher) && (
+                    <BackupNotificationManager />
+                  )}
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-lg">Coordination Actions</CardTitle>

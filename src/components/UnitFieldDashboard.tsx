@@ -308,11 +308,15 @@ export const UnitFieldDashboard: React.FC = () => {
 
         console.log('Backup request result:', backupResult);
         
-        // Show success message with details
         toast({
-          title: "Backup Requested",
-          description: `${backupResult?.message || 'Backup request sent successfully'}`
+          title: "Backup Requested Successfully",
+          description: `Backup request sent to supervisors and dispatchers. ${backupResult?.notifications_sent || 0} notification(s) sent.`
         });
+        
+        // Skip the general success toast for backup requests since we show specific message above
+        setActionDialog(null);
+        setActionNotes('');
+        return;
       }
 
       await fetchAssignments();

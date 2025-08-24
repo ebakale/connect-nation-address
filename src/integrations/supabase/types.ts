@@ -271,6 +271,9 @@ export type Database = {
         Row: {
           assigned_operator_id: string | null
           assigned_units: string[] | null
+          backup_requested: boolean | null
+          backup_requested_at: string | null
+          backup_requesting_unit: string | null
           city: string | null
           closed_at: string | null
           country: string | null
@@ -308,6 +311,9 @@ export type Database = {
         Insert: {
           assigned_operator_id?: string | null
           assigned_units?: string[] | null
+          backup_requested?: boolean | null
+          backup_requested_at?: string | null
+          backup_requesting_unit?: string | null
           city?: string | null
           closed_at?: string | null
           country?: string | null
@@ -345,6 +351,9 @@ export type Database = {
         Update: {
           assigned_operator_id?: string | null
           assigned_units?: string[] | null
+          backup_requested?: boolean | null
+          backup_requested_at?: string | null
+          backup_requesting_unit?: string | null
           city?: string | null
           closed_at?: string | null
           country?: string | null
