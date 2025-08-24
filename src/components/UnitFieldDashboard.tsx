@@ -225,7 +225,6 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ unitInci
           assigned_units
         `)
         .contains('assigned_units', [unitInfo.unit_code])
-        .in('status', ['dispatched', 'responded', 'en_route', 'on_scene'])
         .order('priority_level', { ascending: false })
         .order('dispatched_at', { ascending: true });
 
