@@ -79,8 +79,10 @@ const PoliceDashboard = () => {
         setActiveTab('field'); // Field officers see their assignments first
       } else if (isPoliceDispatcher) {
         setActiveTab('dispatch'); // Dispatchers see command center first
-      } else if (isPoliceSupervisor || isAdmin) {
-        setActiveTab('dispatch'); // Supervisors see command center first
+      } else if (isPoliceSupervisor) {
+        setActiveTab('coordination'); // Supervisors see coordination first
+      } else if (isAdmin) {
+        setActiveTab('dispatch'); // Admins see command center first
       }
     }
   }, [role, activeTab, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isAdmin]);
@@ -345,10 +347,23 @@ const PoliceDashboard = () => {
               <Radio className="h-4 w-4" />
               My Unit
             </TabsTrigger>
-            <TabsTrigger value="dispatch" className="flex items-center gap-2">
-              <Activity className="h-4 w-4" />
-              Command Center
-            </TabsTrigger>
+            {/* Different tab based on role */}
+            {(isPoliceDispatcher || isAdmin) ? (
+              <TabsTrigger value="dispatch" className="flex items-center gap-2">
+                <Activity className="h-4 w-4" />
+                Command Center
+              </TabsTrigger>
+            ) : isPoliceSupervisor ? (
+              <TabsTrigger value="coordination" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Unit Coordination
+              </TabsTrigger>
+            ) : (
+              <TabsTrigger value="support" className="flex items-center gap-2">
+                <MessageSquare className="h-4 w-4" />
+                Support
+              </TabsTrigger>
+            )}
             {(isPoliceSupervisor || isAdmin) && (
               <TabsTrigger value="management" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
@@ -543,6 +558,193 @@ const PoliceDashboard = () => {
               </div>
             </div>
           </TabsContent>
+
+          {/* Unit Coordination Tab - Supervisors Only */}
+          {isPoliceSupervisor && (
+            <TabsContent value="coordination" className="space-y-6">
+              <div className="flex items-center gap-4 mb-4">
+                <Badge variant="outline" className="flex items-center gap-2">
+                  <Users className="h-3 w-3" />
+                  Unit Coordination
+                </Badge>
+                <p className="text-sm text-muted-foreground">
+                  Coordinate with other units and monitor area-specific incidents
+                </p>
+              </div>
+
+              {/* Simplified Stats for Supervisors */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">My Area Incidents</p>
+                        <p className="text-2xl font-bold text-red-600">{dashboardStats.activeIncidents}</p>
+                      </div>
+                      <AlertTriangle className="h-5 w-5 text-red-600" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Available Units</p>
+                        <p className="text-2xl font-bold text-green-600">{dashboardStats.availableUnits}</p>
+                      </div>
+                      <CheckCircle className="h-5 w-5 text-green-600" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Avg Response Time</p>
+                        <p className="text-2xl font-bold text-blue-600">{dashboardStats.avgResponseTime}m</p>
+                      </div>
+                      <Clock className="h-5 w-5 text-blue-600" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Coordination Tools */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Area Incidents - Limited to their scope */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5" />
+                      Area Incidents
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <IncidentList 
+                      incidents={incidents.slice(0, 5)} // Limited view
+                      onUpdate={fetchIncidents}
+                      selectedIncident={selectedIncident}
+                      onSelectIncident={(incident) => setSelectedIncident(incident)}
+                    />
+                  </CardContent>
+                </Card>
+
+                {/* Quick Actions for Supervisors */}
+                <div className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Coordination Actions</CardTitle>
+                      <CardDescription>Supervisor coordination tools</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <Button 
+                        onClick={() => setShowUnitsOverview(true)}
+                        variant="outline" 
+                        className="w-full"
+                      >
+                        <Shield className="h-4 w-4 mr-2" />
+                        View All Units
+                      </Button>
+                      <Button 
+                        onClick={() => window.location.href = '/units-profiles'}
+                        variant="outline" 
+                        className="w-full"
+                      >
+                        <Users className="h-4 w-4 mr-2" />
+                        Manage My Units
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => toast.info('Backup request feature coming soon')}
+                      >
+                        <MessageSquare className="h-4 w-4 mr-2" />
+                        Request Regional Backup
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Unit Status</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <UnitStatusManager />
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </TabsContent>
+          )}
+
+          {/* Support Tab - Field Officers */}
+          {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher && (
+            <TabsContent value="support" className="space-y-6">
+              <div className="flex items-center gap-4 mb-4">
+                <Badge variant="outline" className="flex items-center gap-2">
+                  <MessageSquare className="h-3 w-3" />
+                  Support & Resources
+                </Badge>
+                <p className="text-sm text-muted-foreground">
+                  Access support resources and communication tools
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Phone className="h-5 w-5" />
+                      Emergency Contacts
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <div className="p-2 border rounded">
+                      <p className="font-medium">Dispatch Center</p>
+                      <p className="text-sm text-muted-foreground">911 or Internal: 100</p>
+                    </div>
+                    <div className="p-2 border rounded">
+                      <p className="font-medium">Supervisor</p>
+                      <p className="text-sm text-muted-foreground">Internal: 200</p>
+                    </div>
+                    <div className="p-2 border rounded">
+                      <p className="font-medium">Medical Support</p>
+                      <p className="text-sm text-muted-foreground">Internal: 300</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <MessageSquare className="h-5 w-5" />
+                      Quick Actions
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => toast.info('Request backup feature available in My Unit tab')}
+                    >
+                      <Users className="h-4 w-4 mr-2" />
+                      Request Backup
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => toast.info('Status update feature available in My Unit tab')}
+                    >
+                      <Flag className="h-4 w-4 mr-2" />
+                      Update Status
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          )}
 
           {/* Management Tab - Supervisors Only */}
           {(isPoliceSupervisor || isAdmin) && (
