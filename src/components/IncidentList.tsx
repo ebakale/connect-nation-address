@@ -28,6 +28,7 @@ interface EmergencyIncident {
   assigned_units?: string[];
   dispatcher_notes?: string;
   language_code?: string;
+  reporter_id?: string;
   encrypted_message?: string;
   encrypted_address?: string;
   encrypted_latitude?: string;
@@ -39,6 +40,9 @@ interface EmergencyIncident {
   location_longitude?: number;
   incident_message?: string;
   reporter_contact_info?: string;
+  // Reporter profile information
+  reporter_name?: string;
+  reporter_email?: string;
 }
 
 interface IncidentListProps {
@@ -390,6 +394,18 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
                   </Badge>
                 </div>
               </div>
+
+              {/* Show reporter information */}
+              {(incident.reporter_name || incident.reporter_email) && (
+                <div className="mb-2 p-2 bg-blue-50 rounded border border-blue-200">
+                  <p className="text-sm text-blue-800">
+                    <strong>Reporter:</strong> {incident.reporter_name}
+                    {incident.reporter_email && (
+                      <span className="ml-2 text-blue-600 font-mono">({incident.reporter_email})</span>
+                    )}
+                  </p>
+                </div>
+              )}
 
               {/* Show incident description for better prioritization */}
               {decryptedInfo[incident.id]?.message && (

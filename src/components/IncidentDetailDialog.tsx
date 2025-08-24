@@ -32,6 +32,7 @@ interface EmergencyIncident {
   assigned_units?: string[];
   dispatcher_notes?: string;
   language_code?: string;
+  reporter_id?: string;
   // Unencrypted fields for immediate police access
   location_latitude?: number;
   location_longitude?: number;
@@ -39,6 +40,9 @@ interface EmergencyIncident {
   incident_uac?: string;
   incident_message?: string;
   reporter_contact_info?: string;
+  // Reporter profile information
+  reporter_name?: string;
+  reporter_email?: string;
 }
 
 interface DecryptedIncident {
@@ -456,13 +460,33 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                   </div>
                 )}
                 
-                {incident.reporter_contact_info && (
+                {/* Reporter Information */}
+                {(incident.reporter_name || incident.reporter_email || incident.reporter_contact_info) && (
                   <div>
                     <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                      <Phone className="h-4 w-4" />
-                      Contact Information
+                      <User className="h-4 w-4" />
+                      Reporter Information
                     </label>
-                    <p className="mt-1 font-mono">{incident.reporter_contact_info}</p>
+                    <div className="mt-1 space-y-1">
+                      {incident.reporter_name && (
+                        <p className="flex items-center gap-2">
+                          <span className="text-sm font-medium">Name:</span>
+                          <span>{incident.reporter_name}</span>
+                        </p>
+                      )}
+                      {incident.reporter_email && (
+                        <p className="flex items-center gap-2">
+                          <span className="text-sm font-medium">Email:</span>
+                          <span className="font-mono">{incident.reporter_email}</span>
+                        </p>
+                      )}
+                      {incident.reporter_contact_info && (
+                        <p className="flex items-center gap-2">
+                          <span className="text-sm font-medium">Contact:</span>
+                          <span className="font-mono">{incident.reporter_contact_info}</span>
+                        </p>
+                      )}
+                    </div>
                   </div>
                 )}
                 

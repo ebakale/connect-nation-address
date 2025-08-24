@@ -31,6 +31,9 @@ interface EmergencyIncident {
   assigned_units?: string[];
   dispatcher_notes?: string;
   language_code?: string;
+  reporter_id?: string;
+  reporter_name?: string;
+  reporter_email?: string;
 }
 
 interface DashboardStats {
@@ -141,7 +144,37 @@ const PoliceDashboard = () => {
           .limit(50);
 
         if (incidentsError) throw incidentsError;
-        setIncidents(incidentsData || []);
+        
+        // Get unique reporter IDs
+        const reporterIds = [...new Set(incidentsData?.map(i => i.reporter_id).filter(Boolean))] as string[];
+        
+        // Fetch reporter profiles if we have reporter IDs
+        let reporterProfiles: Record<string, { full_name?: string; email?: string }> = {};
+        if (reporterIds.length > 0) {
+          const { data: profilesData } = await supabase
+            .from('profiles')
+            .select('user_id, full_name, email')
+            .in('user_id', reporterIds);
+          
+          if (profilesData) {
+            reporterProfiles = profilesData.reduce((acc, profile) => {
+              acc[profile.user_id] = {
+                full_name: profile.full_name,
+                email: profile.email
+              };
+              return acc;
+            }, {} as Record<string, { full_name?: string; email?: string }>);
+          }
+        }
+        
+        // Transform the data to include reporter info at the top level
+        const transformedIncidents = incidentsData?.map(incident => ({
+          ...incident,
+          reporter_name: incident.reporter_id ? reporterProfiles[incident.reporter_id]?.full_name : undefined,
+          reporter_email: incident.reporter_id ? reporterProfiles[incident.reporter_id]?.email : undefined
+        })) || [];
+        
+        setIncidents(transformedIncidents);
 
         // Calculate stats
         const now = new Date();
@@ -416,7 +449,37 @@ const PoliceDashboard = () => {
                       .limit(50);
 
                     if (incidentsError) throw incidentsError;
-                    setIncidents(incidentsData || []);
+                    
+                    // Get unique reporter IDs
+                    const reporterIds = [...new Set(incidentsData?.map(i => i.reporter_id).filter(Boolean))] as string[];
+                    
+                    // Fetch reporter profiles if we have reporter IDs
+                    let reporterProfiles: Record<string, { full_name?: string; email?: string }> = {};
+                    if (reporterIds.length > 0) {
+                      const { data: profilesData } = await supabase
+                        .from('profiles')
+                        .select('user_id, full_name, email')
+                        .in('user_id', reporterIds);
+                      
+                      if (profilesData) {
+                        reporterProfiles = profilesData.reduce((acc, profile) => {
+                          acc[profile.user_id] = {
+                            full_name: profile.full_name,
+                            email: profile.email
+                          };
+                          return acc;
+                        }, {} as Record<string, { full_name?: string; email?: string }>);
+                      }
+                    }
+                    
+                    // Transform the data to include reporter info at the top level
+                    const transformedIncidents = incidentsData?.map(incident => ({
+                      ...incident,
+                      reporter_name: incident.reporter_id ? reporterProfiles[incident.reporter_id]?.full_name : undefined,
+                      reporter_email: incident.reporter_id ? reporterProfiles[incident.reporter_id]?.email : undefined
+                    })) || [];
+                    
+                    setIncidents(transformedIncidents);
                   } catch (error) {
                     console.error('Error refreshing incidents:', error);
                   }
