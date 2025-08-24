@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { useNavigate } from "react-router-dom";
 
 // Component imports
 import AdminPanel from "@/components/AdminPanel";
@@ -83,10 +84,19 @@ const UnifiedDashboard = () => {
     hasAdminAccess,
     canCreateDraftAddress,
     canVerifyAddresses,
-    canPublishAddresses
+    canPublishAddresses,
+    hasPoliceAccess
   } = useUserRole();
   const { user, signOut } = useAuth();
   const { t } = useLanguage();
+  const navigate = useNavigate();
+
+  // Redirect police roles to dedicated dashboard if they land here
+  useEffect(() => {
+    if (!loading && hasPoliceAccess) {
+      navigate('/police', { replace: true });
+    }
+  }, [loading, hasPoliceAccess, navigate]);
 
   // Stats state
   const [stats, setStats] = useState<DashboardStats>({

@@ -66,7 +66,12 @@ export const useUserRole = () => {
         if (roleData && roleData.length > 0) {
           // Get the highest priority role (admin > ndaa_admin > registrar > etc.)
           const roles = roleData.map(r => r.role);
-          const priorityOrder: UserRole[] = ['admin', 'ndaa_admin', 'registrar', 'verifier', 'field_agent', 'property_claimant', 'citizen', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user'];
+          const priorityOrder: UserRole[] = [
+            'admin', 'ndaa_admin',
+            'police_supervisor', 'police_operator', 'police_dispatcher',
+            'registrar', 'verifier', 'field_agent', 'property_claimant',
+            'citizen', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user'
+          ];
           const highestRole = priorityOrder.find(role => roles.includes(role)) || 'citizen';
           
           setRole(highestRole as UserRole);
