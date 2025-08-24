@@ -41,6 +41,7 @@ interface EmergencyIncident {
   reporter_name?: string;
   reporter_email?: string;
   region?: string;
+  city?: string;
 }
 
 interface DashboardStats {
@@ -74,6 +75,7 @@ const PoliceDashboard = () => {
   const [operatorSession, setOperatorSession] = useState<any>(null);
   const [userUnitCodes, setUserUnitCodes] = useState<string[]>([]);
   const [userUnitRegion, setUserUnitRegion] = useState<string | null>(null);
+  const [userUnitCity, setUserUnitCity] = useState<string | null>(null);
 
   // Set default tab based on user role
   useEffect(() => {
@@ -150,14 +152,16 @@ const PoliceDashboard = () => {
         membership.emergency_units?.unit_code
       ).filter(Boolean) || [];
       
-      // Get the region from the first unit's location
+      // Get the region/city from the first unit's location
       const firstUnit = unitMemberships?.[0]?.emergency_units;
       if (firstUnit?.current_location) {
-        // Extract region/province from current_location
-        // This assumes current_location contains region info
         const locationParts = firstUnit.current_location.split(',');
-        const region = locationParts[locationParts.length - 2]?.trim(); // Assuming format: "City, Region, Country"
-        setUserUnitRegion(region);
+        const city = locationParts[0]?.trim();
+        const region = (locationParts.length >= 3
+          ? locationParts[locationParts.length - 2]
+          : locationParts[1])?.trim(); // Fallback if only "City, Region"
+        if (city) setUserUnitCity(city);
+        if (region) setUserUnitRegion(region);
       }
       
       setUserUnitCodes(unitCodes);
@@ -667,7 +671,8 @@ const PoliceDashboard = () => {
                   <CardContent>
                     <IncidentList 
                       incidents={incidents.filter(incident => 
-                        userUnitRegion ? incident.region === userUnitRegion : true
+                        (userUnitRegion && incident.region && incident.region.toLowerCase().trim() === userUnitRegion.toLowerCase().trim()) ||
+                        (userUnitCity && incident.city && incident.city.toLowerCase().trim() === userUnitCity.toLowerCase().trim())
                       )}
                       onUpdate={fetchIncidents}
                       selectedIncident={selectedIncident}
