@@ -203,7 +203,7 @@ const PoliceDashboard = () => {
       let query = supabase
         .from('emergency_incidents')
         .select('*')
-        .in('status', ['reported', 'dispatched', 'responded'])
+        .in('status', ['reported', 'dispatched', 'responding', 'on_scene'])
         .order('priority_level', { ascending: false })
         .order('reported_at', { ascending: true });
 
@@ -237,6 +237,18 @@ const PoliceDashboard = () => {
         const userUnitCodes = userUnits.map(u => u.unit_code);
         const hasUserUnit = incident.assigned_units.some((unit: string) => userUnitCodes.includes(unit));
         
+        // Debug logging
+        if (incident.incident_number === 'INC-2024-000009' || incident.incident_number === 'INC-2025-000024') {
+          console.log('Filtering incident:', incident.incident_number, {
+            assigned_units: incident.assigned_units,
+            hasValidUnit,
+            hasUserUnit,
+            isPoliceSupervisor,
+            userUnitCodes,
+            finalResult: hasValidUnit || (isPoliceSupervisor && hasUserUnit)
+          });
+        }
+        
         return hasValidUnit || (isPoliceSupervisor && hasUserUnit);
       });
 
@@ -261,7 +273,7 @@ const PoliceDashboard = () => {
       let query = supabase
         .from('emergency_incidents')
         .select('*')
-        .in('status', ['reported', 'dispatched', 'responded'])
+        .in('status', ['reported', 'dispatched', 'responding', 'on_scene'])
         .order('priority_level', { ascending: false })
         .order('reported_at', { ascending: true });
 
