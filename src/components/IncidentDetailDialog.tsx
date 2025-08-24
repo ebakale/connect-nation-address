@@ -43,6 +43,12 @@ interface EmergencyIncident {
   // Reporter profile information
   reporter_name?: string;
   reporter_email?: string;
+  // Address fields from emergency_incidents table
+  street?: string;
+  city?: string;
+  region?: string;
+  country?: string;
+  building?: string;
 }
 
 interface DecryptedIncident {
@@ -541,22 +547,57 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                   <div>
                     <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                       <MapPin className="h-4 w-4" />
-                      Location Details
+                      Emergency Location
                     </label>
-                    <div className="mt-1 space-y-2">
+                    <div className="mt-1 space-y-3">
+                      {/* Primary: UAC */}
                       {incident.incident_uac && (
-                        <p className="font-mono text-sm bg-white p-2 rounded border">
-                          UAC: {incident.incident_uac}
-                        </p>
+                        <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                          <p className="text-xs font-medium text-blue-600 mb-1">Unified Address Code (UAC)</p>
+                          <p className="font-mono text-lg font-semibold text-blue-800">{incident.incident_uac}</p>
+                        </div>
                       )}
-                      <p className="font-mono">
-                        {incident.location_latitude.toFixed(6)}, {incident.location_longitude.toFixed(6)}
-                      </p>
-                      {incident.location_address && (
-                        <p className="text-sm text-muted-foreground">
-                          {incident.location_address}
-                        </p>
+                      
+                      {/* Secondary: Structured Address (if available) */}
+                      {(incident.street || incident.city || incident.region || incident.country) && (
+                        <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
+                          <p className="text-xs font-medium text-gray-600 mb-2">Address Information</p>
+                          <div className="space-y-1 text-sm">
+                            {incident.building && (
+                              <p><span className="font-medium">Building:</span> {incident.building}</p>
+                            )}
+                            {incident.street && (
+                              <p><span className="font-medium">Street:</span> {incident.street}</p>
+                            )}
+                            {incident.city && (
+                              <p><span className="font-medium">City:</span> {incident.city}</p>
+                            )}
+                            {incident.region && (
+                              <p><span className="font-medium">Region:</span> {incident.region}</p>
+                            )}
+                            {incident.country && (
+                              <p><span className="font-medium">Country:</span> {incident.country}</p>
+                            )}
+                          </div>
+                        </div>
                       )}
+                      
+                      {/* Coordinates */}
+                      <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
+                        <p className="text-xs font-medium text-gray-600 mb-1">GPS Coordinates</p>
+                        <p className="font-mono text-sm">
+                          {incident.location_latitude.toFixed(6)}, {incident.location_longitude.toFixed(6)}
+                        </p>
+                      </div>
+                      
+                      {/* Generated Address (fallback) */}
+                      {incident.location_address && !incident.street && (
+                        <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
+                          <p className="text-xs font-medium text-gray-600 mb-1">Generated Address</p>
+                          <p className="text-sm text-muted-foreground">{incident.location_address}</p>
+                        </div>
+                      )}
+                      
                       <Button 
                         size="sm" 
                         variant="outline"
@@ -564,9 +605,10 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                           const url = `https://www.google.com/maps?q=${incident.location_latitude},${incident.location_longitude}`;
                           window.open(url, '_blank');
                         }}
+                        className="w-full"
                       >
-                        <Navigation className="h-4 w-4 mr-1" />
-                        Open in Maps
+                        <Navigation className="h-4 w-4 mr-2" />
+                        Open in Google Maps
                       </Button>
                     </div>
                   </div>
