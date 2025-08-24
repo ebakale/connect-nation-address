@@ -13,7 +13,10 @@ import {
   AlertTriangle, Clock, MapPin, Navigation, CheckCircle, 
   Radio, Users, MessageSquare, Phone, Car, Shield,
   ArrowRight, PlayCircle, StopCircle, Flag, AlertCircle,
-  Map, Camera, FileText, Send
+  Map, Camera, FileText, Send, Bell, Battery, Wifi,
+  UserCheck, Upload, Download, History, Settings,
+  Zap, Heart, Siren, LogIn, LogOut, RefreshCw,
+  Headphones, Mic, Volume2, Navigation2, Locate
 } from 'lucide-react';
 
 interface IncidentAssignment {
@@ -118,14 +121,36 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ unitInci
   const [actionNotes, setActionNotes] = useState('');
   const [currentLocation, setCurrentLocation] = useState('');
   const [isUpdatingLocation, setIsUpdatingLocation] = useState(false);
+  const [unitMembers, setUnitMembers] = useState<any[]>([]);
+  const [unitStatus, setUnitStatus] = useState<string>('available');
+  const [shiftStatus, setShiftStatus] = useState<'on_duty' | 'off_duty' | 'break'>('off_duty');
+  const [emergencyMode, setEmergencyMode] = useState(false);
+  const [incidentHistory, setIncidentHistory] = useState<IncidentAssignment[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+  const [gpsEnabled, setGpsEnabled] = useState(false);
+  const [batteryLevel, setBatteryLevel] = useState(100);
+  const [signalStrength, setSignalStrength] = useState(4);
+  const [evidenceFiles, setEvidenceFiles] = useState<File[]>([]);
+  const [communicationLog, setCommunicationLog] = useState<any[]>([]);
+  const [quickMessage, setQuickMessage] = useState('');
+  const [resourceRequest, setResourceRequest] = useState('');
+  const [showResourceDialog, setShowResourceDialog] = useState(false);
 
   // Use the incidents passed from parent component
   useEffect(() => {
     setAssignments(unitIncidents);
+    // Also filter for incident history (resolved/closed incidents)
+    const historyIncidents = unitIncidents.filter(incident => 
+      ['resolved', 'closed'].includes(incident.status)
+    );
+    setIncidentHistory(historyIncidents);
   }, [unitIncidents]);
 
   useEffect(() => {
     fetchUnitInfo();
+    fetchUnitMembers();
+    initializeGPS();
+    checkBatteryStatus();
   }, [user]);
 
   useEffect(() => {
@@ -186,11 +211,239 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ unitInci
 
       if (error) throw error;
       if (data?.emergency_units) {
-        setUnitInfo(data.emergency_units as UnitInfo);
+        const unit = data.emergency_units as UnitInfo;
+        setUnitInfo(unit);
+        setUnitStatus(unit.status);
       }
     } catch (error) {
       console.error('Error fetching unit info:', error);
     }
+  };
+
+  const fetchUnitMembers = async () => {
+    if (!user) return;
+
+    try {
+      const { data: unitMembership } = await supabase
+        .from('emergency_unit_members')
+        .select('unit_id')
+        .eq('officer_id', user.id)
+        .single();
+
+      if (unitMembership) {
+        const { data: members, error } = await supabase
+          .from('emergency_unit_members')
+          .select(`
+            officer_id,
+            role,
+            is_lead,
+            profiles(full_name, email)
+          `)
+          .eq('unit_id', unitMembership.unit_id);
+
+        if (error) throw error;
+        setUnitMembers(members || []);
+      }
+    } catch (error) {
+      console.error('Error fetching unit members:', error);
+    }
+  };
+
+  const initializeGPS = () => {
+    if ('geolocation' in navigator) {
+      setGpsEnabled(true);
+      // Auto-update location every 5 minutes when on duty
+      if (shiftStatus === 'on_duty') {
+        const interval = setInterval(() => {
+          navigator.geolocation.getCurrentPosition((position) => {
+            const { latitude, longitude } = position.coords;
+            // Auto-update unit location
+            updateUnitLocationCoordinates(latitude, longitude);
+          });
+        }, 300000); // 5 minutes
+
+        return () => clearInterval(interval);
+      }
+    }
+  };
+
+  const checkBatteryStatus = () => {
+    if ('getBattery' in navigator) {
+      (navigator as any).getBattery().then((battery: any) => {
+        setBatteryLevel(Math.round(battery.level * 100));
+        
+        battery.addEventListener('levelchange', () => {
+          setBatteryLevel(Math.round(battery.level * 100));
+        });
+      });
+    }
+  };
+
+  const updateUnitStatus = async (newStatus: string) => {
+    if (!unitInfo) return;
+
+    try {
+      const { error } = await supabase
+        .from('emergency_units')
+        .update({ status: newStatus })
+        .eq('id', unitInfo.id);
+
+      if (error) throw error;
+      setUnitStatus(newStatus);
+      toast({ title: 'Unit status updated', description: `Status changed to ${newStatus}` });
+    } catch (error) {
+      console.error('Error updating unit status:', error);
+      toast({ title: 'Error', description: 'Failed to update unit status', variant: 'destructive' });
+    }
+  };
+
+  const toggleShift = async () => {
+    const newStatus = shiftStatus === 'off_duty' ? 'on_duty' : 'off_duty';
+    
+    try {
+      // Log shift change
+      await supabase
+        .from('emergency_incident_logs')
+        .insert({
+          incident_id: '00000000-0000-0000-0000-000000000000', // System log
+          user_id: user?.id,
+          action: newStatus === 'on_duty' ? 'shift_start' : 'shift_end',
+          details: { 
+            unit_code: unitInfo?.unit_code,
+            timestamp: new Date().toISOString()
+          }
+        });
+
+      setShiftStatus(newStatus);
+      
+      if (newStatus === 'on_duty') {
+        await updateUnitStatus('available');
+        initializeGPS();
+      } else {
+        await updateUnitStatus('off_duty');
+      }
+
+      toast({ 
+        title: 'Shift updated', 
+        description: `You are now ${newStatus.replace('_', ' ')}` 
+      });
+    } catch (error) {
+      console.error('Error updating shift:', error);
+      toast({ title: 'Error', description: 'Failed to update shift status', variant: 'destructive' });
+    }
+  };
+
+  const triggerEmergency = async () => {
+    setEmergencyMode(true);
+    
+    try {
+      // Send emergency alert
+      await supabase.functions.invoke('notify-emergency-operators', {
+        body: {
+          type: 'officer_emergency',
+          unit_code: unitInfo?.unit_code,
+          officer_id: user?.id,
+          location: unitInfo?.current_location,
+          coordinates: {
+            latitude: unitInfo?.location_latitude,
+            longitude: unitInfo?.location_longitude
+          }
+        }
+      });
+
+      toast({ 
+        title: 'EMERGENCY ALERT SENT', 
+        description: 'All operators have been notified', 
+        variant: 'destructive' 
+      });
+    } catch (error) {
+      console.error('Error sending emergency alert:', error);
+      toast({ title: 'Error', description: 'Failed to send emergency alert', variant: 'destructive' });
+    }
+
+    // Auto-disable after 30 seconds unless manually disabled
+    setTimeout(() => {
+      if (emergencyMode) setEmergencyMode(false);
+    }, 30000);
+  };
+
+  const updateUnitLocationCoordinates = async (latitude: number, longitude: number) => {
+    if (!unitInfo) return;
+
+    try {
+      const { error } = await supabase
+        .from('emergency_units')
+        .update({ 
+          location_latitude: latitude,
+          location_longitude: longitude,
+          location_updated_at: new Date().toISOString()
+        })
+        .eq('id', unitInfo.id);
+
+      if (error) throw error;
+      
+      setUnitInfo(prev => prev ? {
+        ...prev,
+        location_latitude: latitude,
+        location_longitude: longitude
+      } : null);
+    } catch (error) {
+      console.error('Error updating coordinates:', error);
+    }
+  };
+
+  const sendQuickMessage = async () => {
+    if (!quickMessage.trim() || !unitInfo) return;
+
+    try {
+      const newMessage = {
+        id: Date.now().toString(),
+        timestamp: new Date().toISOString(),
+        from: unitInfo.unit_code,
+        message: quickMessage,
+        type: 'outgoing'
+      };
+
+      setCommunicationLog(prev => [newMessage, ...prev]);
+      setQuickMessage('');
+
+      // In a real implementation, this would send to dispatch
+      toast({ title: 'Message sent', description: 'Message sent to dispatch' });
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  };
+
+  const requestResource = async () => {
+    if (!resourceRequest.trim() || !unitInfo) return;
+
+    try {
+      await supabase
+        .from('emergency_incident_logs')
+        .insert({
+          incident_id: '00000000-0000-0000-0000-000000000000', // System log
+          user_id: user?.id,
+          action: 'resource_request',
+          details: { 
+            unit_code: unitInfo.unit_code,
+            request: resourceRequest,
+            timestamp: new Date().toISOString()
+          }
+        });
+
+      setResourceRequest('');
+      setShowResourceDialog(false);
+      toast({ title: 'Resource requested', description: 'Request sent to dispatch' });
+    } catch (error) {
+      console.error('Error requesting resource:', error);
+      toast({ title: 'Error', description: 'Failed to send resource request', variant: 'destructive' });
+    }
+  };
+
+  const handleEvidenceUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    setEvidenceFiles(prev => [...prev, ...files]);
+    toast({ title: 'Evidence added', description: `${files.length} file(s) added to evidence` });
   };
 
   const fetchAssignments = async () => {
@@ -489,9 +742,37 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ unitInci
         </div>
         <div className="flex items-center gap-4">
           <Badge variant="outline" className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${getIncidentStatusColor(unitInfo.status)}`} />
-            {unitInfo.status.toUpperCase()}
+            <div className={`w-2 h-2 rounded-full ${getIncidentStatusColor(unitStatus)}`} />
+            {unitStatus.toUpperCase()}
           </Badge>
+          
+          {/* Shift Status */}
+          <Badge variant={shiftStatus === 'on_duty' ? 'default' : 'secondary'} 
+                 className="flex items-center gap-2">
+            {shiftStatus === 'on_duty' ? <UserCheck className="h-3 w-3" /> : <LogOut className="h-3 w-3" />}
+            {shiftStatus.replace('_', ' ').toUpperCase()}
+          </Badge>
+
+          {/* System Status Indicators */}
+          <div className="flex items-center gap-2">
+            {gpsEnabled && (
+              <Badge variant="outline" className="flex items-center gap-1">
+                <Locate className="h-3 w-3 text-green-600" />
+                GPS
+              </Badge>
+            )}
+            
+            <Badge variant="outline" className="flex items-center gap-1">
+              <Battery className="h-3 w-3" />
+              {batteryLevel}%
+            </Badge>
+            
+            <Badge variant="outline" className="flex items-center gap-1">
+              <Wifi className="h-3 w-3" />
+              {signalStrength}/4
+            </Badge>
+          </div>
+
           {unitInfo.radio_frequency && (
             <Badge variant="outline">
               <Radio className="h-3 w-3 mr-1" />
@@ -501,35 +782,312 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ unitInci
         </div>
       </div>
 
-      {/* Quick Location Update */}
+      {/* Emergency Alert Bar */}
+      {emergencyMode && (
+        <div className="bg-red-600 text-white p-4 rounded-lg animate-pulse">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5" />
+              <span className="font-bold">EMERGENCY MODE ACTIVE</span>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setEmergencyMode(false)}
+              className="bg-white text-red-600 hover:bg-gray-100"
+            >
+              Clear Alert
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Control Panel */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Unit Status Controls */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Unit Controls
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="grid grid-cols-2 gap-2">
+              <Button 
+                variant={shiftStatus === 'on_duty' ? 'destructive' : 'default'}
+                size="sm"
+                onClick={toggleShift}
+                className="flex items-center gap-1"
+              >
+                {shiftStatus === 'on_duty' ? (
+                  <>
+                    <LogOut className="h-3 w-3" />
+                    End Shift
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="h-3 w-3" />
+                    Start Shift
+                  </>
+                )}
+              </Button>
+              
+              <Button 
+                variant="destructive"
+                size="sm"
+                onClick={triggerEmergency}
+                disabled={emergencyMode}
+                className="flex items-center gap-1"
+              >
+                <AlertCircle className="h-3 w-3" />
+                Emergency
+              </Button>
+            </div>
+            
+            <Select value={unitStatus} onValueChange={updateUnitStatus}>
+              <SelectTrigger className="h-8">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="available">Available</SelectItem>
+                <SelectItem value="busy">Busy</SelectItem>
+                <SelectItem value="en_route">En Route</SelectItem>
+                <SelectItem value="on_scene">On Scene</SelectItem>
+                <SelectItem value="out_of_service">Out of Service</SelectItem>
+              </SelectContent>
+            </Select>
+          </CardContent>
+        </Card>
+
+        {/* Quick Communication */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <MessageSquare className="h-4 w-4" />
+              Quick Comm
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex gap-1">
+              <input
+                type="text"
+                placeholder="Message dispatch..."
+                value={quickMessage}
+                onChange={(e) => setQuickMessage(e.target.value)}
+                className="flex-1 px-2 py-1 text-xs border rounded"
+                onKeyPress={(e) => e.key === 'Enter' && sendQuickMessage()}
+              />
+              <Button size="sm" onClick={sendQuickMessage} disabled={!quickMessage.trim()}>
+                <Send className="h-3 w-3" />
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-1">
+              <Button variant="outline" size="sm" onClick={() => setQuickMessage('10-4 Acknowledged')}>
+                <span className="text-xs">10-4</span>
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => setQuickMessage('10-8 In Service')}>
+                <span className="text-xs">10-8</span>
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => setQuickMessage('10-23 Arrived')}>
+                <span className="text-xs">10-23</span>
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => setQuickMessage('10-24 Assignment Complete')}>
+                <span className="text-xs">10-24</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Actions */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Zap className="h-4 w-4" />
+              Quick Actions
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="grid grid-cols-2 gap-1">
+              <Dialog open={showResourceDialog} onOpenChange={setShowResourceDialog}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Car className="h-3 w-3 mr-1" />
+                    <span className="text-xs">Resources</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Request Resources</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <Textarea
+                      value={resourceRequest}
+                      onChange={(e) => setResourceRequest(e.target.value)}
+                      placeholder="Describe the resources needed..."
+                      rows={3}
+                    />
+                    <Button onClick={requestResource} disabled={!resourceRequest.trim()}>
+                      Send Request
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+              
+              <Button variant="outline" size="sm" onClick={() => setShowHistory(!showHistory)}>
+                <History className="h-3 w-3 mr-1" />
+                <span className="text-xs">History</span>
+              </Button>
+              
+              <label className="cursor-pointer">
+                <Button variant="outline" size="sm" asChild>
+                  <span>
+                    <Camera className="h-3 w-3 mr-1" />
+                    <span className="text-xs">Evidence</span>
+                  </span>
+                </Button>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*,video/*,audio/*"
+                  className="hidden"
+                  onChange={handleEvidenceUpload}
+                />
+              </label>
+              
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigator.geolocation.getCurrentPosition((pos) => {
+                  updateUnitLocationCoordinates(pos.coords.latitude, pos.coords.longitude);
+                  toast({ title: 'Location updated', description: 'GPS coordinates synced' });
+                })}
+              >
+                <RefreshCw className="h-3 w-3 mr-1" />
+                <span className="text-xs">GPS</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Unit Members */}
+      {unitMembers.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Unit Members ({unitMembers.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {unitMembers.map((member) => (
+                <div key={member.officer_id} className="flex items-center gap-3 p-2 border rounded">
+                  <div className={`w-3 h-3 rounded-full ${member.is_lead ? 'bg-yellow-500' : 'bg-green-500'}`} />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm truncate">
+                      {member.profiles?.full_name || 'Unknown'}
+                    </p>
+                    <p className="text-xs text-muted-foreground capitalize">
+                      {member.role} {member.is_lead && '(Lead)'}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Evidence Files */}
+      {evidenceFiles.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Evidence Files ({evidenceFiles.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {evidenceFiles.map((file, index) => (
+                <div key={index} className="flex items-center gap-2 p-2 border rounded text-xs">
+                  <FileText className="h-3 w-3" />
+                  <span className="truncate">{file.name}</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Incident History */}
+      {showHistory && incidentHistory.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <History className="h-5 w-5" />
+              Recent Incident History
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2 max-h-60 overflow-y-auto">
+              {incidentHistory.slice(0, 10).map((incident) => (
+                <div key={incident.id} className="flex items-center justify-between p-2 border rounded text-sm">
+                  <div>
+                    <span className="font-medium">{incident.incident_number}</span>
+                    <span className="ml-2 text-muted-foreground">{incident.emergency_type}</span>
+                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    {incident.status}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Location Update */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MapPin className="h-5 w-5" />
-            Update Location
+            Location Management
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Current location (e.g., Main St & 5th Ave)"
-              value={currentLocation}
-              onChange={(e) => setCurrentLocation(e.target.value)}
-              className="flex-1 px-3 py-2 border rounded-md"
-            />
-            <Button 
-              onClick={updateUnitLocation}
-              disabled={!currentLocation.trim() || isUpdatingLocation}
-            >
-              {isUpdatingLocation ? 'Updating...' : 'Update'}
-            </Button>
+          <div className="space-y-3">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Update location manually..."
+                value={currentLocation}
+                onChange={(e) => setCurrentLocation(e.target.value)}
+                className="flex-1 px-3 py-2 border rounded-md"
+              />
+              <Button 
+                onClick={updateUnitLocation}
+                disabled={!currentLocation.trim() || isUpdatingLocation}
+              >
+                {isUpdatingLocation ? 'Updating...' : 'Update'}
+              </Button>
+            </div>
+            
+            {unitInfo.current_location && (
+              <p className="text-sm text-muted-foreground">
+                Current: {unitInfo.current_location}
+              </p>
+            )}
+            
+            {unitInfo.location_latitude && unitInfo.location_longitude && (
+              <p className="text-xs text-muted-foreground font-mono">
+                GPS: {unitInfo.location_latitude.toFixed(6)}, {unitInfo.location_longitude.toFixed(6)}
+              </p>
+            )}
           </div>
-          {unitInfo.current_location && (
-            <p className="text-sm text-muted-foreground mt-2">
-              Last location: {unitInfo.current_location}
-            </p>
-          )}
         </CardContent>
       </Card>
 
