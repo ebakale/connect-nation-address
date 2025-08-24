@@ -278,7 +278,9 @@ const PoliceDashboard = () => {
           } else if (payload.eventType === 'UPDATE') {
             setIncidents(prev => 
               prev.map(incident => 
-                incident.id === payload.new.id ? payload.new as EmergencyIncident : incident
+                incident.id === (payload.new as any).id 
+                  ? { ...incident, ...(payload.new as any) } // preserve enriched fields like reporter_name/email
+                  : incident
               )
             );
           }
