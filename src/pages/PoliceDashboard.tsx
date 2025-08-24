@@ -73,6 +73,7 @@ const PoliceDashboard = () => {
   });
   const [operatorSession, setOperatorSession] = useState<any>(null);
   const [userUnit, setUserUnit] = useState<any>(null);
+  const [userUnits, setUserUnits] = useState<any[]>([]);
   const [userCity, setUserCity] = useState<string | null>(null);
 
   // Set default tab based on user role
@@ -134,11 +135,13 @@ const PoliceDashboard = () => {
     if (!user || !hasPoliceAccess) return;
 
     try {
-      // Get unit information
-      const { data: unitMember, error } = await supabase
+      // Get unit memberships for this user (may belong to multiple units)
+      const { data: unitMemberships, error } = await supabase
         .from('emergency_unit_members')
         .select(`
           unit_id,
+          is_lead,
+          role,
           emergency_units (
             id,
             unit_name,
@@ -148,14 +151,19 @@ const PoliceDashboard = () => {
             current_location
           )
         `)
-        .eq('officer_id', user.id)
-        .maybeSingle();
+        .eq('officer_id', user.id);
 
       if (error) throw error;
 
-      if (unitMember?.emergency_units) {
-        setUserUnit(unitMember.emergency_units);
-      }
+      const units = (unitMemberships || [])
+        .map((m: any) => m.emergency_units)
+        .filter(Boolean);
+
+      const leadMembership = (unitMemberships || []).find((m: any) => m?.is_lead || m?.role === 'sergeant');
+      const primaryUnit = leadMembership?.emergency_units || units[0] || null;
+
+      setUserUnits(units);
+      setUserUnit(primaryUnit);
 
       // Get user's city assignment from role metadata
       const { data: roleData, error: roleError } = await supabase
@@ -217,11 +225,10 @@ const PoliceDashboard = () => {
     }
   };
 
-  // Fetch area-specific incidents based on user's assigned city or unit coverage
+  // Fetch area-specific incidents based on the supervisor's primary unit coverage (fallback to role city)
   const fetchAreaIncidents = async () => {
     if (!hasPoliceAccess) return;
 
-    // Prefer unit coverage city; fallback to role metadata city
     const filterCity = userUnit?.coverage_city || userCity;
     if (!filterCity) return;
 
@@ -233,11 +240,9 @@ const PoliceDashboard = () => {
         .order('priority_level', { ascending: false })
         .order('reported_at', { ascending: true });
 
-      // Filter by derived city
       query = query.eq('city', filterCity);
 
       const { data: incidentsData, error } = await query;
-
       if (error) throw error;
 
       const enrichedIncidents = incidentsData?.map(incident => ({
@@ -272,11 +277,11 @@ const PoliceDashboard = () => {
 
   // Fetch incidents when user city or unit coverage changes
   useEffect(() => {
-    if (userCity || userUnit?.coverage_city) {
+    if (userCity || userUnit?.coverage_city || (userUnits && userUnits.length > 0)) {
       fetchIncidents();
       fetchAreaIncidents();
     }
-  }, [userCity, userUnit?.coverage_city, hasPoliceAccess]);
+  }, [userCity, userUnit?.coverage_city, userUnits.length, hasPoliceAccess]);
 
   // Real-time subscription
   useEffect(() => {
@@ -293,6 +298,7 @@ const PoliceDashboard = () => {
         },
         () => {
           fetchIncidents();
+          fetchAreaIncidents();
         }
       )
       .subscribe();
