@@ -152,9 +152,11 @@ serve(async (req) => {
           .insert({
             incident_id: incidentId,
             user_id: user.id,
-            action: 'units_assigned',
+            action: 'unit_assigned',
             details: { 
-              units: data.units,
+              assigned_unit: data.unitCode,
+              unit_name: data.unitName,
+              assigned_by: user.email,
               timestamp: new Date().toISOString()
             }
           });

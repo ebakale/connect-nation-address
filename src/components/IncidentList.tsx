@@ -274,33 +274,32 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
         ? currentUnits 
         : [...currentUnits, unitCode];
 
-      const { error } = await supabase
+      // Use the police-incident-actions edge function for consistent logging
+      const { error } = await supabase.functions.invoke('police-incident-actions', {
+        body: {
+          action: 'assignUnits',
+          incidentId: incidentId,
+          data: {
+            units: newUnits,
+            unitName: unitData.unit_name,
+            unitCode: unitCode
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      // Also update operator assignment and status if needed
+      await supabase
         .from('emergency_incidents')
         .update({
           assigned_operator_id: user?.id,
-          assigned_units: newUnits,
           status: incident?.status === 'reported' ? 'dispatched' : incident?.status,
           dispatched_at: incident?.status === 'reported' ? new Date().toISOString() : incident?.dispatched_at
         })
         .eq('id', incidentId);
 
-      if (error) throw error;
-
-      // Log the assignment without foreign key dependency for now
-      await supabase
-        .from('emergency_incident_logs')
-        .insert({
-          incident_id: incidentId,
-          user_id: user?.id || 'system',
-          action: 'unit_assigned',
-          details: { 
-            assigned_unit: unitCode,
-            unit_name: unitData.unit_name,
-            assigned_by: user?.email || 'system'
-          }
-        });
-
-      toast.success(`Incident assigned to ${unitCode} - ${unitData.unit_name}`);
+      toast.success(`Incident assigned to ${unitData.unit_name} (${unitCode})`);
       setAssignDialog(null);
       setAssigningUnit('');
       
