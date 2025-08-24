@@ -271,7 +271,9 @@ export type Database = {
         Row: {
           assigned_operator_id: string | null
           assigned_units: string[] | null
+          city: string | null
           closed_at: string | null
+          country: string | null
           created_at: string
           dispatch_system_id: string | null
           dispatched_at: string | null
@@ -293,18 +295,22 @@ export type Database = {
           location_latitude: number | null
           location_longitude: number | null
           priority_level: number
+          region: string | null
           reported_at: string
           reporter_contact_info: string | null
           reporter_id: string | null
           resolved_at: string | null
           responded_at: string | null
           status: string
+          street: string | null
           updated_at: string
         }
         Insert: {
           assigned_operator_id?: string | null
           assigned_units?: string[] | null
+          city?: string | null
           closed_at?: string | null
+          country?: string | null
           created_at?: string
           dispatch_system_id?: string | null
           dispatched_at?: string | null
@@ -326,18 +332,22 @@ export type Database = {
           location_latitude?: number | null
           location_longitude?: number | null
           priority_level?: number
+          region?: string | null
           reported_at?: string
           reporter_contact_info?: string | null
           reporter_id?: string | null
           resolved_at?: string | null
           responded_at?: string | null
           status?: string
+          street?: string | null
           updated_at?: string
         }
         Update: {
           assigned_operator_id?: string | null
           assigned_units?: string[] | null
+          city?: string | null
           closed_at?: string | null
+          country?: string | null
           created_at?: string
           dispatch_system_id?: string | null
           dispatched_at?: string | null
@@ -359,12 +369,14 @@ export type Database = {
           location_latitude?: number | null
           location_longitude?: number | null
           priority_level?: number
+          region?: string | null
           reported_at?: string
           reporter_contact_info?: string | null
           reporter_id?: string | null
           resolved_at?: string | null
           responded_at?: string | null
           status?: string
+          street?: string | null
           updated_at?: string
         }
         Relationships: []
