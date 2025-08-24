@@ -102,6 +102,7 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
           : undefined;
 
         return {
+          incident_id: incident.id,
           ...incident,
           response_time_minutes: responseTime,
           resolution_time_minutes: resolutionTime
@@ -148,7 +149,7 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
     return `${hours}h ${mins}m`;
   };
 
-  const getResponseBadgeColor = (minutes?: number): string => {
+  const getResponseBadgeColor = (minutes?: number): "default" | "secondary" | "outline" | "destructive" => {
     if (!minutes) return 'secondary';
     if (minutes <= 10) return 'default'; // Excellent
     if (minutes <= 15) return 'secondary'; // Good

@@ -381,6 +381,51 @@ export type Database = {
         }
         Relationships: []
       }
+      emergency_notifications: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          incident_id: string | null
+          message: string
+          metadata: Json | null
+          priority_level: number
+          read: boolean
+          read_at: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          incident_id?: string | null
+          message: string
+          metadata?: Json | null
+          priority_level?: number
+          read?: boolean
+          read_at?: string | null
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          incident_id?: string | null
+          message?: string
+          metadata?: Json | null
+          priority_level?: number
+          read?: boolean
+          read_at?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       emergency_operator_sessions: {
         Row: {
           active_incidents: string[] | null
@@ -467,9 +512,12 @@ export type Database = {
         Row: {
           created_at: string
           current_location: string | null
+          heading: number | null
           id: string
+          location_accuracy: number | null
           location_latitude: number | null
           location_longitude: number | null
+          location_updated_at: string | null
           radio_frequency: string | null
           status: string
           unit_code: string
@@ -481,9 +529,12 @@ export type Database = {
         Insert: {
           created_at?: string
           current_location?: string | null
+          heading?: number | null
           id?: string
+          location_accuracy?: number | null
           location_latitude?: number | null
           location_longitude?: number | null
+          location_updated_at?: string | null
           radio_frequency?: string | null
           status?: string
           unit_code: string
@@ -495,9 +546,12 @@ export type Database = {
         Update: {
           created_at?: string
           current_location?: string | null
+          heading?: number | null
           id?: string
+          location_accuracy?: number | null
           location_latitude?: number | null
           location_longitude?: number | null
+          location_updated_at?: string | null
           radio_frequency?: string | null
           status?: string
           unit_code?: string

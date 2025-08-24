@@ -316,6 +316,19 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
 
       if (error) throw error;
 
+      // Send notification to assigned unit
+      await supabase.functions.invoke('notify-unit-assignment', {
+        body: {
+          incidentId: incidentId,
+          unitCode: unitCode,
+          unitName: unitData.unit_name,
+          incidentNumber: incident?.incident_number,
+          emergencyType: incident?.emergency_type,
+          priority: incident?.priority_level,
+          location: incident?.location_address || `${incident?.location_latitude}, ${incident?.location_longitude}`
+        }
+      });
+
       // Also update operator assignment and status if needed
       await supabase
         .from('emergency_incidents')

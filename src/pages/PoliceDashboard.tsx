@@ -15,6 +15,8 @@ import LanguageSwitcher from '@/components/LanguageSwitcher';
 import IncidentMap from '@/components/IncidentMap';
 import IncidentList from '@/components/IncidentList';
 import OperatorStatusPanel from '@/components/OperatorStatusPanel';
+import { UnitStatusManager } from '@/components/UnitStatusManager';
+import { ResponseTimeTracker } from '@/components/ResponseTimeTracker';
 import { toast } from "sonner";
 
 interface EmergencyIncident {
@@ -530,6 +532,11 @@ const PoliceDashboard = () => {
 
           {/* Right Panel */}
           <div className="space-y-6">
+            {/* Unit Status Manager for current user */}
+            <UnitStatusManager />
+            
+            {/* Response Time Metrics */}
+            <ResponseTimeTracker showRecentOnly={true} />
             {/* Quick Actions */}
             <Card>
               <CardHeader>

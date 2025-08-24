@@ -204,10 +204,17 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unitId, cl
 
       setUnitStatus({ ...unitStatus, ...updateData });
       setLocationNotes('');
-      toast.success(`Unit status updated to ${statusOptions.find(s => s.value === selectedStatus)?.label}`);
+      toast({
+        title: "Status Updated",
+        description: `Unit status updated to ${statusOptions.find(s => s.value === selectedStatus)?.label}`
+      });
     } catch (error) {
       console.error('Error updating unit status:', error);
-      toast.error('Failed to update unit status');
+      toast({
+        title: "Error",
+        description: "Failed to update unit status",
+        variant: "destructive"
+      });
     } finally {
       setIsUpdating(false);
     }
@@ -240,10 +247,17 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unitId, cl
         });
 
       fetchActiveAssignments();
-      toast.success('Marked as responded to incident');
+      toast({
+        title: "Response Recorded",
+        description: "Marked as responded to incident"
+      });
     } catch (error) {
       console.error('Error responding to incident:', error);
-      toast.error('Failed to update incident status');
+      toast({
+        title: "Error",
+        description: "Failed to update incident status",
+        variant: "destructive"
+      });
     }
   };
 
