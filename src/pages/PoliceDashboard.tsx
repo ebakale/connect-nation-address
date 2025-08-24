@@ -20,6 +20,7 @@ import OperatorStatusPanel from '@/components/OperatorStatusPanel';
 import { UnitStatusManager } from '@/components/UnitStatusManager';
 import { ResponseTimeTracker } from '@/components/ResponseTimeTracker';
 import { UnitFieldDashboard } from '@/components/UnitFieldDashboard';
+import { UnitsOverview } from '@/components/UnitsOverview';
 import { toast } from "sonner";
 
 interface EmergencyIncident {
@@ -58,6 +59,7 @@ const PoliceDashboard = () => {
   // Dashboard state
   const [activeTab, setActiveTab] = useState<string>('');
   const [showMap, setShowMap] = useState(false);
+  const [showUnitsOverview, setShowUnitsOverview] = useState(false);
   const [incidents, setIncidents] = useState<EmergencyIncident[]>([]);
   const [selectedIncident, setSelectedIncident] = useState<EmergencyIncident | null>(null);
   const [dashboardStats, setDashboardStats] = useState<DashboardStats>({
@@ -254,6 +256,39 @@ const PoliceDashboard = () => {
     );
   }
 
+  // Show units overview if requested
+  if (showUnitsOverview) {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="border-b bg-card">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Shield className="h-8 w-8 text-blue-600" />
+                  <div>
+                    <h1 className="text-2xl font-bold">Police Command Center</h1>
+                    <p className="text-sm text-muted-foreground">Units Overview</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <LanguageSwitcher />
+                <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-2">
+                  <LogOut className="h-4 w-4" />
+                  {t('logout')}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </header>
+        <main className="container mx-auto px-4 py-6">
+          <UnitsOverview onClose={() => setShowUnitsOverview(false)} />
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -444,6 +479,14 @@ const PoliceDashboard = () => {
                     )}
                   </CardHeader>
                   <CardContent className="space-y-3">
+                    <Button 
+                      onClick={() => setShowUnitsOverview(true)}
+                      variant="outline" 
+                      className="w-full"
+                    >
+                      <Shield className="h-4 w-4 mr-2" />
+                      Units Overview
+                    </Button>
                     {(isPoliceSupervisor || isAdmin) && (
                       <Button 
                         onClick={() => window.location.href = '/units-profiles'}
