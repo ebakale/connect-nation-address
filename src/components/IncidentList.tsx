@@ -468,12 +468,12 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
                     {incident.emergency_type.toUpperCase()}
                   </span>
                   
-                  {incident.assigned_units && incident.assigned_units.length > 0 && (
-                    <span className="flex items-center gap-1">
-                      <User className="h-4 w-4" />
-                      {incident.assigned_units.join(', ')}
-                    </span>
-                  )}
+                      {incident.assigned_units && incident.assigned_units.length > 0 && (
+                        <span className="flex items-center gap-1">
+                          <User className="h-4 w-4" />
+                          {(incident.assigned_units || []).map((u) => u).join(', ')}
+                        </span>
+                      )}
                 </div>
 
                 <div className="flex gap-2">

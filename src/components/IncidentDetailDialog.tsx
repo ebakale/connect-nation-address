@@ -82,6 +82,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   });
   const [newUnit, setNewUnit] = useState('');
   const [unitNames, setUnitNames] = useState<Record<string, string>>({});
+  const [userNames, setUserNames] = useState<Record<string, string>>({});
 
   // Load unit names for display
   const loadUnitNames = async () => {
@@ -104,6 +105,42 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     }
   };
 
+  const isUUID = (s: string) => /^[0-9a-fA-F-]{8}-[0-9a-fA-F-]{4}-[0-9a-fA-F-]{4}-[0-9a-fA-F-]{4}-[0-9a-fA-F-]{12}$/.test(s);
+
+  const loadUserNamesFromLogs = async (logsData: any[]) => {
+    try {
+      const ids = new Set<string>();
+      logsData?.forEach((log) => {
+        if (log.user_id && typeof log.user_id === 'string' && isUUID(log.user_id)) ids.add(log.user_id);
+        const ab = log.details?.assigned_by;
+        const ub = log.details?.updated_by;
+        if (ab && typeof ab === 'string' && isUUID(ab)) ids.add(ab);
+        if (ub && typeof ub === 'string' && isUUID(ub)) ids.add(ub);
+      });
+      if (ids.size === 0) return;
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('user_id, full_name, email')
+        .in('user_id', Array.from(ids));
+      if (error) throw error;
+      const map: Record<string, string> = {};
+      data?.forEach((p) => {
+        map[p.user_id] = p.full_name || p.email || p.user_id;
+      });
+      setUserNames(map);
+    } catch (err) {
+      console.error('Error loading user names from logs:', err);
+    }
+  };
+
+  const getActorDisplay = (log: any) => {
+    const actor = log?.details?.updated_by || log?.details?.assigned_by || log?.user_id || 'System';
+    if (typeof actor === 'string' && userNames[actor]) return userNames[actor];
+    if (typeof actor === 'string' && actor.includes('@')) return actor;
+    if (typeof actor === 'string' && isUUID(actor)) return `User ${actor.slice(0,8)}`;
+    return actor || 'System';
+  };
+
   const loadIncidentLogs = async () => {
     try {
       const { data: logsData, error } = await supabase
@@ -113,6 +150,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
         .order('timestamp', { ascending: false });
 
       if (error) throw error;
+      await loadUserNamesFromLogs(logsData || []);
       setLogs(logsData || []);
     } catch (error) {
       console.error('Error loading incident logs:', error);
@@ -491,7 +529,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                         {editData.assigned_units.map((unit, index) => (
                           <Badge key={index} variant="outline" className="cursor-pointer"
                                  onClick={() => removeUnit(unit)}>
-                            {unitNames[unit] ? `${unit} - ${unitNames[unit]}` : unit} ×
+                            {unitNames[unit] || unit} ×
                           </Badge>
                         ))}
                       </div>
@@ -500,7 +538,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                     <div className="mt-1 flex flex-wrap gap-2">
                       {(incident.assigned_units?.length ? incident.assigned_units : []).map((unit, index) => (
                         <Badge key={index} variant="secondary">
-                          {unitNames[unit] ? `${unit} - ${unitNames[unit]}` : unit}
+                          {unitNames[unit] || unit}
                         </Badge>
                       ))}
                       {(!incident.assigned_units || incident.assigned_units.length === 0) && (
@@ -542,7 +580,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                         <div className="flex items-center gap-2 mb-1">
                           <span className="font-medium">{log.action.replace('_', ' ').toUpperCase()}</span>
                           <span className="text-sm text-muted-foreground">
-                            by {log.details?.updated_by || log.details?.assigned_by || 'System'}
+                            by {getActorDisplay(log)}
                           </span>
                           <span className="text-xs text-muted-foreground">
                             {new Date(log.timestamp).toLocaleString()}
@@ -553,7 +591,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                             <p>Status changed from <strong>{log.details?.old_status}</strong> to <strong>{log.details?.new_status}</strong></p>
                           )}
                           {log.action === 'unit_assigned' && (
-                            <p>Unit <strong>{log.details?.assigned_unit}</strong> ({log.details?.unit_name}) assigned to incident</p>
+                            <p>Unit <strong>{unitNames[log.details?.assigned_unit] || log.details?.unit_name || log.details?.assigned_unit}</strong> assigned to incident</p>
                           )}
                           {log.action === 'priority_updated' && (
                             <p>Priority changed from <strong>{log.details?.old_priority}</strong> to <strong>{log.details?.new_priority}</strong></p>
