@@ -641,15 +641,36 @@ const PoliceDashboard = () => {
 
               {/* Coordination Tools */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Unit Assigned Incidents */}
+                {/* Unit Area Incidents */}
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2">
                       <AlertTriangle className="h-5 w-5" />
-                      My Unit's Incidents
+                      Unit Area Incidents
                     </CardTitle>
                     <CardDescription>
-                      Incidents assigned to your unit
+                      All incidents in your unit area
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <IncidentList 
+                      incidents={incidents.slice(0, 10)} // Show all area incidents
+                      onUpdate={fetchIncidents}
+                      selectedIncident={selectedIncident}
+                      onSelectIncident={(incident) => setSelectedIncident(incident)}
+                    />
+                  </CardContent>
+                </Card>
+
+                {/* My Unit Assigned Incidents */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Users className="h-5 w-5" />
+                      My Unit Incidents
+                    </CardTitle>
+                    <CardDescription>
+                      All incidents assigned to your unit (accepted and pending)
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -663,51 +684,51 @@ const PoliceDashboard = () => {
                     />
                   </CardContent>
                 </Card>
+              </div>
 
-                {/* Quick Actions for Supervisors */}
-                <div className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Coordination Actions</CardTitle>
-                      <CardDescription>Supervisor coordination tools</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <Button 
-                        onClick={() => setShowUnitsOverview(true)}
-                        variant="outline" 
-                        className="w-full"
-                      >
-                        <Shield className="h-4 w-4 mr-2" />
-                        View All Units
-                      </Button>
-                      <Button 
-                        onClick={() => window.location.href = '/units-profiles'}
-                        variant="outline" 
-                        className="w-full"
-                      >
-                        <Users className="h-4 w-4 mr-2" />
-                        Manage My Units
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        className="w-full"
-                        onClick={() => toast.info('Backup request feature coming soon')}
-                      >
-                        <MessageSquare className="h-4 w-4 mr-2" />
-                        Request Regional Backup
-                      </Button>
-                    </CardContent>
-                  </Card>
+              {/* Quick Actions for Supervisors */}
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Coordination Actions</CardTitle>
+                    <CardDescription>Supervisor coordination tools</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Button 
+                      onClick={() => setShowUnitsOverview(true)}
+                      variant="outline" 
+                      className="w-full"
+                    >
+                      <Shield className="h-4 w-4 mr-2" />
+                      View All Units
+                    </Button>
+                    <Button 
+                      onClick={() => window.location.href = '/units-profiles'}
+                      variant="outline" 
+                      className="w-full"
+                    >
+                      <Users className="h-4 w-4 mr-2" />
+                      Manage My Units
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => toast.info('Backup request feature coming soon')}
+                    >
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      Request Regional Backup
+                    </Button>
+                  </CardContent>
+                </Card>
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Unit Status</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <UnitStatusManager />
-                    </CardContent>
-                  </Card>
-                </div>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Unit Status</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <UnitStatusManager />
+                  </CardContent>
+                </Card>
               </div>
             </TabsContent>
           )}
