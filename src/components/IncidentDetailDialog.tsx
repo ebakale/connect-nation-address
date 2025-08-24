@@ -121,6 +121,10 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
         if (ab && typeof ab === 'string' && isUUID(ab)) ids.add(ab);
         if (ub && typeof ub === 'string' && isUUID(ub)) ids.add(ub);
       });
+      // Also include the reporter id so we can resolve the creator's name
+      if (incident.reporter_id && typeof incident.reporter_id === 'string' && isUUID(incident.reporter_id)) {
+        ids.add(incident.reporter_id);
+      }
       if (ids.size === 0) return;
       const { data, error } = await supabase
         .from('profiles')
@@ -138,6 +142,14 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   };
 
   const getActorDisplay = (log: any) => {
+    // Show the reporter's identity for the creation event
+    if (log?.action === 'incident_created') {
+      const nameOrContact = incident.reporter_name || incident.reporter_email || incident.reporter_contact_info;
+      if (nameOrContact) return nameOrContact;
+      if (typeof log.user_id === 'string' && userNames[log.user_id]) return userNames[log.user_id];
+      if (typeof log.user_id === 'string' && isUUID(log.user_id)) return `User ${log.user_id.slice(0,8)}`;
+      return 'Reporter';
+    }
     const actor = log?.details?.updated_by || log?.details?.assigned_by || log?.user_id || 'System';
     if (typeof actor === 'string' && userNames[actor]) return userNames[actor];
     if (typeof actor === 'string' && actor.includes('@')) return actor;

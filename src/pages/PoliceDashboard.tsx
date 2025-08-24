@@ -237,20 +237,41 @@ const PoliceDashboard = () => {
           schema: 'public',
           table: 'emergency_incidents'
         },
-        (payload) => {
+        async (payload) => {
           console.log('Incident update:', payload);
           
           if (payload.eventType === 'INSERT') {
-            setIncidents(prev => [payload.new as EmergencyIncident, ...prev]);
+            const newIncident = payload.new as EmergencyIncident;
+            let enrichedIncident = newIncident;
+            // Enrich with reporter profile so Activity Log can show creator name immediately
+            if (newIncident.reporter_id) {
+              try {
+                const { data: profile } = await supabase
+                  .from('profiles')
+                  .select('user_id, full_name, email')
+                  .eq('user_id', newIncident.reporter_id)
+                  .maybeSingle();
+                if (profile) {
+                  enrichedIncident = {
+                    ...newIncident,
+                    reporter_name: profile.full_name || undefined,
+                    reporter_email: profile.email || undefined,
+                  };
+                }
+              } catch (e) {
+                console.warn('Failed to enrich new incident with reporter profile:', e);
+              }
+            }
+
+            setIncidents(prev => [enrichedIncident, ...prev]);
             
             // Show notification for new high-priority incidents
-            const newIncident = payload.new as EmergencyIncident;
             if (newIncident.priority_level <= 2) {
               toast.error(`HIGH PRIORITY: New ${newIncident.emergency_type} incident #${newIncident.incident_number}`, {
                 duration: 10000,
                 action: {
                   label: "View",
-                  onClick: () => setSelectedIncident(newIncident)
+                  onClick: () => setSelectedIncident(enrichedIncident)
                 }
               });
             }
