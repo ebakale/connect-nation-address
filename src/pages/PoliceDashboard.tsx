@@ -202,10 +202,16 @@ const PoliceDashboard = () => {
     try {
       let query = supabase
         .from('emergency_incidents')
-        .select('*')
-        .in('status', ['reported', 'dispatched', 'responding', 'on_scene'])
-        .order('priority_level', { ascending: false })
-        .order('reported_at', { ascending: true });
+        .select('*');
+
+      // Supervisors see all incidents assigned to their units regardless of status
+      // Other roles see only active incidents
+      if (!isPoliceSupervisor) {
+        query = query.in('status', ['reported', 'dispatched', 'responding', 'on_scene']);
+      }
+
+      query = query.order('priority_level', { ascending: false })
+        .order('reported_at', { ascending: false });
 
       // Filter by user's assigned city
       if (userCity) {
@@ -272,10 +278,16 @@ const PoliceDashboard = () => {
     try {
       let query = supabase
         .from('emergency_incidents')
-        .select('*')
-        .in('status', ['reported', 'dispatched', 'responding', 'on_scene'])
-        .order('priority_level', { ascending: false })
-        .order('reported_at', { ascending: true });
+        .select('*');
+
+      // Supervisors see all incidents assigned to their units regardless of status
+      // Other roles see only active incidents  
+      if (!isPoliceSupervisor) {
+        query = query.in('status', ['reported', 'dispatched', 'responding', 'on_scene']);
+      }
+
+      query = query.order('priority_level', { ascending: false })
+        .order('reported_at', { ascending: false });
 
       query = query.eq('city', filterCity);
 
