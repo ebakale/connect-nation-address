@@ -57,7 +57,7 @@ serve(async (req) => {
         // Search for addresses within approximately 10 meters (0.0001 degrees ≈ 11 meters)
         const { data: nearbyAddresses, error } = await supabase
           .from('addresses')
-          .select('uac, latitude, longitude')
+          .select('uac, latitude, longitude, building, street, city, region, country')
           .gte('latitude', latitude - 0.0001)
           .lte('latitude', latitude + 0.0001)
           .gte('longitude', longitude - 0.0001)
@@ -83,7 +83,16 @@ serve(async (req) => {
 
           if (closestAddress) {
             console.log(`Using existing address UAC: ${closestAddress.uac} (${minDistance.toFixed(2)}m away)`);
-            return closestAddress.uac;
+            return {
+              uac: closestAddress.uac,
+              addressData: {
+                building: closestAddress.building,
+                street: closestAddress.street,
+                city: closestAddress.city,
+                region: closestAddress.region,
+                country: closestAddress.country
+              }
+            };
           }
         }
 
@@ -110,18 +119,24 @@ serve(async (req) => {
         const checkIndex2 = (sum * 7) % chars.length;
         const checkDigit = chars[checkIndex1] + chars[checkIndex2];
         
-        return `${baseCode}-${checkDigit}`;
+        return {
+          uac: `${baseCode}-${checkDigit}`,
+          addressData: null
+        };
         
       } catch (error) {
         console.error('Error finding nearby address or generating UAC:', error);
         // Fallback UAC
-        return `GQ-EMRG-INC-${incidentId.replace(/-/g, '').slice(0, 6).toUpperCase()}-FB`;
+        return {
+          uac: `GQ-EMRG-INC-${incidentId.replace(/-/g, '').slice(0, 6).toUpperCase()}-FB`,
+          addressData: null
+        };
       }
     };
 
     // Create emergency incident with both encrypted and unencrypted location data
     const tempIncidentId = crypto.randomUUID();
-    const incidentUAC = await findNearbyAddressAndGenerateUAC(latitude, longitude, tempIncidentId);
+    const uacResult = await findNearbyAddressAndGenerateUAC(latitude, longitude, tempIncidentId);
     
     const { data: incident, error: incidentError } = await supabase
       .from('emergency_incidents')
@@ -140,9 +155,14 @@ serve(async (req) => {
         location_latitude: latitude,
         location_longitude: longitude,
         location_address: `Emergency Location: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
-        incident_uac: incidentUAC,
+        incident_uac: uacResult.uac,
         incident_message: message,
-        reporter_contact_info: contactInfo
+        reporter_contact_info: contactInfo,
+        // Populate structured address fields if nearby address found
+        street: uacResult.addressData?.street || null,
+        city: uacResult.addressData?.city || null,
+        region: uacResult.addressData?.region || null,
+        country: uacResult.addressData?.country || 'Equatorial Guinea'
       })
       .select()
       .single();
