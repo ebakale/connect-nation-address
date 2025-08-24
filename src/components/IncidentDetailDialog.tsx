@@ -387,6 +387,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
 
   const canEdit = isPoliceSupervisor || isPoliceDispatcher;
   const canComplete = isPoliceOperator || isPoliceSupervisor;
+  const canAssignUnits = isPoliceDispatcher; // Only dispatchers can assign/reassign units
 
   const getPriorityColor = (priority: number) => {
     switch (priority) {
@@ -674,7 +675,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                     <Users className="h-4 w-4" />
                     Assigned Units
                   </label>
-                   {isEditing ? (
+                   {isEditing && canAssignUnits ? (
                      <div className="mt-2 space-y-3">
                        <div className="flex gap-2">
                          <Select value={newUnit} onValueChange={setNewUnit}>
@@ -707,6 +708,12 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                            </Badge>
                          ))}
                        </div>
+                     </div>
+                   ) : isEditing && !canAssignUnits ? (
+                     <div className="mt-1 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                       <p className="text-sm text-yellow-800">
+                         Only dispatchers can assign or reassign units to incidents.
+                       </p>
                      </div>
                   ) : (
                     <div className="mt-1 flex flex-wrap gap-2">
