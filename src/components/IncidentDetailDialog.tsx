@@ -756,41 +756,40 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                               <div className="text-muted-foreground">
                                 {log.details && typeof log.details === 'object' ? (
                                   <div className="space-y-1">
-                                    {Object.entries(log.details).map(([key, value]) => {
-                                      // Convert database field names to human-readable labels
-                                      const formatFieldName = (fieldName: string): string => {
-                                        const fieldMap: Record<string, string> = {
-                                          'user_id': 'User ID',
-                                          'timestamp': 'Time Stamp',
-                                          'incident_id': 'Incident ID',
-                                          'old_status': 'Previous Status',
-                                          'new_status': 'New Status',
-                                          'old_priority': 'Previous Priority',
-                                          'new_priority': 'New Priority',
-                                          'oldStatus': 'Previous Status',
-                                          'oldPriority': 'Previous Priority',
-                                          'assigned_unit': 'Assigned Unit',
-                                          'unit_name': 'Unit Name',
-                                          'created_at': 'Created At',
-                                          'updated_at': 'Updated At',
-                                          'location_latitude': 'Latitude',
-                                          'location_longitude': 'Longitude',
-                                          'reporter_contact_info': 'Reporter Contact',
-                                          'priority_level': 'Priority Level',
-                                          'emergency_type': 'Emergency Type'
-                                        };
-                                        
-                                        return fieldMap[fieldName] || fieldName
-                                          .replace(/_/g, ' ')
-                                          .replace(/\b\w/g, l => l.toUpperCase());
-                                      };
-                                      
-                                      return (
-                                        <div key={key} className="text-xs">
-                                          <strong>{formatFieldName(key)}:</strong> {typeof value === 'string' ? value : JSON.stringify(value)}
-                                        </div>
-                                      );
-                                    })}
+                                     {Object.entries(log.details).filter(([key]) => key !== 'user_id').map(([key, value]) => {
+                                       // Convert database field names to human-readable labels
+                                       const formatFieldName = (fieldName: string): string => {
+                                         const fieldMap: Record<string, string> = {
+                                           'timestamp': 'Time Stamp',
+                                           'incident_id': 'Incident ID',
+                                           'old_status': 'Previous Status',
+                                           'new_status': 'New Status',
+                                           'old_priority': 'Previous Priority',
+                                           'new_priority': 'New Priority',
+                                           'oldStatus': 'Previous Status',
+                                           'oldPriority': 'Previous Priority',
+                                           'assigned_unit': 'Assigned Unit',
+                                           'unit_name': 'Unit Name',
+                                           'created_at': 'Created At',
+                                           'updated_at': 'Updated At',
+                                           'location_latitude': 'Latitude',
+                                           'location_longitude': 'Longitude',
+                                           'reporter_contact_info': 'Reporter Contact',
+                                           'priority_level': 'Priority Level',
+                                           'emergency_type': 'Emergency Type'
+                                         };
+                                         
+                                         return fieldMap[fieldName] || fieldName
+                                           .replace(/_/g, ' ')
+                                           .replace(/\b\w/g, l => l.toUpperCase());
+                                       };
+                                       
+                                       return (
+                                         <div key={key} className="text-xs">
+                                           <strong>{formatFieldName(key)}:</strong> {typeof value === 'string' ? value : JSON.stringify(value)}
+                                         </div>
+                                       );
+                                     })}
                                   </div>
                                 ) : (
                                   <span>{log.details || 'No additional details'}</span>
