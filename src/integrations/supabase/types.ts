@@ -402,6 +402,100 @@ export type Database = {
         }
         Relationships: []
       }
+      emergency_unit_members: {
+        Row: {
+          id: string
+          is_lead: boolean
+          joined_at: string
+          officer_id: string
+          role: string
+          unit_id: string
+        }
+        Insert: {
+          id?: string
+          is_lead?: boolean
+          joined_at?: string
+          officer_id: string
+          role?: string
+          unit_id: string
+        }
+        Update: {
+          id?: string
+          is_lead?: boolean
+          joined_at?: string
+          officer_id?: string
+          role?: string
+          unit_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_unit_members_officer_id_fkey"
+            columns: ["officer_id"]
+            isOneToOne: false
+            referencedRelation: "available_officers"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "emergency_unit_members_officer_id_fkey"
+            columns: ["officer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "emergency_unit_members_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "emergency_units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      emergency_units: {
+        Row: {
+          created_at: string
+          current_location: string | null
+          id: string
+          location_latitude: number | null
+          location_longitude: number | null
+          radio_frequency: string | null
+          status: string
+          unit_code: string
+          unit_name: string
+          unit_type: string
+          updated_at: string
+          vehicle_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          current_location?: string | null
+          id?: string
+          location_latitude?: number | null
+          location_longitude?: number | null
+          radio_frequency?: string | null
+          status?: string
+          unit_code: string
+          unit_name: string
+          unit_type?: string
+          updated_at?: string
+          vehicle_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          current_location?: string | null
+          id?: string
+          location_latitude?: number | null
+          location_longitude?: number | null
+          radio_frequency?: string | null
+          status?: string
+          unit_code?: string
+          unit_name?: string
+          unit_type?: string
+          updated_at?: string
+          vehicle_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -571,7 +665,16 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      available_officers: {
+        Row: {
+          assignment_status: string | null
+          current_unit: string | null
+          full_name: string | null
+          role: Database["public"]["Enums"]["app_role"] | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       approve_address_request: {
