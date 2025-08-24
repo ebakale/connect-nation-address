@@ -229,9 +229,15 @@ const PoliceDashboard = () => {
           return isPoliceDispatcher || isDispatchSupervisor;
         }
         
-        // For assigned incidents, only show those assigned to valid registered units
+        // For assigned incidents, show based on role and unit membership
         const validUnits = ['UNIT-001', 'UNIT-002', 'UNIT-003', 'UNIT-004', 'UNIT-005', 'UNIT-006', 'UNIT-007', 'UNIT-008'];
-        return incident.assigned_units.some((unit: string) => validUnits.includes(unit));
+        const hasValidUnit = incident.assigned_units.some((unit: string) => validUnits.includes(unit));
+        
+        // Supervisors can see incidents assigned to their units
+        const userUnitCodes = userUnits.map(u => u.unit_code);
+        const hasUserUnit = incident.assigned_units.some((unit: string) => userUnitCodes.includes(unit));
+        
+        return hasValidUnit || (isPoliceSupervisor && hasUserUnit);
       });
 
       setIncidents(validIncidents);
@@ -277,9 +283,15 @@ const PoliceDashboard = () => {
           return isPoliceDispatcher || isDispatchSupervisor;
         }
         
-        // For assigned incidents, only show those assigned to valid registered units
+        // For assigned incidents, show based on role and unit membership
         const validUnits = ['UNIT-001', 'UNIT-002', 'UNIT-003', 'UNIT-004', 'UNIT-005', 'UNIT-006', 'UNIT-007', 'UNIT-008'];
-        return incident.assigned_units.some((unit: string) => validUnits.includes(unit));
+        const hasValidUnit = incident.assigned_units.some((unit: string) => validUnits.includes(unit));
+        
+        // Supervisors can see incidents assigned to their units
+        const userUnitCodes = userUnits.map(u => u.unit_code);
+        const hasUserUnit = incident.assigned_units.some((unit: string) => userUnitCodes.includes(unit));
+        
+        return hasValidUnit || (isPoliceSupervisor && hasUserUnit);
       });
 
       setAreaIncidents(validAreaIncidents);
