@@ -40,6 +40,7 @@ interface EmergencyIncident {
   reporter_id?: string;
   reporter_name?: string;
   reporter_email?: string;
+  region?: string;
 }
 
 interface DashboardStats {
@@ -72,6 +73,7 @@ const PoliceDashboard = () => {
   });
   const [operatorSession, setOperatorSession] = useState<any>(null);
   const [userUnitCodes, setUserUnitCodes] = useState<string[]>([]);
+  const [userUnitRegion, setUserUnitRegion] = useState<string | null>(null);
 
   // Set default tab based on user role
   useEffect(() => {
@@ -138,7 +140,7 @@ const PoliceDashboard = () => {
       const { data: unitMemberships, error } = await supabase
         .from('emergency_unit_members')
         .select(`
-          emergency_units(unit_code)
+          emergency_units(unit_code, current_location)
         `)
         .eq('officer_id', user.id);
 
@@ -147,6 +149,16 @@ const PoliceDashboard = () => {
       const unitCodes = unitMemberships?.map(membership => 
         membership.emergency_units?.unit_code
       ).filter(Boolean) || [];
+      
+      // Get the region from the first unit's location
+      const firstUnit = unitMemberships?.[0]?.emergency_units;
+      if (firstUnit?.current_location) {
+        // Extract region/province from current_location
+        // This assumes current_location contains region info
+        const locationParts = firstUnit.current_location.split(',');
+        const region = locationParts[locationParts.length - 2]?.trim(); // Assuming format: "City, Region, Country"
+        setUserUnitRegion(region);
+      }
       
       setUserUnitCodes(unitCodes);
     } catch (error) {
@@ -654,7 +666,9 @@ const PoliceDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <IncidentList 
-                      incidents={incidents.slice(0, 10)} // Show all area incidents
+                      incidents={incidents.filter(incident => 
+                        userUnitRegion ? incident.region === userUnitRegion : true
+                      )}
                       onUpdate={fetchIncidents}
                       selectedIncident={selectedIncident}
                       onSelectIncident={(incident) => setSelectedIncident(incident)}
