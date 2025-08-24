@@ -90,6 +90,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
   const [assignDialog, setAssignDialog] = useState<string | null>(null);
   const [assigningUnit, setAssigningUnit] = useState('');
   const [availableOfficers, setAvailableOfficers] = useState<{id: string, label: string}[]>([]);
+  const [unitNames, setUnitNames] = useState<Record<string, string>>({});
   const [decryptedInfo, setDecryptedInfo] = useState<Record<string, { message: string; address: string; coordinates?: { lat: number; lng: number }; uac?: string }>>({});
 
   // Fetch available emergency units for assignment
@@ -126,6 +127,26 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
       setAvailableOfficers(unitOptions);
     } catch (error) {
       console.error('Error fetching units:', error);
+    }
+  };
+
+  // Fetch unit names for display
+  const fetchUnitNames = async () => {
+    try {
+      const { data: units, error } = await supabase
+        .from('emergency_units')
+        .select('unit_code, unit_name');
+
+      if (error) throw error;
+
+      const unitNameMap: Record<string, string> = {};
+      units?.forEach(unit => {
+        unitNameMap[unit.unit_code] = unit.unit_name;
+      });
+      
+      setUnitNames(unitNameMap);
+    } catch (error) {
+      console.error('Error fetching unit names:', error);
     }
   };
 
@@ -175,6 +196,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
 
     processIncidentInfo();
     fetchAvailableOfficers();
+    fetchUnitNames();
   }, [incidents]);
 
   const getPriorityColor = (priority: number) => {
@@ -486,7 +508,9 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
                       {incident.assigned_units && incident.assigned_units.length > 0 && (
                         <span className="flex items-center gap-1">
                           <User className="h-4 w-4" />
-                          {(incident.assigned_units || []).map((u) => u).join(', ')}
+                          {(incident.assigned_units || []).map((unitCode) => 
+                            unitNames[unitCode] || unitCode
+                          ).join(', ')}
                         </span>
                       )}
                 </div>
