@@ -117,8 +117,16 @@ export const UnitFieldDashboard: React.FC = () => {
 
   useEffect(() => {
     fetchUnitInfo();
-    fetchAssignments();
-    
+  }, [user]);
+
+  // Separate useEffect for assignments that depends on unitInfo
+  useEffect(() => {
+    if (unitInfo) {
+      fetchAssignments();
+    }
+  }, [unitInfo]);
+
+  useEffect(() => {
     // Set up real-time subscription for new assignments
     const channel = supabase
       .channel('unit-assignments')
@@ -130,7 +138,9 @@ export const UnitFieldDashboard: React.FC = () => {
           table: 'emergency_incidents'
         },
         () => {
-          fetchAssignments();
+          if (unitInfo) {
+            fetchAssignments();
+          }
         }
       )
       .subscribe();
@@ -138,7 +148,7 @@ export const UnitFieldDashboard: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [unitInfo]);
 
   const fetchUnitInfo = async () => {
     if (!user) return;
@@ -176,7 +186,12 @@ export const UnitFieldDashboard: React.FC = () => {
   };
 
   const fetchAssignments = async () => {
-    if (!unitInfo) return;
+    if (!unitInfo) {
+      console.log('UnitFieldDashboard: No unit info available yet, skipping assignment fetch');
+      return;
+    }
+
+    console.log('UnitFieldDashboard: Fetching assignments for unit:', unitInfo.unit_code);
 
     try {
       const { data, error } = await supabase
@@ -206,6 +221,8 @@ export const UnitFieldDashboard: React.FC = () => {
         .order('dispatched_at', { ascending: true });
 
       if (error) throw error;
+      
+      console.log('UnitFieldDashboard: Found assignments:', data);
       setAssignments(data || []);
     } catch (error) {
       console.error('Error fetching assignments:', error);
