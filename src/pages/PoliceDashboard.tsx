@@ -217,9 +217,13 @@ const PoliceDashboard = () => {
     }
   };
 
-  // Fetch area-specific incidents based on user's assigned city
+  // Fetch area-specific incidents based on user's assigned city or unit coverage
   const fetchAreaIncidents = async () => {
-    if (!hasPoliceAccess || !userCity) return;
+    if (!hasPoliceAccess) return;
+
+    // Prefer unit coverage city; fallback to role metadata city
+    const filterCity = userUnit?.coverage_city || userCity;
+    if (!filterCity) return;
 
     try {
       let query = supabase
@@ -229,8 +233,8 @@ const PoliceDashboard = () => {
         .order('priority_level', { ascending: false })
         .order('reported_at', { ascending: true });
 
-      // Filter by user's assigned city
-      query = query.eq('city', userCity);
+      // Filter by derived city
+      query = query.eq('city', filterCity);
 
       const { data: incidentsData, error } = await query;
 
@@ -247,7 +251,6 @@ const PoliceDashboard = () => {
       console.error('Error fetching area incidents:', error);
     }
   };
-
   const calculateDashboardStats = (incidents: EmergencyIncident[]): DashboardStats => {
     const activeIncidents = incidents.filter(i => !['resolved', 'closed'].includes(i.status)).length;
     const totalIncidents = incidents.length;
@@ -267,13 +270,13 @@ const PoliceDashboard = () => {
     fetchUserUnit();
   }, [hasPoliceAccess]);
 
-  // Fetch incidents when user city changes
+  // Fetch incidents when user city or unit coverage changes
   useEffect(() => {
-    if (userCity) {
+    if (userCity || userUnit?.coverage_city) {
       fetchIncidents();
       fetchAreaIncidents();
     }
-  }, [userCity, hasPoliceAccess]);
+  }, [userCity, userUnit?.coverage_city, hasPoliceAccess]);
 
   // Real-time subscription
   useEffect(() => {
@@ -679,7 +682,7 @@ const PoliceDashboard = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-muted-foreground">My Area Incidents</p>
-                        <p className="text-2xl font-bold text-red-600">{dashboardStats.activeIncidents}</p>
+                        <p className="text-2xl font-bold text-red-600">{areaIncidents.filter(i => !['resolved','closed'].includes(i.status)).length}</p>
                       </div>
                       <AlertTriangle className="h-5 w-5 text-red-600" />
                     </div>
@@ -719,11 +722,11 @@ const PoliceDashboard = () => {
                     <CardTitle className="text-lg flex items-center gap-2">
                       <AlertTriangle className="h-5 w-5" />
                        Area Incidents
-                       {userCity && (
+                       {(userUnit?.coverage_city || userCity) && (
                          <Badge variant="secondary" className="ml-2">
-                           {userCity}
-                        </Badge>
-                      )}
+                           {userUnit?.coverage_city || userCity}
+                         </Badge>
+                       )}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
