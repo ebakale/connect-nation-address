@@ -132,6 +132,8 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ unitInci
   const [signalStrength, setSignalStrength] = useState(4);
   const [evidenceFiles, setEvidenceFiles] = useState<File[]>([]);
   const [communicationLog, setCommunicationLog] = useState<any[]>([]);
+  const [recentMessages, setRecentMessages] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [quickMessage, setQuickMessage] = useState('');
   const [resourceRequest, setResourceRequest] = useState('');
   const [showResourceDialog, setShowResourceDialog] = useState(false);
@@ -149,8 +151,10 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ unitInci
   useEffect(() => {
     fetchUnitInfo();
     fetchUnitMembers();
+    fetchRecentMessages();
     initializeGPS();
     checkBatteryStatus();
+    setupRealtimeSubscription();
   }, [user]);
 
   useEffect(() => {
@@ -396,22 +400,165 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ unitInci
     if (!quickMessage.trim() || !unitInfo) return;
 
     try {
+      const { data, error } = await supabase.functions.invoke('unit-communications', {
+        body: {
+          action: 'send_message',
+          message_content: quickMessage,
+          message_type: 'text',
+          is_radio_code: false,
+          priority_level: 3,
+          unit_id: unitInfo.id
+        }
+      });
+
+      if (error) throw error;
+
+      // Add to local communication log for immediate feedback
       const newMessage = {
-        id: Date.now().toString(),
+        id: data.communication?.id || Date.now().toString(),
         timestamp: new Date().toISOString(),
-        from: unitInfo.unit_code,
-        message: quickMessage,
+        from_unit_id: unitInfo.id,
+        from_user_id: user?.id,
+        message_content: quickMessage,
+        message_type: 'text',
+        is_radio_code: false,
+        acknowledged: false,
         type: 'outgoing'
       };
 
       setCommunicationLog(prev => [newMessage, ...prev]);
       setQuickMessage('');
 
-      // In a real implementation, this would send to dispatch
-      toast({ title: 'Message sent', description: 'Message sent to dispatch' });
+      toast({ title: 'Message sent', description: 'Message sent to dispatch successfully' });
     } catch (error) {
       console.error('Error sending message:', error);
+      toast({ title: 'Error', description: 'Failed to send message', variant: 'destructive' });
     }
+  };
+
+  const sendRadioCode = async (code: string, message: string) => {
+    if (!unitInfo) return;
+
+    try {
+      const { data, error } = await supabase.functions.invoke('unit-communications', {
+        body: {
+          action: 'send_message',
+          message_content: message,
+          message_type: 'radio_code',
+          is_radio_code: true,
+          radio_code: code,
+          priority_level: 2,
+          unit_id: unitInfo.id
+        }
+      });
+
+      if (error) throw error;
+
+      // Add to local communication log
+      const newMessage = {
+        id: data.communication?.id || Date.now().toString(),
+        timestamp: new Date().toISOString(),
+        from_unit_id: unitInfo.id,
+        from_user_id: user?.id,
+        message_content: message,
+        radio_code: code,
+        message_type: 'radio_code',
+        is_radio_code: true,
+        acknowledged: false,
+        type: 'outgoing'
+      };
+
+      setCommunicationLog(prev => [newMessage, ...prev]);
+      toast({ title: `${code} sent`, description: message });
+    } catch (error) {
+      console.error('Error sending radio code:', error);
+      toast({ title: 'Error', description: 'Failed to send radio code', variant: 'destructive' });
+    }
+  };
+
+  const fetchRecentMessages = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('unit-communications', {
+        body: {
+          action: 'get_messages'
+        }
+      });
+
+      if (error) throw error;
+
+      setRecentMessages(data.messages || []);
+      setCommunicationLog(data.messages || []);
+      
+      // Count unread messages (not acknowledged)
+      const unread = (data.messages || []).filter((msg: any) => !msg.acknowledged).length;
+      setUnreadCount(unread);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  };
+
+  const setupRealtimeSubscription = () => {
+    if (!user?.id) return;
+
+    const channel = supabase
+      .channel('unit-communications-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'unit_communications'
+        },
+        (payload) => {
+          const newMessage = {
+            ...payload.new,
+            type: payload.new.from_user_id === user.id ? 'outgoing' : 'incoming'
+          };
+          
+          setCommunicationLog(prev => [newMessage, ...prev]);
+          setRecentMessages(prev => [newMessage, ...prev]);
+          
+          // Increment unread count for incoming messages
+          if (payload.new.from_user_id !== user.id) {
+            setUnreadCount(prev => prev + 1);
+            toast({ 
+              title: 'New message', 
+              description: `From ${payload.new.emergency_units?.unit_code || 'Dispatch'}: ${payload.new.message_content.substring(0, 50)}...`,
+              duration: 5000
+            });
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'unit_communications'
+        },
+        (payload) => {
+          // Update local messages when acknowledgment status changes
+          setCommunicationLog(prev => 
+            prev.map(msg => 
+              msg.id === payload.new.id 
+                ? { ...msg, acknowledged: payload.new.acknowledged, acknowledged_at: payload.new.acknowledged_at }
+                : msg
+            )
+          );
+          
+          if (payload.new.acknowledged && payload.new.from_user_id === user.id) {
+            toast({ 
+              title: 'Message acknowledged', 
+              description: 'Your message has been received by dispatch' 
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   };
 
   const requestResource = async () => {
@@ -865,7 +1012,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ unitInci
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               <MessageSquare className="h-4 w-4" />
-              Quick Comm
+              Quick Comm {unreadCount > 0 && <Badge variant="destructive" className="ml-1 text-xs">{unreadCount}</Badge>}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -884,16 +1031,16 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ unitInci
             </div>
             
             <div className="grid grid-cols-2 gap-1">
-              <Button variant="outline" size="sm" onClick={() => setQuickMessage('10-4 Acknowledged')}>
+              <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-4', '10-4 Acknowledged')}>
                 <span className="text-xs">10-4</span>
               </Button>
-              <Button variant="outline" size="sm" onClick={() => setQuickMessage('10-8 In Service')}>
+              <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-8', '10-8 In Service')}>
                 <span className="text-xs">10-8</span>
               </Button>
-              <Button variant="outline" size="sm" onClick={() => setQuickMessage('10-23 Arrived')}>
+              <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-23', '10-23 Arrived')}>
                 <span className="text-xs">10-23</span>
               </Button>
-              <Button variant="outline" size="sm" onClick={() => setQuickMessage('10-24 Assignment Complete')}>
+              <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-24', '10-24 Assignment Complete')}>
                 <span className="text-xs">10-24</span>
               </Button>
             </div>
@@ -1001,7 +1148,44 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ unitInci
         </Card>
       )}
 
-      {/* Evidence Files */}
+      {/* Recent Communications */}
+      {communicationLog.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MessageSquare className="h-5 w-5" />
+              Recent Communications
+              {unreadCount > 0 && <Badge variant="destructive">{unreadCount} unread</Badge>}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2 max-h-40 overflow-y-auto">
+              {communicationLog.slice(0, 10).map((comm) => (
+                <div key={comm.id} className={`flex items-start justify-between p-2 border rounded text-sm ${
+                  comm.type === 'outgoing' ? 'bg-blue-50 border-blue-200' : 'bg-gray-50'
+                }`}>
+                  <div className="flex-1">
+                    {comm.is_radio_code && (
+                      <Badge variant="outline" className="text-xs mb-1">
+                        {comm.radio_code}
+                      </Badge>
+                    )}
+                    <p className="text-sm">{comm.message_content}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(comm.timestamp || comm.created_at).toLocaleTimeString()}
+                      {comm.type === 'outgoing' && (
+                        <span className="ml-2">
+                          {comm.acknowledged ? '✓ Acknowledged' : 'Pending'}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
       {evidenceFiles.length > 0 && (
         <Card>
           <CardHeader>

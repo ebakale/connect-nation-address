@@ -681,6 +681,86 @@ export type Database = {
         }
         Relationships: []
       }
+      unit_communications: {
+        Row: {
+          acknowledged: boolean
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          created_at: string
+          from_unit_id: string | null
+          from_user_id: string | null
+          id: string
+          is_radio_code: boolean
+          message_content: string
+          message_type: string
+          metadata: Json | null
+          priority_level: number
+          radio_code: string | null
+          to_user_id: string | null
+        }
+        Insert: {
+          acknowledged?: boolean
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          created_at?: string
+          from_unit_id?: string | null
+          from_user_id?: string | null
+          id?: string
+          is_radio_code?: boolean
+          message_content: string
+          message_type?: string
+          metadata?: Json | null
+          priority_level?: number
+          radio_code?: string | null
+          to_user_id?: string | null
+        }
+        Update: {
+          acknowledged?: boolean
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          created_at?: string
+          from_unit_id?: string | null
+          from_user_id?: string | null
+          id?: string
+          is_radio_code?: boolean
+          message_content?: string
+          message_type?: string
+          metadata?: Json | null
+          priority_level?: number
+          radio_code?: string | null
+          to_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unit_communications_acknowledged_by_fkey"
+            columns: ["acknowledged_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "unit_communications_from_unit_id_fkey"
+            columns: ["from_unit_id"]
+            isOneToOne: false
+            referencedRelation: "emergency_units"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unit_communications_from_user_id_fkey"
+            columns: ["from_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "unit_communications_to_user_id_fkey"
+            columns: ["to_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       user_role_metadata: {
         Row: {
           created_at: string | null
