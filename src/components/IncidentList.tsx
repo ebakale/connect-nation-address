@@ -88,28 +88,37 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
   const [availableOfficers, setAvailableOfficers] = useState<{id: string, label: string}[]>([]);
   const [decryptedInfo, setDecryptedInfo] = useState<Record<string, { message: string; address: string; coordinates?: { lat: number; lng: number }; uac?: string }>>({});
 
-  // Fetch available officers for assignment
+  // Fetch available officers and units for assignment
   const fetchAvailableOfficers = async () => {
     try {
-      const { data: officers, error } = await supabase
-        .from('profiles')
+      // Get emergency units with their members
+      const { data: units, error: unitsError } = await supabase
+        .from('emergency_units')
         .select(`
-          user_id,
-          full_name,
-          user_roles!inner(role)
+          id,
+          unit_code,
+          unit_name,
+          unit_type,
+          status,
+          emergency_unit_members!inner(
+            officer_id,
+            role,
+            is_lead,
+            profiles!inner(full_name)
+          )
         `)
-        .in('user_roles.role', ['police_operator', 'police_supervisor', 'police_dispatcher']);
+        .eq('status', 'available');
 
-      if (error) throw error;
+      if (unitsError) throw unitsError;
 
-      const officerOptions = officers?.map(officer => ({
-        id: officer.user_id,
-        label: `${officer.full_name || 'Unknown Officer'} (${(officer.user_roles as any)?.[0]?.role?.replace('police_', '').toUpperCase() || 'OFFICER'})`
+      const unitOptions = units?.map(unit => ({
+        id: unit.id,
+        label: `${unit.unit_code} - ${unit.unit_name} (${unit.unit_type.toUpperCase()}) - ${unit.emergency_unit_members?.length || 0} officers`
       })) || [];
 
-      setAvailableOfficers(officerOptions);
+      setAvailableOfficers(unitOptions);
     } catch (error) {
-      console.error('Error fetching officers:', error);
+      console.error('Error fetching units:', error);
     }
   };
 
@@ -455,15 +464,15 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
                       
                        <div className="space-y-4">
                          <div>
-                           <label className="text-sm font-medium">Select Officer/Unit</label>
+                           <label className="text-sm font-medium">Select Emergency Unit</label>
                            <Select onValueChange={setAssigningUnit} value={assigningUnit}>
                              <SelectTrigger>
-                               <SelectValue placeholder="Choose an officer or unit..." />
+                               <SelectValue placeholder="Choose an emergency unit..." />
                              </SelectTrigger>
                              <SelectContent>
-                               {availableOfficers.map((officer) => (
-                                 <SelectItem key={officer.id} value={officer.id}>
-                                   {officer.label}
+                               {availableOfficers.map((unit) => (
+                                 <SelectItem key={unit.id} value={unit.id}>
+                                   {unit.label}
                                  </SelectItem>
                                ))}
                              </SelectContent>
