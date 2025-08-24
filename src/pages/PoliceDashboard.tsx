@@ -50,7 +50,8 @@ const PoliceDashboard = () => {
     hasPoliceAccess,
     hasPoliceManagementAccess,
     isPoliceOperator,
-    isPoliceSupervisor 
+    isPoliceSupervisor,
+    isPoliceDispatcher 
   } = useUserRole();
   const { user, signOut } = useAuth();
   const { t } = useLanguage();
@@ -263,15 +264,27 @@ const PoliceDashboard = () => {
               <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
                 <Shield className="h-8 w-8 text-blue-600" />
                 Police Emergency Command Center
-                {hasPoliceManagementAccess && (
+                {isPoliceSupervisor && (
                   <Badge variant="default" className="ml-2 bg-blue-100 text-blue-800">
                     Supervisor
                   </Badge>
                 )}
+                {isPoliceDispatcher && (
+                  <Badge variant="default" className="ml-2 bg-green-100 text-green-800">
+                    Dispatcher
+                  </Badge>
+                )}
+                {isPoliceOperator && (
+                  <Badge variant="default" className="ml-2 bg-orange-100 text-orange-800">
+                    Operator
+                  </Badge>
+                )}
               </h1>
               <p className="text-muted-foreground">
-                {hasPoliceManagementAccess 
+                {isPoliceSupervisor 
                   ? "Supervisor dashboard - Real-time emergency incident management & team oversight"
+                  : isPoliceDispatcher
+                  ? "Dispatcher dashboard - Emergency response coordination & unit management"
                   : "Operator dashboard - Real-time emergency incident management"
                 }
               </p>
@@ -382,8 +395,14 @@ const PoliceDashboard = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Quick Actions</CardTitle>
-                {hasPoliceManagementAccess && (
+                {isPoliceSupervisor && (
                   <CardDescription>Supervisor Actions Available</CardDescription>
+                )}
+                {isPoliceDispatcher && (
+                  <CardDescription>Dispatcher Actions Available</CardDescription>
+                )}
+                {isPoliceOperator && (
+                  <CardDescription>Operator Actions Available</CardDescription>
                 )}
               </CardHeader>
               <CardContent className="space-y-3">
@@ -401,7 +420,7 @@ const PoliceDashboard = () => {
                 </Button>
                 
                 {/* Supervisor-only actions */}
-                {hasPoliceManagementAccess && (
+                {isPoliceSupervisor && (
                   <>
                     <Button className="w-full justify-start" variant="outline">
                       <Users className="mr-2 h-4 w-4" />
@@ -418,12 +437,40 @@ const PoliceDashboard = () => {
                   </>
                 )}
                 
+                {/* Dispatcher-specific actions */}
+                {isPoliceDispatcher && (
+                  <>
+                    <Button className="w-full justify-start" variant="outline">
+                      <Phone className="mr-2 h-4 w-4" />
+                      Unit Communications
+                    </Button>
+                    <Button className="w-full justify-start" variant="outline">
+                      <Users className="mr-2 h-4 w-4" />
+                      Assign Units
+                    </Button>
+                    <Button className="w-full justify-start" variant="outline">
+                      <Activity className="mr-2 h-4 w-4" />
+                      Dispatch Queue
+                    </Button>
+                    <Button className="w-full justify-start" variant="outline">
+                      <TrendingUp className="mr-2 h-4 w-4" />
+                      Response Analytics
+                    </Button>
+                  </>
+                )}
+                
                 {/* Operator-only actions */}
                 {isPoliceOperator && (
-                  <Button className="w-full justify-start" variant="outline">
-                    <TrendingUp className="mr-2 h-4 w-4" />
-                    My Performance
-                  </Button>
+                  <>
+                    <Button className="w-full justify-start" variant="outline">
+                      <TrendingUp className="mr-2 h-4 w-4" />
+                      My Performance
+                    </Button>
+                    <Button className="w-full justify-start" variant="outline">
+                      <CheckCircle className="mr-2 h-4 w-4" />
+                      Mark Incident Complete
+                    </Button>
+                  </>
                 )}
               </CardContent>
             </Card>
