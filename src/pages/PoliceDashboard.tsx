@@ -76,7 +76,7 @@ const PoliceDashboard = () => {
   const [userUnit, setUserUnit] = useState<any>(null);
   const [userUnits, setUserUnits] = useState<any[]>([]);
   const [userCity, setUserCity] = useState<string | null>(null);
-
+  const [isDispatchSupervisor, setIsDispatchSupervisor] = useState<boolean>(false);
   // Set default tab based on user role
   useEffect(() => {
     if (!activeTab && role) {
@@ -147,6 +147,7 @@ const PoliceDashboard = () => {
             id,
             unit_name,
             unit_code,
+            unit_type,
             coverage_region,
             coverage_city,
             current_location
@@ -166,6 +167,11 @@ const PoliceDashboard = () => {
       setUserUnits(units);
       setUserUnit(primaryUnit);
 
+      // Determine if user is a supervisor of a Dispatch unit
+      const dispatchSupervisor = (unitMemberships || []).some((m: any) =>
+        (m?.is_lead || m?.role === 'sergeant') && m?.emergency_units?.unit_type === 'dispatch'
+      );
+      setIsDispatchSupervisor(dispatchSupervisor);
       // Get user's city assignment from role metadata
       const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
@@ -220,7 +226,7 @@ const PoliceDashboard = () => {
       const validIncidents = enrichedIncidents.filter(incident => {
         // Show unassigned incidents only to dispatchers/supervisors
         if (!incident.assigned_units || incident.assigned_units.length === 0) {
-          return isPoliceDispatcher || isPoliceSupervisor;
+          return isPoliceDispatcher || isDispatchSupervisor;
         }
         
         // For assigned incidents, only show those assigned to valid registered units
@@ -268,7 +274,7 @@ const PoliceDashboard = () => {
       const validAreaIncidents = enrichedIncidents.filter(incident => {
         // Show unassigned incidents only to dispatchers/supervisors
         if (!incident.assigned_units || incident.assigned_units.length === 0) {
-          return isPoliceDispatcher || isPoliceSupervisor;
+          return isPoliceDispatcher || isDispatchSupervisor;
         }
         
         // For assigned incidents, only show those assigned to valid registered units
