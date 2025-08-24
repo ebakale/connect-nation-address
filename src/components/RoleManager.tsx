@@ -21,12 +21,16 @@ const ROLE_DESCRIPTIONS: Record<string, string> = {
   'partner': 'API Partner - Machine-to-machine access for services',
   'auditor': 'Auditor - Compliance and forensics access',
   'data_steward': 'Data Steward - Data quality and analytics',
-  'support': 'Support/Helpdesk - User support and account provisioning'
+  'support': 'Support/Helpdesk - User support and account provisioning',
+  'police_operator': 'Police Operator - Emergency response and incident management',
+  'police_supervisor': 'Police Supervisor - Oversight of emergency operations',
+  'police_dispatcher': 'Police Dispatcher - Emergency call routing and coordination'
 };
 
 const AVAILABLE_ROLES: UserRole[] = [
   'citizen', 'property_claimant', 'field_agent', 'verifier', 
-  'registrar', 'ndaa_admin', 'partner', 'auditor', 'data_steward', 'support'
+  'registrar', 'ndaa_admin', 'partner', 'auditor', 'data_steward', 'support',
+  'police_operator', 'police_supervisor', 'police_dispatcher'
 ];
 
 export const RoleManager: React.FC = () => {
