@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { MapPin, Navigation, Layers, Target, Info } from "lucide-react";
+import { MapPin, Navigation, Layers, Target, Info, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { supabase } from "@/integrations/supabase/client";
@@ -241,12 +241,20 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
             View addresses in your assigned area
           </p>
         </div>
-        <div className="flex gap-2">
-          {geographicScope.map((scope) => (
-            <Badge key={scope} variant="secondary">
-              {scope}
-            </Badge>
-          ))}
+        <div className="flex items-center gap-2">
+          <div className="flex gap-2">
+            {geographicScope.map((scope) => (
+              <Badge key={scope} variant="secondary">
+                {scope}
+              </Badge>
+            ))}
+          </div>
+          {onClose && (
+            <Button variant="outline" size="sm" onClick={onClose}>
+              <X className="h-4 w-4 mr-2" />
+              Close
+            </Button>
+          )}
         </div>
       </div>
 

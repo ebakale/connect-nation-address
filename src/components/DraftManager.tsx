@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Edit, Trash2, Send, MapPin, Clock } from "lucide-react";
+import { Edit, Trash2, Send, MapPin, Clock, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -121,7 +121,15 @@ const DraftManager = ({ onClose }: DraftManagerProps) => {
             Manage your draft addresses before submission
           </p>
         </div>
-        <Badge variant="secondary">{drafts.length} draft(s)</Badge>
+        <div className="flex items-center gap-2">
+          <Badge variant="secondary">{drafts.length} draft(s)</Badge>
+          {onClose && (
+            <Button variant="outline" size="sm" onClick={onClose}>
+              <X className="h-4 w-4 mr-2" />
+              Close
+            </Button>
+          )}
+        </div>
       </div>
 
       {drafts.length === 0 ? (

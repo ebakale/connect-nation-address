@@ -383,11 +383,9 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
       
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <span className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-blue-600" />
-              Incident Details: {incident.incident_number}
-            </span>
+          <DialogTitle className="flex items-center gap-2">
+            <Shield className="h-5 w-5 text-blue-600" />
+            Incident Details: {incident.incident_number}
             {!isEditing && canEdit && (
               <Button onClick={handleEdit} size="sm" variant="outline">
                 <Edit className="h-4 w-4 mr-2" />
