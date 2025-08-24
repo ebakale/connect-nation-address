@@ -213,7 +213,8 @@ export const UnitFieldDashboard: React.FC = () => {
           region,
           country,
           incident_uac,
-          dispatcher_notes
+          dispatcher_notes,
+          assigned_units
         `)
         .contains('assigned_units', [unitInfo.unit_code])
         .in('status', ['dispatched', 'responded', 'en_route', 'on_scene'])
@@ -222,8 +223,17 @@ export const UnitFieldDashboard: React.FC = () => {
 
       if (error) throw error;
       
-      console.log('UnitFieldDashboard: Found assignments:', data);
-      setAssignments(data || []);
+      // Filter to only include incidents assigned to valid registered units
+      const validUnits = ['UNIT-001', 'UNIT-002', 'UNIT-003', 'UNIT-004', 'UNIT-005', 'UNIT-006', 'UNIT-007', 'UNIT-008'];
+      const validAssignments = (data || []).filter(incident => 
+        incident.assigned_units && 
+        incident.assigned_units.length > 0 &&
+        incident.assigned_units.some((unit: string) => validUnits.includes(unit)) &&
+        incident.assigned_units.includes(unitInfo.unit_code)
+      );
+      
+      console.log('UnitFieldDashboard: Found valid assignments:', validAssignments);
+      setAssignments(validAssignments);
     } catch (error) {
       console.error('Error fetching assignments:', error);
     }

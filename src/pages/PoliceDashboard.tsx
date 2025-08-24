@@ -216,7 +216,19 @@ const PoliceDashboard = () => {
         reporter_email: ''
       })) || [];
 
-      setIncidents(enrichedIncidents);
+      // Filter incidents - only show unassigned ones to dispatchers/supervisors
+      const validIncidents = enrichedIncidents.filter(incident => {
+        // Show unassigned incidents only to dispatchers/supervisors
+        if (!incident.assigned_units || incident.assigned_units.length === 0) {
+          return isPoliceDispatcher || isPoliceSupervisor;
+        }
+        
+        // For assigned incidents, only show those assigned to valid registered units
+        const validUnits = ['UNIT-001', 'UNIT-002', 'UNIT-003', 'UNIT-004', 'UNIT-005', 'UNIT-006', 'UNIT-007', 'UNIT-008'];
+        return incident.assigned_units.some((unit: string) => validUnits.includes(unit));
+      });
+
+      setIncidents(validIncidents);
       
       // Calculate stats
       const stats = calculateDashboardStats(enrichedIncidents);
@@ -252,7 +264,19 @@ const PoliceDashboard = () => {
         reporter_email: ''
       })) || [];
 
-      setAreaIncidents(enrichedIncidents);
+      // Filter area incidents - only show unassigned ones to dispatchers/supervisors
+      const validAreaIncidents = enrichedIncidents.filter(incident => {
+        // Show unassigned incidents only to dispatchers/supervisors
+        if (!incident.assigned_units || incident.assigned_units.length === 0) {
+          return isPoliceDispatcher || isPoliceSupervisor;
+        }
+        
+        // For assigned incidents, only show those assigned to valid registered units
+        const validUnits = ['UNIT-001', 'UNIT-002', 'UNIT-003', 'UNIT-004', 'UNIT-005', 'UNIT-006', 'UNIT-007', 'UNIT-008'];
+        return incident.assigned_units.some((unit: string) => validUnits.includes(unit));
+      });
+
+      setAreaIncidents(validAreaIncidents);
     } catch (error) {
       console.error('Error fetching area incidents:', error);
     }
