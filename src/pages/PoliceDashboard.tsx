@@ -69,6 +69,24 @@ const PoliceDashboard = () => {
   });
   const [operatorSession, setOperatorSession] = useState<any>(null);
 
+  // Function to create police users (admin only)
+  const createPoliceUsers = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('seed-police-users');
+      
+      if (error) throw error;
+      
+      if (data?.success) {
+        toast.success(`Successfully created ${data.users?.length || 0} police users`);
+        console.log('Created users:', data.users);
+      } else {
+        throw new Error(data?.error || 'Failed to create users');
+      }
+    } catch (error) {
+      console.error('Error creating police users:', error);
+      toast.error('Failed to create police users');
+    }
+  };
 
   // Initialize operator session
   useEffect(() => {
@@ -448,6 +466,14 @@ const PoliceDashboard = () => {
                     <Button className="w-full justify-start" variant="outline">
                       <TrendingUp className="mr-2 h-4 w-4" />
                       Performance Reports
+                    </Button>
+                    <Button 
+                      onClick={createPoliceUsers}
+                      className="w-full justify-start" 
+                      variant="outline"
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      Seed Police Users
                     </Button>
                     <Button className="w-full justify-start" variant="outline">
                       <Settings className="mr-2 h-4 w-4" />
