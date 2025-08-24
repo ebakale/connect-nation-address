@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
@@ -8,7 +9,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { 
   Shield, AlertTriangle, Clock, MapPin, Phone, User, 
   LogOut, Settings, Bell, CheckCircle, XCircle, Eye,
-  Activity, Users, TrendingUp, AlertCircle
+  Activity, Users, TrendingUp, AlertCircle, Radio,
+  Navigation, MessageSquare, Flag
 } from "lucide-react";
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -17,6 +19,7 @@ import IncidentList from '@/components/IncidentList';
 import OperatorStatusPanel from '@/components/OperatorStatusPanel';
 import { UnitStatusManager } from '@/components/UnitStatusManager';
 import { ResponseTimeTracker } from '@/components/ResponseTimeTracker';
+import { UnitFieldDashboard } from '@/components/UnitFieldDashboard';
 import { toast } from "sonner";
 
 interface EmergencyIncident {
@@ -40,58 +43,45 @@ interface EmergencyIncident {
 
 interface DashboardStats {
   activeIncidents: number;
-  highPriorityIncidents: number;
-  resolvedToday: number;
-  averageResponseTime: number;
-  activeOperators: number;
+  availableUnits: number;
+  avgResponseTime: number;
+  operatorsOnline: number;
+  totalIncidents: number;
+  resolvedIncidents: number;
 }
 
 const PoliceDashboard = () => {
-  const { 
-    role, 
-    loading, 
-    isAdmin, 
-    hasAdminAccess,
-    hasPoliceAccess,
-    hasPoliceManagementAccess,
-    isPoliceOperator,
-    isPoliceSupervisor,
-    isPoliceDispatcher 
-  } = useUserRole();
   const { user, signOut } = useAuth();
+  const { role, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isAdmin, loading, hasPoliceAccess } = useUserRole();
   const { t } = useLanguage();
-
-  // State management
+  
+  // Dashboard state
+  const [activeTab, setActiveTab] = useState<string>('');
+  const [showMap, setShowMap] = useState(false);
   const [incidents, setIncidents] = useState<EmergencyIncident[]>([]);
   const [selectedIncident, setSelectedIncident] = useState<EmergencyIncident | null>(null);
-  const [showMap, setShowMap] = useState(true);
-  const [stats, setStats] = useState<DashboardStats>({
+  const [dashboardStats, setDashboardStats] = useState<DashboardStats>({
     activeIncidents: 0,
-    highPriorityIncidents: 0,
-    resolvedToday: 0,
-    averageResponseTime: 0,
-    activeOperators: 0
+    availableUnits: 0,
+    avgResponseTime: 0,
+    operatorsOnline: 0,
+    totalIncidents: 0,
+    resolvedIncidents: 0
   });
   const [operatorSession, setOperatorSession] = useState<any>(null);
 
-  // Function to create police users (admin only)
-  const createPoliceUsers = async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke('seed-police-users');
-      
-      if (error) throw error;
-      
-      if (data?.success) {
-        toast.success(`Successfully created ${data.users?.length || 0} police users`);
-        console.log('Created users:', data.users);
-      } else {
-        throw new Error(data?.error || 'Failed to create users');
+  // Set default tab based on user role
+  useEffect(() => {
+    if (!activeTab && role) {
+      if (isPoliceOperator) {
+        setActiveTab('field'); // Field officers see their assignments first
+      } else if (isPoliceDispatcher) {
+        setActiveTab('dispatch'); // Dispatchers see command center first
+      } else if (isPoliceSupervisor || isAdmin) {
+        setActiveTab('dispatch'); // Supervisors see command center first
       }
-    } catch (error) {
-      console.error('Error creating police users:', error);
-      toast.error('Failed to create police users');
     }
-  };
+  }, [role, activeTab, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isAdmin]);
 
   // Initialize operator session
   useEffect(() => {
@@ -130,108 +120,63 @@ const PoliceDashboard = () => {
     };
 
     initializeSession();
-  }, [user, role]);
+  }, [user, hasPoliceAccess]);
 
-  // Fetch incidents and stats
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!hasPoliceAccess) return;
+  // Fetch incidents and calculate stats
+  const fetchIncidents = async () => {
+    if (!hasPoliceAccess) return;
 
-      try {
-        // Fetch incidents
-        const { data: incidentsData, error: incidentsError } = await supabase
-          .from('emergency_incidents')
-          .select('*')
-          .order('reported_at', { ascending: false })
-          .limit(50);
+    try {
+      const { data: incidentsData, error } = await supabase
+        .from('emergency_incidents')
+        .select('*')
+        .in('status', ['reported', 'dispatched', 'responded'])
+        .order('priority_level', { ascending: false })
+        .order('reported_at', { ascending: true });
 
-        if (incidentsError) throw incidentsError;
-        
-        // Get unique reporter IDs
-        const reporterIds = [...new Set(incidentsData?.map(i => i.reporter_id).filter(Boolean))] as string[];
-        
-        // Fetch reporter profiles if we have reporter IDs
-        let reporterProfiles: Record<string, { full_name?: string; email?: string }> = {};
-        if (reporterIds.length > 0) {
-          try {
-            const { data: profilesData, error: profilesError } = await supabase
-              .from('profiles')
-              .select('user_id, full_name, email')
-              .in('user_id', reporterIds);
-            
-            if (profilesError) {
-              console.warn('Could not fetch reporter profiles:', profilesError);
-            } else if (profilesData) {
-              reporterProfiles = profilesData.reduce((acc, profile) => {
-                acc[profile.user_id] = {
-                  full_name: profile.full_name,
-                  email: profile.email
-                };
-                return acc;
-              }, {} as Record<string, { full_name?: string; email?: string }>);
-            }
-          } catch (error) {
-            console.warn('Error fetching reporter profiles:', error);
-          }
-        }
-        
-        // Transform the data to include reporter info at the top level
-        const transformedIncidents = incidentsData?.map(incident => ({
-          ...incident,
-          reporter_name: incident.reporter_id && reporterProfiles[incident.reporter_id] ? 
-            reporterProfiles[incident.reporter_id].full_name : undefined,
-          reporter_email: incident.reporter_id && reporterProfiles[incident.reporter_id] ? 
-            reporterProfiles[incident.reporter_id].email : undefined
-        })) || [];
-        
-        setIncidents(transformedIncidents);
+      if (error) throw error;
 
-        // Calculate stats
-        const now = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        
-        const activeIncidents = incidentsData?.filter(i => 
-          !['resolved', 'closed'].includes(i.status)
-        ).length || 0;
+      const enrichedIncidents = incidentsData?.map(incident => ({
+        ...incident,
+        reporter_name: 'Unknown',
+        reporter_email: ''
+      })) || [];
 
-        const highPriorityIncidents = incidentsData?.filter(i => 
-          i.priority_level <= 2 && !['resolved', 'closed'].includes(i.status)
-        ).length || 0;
+      setIncidents(enrichedIncidents);
+      
+      // Calculate stats
+      const stats = calculateDashboardStats(enrichedIncidents);
+      setDashboardStats(stats);
+    } catch (error) {
+      console.error('Error fetching incidents:', error);
+    }
+  };
 
-        const resolvedToday = incidentsData?.filter(i => 
-          i.resolved_at && new Date(i.resolved_at) >= today
-        ).length || 0;
-
-        // Get active operators count
-        const { count: activeOperators } = await supabase
-          .from('emergency_operator_sessions')
-          .select('*', { count: 'exact', head: true })
-          .eq('status', 'active')
-          .is('session_end', null);
-
-        setStats({
-          activeIncidents,
-          highPriorityIncidents,
-          resolvedToday,
-          averageResponseTime: 12, // This would be calculated from actual data
-          activeOperators: activeOperators || 0
-        });
-
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-        toast.error('Failed to load dashboard data');
-      }
+  const calculateDashboardStats = (incidents: EmergencyIncident[]): DashboardStats => {
+    const activeIncidents = incidents.filter(i => !['resolved', 'closed'].includes(i.status)).length;
+    const totalIncidents = incidents.length;
+    const resolvedIncidents = incidents.filter(i => ['resolved', 'closed'].includes(i.status)).length;
+    
+    return {
+      activeIncidents,
+      availableUnits: 8, // This would come from units table
+      avgResponseTime: 12, // This would be calculated from response times
+      operatorsOnline: 5, // This would come from active sessions
+      totalIncidents,
+      resolvedIncidents
     };
+  };
 
-    fetchData();
-  }, [role]);
+  useEffect(() => {
+    fetchIncidents();
+  }, [hasPoliceAccess]);
 
-  // Real-time subscriptions
+  // Real-time subscription
   useEffect(() => {
     if (!hasPoliceAccess) return;
 
-    const incidentsSubscription = supabase
-      .channel('emergency-incidents-changes')
+    const channel = supabase
+      .channel('incidents-realtime')
       .on(
         'postgres_changes',
         {
@@ -239,65 +184,36 @@ const PoliceDashboard = () => {
           schema: 'public',
           table: 'emergency_incidents'
         },
-        async (payload) => {
-          console.log('Incident update:', payload);
-          
-          if (payload.eventType === 'INSERT') {
-            const newIncident = payload.new as EmergencyIncident;
-            let enrichedIncident = newIncident;
-            // Enrich with reporter profile so Activity Log can show creator name immediately
-            if (newIncident.reporter_id) {
-              try {
-                const { data: profile } = await supabase
-                  .from('profiles')
-                  .select('user_id, full_name, email')
-                  .eq('user_id', newIncident.reporter_id)
-                  .maybeSingle();
-                if (profile) {
-                  enrichedIncident = {
-                    ...newIncident,
-                    reporter_name: profile.full_name || undefined,
-                    reporter_email: profile.email || undefined,
-                  };
-                }
-              } catch (e) {
-                console.warn('Failed to enrich new incident with reporter profile:', e);
-              }
-            }
-
-            setIncidents(prev => [enrichedIncident, ...prev]);
-            
-            // Show notification for new high-priority incidents
-            if (newIncident.priority_level <= 2) {
-              toast.error(`HIGH PRIORITY: New ${newIncident.emergency_type} incident #${newIncident.incident_number}`, {
-                duration: 10000,
-                action: {
-                  label: "View",
-                  onClick: () => setSelectedIncident(enrichedIncident)
-                }
-              });
-            }
-          } else if (payload.eventType === 'UPDATE') {
-            setIncidents(prev => 
-              prev.map(incident => 
-                incident.id === (payload.new as any).id 
-                  ? { ...incident, ...(payload.new as any) } // preserve enriched fields like reporter_name/email
-                  : incident
-              )
-            );
-          }
+        () => {
+          fetchIncidents();
         }
       )
       .subscribe();
 
     return () => {
-      supabase.removeChannel(incidentsSubscription);
+      supabase.removeChannel(channel);
     };
-  }, [role]);
+  }, [hasPoliceAccess]);
+
+  const createPoliceUsers = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('seed-police-users');
+      
+      if (error) throw error;
+      
+      if (data?.success) {
+        toast.success(`Successfully created ${data.users?.length || 0} police users`);
+      } else {
+        throw new Error(data?.error || 'Failed to create users');
+      }
+    } catch (error) {
+      console.error('Error creating police users:', error);
+      toast.error('Failed to create police users');
+    }
+  };
 
   const handleSignOut = async () => {
     if (operatorSession) {
-      // End operator session
       await supabase
         .from('emergency_operator_sessions')
         .update({ session_end: new Date().toISOString(), status: 'offline' })
@@ -308,15 +224,15 @@ const PoliceDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 via-background to-blue-50 flex items-center justify-center">
-        <div className="text-lg animate-fade-in">{t('loading')}</div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   if (!hasPoliceAccess) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 via-background to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="w-96">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-red-600">
@@ -339,58 +255,44 @@ const PoliceDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-background to-blue-50">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b bg-card">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
                 <Shield className="h-8 w-8 text-blue-600" />
-                Police Emergency Command Center
+                <div>
+                  <h1 className="text-2xl font-bold">Police Command Center</h1>
+                  <p className="text-sm text-muted-foreground">
+                    Emergency Response & Field Operations
+                  </p>
+                </div>
+              </div>
+              
+              {/* Role Badges */}
+              <div className="flex gap-2">
                 {isPoliceSupervisor && (
-                  <Badge variant="default" className="ml-2 bg-blue-100 text-blue-800">
+                  <Badge variant="default" className="bg-purple-100 text-purple-800">
                     Supervisor
                   </Badge>
                 )}
                 {isPoliceDispatcher && (
-                  <Badge variant="default" className="ml-2 bg-green-100 text-green-800">
+                  <Badge variant="default" className="bg-blue-100 text-blue-800">
                     Dispatcher
                   </Badge>
                 )}
                 {isPoliceOperator && (
-                  <Badge variant="default" className="ml-2 bg-orange-100 text-orange-800">
-                    Operator
+                  <Badge variant="default" className="bg-green-100 text-green-800">
+                    Field Officer
                   </Badge>
                 )}
-              </h1>
-              <p className="text-muted-foreground">
-                {isPoliceSupervisor 
-                  ? "Supervisor dashboard - Real-time emergency incident management & team oversight"
-                  : isPoliceDispatcher
-                  ? "Dispatcher dashboard - Emergency response coordination & unit management"
-                  : "Operator dashboard - Real-time emergency incident management"
-                }
-              </p>
-              
-              {operatorSession && (
-                <div className="flex gap-2 mt-3">
-                  <Badge variant="default" className="bg-green-100 text-green-800">
-                    <Activity className="mr-1 h-3 w-3" />
-                    Online
-                  </Badge>
-                  <Badge variant="secondary">
-                    Session: {new Date(operatorSession.session_start).toLocaleTimeString()}
-                  </Badge>
-                </div>
-              )}
+              </div>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <LanguageSwitcher />
-              <Button variant="outline" size="sm">
-                <Settings className="h-4 w-4" />
-              </Button>
               <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-2">
                 <LogOut className="h-4 w-4" />
                 {t('logout')}
@@ -398,261 +300,282 @@ const PoliceDashboard = () => {
             </div>
           </div>
         </div>
+      </header>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 mb-8 police-dashboard-stats">
-          <Card className="border-red-200 bg-red-50">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-red-600" />
-                Active Incidents
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-red-600">{stats.activeIncidents}</div>
-            </CardContent>
-          </Card>
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
+            <TabsTrigger value="field" className="flex items-center gap-2">
+              <Radio className="h-4 w-4" />
+              My Unit
+            </TabsTrigger>
+            <TabsTrigger value="dispatch" className="flex items-center gap-2">
+              <Activity className="h-4 w-4" />
+              Command Center
+            </TabsTrigger>
+            {(isPoliceSupervisor || isAdmin) && (
+              <TabsTrigger value="management" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Management
+              </TabsTrigger>
+            )}
+          </TabsList>
 
-          <Card className="border-orange-200 bg-orange-50">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <AlertCircle className="h-4 w-4 text-orange-600" />
-                High Priority
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-orange-600">{stats.highPriorityIncidents}</div>
-            </CardContent>
-          </Card>
+          {/* Field Operations Tab */}
+          <TabsContent value="field" className="space-y-6">
+            <div className="flex items-center gap-4 mb-4">
+              <Badge variant="outline" className="flex items-center gap-2">
+                <Radio className="h-3 w-3" />
+                Field Operations
+              </Badge>
+              <p className="text-sm text-muted-foreground">
+                Manage your unit assignments and field activities
+              </p>
+            </div>
+            <UnitFieldDashboard />
+          </TabsContent>
 
-          <Card className="border-green-200 bg-green-50">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-                Resolved Today
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">{stats.resolvedToday}</div>
-            </CardContent>
-          </Card>
+          {/* Dispatch Center Tab */}
+          <TabsContent value="dispatch" className="space-y-6">
+            <div className="flex items-center gap-4 mb-4">
+              <Badge variant="outline" className="flex items-center gap-2">
+                <Activity className="h-3 w-3" />
+                Command Center
+              </Badge>
+              <p className="text-sm text-muted-foreground">
+                Monitor incidents, assign units, and coordinate emergency response
+              </p>
+            </div>
 
-          <Card className="border-blue-200 bg-blue-50">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Clock className="h-4 w-4 text-blue-600" />
-                Avg Response
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">{stats.averageResponseTime}m</div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-purple-200 bg-purple-50">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Users className="h-4 w-4 text-purple-600" />
-                Operators Online
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-purple-600">{stats.activeOperators}</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 police-dashboard-grid">
-          {/* Incident List */}
-          <div className="lg:col-span-2">
-            <IncidentList 
-              incidents={incidents}
-              onSelectIncident={(incident) => setSelectedIncident(incident)}
-              selectedIncident={selectedIncident}
-              onUpdate={() => {
-                // Refresh incidents data
-                const fetchData = async () => {
-                  if (!hasPoliceAccess) return;
-                  try {
-                    const { data: incidentsData, error: incidentsError } = await supabase
-                      .from('emergency_incidents')
-                      .select('*')
-                      .order('reported_at', { ascending: false })
-                      .limit(50);
-
-                    if (incidentsError) throw incidentsError;
-                    
-                    // Get unique reporter IDs
-                    const reporterIds = [...new Set(incidentsData?.map(i => i.reporter_id).filter(Boolean))] as string[];
-                    
-                    // Fetch reporter profiles if we have reporter IDs
-                    let reporterProfiles: Record<string, { full_name?: string; email?: string }> = {};
-                    if (reporterIds.length > 0) {
-                      try {
-                        const { data: profilesData, error: profilesError } = await supabase
-                          .from('profiles')
-                          .select('user_id, full_name, email')
-                          .in('user_id', reporterIds);
-                        
-                        if (profilesError) {
-                          console.warn('Could not fetch reporter profiles:', profilesError);
-                        } else if (profilesData) {
-                          reporterProfiles = profilesData.reduce((acc, profile) => {
-                            acc[profile.user_id] = {
-                              full_name: profile.full_name,
-                              email: profile.email
-                            };
-                            return acc;
-                          }, {} as Record<string, { full_name?: string; email?: string }>);
-                        }
-                      } catch (error) {
-                        console.warn('Error fetching reporter profiles:', error);
-                      }
-                    }
-                    
-                    // Transform the data to include reporter info at the top level
-                    const transformedIncidents = incidentsData?.map(incident => ({
-                      ...incident,
-                      reporter_name: incident.reporter_id && reporterProfiles[incident.reporter_id] ? 
-                        reporterProfiles[incident.reporter_id].full_name : undefined,
-                      reporter_email: incident.reporter_id && reporterProfiles[incident.reporter_id] ? 
-                        reporterProfiles[incident.reporter_id].email : undefined
-                    })) || [];
-                    
-                    setIncidents(transformedIncidents);
-                  } catch (error) {
-                    console.error('Error refreshing incidents:', error);
-                  }
-                };
-                fetchData();
-              }}
-            />
-          </div>
-
-          {/* Right Panel */}
-          <div className="space-y-6">
-            {/* Unit Status Manager for current user */}
-            <UnitStatusManager />
-            
-            {/* Response Time Metrics */}
-            <ResponseTimeTracker showRecentOnly={true} />
-            {/* Quick Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Quick Actions</CardTitle>
-                {isPoliceSupervisor && (
-                  <CardDescription>Supervisor Actions Available</CardDescription>
-                )}
-                {isPoliceDispatcher && (
-                  <CardDescription>Dispatcher Actions Available</CardDescription>
-                )}
-                {isPoliceOperator && (
-                  <CardDescription>Operator Actions Available</CardDescription>
-                )}
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button 
-                  className="w-full justify-start" 
-                  variant="outline"
-                  onClick={() => setShowMap(!showMap)}
-                >
-                  <MapPin className="mr-2 h-4 w-4" />
-                  {showMap ? 'Hide' : 'Show'} Incident Map
-                </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <Bell className="mr-2 h-4 w-4" />
-                  Notification Settings
-                </Button>
-                
-                {/* Supervisor-only actions */}
-                {isPoliceSupervisor && (
-                  <>
-                    <Button className="w-full justify-start" variant="outline">
-                      <Users className="mr-2 h-4 w-4" />
-                      Manage Operators
-                    </Button>
-                    <Button className="w-full justify-start" variant="outline">
-                      <TrendingUp className="mr-2 h-4 w-4" />
-                      Performance Reports
-                    </Button>
-                    <Button 
-                      onClick={createPoliceUsers}
-                      className="w-full justify-start" 
-                      variant="outline"
-                    >
-                      <User className="mr-2 h-4 w-4" />
-                      Seed Police Users
-                    </Button>
-                    <Button className="w-full justify-start" variant="outline">
-                      <Settings className="mr-2 h-4 w-4" />
-                      System Settings
-                    </Button>
-                  </>
-                )}
-                
-                {/* Dispatcher-specific actions */}
-                {isPoliceDispatcher && (
-                  <>
-                    <Button className="w-full justify-start" variant="outline">
-                      <Phone className="mr-2 h-4 w-4" />
-                      Unit Communications
-                    </Button>
-                    <Button className="w-full justify-start" variant="outline">
-                      <Users className="mr-2 h-4 w-4" />
-                      Assign Units
-                    </Button>
-                    <Button className="w-full justify-start" variant="outline">
-                      <Activity className="mr-2 h-4 w-4" />
-                      Dispatch Queue
-                    </Button>
-                    <Button className="w-full justify-start" variant="outline">
-                      <TrendingUp className="mr-2 h-4 w-4" />
-                      Response Analytics
-                    </Button>
-                  </>
-                )}
-                
-                {/* Operator-only actions */}
-                {isPoliceOperator && (
-                  <>
-                    <Button className="w-full justify-start" variant="outline">
-                      <TrendingUp className="mr-2 h-4 w-4" />
-                      My Performance
-                    </Button>
-                    <Button className="w-full justify-start" variant="outline">
-                      <CheckCircle className="mr-2 h-4 w-4" />
-                      Mark Incident Complete
-                    </Button>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Operator Status */}
-            <OperatorStatusPanel operatorSession={operatorSession} />
-
-            {/* Map */}
-            {showMap && (
+            {/* Stats Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <MapPin className="h-5 w-5" />
-                    Live Incident Map
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <IncidentMap 
-                    incidents={incidents}
-                    selectedIncident={selectedIncident}
-                    onSelectIncident={(incident) => setSelectedIncident(incident)}
-                  />
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Active Incidents</p>
+                      <p className="text-2xl font-bold text-red-600">{dashboardStats.activeIncidents}</p>
+                    </div>
+                    <AlertTriangle className="h-5 w-5 text-red-600" />
+                  </div>
                 </CardContent>
               </Card>
-            )}
-          </div>
-        </div>
-      </div>
+
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Available Units</p>
+                      <p className="text-2xl font-bold text-green-600">{dashboardStats.availableUnits}</p>
+                    </div>
+                    <CheckCircle className="h-5 w-5 text-green-600" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Avg Response Time</p>
+                      <p className="text-2xl font-bold text-blue-600">{dashboardStats.avgResponseTime}m</p>
+                    </div>
+                    <Clock className="h-5 w-5 text-blue-600" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Operators Online</p>
+                      <p className="text-2xl font-bold text-purple-600">{dashboardStats.operatorsOnline}</p>
+                    </div>
+                    <Users className="h-5 w-5 text-purple-600" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Main Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Incidents List */}
+              <div className="lg:col-span-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-xl flex items-center gap-2">
+                      <AlertTriangle className="h-6 w-6" />
+                      Active Incidents
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <IncidentList 
+                      incidents={incidents}
+                      onUpdate={fetchIncidents}
+                      selectedIncident={selectedIncident}
+                      onSelectIncident={(incident) => setSelectedIncident(incident)}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Right Panel */}
+              <div className="space-y-6">
+                {/* Unit Status Manager for current user */}
+                <UnitStatusManager />
+                
+                {/* Response Time Metrics */}
+                <ResponseTimeTracker showRecentOnly={true} />
+
+                {/* Quick Actions */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Quick Actions</CardTitle>
+                    {isPoliceSupervisor && (
+                      <CardDescription>Supervisor Actions Available</CardDescription>
+                    )}
+                    {isPoliceDispatcher && (
+                      <CardDescription>Dispatcher Actions Available</CardDescription>
+                    )}
+                    {isPoliceOperator && (
+                      <CardDescription>Operator Actions Available</CardDescription>
+                    )}
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {(isPoliceSupervisor || isAdmin) && (
+                      <Button 
+                        onClick={() => window.location.href = '/units-profiles'}
+                        variant="outline" 
+                        className="w-full"
+                      >
+                        <Users className="h-4 w-4 mr-2" />
+                        Manage Units & Profiles
+                      </Button>
+                    )}
+                    {(isPoliceSupervisor || isAdmin) && (
+                      <Button 
+                        onClick={createPoliceUsers}
+                        variant="outline" 
+                        className="w-full"
+                      >
+                        Seed Police Users (Admin Only)
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Operator Status */}
+                <OperatorStatusPanel 
+                  operatorSession={operatorSession}
+                />
+
+                {/* Incident Map */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <MapPin className="h-5 w-5" />
+                      Incident Map
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowMap(!showMap)}
+                        className="ml-auto"
+                      >
+                        {showMap ? 'Hide' : 'Show'}
+                      </Button>
+                    </CardTitle>
+                  </CardHeader>
+                  {showMap && (
+                    <CardContent>
+                      <IncidentMap 
+                        incidents={incidents} 
+                        selectedIncident={selectedIncident}
+                        onSelectIncident={(incident) => setSelectedIncident(incident)}
+                      />
+                    </CardContent>
+                  )}
+                </Card>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Management Tab - Supervisors Only */}
+          {(isPoliceSupervisor || isAdmin) && (
+            <TabsContent value="management" className="space-y-6">
+              <div className="flex items-center gap-4 mb-4">
+                <Badge variant="outline" className="flex items-center gap-2">
+                  <Users className="h-3 w-3" />
+                  Unit Management
+                </Badge>
+                <p className="text-sm text-muted-foreground">
+                  Manage emergency units, officer assignments, and performance analytics
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <Card className="cursor-pointer hover:shadow-lg transition-shadow"
+                      onClick={() => window.location.href = '/units-profiles'}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="h-5 w-5" />
+                      Units & Profiles
+                    </CardTitle>
+                    <CardDescription>
+                      Manage emergency units and officer profiles
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button variant="outline" className="w-full">
+                      Open Management Console
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5" />
+                      Performance Analytics
+                    </CardTitle>
+                    <CardDescription>
+                      Response times and unit performance metrics
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponseTimeTracker showRecentOnly={false} />
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Shield className="h-5 w-5" />
+                      System Status
+                    </CardTitle>
+                    <CardDescription>
+                      Overall system health and statistics
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div className="text-center">
+                        <p className="font-bold text-lg">{dashboardStats.totalIncidents}</p>
+                        <p className="text-muted-foreground">Total Incidents</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="font-bold text-lg">{dashboardStats.resolvedIncidents}</p>
+                        <p className="text-muted-foreground">Resolved</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          )}
+        </Tabs>
+      </main>
     </div>
   );
 };
