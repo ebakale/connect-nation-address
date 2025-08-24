@@ -7,6 +7,7 @@ import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, Check
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { useUserRole } from '@/hooks/useUserRole';
 
 // Import professional images
 import heroImage from '@/assets/hero-address-system.jpg';
@@ -20,6 +21,7 @@ const Index = () => {
   const { user, loading } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const { hasPoliceAccess } = useUserRole();
 
   if (loading) {
     return (
@@ -597,7 +599,7 @@ const navigationItems = [
               <CardContent className="space-y-4">
                 {user ? (
                   <Button 
-                    onClick={() => navigate('/dashboard')} 
+                    onClick={() => navigate(hasPoliceAccess ? '/police' : '/dashboard')} 
                     className="w-full"
                     variant="hero"
                   >
@@ -663,7 +665,7 @@ const navigationItems = [
             </div>
             {user ? (
               <Button 
-                onClick={() => navigate('/dashboard')} 
+                onClick={() => navigate(hasPoliceAccess ? '/police' : '/dashboard')} 
                 className="glass hover:shadow-neon transition-all duration-300"
                 variant="outline"
               >
@@ -694,7 +696,7 @@ const navigationItems = [
                   key={item.id}
                   onClick={() => {
                     if (item.id === 'login') {
-                      user ? navigate('/dashboard') : navigate('/auth');
+                      user ? navigate(hasPoliceAccess ? '/police' : '/dashboard') : navigate('/auth');
                     } else {
                       setActiveSection(item.id);
                     }

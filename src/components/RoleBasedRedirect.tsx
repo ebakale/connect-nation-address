@@ -6,14 +6,14 @@ import { useUserRole } from '@/hooks/useUserRole';
 export const RoleBasedRedirect = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { loading } = useUserRole();
+  const { loading, hasPoliceAccess } = useUserRole();
 
   useEffect(() => {
     if (!user || loading) return;
 
     // All authenticated users go to unified dashboard
-    navigate('/dashboard');
-  }, [user, loading, navigate]);
+    navigate(hasPoliceAccess ? '/police' : '/dashboard');
+  }, [user, loading, hasPoliceAccess, navigate]);
 
   return null;
 };

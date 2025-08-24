@@ -8,6 +8,7 @@ import { Globe, Shield, Lock, Mail } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { useUserRole } from '@/hooks/useUserRole';
 
 const Auth = () => {
   const [loading, setLoading] = useState(false);
@@ -18,10 +19,12 @@ const Auth = () => {
     confirmPassword: ''
   });
   const { signIn, signUp, user } = useAuth();
+  const { hasPoliceAccess, loading: roleLoading } = useUserRole();
   const { t } = useLanguage();
 
   if (user) {
-    return <Navigate to="/dashboard" replace />;
+    if (roleLoading) return null;
+    return <Navigate to={hasPoliceAccess ? '/police' : '/dashboard'} replace />;
   }
 
   const handleInputChange = (field: string, value: string) => {
