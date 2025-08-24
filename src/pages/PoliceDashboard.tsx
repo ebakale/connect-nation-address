@@ -382,7 +382,7 @@ const PoliceDashboard = () => {
       fetchAreaIncidents();
       fetchUnitIncidents();
     }
-  }, [userCity, userUnit?.coverage_city, userUnits.length, hasPoliceAccess]);
+  }, [userCity, userUnit?.coverage_city, userUnits.length, hasPoliceAccess, isPoliceSupervisor]);
 
   // Real-time subscription
   useEffect(() => {
