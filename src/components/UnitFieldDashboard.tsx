@@ -104,7 +104,11 @@ const fieldActions: FieldAction[] = [
   }
 ];
 
-export const UnitFieldDashboard: React.FC = () => {
+interface UnitFieldDashboardProps {
+  unitIncidents: any[];
+}
+
+export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ unitIncidents }) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [unitInfo, setUnitInfo] = useState<UnitInfo | null>(null);
@@ -115,11 +119,15 @@ export const UnitFieldDashboard: React.FC = () => {
   const [currentLocation, setCurrentLocation] = useState('');
   const [isUpdatingLocation, setIsUpdatingLocation] = useState(false);
 
+  // Use the incidents passed from parent component
+  useEffect(() => {
+    setAssignments(unitIncidents);
+  }, [unitIncidents]);
+
   useEffect(() => {
     fetchUnitInfo();
   }, [user]);
 
-  // Separate useEffect for assignments that depends on unitInfo
   useEffect(() => {
     if (unitInfo) {
       fetchAssignments();

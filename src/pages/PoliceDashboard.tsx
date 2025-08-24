@@ -63,6 +63,7 @@ const PoliceDashboard = () => {
   const [showUnitsOverview, setShowUnitsOverview] = useState(false);
   const [incidents, setIncidents] = useState<EmergencyIncident[]>([]);
   const [areaIncidents, setAreaIncidents] = useState<EmergencyIncident[]>([]);
+  const [unitIncidents, setUnitIncidents] = useState<EmergencyIncident[]>([]);
   const [selectedIncident, setSelectedIncident] = useState<EmergencyIncident | null>(null);
   const [dashboardStats, setDashboardStats] = useState<DashboardStats>({
     activeIncidents: 0,
@@ -195,6 +196,49 @@ const PoliceDashboard = () => {
     }
   };
 
+  // Fetch unit-specific incidents (for "My Unit" tab)
+  const fetchUnitIncidents = async () => {
+    if (!hasPoliceAccess || !userUnits.length) return;
+
+    try {
+      const userUnitCodes = userUnits.map(u => u.unit_code);
+      
+      let query = supabase
+        .from('emergency_incidents')
+        .select('*');
+
+      // Supervisors see all incidents assigned to their units regardless of status
+      if (!isPoliceSupervisor) {
+        query = query.in('status', ['reported', 'dispatched', 'responding', 'on_scene']);
+      }
+
+      query = query.order('priority_level', { ascending: false })
+        .order('reported_at', { ascending: false });
+
+      const { data: incidentsData, error } = await query;
+      if (error) throw error;
+
+      const enrichedIncidents = incidentsData?.map(incident => ({
+        ...incident,
+        reporter_name: 'Unknown',
+        reporter_email: ''
+      })) || [];
+
+      // Filter for incidents assigned to user's units
+      const unitSpecificIncidents = enrichedIncidents.filter(incident => {
+        if (!incident.assigned_units || incident.assigned_units.length === 0) {
+          return false; // Unit tab only shows assigned incidents
+        }
+        
+        return incident.assigned_units.some((unit: string) => userUnitCodes.includes(unit));
+      });
+
+      setUnitIncidents(unitSpecificIncidents);
+    } catch (error) {
+      console.error('Error fetching unit incidents:', error);
+    }
+  };
+
   // Fetch incidents and calculate stats - filtered by user's city
   const fetchIncidents = async () => {
     if (!hasPoliceAccess) return;
@@ -280,16 +324,11 @@ const PoliceDashboard = () => {
         .from('emergency_incidents')
         .select('*');
 
-      // Supervisors see all incidents assigned to their units regardless of status
-      // Other roles see only active incidents  
-      if (!isPoliceSupervisor) {
-        query = query.in('status', ['reported', 'dispatched', 'responding', 'on_scene']);
-      }
-
-      query = query.order('priority_level', { ascending: false })
-        .order('reported_at', { ascending: false });
-
-      query = query.eq('city', filterCity);
+      // Area incidents always show only active incidents for all roles
+      query = query.in('status', ['reported', 'dispatched', 'responding', 'on_scene'])
+        .order('priority_level', { ascending: false })
+        .order('reported_at', { ascending: false })
+        .eq('city', filterCity);
 
       const { data: incidentsData, error } = await query;
       if (error) throw error;
@@ -300,22 +339,16 @@ const PoliceDashboard = () => {
         reporter_email: ''
       })) || [];
 
-      // Filter area incidents - only show unassigned ones to dispatchers/supervisors
+      // Filter area incidents - geographic-based, not unit-based
       const validAreaIncidents = enrichedIncidents.filter(incident => {
         // Show unassigned incidents only to dispatchers/supervisors
         if (!incident.assigned_units || incident.assigned_units.length === 0) {
           return isPoliceDispatcher || isDispatchSupervisor;
         }
         
-        // For assigned incidents, show based on role and unit membership
+        // For assigned incidents in the area, show based on valid unit assignments
         const validUnits = ['UNIT-001', 'UNIT-002', 'UNIT-003', 'UNIT-004', 'UNIT-005', 'UNIT-006', 'UNIT-007', 'UNIT-008'];
-        const hasValidUnit = incident.assigned_units.some((unit: string) => validUnits.includes(unit));
-        
-        // Supervisors can see incidents assigned to their units
-        const userUnitCodes = userUnits.map(u => u.unit_code);
-        const hasUserUnit = incident.assigned_units.some((unit: string) => userUnitCodes.includes(unit));
-        
-        return hasValidUnit || (isPoliceSupervisor && hasUserUnit);
+        return incident.assigned_units.some((unit: string) => validUnits.includes(unit));
       });
 
       setAreaIncidents(validAreaIncidents);
@@ -347,6 +380,7 @@ const PoliceDashboard = () => {
     if (userCity || userUnit?.coverage_city || (userUnits && userUnits.length > 0)) {
       fetchIncidents();
       fetchAreaIncidents();
+      fetchUnitIncidents();
     }
   }, [userCity, userUnit?.coverage_city, userUnits.length, hasPoliceAccess]);
 
@@ -559,7 +593,7 @@ const PoliceDashboard = () => {
                 Manage your unit assignments and field activities
               </p>
             </div>
-            <UnitFieldDashboard />
+            <UnitFieldDashboard unitIncidents={unitIncidents} />
           </TabsContent>
 
           {/* Dispatch Center Tab */}
