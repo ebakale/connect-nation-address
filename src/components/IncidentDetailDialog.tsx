@@ -606,32 +606,18 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                         </div>
                       )}
                       
-                      <div className="grid grid-cols-1 gap-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => {
-                            const url = `https://www.google.com/maps?q=${incident.location_latitude},${incident.location_longitude}`;
-                            window.open(url, '_blank');
-                          }}
-                          className="w-full"
-                        >
-                          <Navigation className="h-4 w-4 mr-2" />
-                          Navigate to Incident
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => {
-                            toast.info('Backup request sent to dispatch center');
-                            // Here you could add actual backup request functionality
-                          }}
-                          className="w-full"
-                        >
-                          <Users className="h-4 w-4 mr-2" />
-                          Request Backup
-                        </Button>
-                      </div>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => {
+                          const url = `https://www.google.com/maps?q=${incident.location_latitude},${incident.location_longitude}`;
+                          window.open(url, '_blank');
+                        }}
+                        className="w-full"
+                      >
+                        <Navigation className="h-4 w-4 mr-2" />
+                        Open in Google Maps
+                      </Button>
                     </div>
                   </div>
                 )}

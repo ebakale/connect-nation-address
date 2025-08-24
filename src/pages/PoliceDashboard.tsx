@@ -40,8 +40,6 @@ interface EmergencyIncident {
   reporter_id?: string;
   reporter_name?: string;
   reporter_email?: string;
-  region?: string;
-  city?: string;
 }
 
 interface DashboardStats {
@@ -73,9 +71,6 @@ const PoliceDashboard = () => {
     resolvedIncidents: 0
   });
   const [operatorSession, setOperatorSession] = useState<any>(null);
-  const [userUnitCodes, setUserUnitCodes] = useState<string[]>([]);
-  const [userUnitRegion, setUserUnitRegion] = useState<string | null>(null);
-  const [userUnitCity, setUserUnitCity] = useState<string | null>(null);
 
   // Set default tab based on user role
   useEffect(() => {
@@ -129,46 +124,7 @@ const PoliceDashboard = () => {
     };
 
     initializeSession();
-    if (user?.id) {
-      fetchUserUnits();
-    }
   }, [user, hasPoliceAccess]);
-
-  // Fetch user's unit assignments
-  const fetchUserUnits = async () => {
-    if (!user?.id) return;
-
-    try {
-      const { data: unitMemberships, error } = await supabase
-        .from('emergency_unit_members')
-        .select(`
-          emergency_units(unit_code, current_location)
-        `)
-        .eq('officer_id', user.id);
-
-      if (error) throw error;
-
-      const unitCodes = unitMemberships?.map(membership => 
-        membership.emergency_units?.unit_code
-      ).filter(Boolean) || [];
-      
-      // Get the region/city from the first unit's location
-      const firstUnit = unitMemberships?.[0]?.emergency_units;
-      if (firstUnit?.current_location) {
-        const locationParts = firstUnit.current_location.split(',');
-        const city = locationParts[0]?.trim();
-        const region = (locationParts.length >= 3
-          ? locationParts[locationParts.length - 2]
-          : locationParts[1])?.trim(); // Fallback if only "City, Region"
-        if (city) setUserUnitCity(city);
-        if (region) setUserUnitRegion(region);
-      }
-      
-      setUserUnitCodes(unitCodes);
-    } catch (error) {
-      console.error('Error fetching user units:', error);
-    }
-  };
 
   // Fetch incidents and calculate stats
   const fetchIncidents = async () => {
@@ -657,23 +613,17 @@ const PoliceDashboard = () => {
 
               {/* Coordination Tools */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Unit Area Incidents */}
+                {/* Area Incidents - Limited to their scope */}
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2">
                       <AlertTriangle className="h-5 w-5" />
-                      Unit Area Incidents
+                      Area Incidents
                     </CardTitle>
-                    <CardDescription>
-                      All incidents in your unit area
-                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <IncidentList 
-                      incidents={incidents.filter(incident => 
-                        (userUnitRegion && incident.region && incident.region.toLowerCase().trim() === userUnitRegion.toLowerCase().trim()) ||
-                        (userUnitCity && incident.city && incident.city.toLowerCase().trim() === userUnitCity.toLowerCase().trim())
-                      )}
+                      incidents={incidents.slice(0, 5)} // Limited view
                       onUpdate={fetchIncidents}
                       selectedIncident={selectedIncident}
                       onSelectIncident={(incident) => setSelectedIncident(incident)}
@@ -681,73 +631,50 @@ const PoliceDashboard = () => {
                   </CardContent>
                 </Card>
 
-                {/* My Unit Assigned Incidents */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Users className="h-5 w-5" />
-                      My Unit Incidents
-                    </CardTitle>
-                    <CardDescription>
-                      All incidents assigned to your unit (accepted and pending)
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <IncidentList 
-                      incidents={incidents.filter(incident => 
-                        incident.assigned_units?.some(unit => userUnitCodes.includes(unit))
-                      )}
-                      onUpdate={fetchIncidents}
-                      selectedIncident={selectedIncident}
-                      onSelectIncident={(incident) => setSelectedIncident(incident)}
-                    />
-                  </CardContent>
-                </Card>
-              </div>
+                {/* Quick Actions for Supervisors */}
+                <div className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Coordination Actions</CardTitle>
+                      <CardDescription>Supervisor coordination tools</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <Button 
+                        onClick={() => setShowUnitsOverview(true)}
+                        variant="outline" 
+                        className="w-full"
+                      >
+                        <Shield className="h-4 w-4 mr-2" />
+                        View All Units
+                      </Button>
+                      <Button 
+                        onClick={() => window.location.href = '/units-profiles'}
+                        variant="outline" 
+                        className="w-full"
+                      >
+                        <Users className="h-4 w-4 mr-2" />
+                        Manage My Units
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => toast.info('Backup request feature coming soon')}
+                      >
+                        <MessageSquare className="h-4 w-4 mr-2" />
+                        Request Regional Backup
+                      </Button>
+                    </CardContent>
+                  </Card>
 
-              {/* Quick Actions for Supervisors */}
-              <div className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Coordination Actions</CardTitle>
-                    <CardDescription>Supervisor coordination tools</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <Button 
-                      onClick={() => setShowUnitsOverview(true)}
-                      variant="outline" 
-                      className="w-full"
-                    >
-                      <Shield className="h-4 w-4 mr-2" />
-                      View All Units
-                    </Button>
-                    <Button 
-                      onClick={() => window.location.href = '/units-profiles'}
-                      variant="outline" 
-                      className="w-full"
-                    >
-                      <Users className="h-4 w-4 mr-2" />
-                      Manage My Units
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="w-full"
-                      onClick={() => toast.info('Backup request feature coming soon')}
-                    >
-                      <MessageSquare className="h-4 w-4 mr-2" />
-                      Request Regional Backup
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Unit Status</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <UnitStatusManager />
-                  </CardContent>
-                </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Unit Status</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <UnitStatusManager />
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             </TabsContent>
           )}
