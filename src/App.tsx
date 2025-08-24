@@ -10,6 +10,8 @@ import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import UnifiedDashboard from "./pages/UnifiedDashboard";
 import PoliceDashboard from "./pages/PoliceDashboard";
+import { UnitsAndProfilesPage } from "./pages/UnitsAndProfilesPage";
+import { UnitDashboardPage } from "./pages/UnitDashboardPage";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,8 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<UnifiedDashboard />} />
             <Route path="/police" element={<PoliceDashboard />} />
+            <Route path="/units-profiles" element={<UnitsAndProfilesPage />} />
+            <Route path="/unit-dashboard" element={<UnitDashboardPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
