@@ -151,27 +151,35 @@ const PoliceDashboard = () => {
         // Fetch reporter profiles if we have reporter IDs
         let reporterProfiles: Record<string, { full_name?: string; email?: string }> = {};
         if (reporterIds.length > 0) {
-          const { data: profilesData } = await supabase
-            .from('profiles')
-            .select('user_id, full_name, email')
-            .in('user_id', reporterIds);
-          
-          if (profilesData) {
-            reporterProfiles = profilesData.reduce((acc, profile) => {
-              acc[profile.user_id] = {
-                full_name: profile.full_name,
-                email: profile.email
-              };
-              return acc;
-            }, {} as Record<string, { full_name?: string; email?: string }>);
+          try {
+            const { data: profilesData, error: profilesError } = await supabase
+              .from('profiles')
+              .select('user_id, full_name, email')
+              .in('user_id', reporterIds);
+            
+            if (profilesError) {
+              console.warn('Could not fetch reporter profiles:', profilesError);
+            } else if (profilesData) {
+              reporterProfiles = profilesData.reduce((acc, profile) => {
+                acc[profile.user_id] = {
+                  full_name: profile.full_name,
+                  email: profile.email
+                };
+                return acc;
+              }, {} as Record<string, { full_name?: string; email?: string }>);
+            }
+          } catch (error) {
+            console.warn('Error fetching reporter profiles:', error);
           }
         }
         
         // Transform the data to include reporter info at the top level
         const transformedIncidents = incidentsData?.map(incident => ({
           ...incident,
-          reporter_name: incident.reporter_id ? reporterProfiles[incident.reporter_id]?.full_name : undefined,
-          reporter_email: incident.reporter_id ? reporterProfiles[incident.reporter_id]?.email : undefined
+          reporter_name: incident.reporter_id && reporterProfiles[incident.reporter_id] ? 
+            reporterProfiles[incident.reporter_id].full_name : undefined,
+          reporter_email: incident.reporter_id && reporterProfiles[incident.reporter_id] ? 
+            reporterProfiles[incident.reporter_id].email : undefined
         })) || [];
         
         setIncidents(transformedIncidents);
@@ -456,27 +464,35 @@ const PoliceDashboard = () => {
                     // Fetch reporter profiles if we have reporter IDs
                     let reporterProfiles: Record<string, { full_name?: string; email?: string }> = {};
                     if (reporterIds.length > 0) {
-                      const { data: profilesData } = await supabase
-                        .from('profiles')
-                        .select('user_id, full_name, email')
-                        .in('user_id', reporterIds);
-                      
-                      if (profilesData) {
-                        reporterProfiles = profilesData.reduce((acc, profile) => {
-                          acc[profile.user_id] = {
-                            full_name: profile.full_name,
-                            email: profile.email
-                          };
-                          return acc;
-                        }, {} as Record<string, { full_name?: string; email?: string }>);
+                      try {
+                        const { data: profilesData, error: profilesError } = await supabase
+                          .from('profiles')
+                          .select('user_id, full_name, email')
+                          .in('user_id', reporterIds);
+                        
+                        if (profilesError) {
+                          console.warn('Could not fetch reporter profiles:', profilesError);
+                        } else if (profilesData) {
+                          reporterProfiles = profilesData.reduce((acc, profile) => {
+                            acc[profile.user_id] = {
+                              full_name: profile.full_name,
+                              email: profile.email
+                            };
+                            return acc;
+                          }, {} as Record<string, { full_name?: string; email?: string }>);
+                        }
+                      } catch (error) {
+                        console.warn('Error fetching reporter profiles:', error);
                       }
                     }
                     
                     // Transform the data to include reporter info at the top level
                     const transformedIncidents = incidentsData?.map(incident => ({
                       ...incident,
-                      reporter_name: incident.reporter_id ? reporterProfiles[incident.reporter_id]?.full_name : undefined,
-                      reporter_email: incident.reporter_id ? reporterProfiles[incident.reporter_id]?.email : undefined
+                      reporter_name: incident.reporter_id && reporterProfiles[incident.reporter_id] ? 
+                        reporterProfiles[incident.reporter_id].full_name : undefined,
+                      reporter_email: incident.reporter_id && reporterProfiles[incident.reporter_id] ? 
+                        reporterProfiles[incident.reporter_id].email : undefined
                     })) || [];
                     
                     setIncidents(transformedIncidents);

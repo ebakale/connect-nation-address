@@ -610,26 +610,53 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                             {new Date(log.timestamp).toLocaleString()}
                           </span>
                         </div>
-                        <div className="text-sm">
-                          {log.action === 'status_updated' && (
-                            <p>Status changed from <strong>{log.details?.old_status}</strong> to <strong>{log.details?.new_status}</strong></p>
-                          )}
-                          {log.action === 'unit_assigned' && (
-                            <p>Unit <strong>{unitNames[log.details?.assigned_unit] || log.details?.unit_name || log.details?.assigned_unit}</strong> assigned to incident</p>
-                          )}
-                          {log.action === 'priority_updated' && (
-                            <p>Priority changed from <strong>{log.details?.old_priority}</strong> to <strong>{log.details?.new_priority}</strong></p>
-                          )}
-                          {log.action === 'notes_added' && (
-                            <p>Notes updated: <em>{log.details?.notes}</em></p>
-                          )}
-                          {log.action === 'incident_completed' && (
-                            <p>Incident marked as complete</p>
-                          )}
-                          {!['status_updated', 'unit_assigned', 'priority_updated', 'notes_added', 'incident_completed'].includes(log.action) && (
-                            <p>{log.details ? JSON.stringify(log.details) : 'No additional details'}</p>
-                          )}
-                        </div>
+                         <div className="text-sm">
+                           {log.action === 'status_updated' && (
+                             <p>Status changed from <strong>{log.details?.old_status}</strong> to <strong>{log.details?.new_status}</strong></p>
+                           )}
+                           {log.action === 'unit_assigned' && (
+                             <p>Unit <strong>{unitNames[log.details?.assigned_unit] || log.details?.unit_name || log.details?.assigned_unit}</strong> assigned to incident</p>
+                           )}
+                           {log.action === 'priority_updated' && (
+                             <p>Priority changed from <strong>{log.details?.old_priority}</strong> to <strong>{log.details?.new_priority}</strong></p>
+                           )}
+                           {log.action === 'notes_added' && (
+                             <p>Notes updated: <em>{log.details?.notes}</em></p>
+                           )}
+                           {log.action === 'incident_completed' && (
+                             <p>Incident marked as complete</p>
+                           )}
+                           {log.action === 'addNote' && (
+                             <p>Notes added: <em>{log.details?.notes}</em></p>
+                           )}
+                           {log.action === 'updateStatus' && (
+                             <p>Status changed from <strong>{log.details?.oldStatus}</strong> to <strong>{log.details?.status}</strong></p>
+                           )}
+                           {log.action === 'updatePriority' && (
+                             <p>Priority changed from <strong>{log.details?.oldPriority}</strong> to <strong>{log.details?.priority}</strong></p>
+                           )}
+                           {log.action === 'assignUnits' && log.details?.units && (
+                             <p>Units assigned: <strong>{Array.isArray(log.details.units) ? log.details.units.join(', ') : log.details.units}</strong></p>
+                           )}
+                           {log.action === 'markComplete' && (
+                             <p>Incident marked as complete - {log.details?.notes || 'No additional notes'}</p>
+                           )}
+                           {!['status_updated', 'unit_assigned', 'priority_updated', 'notes_added', 'incident_completed', 'addNote', 'updateStatus', 'updatePriority', 'assignUnits', 'markComplete'].includes(log.action) && (
+                             <div className="text-muted-foreground">
+                               {log.details && typeof log.details === 'object' ? (
+                                 <div className="space-y-1">
+                                   {Object.entries(log.details).map(([key, value]) => (
+                                     <div key={key} className="text-xs">
+                                       <strong>{key}:</strong> {typeof value === 'string' ? value : JSON.stringify(value)}
+                                     </div>
+                                   ))}
+                                 </div>
+                               ) : (
+                                 <span>{log.details || 'No additional details'}</span>
+                               )}
+                             </div>
+                           )}
+                         </div>
                       </div>
                     </div>
                   ))}
