@@ -32,6 +32,11 @@ interface EmergencyIncident {
   encrypted_address?: string;
   encrypted_latitude?: string;
   encrypted_longitude?: string;
+  // New unencrypted location fields
+  incident_uac?: string;
+  location_address?: string;
+  location_latitude?: number;
+  location_longitude?: number;
 }
 
 interface IncidentListProps {
@@ -78,20 +83,28 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [assignDialog, setAssignDialog] = useState<string | null>(null);
   const [assigningUnit, setAssigningUnit] = useState('');
-  const [decryptedInfo, setDecryptedInfo] = useState<Record<string, { message: string; address: string; coordinates?: { lat: number; lng: number } }>>({});
+  const [decryptedInfo, setDecryptedInfo] = useState<Record<string, { message: string; address: string; coordinates?: { lat: number; lng: number }; uac?: string }>>({});
 
-  // Decrypt basic incident info for display (excluding contact details)
+  // Process incident info for display - prefer unencrypted data
   useEffect(() => {
-    const decryptBasicInfo = () => {
-      const newDecryptedInfo: Record<string, { message: string; address: string; coordinates?: { lat: number; lng: number } }> = {};
+    const processIncidentInfo = () => {
+      const newDecryptedInfo: Record<string, { message: string; address: string; coordinates?: { lat: number; lng: number }; uac?: string }> = {};
       
       incidents.forEach(incident => {
-        const decryptedMessage = incident.encrypted_message ? simpleDecrypt(incident.encrypted_message) : '';
-        const decryptedAddress = incident.encrypted_address ? simpleDecrypt(incident.encrypted_address) : '';
+        // Use unencrypted location data if available, otherwise try to decrypt
+        const locationAddress = incident.location_address || 
+          (incident.encrypted_address ? simpleDecrypt(incident.encrypted_address) : '');
         
-        // Also decrypt coordinates for police roles
+        const decryptedMessage = incident.encrypted_message ? simpleDecrypt(incident.encrypted_message) : '';
+        
+        // Use unencrypted coordinates if available
         let coordinates: { lat: number; lng: number } | undefined;
-        if (incident.encrypted_latitude && incident.encrypted_longitude) {
+        if (incident.location_latitude && incident.location_longitude) {
+          coordinates = { 
+            lat: incident.location_latitude, 
+            lng: incident.location_longitude 
+          };
+        } else if (incident.encrypted_latitude && incident.encrypted_longitude) {
           try {
             const lat = parseFloat(simpleDecrypt(incident.encrypted_latitude));
             const lng = parseFloat(simpleDecrypt(incident.encrypted_longitude));
@@ -105,15 +118,16 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
         
         newDecryptedInfo[incident.id] = {
           message: decryptedMessage,
-          address: decryptedAddress,
-          coordinates
+          address: locationAddress,
+          coordinates,
+          uac: incident.incident_uac
         };
       });
       
       setDecryptedInfo(newDecryptedInfo);
     };
 
-    decryptBasicInfo();
+    processIncidentInfo();
   }, [incidents]);
 
   const getPriorityColor = (priority: number) => {
@@ -330,30 +344,47 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
                 </div>
               )}
 
-              {/* Show location with coordinates for police roles */}
+              {/* Show location with UAC for police roles */}
               <div className="mb-3 space-y-1">
+                {/* Show UAC if available */}
+                {decryptedInfo[incident.id]?.uac && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <MapPin className="h-4 w-4 text-blue-600" />
+                    <span className="font-mono bg-blue-50 text-blue-800 px-2 py-1 rounded border border-blue-200">
+                      📍 UAC: {decryptedInfo[incident.id].uac}
+                    </span>
+                  </div>
+                )}
+                
+                {/* Show address */}
                 {decryptedInfo[incident.id]?.address && 
                  !decryptedInfo[incident.id].address.includes('[Decryption') && 
                  !decryptedInfo[incident.id].address.includes('[Encrypted') && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <MapPin className="h-4 w-4" />
+                    <span className="w-4"></span> {/* Indent to align with UAC */}
                     <span>{decryptedInfo[incident.id].address}</span>
                   </div>
                 )}
-                {decryptedInfo[incident.id]?.coordinates && (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground ml-6">
+                
+                {/* Show coordinates as fallback if no UAC */}
+                {!decryptedInfo[incident.id]?.uac && decryptedInfo[incident.id]?.coordinates && (
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <MapPin className="h-4 w-4" />
                     <span className="font-mono bg-background px-2 py-1 rounded border">
                       📍 {decryptedInfo[incident.id].coordinates!.lat.toFixed(4)}, {decryptedInfo[incident.id].coordinates!.lng.toFixed(4)}
                     </span>
                   </div>
                 )}
-                {/* Show placeholder if location is encrypted/corrupted */}
-                {(!decryptedInfo[incident.id]?.address || 
+                
+                {/* Show placeholder if no location data */}
+                {!decryptedInfo[incident.id]?.uac && 
+                 !decryptedInfo[incident.id]?.coordinates &&
+                 (!decryptedInfo[incident.id]?.address || 
                   decryptedInfo[incident.id]?.address.includes('[Decryption') ||
                   decryptedInfo[incident.id]?.address.includes('[Encrypted')) && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <MapPin className="h-4 w-4" />
-                    <span className="italic">Location information encrypted</span>
+                    <span className="italic">Location information unavailable</span>
                   </div>
                 )}
               </div>

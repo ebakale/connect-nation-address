@@ -285,8 +285,12 @@ export type Database = {
           external_case_id: string | null
           id: string
           incident_number: string
+          incident_uac: string | null
           language_code: string | null
           location_accuracy: number | null
+          location_address: string | null
+          location_latitude: number | null
+          location_longitude: number | null
           priority_level: number
           reported_at: string
           reporter_id: string | null
@@ -312,8 +316,12 @@ export type Database = {
           external_case_id?: string | null
           id?: string
           incident_number: string
+          incident_uac?: string | null
           language_code?: string | null
           location_accuracy?: number | null
+          location_address?: string | null
+          location_latitude?: number | null
+          location_longitude?: number | null
           priority_level?: number
           reported_at?: string
           reporter_id?: string | null
@@ -339,8 +347,12 @@ export type Database = {
           external_case_id?: string | null
           id?: string
           incident_number?: string
+          incident_uac?: string | null
           language_code?: string | null
           location_accuracy?: number | null
+          location_address?: string | null
+          location_latitude?: number | null
+          location_longitude?: number | null
           priority_level?: number
           reported_at?: string
           reporter_id?: string | null
