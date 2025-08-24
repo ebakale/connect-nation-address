@@ -95,6 +95,32 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   const [unitNames, setUnitNames] = useState<Record<string, string>>({});
   const [userNames, setUserNames] = useState<Record<string, string>>({});
   const [reporterInfo, setReporterInfo] = useState<{ name?: string; email?: string; contact?: string }>({});
+  const [userUnits, setUserUnits] = useState<string[]>([]);
+
+  // Load user's units for assignment restrictions
+  const loadUserUnits = async () => {
+    if (!user?.id) return;
+    
+    try {
+      const { data: unitMemberships, error } = await supabase
+        .from('emergency_unit_members')
+        .select(`
+          unit_id,
+          is_lead,
+          role,
+          emergency_units(unit_code, unit_name)
+        `)
+        .eq('officer_id', user.id);
+
+      if (error) throw error;
+
+      const userUnitCodes = unitMemberships?.map(m => m.emergency_units?.unit_code).filter(Boolean) || [];
+      setUserUnits(userUnitCodes);
+    } catch (error) {
+      console.error('Error loading user units:', error);
+    }
+  };
+
   // Load unit names for display
   const loadUnitNames = async () => {
     try {
@@ -105,7 +131,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
       if (error) throw error;
       
       const unitNameMap: Record<string, string> = {};
-      const unitsData: { unit_code: string; unit_name: string; status: string }[] = [];
+      let unitsData: { unit_code: string; unit_name: string; status: string }[] = [];
       
       units?.forEach(unit => {
         // Map both unit_code and ID to unit_name for compatibility
@@ -117,6 +143,13 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
           status: unit.status
         });
       });
+
+      // Filter available units based on user role and permissions
+      if (isPoliceSupervisor && !isPoliceDispatcher) {
+        // Supervisors can only assign to their own units
+        unitsData = unitsData.filter(unit => userUnits.includes(unit.unit_code));
+      }
+      // Dispatchers can assign to any unit (no filtering needed)
       
       setUnitNames(unitNameMap);
       setAvailableUnits(unitsData);
@@ -202,8 +235,14 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
 
   useEffect(() => {
     loadIncidentLogs();
-    loadUnitNames();
-  }, [incident.id]);
+    loadUserUnits();
+  }, [incident.id, user?.id]);
+
+  useEffect(() => {
+    if (userUnits.length > 0 || isPoliceDispatcher) {
+      loadUnitNames();
+    }
+  }, [userUnits, isPoliceSupervisor, isPoliceDispatcher]);
 
   // Ensure reporter info is available even if the log has a system user_id
   useEffect(() => {
