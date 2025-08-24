@@ -81,6 +81,26 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     assigned_units: [] as string[]
   });
   const [newUnit, setNewUnit] = useState('');
+  const [unitNames, setUnitNames] = useState<Record<string, string>>({});
+
+  // Load unit names for display
+  const loadUnitNames = async () => {
+    try {
+      const { data: units, error } = await supabase
+        .from('emergency_units')
+        .select('unit_code, unit_name');
+      
+      if (error) throw error;
+      
+      const unitNameMap: Record<string, string> = {};
+      units?.forEach(unit => {
+        unitNameMap[unit.unit_code] = unit.unit_name;
+      });
+      setUnitNames(unitNameMap);
+    } catch (error) {
+      console.error('Error loading unit names:', error);
+    }
+  };
 
   const loadIncidentLogs = async () => {
     try {
@@ -99,6 +119,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
 
   useEffect(() => {
     loadIncidentLogs();
+    loadUnitNames();
   }, [incident.id]);
 
   const handleEdit = () => {
@@ -468,7 +489,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                         {editData.assigned_units.map((unit, index) => (
                           <Badge key={index} variant="outline" className="cursor-pointer"
                                  onClick={() => removeUnit(unit)}>
-                            {unit} ×
+                            {unitNames[unit] ? `${unit} - ${unitNames[unit]}` : unit} ×
                           </Badge>
                         ))}
                       </div>
@@ -476,7 +497,9 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                   ) : (
                     <div className="mt-1 flex flex-wrap gap-2">
                       {(incident.assigned_units?.length ? incident.assigned_units : []).map((unit, index) => (
-                        <Badge key={index} variant="secondary">{unit}</Badge>
+                        <Badge key={index} variant="secondary">
+                          {unitNames[unit] ? `${unit} - ${unitNames[unit]}` : unit}
+                        </Badge>
                       ))}
                       {(!incident.assigned_units || incident.assigned_units.length === 0) && (
                         <span className="text-muted-foreground">No units assigned</span>
@@ -519,15 +542,30 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                           <span className="text-sm text-muted-foreground">
                             by {log.details?.updated_by || log.details?.assigned_by || 'System'}
                           </span>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(log.timestamp).toLocaleString()}
+                          </span>
                         </div>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(log.timestamp).toLocaleString()}
-                        </p>
-                        {log.details && (
-                          <pre className="text-xs mt-2 text-muted-foreground">
-                            {JSON.stringify(log.details, null, 2)}
-                          </pre>
-                        )}
+                        <div className="text-sm">
+                          {log.action === 'status_updated' && (
+                            <p>Status changed from <strong>{log.details?.old_status}</strong> to <strong>{log.details?.new_status}</strong></p>
+                          )}
+                          {log.action === 'unit_assigned' && (
+                            <p>Unit <strong>{log.details?.assigned_unit}</strong> ({log.details?.unit_name}) assigned to incident</p>
+                          )}
+                          {log.action === 'priority_updated' && (
+                            <p>Priority changed from <strong>{log.details?.old_priority}</strong> to <strong>{log.details?.new_priority}</strong></p>
+                          )}
+                          {log.action === 'notes_added' && (
+                            <p>Notes updated: <em>{log.details?.notes}</em></p>
+                          )}
+                          {log.action === 'incident_completed' && (
+                            <p>Incident marked as complete</p>
+                          )}
+                          {!['status_updated', 'unit_assigned', 'priority_updated', 'notes_added', 'incident_completed'].includes(log.action) && (
+                            <p>{log.details ? JSON.stringify(log.details) : 'No additional details'}</p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}
