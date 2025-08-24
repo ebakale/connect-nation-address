@@ -71,6 +71,7 @@ const PoliceDashboard = () => {
     resolvedIncidents: 0
   });
   const [operatorSession, setOperatorSession] = useState<any>(null);
+  const [userUnitCodes, setUserUnitCodes] = useState<string[]>([]);
 
   // Set default tab based on user role
   useEffect(() => {
@@ -124,7 +125,34 @@ const PoliceDashboard = () => {
     };
 
     initializeSession();
+    if (user?.id) {
+      fetchUserUnits();
+    }
   }, [user, hasPoliceAccess]);
+
+  // Fetch user's unit assignments
+  const fetchUserUnits = async () => {
+    if (!user?.id) return;
+
+    try {
+      const { data: unitMemberships, error } = await supabase
+        .from('emergency_unit_members')
+        .select(`
+          emergency_units(unit_code)
+        `)
+        .eq('officer_id', user.id);
+
+      if (error) throw error;
+
+      const unitCodes = unitMemberships?.map(membership => 
+        membership.emergency_units?.unit_code
+      ).filter(Boolean) || [];
+      
+      setUserUnitCodes(unitCodes);
+    } catch (error) {
+      console.error('Error fetching user units:', error);
+    }
+  };
 
   // Fetch incidents and calculate stats
   const fetchIncidents = async () => {
@@ -613,17 +641,22 @@ const PoliceDashboard = () => {
 
               {/* Coordination Tools */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Area Incidents - Limited to their scope */}
+                {/* Unit Assigned Incidents */}
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2">
                       <AlertTriangle className="h-5 w-5" />
-                      Area Incidents
+                      My Unit's Incidents
                     </CardTitle>
+                    <CardDescription>
+                      Incidents assigned to your unit
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <IncidentList 
-                      incidents={incidents.slice(0, 5)} // Limited view
+                      incidents={incidents.filter(incident => 
+                        incident.assigned_units?.some(unit => userUnitCodes.includes(unit))
+                      )}
                       onUpdate={fetchIncidents}
                       selectedIncident={selectedIncident}
                       onSelectIncident={(incident) => setSelectedIncident(incident)}
