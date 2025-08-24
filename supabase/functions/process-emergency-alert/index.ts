@@ -51,18 +51,77 @@ serve(async (req) => {
     // Set default priority to medium - operators should assign final priority
     const priority = 3; // Default medium priority - operators will adjust as needed
 
-    // Generate UAC for incident location
-    const generateUACForIncident = (latitude: number, longitude: number, incidentId: string) => {
-      // Simplified UAC generation for incidents - using incident ID prefix
-      const latPrefix = Math.floor(latitude * 100).toString().slice(0, 4);
-      const lngPrefix = Math.floor(longitude * 100).toString().slice(0, 4);
-      const idPrefix = incidentId.replace(/-/g, '').slice(0, 6).toUpperCase();
-      return `GQ-EMRG-${latPrefix}${lngPrefix}-${idPrefix}`;
+    // Check for nearby addresses within 10 meters and generate proper UAC
+    const findNearbyAddressAndGenerateUAC = async (latitude: number, longitude: number, incidentId: string) => {
+      try {
+        // Search for addresses within approximately 10 meters (0.0001 degrees ≈ 11 meters)
+        const { data: nearbyAddresses, error } = await supabase
+          .from('addresses')
+          .select('uac, latitude, longitude')
+          .gte('latitude', latitude - 0.0001)
+          .lte('latitude', latitude + 0.0001)
+          .gte('longitude', longitude - 0.0001)
+          .lte('longitude', longitude + 0.0001)
+          .limit(5);
+
+        if (!error && nearbyAddresses && nearbyAddresses.length > 0) {
+          // Calculate exact distances and find closest address
+          let closestAddress = null;
+          let minDistance = Infinity;
+
+          for (const addr of nearbyAddresses) {
+            const distance = Math.sqrt(
+              Math.pow((latitude - parseFloat(addr.latitude.toString())) * 111000, 2) + 
+              Math.pow((longitude - parseFloat(addr.longitude.toString())) * 111000, 2)
+            ); // Distance in meters
+
+            if (distance <= 10 && distance < minDistance) {
+              minDistance = distance;
+              closestAddress = addr;
+            }
+          }
+
+          if (closestAddress) {
+            console.log(`Using existing address UAC: ${closestAddress.uac} (${minDistance.toFixed(2)}m away)`);
+            return closestAddress.uac;
+          }
+        }
+
+        // Generate new UAC using standard system for Equatorial Guinea emergency location
+        const countryCode = 'GQ';
+        const regionCode = 'EMRG'; // Emergency region code
+        const cityCode = 'INC'; // Incident city code
+        const sequence = incidentId.replace(/-/g, '').slice(0, 6).toUpperCase();
+        
+        // Generate check digit
+        const baseCode = `${countryCode}-${regionCode}-${cityCode}-${sequence}`;
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let sum = 0;
+        
+        for (let i = 0; i < baseCode.length; i++) {
+          const char = baseCode[i];
+          if (char !== '-') {
+            const value = chars.indexOf(char.toUpperCase());
+            sum += value >= 0 ? value : 0;
+          }
+        }
+        
+        const checkIndex1 = sum % chars.length;
+        const checkIndex2 = (sum * 7) % chars.length;
+        const checkDigit = chars[checkIndex1] + chars[checkIndex2];
+        
+        return `${baseCode}-${checkDigit}`;
+        
+      } catch (error) {
+        console.error('Error finding nearby address or generating UAC:', error);
+        // Fallback UAC
+        return `GQ-EMRG-INC-${incidentId.replace(/-/g, '').slice(0, 6).toUpperCase()}-FB`;
+      }
     };
 
     // Create emergency incident with both encrypted and unencrypted location data
     const tempIncidentId = crypto.randomUUID();
-    const incidentUAC = generateUACForIncident(latitude, longitude, tempIncidentId);
+    const incidentUAC = await findNearbyAddressAndGenerateUAC(latitude, longitude, tempIncidentId);
     
     const { data: incident, error: incidentError } = await supabase
       .from('emergency_incidents')
