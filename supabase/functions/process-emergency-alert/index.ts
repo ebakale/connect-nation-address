@@ -59,7 +59,19 @@ serve(async (req) => {
       priority = 2; // High priority
     }
 
-    // Create emergency incident
+    // Generate UAC for incident location
+    const generateUACForIncident = (latitude: number, longitude: number, incidentId: string) => {
+      // Simplified UAC generation for incidents - using incident ID prefix
+      const latPrefix = Math.floor(latitude * 100).toString().slice(0, 4);
+      const lngPrefix = Math.floor(longitude * 100).toString().slice(0, 4);
+      const idPrefix = incidentId.replace(/-/g, '').slice(0, 6).toUpperCase();
+      return `GQ-EMRG-${latPrefix}${lngPrefix}-${idPrefix}`;
+    };
+
+    // Create emergency incident with both encrypted and unencrypted location data
+    const tempIncidentId = crypto.randomUUID();
+    const incidentUAC = generateUACForIncident(latitude, longitude, tempIncidentId);
+    
     const { data: incident, error: incidentError } = await supabase
       .from('emergency_incidents')
       .insert({
@@ -71,7 +83,12 @@ serve(async (req) => {
         encrypted_message: encryptedMessage,
         encrypted_contact_info: encryptedContactInfo,
         language_code: language,
-        status: 'reported'
+        status: 'reported',
+        // Add unencrypted location fields for immediate police access
+        location_latitude: latitude,
+        location_longitude: longitude,
+        location_address: `Emergency Location: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+        incident_uac: incidentUAC
       })
       .select()
       .single();
