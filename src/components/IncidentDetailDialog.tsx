@@ -88,13 +88,15 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     try {
       const { data: units, error } = await supabase
         .from('emergency_units')
-        .select('unit_code, unit_name');
+        .select('id, unit_code, unit_name');
       
       if (error) throw error;
       
       const unitNameMap: Record<string, string> = {};
       units?.forEach(unit => {
+        // Map both unit_code and ID to unit_name for compatibility
         unitNameMap[unit.unit_code] = unit.unit_name;
+        unitNameMap[unit.id] = unit.unit_name;
       });
       setUnitNames(unitNameMap);
     } catch (error) {
