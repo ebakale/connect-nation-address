@@ -48,7 +48,9 @@ const PoliceDashboard = () => {
     isAdmin, 
     hasAdminAccess,
     hasPoliceAccess,
-    hasPoliceManagementAccess 
+    hasPoliceManagementAccess,
+    isPoliceOperator,
+    isPoliceSupervisor 
   } = useUserRole();
   const { user, signOut } = useAuth();
   const { t } = useLanguage();
@@ -261,8 +263,18 @@ const PoliceDashboard = () => {
               <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
                 <Shield className="h-8 w-8 text-blue-600" />
                 Police Emergency Command Center
+                {hasPoliceManagementAccess && (
+                  <Badge variant="default" className="ml-2 bg-blue-100 text-blue-800">
+                    Supervisor
+                  </Badge>
+                )}
               </h1>
-              <p className="text-muted-foreground">Real-time emergency incident management</p>
+              <p className="text-muted-foreground">
+                {hasPoliceManagementAccess 
+                  ? "Supervisor dashboard - Real-time emergency incident management & team oversight"
+                  : "Operator dashboard - Real-time emergency incident management"
+                }
+              </p>
               
               {operatorSession && (
                 <div className="flex gap-2 mt-3">
@@ -370,6 +382,9 @@ const PoliceDashboard = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Quick Actions</CardTitle>
+                {hasPoliceManagementAccess && (
+                  <CardDescription>Supervisor Actions Available</CardDescription>
+                )}
               </CardHeader>
               <CardContent className="space-y-3">
                 <Button 
@@ -384,10 +399,32 @@ const PoliceDashboard = () => {
                   <Bell className="mr-2 h-4 w-4" />
                   Notification Settings
                 </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <TrendingUp className="mr-2 h-4 w-4" />
-                  View Analytics
-                </Button>
+                
+                {/* Supervisor-only actions */}
+                {hasPoliceManagementAccess && (
+                  <>
+                    <Button className="w-full justify-start" variant="outline">
+                      <Users className="mr-2 h-4 w-4" />
+                      Manage Operators
+                    </Button>
+                    <Button className="w-full justify-start" variant="outline">
+                      <TrendingUp className="mr-2 h-4 w-4" />
+                      Performance Reports
+                    </Button>
+                    <Button className="w-full justify-start" variant="outline">
+                      <Settings className="mr-2 h-4 w-4" />
+                      System Settings
+                    </Button>
+                  </>
+                )}
+                
+                {/* Operator-only actions */}
+                {isPoliceOperator && (
+                  <Button className="w-full justify-start" variant="outline">
+                    <TrendingUp className="mr-2 h-4 w-4" />
+                    My Performance
+                  </Button>
+                )}
               </CardContent>
             </Card>
 
