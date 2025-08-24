@@ -70,13 +70,14 @@ serve(async (req) => {
         reporter_id: reporterId,
         emergency_type: emergencyType,
         priority_level: priority,
+        // Keep encrypted fields for backup/audit purposes
         encrypted_latitude: encryptedLatitude,
         encrypted_longitude: encryptedLongitude,
         encrypted_message: encryptedMessage,
         encrypted_contact_info: encryptedContactInfo,
         language_code: language,
         status: 'reported',
-        // Add unencrypted location fields for immediate police access
+        // Store ALL data in unencrypted fields for immediate police access
         location_latitude: latitude,
         location_longitude: longitude,
         location_address: `Emergency Location: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
