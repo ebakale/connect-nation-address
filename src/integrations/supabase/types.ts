@@ -489,13 +489,6 @@ export type Database = {
             foreignKeyName: "emergency_unit_members_officer_id_fkey"
             columns: ["officer_id"]
             isOneToOne: false
-            referencedRelation: "available_officers"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "emergency_unit_members_officer_id_fkey"
-            columns: ["officer_id"]
-            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
           },
@@ -737,16 +730,7 @@ export type Database = {
       }
     }
     Views: {
-      available_officers: {
-        Row: {
-          assignment_status: string | null
-          current_unit: string | null
-          full_name: string | null
-          role: Database["public"]["Enums"]["app_role"] | null
-          user_id: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       approve_address_request: {
@@ -781,6 +765,16 @@ export type Database = {
           p_region: string
         }
         Returns: string
+      }
+      get_available_officers: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          assignment_status: string
+          current_unit: string
+          full_name: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }[]
       }
       get_flagged_addresses_queue: {
         Args: Record<PropertyKey, never>
