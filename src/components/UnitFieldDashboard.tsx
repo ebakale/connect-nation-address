@@ -288,22 +288,31 @@ export const UnitFieldDashboard: React.FC = () => {
 
       // Handle special actions
       if (action.action === 'request_backup') {
-        // Create a notification for supervisors
-        await supabase
-          .from('emergency_notifications')
-          .insert({
-            user_id: 'system', // Will be handled by supervisors
+        // Process backup request through edge function
+        const { data: backupResult, error: backupError } = await supabase.functions.invoke('process-backup-request', {
+          body: {
             incident_id: incident.id,
-            title: `Backup Requested - ${incident.incident_number}`,
-            message: `Unit ${unitInfo.unit_code} has requested backup for incident ${incident.incident_number}.\n\nReason: ${actionNotes}`,
-            type: 'backup_request',
+            requesting_unit_code: unitInfo.unit_code,
+            requesting_unit_name: unitInfo.unit_name,
+            reason: actionNotes || 'No reason provided',
             priority_level: incident.priority_level,
-            metadata: {
-              requesting_unit: unitInfo.unit_code,
-              incident_number: incident.incident_number,
-              location: incident.location_address || 'Location unavailable'
-            }
-          });
+            location: formatLocation(incident),
+            incident_number: incident.incident_number
+          }
+        });
+
+        if (backupError) {
+          console.error('Backup request failed:', backupError);
+          throw new Error('Failed to send backup request');
+        }
+
+        console.log('Backup request result:', backupResult);
+        
+        // Show success message with details
+        toast({
+          title: "Backup Requested",
+          description: `${backupResult?.message || 'Backup request sent successfully'}`
+        });
       }
 
       await fetchAssignments();
