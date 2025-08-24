@@ -40,6 +40,11 @@ interface EmergencyIncident {
   location_longitude?: number;
   incident_message?: string;
   reporter_contact_info?: string;
+  // Address fields from emergency processing
+  street?: string;
+  city?: string;
+  region?: string;
+  country?: string;
   // Reporter profile information
   reporter_name?: string;
   reporter_email?: string;
@@ -456,46 +461,64 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
               {/* Show location with UAC for police roles */}
               <div className="mb-3 space-y-1">
                 {/* Show UAC if available */}
-                {decryptedInfo[incident.id]?.uac && (
+                {incident.incident_uac && (
                   <div className="flex items-center gap-2 text-sm">
                     <MapPin className="h-4 w-4 text-blue-600" />
                     <span className="font-mono bg-blue-50 text-blue-800 px-2 py-1 rounded border border-blue-200">
-                      📍 UAC: {decryptedInfo[incident.id].uac}
+                      📍 UAC: {incident.incident_uac}
                     </span>
                   </div>
                 )}
                 
-                {/* Show address */}
-                {decryptedInfo[incident.id]?.address && 
-                 !decryptedInfo[incident.id].address.includes('[Decryption') && 
-                 !decryptedInfo[incident.id].address.includes('[Encrypted') && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span className="w-4"></span> {/* Indent to align with UAC */}
-                    <span>{decryptedInfo[incident.id].address}</span>
-                  </div>
-                )}
-                
-                {/* Show coordinates as fallback if no UAC */}
-                {!decryptedInfo[incident.id]?.uac && decryptedInfo[incident.id]?.coordinates && (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <MapPin className="h-4 w-4" />
-                    <span className="font-mono bg-background px-2 py-1 rounded border">
-                      📍 {decryptedInfo[incident.id].coordinates!.lat.toFixed(4)}, {decryptedInfo[incident.id].coordinates!.lng.toFixed(4)}
-                    </span>
-                  </div>
-                )}
-                
-                {/* Show placeholder if no location data */}
-                {!decryptedInfo[incident.id]?.uac && 
-                 !decryptedInfo[incident.id]?.coordinates &&
-                 (!decryptedInfo[incident.id]?.address || 
-                  decryptedInfo[incident.id]?.address.includes('[Decryption') ||
-                  decryptedInfo[incident.id]?.address.includes('[Encrypted')) && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <MapPin className="h-4 w-4" />
-                    <span className="italic">Location information unavailable</span>
-                  </div>
-                )}
+                {/* Show structured address */}
+                {(() => {
+                  const addressParts = [
+                    incident.street,
+                    incident.city,
+                    incident.region,
+                    incident.country
+                  ].filter(Boolean);
+                  
+                  if (addressParts.length > 0) {
+                    return (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span className="w-4"></span> {/* Indent to align with UAC */}
+                        <span>{addressParts.join(', ')}</span>
+                      </div>
+                    );
+                  }
+                  
+                  // Show decrypted address as fallback
+                  if (decryptedInfo[incident.id]?.address && 
+                      !decryptedInfo[incident.id].address.includes('[Decryption') && 
+                      !decryptedInfo[incident.id].address.includes('[Encrypted')) {
+                    return (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span className="w-4"></span> {/* Indent to align with UAC */}
+                        <span>{decryptedInfo[incident.id].address}</span>
+                      </div>
+                    );
+                  }
+                  
+                  // Show coordinates only as last resort
+                  if (incident.location_latitude && incident.location_longitude) {
+                    return (
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <MapPin className="h-4 w-4" />
+                        <span className="font-mono bg-background px-2 py-1 rounded border">
+                          📍 {Number(incident.location_latitude).toFixed(4)}, {Number(incident.location_longitude).toFixed(4)}
+                        </span>
+                      </div>
+                    );
+                  }
+                  
+                  return (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <MapPin className="h-4 w-4" />
+                      <span className="italic">Location information unavailable</span>
+                    </div>
+                  );
+                })()}
               </div>
 
               <div className="flex justify-between items-center">
