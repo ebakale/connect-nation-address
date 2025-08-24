@@ -83,12 +83,12 @@ serve(async (req) => {
     // For demonstration, we'll log the notifications
     console.log('Would send notifications to operators:', notifications);
 
-    // Update incident with notification timestamp
+    // Update incident with notification timestamp only - leave status as 'reported'
     await supabase
       .from('emergency_incidents')
       .update({
-        dispatched_at: new Date().toISOString(),
-        status: priority <= 2 ? 'dispatched' : 'reported'
+        dispatched_at: new Date().toISOString()
+        // Remove automatic status change - operators should manually dispatch
       })
       .eq('id', incidentId);
 
@@ -122,7 +122,7 @@ serve(async (req) => {
         success: true,
         operatorsNotified: activeOperators.length,
         incidentNumber: incidentNumber,
-        dispatchStatus: priority <= 2 ? 'dispatched' : 'pending'
+        dispatchStatus: 'notified' // All incidents start as reported, not dispatched
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

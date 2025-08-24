@@ -48,16 +48,8 @@ serve(async (req) => {
     const encryptedLongitude = simpleEncrypt(longitude.toString());
     const encryptedContactInfo = contactInfo ? simpleEncrypt(contactInfo) : null;
 
-    // Determine priority based on emergency type and keywords
-    let priority = 3; // Default medium priority
-    const urgentKeywords = ['bleeding', 'unconscious', 'fire', 'weapon', 'attack', 'robbery'];
-    const highPriorityTypes = ['medical', 'fire', 'police'];
-    
-    if (urgentKeywords.some(keyword => message.toLowerCase().includes(keyword))) {
-      priority = 1; // Highest priority
-    } else if (highPriorityTypes.includes(emergencyType)) {
-      priority = 2; // High priority
-    }
+    // Set default priority to medium - operators should assign final priority
+    const priority = 3; // Default medium priority - operators will adjust as needed
 
     // Generate UAC for incident location
     const generateUACForIncident = (latitude: number, longitude: number, incidentId: string) => {
