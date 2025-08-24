@@ -44,7 +44,7 @@ export const UnitsAndProfilesPage: React.FC = () => {
       
       {/* Officer Profiles Section */}
       <section>
-        <OfficerProfileDashboard />
+        <OfficerProfileDashboard onClose={() => navigate('/police')} />
       </section>
     </div>
   );

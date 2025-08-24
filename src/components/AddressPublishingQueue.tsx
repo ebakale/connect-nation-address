@@ -3,10 +3,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAddresses } from "@/hooks/useAddresses";
-import { Globe, Eye, EyeOff } from "lucide-react";
+import { Globe, Eye, EyeOff, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-export const AddressPublishingQueue = () => {
+interface AddressPublishingQueueProps {
+  onClose?: () => void;
+}
+
+export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps) => {
   const { addresses, loading, updateAddressStatus, fetchAddresses } = useAddresses();
   const { toast } = useToast();
 
@@ -52,13 +56,24 @@ export const AddressPublishingQueue = () => {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Publishing Queue ({unpublishedAddresses.length})</h3>
-        {unpublishedAddresses.length > 0 && (
-          <Button onClick={handlePublishAll} className="flex items-center gap-1">
-            <Globe className="h-4 w-4" />
-            Publish All ({unpublishedAddresses.length})
-          </Button>
-        )}
+        <div>
+          <h3 className="text-lg font-semibold">Publishing Queue ({unpublishedAddresses.length})</h3>
+          <p className="text-sm text-muted-foreground">Publish verified addresses to the national registry</p>
+        </div>
+        <div className="flex gap-2">
+          {unpublishedAddresses.length > 0 && (
+            <Button onClick={handlePublishAll} className="flex items-center gap-1">
+              <Globe className="h-4 w-4" />
+              Publish All ({unpublishedAddresses.length})
+            </Button>
+          )}
+          {onClose && (
+            <Button variant="outline" size="sm" onClick={onClose}>
+              <X className="h-4 w-4 mr-2" />
+              Close
+            </Button>
+          )}
+        </div>
       </div>
       
       {unpublishedAddresses.length === 0 ? (

@@ -8,7 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { 
   Shield, Star, Clock, MapPin, Phone, Mail, 
   Crown, User, Calendar, Award, TrendingUp,
-  Navigation, Radio
+  Navigation, Radio, ArrowLeft
 } from 'lucide-react';
 
 interface OfficerProfile {
@@ -40,7 +40,11 @@ interface OfficerStats {
   rank_score: number;
 }
 
-export const OfficerProfileDashboard: React.FC = () => {
+interface OfficerProfileDashboardProps {
+  onClose?: () => void;
+}
+
+export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = ({ onClose }) => {
   const { user } = useAuth();
   const [officers, setOfficers] = useState<OfficerProfile[]>([]);
   const [officerStats, setOfficerStats] = useState<Record<string, OfficerStats>>({});
@@ -205,9 +209,17 @@ export const OfficerProfileDashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Officer Profiles & Performance</h1>
-        <p className="text-muted-foreground">View officer profiles, assignments, and performance metrics</p>
+      <div className="flex items-center gap-4">
+        {onClose && (
+          <Button variant="outline" size="sm" onClick={onClose}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back
+          </Button>
+        )}
+        <div>
+          <h1 className="text-3xl font-bold">Officer Profiles & Performance</h1>
+          <p className="text-muted-foreground">View officer profiles, assignments, and performance metrics</p>
+        </div>
       </div>
 
       {/* Summary Cards */}

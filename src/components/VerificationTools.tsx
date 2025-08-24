@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { MapPin, Search, Image, MessageSquare, Clock, CheckCircle2, AlertTriangle, Map, Target, Camera, Zap, Eye, Crosshair, Move, Ruler } from "lucide-react";
+import { MapPin, Search, Image, MessageSquare, Clock, CheckCircle2, AlertTriangle, Map, Target, Camera, Zap, Eye, Crosshair, Move, Ruler, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -39,7 +39,11 @@ interface AddressDetails {
   created_at: string;
 }
 
-export const VerificationTools = () => {
+interface VerificationToolsProps {
+  onClose?: () => void;
+}
+
+export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAddress, setSelectedAddress] = useState<AddressDetails | null>(null);
   const [verificationNotes, setVerificationNotes] = useState("");
@@ -186,6 +190,19 @@ export const VerificationTools = () => {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h3 className="text-lg font-semibold">Verification Tools</h3>
+          <p className="text-sm text-muted-foreground">Advanced tools for address verification and quality control</p>
+        </div>
+        {onClose && (
+          <Button variant="outline" size="sm" onClick={onClose}>
+            <X className="h-4 w-4 mr-2" />
+            Close
+          </Button>
+        )}
+      </div>
+      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="pb-3">

@@ -3,10 +3,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAddresses } from "@/hooks/useAddresses";
-import { EyeOff, Globe } from "lucide-react";
+import { EyeOff, Globe, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-export const AddressUnpublishingQueue = () => {
+interface AddressUnpublishingQueueProps {
+  onClose?: () => void;
+}
+
+export const AddressUnpublishingQueue = ({ onClose }: AddressUnpublishingQueueProps) => {
   const { addresses, loading, updateAddressStatus, fetchAddresses } = useAddresses();
   const { toast } = useToast();
 
@@ -52,17 +56,28 @@ export const AddressUnpublishingQueue = () => {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Published Addresses ({publishedAddresses.length})</h3>
-        {publishedAddresses.length > 0 && (
-          <Button 
-            onClick={handleUnpublishAll} 
-            variant="outline"
-            className="flex items-center gap-1"
-          >
-            <EyeOff className="h-4 w-4" />
-            Remove All from Public Registry ({publishedAddresses.length})
-          </Button>
-        )}
+        <div>
+          <h3 className="text-lg font-semibold">Published Addresses ({publishedAddresses.length})</h3>
+          <p className="text-sm text-muted-foreground">Manage addresses in the national registry</p>
+        </div>
+        <div className="flex gap-2">
+          {publishedAddresses.length > 0 && (
+            <Button 
+              onClick={handleUnpublishAll} 
+              variant="outline"
+              className="flex items-center gap-1"
+            >
+              <EyeOff className="h-4 w-4" />
+              Remove All from Public Registry ({publishedAddresses.length})
+            </Button>
+          )}
+          {onClose && (
+            <Button variant="outline" size="sm" onClick={onClose}>
+              <X className="h-4 w-4 mr-2" />
+              Close
+            </Button>
+          )}
+        </div>
       </div>
       
       {publishedAddresses.length === 0 ? (
