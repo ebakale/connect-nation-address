@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useUserRole } from '@/hooks/useUserRole';
 import { UnitManagementDashboard } from '@/components/UnitManagementDashboard';
 import { OfficerProfileDashboard } from '@/components/OfficerProfileDashboard';
@@ -6,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 
 export const UnitsAndProfilesPage: React.FC = () => {
   const { role, loading } = useUserRole();
+  const navigate = useNavigate();
 
   if (loading) {
     return (
@@ -37,7 +39,7 @@ export const UnitsAndProfilesPage: React.FC = () => {
     <div className="container mx-auto px-4 py-8 space-y-8">
       {/* Unit Management Section */}
       <section>
-        <UnitManagementDashboard />
+        <UnitManagementDashboard onClose={() => navigate('/police')} />
       </section>
       
       {/* Officer Profiles Section */}
