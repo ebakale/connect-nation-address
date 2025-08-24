@@ -13,7 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { 
   Users, MapPin, Radio, Car, Crown, User, Plus, Edit, 
   Trash2, Clock, TrendingUp, AlertCircle, CheckCircle,
-  Phone, Mail, Shield, Navigation
+  Phone, Mail, Shield, Navigation, ArrowLeft
 } from 'lucide-react';
 
 interface EmergencyUnit {
@@ -56,7 +56,11 @@ interface Officer {
   phone?: string;
 }
 
-export const UnitManagementDashboard: React.FC = () => {
+interface UnitManagementDashboardProps {
+  onClose?: () => void;
+}
+
+export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = ({ onClose }) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [units, setUnits] = useState<UnitWithMembers[]>([]);
@@ -285,9 +289,17 @@ export const UnitManagementDashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Unit Management</h1>
-          <p className="text-muted-foreground">Manage emergency units and officer assignments</p>
+        <div className="flex items-center gap-4">
+          {onClose && (
+            <Button variant="outline" size="sm" onClick={onClose}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+          )}
+          <div>
+            <h1 className="text-3xl font-bold">Unit Management</h1>
+            <p className="text-muted-foreground">Manage emergency units and officer assignments</p>
+          </div>
         </div>
         
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
