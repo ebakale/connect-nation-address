@@ -81,7 +81,9 @@ serve(async (req) => {
         location_latitude: latitude,
         location_longitude: longitude,
         location_address: `Emergency Location: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
-        incident_uac: incidentUAC
+        incident_uac: incidentUAC,
+        incident_message: message,
+        reporter_contact_info: contactInfo
       })
       .select()
       .single();

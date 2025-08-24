@@ -32,6 +32,13 @@ interface EmergencyIncident {
   assigned_units?: string[];
   dispatcher_notes?: string;
   language_code?: string;
+  // Unencrypted fields for immediate police access
+  location_latitude?: number;
+  location_longitude?: number;
+  location_address?: string;
+  incident_uac?: string;
+  incident_message?: string;
+  reporter_contact_info?: string;
 }
 
 interface DecryptedIncident {
@@ -65,8 +72,6 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   const { user } = useAuth();
   const { isPoliceSupervisor, isPoliceDispatcher, isPoliceOperator } = useUserRole();
   
-  const [decryptedData, setDecryptedData] = useState<DecryptedIncident | null>(null);
-  const [loading, setLoading] = useState(false);
   const [logs, setLogs] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
@@ -76,28 +81,6 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     assigned_units: [] as string[]
   });
   const [newUnit, setNewUnit] = useState('');
-
-  const loadDecryptedData = async () => {
-    setLoading(true);
-    try {
-      const { data: response, error } = await supabase.functions.invoke('decrypt-incident-data', {
-        body: { incidentId: incident.id }
-      });
-
-      if (error) throw error;
-
-      if (response?.success) {
-        setDecryptedData(response.incident);
-      } else {
-        throw new Error('Failed to decrypt incident data');
-      }
-    } catch (error) {
-      console.error('Error loading incident details:', error);
-      toast.error('Failed to load incident details');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const loadIncidentLogs = async () => {
     try {
@@ -269,7 +252,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline" onClick={loadDecryptedData}>
+        <Button size="sm" variant="outline">
           <Eye className="h-4 w-4 mr-1" />
           Details
         </Button>
@@ -306,13 +289,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
           </DialogDescription>
         </DialogHeader>
 
-        {loading ? (
-          <div className="flex items-center justify-center p-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            <span className="ml-2">Decrypting incident data...</span>
-          </div>
-        ) : (
-          <div className="space-y-6">
+        <div className="space-y-6">
             {/* Basic Information */}
             <Card>
               <CardHeader>
@@ -402,70 +379,73 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
               </CardContent>
             </Card>
 
-            {/* Sensitive Information */}
-            {decryptedData && (
-              <Card className="border-red-200 bg-red-50">
-                <CardHeader>
-                  <CardTitle className="text-lg text-red-800">
-                    Sensitive Information (Encrypted)
-                  </CardTitle>
-                  <CardDescription className="text-red-600">
-                    This information is encrypted and access is logged
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {decryptedData.message && (
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                        <MessageSquare className="h-4 w-4" />
-                        Emergency Message
-                      </label>
-                      <p className="mt-1 p-3 bg-white rounded border">{decryptedData.message}</p>
-                    </div>
-                  )}
-                  
-                  {decryptedData.contact_info && (
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                        <Phone className="h-4 w-4" />
-                        Contact Information
-                      </label>
-                      <p className="mt-1 font-mono">{decryptedData.contact_info}</p>
-                    </div>
-                  )}
-                  
-                  {decryptedData.latitude && decryptedData.longitude && (
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                        <MapPin className="h-4 w-4" />
-                        Location Coordinates
-                      </label>
-                      <div className="mt-1 space-y-2">
-                        <p className="font-mono">
-                          {decryptedData.latitude.toFixed(6)}, {decryptedData.longitude.toFixed(6)}
+            {/* Emergency Information - Now Immediately Accessible */}
+            <Card className="border-blue-200 bg-blue-50">
+              <CardHeader>
+                <CardTitle className="text-lg text-blue-800">
+                  Emergency Information
+                </CardTitle>
+                <CardDescription className="text-blue-600">
+                  Incident details for immediate police response
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {incident.incident_message && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                      <MessageSquare className="h-4 w-4" />
+                      Emergency Message
+                    </label>
+                    <p className="mt-1 p-3 bg-white rounded border">{incident.incident_message}</p>
+                  </div>
+                )}
+                
+                {incident.reporter_contact_info && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                      <Phone className="h-4 w-4" />
+                      Contact Information
+                    </label>
+                    <p className="mt-1 font-mono">{incident.reporter_contact_info}</p>
+                  </div>
+                )}
+                
+                {incident.location_latitude && incident.location_longitude && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                      <MapPin className="h-4 w-4" />
+                      Location Details
+                    </label>
+                    <div className="mt-1 space-y-2">
+                      {incident.incident_uac && (
+                        <p className="font-mono text-sm bg-white p-2 rounded border">
+                          UAC: {incident.incident_uac}
                         </p>
-                        {decryptedData.location_accuracy && (
-                          <p className="text-sm text-muted-foreground">
-                            Accuracy: ±{decryptedData.location_accuracy.toFixed(0)}m
-                          </p>
-                        )}
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => {
-                            const url = `https://www.google.com/maps?q=${decryptedData.latitude},${decryptedData.longitude}`;
-                            window.open(url, '_blank');
-                          }}
-                        >
-                          <Navigation className="h-4 w-4 mr-1" />
-                          Open in Maps
-                        </Button>
-                      </div>
+                      )}
+                      <p className="font-mono">
+                        {incident.location_latitude.toFixed(6)}, {incident.location_longitude.toFixed(6)}
+                      </p>
+                      {incident.location_address && (
+                        <p className="text-sm text-muted-foreground">
+                          {incident.location_address}
+                        </p>
+                      )}
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => {
+                          const url = `https://www.google.com/maps?q=${incident.location_latitude},${incident.location_longitude}`;
+                          window.open(url, '_blank');
+                        }}
+                      >
+                        <Navigation className="h-4 w-4 mr-1" />
+                        Open in Maps
+                      </Button>
                     </div>
-                  )}
-                </CardContent>
-              </Card>
-            )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
             {/* Assignment Information */}
             <Card>
@@ -579,8 +559,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                 </div>
               </div>
             )}
-          </div>
-        )}
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -32,11 +32,13 @@ interface EmergencyIncident {
   encrypted_address?: string;
   encrypted_latitude?: string;
   encrypted_longitude?: string;
-  // New unencrypted location fields
+  // Unencrypted fields for immediate police access
   incident_uac?: string;
   location_address?: string;
   location_latitude?: number;
   location_longitude?: number;
+  incident_message?: string;
+  reporter_contact_info?: string;
 }
 
 interface IncidentListProps {
@@ -91,11 +93,13 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
       const newDecryptedInfo: Record<string, { message: string; address: string; coordinates?: { lat: number; lng: number }; uac?: string }> = {};
       
       incidents.forEach(incident => {
-        // Use unencrypted location data if available, otherwise try to decrypt
+        // Use unencrypted data when available, fall back to decrypted if needed
         const locationAddress = incident.location_address || 
           (incident.encrypted_address ? simpleDecrypt(incident.encrypted_address) : '');
         
-        const decryptedMessage = incident.encrypted_message ? simpleDecrypt(incident.encrypted_message) : '';
+        // Use unencrypted message when available
+        const message = incident.incident_message ||
+          (incident.encrypted_message ? simpleDecrypt(incident.encrypted_message) : '');
         
         // Use unencrypted coordinates if available
         let coordinates: { lat: number; lng: number } | undefined;
@@ -117,7 +121,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
         }
         
         newDecryptedInfo[incident.id] = {
-          message: decryptedMessage,
+          message,
           address: locationAddress,
           coordinates,
           uac: incident.incident_uac

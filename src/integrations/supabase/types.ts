@@ -284,6 +284,7 @@ export type Database = {
           encrypted_message: string
           external_case_id: string | null
           id: string
+          incident_message: string | null
           incident_number: string
           incident_uac: string | null
           language_code: string | null
@@ -293,6 +294,7 @@ export type Database = {
           location_longitude: number | null
           priority_level: number
           reported_at: string
+          reporter_contact_info: string | null
           reporter_id: string | null
           resolved_at: string | null
           responded_at: string | null
@@ -315,6 +317,7 @@ export type Database = {
           encrypted_message: string
           external_case_id?: string | null
           id?: string
+          incident_message?: string | null
           incident_number: string
           incident_uac?: string | null
           language_code?: string | null
@@ -324,6 +327,7 @@ export type Database = {
           location_longitude?: number | null
           priority_level?: number
           reported_at?: string
+          reporter_contact_info?: string | null
           reporter_id?: string | null
           resolved_at?: string | null
           responded_at?: string | null
@@ -346,6 +350,7 @@ export type Database = {
           encrypted_message?: string
           external_case_id?: string | null
           id?: string
+          incident_message?: string | null
           incident_number?: string
           incident_uac?: string | null
           language_code?: string | null
@@ -355,6 +360,7 @@ export type Database = {
           location_longitude?: number | null
           priority_level?: number
           reported_at?: string
+          reporter_contact_info?: string | null
           reporter_id?: string | null
           resolved_at?: string | null
           responded_at?: string | null
