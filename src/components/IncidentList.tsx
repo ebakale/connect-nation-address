@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   AlertTriangle, Clock, MapPin, User, Phone, MessageSquare,
   CheckCircle, XCircle, Eye, ArrowRight, Calendar
@@ -28,6 +28,10 @@ interface EmergencyIncident {
   assigned_units?: string[];
   dispatcher_notes?: string;
   language_code?: string;
+  encrypted_message?: string;
+  encrypted_address?: string;
+  encrypted_latitude?: string;
+  encrypted_longitude?: string;
 }
 
 interface IncidentListProps {
@@ -37,12 +41,42 @@ interface IncidentListProps {
   onUpdate?: () => void;
 }
 
+// Simple decryption function for non-sensitive data
+const simpleDecrypt = (encrypted: string): string => {
+  try {
+    return atob(encrypted); // Basic base64 decoding
+  } catch {
+    return encrypted; // Return as-is if decryption fails
+  }
+};
+
 const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate }: IncidentListProps) => {
   const { user } = useAuth();
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [assignDialog, setAssignDialog] = useState<string | null>(null);
   const [assigningUnit, setAssigningUnit] = useState('');
+  const [decryptedInfo, setDecryptedInfo] = useState<Record<string, { message: string; address: string }>>({});
+
+  // Decrypt basic incident info for display (excluding contact details)
+  useEffect(() => {
+    const decryptBasicInfo = () => {
+      const newDecryptedInfo: Record<string, { message: string; address: string }> = {};
+      
+      incidents.forEach(incident => {
+        if (incident.encrypted_message || incident.encrypted_address) {
+          newDecryptedInfo[incident.id] = {
+            message: incident.encrypted_message ? simpleDecrypt(incident.encrypted_message) : '',
+            address: incident.encrypted_address ? simpleDecrypt(incident.encrypted_address) : ''
+          };
+        }
+      });
+      
+      setDecryptedInfo(newDecryptedInfo);
+    };
+
+    decryptBasicInfo();
+  }, [incidents]);
 
   const getPriorityColor = (priority: number) => {
     switch (priority) {
@@ -232,6 +266,26 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
                   </Badge>
                 </div>
               </div>
+
+              {/* Show incident description for better prioritization */}
+              {decryptedInfo[incident.id]?.message && (
+                <div className="mb-3 p-2 bg-muted/30 rounded">
+                  <p className="text-sm text-foreground">
+                    <strong>Description:</strong> {decryptedInfo[incident.id].message.length > 120 
+                      ? `${decryptedInfo[incident.id].message.substring(0, 120)}...` 
+                      : decryptedInfo[incident.id].message
+                    }
+                  </p>
+                </div>
+              )}
+
+              {/* Show location for better context */}
+              {decryptedInfo[incident.id]?.address && (
+                <div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
+                  <MapPin className="h-4 w-4" />
+                  <span>{decryptedInfo[incident.id].address}</span>
+                </div>
+              )}
 
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
