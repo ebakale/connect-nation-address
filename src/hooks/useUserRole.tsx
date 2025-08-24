@@ -109,12 +109,19 @@ export const useUserRole = () => {
   const isAuditor = role === 'auditor';
   const isDataSteward = role === 'data_steward';
   const isSupport = role === 'support';
+  // Police role checks
+  const isPoliceOperator = role === 'police_operator';
+  const isPoliceSupervisor = role === 'police_supervisor';
+  const isPoliceDispatcher = role === 'police_dispatcher';
 
   // Access level checks
   const hasAdminAccess = role === 'admin' || role === 'ndaa_admin';
   const hasRegistrarAccess = hasAdminAccess || role === 'registrar';
   const hasVerifierAccess = hasRegistrarAccess || role === 'verifier';
   const hasFieldAccess = hasVerifierAccess || role === 'field_agent';
+  // Police access checks
+  const hasPoliceAccess = isPoliceOperator || isPoliceSupervisor || isPoliceDispatcher || hasAdminAccess;
+  const hasPoliceManagementAccess = isPoliceSupervisor || hasAdminAccess;
   
   // Operational Permissions based on the permission map
   const canSearchVerifiedAddresses = true; // All roles can search verified addresses
@@ -242,11 +249,18 @@ export const useUserRole = () => {
     isAuditor,
     isDataSteward,
     isSupport,
+    // Police role checks
+    isPoliceOperator,
+    isPoliceSupervisor,
+    isPoliceDispatcher,
     // Access checks
     hasAdminAccess,
     hasRegistrarAccess,
     hasVerifierAccess,
     hasFieldAccess,
+    // Police access checks
+    hasPoliceAccess,
+    hasPoliceManagementAccess,
     // Operational permissions
     canSearchVerifiedAddresses,
     canCreateDraftAddress,

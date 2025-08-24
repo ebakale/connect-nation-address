@@ -46,7 +46,9 @@ const PoliceDashboard = () => {
     role, 
     loading, 
     isAdmin, 
-    hasAdminAccess 
+    hasAdminAccess,
+    hasPoliceAccess,
+    hasPoliceManagementAccess 
   } = useUserRole();
   const { user, signOut } = useAuth();
   const { t } = useLanguage();
@@ -64,16 +66,11 @@ const PoliceDashboard = () => {
   });
   const [operatorSession, setOperatorSession] = useState<any>(null);
 
-  // Check if user has police role
-  const hasPoliceRole = (userRole: string | null): boolean => {
-    const policeRoles = ['police_operator', 'police_supervisor', 'police_dispatcher', 'admin'];
-    return userRole ? policeRoles.includes(userRole) : false;
-  };
 
   // Initialize operator session
   useEffect(() => {
     const initializeSession = async () => {
-      if (!user || !hasPoliceRole(role)) return;
+      if (!user || !hasPoliceAccess) return;
 
       try {
         // Check for existing active session
@@ -112,7 +109,7 @@ const PoliceDashboard = () => {
   // Fetch incidents and stats
   useEffect(() => {
     const fetchData = async () => {
-      if (!hasPoliceRole(role)) return;
+      if (!hasPoliceAccess) return;
 
       try {
         // Fetch incidents
@@ -167,7 +164,7 @@ const PoliceDashboard = () => {
 
   // Real-time subscriptions
   useEffect(() => {
-    if (!hasPoliceRole(role)) return;
+    if (!hasPoliceAccess) return;
 
     const incidentsSubscription = supabase
       .channel('emergency-incidents-changes')
@@ -230,7 +227,7 @@ const PoliceDashboard = () => {
     );
   }
 
-  if (!hasPoliceRole(role)) {
+  if (!hasPoliceAccess) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 via-background to-blue-50 flex items-center justify-center">
         <Card className="w-96">
