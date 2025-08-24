@@ -73,6 +73,7 @@ const PoliceDashboard = () => {
   });
   const [operatorSession, setOperatorSession] = useState<any>(null);
   const [userUnit, setUserUnit] = useState<any>(null);
+  const [userCity, setUserCity] = useState<string | null>(null);
 
   // Set default tab based on user role
   useEffect(() => {
@@ -128,11 +129,12 @@ const PoliceDashboard = () => {
     initializeSession();
   }, [user, hasPoliceAccess]);
 
-  // Fetch user's unit information
+  // Fetch user's unit and city assignment
   const fetchUserUnit = async () => {
     if (!user || !hasPoliceAccess) return;
 
     try {
+      // Get unit information
       const { data: unitMember, error } = await supabase
         .from('emergency_unit_members')
         .select(`
@@ -154,22 +156,48 @@ const PoliceDashboard = () => {
       if (unitMember?.emergency_units) {
         setUserUnit(unitMember.emergency_units);
       }
+
+      // Get user's city assignment from role metadata
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select(`
+          role,
+          user_role_metadata(scope_type, scope_value)
+        `)
+        .eq('user_id', user.id);
+
+      if (roleError) throw roleError;
+
+      // Find city assignment
+      const cityMetadata = roleData?.find(role => 
+        role.user_role_metadata?.some(meta => meta.scope_type === 'city')
+      );
+      
+      const assignedCity = cityMetadata?.user_role_metadata?.find(meta => meta.scope_type === 'city')?.scope_value || null;
+      setUserCity(assignedCity);
     } catch (error) {
-      console.error('Error fetching user unit:', error);
+      console.error('Error fetching user unit and city:', error);
     }
   };
 
-  // Fetch incidents and calculate stats
+  // Fetch incidents and calculate stats - filtered by user's city
   const fetchIncidents = async () => {
     if (!hasPoliceAccess) return;
 
     try {
-      const { data: incidentsData, error } = await supabase
+      let query = supabase
         .from('emergency_incidents')
         .select('*')
         .in('status', ['reported', 'dispatched', 'responded'])
         .order('priority_level', { ascending: false })
         .order('reported_at', { ascending: true });
+
+      // Filter by user's assigned city
+      if (userCity) {
+        query = query.eq('city', userCity);
+      }
+
+      const { data: incidentsData, error } = await query;
 
       if (error) throw error;
 
@@ -189,9 +217,9 @@ const PoliceDashboard = () => {
     }
   };
 
-  // Fetch area-specific incidents based on unit coverage
+  // Fetch area-specific incidents based on user's assigned city
   const fetchAreaIncidents = async () => {
-    if (!hasPoliceAccess || !userUnit) return;
+    if (!hasPoliceAccess || !userCity) return;
 
     try {
       let query = supabase
@@ -201,12 +229,8 @@ const PoliceDashboard = () => {
         .order('priority_level', { ascending: false })
         .order('reported_at', { ascending: true });
 
-      // Filter by unit's coverage region/city
-      if (userUnit.coverage_region) {
-        query = query.eq('region', userUnit.coverage_region);
-      } else if (userUnit.coverage_city) {
-        query = query.eq('city', userUnit.coverage_city);
-      }
+      // Filter by user's assigned city
+      query = query.eq('city', userCity);
 
       const { data: incidentsData, error } = await query;
 
@@ -240,16 +264,16 @@ const PoliceDashboard = () => {
   };
 
   useEffect(() => {
-    fetchIncidents();
     fetchUserUnit();
   }, [hasPoliceAccess]);
 
-  // Fetch area incidents when user unit changes
+  // Fetch incidents when user city changes
   useEffect(() => {
-    if (userUnit) {
+    if (userCity) {
+      fetchIncidents();
       fetchAreaIncidents();
     }
-  }, [userUnit, hasPoliceAccess]);
+  }, [userCity, hasPoliceAccess]);
 
   // Real-time subscription
   useEffect(() => {
@@ -694,10 +718,10 @@ const PoliceDashboard = () => {
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2">
                       <AlertTriangle className="h-5 w-5" />
-                      Area Incidents
-                      {userUnit && (
-                        <Badge variant="secondary" className="ml-2">
-                          {userUnit.coverage_region || userUnit.coverage_city || 'No coverage set'}
+                       Area Incidents
+                       {userCity && (
+                         <Badge variant="secondary" className="ml-2">
+                           {userCity}
                         </Badge>
                       )}
                     </CardTitle>

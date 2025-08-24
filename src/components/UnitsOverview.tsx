@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 interface OfficerInfo {
   id: string;
@@ -45,8 +46,10 @@ interface UnitsOverviewProps {
 
 export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [units, setUnits] = useState<UnitInfo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userCity, setUserCity] = useState<string | null>(null);
   const [stats, setStats] = useState({
     totalUnits: 0,
     totalOfficers: 0,
@@ -56,15 +59,47 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
   });
 
   useEffect(() => {
-    fetchUnitsData();
-  }, []);
+    fetchUserCity();
+  }, [user]);
+
+  useEffect(() => {
+    if (userCity) {
+      fetchUnitsData();
+    }
+  }, [userCity]);
+
+  const fetchUserCity = async () => {
+    if (!user?.id) return;
+    
+    try {
+      const { data: roleData, error } = await supabase
+        .from('user_roles')
+        .select(`
+          role,
+          user_role_metadata(scope_type, scope_value)
+        `)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      // Find city assignment
+      const cityMetadata = roleData?.find(role => 
+        role.user_role_metadata?.some(meta => meta.scope_type === 'city')
+      );
+      
+      const assignedCity = cityMetadata?.user_role_metadata?.find(meta => meta.scope_type === 'city')?.scope_value || null;
+      setUserCity(assignedCity);
+    } catch (error) {
+      console.error('Error fetching user city:', error);
+    }
+  };
 
   const fetchUnitsData = async () => {
     try {
       setLoading(true);
       
-      // Fetch all units with their members
-      const { data: unitsData, error: unitsError } = await supabase
+      // Fetch units with their members - filtered by user's city
+      let query = supabase
         .from('emergency_units')
         .select(`
           *,
@@ -82,6 +117,13 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
           )
         `)
         .order('unit_code');
+
+      // Filter by user's assigned city
+      if (userCity) {
+        query = query.eq('coverage_city', userCity);
+      }
+
+      const { data: unitsData, error: unitsError } = await query;
 
       if (unitsError) throw unitsError;
 
@@ -177,7 +219,9 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
         )}
         <div className="flex-1">
           <h1 className="text-3xl font-bold">Emergency Units Overview</h1>
-          <p className="text-muted-foreground">Complete view of all units and their composition</p>
+          <p className="text-muted-foreground">
+            {userCity ? `Units in ${userCity}` : 'Complete view of all units and their composition'}
+          </p>
         </div>
         <Button onClick={fetchUnitsData} variant="outline" size="sm">
           <RefreshCw className="h-4 w-4 mr-2" />
