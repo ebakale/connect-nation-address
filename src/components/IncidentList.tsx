@@ -224,14 +224,18 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
 
       if (error) throw error;
 
-      // Log the status change
+      // Log the status change without foreign key dependency for now
       await supabase
         .from('emergency_incident_logs')
         .insert({
           incident_id: incidentId,
-          user_id: user?.id || '',
+          user_id: user?.id || 'system',
           action: 'status_updated',
-          details: { old_status: incidents.find(i => i.id === incidentId)?.status, new_status: newStatus }
+          details: { 
+            old_status: incidents.find(i => i.id === incidentId)?.status, 
+            new_status: newStatus,
+            updated_by: user?.email || 'system'
+          }
         });
 
       toast.success('Incident status updated');
@@ -243,38 +247,63 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
 
   const handleAssignIncident = async (incidentId: string) => {
     if (!assigningUnit.trim()) {
-      toast.error('Please enter a unit to assign');
+      toast.error('Please select a unit to assign');
       return;
     }
 
     try {
+      // Get unit information
+      const { data: unitData, error: unitError } = await supabase
+        .from('emergency_units')
+        .select('unit_code, unit_name')
+        .eq('id', assigningUnit)
+        .single();
+
+      if (unitError) throw unitError;
+
       const incident = incidents.find(i => i.id === incidentId);
       const currentUnits = incident?.assigned_units || [];
-      const newUnits = [...currentUnits, assigningUnit.trim()];
+      
+      // Add the unit code to assigned units (avoid duplicates)
+      const unitCode = unitData.unit_code;
+      const newUnits = currentUnits.includes(unitCode) 
+        ? currentUnits 
+        : [...currentUnits, unitCode];
 
       const { error } = await supabase
         .from('emergency_incidents')
         .update({
           assigned_operator_id: user?.id,
-          assigned_units: newUnits
+          assigned_units: newUnits,
+          status: incident?.status === 'reported' ? 'dispatched' : incident?.status,
+          dispatched_at: incident?.status === 'reported' ? new Date().toISOString() : incident?.dispatched_at
         })
         .eq('id', incidentId);
 
       if (error) throw error;
 
-      // Log the assignment
+      // Log the assignment without foreign key dependency for now
       await supabase
         .from('emergency_incident_logs')
         .insert({
           incident_id: incidentId,
-          user_id: user?.id || '',
-          action: 'incident_assigned',
-          details: { assigned_unit: assigningUnit, assigned_by: user?.id }
+          user_id: user?.id || 'system',
+          action: 'unit_assigned',
+          details: { 
+            assigned_unit: unitCode,
+            unit_name: unitData.unit_name,
+            assigned_by: user?.email || 'system'
+          }
         });
 
-      toast.success(`Incident assigned to unit ${assigningUnit}`);
+      toast.success(`Incident assigned to ${unitCode} - ${unitData.unit_name}`);
       setAssignDialog(null);
       setAssigningUnit('');
+      
+      // Trigger refresh of incident data
+      if (onUpdate) {
+        onUpdate();
+      }
     } catch (error) {
       console.error('Error assigning incident:', error);
       toast.error('Failed to assign incident');

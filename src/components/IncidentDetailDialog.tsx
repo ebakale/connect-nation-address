@@ -86,12 +86,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     try {
       const { data: logsData, error } = await supabase
         .from('emergency_incident_logs')
-        .select(`
-          *,
-          profiles!emergency_incident_logs_user_id_fkey (
-            full_name
-          )
-        `)
+        .select('*')
         .eq('incident_id', incident.id)
         .order('timestamp', { ascending: false });
 
@@ -522,7 +517,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                         <div className="flex items-center gap-2 mb-1">
                           <span className="font-medium">{log.action.replace('_', ' ').toUpperCase()}</span>
                           <span className="text-sm text-muted-foreground">
-                            by {log.profiles?.full_name || 'System'}
+                            by {log.details?.updated_by || log.details?.assigned_by || 'System'}
                           </span>
                         </div>
                         <p className="text-sm text-muted-foreground">
