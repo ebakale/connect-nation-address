@@ -91,6 +91,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     assigned_units: [] as string[]
   });
   const [newUnit, setNewUnit] = useState('');
+  const [availableUnits, setAvailableUnits] = useState<{ unit_code: string; unit_name: string; status: string }[]>([]);
   const [unitNames, setUnitNames] = useState<Record<string, string>>({});
   const [userNames, setUserNames] = useState<Record<string, string>>({});
   const [reporterInfo, setReporterInfo] = useState<{ name?: string; email?: string; contact?: string }>({});
@@ -99,17 +100,26 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     try {
       const { data: units, error } = await supabase
         .from('emergency_units')
-        .select('id, unit_code, unit_name');
+        .select('id, unit_code, unit_name, status');
       
       if (error) throw error;
       
       const unitNameMap: Record<string, string> = {};
+      const unitsData: { unit_code: string; unit_name: string; status: string }[] = [];
+      
       units?.forEach(unit => {
         // Map both unit_code and ID to unit_name for compatibility
         unitNameMap[unit.unit_code] = unit.unit_name;
         unitNameMap[unit.id] = unit.unit_name;
+        unitsData.push({
+          unit_code: unit.unit_code,
+          unit_name: unit.unit_name,
+          status: unit.status
+        });
       });
+      
       setUnitNames(unitNameMap);
+      setAvailableUnits(unitsData);
     } catch (error) {
       console.error('Error loading unit names:', error);
     }
@@ -627,26 +637,40 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                     <Users className="h-4 w-4" />
                     Assigned Units
                   </label>
-                  {isEditing ? (
-                    <div className="mt-2 space-y-3">
-                      <div className="flex gap-2">
-                        <Input
-                          placeholder="Add unit (e.g., POLICE-01)"
-                          value={newUnit}
-                          onChange={(e) => setNewUnit(e.target.value)}
-                          onKeyPress={(e) => e.key === 'Enter' && addUnit()}
-                        />
-                        <Button onClick={addUnit} size="sm">Add</Button>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {editData.assigned_units.map((unit, index) => (
-                          <Badge key={index} variant="outline" className="cursor-pointer"
-                                 onClick={() => removeUnit(unit)}>
-                            {unitNames[unit] || unit} ×
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
+                   {isEditing ? (
+                     <div className="mt-2 space-y-3">
+                       <div className="flex gap-2">
+                         <Select value={newUnit} onValueChange={setNewUnit}>
+                           <SelectTrigger className="flex-1 bg-background border border-input">
+                             <SelectValue placeholder="Select a unit to assign" />
+                           </SelectTrigger>
+                           <SelectContent className="bg-background border border-input z-50">
+                             {availableUnits
+                               .filter(unit => !editData.assigned_units.includes(unit.unit_code))
+                               .map((unit) => (
+                                 <SelectItem key={unit.unit_code} value={unit.unit_code}>
+                                   <div className="flex items-center gap-2">
+                                     <span className="font-medium">{unit.unit_code}</span>
+                                     <span className="text-muted-foreground">- {unit.unit_name}</span>
+                                     <Badge variant={unit.status === 'available' ? 'default' : 'secondary'} className="text-xs">
+                                       {unit.status}
+                                     </Badge>
+                                   </div>
+                                 </SelectItem>
+                               ))}
+                           </SelectContent>
+                         </Select>
+                         <Button onClick={addUnit} size="sm" disabled={!newUnit}>Add</Button>
+                       </div>
+                       <div className="flex flex-wrap gap-2">
+                         {editData.assigned_units.map((unit, index) => (
+                           <Badge key={index} variant="outline" className="cursor-pointer"
+                                  onClick={() => removeUnit(unit)}>
+                             {unitNames[unit] || unit} ×
+                           </Badge>
+                         ))}
+                       </div>
+                     </div>
                   ) : (
                     <div className="mt-1 flex flex-wrap gap-2">
                       {(incident.assigned_units?.length ? incident.assigned_units : []).map((unit, index) => (
