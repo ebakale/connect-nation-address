@@ -61,6 +61,7 @@ const PoliceDashboard = () => {
   const [showMap, setShowMap] = useState(false);
   const [showUnitsOverview, setShowUnitsOverview] = useState(false);
   const [incidents, setIncidents] = useState<EmergencyIncident[]>([]);
+  const [areaIncidents, setAreaIncidents] = useState<EmergencyIncident[]>([]);
   const [selectedIncident, setSelectedIncident] = useState<EmergencyIncident | null>(null);
   const [dashboardStats, setDashboardStats] = useState<DashboardStats>({
     activeIncidents: 0,
@@ -71,6 +72,7 @@ const PoliceDashboard = () => {
     resolvedIncidents: 0
   });
   const [operatorSession, setOperatorSession] = useState<any>(null);
+  const [userUnit, setUserUnit] = useState<any>(null);
 
   // Set default tab based on user role
   useEffect(() => {
@@ -126,6 +128,37 @@ const PoliceDashboard = () => {
     initializeSession();
   }, [user, hasPoliceAccess]);
 
+  // Fetch user's unit information
+  const fetchUserUnit = async () => {
+    if (!user || !hasPoliceAccess) return;
+
+    try {
+      const { data: unitMember, error } = await supabase
+        .from('emergency_unit_members')
+        .select(`
+          unit_id,
+          emergency_units (
+            id,
+            unit_name,
+            unit_code,
+            coverage_region,
+            coverage_city,
+            current_location
+          )
+        `)
+        .eq('officer_id', user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (unitMember?.emergency_units) {
+        setUserUnit(unitMember.emergency_units);
+      }
+    } catch (error) {
+      console.error('Error fetching user unit:', error);
+    }
+  };
+
   // Fetch incidents and calculate stats
   const fetchIncidents = async () => {
     if (!hasPoliceAccess) return;
@@ -156,6 +189,41 @@ const PoliceDashboard = () => {
     }
   };
 
+  // Fetch area-specific incidents based on unit coverage
+  const fetchAreaIncidents = async () => {
+    if (!hasPoliceAccess || !userUnit) return;
+
+    try {
+      let query = supabase
+        .from('emergency_incidents')
+        .select('*')
+        .in('status', ['reported', 'dispatched', 'responded'])
+        .order('priority_level', { ascending: false })
+        .order('reported_at', { ascending: true });
+
+      // Filter by unit's coverage region/city
+      if (userUnit.coverage_region) {
+        query = query.eq('region', userUnit.coverage_region);
+      } else if (userUnit.coverage_city) {
+        query = query.eq('city', userUnit.coverage_city);
+      }
+
+      const { data: incidentsData, error } = await query;
+
+      if (error) throw error;
+
+      const enrichedIncidents = incidentsData?.map(incident => ({
+        ...incident,
+        reporter_name: 'Unknown',
+        reporter_email: ''
+      })) || [];
+
+      setAreaIncidents(enrichedIncidents);
+    } catch (error) {
+      console.error('Error fetching area incidents:', error);
+    }
+  };
+
   const calculateDashboardStats = (incidents: EmergencyIncident[]): DashboardStats => {
     const activeIncidents = incidents.filter(i => !['resolved', 'closed'].includes(i.status)).length;
     const totalIncidents = incidents.length;
@@ -173,7 +241,15 @@ const PoliceDashboard = () => {
 
   useEffect(() => {
     fetchIncidents();
+    fetchUserUnit();
   }, [hasPoliceAccess]);
+
+  // Fetch area incidents when user unit changes
+  useEffect(() => {
+    if (userUnit) {
+      fetchAreaIncidents();
+    }
+  }, [userUnit, hasPoliceAccess]);
 
   // Real-time subscription
   useEffect(() => {
@@ -613,18 +689,23 @@ const PoliceDashboard = () => {
 
               {/* Coordination Tools */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Area Incidents - Limited to their scope */}
+                {/* Area Incidents - Filtered by unit coverage area */}
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2">
                       <AlertTriangle className="h-5 w-5" />
                       Area Incidents
+                      {userUnit && (
+                        <Badge variant="secondary" className="ml-2">
+                          {userUnit.coverage_region || userUnit.coverage_city || 'No coverage set'}
+                        </Badge>
+                      )}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <IncidentList 
-                      incidents={incidents.slice(0, 5)} // Limited view
-                      onUpdate={fetchIncidents}
+                      incidents={areaIncidents}
+                      onUpdate={fetchAreaIncidents}
                       selectedIncident={selectedIncident}
                       onSelectIncident={(incident) => setSelectedIncident(incident)}
                     />

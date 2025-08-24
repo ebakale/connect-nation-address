@@ -510,6 +510,8 @@ export type Database = {
       }
       emergency_units: {
         Row: {
+          coverage_city: string | null
+          coverage_region: string | null
           created_at: string
           current_location: string | null
           heading: number | null
@@ -527,6 +529,8 @@ export type Database = {
           vehicle_id: string | null
         }
         Insert: {
+          coverage_city?: string | null
+          coverage_region?: string | null
           created_at?: string
           current_location?: string | null
           heading?: number | null
@@ -544,6 +548,8 @@ export type Database = {
           vehicle_id?: string | null
         }
         Update: {
+          coverage_city?: string | null
+          coverage_region?: string | null
           created_at?: string
           current_location?: string | null
           heading?: number | null
