@@ -76,8 +76,11 @@ Deno.serve(async (req) => {
       }
     }
 
-    // 2. Find all supervisors and dispatchers in the same area
-    const { data: supervisors, error: supervisorError } = await supabaseClient
+    // 2. Find all supervisors/dispatchers/admins to notify in the same area
+    const recipientsMap = new Map<string, any>()
+
+    // City-scoped supervisors/dispatchers
+    const { data: cityScoped, error: cityErr } = await supabaseClient
       .from('user_roles')
       .select(`
         user_id,
@@ -85,15 +88,48 @@ Deno.serve(async (req) => {
         user_role_metadata!inner(scope_type, scope_value),
         profiles!inner(display_name, email)
       `)
-      .in('role', ['police_supervisor', 'police_dispatcher', 'police_admin'])
+      .in('role', ['police_supervisor', 'police_dispatcher'])
       .eq('user_role_metadata.scope_type', 'city')
       .eq('user_role_metadata.scope_value', requestingUnit.coverage_city)
 
-    if (supervisorError) {
-      console.error('Error fetching supervisors:', supervisorError)
+    if (cityErr) console.error('Error fetching city-scoped supervisors:', cityErr)
+
+    cityScoped?.forEach((u: any) => recipientsMap.set(u.user_id, u))
+
+    // Region-scoped supervisors/dispatchers (fallback)
+    if (requestingUnit.coverage_region) {
+      const { data: regionScoped, error: regionErr } = await supabaseClient
+        .from('user_roles')
+        .select(`
+          user_id,
+          role,
+          user_role_metadata!inner(scope_type, scope_value),
+          profiles!inner(display_name, email)
+        `)
+        .in('role', ['police_supervisor', 'police_dispatcher'])
+        .eq('user_role_metadata.scope_type', 'region')
+        .eq('user_role_metadata.scope_value', requestingUnit.coverage_region)
+
+      if (regionErr) console.error('Error fetching region-scoped supervisors:', regionErr)
+      regionScoped?.forEach((u: any) => recipientsMap.set(u.user_id, u))
     }
 
-    console.log('Found supervisors/dispatchers:', supervisors?.length || 0)
+    // Include police_admins regardless of scope metadata
+    const { data: admins, error: adminErr } = await supabaseClient
+      .from('user_roles')
+      .select(`
+        user_id,
+        role,
+        profiles!inner(display_name, email)
+      `)
+      .eq('role', 'police_admin')
+
+    if (adminErr) console.error('Error fetching police admins:', adminErr)
+    admins?.forEach((u: any) => recipientsMap.set(u.user_id, u))
+
+    const supervisors = Array.from(recipientsMap.values())
+
+    console.log('Found supervisors/dispatchers/admins to notify:', supervisors.length)
 
     // 3. Create notifications for each supervisor/dispatcher
     const notifications = []

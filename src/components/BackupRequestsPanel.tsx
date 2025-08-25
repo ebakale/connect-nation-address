@@ -47,6 +47,28 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
     }
   }, [user]);
 
+  // Realtime updates for new notifications
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel(`backup-requests-panel-${user.id}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'emergency_notifications', filter: `user_id=eq.${user.id}` },
+        (payload) => {
+          const newRow: any = payload.new;
+          if (newRow?.type === 'backup_request') {
+            fetchBackupRequests();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
   const fetchBackupRequests = async () => {
     if (!user) return;
     
