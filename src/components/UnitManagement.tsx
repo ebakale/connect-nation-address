@@ -101,10 +101,14 @@ const UnitManagement: React.FC = () => {
   const fetchUnits = async () => {
     try {
       setLoading(true);
+      console.log('🔍 Fetching police units...');
+      
       const { data: unitsData, error: unitsError } = await supabase
         .from('emergency_units')
         .select('*')
         .order('created_at', { ascending: false });
+
+      console.log('📊 Units query result:', { unitsData, unitsError, count: unitsData?.length || 0 });
 
       if (unitsError) throw unitsError;
 
