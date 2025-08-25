@@ -3,13 +3,14 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   Shield, Star, Clock, MapPin, Phone, Mail, 
-  Crown, User, Calendar, Award, TrendingUp,
-  Navigation, Radio, ArrowLeft
+  Crown, User, Users, Calendar, Award, TrendingUp,
+  Navigation, Radio, ArrowLeft, ChevronDown, ChevronRight
 } from 'lucide-react';
 
 interface OfficerProfile {
@@ -51,7 +52,7 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
   const { t } = useLanguage();
   const [officers, setOfficers] = useState<OfficerProfile[]>([]);
   const [officerStats, setOfficerStats] = useState<Record<string, OfficerStats>>({});
-  const [selectedOfficer, setSelectedOfficer] = useState<OfficerProfile | null>(null);
+  const [expandedOfficers, setExpandedOfficers] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetchOfficers();
@@ -339,6 +340,18 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
     return { label: t('needsImprovement'), variant: 'destructive' as const, color: 'text-red-600' };
   };
 
+  const toggleOfficerExpansion = (officerId: string) => {
+    setExpandedOfficers(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(officerId)) {
+        newSet.delete(officerId);
+      } else {
+        newSet.add(officerId);
+      }
+      return newSet;
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
@@ -412,125 +425,148 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
       </div>
 
       {/* Officers List */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {officers.map((officer) => {
-          const stats = officerStats[officer.user_id];
-          const primaryRole = officer.user_roles[0]?.role || '';
-          const performance = stats ? getPerformanceBadge(stats.rank_score) : null;
-          
-          return (
-            <Card key={officer.user_id} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <Avatar>
-                      <AvatarFallback>
-                        {officer.full_name.split(' ').map(n => n[0]).join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <CardTitle className="text-lg">{officer.full_name}</CardTitle>
-                      <div className="flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${getRoleColor(primaryRole)}`} />
-                        <span className="text-sm text-muted-foreground">
-                          {getRoleName(primaryRole)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {stats && (
-                    <div className="flex items-center gap-1">
-                      {getRankIcon(stats.rank_score)}
-                      <span className="text-sm font-medium">{stats.rank_score}</span>
-                    </div>
-                  )}
-                </div>
-              </CardHeader>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5" />
+            Officers List
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="divide-y">
+            {officers.map((officer) => {
+              const stats = officerStats[officer.user_id];
+              const primaryRole = officer.user_roles[0]?.role || '';
+              const performance = stats ? getPerformanceBadge(stats.rank_score) : null;
+              const isExpanded = expandedOfficers.has(officer.user_id);
               
-              <CardContent className="space-y-4">
-                {/* Contact Information */}
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Mail className="h-4 w-4 text-muted-foreground" />
-                    <span className="truncate">{officer.email}</span>
-                  </div>
-                  
-                  {officer.phone && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <Phone className="h-4 w-4 text-muted-foreground" />
-                      <span>{officer.phone}</span>
-                    </div>
-                  )}
-                  
-                  <div className="flex items-center gap-2 text-sm">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span>{t('joined')} {new Date(officer.created_at).toLocaleDateString()}</span>
-                  </div>
-                </div>
-
-                {/* Current Unit Assignment - Only show for operators */}
-                {officer.user_roles.some(role => role.role === 'police_operator') && 
-                 officer.emergency_unit_members && officer.emergency_unit_members.length > 0 && (
-                   <div className="space-y-2">
-                     <p className="text-sm font-medium">{t('currentAssignment')}</p>
-                    {officer.emergency_unit_members.map((assignment, index) => (
-                      <div key={index} className="flex items-center justify-between text-sm bg-muted/30 rounded p-2">
+              return (
+                <Collapsible key={officer.user_id} open={isExpanded} onOpenChange={() => toggleOfficerExpansion(officer.user_id)}>
+                  <CollapsibleTrigger asChild>
+                    <div className="flex items-center justify-between p-4 hover:bg-muted/50 cursor-pointer transition-colors">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-10 w-10">
+                          <AvatarFallback>
+                            {officer.full_name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
                         <div>
                           <div className="flex items-center gap-2">
-                            {assignment.is_lead && <Crown className="h-3 w-3 text-yellow-600" />}
-                            <span className="font-medium">{assignment.emergency_units.unit_code}</span>
+                            <h3 className="font-medium">{officer.full_name}</h3>
+                            <div className={`w-2 h-2 rounded-full ${getRoleColor(primaryRole)}`} />
                           </div>
-                          <span className="text-muted-foreground">{assignment.role}</span>
+                          <p className="text-sm text-muted-foreground">{getRoleName(primaryRole)}</p>
                         </div>
-                        <Badge 
-                          variant="outline" 
-                          className={`${assignment.emergency_units.status === 'available' ? 'text-green-600' : 'text-blue-600'}`}
-                        >
-                          {assignment.emergency_units.status}
-                        </Badge>
                       </div>
-                    ))}
-                  </div>
-                )}
+                      
+                      <div className="flex items-center gap-3">
+                        {stats && (
+                          <div className="flex items-center gap-1">
+                            {getRankIcon(stats.rank_score)}
+                            <span className="text-sm font-medium">{stats.rank_score}</span>
+                          </div>
+                        )}
+                        {performance && (
+                          <Badge variant={performance.variant} className={performance.color}>
+                            {performance.label}
+                          </Badge>
+                        )}
+                        {isExpanded ? (
+                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </div>
+                    </div>
+                  </CollapsibleTrigger>
+                  
+                  <CollapsibleContent>
+                    <div className="px-4 pb-4 space-y-4 bg-muted/20">
+                      {/* Contact Information */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm">Contact Information</h4>
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-sm">
+                              <Mail className="h-4 w-4 text-muted-foreground" />
+                              <span className="truncate">{officer.email}</span>
+                            </div>
+                            
+                            {officer.phone && (
+                              <div className="flex items-center gap-2 text-sm">
+                                <Phone className="h-4 w-4 text-muted-foreground" />
+                                <span>{officer.phone}</span>
+                              </div>
+                            )}
+                            
+                            <div className="flex items-center gap-2 text-sm">
+                              <Calendar className="h-4 w-4 text-muted-foreground" />
+                              <span>{t('joined')} {new Date(officer.created_at).toLocaleDateString()}</span>
+                            </div>
+                          </div>
+                        </div>
 
-                {/* Performance Metrics */}
-                {stats && (
-                  <div className="space-y-3">
-                     {performance && (
-                       <div className="flex items-center justify-between">
-                         <span className="text-sm font-medium">{t('performance')}</span>
-                         <Badge variant={performance.variant} className={performance.color}>
-                           {performance.label}
-                         </Badge>
-                       </div>
-                     )}
-                    
-                     <div className="grid grid-cols-2 gap-3 text-sm">
-                       <div className="text-center">
-                         <p className="font-bold text-lg">{stats.total_incidents}</p>
-                         <p className="text-muted-foreground">{t('incidents')}</p>
-                       </div>
-                       <div className="text-center">
-                         <p className="font-bold text-lg">{stats.incidents_responded}</p>
-                         <p className="text-muted-foreground">{t('responded')}</p>
-                       </div>
-                       <div className="text-center">
-                         <p className="font-bold text-lg">{stats.avg_response_time}m</p>
-                         <p className="text-muted-foreground">{t('avgResponse')}</p>
-                       </div>
-                       <div className="text-center">
-                         <p className="font-bold text-lg">{stats.units_assigned}</p>
-                         <p className="text-muted-foreground">{t('units')}</p>
-                       </div>
-                     </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+                        {/* Performance Metrics */}
+                        {stats && (
+                          <div className="space-y-2">
+                            <h4 className="font-medium text-sm">Performance Metrics</h4>
+                            <div className="grid grid-cols-2 gap-3 text-sm">
+                              <div className="text-center p-2 bg-background rounded">
+                                <p className="font-bold text-lg">{stats.total_incidents}</p>
+                                <p className="text-muted-foreground">{t('incidents')}</p>
+                              </div>
+                              <div className="text-center p-2 bg-background rounded">
+                                <p className="font-bold text-lg">{stats.incidents_responded}</p>
+                                <p className="text-muted-foreground">{t('responded')}</p>
+                              </div>
+                              <div className="text-center p-2 bg-background rounded">
+                                <p className="font-bold text-lg">{stats.avg_response_time}m</p>
+                                <p className="text-muted-foreground">{t('avgResponse')}</p>
+                              </div>
+                              <div className="text-center p-2 bg-background rounded">
+                                <p className="font-bold text-lg">{stats.units_assigned}</p>
+                                <p className="text-muted-foreground">{t('units')}</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Current Unit Assignment - Only show for operators */}
+                      {officer.user_roles.some(role => role.role === 'police_operator') && 
+                       officer.emergency_unit_members && officer.emergency_unit_members.length > 0 && (
+                         <div className="space-y-2">
+                           <h4 className="font-medium text-sm">{t('currentAssignment')}</h4>
+                           <div className="space-y-2">
+                             {officer.emergency_unit_members.map((assignment, index) => (
+                               <div key={index} className="flex items-center justify-between text-sm bg-background rounded p-3">
+                                 <div>
+                                   <div className="flex items-center gap-2">
+                                     {assignment.is_lead && <Crown className="h-3 w-3 text-yellow-600" />}
+                                     <span className="font-medium">{assignment.emergency_units.unit_code}</span>
+                                   </div>
+                                   <span className="text-muted-foreground">{assignment.emergency_units.unit_name}</span>
+                                   <div className="text-xs text-muted-foreground">Role: {assignment.role}</div>
+                                 </div>
+                                 <Badge 
+                                   variant="outline" 
+                                   className={`${assignment.emergency_units.status === 'available' ? 'text-green-600' : 'text-blue-600'}`}
+                                 >
+                                   {assignment.emergency_units.status}
+                                 </Badge>
+                               </div>
+                             ))}
+                           </div>
+                         </div>
+                       )}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
