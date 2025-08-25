@@ -16,6 +16,7 @@ import {
   Home
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface DashboardStats {
   totalAddresses: number;
@@ -31,6 +32,7 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
+  const { t } = useLanguage();
   const [stats, setStats] = useState<DashboardStats>({
     totalAddresses: 0,
     verifiedAddresses: 0,
@@ -101,29 +103,29 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
 
   const quickActions = [
     {
-      title: "Search Addresses",
-      description: "Find and verify existing addresses",
+      title: t('searchAddresses'),
+      description: t('findAndVerifyExisting'),
       icon: Search,
       action: () => onNavigate?.('search'),
       variant: "default" as const
     },
     {
-      title: "Add New Address",
-      description: "Register a new location",
+      title: t('addNewAddress'),
+      description: t('registerNewLocation'),
       icon: Plus,
       action: () => onNavigate?.('add'),
       variant: "hero" as const
     },
     {
-      title: "View Map",
-      description: "Interactive address mapping",
+      title: t('viewMap'),
+      description: t('interactiveAddressMapping'),
       icon: MapPin,
       action: () => onNavigate?.('map'),
       variant: "default" as const
     },
     {
-      title: "Analytics",
-      description: "Coverage and usage statistics",
+      title: t('analytics'),
+      description: t('coverageAndUsageStatistics'),
       icon: BarChart3,
       action: () => onNavigate?.('analytics'),
       variant: "default" as const
@@ -175,15 +177,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">National Digital Address System</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('nationalDigitalAddressSystem')}</h1>
           <p className="text-muted-foreground">
-            Comprehensive address management and mapping platform
+            {t('comprehensiveAddressManagement')}
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="border-success text-success">
             <Shield className="h-3 w-3 mr-1" />
-            System Operational
+            {t('systemOperational')}
           </Badge>
         </div>
       </div>
@@ -191,33 +193,33 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
-          title="Total Addresses"
+          title={t('totalAddresses')}
           value={stats.totalAddresses}
-          description="Registered locations"
+          description={t('registeredLocations')}
           icon={MapPin}
           trend="+12% this month"
           variant="success"
         />
         <StatCard
-          title="Verified Addresses"
+          title={t('verifiedAddresses')}
           value={stats.verifiedAddresses}
-          description="Quality assured locations"
+          description={t('qualityAssuredLocations')}
           icon={CheckCircle}
           trend={`${((stats.verifiedAddresses / stats.totalAddresses) * 100).toFixed(1)}% verified`}
           variant="success"
         />
         <StatCard
-          title="Pending Verification"
+          title={t('pendingVerification')}
           value={stats.pendingVerification}
-          description="Awaiting validation"
+          description={t('awaitingValidation')}
           icon={AlertCircle}
           trend="Review required"
           variant="warning"
         />
         <StatCard
-          title="Coverage"
+          title={t('coverage')}
           value={`${stats.coveragePercentage}%`}
-          description="National coverage"
+          description={t('nationalCoverage')}
           icon={Globe}
           trend="Target: 95% by 2025"
         />
@@ -228,7 +230,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            Quick Actions
+            {t('quickActions')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -255,7 +257,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="shadow-card">
           <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
+            <CardTitle>{t('recentActivity')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -292,29 +294,29 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
 
         <Card className="shadow-card">
           <CardHeader>
-            <CardTitle>System Status</CardTitle>
+            <CardTitle>{t('systemStatus')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm">API Services</span>
-                <Badge variant="outline" className="border-success text-success">Online</Badge>
+                <span className="text-sm">{t('apiServices')}</span>
+                <Badge variant="outline" className="border-success text-success">{t('online')}</Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Database Sync</span>
-                <Badge variant="outline" className="border-success text-success">Active</Badge>
+                <span className="text-sm">{t('databaseSync')}</span>
+                <Badge variant="outline" className="border-success text-success">{t('active')}</Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Mapping Services</span>
-                <Badge variant="outline" className="border-success text-success">Operational</Badge>
+                <span className="text-sm">{t('mappingServices')}</span>
+                <Badge variant="outline" className="border-success text-success">{t('operational')}</Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Verification Queue</span>
-                <Badge variant="outline" className="border-warning text-warning">Processing</Badge>
+                <span className="text-sm">{t('verificationQueue')}</span>
+                <Badge variant="outline" className="border-warning text-warning">{t('processing')}</Badge>
               </div>
               <div className="mt-4 p-3 bg-muted/50 rounded-lg">
-                <p className="text-sm font-medium">Active Users: {stats.activeUsers.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">Government agencies and authorized personnel</p>
+                <p className="text-sm font-medium">{t('activeUsers')}: {stats.activeUsers.toLocaleString()}</p>
+                <p className="text-xs text-muted-foreground">{t('governmentAgenciesAndAuthorized')}</p>
               </div>
             </div>
           </CardContent>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ interface UserProfile {
 
 export const ProfileEditor = () => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [profile, setProfile] = useState<UserProfile>({
     full_name: "",
     email: "",
@@ -136,7 +138,7 @@ export const ProfileEditor = () => {
   };
 
   if (!user) {
-    return <div>Please log in to edit your profile.</div>;
+    return <div>{t('pleaseLogInToEditProfile')}</div>;
   }
 
   return (
@@ -145,27 +147,27 @@ export const ProfileEditor = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <User className="h-5 w-5" />
-            Profile Information
+            {t('profileInformation')}
           </CardTitle>
           <CardDescription>
-            Update your personal information and contact details
+            {t('updatePersonalInformation')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleProfileUpdate} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name</Label>
+              <Label htmlFor="fullName">{t('fullName')}</Label>
               <Input
                 id="fullName"
                 type="text"
                 value={profile.full_name}
                 onChange={(e) => setProfile(prev => ({ ...prev, full_name: e.target.value }))}
-                placeholder="Enter your full name"
+                placeholder={t('enterFullName')}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('email')}</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -174,13 +176,13 @@ export const ProfileEditor = () => {
                   className="pl-10"
                   value={profile.email}
                   onChange={(e) => setProfile(prev => ({ ...prev, email: e.target.value }))}
-                  placeholder="Enter your email"
+                  placeholder={t('enterEmail')}
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="phone">{t('phoneNumber')}</Label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -189,14 +191,14 @@ export const ProfileEditor = () => {
                   className="pl-10"
                   value={profile.phone}
                   onChange={(e) => setProfile(prev => ({ ...prev, phone: e.target.value }))}
-                  placeholder="Enter your phone number"
+                  placeholder={t('enterPhoneNumber')}
                 />
               </div>
             </div>
 
             <Button type="submit" disabled={loading} className="w-full">
               <Save className="mr-2 h-4 w-4" />
-              {loading ? 'Updating...' : 'Update Profile'}
+              {loading ? t('updating') : t('updateProfile')}
             </Button>
           </form>
         </CardContent>
@@ -206,41 +208,41 @@ export const ProfileEditor = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Lock className="h-5 w-5" />
-            Change Password
+            {t('changePassword')}
           </CardTitle>
           <CardDescription>
-            Update your account password for better security
+            {t('updateAccountPassword')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handlePasswordChange} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="newPassword">New Password</Label>
+              <Label htmlFor="newPassword">{t('newPassword')}</Label>
               <Input
                 id="newPassword"
                 type="password"
                 value={passwords.new}
                 onChange={(e) => setPasswords(prev => ({ ...prev, new: e.target.value }))}
-                placeholder="Enter new password"
+                placeholder={t('enterNewPassword')}
                 minLength={6}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm New Password</Label>
+              <Label htmlFor="confirmPassword">{t('confirmNewPassword')}</Label>
               <Input
                 id="confirmPassword"
                 type="password"
                 value={passwords.confirm}
                 onChange={(e) => setPasswords(prev => ({ ...prev, confirm: e.target.value }))}
-                placeholder="Confirm new password"
+                placeholder={t('confirmNewPasswordPlaceholder')}
                 minLength={6}
               />
             </div>
 
             <Button type="submit" disabled={passwordLoading || !passwords.new || !passwords.confirm} className="w-full">
               <Lock className="mr-2 h-4 w-4" />
-              {passwordLoading ? 'Updating...' : 'Change Password'}
+              {passwordLoading ? t('updating') : t('changePassword')}
             </Button>
           </form>
         </CardContent>
