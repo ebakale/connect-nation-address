@@ -83,10 +83,61 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
         .order('created_at', { ascending: false });
 
       if (notificationError) throw notificationError;
-      setReceivedRequests((notifications || []).map(n => ({
+      const received = (notifications || []).map(n => ({
         ...n,
-        metadata: n.metadata as any || {}
-      })));
+        metadata: (n as any).metadata as any || {}
+      })) as unknown as BackupRequest[];
+
+      // Determine user's city from role metadata
+      const { data: roleData, error: roleErr } = await supabase
+        .from('user_roles')
+        .select(`
+          role,
+          user_role_metadata!fk_user_role_metadata_user_role(scope_type, scope_value)
+        `)
+        .eq('user_id', user.id);
+      if (roleErr) throw roleErr;
+      const city = roleData?.flatMap((r: any) => r.user_role_metadata || [])
+        .find((m: any) => m.scope_type === 'city')?.scope_value as string | undefined;
+
+      // Fallback: show active incidents in user's city with backup requested even if no notification row exists
+      let cityFallback: BackupRequest[] = [];
+      if (city) {
+        const { data: cityIncidents, error: cityIncErr } = await supabase
+          .from('emergency_incidents')
+          .select('id, incident_number, incident_uac, backup_requested, backup_requested_at, backup_requesting_unit, city')
+          .eq('city', city)
+          .eq('backup_requested', true)
+          .order('backup_requested_at', { ascending: false });
+        if (!cityIncErr) {
+          cityFallback = (cityIncidents || []).map((inc: any) => ({
+            id: `incident-${inc.id}`,
+            incident_id: inc.id,
+            title: `🚨 BACKUP REQUESTED - ${inc.incident_number}`,
+            message: `Backup requested for incident ${inc.incident_number}`,
+            type: 'backup_request',
+            priority_level: 2,
+            created_at: inc.backup_requested_at || new Date().toISOString(),
+            read: true,
+            metadata: {
+              requesting_unit: inc.backup_requesting_unit,
+              requesting_unit_name: inc.backup_requesting_unit,
+              incident_number: inc.incident_number,
+              location: inc.incident_uac,
+              reason: 'Backup request active',
+              request_timestamp: inc.backup_requested_at
+            }
+          }));
+        }
+      }
+
+      // Merge notifications and fallback incidents (dedupe by incident_id)
+      const combinedMap = new Map<string, BackupRequest>();
+      [...received, ...cityFallback].forEach(item => {
+        const key = item.incident_id;
+        if (!combinedMap.has(key)) combinedMap.set(key, item);
+      });
+      setReceivedRequests(Array.from(combinedMap.values()));
 
       // For sent requests, we need to find incidents where backup was requested
       // and check if the user's unit was the requesting unit
