@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
         user_role_metadata!inner(scope_type, scope_value),
         profiles!inner(display_name, email)
       `)
-      .in('role', ['police_supervisor', 'police_dispatcher'])
+      .in('role', ['police_supervisor', 'police_dispatcher', 'police_admin'])
       .eq('user_role_metadata.scope_type', 'city')
       .eq('user_role_metadata.scope_value', requestingUnit.coverage_city)
 
