@@ -53,7 +53,7 @@ const UserManager: React.FC = () => {
   const { toast } = useToast();
 
   const roles = [
-    'citizen', 'property_claimant', 'field_agent', 'verifier',
+    'admin', 'citizen', 'property_claimant', 'field_agent', 'verifier',
     'registrar', 'ndaa_admin', 'partner', 'auditor', 'data_steward',
     'police_operator', 'police_supervisor', 'police_dispatcher'
   ] as const;
