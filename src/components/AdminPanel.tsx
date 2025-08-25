@@ -10,10 +10,12 @@ import { UACManager } from './UACManager';
 import ApiWebhookManager from './ApiWebhookManager';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Shield, Hash } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const AdminPanel: React.FC = () => {
   const { user } = useAuth();
   const { loading } = useUserRole();
+  const { t } = useLanguage();
 
   if (!user) {
     return (
@@ -21,10 +23,10 @@ const AdminPanel: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            Role & Permission Management
+            {t('rolePermissionManagement')}
           </CardTitle>
           <CardDescription>
-            Please log in to access role management features
+            {t('pleaseLogInToAccess')}
           </CardDescription>
         </CardHeader>
       </Card>

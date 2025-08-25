@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
 import IncidentDetailDialog from "./IncidentDetailDialog";
 
@@ -90,6 +91,7 @@ const simpleDecrypt = (encrypted: string): string => {
 
 const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate }: IncidentListProps) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [assignDialog, setAssignDialog] = useState<string | null>(null);
@@ -364,9 +366,9 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
       <CardHeader>
         <div className="flex justify-between items-center">
           <div>
-            <CardTitle className="text-xl">Active Incidents</CardTitle>
+            <CardTitle className="text-xl">{t('activeIncidents')}</CardTitle>
             <CardDescription>
-              {filteredIncidents.length} of {incidents.length} incidents
+              {filteredIncidents.length} of {incidents.length} {t('emergencyIncidents').toLowerCase()}
             </CardDescription>
           </div>
           
@@ -376,12 +378,12 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="reported">Reported</SelectItem>
-                <SelectItem value="dispatched">Dispatched</SelectItem>
-                <SelectItem value="responding">Responding</SelectItem>
-                <SelectItem value="on_scene">On Scene</SelectItem>
-                <SelectItem value="resolved">Resolved</SelectItem>
+                <SelectItem value="all">{t('allStatus')}</SelectItem>
+                <SelectItem value="reported">{t('reported')}</SelectItem>
+                <SelectItem value="dispatched">{t('dispatched')}</SelectItem>
+                <SelectItem value="responding">{t('responding')}</SelectItem>
+                <SelectItem value="on_scene">{t('onScene')}</SelectItem>
+                <SelectItem value="resolved">{t('resolved')}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -390,11 +392,11 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
                 <SelectValue placeholder="Priority" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Priority</SelectItem>
-                <SelectItem value="1">Critical</SelectItem>
-                <SelectItem value="2">High</SelectItem>
-                <SelectItem value="3">Medium</SelectItem>
-                <SelectItem value="4">Low</SelectItem>
+                <SelectItem value="all">{t('allPriority')}</SelectItem>
+                <SelectItem value="1">{t('critical')}</SelectItem>
+                <SelectItem value="2">{t('high')}</SelectItem>
+                <SelectItem value="3">{t('medium')}</SelectItem>
+                <SelectItem value="4">{t('low')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
