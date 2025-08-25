@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useUserRole } from "@/hooks/useUserRole";
-import { UserManager } from "./UserManager";
+import UserManager from "./UserManager";
 
 interface PoliceStats {
   totalOfficers: number;
