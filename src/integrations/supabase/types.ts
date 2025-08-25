@@ -795,6 +795,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_user_role_metadata_user_role"
+            columns: ["user_role_id"]
+            isOneToOne: false
+            referencedRelation: "user_roles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "user_role_metadata_user_role_id_fkey"
             columns: ["user_role_id"]
             isOneToOne: false
