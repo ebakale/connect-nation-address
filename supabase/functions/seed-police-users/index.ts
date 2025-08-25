@@ -33,12 +33,12 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Check if user has admin role
+    // Check if user has admin or police_admin role
     const { data: roleData, error: roleError } = await supabaseAdmin
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
-      .eq('role', 'admin')
+      .in('role', ['admin', 'police_admin'])
       .single();
 
     if (roleError || !roleData) {
