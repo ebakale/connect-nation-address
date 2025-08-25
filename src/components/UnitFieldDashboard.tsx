@@ -109,9 +109,13 @@ const fieldActions: FieldAction[] = [
 
 interface UnitFieldDashboardProps {
   unitIncidents: any[];
+  isFieldOperatorMode?: boolean;
 }
 
-export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ unitIncidents }) => {
+export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ 
+  unitIncidents, 
+  isFieldOperatorMode = false 
+}) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [unitInfo, setUnitInfo] = useState<UnitInfo | null>(null);
@@ -884,8 +888,15 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ unitInci
       {/* Unit Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold">{unitInfo.unit_code} - Field Operations</h1>
-          <p className="text-muted-foreground">{unitInfo.unit_name}</p>
+          <h1 className="text-3xl font-bold">
+            {unitInfo.unit_code} - {isFieldOperatorMode ? "My Field Operations" : "Field Operations"}
+          </h1>
+          <p className="text-muted-foreground">
+            {isFieldOperatorMode 
+              ? `Officer Dashboard - ${unitInfo.unit_name}` 
+              : unitInfo.unit_name
+            }
+          </p>
         </div>
         <div className="flex items-center gap-4">
           <Badge variant="outline" className="flex items-center gap-2">
@@ -1119,8 +1130,8 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ unitInci
         </Card>
       </div>
 
-      {/* Unit Members */}
-      {unitMembers.length > 0 && (
+      {/* Unit Members - Restricted for field operators */}
+      {unitMembers.length > 0 && !isFieldOperatorMode && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -1234,20 +1245,28 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({ unitInci
         </Card>
       )}
 
-      {/* Location Update */}
+      {/* Location Update - Own unit only for field operators */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MapPin className="h-5 w-5" />
-            Location Management
+            {isFieldOperatorMode ? "My Location" : "Location Management"}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
+            {isFieldOperatorMode && (
+              <div className="bg-blue-50 border border-blue-200 rounded p-3 mb-3">
+                <p className="text-sm text-blue-800">
+                  <Shield className="h-4 w-4 inline mr-1" />
+                  You can only update your own unit's location
+                </p>
+              </div>
+            )}
             <div className="flex gap-2">
               <input
                 type="text"
-                placeholder="Update location manually..."
+                placeholder={isFieldOperatorMode ? "Update my location..." : "Update location manually..."}
                 value={currentLocation}
                 onChange={(e) => setCurrentLocation(e.target.value)}
                 className="flex-1 px-3 py-2 border rounded-md"

@@ -552,52 +552,71 @@ const PoliceDashboard = () => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
-            <TabsTrigger value="field" className="flex items-center gap-2">
-              <Radio className="h-4 w-4" />
-              My Unit
-            </TabsTrigger>
-            {/* Different tab based on role */}
-            {(isPoliceDispatcher || isAdmin) ? (
-              <TabsTrigger value="dispatch" className="flex items-center gap-2">
-                <Activity className="h-4 w-4" />
-                Command Center
+          {/* Field Operators have limited tab access */}
+          {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher ? (
+            <TabsList className="grid w-full grid-cols-2 lg:w-[300px]">
+              <TabsTrigger value="field" className="flex items-center gap-2">
+                <Radio className="h-4 w-4" />
+                My Unit
               </TabsTrigger>
-            ) : isPoliceSupervisor ? (
-              <TabsTrigger value="coordination" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                Unit Coordination
-              </TabsTrigger>
-            ) : (
               <TabsTrigger value="support" className="flex items-center gap-2">
                 <MessageSquare className="h-4 w-4" />
                 Support
               </TabsTrigger>
-            )}
-            {(isPoliceSupervisor || isAdmin) && (
-              <TabsTrigger value="management" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                Management
+            </TabsList>
+          ) : (
+            <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
+              <TabsTrigger value="field" className="flex items-center gap-2">
+                <Radio className="h-4 w-4" />
+                My Unit
               </TabsTrigger>
-            )}
-          </TabsList>
+              {/* Different tab based on role */}
+              {(isPoliceDispatcher || isAdmin) ? (
+                <TabsTrigger value="dispatch" className="flex items-center gap-2">
+                  <Activity className="h-4 w-4" />
+                  Command Center
+                </TabsTrigger>
+              ) : isPoliceSupervisor ? (
+                <TabsTrigger value="coordination" className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  Unit Coordination
+                </TabsTrigger>
+              ) : null}
+              {(isPoliceSupervisor || isAdmin) && (
+                <TabsTrigger value="management" className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  Management
+                </TabsTrigger>
+              )}
+            </TabsList>
+          )}
 
           {/* Field Operations Tab */}
           <TabsContent value="field" className="space-y-6">
             <div className="flex items-center gap-4 mb-4">
               <Badge variant="outline" className="flex items-center gap-2">
                 <Radio className="h-3 w-3" />
-                Field Operations
+                {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher 
+                  ? "My Field Operations" 
+                  : "Field Operations"
+                }
               </Badge>
               <p className="text-sm text-muted-foreground">
-                Manage your unit assignments and field activities
+                {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher 
+                  ? "Manage your assignments, unit status, and field communications"
+                  : "Manage your unit assignments and field activities"
+                }
               </p>
             </div>
-            <UnitFieldDashboard unitIncidents={unitIncidents} />
+            <UnitFieldDashboard 
+              unitIncidents={unitIncidents} 
+              isFieldOperatorMode={isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher}
+            />
           </TabsContent>
 
-          {/* Dispatch Center Tab */}
-          <TabsContent value="dispatch" className="space-y-6">
+          {/* Dispatch Center Tab - Restricted to Dispatchers and Admins */}
+          {(isPoliceDispatcher || isAdmin) && (
+            <TabsContent value="dispatch" className="space-y-6">
             <div className="flex items-center gap-4 mb-4">
               <Badge variant="outline" className="flex items-center gap-2">
                 <Activity className="h-3 w-3" />
@@ -768,6 +787,7 @@ const PoliceDashboard = () => {
               </div>
             </div>
           </TabsContent>
+          )}
 
           {/* Unit Coordination Tab - Supervisors Only */}
           {isPoliceSupervisor && (
@@ -934,32 +954,40 @@ const PoliceDashboard = () => {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <MessageSquare className="h-5 w-5" />
-                      Quick Actions
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <Button 
-                      variant="outline" 
-                      className="w-full"
-                      onClick={() => toast.info('Request backup feature available in My Unit tab')}
-                    >
-                      <Users className="h-4 w-4 mr-2" />
-                      Request Backup
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="w-full"
-                      onClick={() => toast.info('Status update feature available in My Unit tab')}
-                    >
-                      <Flag className="h-4 w-4 mr-2" />
-                      Update Status
-                    </Button>
-                  </CardContent>
-                </Card>
+                 <Card>
+                   <CardHeader>
+                     <CardTitle className="flex items-center gap-2">
+                       <MessageSquare className="h-5 w-5" />
+                       Field Actions
+                     </CardTitle>
+                   </CardHeader>
+                   <CardContent className="space-y-3">
+                     <Button 
+                       variant="outline" 
+                       className="w-full"
+                       onClick={() => toast.info('Request backup feature available in My Unit tab')}
+                     >
+                       <Users className="h-4 w-4 mr-2" />
+                       Request Backup
+                     </Button>
+                     <Button 
+                       variant="outline" 
+                       className="w-full"
+                       onClick={() => toast.info('Status update feature available in My Unit tab')}
+                     >
+                       <Flag className="h-4 w-4 mr-2" />
+                       Update Status
+                     </Button>
+                     <Button 
+                       variant="outline" 
+                       className="w-full"
+                       onClick={() => setActiveTab('field')}
+                     >
+                       <Radio className="h-4 w-4 mr-2" />
+                       Go to My Unit
+                     </Button>
+                   </CardContent>
+                 </Card>
               </div>
             </TabsContent>
           )}
