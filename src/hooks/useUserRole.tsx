@@ -129,6 +129,40 @@ export const useUserRole = () => {
   const hasPoliceAccess = isPoliceOperator || isPoliceSupervisor || isPoliceDispatcher || hasAdminAccess;
   const hasPoliceManagementAccess = isPoliceSupervisor || hasAdminAccess;
   
+  // Unit lead detection - check if user is a unit lead
+  const [isUnitLead, setIsUnitLead] = useState(false);
+  
+  useEffect(() => {
+    const checkUnitLeadStatus = async () => {
+      if (!user?.id || !isPoliceOperator) {
+        setIsUnitLead(false);
+        return;
+      }
+      
+      try {
+        const { data, error } = await supabase
+          .from('emergency_unit_members')
+          .select('is_lead')
+          .eq('officer_id', user.id)
+          .eq('is_lead', true)
+          .maybeSingle();
+          
+        if (error) {
+          console.error('Error checking unit lead status:', error);
+          setIsUnitLead(false);
+          return;
+        }
+        
+        setIsUnitLead(!!data);
+      } catch (error) {
+        console.error('Error checking unit lead status:', error);
+        setIsUnitLead(false);
+      }
+    };
+    
+    checkUnitLeadStatus();
+  }, [user?.id, isPoliceOperator]);
+  
   // Operational Permissions based on the permission map
   const canSearchVerifiedAddresses = true; // All roles can search verified addresses
   
@@ -268,6 +302,7 @@ export const useUserRole = () => {
     // Police access checks
     hasPoliceAccess,
     hasPoliceManagementAccess,
+    isUnitLead,
     // Operational permissions
     canSearchVerifiedAddresses,
     canCreateDraftAddress,

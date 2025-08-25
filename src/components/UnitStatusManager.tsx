@@ -10,9 +10,21 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { MapPin, Clock, AlertCircle, CheckCircle, Radio, Navigation } from 'lucide-react';
 
+interface UnitInfo {
+  id: string;
+  unit_code: string;
+  unit_name: string;
+  status: string;
+  location_latitude?: number;
+  location_longitude?: number;
+  current_location?: string;
+  radio_frequency?: string;
+  vehicle_id?: string;
+}
+
 interface UnitStatusManagerProps {
-  unitId?: string;
-  className?: string;
+  unit: UnitInfo;
+  onUpdate: () => void;
 }
 
 interface IncidentAssignment {
@@ -47,7 +59,7 @@ const statusOptions = [
   { value: 'unavailable', label: 'Unavailable', icon: AlertCircle, color: 'bg-gray-500' }
 ];
 
-export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unitId, className }) => {
+export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unit, onUpdate }) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [unitStatus, setUnitStatus] = useState<UnitStatus | null>(null);
@@ -58,13 +70,12 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unitId, cl
   const [watchingLocation, setWatchingLocation] = useState(false);
 
   useEffect(() => {
-    if (unitId) {
-      fetchUnitStatus();
+    if (unit) {
+      setUnitStatus(unit as UnitStatus);
+      setSelectedStatus(unit.status);
       fetchActiveAssignments();
-    } else {
-      fetchUserUnit();
     }
-  }, [unitId, user]);
+  }, [unit, user]);
 
   const fetchUserUnit = async () => {
     if (!user) return;
@@ -92,34 +103,17 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unitId, cl
       if (data?.emergency_units) {
         setUnitStatus(data.emergency_units as UnitStatus);
         setSelectedStatus(data.emergency_units.status);
-        fetchActiveAssignments(data.unit_id);
+        fetchActiveAssignments();
       }
     } catch (error) {
       console.error('Error fetching user unit:', error);
     }
   };
 
-  const fetchUnitStatus = async () => {
-    if (!unitId) return;
+  // Remove this function as it's not needed anymore
 
-    try {
-      const { data, error } = await supabase
-        .from('emergency_units')
-        .select('*')
-        .eq('id', unitId)
-        .single();
-
-      if (error) throw error;
-      setUnitStatus(data);
-      setSelectedStatus(data.status);
-    } catch (error) {
-      console.error('Error fetching unit status:', error);
-    }
-  };
-
-  const fetchActiveAssignments = async (currentUnitId?: string) => {
-    const targetUnitId = currentUnitId || unitId;
-    if (!targetUnitId || !unitStatus) return;
+  const fetchActiveAssignments = async () => {
+    if (!unit?.id) return;
 
     try {
       const { data, error } = await supabase
@@ -135,7 +129,7 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unitId, cl
           location_longitude,
           dispatched_at
         `)
-        .contains('assigned_units', [unitStatus.unit_code])
+        .contains('assigned_units', [unit.id])
         .in('status', ['dispatched', 'responded']);
 
       if (error) throw error;
@@ -277,7 +271,7 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unitId, cl
 
   if (!unitStatus) {
     return (
-      <Card className={className}>
+      <Card>
         <CardContent className="p-6 text-center">
           <p className="text-muted-foreground">No unit assignment found</p>
         </CardContent>
@@ -288,7 +282,7 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unitId, cl
   const currentStatus = getCurrentStatusInfo();
 
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className="space-y-4">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

@@ -22,6 +22,8 @@ import { ResponseTimeTracker } from '@/components/ResponseTimeTracker';
 import { UnitFieldDashboard } from '@/components/UnitFieldDashboard';
 import { UnitsOverview } from '@/components/UnitsOverview';
 import { BackupNotificationManager } from '@/components/BackupNotificationManager';
+import { UnitLeadDashboard } from '@/components/UnitLeadDashboard';
+import { UnitLeadActions } from '@/components/UnitLeadActions';
 import { toast } from "sonner";
 
 interface EmergencyIncident {
@@ -54,7 +56,7 @@ interface DashboardStats {
 
 const PoliceDashboard = () => {
   const { user, signOut } = useAuth();
-  const { role, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isAdmin, loading, hasPoliceAccess } = useUserRole();
+  const { role, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isAdmin, loading, hasPoliceAccess, isUnitLead } = useUserRole();
   const { t } = useLanguage();
   
   // Dashboard state
@@ -78,6 +80,7 @@ const PoliceDashboard = () => {
   const [userUnits, setUserUnits] = useState<any[]>([]);
   const [userCity, setUserCity] = useState<string | null>(null);
   const [isDispatchSupervisor, setIsDispatchSupervisor] = useState<boolean>(false);
+  const [showUnitLeadDashboard, setShowUnitLeadDashboard] = useState(false);
   // Set default tab based on user role
   useEffect(() => {
     if (!activeTab && role) {
@@ -530,11 +533,16 @@ const PoliceDashboard = () => {
                     Dispatcher
                   </Badge>
                 )}
-                {isPoliceOperator && (
-                  <Badge variant="default" className="bg-green-100 text-green-800">
-                    Field Officer
-                  </Badge>
-                )}
+                 {isPoliceOperator && (
+                   <Badge variant="default" className="bg-green-100 text-green-800">
+                     Field Officer
+                   </Badge>
+                 )}
+                 {isUnitLead && (
+                   <Badge variant="default" className="bg-yellow-100 text-yellow-800">
+                     Unit Lead
+                   </Badge>
+                 )}
               </div>
             </div>
 
@@ -607,11 +615,45 @@ const PoliceDashboard = () => {
                   : "Manage your unit assignments and field activities"
                 }
               </p>
+              
+              {/* Show Unit Lead Dashboard if user is a unit lead */}
+              {showUnitLeadDashboard && isUnitLead && userUnit && (
+                <UnitLeadDashboard 
+                  userUnit={userUnit}
+                  onRefresh={() => {
+                    fetchUserUnit();
+                    fetchUnitIncidents();
+                  }}
+                />
+              )}
             </div>
-            <UnitFieldDashboard 
-              unitIncidents={unitIncidents} 
-              isFieldOperatorMode={isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher}
-            />
+            
+            {/* Show standard field dashboard if not showing unit lead dashboard */}
+            {!showUnitLeadDashboard && (
+              <UnitFieldDashboard 
+                unitIncidents={unitIncidents} 
+                isFieldOperatorMode={isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher}
+              />
+            )}
+            
+            {/* Unit Lead Actions Panel */}
+            {isUnitLead && !showUnitLeadDashboard && (
+              <UnitLeadActions 
+                onOpenUnitDashboard={() => setShowUnitLeadDashboard(true)}
+              />
+            )}
+            
+            {/* Return to Field View Button */}
+            {showUnitLeadDashboard && (
+              <div className="flex justify-center">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowUnitLeadDashboard(false)}
+                >
+                  Return to Field Operations
+                </Button>
+              </div>
+            )}
           </TabsContent>
 
           {/* Dispatch Center Tab - Restricted to Dispatchers and Admins */}
@@ -703,7 +745,12 @@ const PoliceDashboard = () => {
               {/* Right Panel */}
               <div className="space-y-6">
                 {/* Unit Status Manager for current user */}
-                <UnitStatusManager />
+                {userUnit && (
+                  <UnitStatusManager 
+                    unit={userUnit} 
+                    onUpdate={() => fetchUserUnit()} 
+                  />
+                )}
                 
                 {/* Response Time Metrics */}
                 <ResponseTimeTracker showRecentOnly={true} />
@@ -909,7 +956,12 @@ const PoliceDashboard = () => {
                       <CardTitle className="text-lg">Unit Status</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <UnitStatusManager />
+                      {userUnit && (
+                        <UnitStatusManager 
+                          unit={userUnit} 
+                          onUpdate={() => fetchUserUnit()} 
+                        />
+                      )}
                     </CardContent>
                   </Card>
                 </div>
