@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
@@ -13,7 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { 
   Users, MapPin, Radio, Car, Crown, User, Plus, Edit, 
   Trash2, Clock, TrendingUp, AlertCircle, CheckCircle,
-  Phone, Mail, Shield, Navigation, ArrowLeft, Star, Award
+  Phone, Mail, Shield, Navigation, ArrowLeft, Star, Award, ChevronDown, ChevronRight
 } from 'lucide-react';
 
 interface EmergencyUnit {
@@ -69,6 +71,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
+  const [expandedUnits, setExpandedUnits] = useState<Set<string>>(new Set());
 
   // Form states
   const [newUnit, setNewUnit] = useState({
@@ -375,6 +378,18 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
     return priorities[role] || 0;
   };
 
+  const toggleUnitExpansion = (unitId: string) => {
+    setExpandedUnits(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(unitId)) {
+        newSet.delete(unitId);
+      } else {
+        newSet.add(unitId);
+      }
+      return newSet;
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -465,215 +480,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
         </Dialog>
       </div>
 
-      {/* Units Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {units.map((unit) => (
-          <Card key={unit.id} className="cursor-pointer hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-lg">{unit.unit_code}</CardTitle>
-                  <p className="text-sm text-muted-foreground">{unit.unit_name}</p>
-                </div>
-                <div className={`w-3 h-3 rounded-full ${getStatusColor(unit.status)}`} />
-              </div>
-              <Badge variant="outline" className="w-fit">
-                {unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1)}
-              </Badge>
-            </CardHeader>
-            
-            <CardContent className="space-y-3">
-              <div className="flex items-center gap-2 text-sm">
-                <Users className="h-4 w-4 text-muted-foreground" />
-                <span>{unit.emergency_unit_members.length} officers</span>
-              </div>
-              
-              {unit.radio_frequency && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Radio className="h-4 w-4 text-muted-foreground" />
-                  <span>{unit.radio_frequency}</span>
-                </div>
-              )}
-              
-              {unit.vehicle_id && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Car className="h-4 w-4 text-muted-foreground" />
-                  <span>{unit.vehicle_id}</span>
-                </div>
-              )}
-
-              {unit.current_location && (
-                <div className="flex items-center gap-2 text-sm">
-                  <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span className="truncate">{unit.current_location}</span>
-                </div>
-              )}
-
-              <Separator />
-
-              {/* Officer List with Chain of Command */}
-              <div className="space-y-2">
-                {unit.emergency_unit_members.length > 0 ? (
-                  // Sort by lead status first, then by role priority
-                  unit.emergency_unit_members
-                    .sort((a, b) => {
-                      if (a.is_lead && !b.is_lead) return -1;
-                      if (!a.is_lead && b.is_lead) return 1;
-                      return getRolePriority(b.role) - getRolePriority(a.role);
-                    })
-                    .map((member) => (
-                    <div key={member.id} className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2">
-                        {getRoleIcon(member.role, member.is_lead)}
-                        <div className="flex flex-col">
-                          <span className="truncate font-medium">{member.profiles.full_name}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {formatRoleTitle(member.role)}
-                            {member.is_lead && " • Unit Lead"}
-                          </span>
-                        </div>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeOfficerFromUnit(member.id)}
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-sm text-muted-foreground italic">No officers assigned</p>
-                )}
-              </div>
-
-              <div className="flex gap-2 pt-2">
-                <Select
-                  value={unit.status}
-                  onValueChange={(value) => updateUnitStatus(unit.id, value)}
-                >
-                  <SelectTrigger className="flex-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="available">Available</SelectItem>
-                    <SelectItem value="dispatched">Dispatched</SelectItem>
-                    <SelectItem value="busy">Busy</SelectItem>
-                    <SelectItem value="unavailable">Unavailable</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <Dialog open={isAssignDialogOpen && selectedUnit?.id === unit.id} 
-                        onOpenChange={(open) => {
-                          setIsAssignDialogOpen(open);
-                          if (open) setSelectedUnit(unit);
-                        }}>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Assign Officer to {unit.unit_code}</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <div>
-                        <Label>Available Officers</Label>
-                        <Select
-                          value={assignmentData.officer_id}
-                          onValueChange={(value) => setAssignmentData({...assignmentData, officer_id: value})}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select an officer" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {getUnassignedOfficers().map((officer) => (
-                              <SelectItem key={officer.user_id} value={officer.user_id}>
-                                {officer.full_name} ({officer.email})
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      
-                      <div>
-                        <Label>Role</Label>
-                        <Select
-                          value={assignmentData.role}
-                          onValueChange={(value) => setAssignmentData({...assignmentData, role: value})}
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="officer">Police Officer</SelectItem>
-                            <SelectItem value="senior_officer">Senior Officer</SelectItem>
-                            <SelectItem value="corporal">Corporal</SelectItem>
-                            <SelectItem value="sergeant">Sergeant</SelectItem>
-                            <SelectItem value="lieutenant">Lieutenant</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          id="is_lead"
-                          checked={assignmentData.is_lead}
-                          onChange={(e) => setAssignmentData({...assignmentData, is_lead: e.target.checked})}
-                        />
-                        <Label htmlFor="is_lead">Assign as Unit Lead</Label>
-                      </div>
-
-                      {/* Chain of Command Information */}
-                      <div className="bg-muted/30 rounded p-3 text-sm">
-                        <h4 className="font-medium mb-2">Police Chain of Command:</h4>
-                        <div className="space-y-1 text-xs">
-                          <div className="flex items-center gap-2">
-                            <Star className="h-3 w-3 text-blue-600" />
-                            <span>Lieutenant (Unit Commander)</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Award className="h-3 w-3 text-green-600" />
-                            <span>Sergeant (Squad Leader)</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Shield className="h-3 w-3 text-purple-600" />
-                            <span>Corporal (Team Leader)</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <User className="h-3 w-3 text-orange-600" />
-                            <span>Senior Officer</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <User className="h-3 w-3 text-muted-foreground" />
-                            <span>Police Officer</span>
-                          </div>
-                        </div>
-                        <div className="mt-2 pt-2 border-t text-xs text-muted-foreground">
-                          <Crown className="h-3 w-3 text-yellow-600 inline mr-1" />
-                          Unit Lead designation can be assigned to any rank
-                        </div>
-                      </div>
-
-                      <Button 
-                        onClick={() => assignOfficerToUnit(unit.id)} 
-                        className="w-full"
-                        disabled={!assignmentData.officer_id}
-                      >
-                        Assign Officer
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Summary Statistics */}
+      {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4">
@@ -682,7 +489,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                 <p className="text-sm text-muted-foreground">Total Units</p>
                 <p className="text-2xl font-bold">{units.length}</p>
               </div>
-              <Users className="h-5 w-5 text-muted-foreground" />
+              <Shield className="h-5 w-5 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
@@ -691,7 +498,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Available Units</p>
+                <p className="text-sm text-muted-foreground">Available</p>
                 <p className="text-2xl font-bold text-green-600">
                   {units.filter(u => u.status === 'available').length}
                 </p>
@@ -705,12 +512,12 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">On Duty</p>
+                <p className="text-sm text-muted-foreground">Dispatched</p>
                 <p className="text-2xl font-bold text-blue-600">
-                  {units.filter(u => ['dispatched', 'busy'].includes(u.status)).length}
+                  {units.filter(u => u.status === 'dispatched').length}
                 </p>
               </div>
-              <AlertCircle className="h-5 w-5 text-blue-600" />
+              <Navigation className="h-5 w-5 text-blue-600" />
             </div>
           </CardContent>
         </Card>
@@ -720,15 +527,245 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Officers</p>
-                <p className="text-2xl font-bold">
+                <p className="text-2xl font-bold text-purple-600">
                   {units.reduce((total, unit) => total + unit.emergency_unit_members.length, 0)}
                 </p>
               </div>
-              <Shield className="h-5 w-5 text-muted-foreground" />
+              <Users className="h-5 w-5 text-purple-600" />
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Units List */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            Emergency Units
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="divide-y">
+            {units.map((unit) => {
+              const isExpanded = expandedUnits.has(unit.id);
+              const leadOfficer = unit.emergency_unit_members.find(m => m.is_lead);
+              
+              return (
+                <Collapsible key={unit.id} open={isExpanded} onOpenChange={() => toggleUnitExpansion(unit.id)}>
+                  <CollapsibleTrigger asChild>
+                    <div className="flex items-center justify-between p-4 hover:bg-muted/50 cursor-pointer transition-colors">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-10 w-10">
+                          <AvatarFallback>
+                            {unit.unit_code.substring(0, 2)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-medium">{unit.unit_code}</h3>
+                            <div className={`w-2 h-2 rounded-full ${getStatusColor(unit.status)}`} />
+                          </div>
+                          <p className="text-sm text-muted-foreground">{unit.unit_name}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3">
+                        <Badge variant="outline">
+                          {unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1)}
+                        </Badge>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Users className="h-4 w-4" />
+                          <span>{unit.emergency_unit_members.length}</span>
+                        </div>
+                        {isExpanded ? (
+                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </div>
+                    </div>
+                  </CollapsibleTrigger>
+                  
+                  <CollapsibleContent>
+                    <div className="px-4 pb-4 space-y-4">
+                      {/* Unit Details */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm">Unit Information</h4>
+                          <div className="space-y-1 text-sm">
+                            <div className="flex items-center gap-2">
+                              <Shield className="h-4 w-4 text-muted-foreground" />
+                              <span>Status: {unit.status}</span>
+                            </div>
+                            {unit.radio_frequency && (
+                              <div className="flex items-center gap-2">
+                                <Radio className="h-4 w-4 text-muted-foreground" />
+                                <span>Radio: {unit.radio_frequency}</span>
+                              </div>
+                            )}
+                            {unit.vehicle_id && (
+                              <div className="flex items-center gap-2">
+                                <Car className="h-4 w-4 text-muted-foreground" />
+                                <span>Vehicle: {unit.vehicle_id}</span>
+                              </div>
+                            )}
+                            {unit.current_location && (
+                              <div className="flex items-center gap-2">
+                                <MapPin className="h-4 w-4 text-muted-foreground" />
+                                <span>Location: {unit.current_location}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm">Actions</h4>
+                          <div className="flex flex-wrap gap-2">
+                            <Dialog open={isAssignDialogOpen} onOpenChange={setIsAssignDialogOpen}>
+                              <DialogTrigger asChild>
+                                <Button size="sm" variant="outline" onClick={() => setSelectedUnit(unit)}>
+                                  <Plus className="h-3 w-3 mr-1" />
+                                  Assign Officer
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Assign Officer to {selectedUnit?.unit_code}</DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-4">
+                                  <div>
+                                    <Label htmlFor="officer_select">Select Officer</Label>
+                                    <Select
+                                      value={assignmentData.officer_id}
+                                      onValueChange={(value) => setAssignmentData({...assignmentData, officer_id: value})}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Choose an officer" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {getUnassignedOfficers().map((officer) => (
+                                          <SelectItem key={officer.user_id} value={officer.user_id}>
+                                            {officer.full_name}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  <div>
+                                    <Label htmlFor="role_select">Role</Label>
+                                    <Select
+                                      value={assignmentData.role}
+                                      onValueChange={(value) => setAssignmentData({...assignmentData, role: value})}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="officer">Police Officer</SelectItem>
+                                        <SelectItem value="senior_officer">Senior Officer</SelectItem>
+                                        <SelectItem value="corporal">Corporal</SelectItem>
+                                        <SelectItem value="sergeant">Sergeant</SelectItem>
+                                        <SelectItem value="lieutenant">Lieutenant</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="checkbox"
+                                      id="is_lead"
+                                      checked={assignmentData.is_lead}
+                                      onChange={(e) => setAssignmentData({...assignmentData, is_lead: e.target.checked})}
+                                    />
+                                    <Label htmlFor="is_lead">Make Unit Lead</Label>
+                                  </div>
+                                  <Button onClick={() => selectedUnit && assignOfficerToUnit(selectedUnit.id)} className="w-full">
+                                    Assign Officer
+                                  </Button>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                            
+                            <Select
+                              value={unit.status}
+                              onValueChange={(value) => updateUnitStatus(unit.id, value)}
+                            >
+                              <SelectTrigger className="w-auto">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="available">Available</SelectItem>
+                                <SelectItem value="dispatched">Dispatched</SelectItem>
+                                <SelectItem value="busy">Busy</SelectItem>
+                                <SelectItem value="unavailable">Unavailable</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Unit Members */}
+                      {unit.emergency_unit_members.length > 0 && (
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm">Unit Members ({unit.emergency_unit_members.length})</h4>
+                          <div className="space-y-2">
+                            {unit.emergency_unit_members
+                              .sort((a, b) => {
+                                if (a.is_lead && !b.is_lead) return -1;
+                                if (!a.is_lead && b.is_lead) return 1;
+                                return getRolePriority(b.role) - getRolePriority(a.role);
+                              })
+                              .map((member) => (
+                                <div key={member.id} className="flex items-center justify-between text-sm bg-background rounded p-3">
+                                  <div className="flex items-center gap-3">
+                                    <Avatar className="h-8 w-8">
+                                      <AvatarFallback>
+                                        {member.profiles.full_name.split(' ').map(n => n[0]).join('')}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                      <div className="flex items-center gap-2">
+                                        {getRoleIcon(member.role, member.is_lead)}
+                                        <span className="font-medium">{member.profiles.full_name}</span>
+                                        {member.is_lead && (
+                                          <Badge variant="outline" className="text-xs">Lead</Badge>
+                                        )}
+                                      </div>
+                                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                                        <span>{formatRoleTitle(member.role)}</span>
+                                        <div className="flex items-center gap-1">
+                                          <Mail className="h-3 w-3" />
+                                          <span>{member.profiles.email}</span>
+                                        </div>
+                                        {member.profiles.phone && (
+                                          <div className="flex items-center gap-1">
+                                            <Phone className="h-3 w-3" />
+                                            <span>{member.profiles.phone}</span>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <Button
+                                    size="sm"
+                                    variant="destructive"
+                                    onClick={() => removeOfficerFromUnit(member.id)}
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
