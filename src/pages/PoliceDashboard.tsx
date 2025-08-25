@@ -313,11 +313,15 @@ const PoliceDashboard = () => {
     }
   };
 
-  // Fetch area-specific incidents based on the supervisor's primary unit coverage (fallback to role city)
+  // Fetch area-specific incidents based on supervisor's role city assignment (priority) or unit coverage
   const fetchAreaIncidents = async () => {
     if (!hasPoliceAccess) return;
 
-    const filterCity = userUnit?.coverage_city || userCity;
+    // For supervisors, prioritize role metadata city over unit coverage city
+    const filterCity = isPoliceSupervisor 
+      ? (userCity || userUnit?.coverage_city)
+      : (userUnit?.coverage_city || userCity);
+    
     if (!filterCity) return;
 
     try {
