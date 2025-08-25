@@ -97,8 +97,8 @@ const PoliceAnalytics: React.FC = () => {
       const { data: incidents, error: incidentsError } = await supabase
         .from('emergency_incidents')
         .select('*')
-        .gte('created_at', startDate.toISOString())
-        .lte('created_at', endDate.toISOString());
+        .gte('reported_at', startDate.toISOString())
+        .lte('reported_at', endDate.toISOString());
 
       console.log('📊 Incidents query result:', { incidents, incidentsError });
 
