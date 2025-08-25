@@ -501,8 +501,8 @@ const PoliceDashboard = () => {
               <div className="flex items-center gap-2">
                 <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 flex-shrink-0" />
                 <div className="min-w-0">
-                  <h1 className="text-lg sm:text-2xl font-bold truncate">{t('policeCommandCenter')}</h1>
-                  <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
+                  <h1 className="text-sm sm:text-lg md:text-2xl font-bold truncate">{t('policeCommandCenter')}</h1>
+                  <p className="text-xs text-muted-foreground hidden sm:block">
                     {t('emergencyResponse')}
                   </p>
                 </div>
@@ -657,13 +657,13 @@ const PoliceDashboard = () => {
             </div>
 
             {/* Stats Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
               <Card>
-                <CardContent className="p-4">
+                <CardContent className="p-2 sm:p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">{t('activeIncidents')}</p>
-                      <p className="text-2xl font-bold text-red-600">{dashboardStats.activeIncidents}</p>
+                      <p className="text-xs text-muted-foreground">{t('activeIncidents')}</p>
+                      <p className="text-lg sm:text-2xl font-bold text-red-600">{dashboardStats.activeIncidents}</p>
                     </div>
                     <AlertTriangle className="h-5 w-5 text-red-600" />
                   </div>
@@ -671,11 +671,11 @@ const PoliceDashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-4">
+                <CardContent className="p-2 sm:p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">{t('availableUnits')}</p>
-                      <p className="text-2xl font-bold text-green-600">{dashboardStats.availableUnits}</p>
+                      <p className="text-xs text-muted-foreground">{t('availableUnits')}</p>
+                      <p className="text-lg sm:text-2xl font-bold text-green-600">{dashboardStats.availableUnits}</p>
                     </div>
                     <CheckCircle className="h-5 w-5 text-green-600" />
                   </div>
@@ -683,11 +683,11 @@ const PoliceDashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-4">
+                <CardContent className="p-2 sm:p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">{t('avgResponseTime')}</p>
-                      <p className="text-2xl font-bold text-blue-600">{dashboardStats.avgResponseTime}m</p>
+                      <p className="text-xs text-muted-foreground">{t('avgResponseTime')}</p>
+                      <p className="text-lg sm:text-2xl font-bold text-blue-600">{dashboardStats.avgResponseTime}m</p>
                     </div>
                     <Clock className="h-5 w-5 text-blue-600" />
                   </div>
@@ -695,11 +695,11 @@ const PoliceDashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-4">
+                <CardContent className="p-2 sm:p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">{t('operatorsOnline')}</p>
-                      <p className="text-2xl font-bold text-purple-600">{dashboardStats.operatorsOnline}</p>
+                      <p className="text-xs text-muted-foreground">{t('operatorsOnline')}</p>
+                      <p className="text-lg sm:text-2xl font-bold text-purple-600">{dashboardStats.operatorsOnline}</p>
                     </div>
                     <Users className="h-5 w-5 text-purple-600" />
                   </div>
@@ -713,8 +713,8 @@ const PoliceDashboard = () => {
               <div className="lg:col-span-2">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-xl flex items-center gap-2">
-                       <AlertTriangle className="h-6 w-6" />
+                    <CardTitle className="text-sm sm:text-lg flex items-center gap-2">
+                       <AlertTriangle className="h-4 w-4 sm:h-6 sm:w-6" />
                        {t('activeIncidents')}
                     </CardTitle>
                   </CardHeader>

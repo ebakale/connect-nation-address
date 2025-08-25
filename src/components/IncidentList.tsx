@@ -366,7 +366,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
       <CardHeader>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <CardTitle className="text-xl">{t('activeIncidents')}</CardTitle>
+            <CardTitle className="text-sm sm:text-lg">{t('activeIncidents')}</CardTitle>
             <CardDescription>
               {filteredIncidents.length} of {incidents.length} {t('emergencyIncidents').toLowerCase()}
             </CardDescription>
@@ -408,19 +408,19 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
           {filteredIncidents.map((incident) => (
             <div 
               key={incident.id}
-              className={`border-b p-4 hover:bg-muted/50 cursor-pointer transition-colors ${
+              className={`border-b p-2 sm:p-4 hover:bg-muted/50 cursor-pointer transition-colors ${
                 selectedIncident?.id === incident.id ? 'bg-primary/5 border-l-4 border-l-primary' : ''
               }`}
               onClick={() => onSelectIncident(incident)}
             >
-              <div className="flex justify-between items-start mb-3">
+              <div className="flex justify-between items-start mb-2">
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{getTypeIcon(incident.emergency_type)}</span>
                   <div>
-                    <div className="font-semibold text-lg">
+                    <div className="font-semibold text-sm sm:text-base">
                       {incident.incident_number}
                     </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-xs text-muted-foreground">
                       {new Date(incident.reported_at).toLocaleString()}
                     </div>
                   </div>
