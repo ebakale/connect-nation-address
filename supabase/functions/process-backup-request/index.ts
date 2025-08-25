@@ -31,16 +31,49 @@ Deno.serve(async (req) => {
 
     console.log('Processing backup request:', { incident_id, requesting_unit_code, incident_number })
 
-    // 1. Find all supervisors and dispatchers in the same city/region as the requesting unit
-    const { data: requestingUnit, error: unitError } = await supabaseClient
+    // 1. First try to find the unit by unit_code, then by unit_name as fallback
+    let requestingUnit = null
+    let unitError = null
+
+    // Try to find by unit_code first
+    const { data: unitByCode, error: codeError } = await supabaseClient
       .from('emergency_units')
       .select('coverage_city, coverage_region')
       .eq('unit_code', requesting_unit_code)
-      .single()
+      .maybeSingle()
 
-    if (unitError) {
-      console.error('Error fetching requesting unit:', unitError)
-      throw new Error('Could not find requesting unit')
+    if (unitByCode) {
+      requestingUnit = unitByCode
+    } else {
+      // If not found by code, try by unit_name
+      const { data: unitByName, error: nameError } = await supabaseClient
+        .from('emergency_units')
+        .select('coverage_city, coverage_region')
+        .eq('unit_name', requesting_unit_name)
+        .maybeSingle()
+      
+      if (unitByName) {
+        requestingUnit = unitByName
+      } else {
+        console.error('Error fetching requesting unit by code:', codeError)
+        console.error('Error fetching requesting unit by name:', nameError)
+        console.log('Tried unit_code:', requesting_unit_code, 'and unit_name:', requesting_unit_name)
+        
+        // If we still can't find the unit, get the incident's city directly
+        const { data: incidentData, error: incidentError } = await supabaseClient
+          .from('emergency_incidents')
+          .select('city, region')
+          .eq('id', incident_id)
+          .maybeSingle()
+        
+        if (incidentData) {
+          requestingUnit = { coverage_city: incidentData.city, coverage_region: incidentData.region }
+          console.log('Using incident location as fallback:', incidentData)
+        } else {
+          console.error('Error fetching incident location:', incidentError)
+          throw new Error('Could not determine location for backup request')
+        }
+      }
     }
 
     // 2. Find all supervisors and dispatchers in the same area
