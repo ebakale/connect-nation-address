@@ -78,7 +78,7 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
 
       if (rolesError) throw rolesError;
 
-      // Get unit assignments
+      // Get unit assignments (only for operators)
       const { data: unitsData, error: unitsError } = await supabase
         .from('emergency_unit_members')
         .select(`
@@ -96,14 +96,21 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
 
       if (unitsError) throw unitsError;
 
-      // Combine the data
+      // Combine the data, showing unit assignments only for operators
       const officersWithRoles = profilesData?.filter(profile => 
         rolesData?.some(role => role.user_id === profile.user_id)
-      ).map(profile => ({
-        ...profile,
-        user_roles: rolesData?.filter(role => role.user_id === profile.user_id) || [],
-        emergency_unit_members: unitsData?.filter(unit => unit.officer_id === profile.user_id) || []
-      })) || [];
+      ).map(profile => {
+        const userRoles = rolesData?.filter(role => role.user_id === profile.user_id) || [];
+        const isOperator = userRoles.some(role => role.role === 'police_operator');
+        
+        return {
+          ...profile,
+          user_roles: userRoles,
+          emergency_unit_members: isOperator 
+            ? (unitsData?.filter(unit => unit.officer_id === profile.user_id) || [])
+            : [] // Supervisors and dispatchers don't have unit assignments
+        };
+      }) || [];
 
       setOfficers(officersWithRoles);
       
@@ -147,19 +154,31 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
         ? Math.round(responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length)
         : 0;
 
-      // Get unit assignments count
-      const { data: unitData, error: unitError } = await supabase
-        .from('emergency_unit_members')
-        .select('unit_id')
-        .eq('officer_id', officerId);
+      // Get unit assignments count (only for operators)
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', officerId);
+      
+      const isOperator = roleData?.some(role => role.role === 'police_operator');
+      let unitAssignmentCount = 0;
+      
+      if (isOperator) {
+        const { data: unitData, error: unitError } = await supabase
+          .from('emergency_unit_members')
+          .select('unit_id')
+          .eq('officer_id', officerId);
 
-      if (unitError) throw unitError;
+        if (unitError) throw unitError;
+        
+        unitAssignmentCount = unitData?.length || 0;
+      }
 
       const stats: OfficerStats = {
         total_incidents: totalIncidents,
         incidents_responded: respondedIncidents.length,
         avg_response_time: avgResponseTime,
-        units_assigned: unitData?.length || 0,
+        units_assigned: unitAssignmentCount,
         rank_score: calculateRankScore(totalIncidents, respondedIncidents.length, avgResponseTime)
       };
 
@@ -337,8 +356,9 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
                   </div>
                 </div>
 
-                {/* Current Unit Assignment */}
-                {officer.emergency_unit_members && officer.emergency_unit_members.length > 0 && (
+                {/* Current Unit Assignment - Only show for operators */}
+                {officer.user_roles.some(role => role.role === 'police_operator') && 
+                 officer.emergency_unit_members && officer.emergency_unit_members.length > 0 && (
                   <div className="space-y-2">
                     <p className="text-sm font-medium">Current Assignment:</p>
                     {officer.emergency_unit_members.map((assignment, index) => (

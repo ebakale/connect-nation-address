@@ -97,9 +97,9 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   const [reporterInfo, setReporterInfo] = useState<{ name?: string; email?: string; contact?: string }>({});
   const [userUnits, setUserUnits] = useState<string[]>([]);
 
-  // Load user's units for assignment restrictions
+  // Load user's units for assignment restrictions (only for operators)
   const loadUserUnits = async () => {
-    if (!user?.id) return;
+    if (!user?.id || !isPoliceOperator) return;
     
     try {
       const { data: unitMemberships, error } = await supabase
@@ -145,11 +145,12 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
       });
 
       // Filter available units based on user role and permissions
-      if (isPoliceSupervisor && !isPoliceDispatcher) {
-        // Supervisors can only assign to their own units
+      // Supervisors and dispatchers can assign to any unit (no filtering needed)
+      // Only operators are restricted to their assigned units for updates, but not for viewing
+      if (isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher) {
+        // Regular operators can only see their assigned units for certain operations
         unitsData = unitsData.filter(unit => userUnits.includes(unit.unit_code));
       }
-      // Dispatchers can assign to any unit (no filtering needed)
       
       setUnitNames(unitNameMap);
       setAvailableUnits(unitsData);
@@ -239,7 +240,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   }, [incident.id, user?.id]);
 
   useEffect(() => {
-    if (userUnits.length > 0 || isPoliceDispatcher) {
+    if (userUnits.length > 0 || isPoliceDispatcher || isPoliceSupervisor) {
       loadUnitNames();
     }
   }, [userUnits, isPoliceSupervisor, isPoliceDispatcher]);

@@ -134,7 +134,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
           phone,
           user_roles!inner(role)
         `)
-        .in('user_roles.role', ['police_operator', 'police_dispatcher', 'police_supervisor']);
+        .in('user_roles.role', ['police_operator']); // Only operators can be assigned to units
 
       if (error) throw error;
       setAvailableOfficers(data || []);
