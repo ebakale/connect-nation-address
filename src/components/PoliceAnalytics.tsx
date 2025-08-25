@@ -71,6 +71,7 @@ const PoliceAnalytics: React.FC = () => {
   const fetchAnalytics = async () => {
     try {
       setLoading(true);
+      console.log('🔍 Fetching police analytics data...');
       
       // Calculate date range
       const endDate = new Date();
@@ -90,12 +91,16 @@ const PoliceAnalytics: React.FC = () => {
           break;
       }
 
+      console.log('📅 Date range:', { startDate: startDate.toISOString(), endDate: endDate.toISOString() });
+
       // Fetch incidents data
       const { data: incidents, error: incidentsError } = await supabase
         .from('emergency_incidents')
         .select('*')
         .gte('created_at', startDate.toISOString())
         .lte('created_at', endDate.toISOString());
+
+      console.log('📊 Incidents query result:', { incidents, incidentsError });
 
       if (incidentsError) throw incidentsError;
 
@@ -104,6 +109,8 @@ const PoliceAnalytics: React.FC = () => {
         .from('emergency_units')
         .select('*');
 
+      console.log('🚓 Units query result:', { units, unitsError });
+
       if (unitsError) throw unitsError;
 
       // Fetch officers data
@@ -111,6 +118,8 @@ const PoliceAnalytics: React.FC = () => {
         .from('user_roles')
         .select('user_id')
         .in('role', ['police_operator', 'police_supervisor', 'police_dispatcher']);
+
+      console.log('👮 Officers query result:', { roleRows, rolesError });
 
       if (rolesError) throw rolesError;
 
@@ -128,6 +137,7 @@ const PoliceAnalytics: React.FC = () => {
 
       // Process analytics data
       const processedAnalytics = processAnalyticsData(incidents || [], units || [], officers || []);
+      console.log('🔄 Processed analytics:', processedAnalytics);
       setAnalytics(processedAnalytics);
     } catch (error) {
       console.error('Error fetching analytics:', error);
