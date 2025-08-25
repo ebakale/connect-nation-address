@@ -344,23 +344,15 @@ const PoliceDashboard = () => {
         reporter_email: ''
       })) || [];
 
-      // Filter area incidents - geographic-based, not unit-based
+      // Filter area incidents - supervisors/dispatchers/admin see all active incidents in their city
       const validAreaIncidents = enrichedIncidents.filter(incident => {
-        // Show unassigned incidents only to dispatchers/supervisors
-        if (!incident.assigned_units || incident.assigned_units.length === 0) {
-          return isPoliceDispatcher || isPoliceSupervisor || isAdmin;
-        }
-        
-        // For assigned incidents in the area, show based on valid unit assignments
-        const validUnits = ['UNIT-001', 'UNIT-002', 'UNIT-003', 'UNIT-004', 'UNIT-005', 'UNIT-006', 'UNIT-007', 'UNIT-008'];
-        const hasValidUnit = incident.assigned_units.some((unit: string) => validUnits.includes(unit));
-        
-        // Show to management roles or operators if they have assigned units in this area
         if (isPoliceSupervisor || isPoliceDispatcher || isAdmin) {
-          return hasValidUnit;
-        } else if (isPoliceOperator) {
+          return true;
+        }
+        // Operators: only incidents assigned to their units
+        if (isPoliceOperator) {
           const userUnitCodes = userUnits.map(u => u.unit_code);
-          return incident.assigned_units.some((unit: string) => userUnitCodes.includes(unit));
+          return (incident.assigned_units || []).some((unit: string) => userUnitCodes.includes(unit));
         }
         
         return false;
