@@ -508,6 +508,13 @@ export type Database = {
             referencedRelation: "emergency_units"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_emergency_unit_members_officer_id"
+            columns: ["officer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       emergency_units: {
@@ -815,7 +822,15 @@ export type Database = {
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_user_roles_user_id"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
     }
     Views: {
