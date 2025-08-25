@@ -76,9 +76,10 @@ interface DecryptedIncident {
 interface IncidentDetailDialogProps {
   incident: EmergencyIncident;
   onUpdate?: () => void;
+  trigger?: React.ReactNode;
 }
 
-const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps) => {
+const IncidentDetailDialog = ({ incident, onUpdate, trigger }: IncidentDetailDialogProps) => {
   const { user } = useAuth();
   const { isPoliceSupervisor, isPoliceDispatcher, isPoliceOperator } = useUserRole();
   
@@ -96,6 +97,45 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   const [userNames, setUserNames] = useState<Record<string, string>>({});
   const [reporterInfo, setReporterInfo] = useState<{ name?: string; email?: string; contact?: string }>({});
   const [userUnits, setUserUnits] = useState<string[]>([]);
+  const [assigningUnit, setAssigningUnit] = useState('');
+  const [availableOfficers, setAvailableOfficers] = useState<{id: string, label: string}[]>([]);
+
+  // Fetch available emergency units for assignment
+  const fetchAvailableOfficers = async () => {
+    try {
+      // Get emergency units (available ones)
+      const { data: units, error: unitsError } = await supabase
+        .from('emergency_units')
+        .select(`
+          id,
+          unit_code,
+          unit_name,
+          unit_type,
+          status,
+          emergency_unit_members(
+            officer_id,
+            role,
+            is_lead,
+            profiles(full_name)
+          )
+        `)
+        .eq('status', 'available');
+
+      if (unitsError) throw unitsError;
+
+      const unitOptions = units?.map(unit => {
+        const memberCount = unit.emergency_unit_members?.length || 0;
+        return {
+          id: unit.id,
+          label: `${unit.unit_code} - ${unit.unit_name} (${unit.unit_type.toUpperCase()}) - ${memberCount} officers`
+        };
+      }) || [];
+
+      setAvailableOfficers(unitOptions);
+    } catch (error) {
+      console.error('Error fetching units:', error);
+    }
+  };
 
   // Load user's units for assignment restrictions (only for operators)
   const loadUserUnits = async () => {
@@ -236,6 +276,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
 
   useEffect(() => {
     loadIncidentLogs();
+    fetchAvailableOfficers();
     loadUserUnits();
   }, [incident.id, user?.id]);
 
@@ -386,6 +427,81 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     });
   };
 
+  const handleAssignIncident = async () => {
+    if (!assigningUnit.trim()) {
+      toast.error('Please select a unit to assign');
+      return;
+    }
+
+    try {
+      // Get unit information
+      const { data: unitData, error: unitError } = await supabase
+        .from('emergency_units')
+        .select('unit_code, unit_name')
+        .eq('id', assigningUnit)
+        .single();
+
+      if (unitError) throw unitError;
+
+      const currentUnits = incident?.assigned_units || [];
+      
+      // Add the unit code to assigned units (avoid duplicates)
+      const unitCode = unitData.unit_code;
+      const newUnits = currentUnits.includes(unitCode) 
+        ? currentUnits 
+        : [...currentUnits, unitCode];
+
+      // Use the police-incident-actions edge function for consistent logging
+      const { error } = await supabase.functions.invoke('police-incident-actions', {
+        body: {
+          action: 'assignUnits',
+          incidentId: incident.id,
+          data: {
+            units: newUnits,
+            unitName: unitData.unit_name,
+            unitCode: unitCode
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      // Send notification to assigned unit
+      await supabase.functions.invoke('notify-unit-assignment', {
+        body: {
+          incidentId: incident.id,
+          unitCode: unitCode,
+          unitName: unitData.unit_name,
+          incidentNumber: incident?.incident_number,
+          emergencyType: incident?.emergency_type,
+          priority: incident?.priority_level,
+          location: incident?.location_address || `${incident?.location_latitude}, ${incident?.location_longitude}`
+        }
+      });
+
+      // Also update operator assignment and status if needed
+      await supabase
+        .from('emergency_incidents')
+        .update({
+          assigned_operator_id: user?.id,
+          status: incident?.status === 'reported' ? 'dispatched' : incident?.status,
+          dispatched_at: incident?.status === 'reported' ? new Date().toISOString() : incident?.dispatched_at
+        })
+        .eq('id', incident.id);
+
+      toast.success(`Incident assigned to ${unitData.unit_name} (${unitCode})`);
+      setAssigningUnit('');
+      
+      // Trigger refresh of incident data
+      if (onUpdate) {
+        onUpdate();
+      }
+    } catch (error) {
+      console.error('Error assigning incident:', error);
+      toast.error('Failed to assign incident');
+    }
+  };
+
   const canEdit = isPoliceSupervisor || isPoliceDispatcher;
   const canComplete = isPoliceOperator || isPoliceSupervisor;
   const canAssignUnits = isPoliceDispatcher; // Only dispatchers can assign/reassign units
@@ -416,10 +532,12 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline">
-          <Eye className="h-4 w-4 mr-1" />
-          Details
-        </Button>
+        {trigger || (
+          <Button size="sm" variant="outline">
+            <Eye className="h-4 w-4 mr-1" />
+            Details
+          </Button>
+        )}
       </DialogTrigger>
       
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -859,8 +977,8 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
 
             {/* Action Buttons */}
             {!isEditing && (
-              <div className="flex justify-between items-center pt-4 border-t">
-                <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-4 border-t">
+                <div className="flex flex-wrap gap-2">
                   {canComplete && incident.status !== 'resolved' && incident.status !== 'closed' && (
                     <Button onClick={handleMarkComplete} className="bg-green-600 hover:bg-green-700">
                       <CheckCircle className="h-4 w-4 mr-2" />
@@ -868,6 +986,31 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                     </Button>
                   )}
                 </div>
+
+                {/* Quick Assignment Section */}
+                {(isPoliceSupervisor || isPoliceDispatcher) && (
+                  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                    <Select onValueChange={setAssigningUnit} value={assigningUnit}>
+                      <SelectTrigger className="w-full sm:w-48">
+                        <SelectValue placeholder="Assign to unit..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableOfficers.map((unit) => (
+                          <SelectItem key={unit.id} value={unit.id}>
+                            {unit.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button 
+                      onClick={handleAssignIncident}
+                      disabled={!assigningUnit}
+                      className="w-full sm:w-auto"
+                    >
+                      Assign Unit
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
         </div>

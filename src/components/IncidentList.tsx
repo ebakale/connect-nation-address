@@ -362,275 +362,124 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
   });
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <CardTitle className="text-sm sm:text-lg">{t('activeIncidents')}</CardTitle>
-            <CardDescription>
-              {filteredIncidents.length} of {incidents.length} {t('emergencyIncidents').toLowerCase()}
-            </CardDescription>
-          </div>
-          
-          <div className="flex flex-wrap gap-2 w-full sm:w-auto">
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+    <div className="space-y-4">
+      {/* Header with filters */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 className="text-sm sm:text-lg font-semibold">{t('activeIncidents')}</h3>
+          <p className="text-xs text-muted-foreground">
+            {filteredIncidents.length} of {incidents.length} {t('emergencyIncidents').toLowerCase()}
+          </p>
+        </div>
+        
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-full sm:w-40">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t('allStatus')}</SelectItem>
-                <SelectItem value="reported">{t('reported')}</SelectItem>
-                <SelectItem value="dispatched">{t('dispatched')}</SelectItem>
-                <SelectItem value="responding">{t('responding')}</SelectItem>
-                <SelectItem value="on_scene">{t('onScene')}</SelectItem>
-                <SelectItem value="resolved">{t('resolved')}</SelectItem>
-              </SelectContent>
-            </Select>
+            <SelectContent>
+              <SelectItem value="all">{t('allStatus')}</SelectItem>
+              <SelectItem value="reported">{t('reported')}</SelectItem>
+              <SelectItem value="dispatched">{t('dispatched')}</SelectItem>
+              <SelectItem value="responding">{t('responding')}</SelectItem>
+              <SelectItem value="on_scene">{t('onScene')}</SelectItem>
+              <SelectItem value="resolved">{t('resolved')}</SelectItem>
+            </SelectContent>
+          </Select>
 
-            <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-              <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder="Priority" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t('allPriority')}</SelectItem>
-                <SelectItem value="1">{t('critical')}</SelectItem>
-                <SelectItem value="2">{t('high')}</SelectItem>
-                <SelectItem value="3">{t('medium')}</SelectItem>
-                <SelectItem value="4">{t('low')}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+            <SelectTrigger className="w-full sm:w-40">
+              <SelectValue placeholder="Priority" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t('allPriority')}</SelectItem>
+              <SelectItem value="1">{t('critical')}</SelectItem>
+              <SelectItem value="2">{t('high')}</SelectItem>
+              <SelectItem value="3">{t('medium')}</SelectItem>
+              <SelectItem value="4">{t('low')}</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-      </CardHeader>
-      
-      <CardContent className="p-0">
-        <div className="max-h-[600px] overflow-y-auto">
-          {filteredIncidents.map((incident) => (
-            <div 
-              key={incident.id}
-              className={`border-b p-2 sm:p-4 hover:bg-muted/50 cursor-pointer transition-colors ${
-                selectedIncident?.id === incident.id ? 'bg-primary/5 border-l-4 border-l-primary' : ''
-              }`}
-              onClick={() => onSelectIncident(incident)}
-            >
-              <div className="flex justify-between items-start mb-2">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">{getTypeIcon(incident.emergency_type)}</span>
-                  <div>
-                    <div className="font-semibold text-sm sm:text-base">
-                      {incident.incident_number}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {new Date(incident.reported_at).toLocaleString()}
-                    </div>
+      </div>
+
+      {/* Simplified incident list */}
+      <div className="space-y-2">
+        {filteredIncidents.map((incident) => (
+          <div 
+            key={incident.id}
+            className={`border rounded-lg p-3 hover:bg-muted/50 cursor-pointer transition-colors ${
+              selectedIncident?.id === incident.id ? 'bg-primary/5 border-primary' : ''
+            }`}
+            onClick={() => onSelectIncident(incident)}
+          >
+            <div className="flex items-start justify-between gap-3">
+              {/* Left side - Main info */}
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="text-lg">{getTypeIcon(incident.emergency_type)}</span>
+                <div className="min-w-0">
+                  <div className="font-semibold text-sm sm:text-base truncate">
+                    {incident.incident_number}
                   </div>
-                </div>
-                
-                <div className="flex gap-2">
-                  <Badge className={getPriorityColor(incident.priority_level)}>
-                    Priority {incident.priority_level}
-                  </Badge>
-                  <Badge className={getStatusColor(incident.status)}>
-                    {incident.status.replace('_', ' ').toUpperCase()}
-                  </Badge>
+                  <div className="text-xs text-muted-foreground">
+                    {new Date(incident.reported_at).toLocaleString()}
+                  </div>
+                  {/* Show location if available */}
+                  {incident.incident_uac && (
+                    <div className="text-xs text-blue-600 font-mono">
+                      📍 {incident.incident_uac}
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* Show reporter information */}
-              {(incident.reporter_name || incident.reporter_email) && (
-                <div className="mb-2 p-2 bg-blue-50 rounded border border-blue-200">
-                  <p className="text-sm text-blue-800">
-                    <strong>Reporter:</strong> {incident.reporter_name}
-                    {incident.reporter_email && (
-                      <span className="ml-2 text-blue-600 font-mono">({incident.reporter_email})</span>
-                    )}
-                  </p>
-                </div>
-              )}
-
-              {/* Show incident description for better prioritization */}
-              {decryptedInfo[incident.id]?.message && (
-                <div className="mb-3 p-2 bg-muted/30 rounded">
-                  <p className="text-sm text-foreground">
-                    <strong>Description:</strong> {
-                      // Clean up any garbled text and show readable content
-                      (() => {
-                        const message = decryptedInfo[incident.id].message;
-                        
-                        // If message is empty, corrupted, or shows decryption artifacts
-                        if (!message || 
-                            message.includes('[Decryption') || 
-                            message.includes('[Encrypted') ||
-                            (!/^[\x20-\x7E\s]*$/.test(message) && message.length > 0) ||
-                            message.length < 3) {
-                          return `${incident.emergency_type.charAt(0).toUpperCase() + incident.emergency_type.slice(1)} incident reported`;
-                        }
-                        
-                        return message.length > 120 ? `${message.substring(0, 120)}...` : message;
-                      })()
-                    }
-                  </p>
-                </div>
-              )}
-
-              {/* Show location with UAC for police roles */}
-              <div className="mb-3 space-y-1">
-                {/* Show UAC if available */}
-                {incident.incident_uac && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <MapPin className="h-4 w-4 text-blue-600" />
-                    <span className="font-mono bg-blue-50 text-blue-800 px-2 py-1 rounded border border-blue-200">
-                      📍 UAC: {incident.incident_uac}
-                    </span>
-                  </div>
-                )}
-                
-                {/* Show structured address */}
-                {(() => {
-                  const addressParts = [
-                    incident.street,
-                    incident.city,
-                    incident.region,
-                    incident.country
-                  ].filter(Boolean);
-                  
-                  if (addressParts.length > 0) {
-                    return (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span className="w-4"></span> {/* Indent to align with UAC */}
-                        <span>{addressParts.join(', ')}</span>
-                      </div>
-                    );
-                  }
-                  
-                  // Show decrypted address as fallback
-                  if (decryptedInfo[incident.id]?.address && 
-                      !decryptedInfo[incident.id].address.includes('[Decryption') && 
-                      !decryptedInfo[incident.id].address.includes('[Encrypted')) {
-                    return (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span className="w-4"></span> {/* Indent to align with UAC */}
-                        <span>{decryptedInfo[incident.id].address}</span>
-                      </div>
-                    );
-                  }
-                  
-                  // Show coordinates only as last resort
-                  if (incident.location_latitude && incident.location_longitude) {
-                    return (
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <MapPin className="h-4 w-4" />
-                        <span className="font-mono bg-background px-2 py-1 rounded border">
-                          📍 {Number(incident.location_latitude).toFixed(4)}, {Number(incident.location_longitude).toFixed(4)}
-                        </span>
-                      </div>
-                    );
-                  }
-                  
-                  return (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <MapPin className="h-4 w-4" />
-                      <span className="italic">Location information unavailable</span>
-                    </div>
-                  );
-                })()}
+              {/* Right side - Status and priority badges */}
+              <div className="flex flex-col gap-1 flex-shrink-0">
+                <Badge className={getPriorityColor(incident.priority_level)} variant="outline">
+                  P{incident.priority_level}
+                </Badge>
+                <Badge className={getStatusColor(incident.status)} variant="outline">
+                  {incident.status.replace('_', ' ').toUpperCase()}
+                </Badge>
               </div>
+            </div>
 
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            {/* Bottom row - Assigned units and action hint */}
+            <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+              <div className="flex items-center gap-2">
+                {incident.assigned_units && incident.assigned_units.length > 0 ? (
                   <span className="flex items-center gap-1">
-                    <AlertTriangle className="h-4 w-4" />
-                    {incident.emergency_type.toUpperCase()}
+                    <User className="h-3 w-3" />
+                    {incident.assigned_units.slice(0, 2).map((unitCode) => 
+                      unitNames[unitCode] || unitCode
+                    ).join(', ')}
+                    {incident.assigned_units.length > 2 && ` +${incident.assigned_units.length - 2}`}
                   </span>
-                  
-                      {incident.assigned_units && incident.assigned_units.length > 0 && (
-                        <span className="flex items-center gap-1">
-                          <User className="h-4 w-4" />
-                          {(incident.assigned_units || []).map((unitCode) => 
-                            unitNames[unitCode] || unitCode
-                          ).join(', ')}
-                        </span>
-                      )}
-                </div>
-
-                <div className="flex flex-wrap gap-2 justify-end w-full">
-                  <IncidentDetailDialog incident={incident} onUpdate={onUpdate} />
-                  
-                  <Dialog open={assignDialog === incident.id} onOpenChange={(open) => setAssignDialog(open ? incident.id : null)}>
-                    <DialogTrigger asChild>
-                      <Button size="sm" variant="outline" className="w-full sm:w-auto">
-                        <ArrowRight className="h-4 w-4 mr-1" />
-                        Assign
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Assign Incident {incident.incident_number}</DialogTitle>
-                        <DialogDescription>
-                          Assign this incident to a police unit or officer
-                        </DialogDescription>
-                      </DialogHeader>
-                      
-                       <div className="space-y-4">
-                         <div>
-                           <label className="text-sm font-medium">Select Emergency Unit</label>
-                           <Select onValueChange={setAssigningUnit} value={assigningUnit}>
-                             <SelectTrigger>
-                               <SelectValue placeholder="Choose an emergency unit..." />
-                             </SelectTrigger>
-                             <SelectContent>
-                               {availableOfficers.map((unit) => (
-                                 <SelectItem key={unit.id} value={unit.id}>
-                                   {unit.label}
-                                 </SelectItem>
-                               ))}
-                             </SelectContent>
-                           </Select>
-                         </div>
-                        
-                        <div className="flex gap-2">
-                          <Button 
-                            onClick={() => handleAssignIncident(incident.id)}
-                            className="flex-1"
-                          >
-                            Assign Unit
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            onClick={() => setAssignDialog(null)}
-                          >
-                            Cancel
-                          </Button>
-                        </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-
-                  <Select onValueChange={(value) => handleStatusUpdate(incident.id, value)}>
-                    <SelectTrigger className="w-full sm:w-40">
-                      <SelectValue placeholder="Update" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="dispatched">Mark Dispatched</SelectItem>
-                      <SelectItem value="responding">Mark Responding</SelectItem>
-                      <SelectItem value="on_scene">Mark On Scene</SelectItem>
-                      <SelectItem value="resolved">Mark Resolved</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                ) : (
+                  <span className="text-orange-600">Unassigned</span>
+                )}
               </div>
+              <span className="text-xs text-primary">Click for details →</span>
             </div>
-          ))}
-          
-          {filteredIncidents.length === 0 && (
-            <div className="p-8 text-center text-muted-foreground">
-              <AlertTriangle className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p>No incidents match the current filters</p>
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+
+            {/* Enhanced incident detail dialog */}
+            <IncidentDetailDialog 
+              incident={incident} 
+              onUpdate={onUpdate}
+              trigger={
+                <div className="absolute inset-0 cursor-pointer" aria-label="View incident details" />
+              }
+            />
+          </div>
+        ))}
+        
+        {filteredIncidents.length === 0 && (
+          <div className="p-8 text-center text-muted-foreground">
+            <AlertTriangle className="h-8 w-8 mx-auto mb-2 opacity-50" />
+            <p>No incidents match the current filters</p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
