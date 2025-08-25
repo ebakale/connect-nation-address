@@ -5,9 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { LanguageProvider } from "@/contexts/LanguageContext";
-import SystemSelector from "./pages/SystemSelector";
-import AddressRegistryLanding from "./pages/AddressRegistryLanding";
-import PoliceEmergencyLanding from "./pages/PoliceEmergencyLanding";
+import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import UnifiedDashboard from "./pages/UnifiedDashboard";
@@ -25,9 +23,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<SystemSelector />} />
-            <Route path="/address-registry" element={<AddressRegistryLanding />} />
-            <Route path="/police-emergency" element={<PoliceEmergencyLanding />} />
+            <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<UnifiedDashboard />} />
             <Route path="/police" element={<PoliceDashboard />} />
