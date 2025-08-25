@@ -9,7 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   Shield, Star, Clock, MapPin, Phone, Mail, 
-  Crown, User, Users, Calendar, Award, TrendingUp,
+  Crown, User, Users as UsersIcon, Calendar, Award, TrendingUp,
   Navigation, Radio, ArrowLeft, ChevronDown, ChevronRight
 } from 'lucide-react';
 
@@ -428,7 +428,7 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5" />
+            <UsersIcon className="h-5 w-5" />
             Officers List
           </CardTitle>
         </CardHeader>
@@ -538,21 +538,23 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
                          <div className="space-y-2">
                            <h4 className="font-medium text-sm">{t('currentAssignment')}</h4>
                            <div className="space-y-2">
-                             {officer.emergency_unit_members.map((assignment, index) => (
+                             {officer.emergency_unit_members
+                               .filter((assignment) => assignment?.emergency_units)
+                               .map((assignment, index) => (
                                <div key={index} className="flex items-center justify-between text-sm bg-background rounded p-3">
                                  <div>
                                    <div className="flex items-center gap-2">
                                      {assignment.is_lead && <Crown className="h-3 w-3 text-yellow-600" />}
-                                     <span className="font-medium">{assignment.emergency_units.unit_code}</span>
+                                     <span className="font-medium">{assignment.emergency_units?.unit_code}</span>
                                    </div>
-                                   <span className="text-muted-foreground">{assignment.emergency_units.unit_name}</span>
+                                   <span className="text-muted-foreground">{assignment.emergency_units?.unit_name}</span>
                                    <div className="text-xs text-muted-foreground">Role: {assignment.role}</div>
                                  </div>
                                  <Badge 
                                    variant="outline" 
-                                   className={`${assignment.emergency_units.status === 'available' ? 'text-green-600' : 'text-blue-600'}`}
+                                   className={`${assignment.emergency_units?.status === 'available' ? 'text-green-600' : 'text-blue-600'}`}
                                  >
-                                   {assignment.emergency_units.status}
+                                   {assignment.emergency_units?.status}
                                  </Badge>
                                </div>
                              ))}
