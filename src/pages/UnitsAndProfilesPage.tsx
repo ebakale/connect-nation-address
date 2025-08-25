@@ -4,10 +4,12 @@ import { useUserRole } from '@/hooks/useUserRole';
 import { UnitManagementDashboard } from '@/components/UnitManagementDashboard';
 import { OfficerProfileDashboard } from '@/components/OfficerProfileDashboard';
 import { Card, CardContent } from '@/components/ui/card';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export const UnitsAndProfilesPage: React.FC = () => {
   const { role, loading } = useUserRole();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   if (loading) {
     return (
@@ -25,7 +27,7 @@ export const UnitsAndProfilesPage: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <Card>
           <CardContent className="p-8 text-center">
-            <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
+            <h2 className="text-2xl font-bold mb-4">{t('accessDenied')}</h2>
             <p className="text-muted-foreground">
               You need supervisor or admin privileges to access unit management and officer profiles.
             </p>

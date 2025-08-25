@@ -469,8 +469,8 @@ const PoliceDashboard = () => {
                 <div className="flex items-center gap-2">
                   <Shield className="h-8 w-8 text-blue-600" />
                   <div>
-                    <h1 className="text-2xl font-bold">Police Command Center</h1>
-                    <p className="text-sm text-muted-foreground">Units Overview</p>
+                    <h1 className="text-2xl font-bold">{t('policeCommandCenter')}</h1>
+                    <p className="text-sm text-muted-foreground">{t('unitsOverview')}</p>
                   </div>
                 </div>
               </div>
@@ -501,9 +501,9 @@ const PoliceDashboard = () => {
               <div className="flex items-center gap-2">
                 <Shield className="h-8 w-8 text-blue-600" />
                 <div>
-                  <h1 className="text-2xl font-bold">Police Command Center</h1>
+                  <h1 className="text-2xl font-bold">{t('policeCommandCenter')}</h1>
                   <p className="text-sm text-muted-foreground">
-                    Emergency Response & Field Operations
+                    {t('emergencyResponse')}
                   </p>
                 </div>
               </div>
@@ -511,9 +511,9 @@ const PoliceDashboard = () => {
               {/* Role Badges */}
               <div className="flex gap-2">
                 {isPoliceSupervisor && (
-                  <Badge variant="default" className="bg-purple-100 text-purple-800">
-                    Supervisor
-                  </Badge>
+              <Badge variant="default" className="bg-purple-100 text-purple-800">
+                {t('supervisor')}
+              </Badge>
                 )}
                 {isPoliceDispatcher && (
                   <Badge variant="default" className="bg-blue-100 text-blue-800">
@@ -552,7 +552,7 @@ const PoliceDashboard = () => {
             <TabsList className="grid w-full grid-cols-2 lg:w-[300px]">
               <TabsTrigger value="field" className="flex items-center gap-2">
                 <Radio className="h-4 w-4" />
-                My Unit
+                {t('myUnit')}
               </TabsTrigger>
               <TabsTrigger value="support" className="flex items-center gap-2">
                 <MessageSquare className="h-4 w-4" />
@@ -563,18 +563,18 @@ const PoliceDashboard = () => {
             <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
               <TabsTrigger value="field" className="flex items-center gap-2">
                 <Radio className="h-4 w-4" />
-                My Unit
+                {t('myUnit')}
               </TabsTrigger>
               {/* Different tab based on role */}
               {(isPoliceDispatcher || isAdmin) ? (
                 <TabsTrigger value="dispatch" className="flex items-center gap-2">
                   <Activity className="h-4 w-4" />
-                  Command Center
+                  {t('commandCenter')}
                 </TabsTrigger>
               ) : isPoliceSupervisor ? (
                 <TabsTrigger value="coordination" className="flex items-center gap-2">
                   <Users className="h-4 w-4" />
-                  Unit Coordination
+                  {t('unitCoordination')}
                 </TabsTrigger>
               ) : null}
               {(isPoliceSupervisor || isAdmin) && (
@@ -647,9 +647,9 @@ const PoliceDashboard = () => {
           {(isPoliceDispatcher || isAdmin) && (
             <TabsContent value="dispatch" className="space-y-6">
             <div className="flex items-center gap-4 mb-4">
-              <Badge variant="outline" className="flex items-center gap-2">
+                <Badge variant="outline" className="flex items-center gap-2">
                 <Activity className="h-3 w-3" />
-                Command Center
+                {t('commandCenter')}
               </Badge>
               <p className="text-sm text-muted-foreground">
                 Monitor incidents, assign units, and coordinate emergency response
@@ -662,7 +662,7 @@ const PoliceDashboard = () => {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">Active Incidents</p>
+                      <p className="text-sm text-muted-foreground">{t('activeIncidents')}</p>
                       <p className="text-2xl font-bold text-red-600">{dashboardStats.activeIncidents}</p>
                     </div>
                     <AlertTriangle className="h-5 w-5 text-red-600" />
@@ -674,7 +674,7 @@ const PoliceDashboard = () => {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">Available Units</p>
+                      <p className="text-sm text-muted-foreground">{t('availableUnits')}</p>
                       <p className="text-2xl font-bold text-green-600">{dashboardStats.availableUnits}</p>
                     </div>
                     <CheckCircle className="h-5 w-5 text-green-600" />
@@ -686,7 +686,7 @@ const PoliceDashboard = () => {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">Avg Response Time</p>
+                      <p className="text-sm text-muted-foreground">{t('avgResponseTime')}</p>
                       <p className="text-2xl font-bold text-blue-600">{dashboardStats.avgResponseTime}m</p>
                     </div>
                     <Clock className="h-5 w-5 text-blue-600" />
@@ -698,7 +698,7 @@ const PoliceDashboard = () => {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">Operators Online</p>
+                      <p className="text-sm text-muted-foreground">{t('operatorsOnline')}</p>
                       <p className="text-2xl font-bold text-purple-600">{dashboardStats.operatorsOnline}</p>
                     </div>
                     <Users className="h-5 w-5 text-purple-600" />

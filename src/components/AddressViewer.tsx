@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Address } from '@/hooks/useAddresses';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AddressViewerProps {
   address?: Address | null;
@@ -26,6 +27,7 @@ interface AddressViewerProps {
 
 const AddressViewer: React.FC<AddressViewerProps> = ({ address, onBack, onEdit }) => {
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -163,7 +165,7 @@ const AddressViewer: React.FC<AddressViewerProps> = ({ address, onBack, onEdit }
             ) : (
               <Badge variant="outline">
                 <Lock className="h-3 w-3 mr-1" />
-                Private
+                {t('private')}
               </Badge>
             )}
           </div>

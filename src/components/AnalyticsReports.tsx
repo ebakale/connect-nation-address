@@ -32,6 +32,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Address } from "@/hooks/useAddresses";
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AddressStats {
   total: number;
@@ -75,6 +76,7 @@ export const AnalyticsReports = () => {
   const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesData[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   // Specific colors for each address type using semantic design tokens
   const typeColorMap: Record<string, string> = {
@@ -426,7 +428,7 @@ export const AnalyticsReports = () => {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Private</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('private')}</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -494,7 +496,7 @@ export const AnalyticsReports = () => {
                   ))}
                   {regionData.length === 0 && (
                     <p className="text-center text-muted-foreground py-4">
-                      No data available for selected period
+                      {t('noDataAvailable')}
                     </p>
                   )}
                 </div>
@@ -556,7 +558,7 @@ export const AnalyticsReports = () => {
                   ))}
                   {typeData.length === 0 && (
                     <p className="text-center text-muted-foreground py-4">
-                      No data available for selected period
+                      {t('noDataAvailable')}
                     </p>
                   )}
                 </div>

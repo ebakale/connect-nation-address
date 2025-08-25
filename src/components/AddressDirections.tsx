@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useAddresses } from '@/hooks/useAddresses';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface SearchResult {
   uac: string;
@@ -46,6 +47,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
   const [locationError, setLocationError] = useState<string | null>(null);
   const { searchAddresses } = useAddresses();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   // Get current location on component mount
   useEffect(() => {
@@ -85,10 +87,10 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
         let errorMessage = 'Unable to get your location';
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = 'Location access denied. Please enable location permissions.';
+            errorMessage = t('locationAccessDenied');
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage = 'Location information unavailable.';
+            errorMessage = t('locationUnavailable');
             break;
           case error.TIMEOUT:
             errorMessage = 'Location request timed out.';

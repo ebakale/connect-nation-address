@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAddresses } from "@/hooks/useAddresses";
 import { Globe, Eye, EyeOff, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AddressPublishingQueueProps {
   onClose?: () => void;
@@ -13,6 +14,7 @@ interface AddressPublishingQueueProps {
 export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps) => {
   const { addresses, loading, updateAddressStatus, fetchAddresses } = useAddresses();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetchAddresses();
@@ -96,7 +98,7 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
                 </div>
                 <div className="flex gap-2">
                   <Badge variant="default">Verified</Badge>
-                  <Badge variant="outline">Private</Badge>
+                  <Badge variant="outline">{t('private')}</Badge>
                 </div>
               </div>
             </CardHeader>

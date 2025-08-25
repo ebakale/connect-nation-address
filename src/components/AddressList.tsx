@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useAddresses, Address } from '@/hooks/useAddresses';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AddressListProps {
   onEditAddress?: (address: Address) => void;
@@ -29,6 +30,7 @@ interface AddressListProps {
 const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress, onViewOnMap }) => {
   const { addresses, loading, updateAddressStatus, deleteAddress } = useAddresses();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'verified' | 'unverified' | 'public' | 'private'>('all');
 
@@ -94,7 +96,7 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
       badges.push(
         <Badge key="private" variant="outline">
           <Lock className="h-3 w-3 mr-1" />
-          Private
+          {t('private')}
         </Badge>
       );
     }
@@ -173,7 +175,7 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
                 <option value="verified">Verified Only</option>
                 <option value="unverified">Unverified Only</option>
                 <option value="public">Public Only</option>
-                <option value="private">Private Only</option>
+                <option value="private">{t('private')} Only</option>
               </select>
             </div>
           </div>
@@ -338,7 +340,7 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
                         }}
                         className={`text-xs ${address.public ? 'border-primary text-primary' : ''}`}
                       >
-                        {address.public ? 'Make Private' : 'Make Public'}
+                        {address.public ? `Make ${t('private')}` : `Make ${t('public')}`}
                       </Button>
                     </div>
                   </div>
