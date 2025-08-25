@@ -184,7 +184,7 @@ const UnitManagement: React.FC = () => {
 
       if (error) throw error;
 
-      toast.success('Emergency unit created successfully');
+      toast.success('Police unit created successfully');
       setShowCreateDialog(false);
       setUnitForm({
         unit_name: '',
@@ -198,7 +198,7 @@ const UnitManagement: React.FC = () => {
       fetchUnits();
     } catch (error) {
       console.error('Error creating unit:', error);
-      toast.error('Failed to create emergency unit');
+      toast.error('Failed to create police unit');
     }
   };
 
@@ -213,13 +213,13 @@ const UnitManagement: React.FC = () => {
 
       if (error) throw error;
 
-      toast.success('Emergency unit updated successfully');
+      toast.success('Police unit updated successfully');
       setShowEditDialog(false);
       setSelectedUnit(null);
       fetchUnits();
     } catch (error) {
       console.error('Error updating unit:', error);
-      toast.error('Failed to update emergency unit');
+      toast.error('Failed to update police unit');
     }
   };
 
@@ -234,13 +234,13 @@ const UnitManagement: React.FC = () => {
 
       if (error) throw error;
 
-      toast.success('Emergency unit deleted successfully');
+      toast.success('Police unit deleted successfully');
       setShowDeleteDialog(false);
       setSelectedUnit(null);
       fetchUnits();
     } catch (error) {
       console.error('Error deleting unit:', error);
-      toast.error('Failed to delete emergency unit');
+      toast.error('Failed to delete police unit');
     }
   };
 
@@ -346,20 +346,20 @@ const UnitManagement: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Emergency Unit Management</h2>
-          <p className="text-muted-foreground">Manage emergency response units and personnel assignments</p>
+          <h2 className="text-2xl font-bold">Police Unit Management</h2>
+          <p className="text-muted-foreground">Manage police patrol units, rapid response teams, and specialized units</p>
         </div>
         <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              Create Unit
+              Create Police Unit
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Create Emergency Unit</DialogTitle>
-              <DialogDescription>Create a new emergency response unit</DialogDescription>
+              <DialogTitle>Create Police Unit</DialogTitle>
+              <DialogDescription>Create a new police unit (patrol, rapid response, traffic, investigation)</DialogDescription>
             </DialogHeader>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -381,17 +381,18 @@ const UnitManagement: React.FC = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="unit_type">Unit Type</Label>
+                <Label htmlFor="unit_type">Police Unit Type</Label>
                 <Select value={unitForm.unit_type} onValueChange={(value) => setUnitForm({ ...unitForm, unit_type: value })}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {unitTypes.map(type => (
-                      <SelectItem key={type} value={type}>
-                        {type.charAt(0).toUpperCase() + type.slice(1)}
-                      </SelectItem>
-                    ))}
+                    <SelectItem value="patrol">Patrol Unit</SelectItem>
+                    <SelectItem value="rapid_response">Rapid Response Team</SelectItem>
+                    <SelectItem value="traffic">Traffic Enforcement</SelectItem>
+                    <SelectItem value="investigation">Investigation Unit</SelectItem>
+                    <SelectItem value="k9">K-9 Unit</SelectItem>
+                    <SelectItem value="swat">SWAT Team</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -549,8 +550,8 @@ const UnitManagement: React.FC = () => {
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Edit Emergency Unit</DialogTitle>
-            <DialogDescription>Update unit information</DialogDescription>
+            <DialogTitle>Edit Police Unit</DialogTitle>
+            <DialogDescription>Update police unit information and settings</DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -570,17 +571,18 @@ const UnitManagement: React.FC = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit_unit_type">Unit Type</Label>
+              <Label htmlFor="edit_unit_type">Police Unit Type</Label>
               <Select value={unitForm.unit_type} onValueChange={(value) => setUnitForm({ ...unitForm, unit_type: value })}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {unitTypes.map(type => (
-                    <SelectItem key={type} value={type}>
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value="patrol">Patrol Unit</SelectItem>
+                  <SelectItem value="rapid_response">Rapid Response Team</SelectItem>
+                  <SelectItem value="traffic">Traffic Enforcement</SelectItem>
+                  <SelectItem value="investigation">Investigation Unit</SelectItem>
+                  <SelectItem value="k9">K-9 Unit</SelectItem>
+                  <SelectItem value="swat">SWAT Team</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -686,9 +688,9 @@ const UnitManagement: React.FC = () => {
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Emergency Unit</AlertDialogTitle>
+            <AlertDialogTitle>Delete Police Unit</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{selectedUnit?.unit_name}"? This action cannot be undone.
+              Are you sure you want to delete police unit "{selectedUnit?.unit_name}"? This action cannot be undone.
               All unit members will be unassigned.
             </AlertDialogDescription>
           </AlertDialogHeader>

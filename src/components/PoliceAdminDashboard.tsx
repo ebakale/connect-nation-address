@@ -191,13 +191,13 @@ export const PoliceAdminDashboard = () => {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Emergency Units</CardTitle>
+            <CardTitle className="text-sm font-medium">Police Units</CardTitle>
             <Radio className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalUnits}</div>
             <p className="text-xs text-muted-foreground">
-              {stats.activeUnits} available
+              {stats.activeUnits} available for deployment
             </p>
           </CardContent>
         </Card>
@@ -255,9 +255,9 @@ export const PoliceAdminDashboard = () => {
         <TabsContent value="units" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Emergency Unit Management</CardTitle>
+              <CardTitle>Police Unit Management</CardTitle>
               <CardDescription>
-                Create, edit, and manage emergency response units
+                Create, edit, and manage police patrol units, rapid response teams, and specialized units
               </CardDescription>
             </CardHeader>
             <CardContent>
