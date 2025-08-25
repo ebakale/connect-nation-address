@@ -12,6 +12,9 @@ import {
 import { toast } from "sonner";
 import { useUserRole } from "@/hooks/useUserRole";
 import UserManager from "./UserManager";
+import UnitManagement from "./UnitManagement";
+import SystemConfiguration from "./SystemConfiguration";
+import PoliceAnalytics from "./PoliceAnalytics";
 
 interface PoliceStats {
   totalOfficers: number;
@@ -258,10 +261,7 @@ export const PoliceAdminDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8 text-muted-foreground">
-                <Radio className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Unit management interface coming soon</p>
-              </div>
+              <UnitManagement />
             </CardContent>
           </Card>
         </TabsContent>
@@ -275,10 +275,7 @@ export const PoliceAdminDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8 text-muted-foreground">
-                <Settings className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>System configuration interface coming soon</p>
-              </div>
+              <SystemConfiguration />
             </CardContent>
           </Card>
         </TabsContent>
@@ -292,10 +289,7 @@ export const PoliceAdminDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8 text-muted-foreground">
-                <ChartBar className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Analytics dashboard coming soon</p>
-              </div>
+              <PoliceAnalytics />
             </CardContent>
           </Card>
         </TabsContent>
