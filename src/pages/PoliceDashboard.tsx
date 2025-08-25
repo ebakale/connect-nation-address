@@ -85,19 +85,19 @@ const PoliceDashboard = () => {
   // Set default tab based on user role
   useEffect(() => {
     if (!activeTab && role) {
-      if (isPoliceOperator) {
+      if (isPoliceOperator && !hasPoliceAdminAccess) {
         setActiveTab('field'); // Field officers see their assignments first
       } else if (isPoliceDispatcher) {
         setActiveTab('dispatch'); // Dispatchers see command center first
-      } else if (isPoliceSupervisor) {
+      } else if (isPoliceSupervisor && !hasPoliceAdminAccess) {
         setActiveTab('coordination'); // Supervisors see coordination first
-      } else if (isPoliceAdmin) {
+      } else if (hasPoliceAdminAccess) {
         setActiveTab('admin'); // Police admins see admin first
       } else if (isAdmin) {
         setActiveTab('dispatch'); // Admins see command center first
       }
     }
-  }, [role, activeTab, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isPoliceAdmin, isAdmin]);
+  }, [role, activeTab, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isPoliceAdmin, isAdmin, hasPoliceAdminAccess]);
 
   // Initialize operator session
   useEffect(() => {
@@ -582,10 +582,13 @@ const PoliceDashboard = () => {
             </TabsList>
           ) : (
             <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
-              <TabsTrigger value="field" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-                <Radio className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="truncate">{t('myUnit')}</span>
-              </TabsTrigger>
+              {/* Only show MY UNIT tab for non-admin police roles */}
+              {!hasPoliceAdminAccess && (
+                <TabsTrigger value="field" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                  <Radio className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="truncate">{t('myUnit')}</span>
+                </TabsTrigger>
+              )}
               {/* Different tab based on role */}
               {(isPoliceDispatcher || isAdmin) ? (
                 <TabsTrigger value="dispatch" className="flex items-center gap-2">
