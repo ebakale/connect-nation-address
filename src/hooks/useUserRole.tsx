@@ -114,6 +114,7 @@ export const useUserRole = () => {
   const isAuditor = role === 'auditor';
   const isDataSteward = role === 'data_steward';
   const isSupport = role === 'support';
+  const isUser = role === 'user';
   // Police role checks
   const isPoliceOperator = role === 'police_operator';
   const isPoliceSupervisor = role === 'police_supervisor';
@@ -125,6 +126,12 @@ export const useUserRole = () => {
   const hasRegistrarAccess = hasAdminAccess || role === 'registrar';
   const hasVerifierAccess = hasRegistrarAccess || role === 'verifier';
   const hasFieldAccess = hasVerifierAccess || role === 'field_agent';
+  
+  // Support and moderation access levels
+  const hasSupportAccess = hasAdminAccess || role === 'support';
+  const hasModerationAccess = hasAdminAccess || role === 'moderator';
+  const hasBasicUserAccess = role === 'user' || role === 'citizen' || hasFieldAccess;
+  
   // Police access checks
   const hasPoliceAccess = isPoliceOperator || isPoliceSupervisor || isPoliceDispatcher || hasAdminAccess;
   const hasPoliceManagementAccess = isPoliceSupervisor || hasAdminAccess;
@@ -169,22 +176,27 @@ export const useUserRole = () => {
   const canCreateDraftAddress = 
     role === 'field_agent' || 
     hasVerifierAccess || // Verifiers can create for corrections
-    role === 'data_steward'; // Data stewards can create test sandboxes
+    role === 'data_steward' || // Data stewards can create test sandboxes
+    role === 'support'; // Support can create for troubleshooting
   
   const canUploadEvidence = 
     role === 'property_claimant' || 
     role === 'field_agent' || 
-    hasVerifierAccess;
+    hasVerifierAccess ||
+    role === 'support'; // Support can upload for assistance
   
   // Evidence viewing permissions
   const getEvidenceViewLevel = () => {
     if (hasRegistrarAccess) return 'full'; // Full access
     if (role === 'verifier') return 'full';
+    if (role === 'support') return 'full'; // Support needs full access for troubleshooting
+    if (role === 'moderator') return 'redacted'; // Moderators get redacted view
     if (role === 'field_agent') return 'own'; // Own submissions only
     if (role === 'property_claimant') return 'own'; // Own only
     if (role === 'auditor') return 'redacted'; // Redacted view
     if (role === 'data_steward') return 'redacted'; // Redacted QA view
     if (role === 'citizen') return 'redacted'; // View redacted
+    if (role === 'user') return 'redacted'; // Basic user gets redacted view
     if (role === 'partner') return 'none'; // No evidence access
     return 'none';
   };
@@ -217,11 +229,13 @@ export const useUserRole = () => {
     if (role === 'ndaa_admin') return 'nation';
     if (role === 'registrar') return 'province';
     if (role === 'verifier') return 'district';
+    if (role === 'support') return 'read_only'; // Support can read logs for troubleshooting
+    if (role === 'moderator') return 'read_only'; // Moderators can read for content issues
     if (role === 'auditor') return 'read_only';
     if (role === 'data_steward') return 'qa_only';
     if (role === 'partner') return 'delivery_logs';
     if (role === 'field_agent' || role === 'property_claimant') return 'own';
-    if (role === 'citizen') return 'status_only';
+    if (role === 'citizen' || role === 'user') return 'status_only';
     return 'none';
   };
 
@@ -289,6 +303,7 @@ export const useUserRole = () => {
     isAuditor,
     isDataSteward,
     isSupport,
+    isUser,
     // Police role checks
     isPoliceOperator,
     isPoliceSupervisor,
@@ -299,6 +314,10 @@ export const useUserRole = () => {
     hasRegistrarAccess,
     hasVerifierAccess,
     hasFieldAccess,
+    // New access levels
+    hasSupportAccess,
+    hasModerationAccess,
+    hasBasicUserAccess,
     // Police access checks
     hasPoliceAccess,
     hasPoliceManagementAccess,
