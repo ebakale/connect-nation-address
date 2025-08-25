@@ -24,6 +24,7 @@ import { UnitsOverview } from '@/components/UnitsOverview';
 import { BackupNotificationManager } from '@/components/BackupNotificationManager';
 import { UnitLeadDashboard } from '@/components/UnitLeadDashboard';
 import { UnitLeadActions } from '@/components/UnitLeadActions';
+import { PoliceAdminDashboard } from '@/components/PoliceAdminDashboard';
 import { toast } from "sonner";
 
 interface EmergencyIncident {
@@ -56,7 +57,7 @@ interface DashboardStats {
 
 const PoliceDashboard = () => {
   const { user, signOut } = useAuth();
-  const { role, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isAdmin, loading, hasPoliceAccess, isUnitLead } = useUserRole();
+  const { role, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isPoliceAdmin, isAdmin, loading, hasPoliceAccess, hasPoliceAdminAccess, isUnitLead } = useUserRole();
   const { t } = useLanguage();
   
   // Dashboard state
@@ -90,11 +91,13 @@ const PoliceDashboard = () => {
         setActiveTab('dispatch'); // Dispatchers see command center first
       } else if (isPoliceSupervisor) {
         setActiveTab('coordination'); // Supervisors see coordination first
+      } else if (isPoliceAdmin) {
+        setActiveTab('admin'); // Police admins see admin first
       } else if (isAdmin) {
         setActiveTab('dispatch'); // Admins see command center first
       }
     }
-  }, [role, activeTab, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isAdmin]);
+  }, [role, activeTab, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isPoliceAdmin, isAdmin]);
 
   // Initialize operator session
   useEffect(() => {
@@ -578,7 +581,7 @@ const PoliceDashboard = () => {
               </TabsTrigger>
             </TabsList>
           ) : (
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
               <TabsTrigger value="field" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
                 <Radio className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="truncate">{t('myUnit')}</span>
@@ -599,6 +602,12 @@ const PoliceDashboard = () => {
                 <TabsTrigger value="management" className="flex items-center gap-2">
                   <Users className="h-4 w-4" />
                   Management
+                </TabsTrigger>
+              )}
+              {hasPoliceAdminAccess && (
+                <TabsTrigger value="admin" className="flex items-center gap-2">
+                  <Settings className="h-4 w-4" />
+                  Admin
                 </TabsTrigger>
               )}
             </TabsList>
@@ -1120,6 +1129,13 @@ const PoliceDashboard = () => {
                   </CardContent>
                 </Card>
               </div>
+            </TabsContent>
+          )}
+
+          {/* Police Admin Tab - Police Admins Only */}
+          {hasPoliceAdminAccess && (
+            <TabsContent value="admin" className="space-y-6">
+              <PoliceAdminDashboard />
             </TabsContent>
           )}
         </Tabs>

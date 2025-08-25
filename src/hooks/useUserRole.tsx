@@ -7,7 +7,7 @@ export type UserRole =
   | 'citizen' | 'property_claimant' | 'field_agent' 
   | 'verifier' | 'registrar' | 'ndaa_admin' 
   | 'partner' | 'auditor' | 'data_steward' | 'support'
-  | 'police_operator' | 'police_supervisor' | 'police_dispatcher'
+  | 'police_operator' | 'police_supervisor' | 'police_dispatcher' | 'police_admin'
   | null;
 
 export interface RoleMetadata {
@@ -67,7 +67,7 @@ export const useUserRole = () => {
           // Get the highest priority role (admin > ndaa_admin > registrar > etc.)
           const roles = roleData.map(r => r.role);
           const priorityOrder: UserRole[] = [
-            'admin', 'ndaa_admin',
+            'admin', 'ndaa_admin', 'police_admin',
             'police_supervisor', 'police_dispatcher', 'police_operator',
             'registrar', 'verifier', 'field_agent', 'property_claimant',
             'citizen', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user'
@@ -119,7 +119,8 @@ export const useUserRole = () => {
   const isPoliceOperator = role === 'police_operator';
   const isPoliceSupervisor = role === 'police_supervisor';
   const isPoliceDispatcher = role === 'police_dispatcher';
-  const isPoliceRole = isPoliceOperator || isPoliceSupervisor || isPoliceDispatcher;
+  const isPoliceAdmin = role === 'police_admin';
+  const isPoliceRole = isPoliceOperator || isPoliceSupervisor || isPoliceDispatcher || isPoliceAdmin;
 
   // Access level checks
   const hasAdminAccess = role === 'admin' || role === 'ndaa_admin';
@@ -133,8 +134,9 @@ export const useUserRole = () => {
   const hasBasicUserAccess = role === 'user' || role === 'citizen' || hasFieldAccess;
   
   // Police access checks
-  const hasPoliceAccess = isPoliceOperator || isPoliceSupervisor || isPoliceDispatcher || hasAdminAccess;
-  const hasPoliceManagementAccess = isPoliceSupervisor || hasAdminAccess;
+  const hasPoliceAccess = isPoliceOperator || isPoliceSupervisor || isPoliceDispatcher || isPoliceAdmin || hasAdminAccess;
+  const hasPoliceManagementAccess = isPoliceSupervisor || isPoliceAdmin || hasAdminAccess;
+  const hasPoliceAdminAccess = isPoliceAdmin || hasAdminAccess;
   
   // Unit lead detection - check if user is a unit lead
   const [isUnitLead, setIsUnitLead] = useState(false);
@@ -308,6 +310,7 @@ export const useUserRole = () => {
     isPoliceOperator,
     isPoliceSupervisor,
     isPoliceDispatcher,
+    isPoliceAdmin,
     isPoliceRole,
     // Access checks
     hasAdminAccess,
@@ -321,6 +324,7 @@ export const useUserRole = () => {
     // Police access checks
     hasPoliceAccess,
     hasPoliceManagementAccess,
+    hasPoliceAdminAccess,
     isUnitLead,
     // Operational permissions
     canSearchVerifiedAddresses,
