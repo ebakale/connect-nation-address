@@ -364,7 +364,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
   return (
     <Card>
       <CardHeader>
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <CardTitle className="text-xl">{t('activeIncidents')}</CardTitle>
             <CardDescription>
@@ -372,11 +372,11 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
             </CardDescription>
           </div>
           
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2 w-full sm:w-auto">
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-32">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
+            <SelectTrigger className="w-full sm:w-40">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('allStatus')}</SelectItem>
                 <SelectItem value="reported">{t('reported')}</SelectItem>
@@ -388,7 +388,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
             </Select>
 
             <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-              <SelectTrigger className="w-32">
+              <SelectTrigger className="w-full sm:w-40">
                 <SelectValue placeholder="Priority" />
               </SelectTrigger>
               <SelectContent>
@@ -553,12 +553,12 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
                       )}
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2 justify-end w-full">
                   <IncidentDetailDialog incident={incident} onUpdate={onUpdate} />
                   
                   <Dialog open={assignDialog === incident.id} onOpenChange={(open) => setAssignDialog(open ? incident.id : null)}>
                     <DialogTrigger asChild>
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" className="w-full sm:w-auto">
                         <ArrowRight className="h-4 w-4 mr-1" />
                         Assign
                       </Button>
@@ -607,7 +607,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
                   </Dialog>
 
                   <Select onValueChange={(value) => handleStatusUpdate(incident.id, value)}>
-                    <SelectTrigger className="w-32">
+                    <SelectTrigger className="w-full sm:w-40">
                       <SelectValue placeholder="Update" />
                     </SelectTrigger>
                     <SelectContent>
