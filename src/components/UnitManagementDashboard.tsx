@@ -13,7 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { 
   Users, MapPin, Radio, Car, Crown, User, Plus, Edit, 
   Trash2, Clock, TrendingUp, AlertCircle, CheckCircle,
-  Phone, Mail, Shield, Navigation, ArrowLeft
+  Phone, Mail, Shield, Navigation, ArrowLeft, Star, Award
 } from 'lucide-react';
 
 interface EmergencyUnit {
@@ -186,13 +186,21 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
 
   const assignOfficerToUnit = async (unitId: string) => {
     try {
+      // Auto-assign lead role for senior positions if no lead exists
+      const unit = units.find(u => u.id === unitId);
+      const hasLead = unit?.emergency_unit_members?.some(member => member.is_lead);
+      const isSeniorRole = ['sergeant', 'lieutenant', 'corporal'].includes(assignmentData.role);
+      
+      // If no lead exists and this is a senior role, suggest making them lead
+      const shouldBeLead = !hasLead && isSeniorRole;
+
       const { error } = await supabase
         .from('emergency_unit_members')
         .insert({
           unit_id: unitId,
           officer_id: assignmentData.officer_id,
           role: assignmentData.role,
-          is_lead: assignmentData.is_lead
+          is_lead: assignmentData.is_lead || shouldBeLead
         });
 
       if (error) throw error;
@@ -205,9 +213,12 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
         is_lead: false
       });
 
+      const roleTitle = formatRoleTitle(assignmentData.role);
+      const leadStatus = (assignmentData.is_lead || shouldBeLead) ? ' as Unit Lead' : '';
+
       toast({
         title: "Success",
-        description: "Officer assigned to unit successfully"
+        description: `${roleTitle} assigned to unit successfully${leadStatus}`
       });
     } catch (error) {
       console.error('Error assigning officer:', error);
@@ -284,6 +295,40 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
     return availableOfficers.filter(officer => 
       !assignedOfficerIds.includes(officer.user_id)
     );
+  };
+
+  const formatRoleTitle = (role: string) => {
+    switch (role) {
+      case 'officer': return 'Police Officer';
+      case 'senior_officer': return 'Senior Officer';
+      case 'corporal': return 'Corporal';
+      case 'sergeant': return 'Sergeant';
+      case 'lieutenant': return 'Lieutenant';
+      default: return role.charAt(0).toUpperCase() + role.slice(1);
+    }
+  };
+
+  const getRoleIcon = (role: string, isLead: boolean) => {
+    if (isLead) return <Crown className="h-3 w-3 text-yellow-600" />;
+    
+    switch (role) {
+      case 'lieutenant': return <Star className="h-3 w-3 text-blue-600" />;
+      case 'sergeant': return <Award className="h-3 w-3 text-green-600" />;
+      case 'corporal': return <Shield className="h-3 w-3 text-purple-600" />;
+      case 'senior_officer': return <User className="h-3 w-3 text-orange-600" />;
+      default: return <User className="h-3 w-3 text-muted-foreground" />;
+    }
+  };
+
+  const getRolePriority = (role: string) => {
+    const priorities = {
+      'lieutenant': 5,
+      'sergeant': 4,
+      'corporal': 3,
+      'senior_officer': 2,
+      'officer': 1
+    };
+    return priorities[role] || 0;
   };
 
   return (
@@ -422,18 +467,27 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
 
               <Separator />
 
-              {/* Officer List */}
+              {/* Officer List with Chain of Command */}
               <div className="space-y-2">
                 {unit.emergency_unit_members.length > 0 ? (
-                  unit.emergency_unit_members.map((member) => (
+                  // Sort by lead status first, then by role priority
+                  unit.emergency_unit_members
+                    .sort((a, b) => {
+                      if (a.is_lead && !b.is_lead) return -1;
+                      if (!a.is_lead && b.is_lead) return 1;
+                      return getRolePriority(b.role) - getRolePriority(a.role);
+                    })
+                    .map((member) => (
                     <div key={member.id} className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-2">
-                        {member.is_lead ? (
-                          <Crown className="h-3 w-3 text-yellow-600" />
-                        ) : (
-                          <User className="h-3 w-3 text-muted-foreground" />
-                        )}
-                        <span className="truncate">{member.profiles.full_name}</span>
+                        {getRoleIcon(member.role, member.is_lead)}
+                        <div className="flex flex-col">
+                          <span className="truncate font-medium">{member.profiles.full_name}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {formatRoleTitle(member.role)}
+                            {member.is_lead && " • Unit Lead"}
+                          </span>
+                        </div>
                       </div>
                       <Button
                         variant="ghost"
@@ -509,8 +563,9 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="officer">Officer</SelectItem>
+                            <SelectItem value="officer">Police Officer</SelectItem>
                             <SelectItem value="senior_officer">Senior Officer</SelectItem>
+                            <SelectItem value="corporal">Corporal</SelectItem>
                             <SelectItem value="sergeant">Sergeant</SelectItem>
                             <SelectItem value="lieutenant">Lieutenant</SelectItem>
                           </SelectContent>
@@ -524,7 +579,38 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                           checked={assignmentData.is_lead}
                           onChange={(e) => setAssignmentData({...assignmentData, is_lead: e.target.checked})}
                         />
-                        <Label htmlFor="is_lead">Unit Lead</Label>
+                        <Label htmlFor="is_lead">Assign as Unit Lead</Label>
+                      </div>
+
+                      {/* Chain of Command Information */}
+                      <div className="bg-muted/30 rounded p-3 text-sm">
+                        <h4 className="font-medium mb-2">Police Chain of Command:</h4>
+                        <div className="space-y-1 text-xs">
+                          <div className="flex items-center gap-2">
+                            <Star className="h-3 w-3 text-blue-600" />
+                            <span>Lieutenant (Unit Commander)</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Award className="h-3 w-3 text-green-600" />
+                            <span>Sergeant (Squad Leader)</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Shield className="h-3 w-3 text-purple-600" />
+                            <span>Corporal (Team Leader)</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <User className="h-3 w-3 text-orange-600" />
+                            <span>Senior Officer</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <User className="h-3 w-3 text-muted-foreground" />
+                            <span>Police Officer</span>
+                          </div>
+                        </div>
+                        <div className="mt-2 pt-2 border-t text-xs text-muted-foreground">
+                          <Crown className="h-3 w-3 text-yellow-600 inline mr-1" />
+                          Unit Lead designation can be assigned to any rank
+                        </div>
                       </div>
 
                       <Button 
