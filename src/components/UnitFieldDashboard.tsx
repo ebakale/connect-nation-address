@@ -921,31 +921,31 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 space-y-6">
+    <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
       {/* Unit Header */}
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-3xl font-bold">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-3xl font-bold truncate">
             {unitInfo.unit_code} - {isFieldOperatorMode ? "My Field Operations" : "Field Operations"}
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm text-muted-foreground truncate">
             {isFieldOperatorMode 
               ? `Officer Dashboard - ${unitInfo.unit_name}` 
               : unitInfo.unit_name
             }
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <Badge variant="outline" className="flex items-center gap-2">
+        <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+          <Badge variant="outline" className="flex items-center gap-1 sm:gap-2 text-xs">
             <div className={`w-2 h-2 rounded-full ${getIncidentStatusColor(unitStatus)}`} />
-            {unitStatus.toUpperCase()}
+            <span className="truncate">{unitStatus.toUpperCase()}</span>
           </Badge>
           
           {/* Shift Status */}
           <Badge variant={shiftStatus === 'on_duty' ? 'default' : 'secondary'} 
-                 className="flex items-center gap-2">
+                 className="flex items-center gap-1 sm:gap-2 text-xs">
             {shiftStatus === 'on_duty' ? <UserCheck className="h-3 w-3" /> : <LogOut className="h-3 w-3" />}
-            {shiftStatus.replace('_', ' ').toUpperCase()}
+            <span className="truncate">{shiftStatus.replace('_', ' ').toUpperCase()}</span>
           </Badge>
 
           {/* System Status Indicators */}

@@ -58,13 +58,13 @@ const AdminPanel: React.FC = () => {
       </Card>
       
       <Tabs defaultValue="roles" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="roles">{t('roleManagement')}</TabsTrigger>
-          <TabsTrigger value="permissions">{t('permissions')}</TabsTrigger>
-          <TabsTrigger value="workflows">{t('workflows')}</TabsTrigger>
-          <TabsTrigger value="users">{t('userManagement')}</TabsTrigger>
-          <TabsTrigger value="uac">{t('uacSystem')}</TabsTrigger>
-          <TabsTrigger value="api-webhooks">{t('apiWebhooks')}</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1">
+          <TabsTrigger value="roles" className="text-xs sm:text-sm px-2 sm:px-3">{t('roleManagement')}</TabsTrigger>
+          <TabsTrigger value="permissions" className="text-xs sm:text-sm px-2 sm:px-3">{t('permissions')}</TabsTrigger>
+          <TabsTrigger value="workflows" className="text-xs sm:text-sm px-2 sm:px-3">{t('workflows')}</TabsTrigger>
+          <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">{t('userManagement')}</TabsTrigger>
+          <TabsTrigger value="uac" className="text-xs sm:text-sm px-2 sm:px-3">{t('uacSystem')}</TabsTrigger>
+          <TabsTrigger value="api-webhooks" className="text-xs sm:text-sm px-2 sm:px-3">{t('apiWebhooks')}</TabsTrigger>
         </TabsList>
         
         <TabsContent value="roles">

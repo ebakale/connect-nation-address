@@ -356,4 +356,35 @@ All colors MUST be HSL.
   .incident-map {
     @apply h-64;
   }
+  
+  /* Mobile typography and spacing improvements */
+  @media (max-width: 640px) {
+    .text-3xl { @apply text-xl; }
+    .text-2xl { @apply text-lg; }
+    .text-xl { @apply text-base; }
+    
+    .p-8 { @apply p-4; }
+    .p-6 { @apply p-3; }
+    .gap-8 { @apply gap-4; }
+    .gap-6 { @apply gap-3; }
+    
+    /* Container responsive padding */
+    .container { @apply px-2; }
+    
+    /* Button responsiveness */
+    button { min-height: 40px; }
+    
+    /* Flex utilities for mobile */
+    .mobile-flex-col { @apply flex-col; }
+    .mobile-text-center { @apply text-center; }
+    
+    /* Overflow handling */
+    .mobile-truncate { @apply truncate; }
+    .mobile-line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
 }

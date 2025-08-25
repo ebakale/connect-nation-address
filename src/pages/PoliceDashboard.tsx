@@ -495,28 +495,28 @@ const PoliceDashboard = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+        <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0">
               <div className="flex items-center gap-2">
-                <Shield className="h-8 w-8 text-blue-600" />
-                <div>
-                  <h1 className="text-2xl font-bold">{t('policeCommandCenter')}</h1>
-                  <p className="text-sm text-muted-foreground">
+                <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 flex-shrink-0" />
+                <div className="min-w-0">
+                  <h1 className="text-lg sm:text-2xl font-bold truncate">{t('policeCommandCenter')}</h1>
+                  <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
                     {t('emergencyResponse')}
                   </p>
                 </div>
               </div>
               
               {/* Role Badges */}
-              <div className="flex gap-2">
+              <div className="hidden md:flex gap-2">
                 {isPoliceSupervisor && (
-              <Badge variant="default" className="bg-purple-100 text-purple-800">
+              <Badge variant="default" className="bg-purple-100 text-purple-800 text-xs">
                 {t('supervisor')}
               </Badge>
                 )}
                  {isPoliceDispatcher && (
-                   <Badge variant="default" className="bg-blue-100 text-blue-800">
+                   <Badge variant="default" className="bg-blue-100 text-blue-800 text-xs">
                      {t('dispatch')}
                    </Badge>
                  )}
@@ -533,11 +533,11 @@ const PoliceDashboard = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               <LanguageSwitcher />
-              <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-2">
-                <LogOut className="h-4 w-4" />
-                {t('logout')}
+              <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
+                <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">{t('logout')}</span>
               </Button>
             </div>
           </div>
@@ -545,25 +545,25 @@ const PoliceDashboard = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
           {/* Field Operators have limited tab access */}
           {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher ? (
-            <TabsList className="grid w-full grid-cols-2 lg:w-[300px]">
-              <TabsTrigger value="field" className="flex items-center gap-2">
-                <Radio className="h-4 w-4" />
-                {t('myUnit')}
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="field" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                <Radio className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="truncate">{t('myUnit')}</span>
               </TabsTrigger>
-              <TabsTrigger value="support" className="flex items-center gap-2">
-                <MessageSquare className="h-4 w-4" />
-                Support
+              <TabsTrigger value="support" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="truncate">Support</span>
               </TabsTrigger>
             </TabsList>
           ) : (
-            <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
-              <TabsTrigger value="field" className="flex items-center gap-2">
-                <Radio className="h-4 w-4" />
-                {t('myUnit')}
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3">
+              <TabsTrigger value="field" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                <Radio className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="truncate">{t('myUnit')}</span>
               </TabsTrigger>
               {/* Different tab based on role */}
               {(isPoliceDispatcher || isAdmin) ? (

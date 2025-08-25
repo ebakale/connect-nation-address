@@ -141,27 +141,27 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
     variant?: 'default' | 'success' | 'warning';
   }> = ({ title, value, description, icon: Icon, trend, variant = 'default' }) => (
     <Card className="shadow-card hover:shadow-elegant transition-all duration-200">
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <p className="text-2xl font-bold">{typeof value === 'number' ? value.toLocaleString() : value}</p>
-            <p className="text-xs text-muted-foreground mt-1">{description}</p>
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">{title}</p>
+            <p className="text-xl sm:text-2xl font-bold">{typeof value === 'number' ? value.toLocaleString() : value}</p>
+            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{description}</p>
             {trend && (
               <Badge 
                 variant="outline" 
-                className={`mt-2 ${variant === 'success' ? 'border-success text-success' : variant === 'warning' ? 'border-warning text-warning' : ''}`}
+                className={`mt-2 text-xs ${variant === 'success' ? 'border-success text-success' : variant === 'warning' ? 'border-warning text-warning' : ''}`}
               >
                 {trend}
               </Badge>
             )}
           </div>
-          <div className={`p-3 rounded-full ${
+          <div className={`p-2 sm:p-3 rounded-full flex-shrink-0 ${
             variant === 'success' ? 'bg-success/10' : 
             variant === 'warning' ? 'bg-warning/10' : 
             'bg-primary/10'
           }`}>
-            <Icon className={`h-6 w-6 ${
+            <Icon className={`h-5 w-5 sm:h-6 sm:w-6 ${
               variant === 'success' ? 'text-success' : 
               variant === 'warning' ? 'text-warning' : 
               'text-primary'
@@ -191,7 +191,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <StatCard
           title={t('totalAddresses')}
           value={stats.totalAddresses}
@@ -234,18 +234,18 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {quickActions.map((action, index) => (
               <Button
                 key={index}
                 variant={action.variant}
-                className="h-auto p-4 flex flex-col items-start gap-2"
+                className="h-auto p-3 sm:p-4 flex flex-col items-start gap-2 text-left"
                 onClick={action.action}
               >
-                <action.icon className="h-5 w-5" />
-                <div className="text-left">
-                  <p className="font-semibold">{action.title}</p>
-                  <p className="text-xs opacity-90">{action.description}</p>
+                <action.icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                <div className="text-left w-full">
+                  <p className="font-semibold text-sm sm:text-base truncate">{action.title}</p>
+                  <p className="text-xs opacity-90 line-clamp-2">{action.description}</p>
                 </div>
               </Button>
             ))}
@@ -254,7 +254,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       </Card>
 
       {/* Recent Activity & System Status */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <Card className="shadow-card">
           <CardHeader>
             <CardTitle>{t('recentActivity')}</CardTitle>
