@@ -1444,7 +1444,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                       (action.action === 'accept_assignment' && incident.status === 'dispatched') ||
                       (action.action === 'en_route' && ['dispatched'].includes(incident.status)) ||
                       (action.action === 'on_scene' && ['dispatched', 'en_route', 'responded'].includes(incident.status)) ||
-                      (action.action === 'request_backup') ||
+                      (action.action === 'request_backup') || // Always available for any incident
                       (action.action === 'update_status') ||
                       (action.action === 'complete_incident' && ['on_scene', 'responded'].includes(incident.status));
 
