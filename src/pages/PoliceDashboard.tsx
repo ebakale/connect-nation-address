@@ -965,7 +965,7 @@ const PoliceDashboard = () => {
                      <Button 
                        variant="outline" 
                        className="w-full"
-                       onClick={() => toast.info('Request backup feature available in My Unit tab')}
+                       onClick={() => setActiveTab('field')}
                      >
                        <Users className="h-4 w-4 mr-2" />
                        Request Backup
@@ -973,7 +973,7 @@ const PoliceDashboard = () => {
                      <Button 
                        variant="outline" 
                        className="w-full"
-                       onClick={() => toast.info('Status update feature available in My Unit tab')}
+                       onClick={() => setActiveTab('field')}
                      >
                        <Flag className="h-4 w-4 mr-2" />
                        Update Status
