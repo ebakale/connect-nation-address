@@ -61,9 +61,9 @@ const UserManager: React.FC = () => {
   const { hasPoliceAdminAccess } = useUserRole();
   const { toast } = useToast();
 
-  // Only police-related roles for police system
+  // Only police-related roles for police system (excluding general admin)
   const policeRoles = [
-    'police_operator', 'police_supervisor', 'police_dispatcher', 'police_admin', 'admin'
+    'police_operator', 'police_supervisor', 'police_dispatcher', 'police_admin'
   ] as const;
 
   const geographicScopes = [
@@ -99,7 +99,7 @@ const UserManager: React.FC = () => {
             scope_value
           )
         `)
-        .in('role', ['police_operator', 'police_supervisor', 'police_dispatcher', 'police_admin', 'admin']);
+        .in('role', ['police_operator', 'police_supervisor', 'police_dispatcher', 'police_admin']);
 
       if (rolesError) throw rolesError;
 
