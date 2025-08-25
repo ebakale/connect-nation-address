@@ -492,7 +492,21 @@ const UnitManagement: React.FC = () => {
       </div>
 
       <div className="grid gap-6">
-        {units.map((unit) => (
+        {units.length === 0 ? (
+          <Card>
+            <CardContent className="p-8 text-center">
+              <Radio className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No Police Units Found</h3>
+              <p className="text-muted-foreground mb-4">
+                Create your first police unit to start managing your emergency response teams.
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Once you create units, you'll be able to edit, delete, and assign officers to them.
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          units.map((unit) => (
           <Card key={unit.id}>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -593,7 +607,7 @@ const UnitManagement: React.FC = () => {
               )}
             </CardContent>
           </Card>
-        ))}
+        )))}
       </div>
 
       {/* Edit Dialog */}
