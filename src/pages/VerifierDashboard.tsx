@@ -58,53 +58,53 @@ const VerifierDashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pending Review</CardTitle>
-              <AlertTriangle className="h-4 w-4 text-amber-500" />
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <Card className="min-w-0">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+              <CardTitle className="text-xs font-medium truncate">Pending Review</CardTitle>
+              <AlertTriangle className="h-3 w-3 text-amber-500 flex-shrink-0" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">23</div>
-              <p className="text-xs text-muted-foreground">Requires verification</p>
+            <CardContent className="pb-2">
+              <div className="text-lg font-bold">23</div>
+              <p className="text-xs text-muted-foreground truncate">Requires verification</p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Verified Today</CardTitle>
-              <CheckCircle className="h-4 w-4 text-green-500" />
+          <Card className="min-w-0">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+              <CardTitle className="text-xs font-medium truncate">Verified Today</CardTitle>
+              <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">18</div>
-              <p className="text-xs text-muted-foreground">Approved addresses</p>
+            <CardContent className="pb-2">
+              <div className="text-lg font-bold">18</div>
+              <p className="text-xs text-muted-foreground truncate">Approved addresses</p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Verified</CardTitle>
-              <Shield className="h-4 w-4 text-muted-foreground" />
+          <Card className="min-w-0">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+              <CardTitle className="text-xs font-medium truncate">Total Verified</CardTitle>
+              <Shield className="h-3 w-3 text-muted-foreground flex-shrink-0" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">1,247</div>
-              <p className="text-xs text-muted-foreground">This month</p>
+            <CardContent className="pb-2">
+              <div className="text-lg font-bold">1,247</div>
+              <p className="text-xs text-muted-foreground truncate">This month</p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Quality Score</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+          <Card className="min-w-0">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+              <CardTitle className="text-xs font-medium truncate">Quality Score</CardTitle>
+              <Users className="h-3 w-3 text-muted-foreground flex-shrink-0" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">94.2%</div>
-              <p className="text-xs text-muted-foreground">Accuracy rate</p>
+            <CardContent className="pb-2">
+              <div className="text-lg font-bold">94.2%</div>
+              <p className="text-xs text-muted-foreground truncate">Accuracy rate</p>
             </CardContent>
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">

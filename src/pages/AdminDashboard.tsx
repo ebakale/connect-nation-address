@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
 import AdminPanel from "@/components/AdminPanel";
@@ -40,47 +41,77 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
-          <Card className="min-w-0">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium truncate">{t('totalUsers')}</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">1,234</div>
-              <p className="text-xs text-muted-foreground truncate">{t('fromLastMonth')}</p>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Card className="min-w-0 cursor-pointer hover:shadow-md transition-shadow">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-xs font-medium truncate">{t('totalUsers')}</CardTitle>
+                  <Users className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                </CardHeader>
+                <CardContent className="pb-2">
+                  <div className="text-lg font-bold">1,234</div>
+                  <p className="text-xs text-muted-foreground truncate">{t('clickToManage')}</p>
+                </CardContent>
+              </Card>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>{t('userManagement')}</DialogTitle>
+              </DialogHeader>
+              <AdminPanel />
+            </DialogContent>
+          </Dialog>
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <Card className="min-w-0 cursor-pointer hover:shadow-md transition-shadow">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-xs font-medium truncate">{t('activeRoles')}</CardTitle>
+                  <Shield className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                </CardHeader>
+                <CardContent className="pb-2">
+                  <div className="text-lg font-bold">13</div>
+                  <p className="text-xs text-muted-foreground truncate">{t('clickToManage')}</p>
+                </CardContent>
+              </Card>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>{t('roleManagement')}</DialogTitle>
+              </DialogHeader>
+              <AdminPanel />
+            </DialogContent>
+          </Dialog>
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <Card className="min-w-0 cursor-pointer hover:shadow-md transition-shadow">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-xs font-medium truncate">{t('pendingApprovals')}</CardTitle>
+                  <Settings className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                </CardHeader>
+                <CardContent className="pb-2">
+                  <div className="text-lg font-bold">8</div>
+                  <p className="text-xs text-muted-foreground truncate">{t('clickToReview')}</p>
+                </CardContent>
+              </Card>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>{t('pendingApprovals')}</DialogTitle>
+              </DialogHeader>
+              <AdminPanel />
+            </DialogContent>
+          </Dialog>
 
           <Card className="min-w-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium truncate">{t('activeRoles')}</CardTitle>
-              <Shield className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <CardTitle className="text-xs font-medium truncate">{t('systemHealth')}</CardTitle>
+              <BarChart3 className="h-3 w-3 text-muted-foreground flex-shrink-0" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">13</div>
-              <p className="text-xs text-muted-foreground truncate">{t('allSystemRoles')}</p>
-            </CardContent>
-          </Card>
-
-          <Card className="min-w-0">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium truncate">{t('pendingApprovals')}</CardTitle>
-              <Settings className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">8</div>
-              <p className="text-xs text-muted-foreground truncate">{t('requiresAttention')}</p>
-            </CardContent>
-          </Card>
-
-          <Card className="min-w-0">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium truncate">{t('systemHealth')}</CardTitle>
-              <BarChart3 className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">99.9%</div>
+            <CardContent className="pb-2">
+              <div className="text-lg font-bold">99.9%</div>
               <p className="text-xs text-muted-foreground truncate">{t('uptime')}</p>
             </CardContent>
           </Card>

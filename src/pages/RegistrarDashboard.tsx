@@ -56,53 +56,53 @@ const RegistrarDashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Ready to Publish</CardTitle>
-              <FileCheck className="h-4 w-4 text-green-500" />
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <Card className="min-w-0">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+              <CardTitle className="text-xs font-medium truncate">Ready to Publish</CardTitle>
+              <FileCheck className="h-3 w-3 text-green-500 flex-shrink-0" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">7</div>
-              <p className="text-xs text-muted-foreground">Verified addresses</p>
+            <CardContent className="pb-2">
+              <div className="text-lg font-bold">7</div>
+              <p className="text-xs text-muted-foreground truncate">Verified addresses</p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Published Today</CardTitle>
-              <Globe className="h-4 w-4 text-blue-500" />
+          <Card className="min-w-0">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+              <CardTitle className="text-xs font-medium truncate">Published Today</CardTitle>
+              <Globe className="h-3 w-3 text-blue-500 flex-shrink-0" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">42</div>
-              <p className="text-xs text-muted-foreground">Made public</p>
+            <CardContent className="pb-2">
+              <div className="text-lg font-bold">42</div>
+              <p className="text-xs text-muted-foreground truncate">Made public</p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Published</CardTitle>
-              <Crown className="h-4 w-4 text-muted-foreground" />
+          <Card className="min-w-0">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+              <CardTitle className="text-xs font-medium truncate">Total Published</CardTitle>
+              <Crown className="h-3 w-3 text-muted-foreground flex-shrink-0" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">12,847</div>
-              <p className="text-xs text-muted-foreground">In province</p>
+            <CardContent className="pb-2">
+              <div className="text-lg font-bold">12,847</div>
+              <p className="text-xs text-muted-foreground truncate">In province</p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Coverage</CardTitle>
-              <BarChart3 className="h-4 w-4 text-muted-foreground" />
+          <Card className="min-w-0">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+              <CardTitle className="text-xs font-medium truncate">Coverage</CardTitle>
+              <BarChart3 className="h-3 w-3 text-muted-foreground flex-shrink-0" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">87.3%</div>
-              <p className="text-xs text-muted-foreground">Provincial coverage</p>
+            <CardContent className="pb-2">
+              <div className="text-lg font-bold">87.3%</div>
+              <p className="text-xs text-muted-foreground truncate">Provincial coverage</p>
             </CardContent>
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">

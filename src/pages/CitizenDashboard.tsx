@@ -78,21 +78,21 @@ const CitizenDashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Search className="h-5 w-5 text-primary" />
-                {t('searchAddresses')}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <Card className="min-w-0">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <Search className="h-4 w-4 text-primary flex-shrink-0" />
+                <span className="truncate">{t('searchAddresses')}</span>
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs">
                 {t('findVerifiedAddresses')}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
                 <DialogTrigger asChild>
-                  <Button className="w-full">
+                  <Button className="w-full text-xs py-2">
                     {t('searchDatabase')}
                   </Button>
                 </DialogTrigger>
@@ -115,37 +115,37 @@ const CitizenDashboard = () => {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-primary" />
-                {t('submitRequest')}
+          <Card className="min-w-0">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <FileText className="h-4 w-4 text-primary flex-shrink-0" />
+                <span className="truncate">{t('submitRequest')}</span>
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs">
                 {t('submitNewRequest')}
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <Button className="w-full" onClick={() => setSubmitRequestOpen(true)}>
-                <FileText className="mr-2 h-4 w-4" />
+            <CardContent className="pt-0">
+              <Button className="w-full text-xs py-2" onClick={() => setSubmitRequestOpen(true)}>
+                <FileText className="mr-1 h-3 w-3" />
                 {t('newRequest')}
               </Button>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="h-5 w-5 text-primary" />
-                {t('addressStatus')}
+          <Card className="min-w-0">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <Clock className="h-4 w-4 text-primary flex-shrink-0" />
+                <span className="truncate">{t('addressStatus')}</span>
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs">
                 {t('trackRequestStatus')}
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <Button className="w-full" onClick={() => setStatusOpen(true)}>
-                <Clock className="mr-2 h-4 w-4" />
+            <CardContent className="pt-0">
+              <Button className="w-full text-xs py-2" onClick={() => setStatusOpen(true)}>
+                <Clock className="mr-1 h-3 w-3" />
                 {t('checkStatus')}
               </Button>
             </CardContent>
