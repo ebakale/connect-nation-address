@@ -25,6 +25,7 @@ import { BackupNotificationManager } from '@/components/BackupNotificationManage
 import { UnitLeadDashboard } from '@/components/UnitLeadDashboard';
 import { UnitLeadActions } from '@/components/UnitLeadActions';
 import { PoliceAdminDashboard } from '@/components/PoliceAdminDashboard';
+import { RequestBackupDialog } from '@/components/RequestBackupDialog';
 import { toast } from "sonner";
 
 interface EmergencyIncident {
@@ -951,14 +952,15 @@ const PoliceDashboard = () => {
                         <Users className="h-4 w-4 mr-2" />
                         Manage My Units
                       </Button>
-                      <Button 
-                        variant="outline" 
-                        className="w-full"
-                        onClick={() => toast.info('Backup request feature coming soon')}
-                      >
-                        <MessageSquare className="h-4 w-4 mr-2" />
-                        Request Regional Backup
-                      </Button>
+                      <RequestBackupDialog>
+                        <Button 
+                          variant="outline" 
+                          className="w-full"
+                        >
+                          <MessageSquare className="h-4 w-4 mr-2" />
+                          Request Regional Backup
+                        </Button>
+                      </RequestBackupDialog>
                     </CardContent>
                   </Card>
 
