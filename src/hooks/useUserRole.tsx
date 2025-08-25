@@ -68,7 +68,7 @@ export const useUserRole = () => {
           const roles = roleData.map(r => r.role);
           const priorityOrder: UserRole[] = [
             'admin', 'ndaa_admin',
-            'police_supervisor', 'police_operator', 'police_dispatcher',
+            'police_supervisor', 'police_dispatcher', 'police_operator',
             'registrar', 'verifier', 'field_agent', 'property_claimant',
             'citizen', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user'
           ];

@@ -53,9 +53,9 @@ const UserManager: React.FC = () => {
   const { toast } = useToast();
 
   const roles = [
-    'admin', 'citizen', 'property_claimant', 'field_agent', 'verifier',
-    'registrar', 'ndaa_admin', 'partner', 'auditor', 'data_steward',
-    'police_operator', 'police_supervisor', 'police_dispatcher'
+    'admin', 'moderator', 'user', 'citizen', 'property_claimant', 'field_agent', 
+    'verifier', 'registrar', 'ndaa_admin', 'partner', 'auditor', 'data_steward', 
+    'support', 'police_operator', 'police_supervisor', 'police_dispatcher'
   ] as const;
 
   const geographicScopes = [
