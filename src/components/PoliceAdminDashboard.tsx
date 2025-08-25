@@ -27,7 +27,7 @@ interface PoliceStats {
 }
 
 export const PoliceAdminDashboard = () => {
-  const { hasPoliceAdminAccess } = useUserRole();
+  const { hasPoliceAdminAccess, loading: roleLoading } = useUserRole();
   const [stats, setStats] = useState<PoliceStats>({
     totalOfficers: 0,
     activeOperators: 0,

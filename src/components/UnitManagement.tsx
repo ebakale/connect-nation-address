@@ -85,33 +85,49 @@ const UnitManagement: React.FC = () => {
   const fetchUnits = async () => {
     try {
       setLoading(true);
-      const { data: unitsData, error } = await supabase
+      const { data: unitsData, error: unitsError } = await supabase
         .from('emergency_units')
-        .select(`
-          *,
-          emergency_unit_members (
-            id,
-            officer_id,
-            role,
-            is_lead,
-            joined_at,
-            profiles (
-              full_name,
-              email
-            )
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (unitsError) throw unitsError;
 
-      const unitsWithMembers = unitsData?.map(unit => ({
-        ...unit,
-        members: unit.emergency_unit_members?.map((member: any) => ({
-          ...member,
-          profile: member.profiles
-        })) || []
-      })) || [];
+      const unitIds = (unitsData || []).map((u: any) => u.id);
+      let membersByUnit: Record<string, any[]> = {};
+      let profilesByUser: Record<string, any> = {};
+
+      if (unitIds.length > 0) {
+        const { data: members, error: membersError } = await supabase
+          .from('emergency_unit_members')
+          .select('*')
+          .in('unit_id', unitIds);
+
+        if (membersError) throw membersError;
+
+        const officerIds = Array.from(new Set((members || []).map((m: any) => m.officer_id)));
+        if (officerIds.length > 0) {
+          const { data: profiles, error: profilesError } = await supabase
+            .from('profiles')
+            .select('user_id, full_name, email')
+            .in('user_id', officerIds);
+
+          if (profilesError) throw profilesError;
+          profilesByUser = Object.fromEntries((profiles || []).map((p: any) => [p.user_id, p]));
+        }
+
+        membersByUnit = (members || []).reduce((acc: any, m: any) => {
+          (acc[m.unit_id] ||= []).push({
+            ...m,
+            profile: profilesByUser[m.officer_id] || undefined,
+          });
+          return acc;
+        }, {} as Record<string, any[]>);
+      }
+
+      const unitsWithMembers = (unitsData || []).map((u: any) => ({
+        ...u,
+        members: membersByUnit[u.id] || [],
+      }));
 
       setUnits(unitsWithMembers);
     } catch (error) {
@@ -124,24 +140,31 @@ const UnitManagement: React.FC = () => {
 
   const fetchOfficers = async () => {
     try {
-      const { data: officersData, error } = await supabase
+      const { data: roleRows, error: rolesError } = await supabase
         .from('user_roles')
-        .select(`
-          user_id,
-          profiles (
-            full_name,
-            email
-          )
-        `)
+        .select('user_id')
         .in('role', ['police_operator', 'police_supervisor', 'police_dispatcher']);
 
-      if (error) throw error;
+      if (rolesError) throw rolesError;
 
-      const officers = officersData?.map((item: any) => ({
-        user_id: item.user_id,
-        full_name: item.profiles?.full_name || 'Unknown',
-        email: item.profiles?.email || 'No email'
-      })) || [];
+      const userIds = Array.from(new Set((roleRows || []).map((r: any) => r.user_id)));
+      if (userIds.length === 0) {
+        setOfficers([]);
+        return;
+      }
+
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('user_id, full_name, email')
+        .in('user_id', userIds);
+
+      if (profilesError) throw profilesError;
+
+      const officers = (profilesData || []).map((p: any) => ({
+        user_id: p.user_id,
+        full_name: p.full_name || 'Unknown',
+        email: p.email || 'No email'
+      }));
 
       setOfficers(officers);
     } catch (error) {

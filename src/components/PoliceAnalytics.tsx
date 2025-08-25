@@ -107,18 +107,24 @@ const PoliceAnalytics: React.FC = () => {
       if (unitsError) throw unitsError;
 
       // Fetch officers data
-      const { data: officers, error: officersError } = await supabase
+      const { data: roleRows, error: rolesError } = await supabase
         .from('user_roles')
-        .select(`
-          user_id,
-          profiles (
-            full_name,
-            email
-          )
-        `)
+        .select('user_id')
         .in('role', ['police_operator', 'police_supervisor', 'police_dispatcher']);
 
-      if (officersError) throw officersError;
+      if (rolesError) throw rolesError;
+
+      const userIds = Array.from(new Set((roleRows || []).map((r: any) => r.user_id)));
+      let officers: any[] = [];
+      if (userIds.length > 0) {
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('user_id, full_name, email')
+          .in('user_id', userIds);
+
+        if (profilesError) throw profilesError;
+        officers = profilesData || [];
+      }
 
       // Process analytics data
       const processedAnalytics = processAnalyticsData(incidents || [], units || [], officers || []);

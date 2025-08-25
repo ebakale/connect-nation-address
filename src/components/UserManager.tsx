@@ -49,7 +49,7 @@ const UserManager: React.FC = () => {
     phone: '',
     password: ''
   });
-  const { hasAdminAccess } = useUserRole();
+  const { hasPoliceAdminAccess } = useUserRole();
   const { toast } = useToast();
 
   const roles = [
@@ -64,10 +64,10 @@ const UserManager: React.FC = () => {
   ] as const;
 
   useEffect(() => {
-    if (hasAdminAccess) {
+    if (hasPoliceAdminAccess) {
       fetchUsers();
     }
-  }, [hasAdminAccess]);
+  }, [hasPoliceAdminAccess]);
 
   const fetchUsers = async () => {
     try {
@@ -313,7 +313,7 @@ const UserManager: React.FC = () => {
     user.organization.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (!hasAdminAccess) {
+  if (!hasPoliceAdminAccess) {
     return (
       <Card>
         <CardHeader>
@@ -322,7 +322,7 @@ const UserManager: React.FC = () => {
             User Management
           </CardTitle>
           <CardDescription>
-            Access denied. Admin privileges required.
+            Access denied. Police admin privileges required.
           </CardDescription>
         </CardHeader>
       </Card>
