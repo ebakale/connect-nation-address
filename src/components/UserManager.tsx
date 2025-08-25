@@ -149,13 +149,6 @@ const UserManager: React.FC = () => {
   };
 
   const assignRole = async (userId: string, role: string) => {
-    // If role is field_agent, show dialog for geographic scope selection
-    if (role === 'field_agent') {
-      setPendingAssignment({ userId, role });
-      setShowScopeDialog(true);
-      return;
-    }
-
     await assignRoleWithScope(userId, role, null);
   };
 
