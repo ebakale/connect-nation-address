@@ -109,7 +109,7 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
             role,
             is_lead,
             joined_at,
-            profiles(
+            profiles!emergency_unit_members_officer_id_fkey(
               full_name,
               email,
               phone
