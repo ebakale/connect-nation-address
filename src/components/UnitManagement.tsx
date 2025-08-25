@@ -496,6 +496,16 @@ const UnitManagement: React.FC = () => {
       </div>
 
       <div className="grid gap-6">
+        {/* Debug info */}
+        <Card className="bg-blue-50 border-blue-200">
+          <CardContent className="p-4">
+            <p className="text-sm text-blue-800">
+              <strong>Debug Info:</strong> Found {units.length} units in database
+              {loading && " (Loading...)"}
+            </p>
+          </CardContent>
+        </Card>
+        
         {units.length === 0 ? (
           <Card>
             <CardContent className="p-8 text-center">
