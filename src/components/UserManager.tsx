@@ -63,7 +63,7 @@ const UserManager: React.FC = () => {
 
   // Only police-related roles for police system
   const policeRoles = [
-    'police_operator', 'police_supervisor', 'police_dispatcher', 'admin'
+    'police_operator', 'police_supervisor', 'police_dispatcher', 'police_admin', 'admin'
   ] as const;
 
   const geographicScopes = [
@@ -99,7 +99,7 @@ const UserManager: React.FC = () => {
             scope_value
           )
         `)
-        .in('role', ['police_operator', 'police_supervisor', 'police_dispatcher', 'admin']);
+        .in('role', ['police_operator', 'police_supervisor', 'police_dispatcher', 'police_admin', 'admin']);
 
       if (rolesError) throw rolesError;
 
