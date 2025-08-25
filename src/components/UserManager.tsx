@@ -94,7 +94,7 @@ const UserManager: React.FC = () => {
         .select(`
           user_id,
           role,
-          user_role_metadata(
+          user_role_metadata!fk_user_role_metadata_user_role(
             scope_type,
             scope_value
           )

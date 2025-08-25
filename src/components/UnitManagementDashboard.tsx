@@ -100,7 +100,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
         .from('user_roles')
         .select(`
           role,
-          user_role_metadata(scope_type, scope_value)
+          user_role_metadata!fk_user_role_metadata_user_role(scope_type, scope_value)
         `)
         .eq('user_id', user?.id);
 
@@ -179,7 +179,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
         .from('user_roles')
         .select(`
           role,
-          user_role_metadata(scope_type, scope_value)
+          user_role_metadata!fk_user_role_metadata_user_role(scope_type, scope_value)
         `)
         .eq('user_id', user?.id);
 

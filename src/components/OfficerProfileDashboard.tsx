@@ -63,7 +63,7 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
       // First check the current user's role and scope
       const { data: currentUserRole, error: currentRoleError } = await supabase
         .from('user_roles')
-        .select('role, user_role_metadata(scope_type, scope_value)')
+        .select('role, user_role_metadata!fk_user_role_metadata_user_role(scope_type, scope_value)')
         .eq('user_id', user?.id);
 
       if (currentRoleError) throw currentRoleError;
