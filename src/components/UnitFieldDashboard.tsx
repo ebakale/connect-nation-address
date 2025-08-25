@@ -1067,6 +1067,40 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
+            {/* Recent Messages - Always visible */}
+            <div className="bg-muted/30 rounded p-2 h-24 overflow-y-auto">
+              <div className="text-xs font-medium mb-1 text-muted-foreground">Recent Messages:</div>
+              {communicationLog.length === 0 ? (
+                <div className="text-xs text-muted-foreground italic">No recent communications</div>
+              ) : (
+                <div className="space-y-1">
+                  {communicationLog.slice(0, 3).map((comm) => (
+                    <div key={comm.id} className={`text-xs p-1 rounded ${
+                      comm.type === 'outgoing' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
+                    }`}>
+                      <div className="flex items-center gap-1">
+                        {comm.is_radio_code && (
+                          <Badge variant="secondary" className="text-xs py-0 px-1 h-4">
+                            {comm.radio_code}
+                          </Badge>
+                        )}
+                        <span className="flex-1 truncate">{comm.message_content}</span>
+                        <span className="text-xs opacity-75">
+                          {new Date(comm.timestamp || comm.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                        </span>
+                      </div>
+                      {comm.type === 'outgoing' && (
+                        <div className="text-xs opacity-75">
+                          {comm.acknowledged ? '✓ Acknowledged' : 'Pending'}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            {/* Send Message */}
             <div className="flex gap-1">
               <input
                 type="text"
@@ -1081,6 +1115,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
               </Button>
             </div>
             
+            {/* Radio Codes */}
             <div className="grid grid-cols-2 gap-1">
               <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-4', '10-4 Acknowledged')}>
                 <span className="text-xs">10-4</span>
