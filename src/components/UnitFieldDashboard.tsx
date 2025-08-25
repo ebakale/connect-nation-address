@@ -141,6 +141,8 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
   const [quickMessage, setQuickMessage] = useState('');
   const [resourceRequest, setResourceRequest] = useState('');
   const [showResourceDialog, setShowResourceDialog] = useState(false);
+  const [showBackupDialog, setShowBackupDialog] = useState(false);
+  const [backupReason, setBackupReason] = useState('');
 
   // Use the incidents passed from parent component
   useEffect(() => {
@@ -868,6 +870,44 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
     return 'Location unavailable';
   };
 
+  // Request backup function for general use (not incident-specific)
+  const requestBackup = async () => {
+    if (!unitInfo || !backupReason.trim()) return;
+
+    try {
+      const { data: backupResult, error: backupError } = await supabase.functions.invoke('process-backup-request', {
+        body: {
+          incident_id: null, // General backup request, not incident-specific
+          requesting_unit_code: unitInfo.unit_code,
+          requesting_unit_name: unitInfo.unit_name,
+          reason: backupReason,
+          priority_level: 3, // Normal priority for general backup
+          location: unitInfo.current_location || 'Unknown location',
+          incident_number: null
+        }
+      });
+
+      if (backupError) {
+        console.error('Backup request failed:', backupError);
+        throw new Error('Failed to send backup request');
+      }
+
+      toast({
+        title: "Backup Requested Successfully",
+        description: `General backup request sent to supervisors and dispatchers. ${backupResult?.notifications_sent || 0} notification(s) sent.`
+      });
+      
+      setShowBackupDialog(false);
+      setBackupReason('');
+    } catch (error) {
+      console.error('Error requesting backup:', error);
+      toast({
+        title: "Error",
+        description: "Failed to request backup",
+        variant: "destructive"
+      });
+    }
+  };
   if (!unitInfo) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -1067,6 +1107,32 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
+            {/* Request Backup Button - Always Available */}
+            <Dialog open={showBackupDialog} onOpenChange={setShowBackupDialog}>
+              <DialogTrigger asChild>
+                <Button variant="destructive" className="w-full mb-2">
+                  <Users className="h-4 w-4 mr-2" />
+                  Request Backup
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Request Backup</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <Textarea
+                    value={backupReason}
+                    onChange={(e) => setBackupReason(e.target.value)}
+                    placeholder="Describe the reason for backup request..."
+                    rows={3}
+                  />
+                  <Button onClick={requestBackup} disabled={!backupReason.trim()}>
+                    Send Backup Request
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+            
             <div className="grid grid-cols-2 gap-1">
               <Dialog open={showResourceDialog} onOpenChange={setShowResourceDialog}>
                 <DialogTrigger asChild>
