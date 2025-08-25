@@ -82,9 +82,9 @@ const UnitManagement: React.FC = () => {
     'Bioko Norte': ['Malabo', 'Baney', 'Rebola'],
     'Bioko Sur': ['Luba', 'Riaba'],
     'Litoral': ['Bata', 'Mbini', 'Kogo'],
-    'Centro Sur': ['Evinayong', 'Acurenam'],
-    'Kié-Ntem': ['Ebebiyín', 'Mikomeseng'],
-    'Wele-Nzas': ['Mongomo', 'Añisoc', 'Aconibe', 'Nsork', 'Nsonk Nsomo'],
+    'Centro Sur': ['Evinayong', 'Acurenam', 'Niefang'],
+    'Kié-Ntem': ['Ebebiyín', 'Mikomeseng', 'Nsonk Nsomo'],
+    'Wele-Nzas': ['Mongomo', 'Añisoc', 'Aconibe', 'Nsork'],
     'Annobón': ['San Antonio de Palé'],
     'Djibloho': ['Ciudad de la Paz']
   };
