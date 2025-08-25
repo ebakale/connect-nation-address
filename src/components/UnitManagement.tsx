@@ -398,21 +398,46 @@ const UnitManagement: React.FC = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="coverage_region">Coverage Region</Label>
-                <Input
-                  id="coverage_region"
-                  value={unitForm.coverage_region}
-                  onChange={(e) => setUnitForm({ ...unitForm, coverage_region: e.target.value })}
-                  placeholder="Litoral"
-                />
+                <Select value={unitForm.coverage_region} onValueChange={(value) => setUnitForm({ ...unitForm, coverage_region: value })}>
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Select region" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background z-50">
+                    <SelectItem value="Annobón">Annobón</SelectItem>
+                    <SelectItem value="Bioko Norte">Bioko Norte</SelectItem>
+                    <SelectItem value="Bioko Sur">Bioko Sur</SelectItem>
+                    <SelectItem value="Centro Sur">Centro Sur</SelectItem>
+                    <SelectItem value="Djibloho">Djibloho</SelectItem>
+                    <SelectItem value="Kié-Ntem">Kié-Ntem</SelectItem>
+                    <SelectItem value="Litoral">Litoral</SelectItem>
+                    <SelectItem value="Wele-Nzas">Wele-Nzas</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="coverage_city">Coverage City</Label>
-                <Input
-                  id="coverage_city"
-                  value={unitForm.coverage_city}
-                  onChange={(e) => setUnitForm({ ...unitForm, coverage_city: e.target.value })}
-                  placeholder="Bata"
-                />
+                <Select value={unitForm.coverage_city} onValueChange={(value) => setUnitForm({ ...unitForm, coverage_city: value })}>
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Select city" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background z-50">
+                    <SelectItem value="Malabo">Malabo</SelectItem>
+                    <SelectItem value="Bata">Bata</SelectItem>
+                    <SelectItem value="Ebebiyín">Ebebiyín</SelectItem>
+                    <SelectItem value="Aconibe">Aconibe</SelectItem>
+                    <SelectItem value="Añisoc">Añisoc</SelectItem>
+                    <SelectItem value="Luba">Luba</SelectItem>
+                    <SelectItem value="Evinayong">Evinayong</SelectItem>
+                    <SelectItem value="Mongomo">Mongomo</SelectItem>
+                    <SelectItem value="Mikomeseng">Mikomeseng</SelectItem>
+                    <SelectItem value="Nsork">Nsork</SelectItem>
+                    <SelectItem value="Kogo">Kogo</SelectItem>
+                    <SelectItem value="Mbini">Mbini</SelectItem>
+                    <SelectItem value="Acalayong">Acalayong</SelectItem>
+                    <SelectItem value="San Antonio de Palé">San Antonio de Palé</SelectItem>
+                    <SelectItem value="Ciudad de la Paz">Ciudad de la Paz</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="vehicle_id">Vehicle ID</Label>
@@ -588,19 +613,46 @@ const UnitManagement: React.FC = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="edit_coverage_region">Coverage Region</Label>
-              <Input
-                id="edit_coverage_region"
-                value={unitForm.coverage_region}
-                onChange={(e) => setUnitForm({ ...unitForm, coverage_region: e.target.value })}
-              />
+              <Select value={unitForm.coverage_region} onValueChange={(value) => setUnitForm({ ...unitForm, coverage_region: value })}>
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select region" />
+                </SelectTrigger>
+                <SelectContent className="bg-background z-50">
+                  <SelectItem value="Annobón">Annobón</SelectItem>
+                  <SelectItem value="Bioko Norte">Bioko Norte</SelectItem>
+                  <SelectItem value="Bioko Sur">Bioko Sur</SelectItem>
+                  <SelectItem value="Centro Sur">Centro Sur</SelectItem>
+                  <SelectItem value="Djibloho">Djibloho</SelectItem>
+                  <SelectItem value="Kié-Ntem">Kié-Ntem</SelectItem>
+                  <SelectItem value="Litoral">Litoral</SelectItem>
+                  <SelectItem value="Wele-Nzas">Wele-Nzas</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="edit_coverage_city">Coverage City</Label>
-              <Input
-                id="edit_coverage_city"
-                value={unitForm.coverage_city}
-                onChange={(e) => setUnitForm({ ...unitForm, coverage_city: e.target.value })}
-              />
+              <Select value={unitForm.coverage_city} onValueChange={(value) => setUnitForm({ ...unitForm, coverage_city: value })}>
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select city" />
+                </SelectTrigger>
+                <SelectContent className="bg-background z-50">
+                  <SelectItem value="Malabo">Malabo</SelectItem>
+                  <SelectItem value="Bata">Bata</SelectItem>
+                  <SelectItem value="Ebebiyín">Ebebiyín</SelectItem>
+                  <SelectItem value="Aconibe">Aconibe</SelectItem>
+                  <SelectItem value="Añisoc">Añisoc</SelectItem>
+                  <SelectItem value="Luba">Luba</SelectItem>
+                  <SelectItem value="Evinayong">Evinayong</SelectItem>
+                  <SelectItem value="Mongomo">Mongomo</SelectItem>
+                  <SelectItem value="Mikomeseng">Mikomeseng</SelectItem>
+                  <SelectItem value="Nsork">Nsork</SelectItem>
+                  <SelectItem value="Kogo">Kogo</SelectItem>
+                  <SelectItem value="Mbini">Mbini</SelectItem>
+                  <SelectItem value="Acalayong">Acalayong</SelectItem>
+                  <SelectItem value="San Antonio de Palé">San Antonio de Palé</SelectItem>
+                  <SelectItem value="Ciudad de la Paz">Ciudad de la Paz</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="edit_vehicle_id">Vehicle ID</Label>
