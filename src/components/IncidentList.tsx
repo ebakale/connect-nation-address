@@ -407,10 +407,9 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
         {filteredIncidents.map((incident) => (
           <div 
             key={incident.id}
-            className={`border rounded-lg p-3 hover:bg-muted/50 cursor-pointer transition-colors ${
+            className={`border rounded-lg p-3 hover:bg-muted/50 transition-colors relative ${
               selectedIncident?.id === incident.id ? 'bg-primary/5 border-primary' : ''
             }`}
-            onClick={() => onSelectIncident(incident)}
           >
             <div className="flex items-start justify-between gap-3">
               {/* Left side - Main info */}
@@ -466,7 +465,14 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
               incident={incident} 
               onUpdate={onUpdate}
               trigger={
-                <div className="absolute inset-0 cursor-pointer" aria-label="View incident details" />
+                <div 
+                  className="absolute inset-0 cursor-pointer" 
+                  aria-label="View incident details"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSelectIncident(incident);
+                  }}
+                />
               }
             />
           </div>
