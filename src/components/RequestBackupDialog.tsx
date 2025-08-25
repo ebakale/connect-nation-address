@@ -59,11 +59,18 @@ export function RequestBackupDialog({
         .select('id, incident_number, incident_uac, location_address, assigned_units, status, priority_level')
         .eq('city', roleMetadata[0].scope_value)
         .in('status', ['reported', 'dispatched', 'responding', 'on_scene'])
+        .not('assigned_units', 'is', null)
         .order('priority_level', { ascending: false })
         .order('reported_at', { ascending: false });
 
       if (error) throw error;
-      setIncidents(data || []);
+      
+      // Filter out incidents with empty assigned_units arrays
+      const filteredData = (data || []).filter(incident => 
+        incident.assigned_units && incident.assigned_units.length > 0
+      );
+      
+      setIncidents(filteredData);
     } catch (error) {
       console.error('Error fetching incidents:', error);
       toast({
