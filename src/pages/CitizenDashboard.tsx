@@ -105,7 +105,6 @@ const CitizenDashboard = () => {
                   </DialogHeader>
                   <AddressSearch 
                     onSelectAddress={(address) => {
-                      console.log('Selected address:', address);
                       setSelectedAddress(address);
                       setSearchOpen(false);
                       setShowMapView(true);

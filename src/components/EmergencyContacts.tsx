@@ -60,14 +60,6 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber }: Emerg
 
       if (error) throw error;
       
-      // In a real implementation, this would send the alert to emergency services
-      console.log('Emergency alert sent:', {
-        type,
-        message,
-        location: { latitude, longitude, accuracy },
-        timestamp: new Date().toISOString()
-      });
-      
       setSent(true);
       toast.success(t('emergencyAlertSent'));
       

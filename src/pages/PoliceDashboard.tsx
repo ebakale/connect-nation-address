@@ -289,19 +289,6 @@ const PoliceDashboard = () => {
         // Supervisors can see incidents assigned to their units
         const userUnitCodes = userUnits.map(u => u.unit_code);
         const hasUserUnit = incident.assigned_units.some((unit: string) => userUnitCodes.includes(unit));
-        
-        // Debug logging
-        if (incident.incident_number === 'INC-2024-000009' || incident.incident_number === 'INC-2025-000024') {
-          console.log('Filtering incident:', incident.incident_number, {
-            assigned_units: incident.assigned_units,
-            hasValidUnit,
-            hasUserUnit,
-            isPoliceSupervisor,
-            userUnitCodes,
-            finalResult: hasValidUnit || (isPoliceSupervisor && hasUserUnit)
-          });
-        }
-        
         return hasValidUnit || (isPoliceSupervisor && hasUserUnit);
       });
 

@@ -11,9 +11,11 @@ export const RoleBasedRedirect = () => {
   useEffect(() => {
     if (!user || loading) return;
 
-    // All authenticated users go to unified dashboard
+    // Redirect based on role
     navigate(isPoliceRole ? '/police' : '/dashboard');
   }, [user, loading, isPoliceRole, navigate]);
 
   return null;
 };
+
+export default RoleBasedRedirect;

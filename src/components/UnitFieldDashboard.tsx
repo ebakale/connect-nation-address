@@ -601,11 +601,8 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
 
   const fetchAssignments = async () => {
     if (!unitInfo) {
-      console.log('UnitFieldDashboard: No unit info available yet, skipping assignment fetch');
       return;
     }
-
-    console.log('UnitFieldDashboard: Fetching assignments for unit:', unitInfo.unit_code);
 
     try {
       const { data, error } = await supabase
@@ -729,8 +726,6 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
           throw new Error('Failed to send backup request');
         }
 
-        console.log('Backup request result:', backupResult);
-        
         toast({
           title: "Backup Requested Successfully",
           description: `Backup request sent to supervisors and dispatchers. ${backupResult?.notifications_sent || 0} notification(s) sent.`
@@ -782,7 +777,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
             lng: position.coords.longitude
           };
         } catch (gpsError) {
-          console.log('GPS not available, using manual location only');
+          // GPS not available, using manual location only
         }
       }
 
