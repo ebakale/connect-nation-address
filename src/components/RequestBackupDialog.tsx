@@ -9,7 +9,7 @@ import { MessageSquare, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
-
+import { useAuth } from "@/hooks/useAuth";
 interface RequestBackupDialogProps {
   children: React.ReactNode;
   incidentId?: string;
@@ -41,7 +41,7 @@ export function RequestBackupDialog({
 
   const { toast } = useToast();
   const { roleMetadata } = useUserRole();
-
+  const { user } = useAuth();
   // Fetch incidents in supervisor's area
   useEffect(() => {
     if (open && roleMetadata?.length > 0) {
@@ -113,7 +113,7 @@ export function RequestBackupDialog({
 
     try {
       const { data, error } = await supabase.functions.invoke('process-backup-request', {
-        body: formData
+        body: { ...formData, requested_by_user_id: user?.id }
       });
 
       if (error) throw error;

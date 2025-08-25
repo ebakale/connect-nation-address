@@ -13,6 +13,7 @@ interface BackupRequestPayload {
   priority_level: number
   location: string
   incident_number: string
+  requested_by_user_id?: string
 }
 
 Deno.serve(async (req) => {
@@ -37,7 +38,11 @@ Deno.serve(async (req) => {
       currentUserId = user?.id
     }
 
-    const { incident_id, requesting_unit_code, requesting_unit_name, reason, priority_level, location, incident_number } = await req.json() as BackupRequestPayload
+    const { incident_id, requesting_unit_code, requesting_unit_name, reason, priority_level, location, incident_number, requested_by_user_id } = await req.json() as BackupRequestPayload
+
+    if (!currentUserId && requested_by_user_id) {
+      currentUserId = requested_by_user_id
+    }
 
     console.log('Processing backup request:', { incident_id, requesting_unit_code, incident_number, user_id: currentUserId })
 
