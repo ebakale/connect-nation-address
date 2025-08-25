@@ -24,12 +24,13 @@ interface OfficerProfile {
     role: string;
     is_lead: boolean;
     joined_at: string;
-    emergency_units: {
-      unit_code: string;
-      unit_name: string;
-      unit_type: string;
-      status: string;
-    };
+      emergency_units: {
+        unit_code: string;
+        unit_name: string;
+        unit_type: string;
+        status: string;
+        coverage_city?: string;
+      };
   }>;
 }
 
@@ -68,6 +69,8 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
 
       const userRole = currentUserRole?.[0]?.role;
       const userScope = currentUserRole?.[0]?.user_role_metadata;
+      const userCityMeta = currentUserRole?.flatMap((r: any) => r.user_role_metadata || []).find((m: any) => m.scope_type === 'city');
+      const userCity = userCityMeta?.scope_value;
 
       // Get all profiles with police roles
       const { data: profilesData, error: profilesError } = await supabase
@@ -139,7 +142,8 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
             unit_code,
             unit_name,
             unit_type,
-            status
+            status,
+            coverage_city
           )
         `);
 
@@ -161,10 +165,20 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
         };
       }) || [];
 
-      setOfficers(officersWithRoles);
+      // Filter by city for supervisors: only operators assigned to units in their city
+      let finalOfficers = officersWithRoles;
+      if (userRole === 'police_supervisor' && userCity) {
+        finalOfficers = officersWithRoles.filter(officer => {
+          const isOperator = officer.user_roles.some(r => r.role === 'police_operator');
+          if (!isOperator) return true; // keep supervisors/dispatchers in view
+          return officer.emergency_unit_members?.some(m => m.emergency_units?.coverage_city === userCity);
+        });
+      }
+
+      setOfficers(finalOfficers);
       
       // Fetch stats for each officer
-      for (const officer of officersWithRoles) {
+      for (const officer of finalOfficers) {
         await fetchOfficerStats(officer.user_id);
       }
     } catch (error) {
