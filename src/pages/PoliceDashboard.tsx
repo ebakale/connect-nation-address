@@ -279,7 +279,7 @@ const PoliceDashboard = () => {
       const validIncidents = enrichedIncidents.filter(incident => {
         // Show unassigned incidents only to dispatchers/supervisors
         if (!incident.assigned_units || incident.assigned_units.length === 0) {
-          return isPoliceDispatcher || isDispatchSupervisor;
+          return isPoliceDispatcher || isPoliceSupervisor || isAdmin;
         }
         
         // For assigned incidents, show based on role and unit membership
@@ -289,7 +289,15 @@ const PoliceDashboard = () => {
         // Supervisors can see incidents assigned to their units
         const userUnitCodes = userUnits.map(u => u.unit_code);
         const hasUserUnit = incident.assigned_units.some((unit: string) => userUnitCodes.includes(unit));
-        return hasValidUnit || (isPoliceSupervisor && hasUserUnit);
+        
+        // Show to all roles who have management access, or to operators if it's assigned to their unit
+        if (isPoliceSupervisor || isPoliceDispatcher || isAdmin) {
+          return hasValidUnit || hasUserUnit;
+        } else if (isPoliceOperator) {
+          return hasUserUnit; // Operators only see incidents assigned to their units
+        }
+        
+        return false;
       });
 
       setIncidents(validIncidents);
@@ -333,12 +341,22 @@ const PoliceDashboard = () => {
       const validAreaIncidents = enrichedIncidents.filter(incident => {
         // Show unassigned incidents only to dispatchers/supervisors
         if (!incident.assigned_units || incident.assigned_units.length === 0) {
-          return isPoliceDispatcher || isDispatchSupervisor;
+          return isPoliceDispatcher || isPoliceSupervisor || isAdmin;
         }
         
         // For assigned incidents in the area, show based on valid unit assignments
         const validUnits = ['UNIT-001', 'UNIT-002', 'UNIT-003', 'UNIT-004', 'UNIT-005', 'UNIT-006', 'UNIT-007', 'UNIT-008'];
-        return incident.assigned_units.some((unit: string) => validUnits.includes(unit));
+        const hasValidUnit = incident.assigned_units.some((unit: string) => validUnits.includes(unit));
+        
+        // Show to management roles or operators if they have assigned units in this area
+        if (isPoliceSupervisor || isPoliceDispatcher || isAdmin) {
+          return hasValidUnit;
+        } else if (isPoliceOperator) {
+          const userUnitCodes = userUnits.map(u => u.unit_code);
+          return incident.assigned_units.some((unit: string) => userUnitCodes.includes(unit));
+        }
+        
+        return false;
       });
 
       setAreaIncidents(validAreaIncidents);
