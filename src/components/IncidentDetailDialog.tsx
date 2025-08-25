@@ -997,5 +997,6 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
         )}
     </div>
   );
+};
 
 export default IncidentDetailDialog;
