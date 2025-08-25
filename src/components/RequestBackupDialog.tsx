@@ -56,7 +56,7 @@ export function RequestBackupDialog({
     try {
       const { data, error } = await supabase
         .from('emergency_incidents')
-        .select('id, incident_number, location_address, assigned_units, status, priority_level')
+        .select('id, incident_number, incident_uac, location_address, assigned_units, status, priority_level')
         .eq('city', roleMetadata[0].scope_value)
         .in('status', ['reported', 'dispatched', 'responding', 'on_scene'])
         .order('priority_level', { ascending: false })
@@ -85,7 +85,7 @@ export function RequestBackupDialog({
         incident_number: selectedIncident.incident_number,
         requesting_unit_code: selectedIncident.assigned_units?.[0] || '',
         requesting_unit_name: selectedIncident.assigned_units?.[0] || '',
-        location: selectedIncident.location_address || ''
+        location: selectedIncident.incident_uac || selectedIncident.location_address || ''
       }));
     }
   };
@@ -156,16 +156,20 @@ export function RequestBackupDialog({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="incident_select">Select Incident *</Label>
-            <Select onValueChange={handleIncidentSelect} disabled={loadingIncidents}>
+            <Select value={formData.incident_id || undefined} onValueChange={handleIncidentSelect} disabled={loadingIncidents}>
               <SelectTrigger>
                 <SelectValue placeholder={loadingIncidents ? "Loading incidents..." : "Select an incident"} />
               </SelectTrigger>
-              <SelectContent>
-                {incidents.map((incident) => (
-                  <SelectItem key={incident.id} value={incident.id}>
-                    {incident.incident_number} - {incident.status} (Priority {incident.priority_level})
-                  </SelectItem>
-                ))}
+              <SelectContent className="z-50 bg-popover">
+                {incidents.length === 0 ? (
+                  <div className="px-3 py-2 text-sm text-muted-foreground">No incidents found</div>
+                ) : (
+                  incidents.map((incident) => (
+                    <SelectItem key={incident.id} value={incident.id}>
+                      {incident.incident_number} · UAC {incident.incident_uac} · {incident.status} (P{incident.priority_level})
+                    </SelectItem>
+                  ))
+                )}
               </SelectContent>
             </Select>
           </div>
@@ -215,7 +219,7 @@ export function RequestBackupDialog({
           </div>
 
           <div>
-            <Label htmlFor="location">Incident Location</Label>
+            <Label htmlFor="location">Incident UAC</Label>
             <Input
               id="location"
               value={formData.location}
