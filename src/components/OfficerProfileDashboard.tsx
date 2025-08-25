@@ -108,7 +108,10 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
         const { data: cityUnitsMembers, error: cityUnitsError } = await unitsQuery;
         if (cityUnitsError) throw cityUnitsError;
 
-        const operatorIds: string[] = Array.from(new Set((cityUnitsMembers || []).map((m: any) => m.officer_id)));
+        // Filter out any assignments with null emergency_units
+        const validCityUnitsMembers = (cityUnitsMembers || []).filter((m: any) => m.emergency_units !== null);
+
+        const operatorIds: string[] = Array.from(new Set(validCityUnitsMembers.map((m: any) => m.officer_id)));
         const allowedUserIds = new Set<string>([...operatorIds, user?.id as string].filter(Boolean) as string[]);
 
         const officersWithRoles = (profilesData || [])
@@ -121,7 +124,7 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
               ...(isSupervisorSelf ? [{ role: 'police_supervisor' }] : []),
             ];
             const emergency_unit_members = isOperator
-              ? (cityUnitsMembers || []).filter((m: any) => m.officer_id === profile.user_id)
+              ? validCityUnitsMembers.filter((m: any) => m.officer_id === profile.user_id)
               : [];
             return { ...profile, user_roles, emergency_unit_members };
           });
