@@ -58,7 +58,18 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
 
   const fetchOfficers = async () => {
     try {
-      // First get all profiles with police roles
+      // First check the current user's role and scope
+      const { data: currentUserRole, error: currentRoleError } = await supabase
+        .from('user_roles')
+        .select('role, user_role_metadata(scope_type, scope_value)')
+        .eq('user_id', user?.id);
+
+      if (currentRoleError) throw currentRoleError;
+
+      const userRole = currentUserRole?.[0]?.role;
+      const userScope = currentUserRole?.[0]?.user_role_metadata;
+
+      // Get all profiles with police roles
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select(`
@@ -72,13 +83,49 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
 
       if (profilesError) throw profilesError;
 
-      // Get user roles separately
-      const { data: rolesData, error: rolesError } = await supabase
+      // Get user roles - filter based on supervisor scope if applicable
+      let rolesQuery = supabase
         .from('user_roles')
-        .select('user_id, role')
+        .select('user_id, role, user_role_metadata(scope_type, scope_value)')
         .in('role', ['police_operator', 'police_dispatcher', 'police_supervisor']);
 
+      const { data: rolesData, error: rolesError } = await rolesQuery;
+
       if (rolesError) throw rolesError;
+
+      // Filter officers based on supervisor's scope
+      let filteredRoles = rolesData || [];
+      
+      if (userRole === 'police_supervisor') {
+        // If supervisor has scope, only show officers in the same scope
+        if (userScope && userScope.length > 0) {
+          const supervisorScope = userScope[0];
+          filteredRoles = rolesData?.filter(roleData => {
+            // Include the supervisor themselves
+            if (roleData.user_id === user?.id) return true;
+            
+            // For operators, check if they're in the same scope (city/region)
+            if (roleData.role === 'police_operator') {
+              const officerScope = roleData.user_role_metadata?.[0];
+              return officerScope && 
+                     officerScope.scope_type === supervisorScope.scope_type &&
+                     officerScope.scope_value === supervisorScope.scope_value;
+            }
+            
+            // Include dispatchers (they work with all units)
+            return roleData.role === 'police_dispatcher';
+          }) || [];
+        } else {
+          // If no scope defined, show all officers (fallback behavior)
+          filteredRoles = rolesData || [];
+        }
+      } else if (userRole === 'police_admin') {
+        // Police admins see everyone
+        filteredRoles = rolesData || [];
+      } else {
+        // Regular operators/dispatchers see everyone (for transparency)
+        filteredRoles = rolesData || [];
+      }
 
       // Get unit assignments (only for operators)
       const { data: unitsData, error: unitsError } = await supabase
@@ -100,9 +147,9 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
 
       // Combine the data, showing unit assignments only for operators
       const officersWithRoles = profilesData?.filter(profile => 
-        rolesData?.some(role => role.user_id === profile.user_id)
+        filteredRoles?.some(role => role.user_id === profile.user_id)
       ).map(profile => {
-        const userRoles = rolesData?.filter(role => role.user_id === profile.user_id) || [];
+        const userRoles = filteredRoles?.filter(role => role.user_id === profile.user_id) || [];
         const isOperator = userRoles.some(role => role.role === 'police_operator');
         
         return {
