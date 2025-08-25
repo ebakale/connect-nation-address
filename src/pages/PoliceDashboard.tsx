@@ -85,12 +85,12 @@ const PoliceDashboard = () => {
   // Set default tab based on user role
   useEffect(() => {
     if (!activeTab && role) {
-      if (isPoliceOperator && !hasPoliceAdminAccess) {
-        setActiveTab('field'); // Field officers see their assignments first
+      if (isPoliceOperator && !hasPoliceAdminAccess && !isPoliceSupervisor) {
+        setActiveTab('field'); // Only field officers see their unit assignments
       } else if (isPoliceDispatcher) {
         setActiveTab('dispatch'); // Dispatchers see command center first
       } else if (isPoliceSupervisor && !hasPoliceAdminAccess) {
-        setActiveTab('coordination'); // Supervisors see coordination first
+        setActiveTab('coordination'); // Supervisors see coordination first (no unit assignment)
       } else if (hasPoliceAdminAccess) {
         setActiveTab('admin'); // Police admins see admin first
       } else if (isAdmin) {
@@ -588,8 +588,8 @@ const PoliceDashboard = () => {
             </TabsList>
           ) : (
             <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
-              {/* Only show MY UNIT tab for non-admin police roles */}
-              {!hasPoliceAdminAccess && (
+              {/* Only show MY UNIT tab for field operators, not supervisors or admins */}
+              {!hasPoliceAdminAccess && !isPoliceSupervisor && isPoliceOperator && (
                 <TabsTrigger value="field" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
                   <Radio className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="truncate">{t('myUnit')}</span>
