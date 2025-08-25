@@ -433,7 +433,11 @@ const UnitManagement: React.FC = () => {
                     <SelectItem value="Nsork">Nsork</SelectItem>
                     <SelectItem value="Kogo">Kogo</SelectItem>
                     <SelectItem value="Mbini">Mbini</SelectItem>
-                    <SelectItem value="Acalayong">Acalayong</SelectItem>
+                    <SelectItem value="Acurenam">Acurenam</SelectItem>
+                    <SelectItem value="Riaba">Riaba</SelectItem>
+                    <SelectItem value="Baney">Baney</SelectItem>
+                    <SelectItem value="Rebola">Rebola</SelectItem>
+                    <SelectItem value="Nsonk Nsomo">Nsonk Nsomo</SelectItem>
                     <SelectItem value="San Antonio de Palé">San Antonio de Palé</SelectItem>
                     <SelectItem value="Ciudad de la Paz">Ciudad de la Paz</SelectItem>
                   </SelectContent>
@@ -648,7 +652,11 @@ const UnitManagement: React.FC = () => {
                   <SelectItem value="Nsork">Nsork</SelectItem>
                   <SelectItem value="Kogo">Kogo</SelectItem>
                   <SelectItem value="Mbini">Mbini</SelectItem>
-                  <SelectItem value="Acalayong">Acalayong</SelectItem>
+                  <SelectItem value="Acurenam">Acurenam</SelectItem>
+                  <SelectItem value="Riaba">Riaba</SelectItem>
+                  <SelectItem value="Baney">Baney</SelectItem>
+                  <SelectItem value="Rebola">Rebola</SelectItem>
+                  <SelectItem value="Nsonk Nsomo">Nsonk Nsomo</SelectItem>
                   <SelectItem value="San Antonio de Palé">San Antonio de Palé</SelectItem>
                   <SelectItem value="Ciudad de la Paz">Ciudad de la Paz</SelectItem>
                 </SelectContent>
