@@ -76,10 +76,9 @@ interface DecryptedIncident {
 interface IncidentDetailDialogProps {
   incident: EmergencyIncident;
   onUpdate?: () => void;
-  trigger?: React.ReactNode;
 }
 
-const IncidentDetailDialog = ({ incident, onUpdate, trigger }: IncidentDetailDialogProps) => {
+const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps) => {
   const { user } = useAuth();
   const { isPoliceSupervisor, isPoliceDispatcher, isPoliceOperator } = useUserRole();
   
@@ -530,493 +529,473 @@ const IncidentDetailDialog = ({ incident, onUpdate, trigger }: IncidentDetailDia
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        {trigger || (
-          <Button size="sm" variant="outline">
-            <Eye className="h-4 w-4 mr-1" />
-            Details
-          </Button>
-        )}
-      </DialogTrigger>
-      
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5 text-blue-600" />
-            Incident Details: {incident.incident_number}
-            {!isEditing && canEdit && (
-              <Button onClick={handleEdit} size="sm" variant="outline">
-                <Edit className="h-4 w-4 mr-2" />
-                Edit
-              </Button>
-            )}
-            {isEditing && (
-              <div className="flex gap-2">
-                <Button onClick={handleSave} size="sm">
-                  <Save className="h-4 w-4 mr-2" />
-                  Save
-                </Button>
-                <Button onClick={() => setIsEditing(false)} size="sm" variant="outline">
-                  <X className="h-4 w-4 mr-2" />
-                  Cancel
-                </Button>
+    <div className="space-y-6">
+        {/* Basic Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Basic Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+             <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Incident Number</label>
+                <p className="font-mono text-lg">{incident.incident_number}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Emergency Type</label>
+                <p className="text-lg capitalize">{incident.emergency_type}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Priority Level</label>
+                {isEditing ? (
+                  <Select 
+                    value={editData.priority_level.toString()} 
+                    onValueChange={(value) => setEditData({...editData, priority_level: parseInt(value)})}
+                  >
+                    <SelectTrigger className="w-40">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">1 - Critical</SelectItem>
+                      <SelectItem value="2">2 - High</SelectItem>
+                      <SelectItem value="3">3 - Medium</SelectItem>
+                      <SelectItem value="4">4 - Low</SelectItem>
+                      <SelectItem value="5">5 - Info</SelectItem>
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <Badge className={getPriorityColor(incident.priority_level)}>
+                    Priority {incident.priority_level}
+                  </Badge>
+                )}
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Current Status</label>
+                {isEditing ? (
+                  <Select 
+                    value={editData.status} 
+                    onValueChange={(value) => setEditData({...editData, status: value})}
+                  >
+                    <SelectTrigger className="w-40">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="reported">Reported</SelectItem>
+                      <SelectItem value="dispatched">Dispatched</SelectItem>
+                      <SelectItem value="responding">Responding</SelectItem>
+                      <SelectItem value="on_scene">On Scene</SelectItem>
+                      <SelectItem value="resolved">Resolved</SelectItem>
+                      <SelectItem value="closed">Closed</SelectItem>
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <Badge className={getStatusColor(incident.status)}>
+                    {incident.status.replace('_', ' ').toUpperCase()}
+                  </Badge>
+                )}
+              </div>
+            </div>
+            
+            <Separator />
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Reported At</label>
+                <p className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  {new Date(incident.reported_at).toLocaleString()}
+                </p>
+              </div>
+              {incident.dispatched_at && (
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Dispatched At</label>
+                  <p className="flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    {new Date(incident.dispatched_at).toLocaleString()}
+                  </p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Emergency Information - Now Immediately Accessible */}
+        <Card className="border-blue-200 bg-blue-50">
+          <CardHeader>
+            <CardTitle className="text-lg text-blue-800">
+              Emergency Information
+            </CardTitle>
+            <CardDescription className="text-blue-600">
+              Incident details for immediate police response
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {incident.incident_message && (
+              <div>
+                <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <MessageSquare className="h-4 w-4" />
+                  Emergency Message
+                </label>
+                <p className="mt-1 p-3 bg-white rounded border">{incident.incident_message}</p>
               </div>
             )}
-          </DialogTitle>
-          <DialogDescription>
-            Confidential emergency incident information
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-6">
-            {/* Basic Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Basic Information</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">Incident Number</label>
-                    <p className="font-mono text-lg">{incident.incident_number}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">Emergency Type</label>
-                    <p className="text-lg capitalize">{incident.emergency_type}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">Priority Level</label>
-                    {isEditing ? (
-                      <Select 
-                        value={editData.priority_level.toString()} 
-                        onValueChange={(value) => setEditData({...editData, priority_level: parseInt(value)})}
-                      >
-                        <SelectTrigger className="w-40">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1">1 - Critical</SelectItem>
-                          <SelectItem value="2">2 - High</SelectItem>
-                          <SelectItem value="3">3 - Medium</SelectItem>
-                          <SelectItem value="4">4 - Low</SelectItem>
-                          <SelectItem value="5">5 - Info</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    ) : (
-                      <Badge className={getPriorityColor(incident.priority_level)}>
-                        Priority {incident.priority_level}
-                      </Badge>
-                    )}
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">Current Status</label>
-                    {isEditing ? (
-                      <Select 
-                        value={editData.status} 
-                        onValueChange={(value) => setEditData({...editData, status: value})}
-                      >
-                        <SelectTrigger className="w-40">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="reported">Reported</SelectItem>
-                          <SelectItem value="dispatched">Dispatched</SelectItem>
-                          <SelectItem value="responding">Responding</SelectItem>
-                          <SelectItem value="on_scene">On Scene</SelectItem>
-                          <SelectItem value="resolved">Resolved</SelectItem>
-                          <SelectItem value="closed">Closed</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    ) : (
-                      <Badge className={getStatusColor(incident.status)}>
-                        {incident.status.replace('_', ' ').toUpperCase()}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-                
-                <Separator />
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">Reported At</label>
+            
+            {/* Reporter Information */}
+            {(incident.reporter_name || incident.reporter_email || incident.reporter_contact_info || reporterInfo.name || reporterInfo.email || reporterInfo.contact) && (
+              <div>
+                <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  Reporter Information
+                </label>
+                <div className="mt-1 space-y-1">
+                  {(incident.reporter_name || reporterInfo.name) && (
                     <p className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      {new Date(incident.reported_at).toLocaleString()}
+                      <span className="text-sm font-medium">Name:</span>
+                      <span>{incident.reporter_name || reporterInfo.name}</span>
                     </p>
-                  </div>
-                  {incident.dispatched_at && (
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">Dispatched At</label>
-                      <p className="flex items-center gap-2">
-                        <Clock className="h-4 w-4" />
-                        {new Date(incident.dispatched_at).toLocaleString()}
-                      </p>
-                    </div>
+                  )}
+                  {(incident.reporter_email || reporterInfo.email) && (
+                    <p className="flex items-center gap-2">
+                      <span className="text-sm font-medium">Email:</span>
+                      <span className="font-mono">{incident.reporter_email || reporterInfo.email}</span>
+                    </p>
+                  )}
+                  {(incident.reporter_contact_info || reporterInfo.contact) && (
+                    <p className="flex items-center gap-2">
+                      <span className="text-sm font-medium">Contact:</span>
+                      <span className="font-mono">{incident.reporter_contact_info || reporterInfo.contact}</span>
+                    </p>
                   )}
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Emergency Information - Now Immediately Accessible */}
-            <Card className="border-blue-200 bg-blue-50">
-              <CardHeader>
-                <CardTitle className="text-lg text-blue-800">
-                  Emergency Information
-                </CardTitle>
-                <CardDescription className="text-blue-600">
-                  Incident details for immediate police response
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {incident.incident_message && (
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                      <MessageSquare className="h-4 w-4" />
-                      Emergency Message
-                    </label>
-                    <p className="mt-1 p-3 bg-white rounded border">{incident.incident_message}</p>
-                  </div>
-                )}
-                
-                {/* Reporter Information */}
-                {(incident.reporter_name || incident.reporter_email || incident.reporter_contact_info || reporterInfo.name || reporterInfo.email || reporterInfo.contact) && (
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      Reporter Information
-                    </label>
-                    <div className="mt-1 space-y-1">
-                      {(incident.reporter_name || reporterInfo.name) && (
-                        <p className="flex items-center gap-2">
-                          <span className="text-sm font-medium">Name:</span>
-                          <span>{incident.reporter_name || reporterInfo.name}</span>
-                        </p>
-                      )}
-                      {(incident.reporter_email || reporterInfo.email) && (
-                        <p className="flex items-center gap-2">
-                          <span className="text-sm font-medium">Email:</span>
-                          <span className="font-mono">{incident.reporter_email || reporterInfo.email}</span>
-                        </p>
-                      )}
-                      {(incident.reporter_contact_info || reporterInfo.contact) && (
-                        <p className="flex items-center gap-2">
-                          <span className="text-sm font-medium">Contact:</span>
-                          <span className="font-mono">{incident.reporter_contact_info || reporterInfo.contact}</span>
-                        </p>
-                      )}
+              </div>
+            )}
+            
+            {incident.location_latitude && incident.location_longitude && (
+              <div>
+                <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  Emergency Location
+                </label>
+                <div className="mt-1 space-y-3">
+                  {/* Primary: UAC */}
+                  {incident.incident_uac && (
+                    <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                      <p className="text-xs font-medium text-blue-600 mb-1">Unified Address Code (UAC)</p>
+                      <p className="font-mono text-lg font-semibold text-blue-800">{incident.incident_uac}</p>
                     </div>
+                  )}
+                  
+                  {/* Secondary: Structured Address (if available) */}
+                  {(incident.street || incident.city || incident.region || incident.country) && (
+                    <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
+                      <p className="text-xs font-medium text-gray-600 mb-2">Address Information</p>
+                      <div className="space-y-1 text-sm">
+                        {incident.building && (
+                          <p><span className="font-medium">Building:</span> {incident.building}</p>
+                        )}
+                        {incident.street && (
+                          <p><span className="font-medium">Street:</span> {incident.street}</p>
+                        )}
+                        {incident.city && (
+                          <p><span className="font-medium">City:</span> {incident.city}</p>
+                        )}
+                        {incident.region && (
+                          <p><span className="font-medium">Region:</span> {incident.region}</p>
+                        )}
+                        {incident.country && (
+                          <p><span className="font-medium">Country:</span> {incident.country}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Coordinates */}
+                  <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
+                    <p className="text-xs font-medium text-gray-600 mb-1">GPS Coordinates</p>
+                    <p className="font-mono text-sm">
+                      {incident.location_latitude.toFixed(6)}, {incident.location_longitude.toFixed(6)}
+                    </p>
                   </div>
+                  
+                  {/* Generated Address (fallback) */}
+                  {incident.location_address && !incident.street && (
+                    <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
+                      <p className="text-xs font-medium text-gray-600 mb-1">Generated Address</p>
+                      <p className="text-sm text-muted-foreground">{incident.location_address}</p>
+                    </div>
+                  )}
+                  
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => {
+                      const url = `https://www.google.com/maps?q=${incident.location_latitude},${incident.location_longitude}`;
+                      window.open(url, '_blank');
+                    }}
+                    className="w-full"
+                  >
+                    <Navigation className="h-4 w-4 mr-2" />
+                    Open in Google Maps
+                  </Button>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Assignment Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center justify-between">
+              Assignment & Notes
+              <div className="flex gap-2">
+                {!isEditing && canEdit && (
+                  <Button onClick={handleEdit} size="sm" variant="outline">
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit
+                  </Button>
                 )}
-                
-                {incident.location_latitude && incident.location_longitude && (
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                      <MapPin className="h-4 w-4" />
-                      Emergency Location
-                    </label>
-                    <div className="mt-1 space-y-3">
-                      {/* Primary: UAC */}
-                      {incident.incident_uac && (
-                        <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg">
-                          <p className="text-xs font-medium text-blue-600 mb-1">Unified Address Code (UAC)</p>
-                          <p className="font-mono text-lg font-semibold text-blue-800">{incident.incident_uac}</p>
-                        </div>
-                      )}
-                      
-                      {/* Secondary: Structured Address (if available) */}
-                      {(incident.street || incident.city || incident.region || incident.country) && (
-                        <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
-                          <p className="text-xs font-medium text-gray-600 mb-2">Address Information</p>
-                          <div className="space-y-1 text-sm">
-                            {incident.building && (
-                              <p><span className="font-medium">Building:</span> {incident.building}</p>
-                            )}
-                            {incident.street && (
-                              <p><span className="font-medium">Street:</span> {incident.street}</p>
-                            )}
-                            {incident.city && (
-                              <p><span className="font-medium">City:</span> {incident.city}</p>
-                            )}
-                            {incident.region && (
-                              <p><span className="font-medium">Region:</span> {incident.region}</p>
-                            )}
-                            {incident.country && (
-                              <p><span className="font-medium">Country:</span> {incident.country}</p>
+                {isEditing && (
+                  <>
+                    <Button onClick={handleSave} size="sm">
+                      <Save className="h-4 w-4 mr-2" />
+                      Save
+                    </Button>
+                    <Button onClick={() => setIsEditing(false)} size="sm" variant="outline">
+                      <X className="h-4 w-4 mr-2" />
+                      Cancel
+                    </Button>
+                  </>
+                )}
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Assigned Units
+              </label>
+               {isEditing && canAssignUnits ? (
+                 <div className="mt-2 space-y-3">
+                   <div className="flex gap-2">
+                     <Select value={newUnit} onValueChange={setNewUnit}>
+                       <SelectTrigger className="flex-1 bg-background border border-input">
+                         <SelectValue placeholder="Select a unit to assign" />
+                       </SelectTrigger>
+                       <SelectContent className="bg-background border border-input z-50">
+                         {availableUnits
+                           .filter(unit => !editData.assigned_units.includes(unit.unit_code))
+                           .map((unit) => (
+                             <SelectItem key={unit.unit_code} value={unit.unit_code}>
+                               <div className="flex items-center gap-2">
+                                 <span className="font-medium">{unit.unit_code}</span>
+                                 <span className="text-muted-foreground">- {unit.unit_name}</span>
+                                 <Badge variant={unit.status === 'available' ? 'default' : 'secondary'} className="text-xs">
+                                   {unit.status}
+                                 </Badge>
+                               </div>
+                             </SelectItem>
+                           ))}
+                       </SelectContent>
+                     </Select>
+                     <Button onClick={addUnit} size="sm" disabled={!newUnit}>Add</Button>
+                   </div>
+                   <div className="flex flex-wrap gap-2">
+                     {editData.assigned_units.map((unit, index) => (
+                       <Badge key={index} variant="outline" className="cursor-pointer"
+                              onClick={() => removeUnit(unit)}>
+                         {unitNames[unit] || unit} ×
+                       </Badge>
+                     ))}
+                   </div>
+                 </div>
+               ) : isEditing && !canAssignUnits ? (
+                 <div className="mt-1 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                   <p className="text-sm text-yellow-800">
+                     Only dispatchers can assign or reassign units to incidents.
+                   </p>
+                 </div>
+              ) : (
+                <div className="mt-1 flex flex-wrap gap-2">
+                  {(incident.assigned_units?.length ? incident.assigned_units : []).map((unit, index) => (
+                    <Badge key={index} variant="secondary">
+                      {unitNames[unit] || unit}
+                    </Badge>
+                  ))}
+                  {(!incident.assigned_units || incident.assigned_units.length === 0) && (
+                    <span className="text-muted-foreground">No units assigned</span>
+                  )}
+                </div>
+              )}
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">Dispatcher Notes</label>
+              {isEditing ? (
+                <Textarea
+                  className="mt-1"
+                  value={editData.dispatcher_notes}
+                  onChange={(e) => setEditData({...editData, dispatcher_notes: e.target.value})}
+                  placeholder="Add notes about this incident..."
+                  rows={4}
+                />
+              ) : (
+                <p className="mt-1 p-3 bg-muted rounded">
+                  {incident.dispatcher_notes || 'No notes available'}
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Activity Log */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Activity Log</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {logs.map((log, index) => (
+                <div key={log.id} className="flex items-start gap-3 p-3 bg-muted rounded">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-medium">{log.action.replace('_', ' ').toUpperCase()}</span>
+                      <span className="text-sm text-muted-foreground">
+                        by {getActorDisplay(log)}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(log.timestamp).toLocaleString()}
+                      </span>
+                    </div>
+                     <div className="text-sm">
+                       {log.action === 'status_updated' && (
+                         <p>Status changed from <strong>{log.details?.old_status}</strong> to <strong>{log.details?.new_status}</strong></p>
+                       )}
+                       {log.action === 'unit_assigned' && (
+                         <p>Unit <strong>{unitNames[log.details?.assigned_unit] || log.details?.unit_name || log.details?.assigned_unit}</strong> assigned to incident</p>
+                       )}
+                       {log.action === 'priority_updated' && (
+                         <p>Priority changed from <strong>{log.details?.old_priority}</strong> to <strong>{log.details?.new_priority}</strong></p>
+                       )}
+                       {log.action === 'notes_added' && (
+                         <p>Notes updated: <em>{log.details?.notes}</em></p>
+                       )}
+                       {log.action === 'incident_completed' && (
+                         <p>Incident marked as complete</p>
+                       )}
+                       {log.action === 'addNote' && (
+                         <p>Notes added: <em>{log.details?.notes}</em></p>
+                       )}
+                       {log.action === 'updateStatus' && (
+                         <p>Status changed from <strong>{log.details?.oldStatus}</strong> to <strong>{log.details?.status}</strong></p>
+                       )}
+                       {log.action === 'updatePriority' && (
+                         <p>Priority changed from <strong>{log.details?.oldPriority}</strong> to <strong>{log.details?.priority}</strong></p>
+                       )}
+                       {log.action === 'assignUnits' && log.details?.units && (
+                         <p>Units assigned: <strong>{Array.isArray(log.details.units) ? log.details.units.join(', ') : log.details.units}</strong></p>
+                       )}
+                       {log.action === 'markComplete' && (
+                         <p>Incident marked as complete - {log.details?.notes || 'No additional notes'}</p>
+                       )}
+                        {!['status_updated', 'unit_assigned', 'priority_updated', 'notes_added', 'incident_completed', 'addNote', 'updateStatus', 'updatePriority', 'assignUnits', 'markComplete'].includes(log.action) && (
+                          <div className="text-muted-foreground">
+                            {log.details && typeof log.details === 'object' ? (
+                              <div className="space-y-1">
+                                 {Object.entries(log.details).filter(([key]) => key !== 'user_id').map(([key, value]) => {
+                                   // Convert database field names to human-readable labels
+                                   const formatFieldName = (fieldName: string): string => {
+                                     const fieldMap: Record<string, string> = {
+                                       'timestamp': 'Time Stamp',
+                                       'incident_id': 'Incident ID',
+                                       'old_status': 'Previous Status',
+                                       'new_status': 'New Status',
+                                       'old_priority': 'Previous Priority',
+                                       'new_priority': 'New Priority',
+                                       'oldStatus': 'Previous Status',
+                                       'oldPriority': 'Previous Priority',
+                                       'assigned_unit': 'Assigned Unit',
+                                       'unit_name': 'Unit Name',
+                                       'created_at': 'Created At',
+                                       'updated_at': 'Updated At',
+                                       'location_latitude': 'Latitude',
+                                       'location_longitude': 'Longitude',
+                                       'reporter_contact_info': 'Reporter Contact',
+                                       'priority_level': 'Priority Level',
+                                       'emergency_type': 'Emergency Type'
+                                     };
+                                     
+                                     return fieldMap[fieldName] || fieldName
+                                       .replace(/_/g, ' ')
+                                       .replace(/\b\w/g, l => l.toUpperCase());
+                                   };
+                                   
+                                   return (
+                                     <div key={key} className="text-xs">
+                                       <strong>{formatFieldName(key)}:</strong> {typeof value === 'string' ? value : JSON.stringify(value)}
+                                     </div>
+                                   );
+                                 })}
+                              </div>
+                            ) : (
+                              <span>{log.details || 'No additional details'}</span>
                             )}
                           </div>
-                        </div>
-                      )}
-                      
-                      {/* Coordinates */}
-                      <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
-                        <p className="text-xs font-medium text-gray-600 mb-1">GPS Coordinates</p>
-                        <p className="font-mono text-sm">
-                          {incident.location_latitude.toFixed(6)}, {incident.location_longitude.toFixed(6)}
-                        </p>
-                      </div>
-                      
-                      {/* Generated Address (fallback) */}
-                      {incident.location_address && !incident.street && (
-                        <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
-                          <p className="text-xs font-medium text-gray-600 mb-1">Generated Address</p>
-                          <p className="text-sm text-muted-foreground">{incident.location_address}</p>
-                        </div>
-                      )}
-                      
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        onClick={() => {
-                          const url = `https://www.google.com/maps?q=${incident.location_latitude},${incident.location_longitude}`;
-                          window.open(url, '_blank');
-                        }}
-                        className="w-full"
-                      >
-                        <Navigation className="h-4 w-4 mr-2" />
-                        Open in Google Maps
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Assignment Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Assignment & Notes</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    Assigned Units
-                  </label>
-                   {isEditing && canAssignUnits ? (
-                     <div className="mt-2 space-y-3">
-                       <div className="flex gap-2">
-                         <Select value={newUnit} onValueChange={setNewUnit}>
-                           <SelectTrigger className="flex-1 bg-background border border-input">
-                             <SelectValue placeholder="Select a unit to assign" />
-                           </SelectTrigger>
-                           <SelectContent className="bg-background border border-input z-50">
-                             {availableUnits
-                               .filter(unit => !editData.assigned_units.includes(unit.unit_code))
-                               .map((unit) => (
-                                 <SelectItem key={unit.unit_code} value={unit.unit_code}>
-                                   <div className="flex items-center gap-2">
-                                     <span className="font-medium">{unit.unit_code}</span>
-                                     <span className="text-muted-foreground">- {unit.unit_name}</span>
-                                     <Badge variant={unit.status === 'available' ? 'default' : 'secondary'} className="text-xs">
-                                       {unit.status}
-                                     </Badge>
-                                   </div>
-                                 </SelectItem>
-                               ))}
-                           </SelectContent>
-                         </Select>
-                         <Button onClick={addUnit} size="sm" disabled={!newUnit}>Add</Button>
-                       </div>
-                       <div className="flex flex-wrap gap-2">
-                         {editData.assigned_units.map((unit, index) => (
-                           <Badge key={index} variant="outline" className="cursor-pointer"
-                                  onClick={() => removeUnit(unit)}>
-                             {unitNames[unit] || unit} ×
-                           </Badge>
-                         ))}
-                       </div>
+                        )}
                      </div>
-                   ) : isEditing && !canAssignUnits ? (
-                     <div className="mt-1 p-3 bg-yellow-50 border border-yellow-200 rounded">
-                       <p className="text-sm text-yellow-800">
-                         Only dispatchers can assign or reassign units to incidents.
-                       </p>
-                     </div>
-                  ) : (
-                    <div className="mt-1 flex flex-wrap gap-2">
-                      {(incident.assigned_units?.length ? incident.assigned_units : []).map((unit, index) => (
-                        <Badge key={index} variant="secondary">
-                          {unitNames[unit] || unit}
-                        </Badge>
-                      ))}
-                      {(!incident.assigned_units || incident.assigned_units.length === 0) && (
-                        <span className="text-muted-foreground">No units assigned</span>
-                      )}
-                    </div>
-                  )}
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Dispatcher Notes</label>
-                  {isEditing ? (
-                    <Textarea
-                      className="mt-1"
-                      value={editData.dispatcher_notes}
-                      onChange={(e) => setEditData({...editData, dispatcher_notes: e.target.value})}
-                      placeholder="Add notes about this incident..."
-                      rows={4}
-                    />
-                  ) : (
-                    <p className="mt-1 p-3 bg-muted rounded">
-                      {incident.dispatcher_notes || 'No notes available'}
-                    </p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Activity Log */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Activity Log</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {logs.map((log, index) => (
-                    <div key={log.id} className="flex items-start gap-3 p-3 bg-muted rounded">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-medium">{log.action.replace('_', ' ').toUpperCase()}</span>
-                          <span className="text-sm text-muted-foreground">
-                            by {getActorDisplay(log)}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(log.timestamp).toLocaleString()}
-                          </span>
-                        </div>
-                         <div className="text-sm">
-                           {log.action === 'status_updated' && (
-                             <p>Status changed from <strong>{log.details?.old_status}</strong> to <strong>{log.details?.new_status}</strong></p>
-                           )}
-                           {log.action === 'unit_assigned' && (
-                             <p>Unit <strong>{unitNames[log.details?.assigned_unit] || log.details?.unit_name || log.details?.assigned_unit}</strong> assigned to incident</p>
-                           )}
-                           {log.action === 'priority_updated' && (
-                             <p>Priority changed from <strong>{log.details?.old_priority}</strong> to <strong>{log.details?.new_priority}</strong></p>
-                           )}
-                           {log.action === 'notes_added' && (
-                             <p>Notes updated: <em>{log.details?.notes}</em></p>
-                           )}
-                           {log.action === 'incident_completed' && (
-                             <p>Incident marked as complete</p>
-                           )}
-                           {log.action === 'addNote' && (
-                             <p>Notes added: <em>{log.details?.notes}</em></p>
-                           )}
-                           {log.action === 'updateStatus' && (
-                             <p>Status changed from <strong>{log.details?.oldStatus}</strong> to <strong>{log.details?.status}</strong></p>
-                           )}
-                           {log.action === 'updatePriority' && (
-                             <p>Priority changed from <strong>{log.details?.oldPriority}</strong> to <strong>{log.details?.priority}</strong></p>
-                           )}
-                           {log.action === 'assignUnits' && log.details?.units && (
-                             <p>Units assigned: <strong>{Array.isArray(log.details.units) ? log.details.units.join(', ') : log.details.units}</strong></p>
-                           )}
-                           {log.action === 'markComplete' && (
-                             <p>Incident marked as complete - {log.details?.notes || 'No additional notes'}</p>
-                           )}
-                            {!['status_updated', 'unit_assigned', 'priority_updated', 'notes_added', 'incident_completed', 'addNote', 'updateStatus', 'updatePriority', 'assignUnits', 'markComplete'].includes(log.action) && (
-                              <div className="text-muted-foreground">
-                                {log.details && typeof log.details === 'object' ? (
-                                  <div className="space-y-1">
-                                     {Object.entries(log.details).filter(([key]) => key !== 'user_id').map(([key, value]) => {
-                                       // Convert database field names to human-readable labels
-                                       const formatFieldName = (fieldName: string): string => {
-                                         const fieldMap: Record<string, string> = {
-                                           'timestamp': 'Time Stamp',
-                                           'incident_id': 'Incident ID',
-                                           'old_status': 'Previous Status',
-                                           'new_status': 'New Status',
-                                           'old_priority': 'Previous Priority',
-                                           'new_priority': 'New Priority',
-                                           'oldStatus': 'Previous Status',
-                                           'oldPriority': 'Previous Priority',
-                                           'assigned_unit': 'Assigned Unit',
-                                           'unit_name': 'Unit Name',
-                                           'created_at': 'Created At',
-                                           'updated_at': 'Updated At',
-                                           'location_latitude': 'Latitude',
-                                           'location_longitude': 'Longitude',
-                                           'reporter_contact_info': 'Reporter Contact',
-                                           'priority_level': 'Priority Level',
-                                           'emergency_type': 'Emergency Type'
-                                         };
-                                         
-                                         return fieldMap[fieldName] || fieldName
-                                           .replace(/_/g, ' ')
-                                           .replace(/\b\w/g, l => l.toUpperCase());
-                                       };
-                                       
-                                       return (
-                                         <div key={key} className="text-xs">
-                                           <strong>{formatFieldName(key)}:</strong> {typeof value === 'string' ? value : JSON.stringify(value)}
-                                         </div>
-                                       );
-                                     })}
-                                  </div>
-                                ) : (
-                                  <span>{log.details || 'No additional details'}</span>
-                                )}
-                              </div>
-                            )}
-                         </div>
-                      </div>
-                    </div>
-                  ))}
-                  
-                  {logs.length === 0 && (
-                    <p className="text-center text-muted-foreground py-4">
-                      No activity logs available
-                    </p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Action Buttons */}
-            {!isEditing && (
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-4 border-t">
-                <div className="flex flex-wrap gap-2">
-                  {canComplete && incident.status !== 'resolved' && incident.status !== 'closed' && (
-                    <Button onClick={handleMarkComplete} className="bg-green-600 hover:bg-green-700">
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      Mark Complete
-                    </Button>
-                  )}
-                </div>
-
-                {/* Quick Assignment Section */}
-                {(isPoliceSupervisor || isPoliceDispatcher) && (
-                  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                    <Select onValueChange={setAssigningUnit} value={assigningUnit}>
-                      <SelectTrigger className="w-full sm:w-48">
-                        <SelectValue placeholder="Assign to unit..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {availableOfficers.map((unit) => (
-                          <SelectItem key={unit.id} value={unit.id}>
-                            {unit.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Button 
-                      onClick={handleAssignIncident}
-                      disabled={!assigningUnit}
-                      className="w-full sm:w-auto"
-                    >
-                      Assign Unit
-                    </Button>
                   </div>
-                )}
+                </div>
+              ))}
+              
+              {logs.length === 0 && (
+                <p className="text-center text-muted-foreground py-4">
+                  No activity logs available
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Action Buttons */}
+        {!isEditing && (
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-4 border-t">
+            <div className="flex flex-wrap gap-2">
+              {canComplete && incident.status !== 'resolved' && incident.status !== 'closed' && (
+                <Button onClick={handleMarkComplete} className="bg-green-600 hover:bg-green-700">
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Mark Complete
+                </Button>
+              )}
+            </div>
+
+            {/* Quick Assignment Section */}
+            {(isPoliceSupervisor || isPoliceDispatcher) && (
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                <Select onValueChange={setAssigningUnit} value={assigningUnit}>
+                  <SelectTrigger className="w-full sm:w-48">
+                    <SelectValue placeholder="Assign to unit..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableOfficers.map((unit) => (
+                      <SelectItem key={unit.id} value={unit.id}>
+                        {unit.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button 
+                  onClick={handleAssignIncident}
+                  disabled={!assigningUnit}
+                  className="w-full sm:w-auto"
+                >
+                  Assign Unit
+                </Button>
               </div>
             )}
-        </div>
-      </DialogContent>
-    </Dialog>
+          </div>
+        )}
+    </div>
   );
-};
 
 export default IncidentDetailDialog;

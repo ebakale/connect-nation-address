@@ -99,6 +99,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
   const [availableOfficers, setAvailableOfficers] = useState<{id: string, label: string}[]>([]);
   const [unitNames, setUnitNames] = useState<Record<string, string>>({});
   const [decryptedInfo, setDecryptedInfo] = useState<Record<string, { message: string; address: string; coordinates?: { lat: number; lng: number }; uac?: string }>>({});
+  const [showDetailDialog, setShowDetailDialog] = useState(false);
 
   // Fetch available emergency units for assignment
   const fetchAvailableOfficers = async () => {
@@ -407,9 +408,13 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
         {filteredIncidents.map((incident) => (
           <div 
             key={incident.id}
-            className={`border rounded-lg p-3 hover:bg-muted/50 transition-colors relative ${
+            className={`border rounded-lg p-3 hover:bg-muted/50 cursor-pointer transition-colors ${
               selectedIncident?.id === incident.id ? 'bg-primary/5 border-primary' : ''
             }`}
+            onClick={() => {
+              onSelectIncident(incident);
+              setShowDetailDialog(true);
+            }}
           >
             <div className="flex items-start justify-between gap-3">
               {/* Left side - Main info */}
@@ -459,22 +464,6 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
               </div>
               <span className="text-xs text-primary">Click for details →</span>
             </div>
-
-            {/* Enhanced incident detail dialog */}
-            <IncidentDetailDialog 
-              incident={incident} 
-              onUpdate={onUpdate}
-              trigger={
-                <div 
-                  className="absolute inset-0 cursor-pointer" 
-                  aria-label="View incident details"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onSelectIncident(incident);
-                  }}
-                />
-              }
-            />
           </div>
         ))}
         
@@ -485,6 +474,26 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
           </div>
         )}
       </div>
+
+      {/* Single incident detail dialog */}
+      {selectedIncident && showDetailDialog && (
+        <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Incident Details: {selectedIncident.incident_number}</DialogTitle>
+            </DialogHeader>
+            <div className="mt-4">
+              <IncidentDetailDialog 
+                incident={selectedIncident} 
+                onUpdate={() => {
+                  onUpdate?.();
+                  setShowDetailDialog(false);
+                }}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
