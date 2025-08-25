@@ -86,6 +86,53 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
 
       if (profilesError) throw profilesError;
 
+      // Supervisor with city scope: derive visible officers from unit members in that city
+      if (userRole === 'police_supervisor' && userCity) {
+        const unitsQuery = supabase
+          .from('emergency_unit_members')
+          .select(`
+            officer_id,
+            role,
+            is_lead,
+            joined_at,
+            emergency_units(
+              unit_code,
+              unit_name,
+              unit_type,
+              status,
+              coverage_city
+            )
+          `)
+          .eq('emergency_units.coverage_city', userCity);
+
+        const { data: cityUnitsMembers, error: cityUnitsError } = await unitsQuery;
+        if (cityUnitsError) throw cityUnitsError;
+
+        const operatorIds: string[] = Array.from(new Set((cityUnitsMembers || []).map((m: any) => m.officer_id)));
+        const allowedUserIds = new Set<string>([...operatorIds, user?.id as string].filter(Boolean) as string[]);
+
+        const officersWithRoles = (profilesData || [])
+          .filter((profile: any) => allowedUserIds.has(profile.user_id))
+          .map((profile: any) => {
+            const isSupervisorSelf = profile.user_id === user?.id;
+            const isOperator = operatorIds.includes(profile.user_id);
+            const user_roles = [
+              ...(isOperator ? [{ role: 'police_operator' }] : []),
+              ...(isSupervisorSelf ? [{ role: 'police_supervisor' }] : []),
+            ];
+            const emergency_unit_members = isOperator
+              ? (cityUnitsMembers || []).filter((m: any) => m.officer_id === profile.user_id)
+              : [];
+            return { ...profile, user_roles, emergency_unit_members };
+          });
+
+        setOfficers(officersWithRoles);
+        for (const officer of officersWithRoles) {
+          await fetchOfficerStats(officer.user_id);
+        }
+        return;
+      }
+
       // Get user roles - filter based on supervisor scope if applicable
       let rolesQuery = supabase
         .from('user_roles')
