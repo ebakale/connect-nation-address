@@ -92,7 +92,26 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
 
   const fetchUnits = async () => {
     try {
-      const { data, error } = await supabase
+      // Get current user's city scope
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select(`
+          role,
+          user_role_metadata(scope_type, scope_value)
+        `)
+        .eq('user_id', user?.id);
+
+      if (roleError) throw roleError;
+
+      // Find city assignment for supervisor
+      const cityMetadata = roleData?.find(role => 
+        role.user_role_metadata?.some(meta => meta.scope_type === 'city')
+      );
+      
+      const userCity = cityMetadata?.user_role_metadata?.find(meta => meta.scope_type === 'city')?.scope_value || null;
+
+      // Build query with city filter for supervisors
+      let query = supabase
         .from('emergency_units')
         .select(`
           *,
@@ -110,6 +129,13 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
           )
         `)
         .order('unit_code');
+
+      // Filter by user's assigned city if they have one
+      if (userCity) {
+        query = query.eq('coverage_city', userCity);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       setUnits(data || []);
@@ -145,6 +171,23 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
 
   const createUnit = async () => {
     try {
+      // Get current user's city scope to assign to new unit
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select(`
+          role,
+          user_role_metadata(scope_type, scope_value)
+        `)
+        .eq('user_id', user?.id);
+
+      if (roleError) throw roleError;
+
+      const cityMetadata = roleData?.find(role => 
+        role.user_role_metadata?.some(meta => meta.scope_type === 'city')
+      );
+      
+      const userCity = cityMetadata?.user_role_metadata?.find(meta => meta.scope_type === 'city')?.scope_value || null;
+
       const { data, error } = await supabase
         .from('emergency_units')
         .insert({
@@ -153,6 +196,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
           unit_type: newUnit.unit_type,
           radio_frequency: newUnit.radio_frequency || null,
           vehicle_id: newUnit.vehicle_id || null,
+          coverage_city: userCity, // Set coverage city based on supervisor's scope
           status: 'available'
         })
         .select()
@@ -172,7 +216,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
 
       toast({
         title: "Success",
-        description: `Unit ${newUnit.unit_code} created successfully`
+        description: `Unit ${newUnit.unit_code} created successfully${userCity ? ` for ${userCity}` : ''}`
       });
     } catch (error) {
       console.error('Error creating unit:', error);
