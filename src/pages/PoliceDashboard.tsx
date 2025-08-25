@@ -26,6 +26,7 @@ import { UnitLeadDashboard } from '@/components/UnitLeadDashboard';
 import { UnitLeadActions } from '@/components/UnitLeadActions';
 import { PoliceAdminDashboard } from '@/components/PoliceAdminDashboard';
 import { RequestBackupDialog } from '@/components/RequestBackupDialog';
+import { BackupRequestsPanel } from '@/components/BackupRequestsPanel';
 import { toast } from "sonner";
 
 interface EmergencyIncident {
@@ -935,6 +936,9 @@ const PoliceDashboard = () => {
 
                 {/* Quick Actions for Supervisors */}
                 <div className="space-y-6">
+                  {/* Backup Requests Panel */}
+                  <BackupRequestsPanel />
+                  
                   {(isPoliceSupervisor || isPoliceDispatcher) && (
                     <BackupNotificationManager />
                   )}
