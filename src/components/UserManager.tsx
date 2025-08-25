@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useUserRole } from '@/hooks/useUserRole';
-import { Users, Search, UserCog, MapPin, Edit, Trash2 } from 'lucide-react';
+import { Users, Search, UserCog, MapPin, Edit, Trash2, UserPlus } from 'lucide-react';
 
 interface UserProfile {
   id: string;
@@ -41,6 +41,7 @@ const UserManager: React.FC = () => {
   const [pendingAssignment, setPendingAssignment] = useState<{userId: string, role: string} | null>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [editForm, setEditForm] = useState({
     full_name: '',
@@ -49,13 +50,20 @@ const UserManager: React.FC = () => {
     phone: '',
     password: ''
   });
+  const [createForm, setCreateForm] = useState({
+    full_name: '',
+    email: '',
+    organization: '',
+    phone: '',
+    password: '',
+    role: 'police_operator'
+  });
   const { hasPoliceAdminAccess } = useUserRole();
   const { toast } = useToast();
 
-  const roles = [
-    'admin', 'moderator', 'user', 'citizen', 'property_claimant', 'field_agent', 
-    'verifier', 'registrar', 'ndaa_admin', 'partner', 'auditor', 'data_steward', 
-    'support', 'police_operator', 'police_supervisor', 'police_dispatcher'
+  // Only police-related roles for police system
+  const policeRoles = [
+    'police_operator', 'police_supervisor', 'police_dispatcher', 'admin'
   ] as const;
 
   const geographicScopes = [
@@ -80,7 +88,7 @@ const UserManager: React.FC = () => {
 
       if (profilesError) throw profilesError;
 
-      // Then fetch all user roles with metadata
+      // Then fetch all user roles with metadata - only police-related roles
       const { data: userRoles, error: rolesError } = await supabase
         .from('user_roles')
         .select(`
@@ -90,25 +98,30 @@ const UserManager: React.FC = () => {
             scope_type,
             scope_value
           )
-        `);
+        `)
+        .in('role', ['police_operator', 'police_supervisor', 'police_dispatcher', 'admin']);
 
       if (rolesError) throw rolesError;
 
-      // Transform the data to group roles by user
+      // Transform the data to group roles by user - only users with police roles
       const usersMap = new Map<string, UserProfile>();
       
-      // First, create user entries from profiles
+      // Create user entries from profiles, but only for users with police roles
+      const policeUserIds = new Set(userRoles?.map((ur: any) => ur.user_id) || []);
+      
       profiles?.forEach((profile: any) => {
-        usersMap.set(profile.user_id, {
-          id: profile.id,
-          user_id: profile.user_id,
-          email: profile.email || '',
-          full_name: profile.full_name || '',
-          organization: profile.organization || '',
-          phone: profile.phone || '',
-          created_at: profile.created_at,
-          roles: []
-        });
+        if (policeUserIds.has(profile.user_id)) {
+          usersMap.set(profile.user_id, {
+            id: profile.id,
+            user_id: profile.user_id,
+            email: profile.email || '',
+            full_name: profile.full_name || '',
+            organization: profile.organization || '',
+            phone: profile.phone || '',
+            created_at: profile.created_at,
+            roles: []
+          });
+        }
       });
 
       // Then, add roles to the corresponding users
@@ -307,6 +320,51 @@ const UserManager: React.FC = () => {
     }
   };
 
+  const createUser = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-user-operations', {
+        body: {
+          operation: 'createUser',
+          data: {
+            full_name: createForm.full_name,
+            email: createForm.email,
+            organization: createForm.organization,
+            phone: createForm.phone,
+            password: createForm.password,
+            role: createForm.role
+          }
+        }
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Failed to create user');
+      }
+
+      toast({
+        title: "Success",
+        description: "User created successfully"
+      });
+
+      await fetchUsers();
+      setShowCreateDialog(false);
+      setCreateForm({
+        full_name: '',
+        email: '',
+        organization: '',
+        phone: '',
+        password: '',
+        role: 'police_operator'
+      });
+    } catch (error) {
+      console.error('Error creating user:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to create user",
+        variant: "destructive"
+      });
+    }
+  };
+
   const filteredUsers = users.filter(user => 
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -319,7 +377,7 @@ const UserManager: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            User Management
+            Police User Management
           </CardTitle>
           <CardDescription>
             Access denied. Police admin privileges required.
@@ -335,10 +393,10 @@ const UserManager: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            User Management
+            Police User Management
           </CardTitle>
           <CardDescription>
-            Manage users and their role assignments
+            Manage police system users and their role assignments
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -352,6 +410,14 @@ const UserManager: React.FC = () => {
                 className="pl-10"
               />
             </div>
+            <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+              <DialogTrigger asChild>
+                <Button className="flex items-center gap-2">
+                  <UserPlus className="h-4 w-4" />
+                  Create User
+                </Button>
+              </DialogTrigger>
+            </Dialog>
             <Button onClick={fetchUsers} variant="outline">
               Refresh
             </Button>
@@ -424,12 +490,11 @@ const UserManager: React.FC = () => {
                               <SelectValue placeholder="Assign role" />
                             </SelectTrigger>
                             <SelectContent>
-                              {roles.filter(role => 
+                              {policeRoles.filter(role => 
                                 !user.roles.some(userRole => userRole.role === role)
                               ).map((role) => (
                                 <SelectItem key={role} value={role}>
                                   {role.replace('_', ' ')}
-                                  {role === 'field_agent' && <MapPin className="ml-1 h-3 w-3 inline" />}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -462,7 +527,7 @@ const UserManager: React.FC = () => {
           {filteredUsers.length === 0 && !loading && (
             <div className="text-center py-8">
               <UserCog className="mx-auto h-12 w-12 text-muted-foreground" />
-              <p className="mt-2 text-muted-foreground">No users found</p>
+              <p className="mt-2 text-muted-foreground">No police users found</p>
             </div>
           )}
         </CardContent>
@@ -601,6 +666,115 @@ const UserManager: React.FC = () => {
               </Button>
               <Button onClick={updateUserProfile}>
                 Update User
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Create User Dialog */}
+      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <UserPlus className="h-5 w-5" />
+              Create New Police User
+            </DialogTitle>
+            <DialogDescription>
+              Create a new user account for the police system.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="create-full-name">Full Name</Label>
+              <Input
+                id="create-full-name"
+                value={createForm.full_name}
+                onChange={(e) => setCreateForm({ ...createForm, full_name: e.target.value })}
+                placeholder="Enter full name"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="create-email">Email</Label>
+              <Input
+                id="create-email"
+                type="email"
+                value={createForm.email}
+                onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
+                placeholder="Enter email address"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="create-organization">Organization</Label>
+              <Input
+                id="create-organization"
+                value={createForm.organization}
+                onChange={(e) => setCreateForm({ ...createForm, organization: e.target.value })}
+                placeholder="Enter organization (e.g., Guardia Civil)"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="create-phone">Phone</Label>
+              <Input
+                id="create-phone"
+                value={createForm.phone}
+                onChange={(e) => setCreateForm({ ...createForm, phone: e.target.value })}
+                placeholder="Enter phone number"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="create-password">Password</Label>
+              <Input
+                id="create-password"
+                type="password"
+                value={createForm.password}
+                onChange={(e) => setCreateForm({ ...createForm, password: e.target.value })}
+                placeholder="Enter initial password"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="create-role">Initial Role</Label>
+              <Select
+                value={createForm.role}
+                onValueChange={(role) => setCreateForm({ ...createForm, role })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {policeRoles.map((role) => (
+                    <SelectItem key={role} value={role}>
+                      {role.replace('_', ' ')}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowCreateDialog(false);
+                  setCreateForm({
+                    full_name: '',
+                    email: '',
+                    organization: '',
+                    phone: '',
+                    password: '',
+                    role: 'police_operator'
+                  });
+                }}
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={createUser}
+                disabled={!createForm.full_name || !createForm.email || !createForm.password}
+              >
+                Create User
               </Button>
             </div>
           </div>
