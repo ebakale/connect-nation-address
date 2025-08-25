@@ -118,6 +118,9 @@ export function RequestBackupDialog({
 
       if (error) throw error;
 
+      // Notify local listeners to refresh panels immediately
+      window.dispatchEvent(new CustomEvent('backup-request:sent', { detail: { incident_id: formData.incident_id } }));
+
       toast({
         title: "Backup Request Sent",
         description: `Regional backup has been requested. ${data.notifications_sent} supervisors/dispatchers have been notified.`,

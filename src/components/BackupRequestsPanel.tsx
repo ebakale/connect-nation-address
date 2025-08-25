@@ -81,6 +81,30 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
     };
   }, [user]);
 
+  // Realtime: listen for SENT logs created by this user
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel(`backup-requests-sent-logs-${user.id}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'emergency_incident_logs', filter: `user_id=eq.${user.id}` },
+        () => fetchBackupRequests()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
+  // Local event bus to refresh immediately after sending from the UI
+  useEffect(() => {
+    const onLocalSent = () => fetchBackupRequests();
+    window.addEventListener('backup-request:sent', onLocalSent as EventListener);
+    return () => window.removeEventListener('backup-request:sent', onLocalSent as EventListener);
+  }, []);
+
   const fetchBackupRequests = async () => {
     if (!user) return;
     
