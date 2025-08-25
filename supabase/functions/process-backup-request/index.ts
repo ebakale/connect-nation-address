@@ -27,9 +27,19 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
+    // Get the user ID from the request headers
+    const authHeader = req.headers.get('authorization')
+    const token = authHeader?.replace('Bearer ', '')
+    
+    let currentUserId = null
+    if (token) {
+      const { data: { user } } = await supabaseClient.auth.getUser(token)
+      currentUserId = user?.id
+    }
+
     const { incident_id, requesting_unit_code, requesting_unit_name, reason, priority_level, location, incident_number } = await req.json() as BackupRequestPayload
 
-    console.log('Processing backup request:', { incident_id, requesting_unit_code, incident_number })
+    console.log('Processing backup request:', { incident_id, requesting_unit_code, incident_number, user_id: currentUserId })
 
     // 1. First try to find the unit by unit_code, then by unit_name as fallback
     let requestingUnit = null
@@ -168,26 +178,30 @@ Deno.serve(async (req) => {
       // Don't throw here as notifications were successful
     }
 
-    // 5. Log the backup request
-    const { error: logError } = await supabaseClient
-      .from('emergency_incident_logs')
-      .insert({
-        incident_id: incident_id,
-        user_id: 'system',
-        action: 'backup_requested',
-        details: {
-          requesting_unit: requesting_unit_code,
-          requesting_unit_name: requesting_unit_name,
-          reason: reason,
-          priority_level: priority_level,
-          location: location,
-          notifications_sent: notifications.length,
-          timestamp: new Date().toISOString()
-        }
-      })
+    // 5. Log the backup request - use currentUserId if available, otherwise skip logging
+    if (currentUserId) {
+      const { error: logError } = await supabaseClient
+        .from('emergency_incident_logs')
+        .insert({
+          incident_id: incident_id,
+          user_id: currentUserId,
+          action: 'backup_requested',
+          details: {
+            requesting_unit: requesting_unit_code,
+            requesting_unit_name: requesting_unit_name,
+            reason: reason,
+            priority_level: priority_level,
+            location: location,
+            notifications_sent: notifications.length,
+            timestamp: new Date().toISOString()
+          }
+        })
 
-    if (logError) {
-      console.error('Error logging backup request:', logError)
+      if (logError) {
+        console.error('Error logging backup request:', logError)
+      }
+    } else {
+      console.log('No user ID available for logging backup request')
     }
 
     console.log(`Backup request processed successfully. Sent ${notifications.length} notifications.`)
