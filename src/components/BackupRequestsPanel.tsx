@@ -166,10 +166,12 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
         .order('created_at', { ascending: false });
 
       if (notificationError) throw notificationError;
-      const received = (notifications || []).map(n => ({
-        ...n,
-        metadata: (n as any).metadata as any || {}
-      })) as unknown as BackupRequest[];
+      const received = (notifications || [])
+        .filter((n: any) => (n?.metadata?.requested_by_user_id ?? null) !== user.id)
+        .map(n => ({
+          ...n,
+          metadata: (n as any).metadata as any || {}
+        })) as unknown as BackupRequest[];
 
       // Determine user's city from role metadata for fallback
       const { data: roleData, error: roleErr } = await supabase
@@ -214,10 +216,12 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
         }
       }
 
-      // Merge notifications and fallback incidents (dedupe by incident_id)
+      // Merge notifications and fallback incidents (dedupe by incident_id) and exclude items the user sent (already in SENT)
+      const sentSet = new Set(sentIncidentIds);
       const combinedMap = new Map<string, BackupRequest>();
       [...received, ...cityFallback].forEach(item => {
         const key = item.incident_id;
+        if (sentSet.has(key)) return; // exclude if user is sender
         if (!combinedMap.has(key)) combinedMap.set(key, item);
       });
       setReceivedRequests(Array.from(combinedMap.values()));

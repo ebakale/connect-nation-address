@@ -152,7 +152,8 @@ Deno.serve(async (req) => {
             incident_number: incident_number,
             location: location,
             reason: reason,
-            request_timestamp: new Date().toISOString()
+            request_timestamp: new Date().toISOString(),
+            requested_by_user_id: currentUserId
           }
         })
       }
