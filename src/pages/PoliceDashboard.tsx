@@ -944,14 +944,6 @@ const PoliceDashboard = () => {
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <Button 
-                        onClick={() => setShowUnitsOverview(true)}
-                        variant="outline" 
-                        className="w-full"
-                      >
-                        <Shield className="h-4 w-4 mr-2" />
-                        View All Units
-                      </Button>
-                      <Button 
                         onClick={() => window.location.href = '/units-profiles'}
                         variant="outline" 
                         className="w-full"
