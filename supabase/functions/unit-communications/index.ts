@@ -52,7 +52,7 @@ const handler = async (req: Request): Promise<Response> => {
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
-      .in('role', ['police_operator', 'police_dispatcher', 'police_supervisor', 'admin'])
+      .in('role', ['police_operator', 'police_dispatcher', 'police_supervisor', 'police_admin', 'admin'])
 
     if (roleError || !userRoles || userRoles.length === 0) {
       console.error('Role verification error:', roleError)
@@ -146,7 +146,7 @@ const handler = async (req: Request): Promise<Response> => {
 
         // Check if user can acknowledge (dispatchers/supervisors only)
         const canAcknowledge = userRoles.some(role => 
-          ['police_dispatcher', 'police_supervisor', 'admin'].includes(role.role)
+          ['police_dispatcher', 'police_supervisor', 'police_admin', 'admin'].includes(role.role)
         )
 
         if (!canAcknowledge) {
@@ -188,7 +188,7 @@ const handler = async (req: Request): Promise<Response> => {
       case 'get_messages': {
         // Get recent communications for the user's unit or all if dispatcher
         const isDispatcher = userRoles.some(role => 
-          ['police_dispatcher', 'police_supervisor', 'admin'].includes(role.role)
+          ['police_dispatcher', 'police_supervisor', 'police_admin', 'admin'].includes(role.role)
         )
 
         let query = supabaseClient

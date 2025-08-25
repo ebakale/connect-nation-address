@@ -43,7 +43,7 @@ serve(async (req) => {
       .eq('user_id', user.id);
     
     const hasPoliceRole = userRoles?.some(r => 
-      ['police_operator', 'police_supervisor', 'police_dispatcher', 'admin'].includes(r.role)
+      ['police_operator', 'police_supervisor', 'police_dispatcher', 'police_admin', 'admin'].includes(r.role)
     );
 
     if (!hasPoliceRole) {

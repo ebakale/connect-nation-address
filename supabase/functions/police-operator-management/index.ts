@@ -35,7 +35,7 @@ serve(async (req) => {
       .eq('user_id', user.id);
     
     const hasSupervisorRole = userRoles?.some(r => 
-      ['police_supervisor', 'admin'].includes(r.role)
+      ['police_supervisor', 'police_admin', 'admin'].includes(r.role)
     );
 
     if (!hasSupervisorRole) {
