@@ -76,52 +76,41 @@ Deno.serve(async (req) => {
       }
     }
 
-    // 2. Find all supervisors/dispatchers/admins to notify in the same area
+    // 2. Resolve recipients: supervisors/dispatchers scoped to the same city, plus police_admins
     const recipientsMap = new Map<string, any>()
 
-    // City-scoped supervisors/dispatchers
-    const { data: cityScoped, error: cityErr } = await supabaseClient
+    // Fetch supervisors/dispatchers (all), then filter by city via role metadata
+    const { data: supRoles, error: supErr } = await supabaseClient
       .from('user_roles')
-      .select(`
-        user_id,
-        role,
-        user_role_metadata!inner(scope_type, scope_value),
-        profiles!inner(display_name, email)
-      `)
+      .select('id, user_id, role')
       .in('role', ['police_supervisor', 'police_dispatcher'])
-      .eq('user_role_metadata.scope_type', 'city')
-      .eq('user_role_metadata.scope_value', requestingUnit.coverage_city)
 
-    if (cityErr) console.error('Error fetching city-scoped supervisors:', cityErr)
-
-    cityScoped?.forEach((u: any) => recipientsMap.set(u.user_id, u))
-
-    // Region-scoped supervisors/dispatchers (fallback)
-    if (requestingUnit.coverage_region) {
-      const { data: regionScoped, error: regionErr } = await supabaseClient
-        .from('user_roles')
-        .select(`
-          user_id,
-          role,
-          user_role_metadata!inner(scope_type, scope_value),
-          profiles!inner(display_name, email)
-        `)
-        .in('role', ['police_supervisor', 'police_dispatcher'])
-        .eq('user_role_metadata.scope_type', 'region')
-        .eq('user_role_metadata.scope_value', requestingUnit.coverage_region)
-
-      if (regionErr) console.error('Error fetching region-scoped supervisors:', regionErr)
-      regionScoped?.forEach((u: any) => recipientsMap.set(u.user_id, u))
+    if (supErr) {
+      console.error('Error fetching supervisor roles:', supErr)
     }
+
+    let cityRoleIds: string[] = []
+    if (requestingUnit.coverage_city) {
+      const { data: metaCity, error: metaErr } = await supabaseClient
+        .from('user_role_metadata')
+        .select('user_role_id')
+        .eq('scope_type', 'city')
+        .eq('scope_value', requestingUnit.coverage_city)
+
+      if (metaErr) {
+        console.error('Error fetching role metadata (city):', metaErr)
+      } else {
+        cityRoleIds = (metaCity || []).map((m: any) => m.user_role_id)
+      }
+    }
+
+    const cityScopedUsers = (supRoles || []).filter((r: any) => cityRoleIds.includes(r.id))
+    cityScopedUsers.forEach((u: any) => recipientsMap.set(u.user_id, u))
 
     // Include police_admins regardless of scope metadata
     const { data: admins, error: adminErr } = await supabaseClient
       .from('user_roles')
-      .select(`
-        user_id,
-        role,
-        profiles!inner(display_name, email)
-      `)
+      .select('user_id, role')
       .eq('role', 'police_admin')
 
     if (adminErr) console.error('Error fetching police admins:', adminErr)
@@ -129,7 +118,7 @@ Deno.serve(async (req) => {
 
     const supervisors = Array.from(recipientsMap.values())
 
-    console.log('Found supervisors/dispatchers/admins to notify:', supervisors.length)
+    console.log('Found recipients (supervisors/dispatchers/admins):', supervisors.length)
 
     // 3. Create notifications for each supervisor/dispatcher
     const notifications = []
