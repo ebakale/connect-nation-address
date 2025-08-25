@@ -136,10 +136,10 @@ export const useUserRole = () => {
   const hasModerationAccess = hasAdminAccess || role === 'moderator';
   const hasBasicUserAccess = role === 'user' || role === 'citizen' || hasFieldAccess;
   
-  // Police access checks
-  const hasPoliceAccess = isPoliceOperator || isPoliceSupervisor || isPoliceDispatcher || isPoliceAdmin || hasAdminAccess;
-  const hasPoliceManagementAccess = isPoliceSupervisor || isPoliceAdmin || hasAdminAccess;
-  const hasPoliceAdminAccess = isPoliceAdmin || hasAdminAccess;
+  // Police access checks - separated from general admin
+  const hasPoliceAccess = isPoliceOperator || isPoliceSupervisor || isPoliceDispatcher || isPoliceAdmin;
+  const hasPoliceManagementAccess = isPoliceSupervisor || isPoliceAdmin;
+  const hasPoliceAdminAccess = isPoliceAdmin;
   
   // Unit lead detection - check if user is a unit lead
   const [isUnitLead, setIsUnitLead] = useState(false);
