@@ -3,11 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
-import { AlertTriangle, Clock, MapPin, CheckCircle, User, Calendar } from "lucide-react";
+import { AlertTriangle, Clock, MapPin, CheckCircle, User, Calendar, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 
 interface BackupRequest {
@@ -36,6 +37,7 @@ interface BackupRequestsPanelProps {
 export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
   const [sentRequests, setSentRequests] = useState<BackupRequest[]>([]);
   const [receivedRequests, setReceivedRequests] = useState<BackupRequest[]>([]);
+  const [selectedRequest, setSelectedRequest] = useState<BackupRequest | null>(null);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { isPoliceSupervisor, isPoliceDispatcher, isAdmin } = useUserRole();
@@ -62,6 +64,16 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
           }
         }
       )
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'emergency_incidents' },
+        (payload) => {
+          const updatedRow: any = payload.new;
+          if (updatedRow?.backup_requested) {
+            fetchBackupRequests();
+          }
+        }
+      )
       .subscribe();
 
     return () => {
@@ -74,7 +86,54 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
     
     setLoading(true);
     try {
-      // Fetch received backup request notifications
+      // For SENT requests: Find incident logs where this user sent backup requests
+      const { data: incidentLogs, error: logsError } = await supabase
+        .from('emergency_incident_logs')
+        .select('incident_id, details, timestamp')
+        .eq('user_id', user.id)
+        .eq('action', 'backup_requested')
+        .order('timestamp', { ascending: false });
+
+      if (logsError) throw logsError;
+
+      // Get incident details for sent requests
+      const sentIncidentIds = (incidentLogs || []).map((log: any) => log.incident_id);
+      let sentRequestsData: BackupRequest[] = [];
+      
+      if (sentIncidentIds.length > 0) {
+        const { data: sentIncidents, error: sentError } = await supabase
+          .from('emergency_incidents')
+          .select('id, incident_number, incident_uac, backup_requested_at, backup_requesting_unit')
+          .in('id', sentIncidentIds);
+
+        if (sentError) throw sentError;
+
+        sentRequestsData = (sentIncidents || []).map((incident: any) => {
+          const logEntry = incidentLogs?.find((log: any) => log.incident_id === incident.id);
+          return {
+            id: `sent-${incident.id}`,
+            incident_id: incident.id,
+            title: `🚨 BACKUP REQUESTED - ${incident.incident_number}`,
+            message: `You requested backup for incident ${incident.incident_number}`,
+            type: 'backup_request',
+            priority_level: (logEntry?.details as any)?.priority_level || 2,
+            created_at: incident.backup_requested_at || logEntry?.timestamp,
+            read: true,
+            metadata: {
+              requesting_unit: incident.backup_requesting_unit,
+              requesting_unit_name: incident.backup_requesting_unit,
+              incident_number: incident.incident_number,
+              location: incident.incident_uac,
+              reason: (logEntry?.details as any)?.reason || 'Backup request sent',
+              request_timestamp: incident.backup_requested_at || logEntry?.timestamp
+            }
+          };
+        });
+      }
+
+      setSentRequests(sentRequestsData);
+
+      // For RECEIVED requests: Get notifications sent to this user
       const { data: notifications, error: notificationError } = await supabase
         .from('emergency_notifications')
         .select('*')
@@ -88,7 +147,7 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
         metadata: (n as any).metadata as any || {}
       })) as unknown as BackupRequest[];
 
-      // Determine user's city from role metadata
+      // Determine user's city from role metadata for fallback
       const { data: roleData, error: roleErr } = await supabase
         .from('user_roles')
         .select(`
@@ -139,54 +198,6 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
       });
       setReceivedRequests(Array.from(combinedMap.values()));
 
-      // For sent requests, we need to find incidents where backup was requested
-      // and check if the user's unit was the requesting unit
-      const { data: incidents, error: incidentError } = await supabase
-        .from('emergency_incidents')
-        .select('id, incident_number, backup_requested, backup_requested_at, backup_requesting_unit, incident_uac, status')
-        .eq('backup_requested', true)
-        .not('backup_requested_at', 'is', null)
-        .order('backup_requested_at', { ascending: false });
-
-      if (incidentError) throw incidentError;
-
-      // Get user's units to match with requesting units
-      const { data: userUnits, error: unitsError } = await supabase
-        .from('emergency_unit_members')
-        .select(`
-          emergency_units (unit_code, unit_name)
-        `)
-        .eq('officer_id', user.id);
-
-      if (unitsError) throw unitsError;
-
-      const userUnitCodes = (userUnits || [])
-        .map((m: any) => m.emergency_units?.unit_code)
-        .filter(Boolean);
-
-      // Filter incidents where user's unit requested backup
-      const sentBackupRequests = (incidents || [])
-        .filter(incident => userUnitCodes.includes(incident.backup_requesting_unit))
-        .map(incident => ({
-          id: incident.id,
-          incident_id: incident.id,
-          title: `🚨 BACKUP REQUESTED - ${incident.incident_number}`,
-          message: `Your unit requested backup for incident ${incident.incident_number}`,
-          type: 'backup_request',
-          priority_level: 2,
-          created_at: incident.backup_requested_at,
-          read: true,
-          metadata: {
-            requesting_unit: incident.backup_requesting_unit,
-            requesting_unit_name: incident.backup_requesting_unit,
-            incident_number: incident.incident_number,
-            location: incident.incident_uac || 'Location not specified',
-            reason: 'Backup request sent',
-            request_timestamp: incident.backup_requested_at
-          }
-        }));
-
-      setSentRequests(sentBackupRequests);
     } catch (error) {
       console.error('Error fetching backup requests:', error);
       toast({
@@ -238,6 +249,46 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
     }
   };
 
+  const RequestListItem = ({ request, onClick }: { request: BackupRequest; onClick: () => void }) => (
+    <div
+      className={`p-4 border rounded-lg cursor-pointer transition-all hover:bg-muted/50 ${
+        !request.read ? 'bg-muted/50 border-primary' : 'bg-background'
+      }`}
+      onClick={onClick}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3 flex-1">
+          <Badge variant={getPriorityColor(request.priority_level)} className="shrink-0">
+            {getPriorityIcon(request.priority_level)} P{request.priority_level}
+          </Badge>
+          
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="font-medium text-sm truncate">
+                {request.metadata?.incident_number || 'Unknown Incident'}
+              </span>
+              {!request.read && (
+                <Badge variant="destructive" className="text-xs shrink-0">
+                  NEW
+                </Badge>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground truncate">
+              {request.metadata?.location || 'Location unavailable'}
+            </p>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="text-xs text-muted-foreground">
+            {format(new Date(request.created_at), 'HH:mm')}
+          </span>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </div>
+      </div>
+    </div>
+  );
+
   if (loading) {
     return (
       <Card className={className}>
@@ -258,139 +309,139 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
   }
 
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <AlertTriangle className="h-5 w-5" />
-          Backup Requests
-        </CardTitle>
-        <CardDescription>
-          Monitor sent and received backup requests
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="received">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="received">
-              Received ({receivedRequests.length})
-            </TabsTrigger>
-            <TabsTrigger value="sent">
-              Sent ({sentRequests.length})
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="received" className="space-y-4">
-            {receivedRequests.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <AlertTriangle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No backup requests received</p>
-              </div>
-            ) : (
-              receivedRequests.map((request) => (
-                <div
-                  key={request.id}
-                  className={`p-4 border rounded-lg ${!request.read ? 'bg-muted/50 border-primary' : 'bg-background'}`}
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <Badge variant={getPriorityColor(request.priority_level)}>
-                        {getPriorityIcon(request.priority_level)} P{request.priority_level}
-                      </Badge>
-                      {!request.read && (
-                        <Badge variant="destructive" className="text-xs">
-                          NEW
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Calendar className="h-3 w-3" />
-                      {format(new Date(request.created_at), 'MMM dd, HH:mm')}
-                    </div>
-                  </div>
-                  
-                  <h4 className="font-semibold mb-2">{request.title}</h4>
-                  
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4 text-muted-foreground" />
-                      <span>Unit: {request.metadata?.requesting_unit} ({request.metadata?.requesting_unit_name})</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span>Location: {request.metadata?.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-                      <span>Reason: {request.metadata?.reason}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-3 pt-3 border-t">
-                    <p className="text-sm text-muted-foreground mb-2">{request.message}</p>
-                    {!request.read && (
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        onClick={() => markAsRead(request.id)}
-                      >
-                        <CheckCircle className="h-4 w-4 mr-2" />
-                        Mark as Read
-                      </Button>
-                    )}
-                  </div>
+    <>
+      <Card className={className}>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5" />
+            Backup Requests
+          </CardTitle>
+          <CardDescription>
+            Monitor sent and received backup requests
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="sent">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="sent">
+                Sent ({sentRequests.length})
+              </TabsTrigger>
+              <TabsTrigger value="received">
+                Received ({receivedRequests.length})
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="sent" className="space-y-3 mt-4">
+              {sentRequests.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <AlertTriangle className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No backup requests sent</p>
                 </div>
-              ))
-            )}
-          </TabsContent>
+              ) : (
+                sentRequests.map((request) => (
+                  <RequestListItem
+                    key={request.id}
+                    request={request}
+                    onClick={() => setSelectedRequest(request)}
+                  />
+                ))
+              )}
+            </TabsContent>
+            
+            <TabsContent value="received" className="space-y-3 mt-4">
+              {receivedRequests.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <AlertTriangle className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No backup requests received</p>
+                </div>
+              ) : (
+                receivedRequests.map((request) => (
+                  <RequestListItem
+                    key={request.id}
+                    request={request}
+                    onClick={() => {
+                      setSelectedRequest(request);
+                      if (!request.read && request.id.startsWith('notification-')) {
+                        markAsRead(request.id);
+                      }
+                    }}
+                  />
+                ))
+              )}
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+
+      {/* Request Detail Dialog */}
+      <Dialog open={!!selectedRequest} onOpenChange={() => setSelectedRequest(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              Backup Request Details
+            </DialogTitle>
+          </DialogHeader>
           
-          <TabsContent value="sent" className="space-y-4">
-            {sentRequests.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <AlertTriangle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No backup requests sent</p>
-              </div>
-            ) : (
-              sentRequests.map((request) => (
-                <div
-                  key={request.id}
-                  className="p-4 border rounded-lg bg-background"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <Badge variant={getPriorityColor(request.priority_level)}>
-                      {getPriorityIcon(request.priority_level)} P{request.priority_level}
+          {selectedRequest && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium">Incident Number</label>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedRequest.metadata?.incident_number || 'Unknown'}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Priority Level</label>
+                  <div className="flex items-center gap-2">
+                    <Badge variant={getPriorityColor(selectedRequest.priority_level)}>
+                      {getPriorityIcon(selectedRequest.priority_level)} P{selectedRequest.priority_level}
                     </Badge>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Calendar className="h-3 w-3" />
-                      {format(new Date(request.created_at), 'MMM dd, HH:mm')}
-                    </div>
-                  </div>
-                  
-                  <h4 className="font-semibold mb-2">{request.title}</h4>
-                  
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4 text-muted-foreground" />
-                      <span>Requesting Unit: {request.metadata?.requesting_unit}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span>Location: {request.metadata?.location}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-3 pt-3 border-t">
-                    <p className="text-sm text-muted-foreground">{request.message}</p>
-                    <div className="flex items-center gap-1 mt-2 text-xs text-green-600">
-                      <CheckCircle className="h-3 w-3" />
-                      Backup request sent successfully
-                    </div>
                   </div>
                 </div>
-              ))
-            )}
-          </TabsContent>
-        </Tabs>
-      </CardContent>
-    </Card>
+                <div>
+                  <label className="text-sm font-medium">Requesting Unit</label>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedRequest.metadata?.requesting_unit || 'Unknown'} - {selectedRequest.metadata?.requesting_unit_name || 'Unknown Unit'}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Request Time</label>
+                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                    <Clock className="h-3 w-3" />
+                    {selectedRequest.metadata?.request_timestamp ? 
+                      format(new Date(selectedRequest.metadata.request_timestamp), 'MMM dd, HH:mm') : 
+                      'Unknown time'
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Location (UAC)</label>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                  <MapPin className="h-4 w-4" />
+                  {selectedRequest.metadata?.location || 'Location unavailable'}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Reason for Backup</label>
+                <p className="text-sm text-muted-foreground mt-1 p-3 bg-muted rounded-md">
+                  {selectedRequest.metadata?.reason || 'No reason provided'}
+                </p>
+              </div>
+
+              <div className="flex justify-end pt-4">
+                <Button onClick={() => setSelectedRequest(null)} variant="outline">
+                  Close
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
