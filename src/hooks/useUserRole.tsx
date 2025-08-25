@@ -74,6 +74,9 @@ export const useUserRole = () => {
           ];
           const highestRole = priorityOrder.find(role => roles.includes(role)) || 'citizen';
           
+          console.log('User roles found:', roles);
+          console.log('Highest priority role selected:', highestRole);
+          
           setRole(highestRole as UserRole);
           
           // Collect all metadata from all roles
