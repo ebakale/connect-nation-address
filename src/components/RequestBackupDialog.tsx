@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { MessageSquare, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface RequestBackupDialogProps {
   children: React.ReactNode;
@@ -26,6 +27,8 @@ export function RequestBackupDialog({
 }: RequestBackupDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [incidents, setIncidents] = useState<any[]>([]);
+  const [loadingIncidents, setLoadingIncidents] = useState(false);
   const [formData, setFormData] = useState({
     incident_id: incidentId || '',
     incident_number: incidentNumber || '',
@@ -37,6 +40,55 @@ export function RequestBackupDialog({
   });
 
   const { toast } = useToast();
+  const { roleMetadata } = useUserRole();
+
+  // Fetch incidents in supervisor's area
+  useEffect(() => {
+    if (open && roleMetadata?.length > 0) {
+      fetchIncidents();
+    }
+  }, [open, roleMetadata]);
+
+  const fetchIncidents = async () => {
+    if (!roleMetadata?.[0]?.scope_value) return;
+    
+    setLoadingIncidents(true);
+    try {
+      const { data, error } = await supabase
+        .from('emergency_incidents')
+        .select('id, incident_number, location_address, assigned_units, status, priority_level')
+        .eq('city', roleMetadata[0].scope_value)
+        .in('status', ['reported', 'dispatched', 'responding', 'on_scene'])
+        .order('priority_level', { ascending: false })
+        .order('reported_at', { ascending: false });
+
+      if (error) throw error;
+      setIncidents(data || []);
+    } catch (error) {
+      console.error('Error fetching incidents:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load incidents",
+        variant: "destructive"
+      });
+    } finally {
+      setLoadingIncidents(false);
+    }
+  };
+
+  const handleIncidentSelect = (incidentId: string) => {
+    const selectedIncident = incidents.find(inc => inc.id === incidentId);
+    if (selectedIncident) {
+      setFormData(prev => ({
+        ...prev,
+        incident_id: selectedIncident.id,
+        incident_number: selectedIncident.incident_number,
+        requesting_unit_code: selectedIncident.assigned_units?.[0] || '',
+        requesting_unit_name: selectedIncident.assigned_units?.[0] || '',
+        location: selectedIncident.location_address || ''
+      }));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,15 +154,30 @@ export function RequestBackupDialog({
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="incident_select">Select Incident *</Label>
+            <Select onValueChange={handleIncidentSelect} disabled={loadingIncidents}>
+              <SelectTrigger>
+                <SelectValue placeholder={loadingIncidents ? "Loading incidents..." : "Select an incident"} />
+              </SelectTrigger>
+              <SelectContent>
+                {incidents.map((incident) => (
+                  <SelectItem key={incident.id} value={incident.id}>
+                    {incident.incident_number} - {incident.status} (Priority {incident.priority_level})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="incident_id">Incident ID *</Label>
+              <Label htmlFor="incident_id">Incident ID</Label>
               <Input
                 id="incident_id"
                 value={formData.incident_id}
-                onChange={(e) => setFormData(prev => ({ ...prev, incident_id: e.target.value }))}
-                placeholder="Enter incident ID"
-                required
+                readOnly
+                className="bg-muted"
               />
             </div>
             <div>
@@ -118,21 +185,21 @@ export function RequestBackupDialog({
               <Input
                 id="incident_number"
                 value={formData.incident_number}
-                onChange={(e) => setFormData(prev => ({ ...prev, incident_number: e.target.value }))}
-                placeholder="e.g., INC-2024-000123"
+                readOnly
+                className="bg-muted"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="unit_code">Your Unit Code *</Label>
+              <Label htmlFor="unit_code">Assigned Unit Code</Label>
               <Input
                 id="unit_code"
                 value={formData.requesting_unit_code}
-                onChange={(e) => setFormData(prev => ({ ...prev, requesting_unit_code: e.target.value }))}
-                placeholder="e.g., UNIT-001"
-                required
+                readOnly
+                className="bg-muted"
+                placeholder="Will be populated from incident"
               />
             </div>
             <div>
@@ -140,20 +207,21 @@ export function RequestBackupDialog({
               <Input
                 id="unit_name"
                 value={formData.requesting_unit_name}
-                onChange={(e) => setFormData(prev => ({ ...prev, requesting_unit_name: e.target.value }))}
-                placeholder="Unit name"
+                readOnly
+                className="bg-muted"
+                placeholder="Will be populated from incident"
               />
             </div>
           </div>
 
           <div>
-            <Label htmlFor="location">Incident Location *</Label>
+            <Label htmlFor="location">Incident Location</Label>
             <Input
               id="location"
               value={formData.location}
-              onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-              placeholder="Enter incident location"
-              required
+              readOnly
+              className="bg-muted"
+              placeholder="Will be populated from incident"
             />
           </div>
 
