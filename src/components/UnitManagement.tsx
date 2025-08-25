@@ -77,6 +77,22 @@ const UnitManagement: React.FC = () => {
   const unitStatuses = ['available', 'busy', 'offline', 'maintenance'];
   const memberRoles = ['officer', 'sergeant', 'lieutenant', 'captain'];
 
+  // Region to cities mapping for Equatorial Guinea
+  const regionCities: Record<string, string[]> = {
+    'Bioko Norte': ['Malabo', 'Baney', 'Rebola'],
+    'Bioko Sur': ['Luba', 'Riaba'],
+    'Litoral': ['Bata', 'Mbini', 'Kogo'],
+    'Centro Sur': ['Evinayong', 'Acurenam'],
+    'Kié-Ntem': ['Ebebiyín', 'Mikomeseng'],
+    'Wele-Nzas': ['Mongomo', 'Añisoc', 'Aconibe', 'Nsork', 'Nsonk Nsomo'],
+    'Annobón': ['San Antonio de Palé'],
+    'Djibloho': ['Ciudad de la Paz']
+  };
+
+  const getAvailableCities = (region: string) => {
+    return regionCities[region] || [];
+  };
+
   useEffect(() => {
     fetchUnits();
     fetchOfficers();
@@ -398,7 +414,16 @@ const UnitManagement: React.FC = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="coverage_region">Coverage Region</Label>
-                <Select value={unitForm.coverage_region} onValueChange={(value) => setUnitForm({ ...unitForm, coverage_region: value })}>
+                <Select 
+                  value={unitForm.coverage_region} 
+                  onValueChange={(value) => {
+                    setUnitForm({ 
+                      ...unitForm, 
+                      coverage_region: value,
+                      coverage_city: '' // Reset city when region changes
+                    });
+                  }}
+                >
                   <SelectTrigger className="bg-background">
                     <SelectValue placeholder="Select region" />
                   </SelectTrigger>
@@ -416,30 +441,26 @@ const UnitManagement: React.FC = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="coverage_city">Coverage City</Label>
-                <Select value={unitForm.coverage_city} onValueChange={(value) => setUnitForm({ ...unitForm, coverage_city: value })}>
+                <Select 
+                  value={unitForm.coverage_city} 
+                  onValueChange={(value) => setUnitForm({ ...unitForm, coverage_city: value })}
+                  disabled={!unitForm.coverage_region}
+                >
                   <SelectTrigger className="bg-background">
-                    <SelectValue placeholder="Select city" />
+                    <SelectValue 
+                      placeholder={
+                        unitForm.coverage_region 
+                          ? "Select city" 
+                          : "Select region first"
+                      } 
+                    />
                   </SelectTrigger>
                   <SelectContent className="bg-background z-50">
-                    <SelectItem value="Malabo">Malabo</SelectItem>
-                    <SelectItem value="Bata">Bata</SelectItem>
-                    <SelectItem value="Ebebiyín">Ebebiyín</SelectItem>
-                    <SelectItem value="Aconibe">Aconibe</SelectItem>
-                    <SelectItem value="Añisoc">Añisoc</SelectItem>
-                    <SelectItem value="Luba">Luba</SelectItem>
-                    <SelectItem value="Evinayong">Evinayong</SelectItem>
-                    <SelectItem value="Mongomo">Mongomo</SelectItem>
-                    <SelectItem value="Mikomeseng">Mikomeseng</SelectItem>
-                    <SelectItem value="Nsork">Nsork</SelectItem>
-                    <SelectItem value="Kogo">Kogo</SelectItem>
-                    <SelectItem value="Mbini">Mbini</SelectItem>
-                    <SelectItem value="Acurenam">Acurenam</SelectItem>
-                    <SelectItem value="Riaba">Riaba</SelectItem>
-                    <SelectItem value="Baney">Baney</SelectItem>
-                    <SelectItem value="Rebola">Rebola</SelectItem>
-                    <SelectItem value="Nsonk Nsomo">Nsonk Nsomo</SelectItem>
-                    <SelectItem value="San Antonio de Palé">San Antonio de Palé</SelectItem>
-                    <SelectItem value="Ciudad de la Paz">Ciudad de la Paz</SelectItem>
+                    {getAvailableCities(unitForm.coverage_region).map((city) => (
+                      <SelectItem key={city} value={city}>
+                        {city}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -617,7 +638,16 @@ const UnitManagement: React.FC = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="edit_coverage_region">Coverage Region</Label>
-              <Select value={unitForm.coverage_region} onValueChange={(value) => setUnitForm({ ...unitForm, coverage_region: value })}>
+              <Select 
+                value={unitForm.coverage_region} 
+                onValueChange={(value) => {
+                  setUnitForm({ 
+                    ...unitForm, 
+                    coverage_region: value,
+                    coverage_city: '' // Reset city when region changes
+                  });
+                }}
+              >
                 <SelectTrigger className="bg-background">
                   <SelectValue placeholder="Select region" />
                 </SelectTrigger>
@@ -635,30 +665,26 @@ const UnitManagement: React.FC = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="edit_coverage_city">Coverage City</Label>
-              <Select value={unitForm.coverage_city} onValueChange={(value) => setUnitForm({ ...unitForm, coverage_city: value })}>
+              <Select 
+                value={unitForm.coverage_city} 
+                onValueChange={(value) => setUnitForm({ ...unitForm, coverage_city: value })}
+                disabled={!unitForm.coverage_region}
+              >
                 <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Select city" />
+                  <SelectValue 
+                    placeholder={
+                      unitForm.coverage_region 
+                        ? "Select city" 
+                        : "Select region first"
+                    } 
+                  />
                 </SelectTrigger>
                 <SelectContent className="bg-background z-50">
-                  <SelectItem value="Malabo">Malabo</SelectItem>
-                  <SelectItem value="Bata">Bata</SelectItem>
-                  <SelectItem value="Ebebiyín">Ebebiyín</SelectItem>
-                  <SelectItem value="Aconibe">Aconibe</SelectItem>
-                  <SelectItem value="Añisoc">Añisoc</SelectItem>
-                  <SelectItem value="Luba">Luba</SelectItem>
-                  <SelectItem value="Evinayong">Evinayong</SelectItem>
-                  <SelectItem value="Mongomo">Mongomo</SelectItem>
-                  <SelectItem value="Mikomeseng">Mikomeseng</SelectItem>
-                  <SelectItem value="Nsork">Nsork</SelectItem>
-                  <SelectItem value="Kogo">Kogo</SelectItem>
-                  <SelectItem value="Mbini">Mbini</SelectItem>
-                  <SelectItem value="Acurenam">Acurenam</SelectItem>
-                  <SelectItem value="Riaba">Riaba</SelectItem>
-                  <SelectItem value="Baney">Baney</SelectItem>
-                  <SelectItem value="Rebola">Rebola</SelectItem>
-                  <SelectItem value="Nsonk Nsomo">Nsonk Nsomo</SelectItem>
-                  <SelectItem value="San Antonio de Palé">San Antonio de Palé</SelectItem>
-                  <SelectItem value="Ciudad de la Paz">Ciudad de la Paz</SelectItem>
+                  {getAvailableCities(unitForm.coverage_region).map((city) => (
+                    <SelectItem key={city} value={city}>
+                      {city}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
