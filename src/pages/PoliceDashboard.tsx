@@ -567,6 +567,12 @@ const PoliceDashboard = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
+        {/* Show admin panel directly if user has only admin access */}
+        {hasPoliceAdminAccess && !isPoliceOperator && !isPoliceDispatcher && !isPoliceSupervisor ? (
+          <div className="space-y-6">
+            <PoliceAdminDashboard />
+          </div>
+        ) : (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
           {/* Field Operators have limited tab access */}
           {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher ? (
@@ -1142,6 +1148,7 @@ const PoliceDashboard = () => {
             </TabsContent>
           )}
         </Tabs>
+        )}
       </main>
     </div>
   );
