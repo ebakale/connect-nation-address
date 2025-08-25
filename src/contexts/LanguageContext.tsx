@@ -233,6 +233,12 @@ const translations = {
     addressRegistrationOverTime: 'Registro de direcciones a lo largo del tiempo',
     newAddresses: 'Nuevas Direcciones',
     verifiedAddresses: 'Direcciones Verificadas',
+    unitStatusUpdated: 'Estado de Unidad Actualizado',
+    dispatch: 'Despacho',
+    field: 'Campo',
+    supervisor: 'Supervisor',
+    emergencyResponse: 'Respuesta de Emergencia',
+    accessDenied: 'Acceso Denegado',
     private: 'Privado',
     
     // Dashboard sections
@@ -517,6 +523,12 @@ const translations = {
     addressRegistrationOverTime: 'Address registration over time',
     newAddresses: 'New Addresses',
     verifiedAddresses: 'Verified Addresses',
+    unitStatusUpdated: 'Unit Status Updated',
+    dispatch: 'Dispatch',
+    field: 'Field',
+    supervisor: 'Supervisor',
+    emergencyResponse: 'Emergency Response',
+    accessDenied: 'Access Denied',
     private: 'Private',
     
     // Dashboard sections
@@ -801,6 +813,12 @@ const translations = {
     addressRegistrationOverTime: 'Enregistrement d\'adresses au fil du temps',
     newAddresses: 'Nouvelles Adresses',
     verifiedAddresses: 'Adresses Vérifiées',
+    unitStatusUpdated: 'État de l\'Unité Mis à Jour',
+    dispatch: 'Répartition',
+    field: 'Terrain',
+    supervisor: 'Superviseur',
+    emergencyResponse: 'Réponse d\'Urgence',
+    accessDenied: 'Accès Refusé',
     private: 'Privé',
     
     // Dashboard sections

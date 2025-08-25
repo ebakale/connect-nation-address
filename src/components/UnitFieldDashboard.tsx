@@ -18,6 +18,7 @@ import {
   Zap, Heart, Siren, LogIn, LogOut, RefreshCw,
   Headphones, Mic, Volume2, Navigation2, Locate
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface IncidentAssignment {
   id: string;
@@ -121,6 +122,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
   const [unitInfo, setUnitInfo] = useState<UnitInfo | null>(null);
   const [assignments, setAssignments] = useState<IncidentAssignment[]>([]);
   const [selectedIncident, setSelectedIncident] = useState<IncidentAssignment | null>(null);
+  const { t } = useLanguage();
   const [actionDialog, setActionDialog] = useState<{ action: FieldAction; incident: IncidentAssignment } | null>(null);
   const [actionNotes, setActionNotes] = useState('');
   const [currentLocation, setCurrentLocation] = useState('');
@@ -300,7 +302,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
 
       if (error) throw error;
       setUnitStatus(newStatus);
-      toast({ title: 'Unit status updated', description: `Status changed to ${newStatus}` });
+      toast({ title: t('unitStatusUpdated'), description: `${t('status')} changed to ${newStatus}` });
     } catch (error) {
       console.error('Error updating unit status:', error);
       toast({ title: 'Error', description: 'Failed to update unit status', variant: 'destructive' });

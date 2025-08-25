@@ -37,7 +37,7 @@ const AdminPanel: React.FC = () => {
     return (
       <Card>
         <CardContent className="p-6">
-          <p className="text-center text-muted-foreground">Loading role information...</p>
+          <p className="text-center text-muted-foreground">{t('loadingRoleInformation')}</p>
         </CardContent>
       </Card>
     );
@@ -49,22 +49,22 @@ const AdminPanel: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            Role & Permission Management
+            {t('rolePermissionManagement')}
           </CardTitle>
           <CardDescription>
-            Manage user roles and permissions for the National Digital Address System
+            {t('manageUserRoles')}
           </CardDescription>
         </CardHeader>
       </Card>
       
       <Tabs defaultValue="roles" className="space-y-6">
         <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="roles">Role Management</TabsTrigger>
-          <TabsTrigger value="permissions">Permissions</TabsTrigger>
-          <TabsTrigger value="workflows">Workflows</TabsTrigger>
-          <TabsTrigger value="users">User Management</TabsTrigger>
-          <TabsTrigger value="uac">UAC System</TabsTrigger>
-          <TabsTrigger value="api-webhooks">API & Webhooks</TabsTrigger>
+          <TabsTrigger value="roles">{t('roleManagement')}</TabsTrigger>
+          <TabsTrigger value="permissions">{t('permissions')}</TabsTrigger>
+          <TabsTrigger value="workflows">{t('workflows')}</TabsTrigger>
+          <TabsTrigger value="users">{t('userManagement')}</TabsTrigger>
+          <TabsTrigger value="uac">{t('uacSystem')}</TabsTrigger>
+          <TabsTrigger value="api-webhooks">{t('apiWebhooks')}</TabsTrigger>
         </TabsList>
         
         <TabsContent value="roles">

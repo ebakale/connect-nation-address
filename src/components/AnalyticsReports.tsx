@@ -327,15 +327,15 @@ export const AnalyticsReports = () => {
   };
 
   if (loading) {
-    return <div className="p-4">Loading analytics...</div>;
+    return <div className="p-4">{t('loading')}...</div>;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold">Reports & Analytics</h2>
-          <p className="text-muted-foreground">Address registration and verification insights</p>
+          <h2 className="text-2xl font-bold">{t('reportsAnalytics')}</h2>
+          <p className="text-muted-foreground">{t('addressRegistrationInsights')}</p>
         </div>
         
         <div className="flex gap-2">
@@ -344,19 +344,19 @@ export const AnalyticsReports = () => {
             onValueChange={(value) => {
               setSelectedPeriod(value);
               toast({
-                title: "Period Updated",
-                description: `Analytics updated for ${value === '7d' ? 'last 7 days' : value === '30d' ? 'last 30 days' : value === '90d' ? 'last 90 days' : 'last year'}`,
+                title: t('periodUpdated'),
+                description: `${t('analyticsUpdatedFor')} ${value === '7d' ? t('lastSevenDays') : value === '30d' ? t('lastThirtyDays') : value === '90d' ? t('lastNinetyDays') : t('lastYear')}`,
               });
             }}
           >
             <SelectTrigger className="w-[140px] bg-background">
-              <SelectValue placeholder="Select period" />
+              <SelectValue placeholder={t('selectPeriod')} />
             </SelectTrigger>
             <SelectContent className="bg-background border shadow-lg z-50">
-              <SelectItem value="7d">Last 7 days</SelectItem>
-              <SelectItem value="30d">Last 30 days</SelectItem>
-              <SelectItem value="90d">Last 90 days</SelectItem>
-              <SelectItem value="1y">Last year</SelectItem>
+              <SelectItem value="7d">{t('lastSevenDays')}</SelectItem>
+              <SelectItem value="30d">{t('lastThirtyDays')}</SelectItem>
+              <SelectItem value="90d">{t('lastNinetyDays')}</SelectItem>
+              <SelectItem value="1y">{t('lastYear')}</SelectItem>
             </SelectContent>
           </Select>
           
@@ -366,7 +366,7 @@ export const AnalyticsReports = () => {
             disabled={loading}
           >
             <Download className="h-4 w-4 mr-2" />
-            {loading ? "Loading..." : "Export CSV"}
+            {loading ? t('loading') : t('exportCSV')}
           </Button>
         </div>
       </div>
@@ -375,7 +375,7 @@ export const AnalyticsReports = () => {
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Addresses</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('totalAddresses')}</CardTitle>
             <MapPin className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -389,39 +389,39 @@ export const AnalyticsReports = () => {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Verified</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('verified')}</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">{addressStats.verified.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              {Math.round((addressStats.verified / addressStats.total) * 100)}% verification rate
+              {Math.round((addressStats.verified / addressStats.total) * 100)}% {t('verificationRate')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('pending')}</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-orange-600">{addressStats.pending.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              Awaiting verification
+              {t('awaitingVerification')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Public</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('publicAddresses')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-600">{addressStats.public.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              Publicly accessible
+              {t('publiclyAccessible')}
             </p>
           </CardContent>
         </Card>
@@ -434,7 +434,7 @@ export const AnalyticsReports = () => {
           <CardContent>
             <div className="text-2xl font-bold text-gray-600">{addressStats.private.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              Restricted access
+              {t('restrictedAccess')}
             </p>
           </CardContent>
         </Card>
@@ -442,17 +442,17 @@ export const AnalyticsReports = () => {
 
       <Tabs defaultValue="regional" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="regional">Regional Analysis</TabsTrigger>
-          <TabsTrigger value="types">Address Types</TabsTrigger>
-          <TabsTrigger value="trends">Trends</TabsTrigger>
+          <TabsTrigger value="regional">{t('regionalAnalysis')}</TabsTrigger>
+          <TabsTrigger value="types">{t('addressTypes')}</TabsTrigger>
+          <TabsTrigger value="trends">{t('trends')}</TabsTrigger>
         </TabsList>
         
         <TabsContent value="regional" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>Addresses by Region</CardTitle>
-                <CardDescription>Total and verified addresses per region</CardDescription>
+                <CardTitle>{t('addressesByRegion')}</CardTitle>
+                <CardDescription>{t('totalAndVerifiedPerRegion')}</CardDescription>
               </CardHeader>
               <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -471,8 +471,8 @@ export const AnalyticsReports = () => {
             
             <Card>
               <CardHeader>
-                <CardTitle>Regional Summary</CardTitle>
-                <CardDescription>Key statistics by region</CardDescription>
+                <CardTitle>{t('regionalSummary')}</CardTitle>
+                <CardDescription>{t('keyStatisticsByRegion')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -481,7 +481,7 @@ export const AnalyticsReports = () => {
                       <div>
                         <h4 className="font-medium">{region.region}</h4>
                         <p className="text-sm text-muted-foreground">
-                          {region.addresses} total addresses
+                          {region.addresses} {t('totalAddressesCount')}
                         </p>
                       </div>
                       <div className="text-right">
@@ -509,8 +509,8 @@ export const AnalyticsReports = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>Address Types Distribution</CardTitle>
-                <CardDescription>Breakdown by address type</CardDescription>
+                <CardTitle>{t('addressTypeDistribution')}</CardTitle>
+                <CardDescription>{t('totalByType')}</CardDescription>
               </CardHeader>
               <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -536,8 +536,8 @@ export const AnalyticsReports = () => {
             
             <Card>
               <CardHeader>
-                <CardTitle>Type Breakdown</CardTitle>
-                <CardDescription>Detailed statistics by address type</CardDescription>
+                <CardTitle>{t('totalByType')}</CardTitle>
+                <CardDescription>{t('addressTypeDistribution')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -570,8 +570,8 @@ export const AnalyticsReports = () => {
         <TabsContent value="trends" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Registration Trends</CardTitle>
-              <CardDescription>Address registrations and verifications over time</CardDescription>
+               <CardTitle>{t('registrationTrends')}</CardTitle>
+               <CardDescription>{t('addressRegistrationOverTime')}</CardDescription>
             </CardHeader>
             <CardContent>
             <ResponsiveContainer width="100%" height={400}>
@@ -586,14 +586,14 @@ export const AnalyticsReports = () => {
                   dataKey="addresses" 
                   stroke="hsl(var(--primary))" 
                   strokeWidth={2}
-                  name="New Addresses"
+                  name={t('newAddresses')}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="verified" 
                   stroke="hsl(var(--success))" 
                   strokeWidth={2}
-                  name="Verifications"
+                  name={t('verifiedAddresses')}
                 />
               </LineChart>
             </ResponsiveContainer>

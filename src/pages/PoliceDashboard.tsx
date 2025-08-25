@@ -439,18 +439,18 @@ const PoliceDashboard = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="w-96">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-red-600">
-              <Shield className="h-5 w-5" />
-              Access Denied
+             <CardTitle className="flex items-center gap-2 text-red-600">
+               <Shield className="h-5 w-5" />
+               {t('accessDenied')}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground mb-4">
-              You need police operator credentials to access this dashboard.
+             <p className="text-muted-foreground mb-4">
+               {t('pleaseLogInToAccess')}
             </p>
             <Button onClick={signOut} variant="outline" className="w-full">
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign Out
+               <LogOut className="mr-2 h-4 w-4" />
+               {t('logout')}
             </Button>
           </CardContent>
         </Card>
@@ -462,15 +462,15 @@ const PoliceDashboard = () => {
   if (showUnitsOverview) {
     return (
       <div className="min-h-screen bg-background">
-        <header className="border-b bg-card">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <Shield className="h-8 w-8 text-blue-600" />
-                  <div>
-                    <h1 className="text-2xl font-bold">{t('policeCommandCenter')}</h1>
-                    <p className="text-sm text-muted-foreground">{t('unitsOverview')}</p>
+       <header className="border-b bg-card">
+         <div className="container mx-auto px-4 py-4">
+           <div className="flex items-center justify-between">
+             <div className="flex items-center gap-4">
+               <div className="flex items-center gap-2">
+                 <Shield className="h-8 w-8 text-blue-600" />
+                 <div>
+                   <h1 className="text-2xl font-bold">{t('policeCommandCenter')}</h1>
+                   <p className="text-sm text-muted-foreground">{t('emergencyIncidents')}</p>
                   </div>
                 </div>
               </div>
@@ -515,16 +515,16 @@ const PoliceDashboard = () => {
                 {t('supervisor')}
               </Badge>
                 )}
-                {isPoliceDispatcher && (
-                  <Badge variant="default" className="bg-blue-100 text-blue-800">
-                    Dispatcher
-                  </Badge>
-                )}
-                 {isPoliceOperator && (
-                   <Badge variant="default" className="bg-green-100 text-green-800">
-                     Field Officer
+                 {isPoliceDispatcher && (
+                   <Badge variant="default" className="bg-blue-100 text-blue-800">
+                     {t('dispatch')}
                    </Badge>
                  )}
+                  {isPoliceOperator && (
+                    <Badge variant="default" className="bg-green-100 text-green-800">
+                      {t('field')}
+                    </Badge>
+                  )}
                  {isUnitLead && (
                    <Badge variant="default" className="bg-yellow-100 text-yellow-800">
                      Unit Lead
@@ -569,12 +569,12 @@ const PoliceDashboard = () => {
               {(isPoliceDispatcher || isAdmin) ? (
                 <TabsTrigger value="dispatch" className="flex items-center gap-2">
                   <Activity className="h-4 w-4" />
-                  {t('commandCenter')}
+                   {t('dispatchCenter')}
                 </TabsTrigger>
               ) : isPoliceSupervisor ? (
                 <TabsTrigger value="coordination" className="flex items-center gap-2">
                   <Users className="h-4 w-4" />
-                  {t('unitCoordination')}
+                  {t('coordinationCenter')}
                 </TabsTrigger>
               ) : null}
               {(isPoliceSupervisor || isAdmin) && (
@@ -648,8 +648,8 @@ const PoliceDashboard = () => {
             <TabsContent value="dispatch" className="space-y-6">
             <div className="flex items-center gap-4 mb-4">
                 <Badge variant="outline" className="flex items-center gap-2">
-                <Activity className="h-3 w-3" />
-                {t('commandCenter')}
+                 <Activity className="h-3 w-3" />
+                 {t('dispatchCenter')}
               </Badge>
               <p className="text-sm text-muted-foreground">
                 Monitor incidents, assign units, and coordinate emergency response
@@ -714,8 +714,8 @@ const PoliceDashboard = () => {
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-xl flex items-center gap-2">
-                      <AlertTriangle className="h-6 w-6" />
-                      Active Incidents
+                       <AlertTriangle className="h-6 w-6" />
+                       {t('activeIncidents')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -829,7 +829,7 @@ const PoliceDashboard = () => {
               <div className="flex items-center gap-4 mb-4">
                 <Badge variant="outline" className="flex items-center gap-2">
                   <Users className="h-3 w-3" />
-                  Unit Coordination
+                   {t('coordinationCenter')}
                 </Badge>
                 <p className="text-sm text-muted-foreground">
                   Coordinate with other units and monitor area-specific incidents
