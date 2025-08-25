@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -400,73 +400,75 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
         
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Unit
+            <Button className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              Create Police Unit
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Create New Emergency Unit</DialogTitle>
+              <DialogTitle>Create Police Unit</DialogTitle>
+              <DialogDescription>Create a new police unit (patrol, rapid response, traffic, investigation)</DialogDescription>
             </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="unit_code">Unit Code</Label>
-                <Input
-                  id="unit_code"
-                  placeholder="e.g., POLICE-01"
-                  value={newUnit.unit_code}
-                  onChange={(e) => setNewUnit({...newUnit, unit_code: e.target.value})}
-                />
-              </div>
-              <div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
                 <Label htmlFor="unit_name">Unit Name</Label>
                 <Input
                   id="unit_name"
-                  placeholder="e.g., Patrol Unit Alpha"
                   value={newUnit.unit_name}
-                  onChange={(e) => setNewUnit({...newUnit, unit_name: e.target.value})}
+                  onChange={(e) => setNewUnit({ ...newUnit, unit_name: e.target.value })}
+                  placeholder="Alpha Unit"
                 />
               </div>
-              <div>
-                <Label htmlFor="unit_type">Unit Type</Label>
+              <div className="space-y-2">
+                <Label htmlFor="unit_code">Unit Code</Label>
+                <Input
+                  id="unit_code"
+                  value={newUnit.unit_code}
+                  onChange={(e) => setNewUnit({ ...newUnit, unit_code: e.target.value })}
+                  placeholder="UNIT-001"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="unit_type">Police Unit Type</Label>
                 <Select
                   value={newUnit.unit_type}
-                  onValueChange={(value) => setNewUnit({...newUnit, unit_type: value})}
+                  onValueChange={(value) => setNewUnit({ ...newUnit, unit_type: value })}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="patrol">Patrol</SelectItem>
-                    <SelectItem value="response">Emergency Response</SelectItem>
-                    <SelectItem value="traffic">Traffic</SelectItem>
-                    <SelectItem value="investigation">Investigation</SelectItem>
+                    <SelectItem value="patrol">Patrol Unit</SelectItem>
+                    <SelectItem value="rapid_response">Rapid Response Team</SelectItem>
+                    <SelectItem value="traffic">Traffic Enforcement</SelectItem>
+                    <SelectItem value="investigation">Investigation Unit</SelectItem>
                     <SelectItem value="special">Special Operations</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <div>
-                <Label htmlFor="radio_frequency">Radio Frequency (Optional)</Label>
-                <Input
-                  id="radio_frequency"
-                  placeholder="e.g., 154.755"
-                  value={newUnit.radio_frequency}
-                  onChange={(e) => setNewUnit({...newUnit, radio_frequency: e.target.value})}
-                />
-              </div>
-              <div>
-                <Label htmlFor="vehicle_id">Vehicle ID (Optional)</Label>
+              <div className="space-y-2">
+                <Label htmlFor="vehicle_id">Vehicle ID</Label>
                 <Input
                   id="vehicle_id"
-                  placeholder="e.g., CAR-2024-001"
                   value={newUnit.vehicle_id}
-                  onChange={(e) => setNewUnit({...newUnit, vehicle_id: e.target.value})}
+                  onChange={(e) => setNewUnit({ ...newUnit, vehicle_id: e.target.value })}
+                  placeholder="POL-001"
                 />
               </div>
-              <Button onClick={createUnit} className="w-full">
-                Create Unit
-              </Button>
+              <div className="col-span-2 space-y-2">
+                <Label htmlFor="radio_frequency">Radio Frequency</Label>
+                <Input
+                  id="radio_frequency"
+                  value={newUnit.radio_frequency}
+                  onChange={(e) => setNewUnit({ ...newUnit, radio_frequency: e.target.value })}
+                  placeholder="154.920 MHz"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>Cancel</Button>
+              <Button onClick={createUnit}>Create Unit</Button>
             </div>
           </DialogContent>
         </Dialog>
