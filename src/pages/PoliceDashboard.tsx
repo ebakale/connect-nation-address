@@ -938,10 +938,6 @@ const PoliceDashboard = () => {
                 <div className="space-y-6">
                   {/* Backup Requests Panel */}
                   <BackupRequestsPanel />
-                  
-                  {(isPoliceSupervisor || isPoliceDispatcher) && (
-                    <BackupNotificationManager />
-                  )}
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-lg">Coordination Actions</CardTitle>
