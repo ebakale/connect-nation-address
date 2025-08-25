@@ -393,17 +393,9 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          {onClose && (
-            <Button variant="outline" size="sm" onClick={onClose}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
-          )}
-          <div>
-            <h1 className="text-3xl font-bold">Unit Management</h1>
-            <p className="text-muted-foreground">Manage emergency units and officer assignments</p>
-          </div>
+        <div>
+          <h1 className="text-3xl font-bold">Unit Management</h1>
+          <p className="text-muted-foreground">Manage emergency units and officer assignments</p>
         </div>
         
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
