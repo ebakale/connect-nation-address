@@ -385,30 +385,17 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
           </p>
         </div>
         
-        {/* Assignment Status Cards */}
+        {/* Unassigned Incidents Alert */}
         {(() => {
-          const newIncidents = filteredIncidents.filter(i => !i.assigned_operator_id && i.status === 'reported');
-          const otherUnassigned = filteredIncidents.filter(i => !i.assigned_operator_id && i.status !== 'reported');
+          const unassignedIncidents = filteredIncidents.filter(i => !i.assigned_operator_id);
           
-          if (newIncidents.length > 0 || otherUnassigned.length > 0) {
+          if (unassignedIncidents.length > 0) {
             return (
-              <div className="flex flex-wrap gap-2 mb-3">
-                {newIncidents.length > 0 && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2 flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4 text-red-600" />
-                    <span className="text-sm font-medium text-red-800">
-                      {newIncidents.length} new incident{newIncidents.length > 1 ? 's' : ''} need dispatcher assignment
-                    </span>
-                  </div>
-                )}
-                {otherUnassigned.length > 0 && (
-                  <div className="bg-orange-50 border border-orange-200 rounded-lg px-3 py-2 flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-orange-600" />
-                    <span className="text-sm font-medium text-orange-800">
-                      {otherUnassigned.length} ongoing incident{otherUnassigned.length > 1 ? 's' : ''} without dispatcher
-                    </span>
-                  </div>
-                )}
+              <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2 flex items-center gap-2 mb-3">
+                <AlertTriangle className="h-4 w-4 text-red-600" />
+                <span className="text-sm font-medium text-red-800">
+                  {unassignedIncidents.length} incident{unassignedIncidents.length > 1 ? 's' : ''} need dispatcher assignment
+                </span>
               </div>
             );
           }
@@ -458,7 +445,6 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
       <div className="space-y-2">
         {paginatedIncidents.map((incident) => {
           const isUnassigned = !incident.assigned_operator_id;
-          const needsAssignment = incident.status === 'reported';
           
           return (
             <div 
@@ -466,9 +452,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
               className={`border rounded-lg p-3 hover:bg-muted/50 cursor-pointer transition-colors ${
                 selectedIncident?.id === incident.id ? 'bg-primary/5 border-primary' : ''
               } ${
-                isUnassigned && needsAssignment ? 'border-l-4 border-l-red-500 bg-red-50/50' : ''
-              } ${
-                isUnassigned && !needsAssignment ? 'border-l-4 border-l-orange-500 bg-orange-50/50' : ''
+                isUnassigned ? 'border-l-4 border-l-red-500 bg-red-50/50' : ''
               }`}
               onClick={() => {
                 onSelectIncident(incident);
@@ -508,21 +492,10 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
 
             {/* Bottom row - Assigned units and action hint */}
             <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-              <div className="flex items-center gap-3">
-                <span className={incident.assigned_operator_id ? 'text-emerald-600' : 'text-red-600'}>
-                  {incident.assigned_operator_id ? 'Dispatcher assigned' : 'No dispatcher'}
+              <div className="flex items-center gap-2">
+                <span className={incident.assigned_operator_id ? 'text-emerald-600 font-medium' : 'text-red-600 font-medium'}>
+                  {incident.assigned_operator_id ? '✓ Dispatcher assigned' : '⚠ Unassigned'}
                 </span>
-                {incident.assigned_units && incident.assigned_units.length > 0 ? (
-                  <span className="flex items-center gap-1">
-                    <User className="h-3 w-3" />
-                    {incident.assigned_units.slice(0, 2).map((unitCode) => 
-                      unitNames[unitCode] || unitCode
-                    ).join(', ')}
-                    {incident.assigned_units.length > 2 && ` +${incident.assigned_units.length - 2}`}
-                  </span>
-                 ) : (
-                   <span className="text-orange-600">No units dispatched</span>
-                 )}
               </div>
               <span className="text-xs text-primary">Click for details →</span>
             </div>
