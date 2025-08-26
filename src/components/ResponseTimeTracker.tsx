@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { Clock, TrendingDown, TrendingUp, Target } from 'lucide-react';
+import { Clock, TrendingDown, TrendingUp, Target, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ResponseMetrics {
   incident_id: string;
@@ -27,6 +28,7 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
   showRecentOnly = false 
 }) => {
   const [metrics, setMetrics] = useState<ResponseMetrics[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [averages, setAverages] = useState<{
     avgResponse: number;
     avgResolution: number;
@@ -36,6 +38,8 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
     avgResolution: 0,
     targetResponse: 15 // 15 minutes target
   });
+
+  const ITEMS_PER_PAGE = 5;
 
   useEffect(() => {
     fetchResponseMetrics();
@@ -164,6 +168,28 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
     return <TrendingUp className="h-4 w-4 text-red-600" />;
   };
 
+  // Pagination calculations
+  const totalPages = Math.ceil(metrics.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const currentPageMetrics = metrics.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const handlePreviousPage = () => {
+    setCurrentPage(prev => Math.max(1, prev - 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage(prev => Math.min(totalPages, prev + 1));
+  };
+
+  // Reset to first page when data changes
+  const resetPagination = () => {
+    setCurrentPage(1);
+  };
+
+  useEffect(() => {
+    resetPagination();
+  }, [metrics.length]);
+
   return (
     <div className={`space-y-4 ${className}`}>
       {/* Summary Statistics */}
@@ -219,47 +245,84 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {metrics.length === 0 ? (
-              <p className="text-center text-muted-foreground py-4">
-                No response data available
-              </p>
-            ) : (
-              metrics.map((metric) => (
-                <div key={metric.incident_id} className="border rounded-lg p-3">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <p className="font-medium">{metric.incident_number}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {metric.emergency_type.toUpperCase()} - Priority {metric.priority_level}
-                      </p>
+          <div className="space-y-4">
+            {/* Incidents List */}
+            <div className="space-y-3">
+              {metrics.length === 0 ? (
+                <p className="text-center text-muted-foreground py-4">
+                  No response data available
+                </p>
+              ) : (
+                currentPageMetrics.map((metric) => (
+                  <div key={metric.incident_id} className="border rounded-lg p-3">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <p className="font-medium">{metric.incident_number}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {metric.emergency_type.toUpperCase()} - Priority {metric.priority_level}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        {metric.response_time_minutes && (
+                          <Badge variant={getResponseBadgeColor(metric.response_time_minutes)}>
+                            Response: {formatTime(metric.response_time_minutes)}
+                          </Badge>
+                        )}
+                        {metric.resolution_time_minutes && (
+                          <Badge variant="outline">
+                            Total: {formatTime(metric.resolution_time_minutes)}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex gap-2">
-                      {metric.response_time_minutes && (
-                        <Badge variant={getResponseBadgeColor(metric.response_time_minutes)}>
-                          Response: {formatTime(metric.response_time_minutes)}
-                        </Badge>
-                      )}
-                      {metric.resolution_time_minutes && (
-                        <Badge variant="outline">
-                          Total: {formatTime(metric.resolution_time_minutes)}
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-between items-center text-sm text-muted-foreground">
-                    <span>
-                      Dispatched: {new Date(metric.dispatched_at).toLocaleString()}
-                    </span>
-                    {metric.assigned_units && metric.assigned_units.length > 0 && (
+                    
+                    <div className="flex justify-between items-center text-sm text-muted-foreground">
                       <span>
-                        Units: {metric.assigned_units.join(', ')}
+                        Dispatched: {new Date(metric.dispatched_at).toLocaleString()}
                       </span>
-                    )}
+                      {metric.assigned_units && metric.assigned_units.length > 0 && (
+                        <span>
+                          Units: {metric.assigned_units.join(', ')}
+                        </span>
+                      )}
+                    </div>
                   </div>
+                ))
+              )}
+            </div>
+
+            {/* Pagination Controls */}
+            {metrics.length > 0 && totalPages > 1 && (
+              <div className="flex items-center justify-between pt-4 border-t">
+                <div className="text-sm text-muted-foreground">
+                  Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, metrics.length)} of {metrics.length} incidents
                 </div>
-              ))
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handlePreviousPage}
+                    disabled={currentPage === 1}
+                    className="flex items-center gap-1"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Previous
+                  </Button>
+                  <span className="text-sm text-muted-foreground px-2">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages}
+                    className="flex items-center gap-1"
+                  >
+                    Next
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
             )}
           </div>
         </CardContent>
