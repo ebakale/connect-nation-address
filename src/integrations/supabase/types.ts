@@ -868,6 +868,15 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      generate_incident_uac: {
+        Args: {
+          p_city: string
+          p_country: string
+          p_incident_id: string
+          p_region: string
+        }
+        Returns: string
+      }
       generate_unified_uac_unique: {
         Args: {
           p_address_id: string
