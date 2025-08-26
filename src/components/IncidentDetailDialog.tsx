@@ -1073,12 +1073,12 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
             {/* Quick Action Section */}
             {isPoliceSupervisor && (
               <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                <Select onValueChange={(value) => setEditData({...editData, assigned_operator_id: value})} value={editData.assigned_operator_id}>
+                <Select onValueChange={(value) => setEditData({...editData, assigned_operator_id: value === 'unassigned' ? '' : value})} value={editData.assigned_operator_id || 'unassigned'}>
                   <SelectTrigger className="w-full sm:w-48">
                     <SelectValue placeholder="Assign dispatcher..." />
                   </SelectTrigger>
                   <SelectContent className="bg-background z-50">
-                    <SelectItem value="">Unassigned</SelectItem>
+                    <SelectItem value="unassigned">Unassigned</SelectItem>
                     {availableOperators.map((operator) => (
                       <SelectItem key={operator.id} value={operator.id}>
                         {operator.name}
@@ -1089,12 +1089,13 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                 <Button 
                   onClick={async () => {
                     try {
+                      const operatorId = editData.assigned_operator_id === 'unassigned' ? null : editData.assigned_operator_id;
                       await supabase.functions.invoke('police-incident-actions', {
                         body: {
                           action: 'assignOperator',
                           incidentId: incident.id,
                           data: {
-                            operatorId: editData.assigned_operator_id || null
+                            operatorId: operatorId
                           }
                         }
                       });
@@ -1105,7 +1106,6 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                       toast.error('Failed to assign dispatcher');
                     }
                   }}
-                  disabled={!editData.assigned_operator_id}
                   className="w-full sm:w-auto"
                 >
                   Assign Dispatcher
