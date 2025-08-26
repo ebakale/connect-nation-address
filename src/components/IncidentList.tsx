@@ -383,20 +383,36 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
           <p className="text-xs text-muted-foreground">
             {filteredIncidents.length} of {incidents.length} {t('emergencyIncidents').toLowerCase()}
           </p>
-          {/* Unassigned incidents alert */}
-          {(() => {
-            const unassignedCount = filteredIncidents.filter(i => !i.assigned_operator_id).length;
-            const urgentUnassigned = filteredIncidents.filter(i => !i.assigned_operator_id && i.status === 'reported').length;
-            
-            if (unassignedCount > 0) {
-              return (
-                <div className="text-xs text-red-600 font-medium mt-1">
-                  🚨 {urgentUnassigned} urgent unassigned, {unassignedCount} total unassigned
-                </div>
-              );
-            }
-          })()}
         </div>
+        
+        {/* Assignment Status Cards */}
+        {(() => {
+          const newIncidents = filteredIncidents.filter(i => !i.assigned_operator_id && i.status === 'reported');
+          const otherUnassigned = filteredIncidents.filter(i => !i.assigned_operator_id && i.status !== 'reported');
+          
+          if (newIncidents.length > 0 || otherUnassigned.length > 0) {
+            return (
+              <div className="flex flex-wrap gap-2 mb-3">
+                {newIncidents.length > 0 && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2 flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 text-red-600" />
+                    <span className="text-sm font-medium text-red-800">
+                      {newIncidents.length} new incident{newIncidents.length > 1 ? 's' : ''} need assignment
+                    </span>
+                  </div>
+                )}
+                {otherUnassigned.length > 0 && (
+                  <div className="bg-orange-50 border border-orange-200 rounded-lg px-3 py-2 flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-orange-600" />
+                    <span className="text-sm font-medium text-orange-800">
+                      {otherUnassigned.length} ongoing incident{otherUnassigned.length > 1 ? 's' : ''} unassigned
+                    </span>
+                  </div>
+                )}
+              </div>
+            );
+          }
+        })()}
         
         <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
