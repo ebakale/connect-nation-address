@@ -36,7 +36,7 @@ serve(async (req) => {
       );
     }
 
-    // Check if user has police access
+    // Check if user has police access and get their role
     const { data: userRoles } = await supabase
       .from('user_roles')
       .select('role')
@@ -52,6 +52,12 @@ serve(async (req) => {
         { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    // Get the user's primary role (highest priority)
+    const userRole = userRoles?.find(r => r.role === 'police_supervisor')?.role ||
+                     userRoles?.find(r => r.role === 'police_dispatcher')?.role ||
+                     userRoles?.find(r => r.role === 'police_operator')?.role ||
+                     userRoles?.[0]?.role;
 
     const { action, incidentId, data } = await req.json();
 
@@ -90,6 +96,25 @@ serve(async (req) => {
         break;
 
       case 'assignOperator':
+        // Validate that only supervisors can assign operators
+        if (!userRole || userRole !== 'police_supervisor') {
+          throw new Error('Only supervisors can assign incidents to dispatchers');
+        }
+
+        // If operatorId is provided, validate it's a dispatcher
+        if (data.operatorId) {
+          const { data: operatorRole, error: roleError } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', data.operatorId)
+            .eq('role', 'police_dispatcher')
+            .single();
+
+          if (roleError || !operatorRole) {
+            throw new Error('Incidents can only be assigned to dispatchers');
+          }
+        }
+
         const { error: assignError } = await supabase
           .from('emergency_incidents')
           .update({ 
@@ -112,7 +137,7 @@ serve(async (req) => {
             }
           });
 
-        result = { success: true, message: 'Operator assigned to incident' };
+        result = { success: true, message: 'Incident assigned to dispatcher' };
         break;
 
       case 'addNote':

@@ -140,7 +140,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     }
   };
 
-  // Fetch available operators for assignment
+  // Fetch available operators for assignment (only dispatchers)
   const fetchAvailableOperators = async () => {
     try {
       const { data: operators, error } = await supabase
@@ -148,16 +148,16 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
         .select(`
           user_id,
           full_name,
-          user_roles(role)
+          user_roles!inner(role)
         `)
-        .in('user_roles.role', ['police_operator', 'police_dispatcher', 'police_supervisor']);
+        .eq('user_roles.role', 'police_dispatcher'); // Only fetch dispatchers
 
       if (error) throw error;
 
       const operatorOptions = (operators || []).map((operator: any) => ({
         id: operator.user_id,
         name: operator.full_name || operator.user_id,
-        role: operator.user_roles?.[0]?.role || 'police_operator'
+        role: 'police_dispatcher'
       }));
 
       setAvailableOperators(operatorOptions);
@@ -832,7 +832,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
             <div>
               <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <User className="h-4 w-4" />
-                Assigned Operator
+                Assigned Dispatcher
               </label>
               {isEditing && isPoliceSupervisor ? (
                 <div className="mt-2">
@@ -846,7 +846,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                         <SelectItem key={operator.id} value={operator.id}>
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{operator.name}</span>
-                            <span className="text-muted-foreground">({operator.role.replace('police_', '')})</span>
+                            <span className="text-muted-foreground">(dispatcher)</span>
                           </div>
                         </SelectItem>
                       ))}
@@ -856,17 +856,17 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
               ) : isEditing && !isPoliceSupervisor ? (
                 <div className="mt-1 p-3 bg-yellow-50 border border-yellow-200 rounded">
                   <p className="text-sm text-yellow-800">
-                    Only supervisors can assign incidents to operators.
+                    Only supervisors can assign incidents to dispatchers.
                   </p>
                 </div>
               ) : (
                 <div className="mt-1">
                   {incident.assigned_operator_id ? (
                     <Badge variant="secondary">
-                      {userNames[incident.assigned_operator_id] || `Operator ${incident.assigned_operator_id.slice(0,8)}`}
+                      {userNames[incident.assigned_operator_id] || `Dispatcher ${incident.assigned_operator_id.slice(0,8)}`}
                     </Badge>
                   ) : (
-                    <span className="text-muted-foreground">No operator assigned</span>
+                    <span className="text-muted-foreground">No dispatcher assigned</span>
                   )}
                 </div>
               )}
