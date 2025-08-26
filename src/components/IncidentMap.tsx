@@ -99,7 +99,7 @@ const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: Incident
     incidents.forEach((incident) => {
       if (!incident.location_latitude || !incident.location_longitude) return;
 
-      // Create custom marker element
+      // Create custom marker element (fixed-size, bottom-anchored)
       const markerElement = document.createElement('div');
       markerElement.className = 'incident-marker';
       markerElement.style.cssText = `
@@ -110,62 +110,51 @@ const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: Incident
         border: 3px solid white;
         box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         cursor: pointer;
-        transition: transform 0.2s;
+        box-sizing: border-box;
+        position: relative;
       `;
 
-      // Add pulse animation for high priority incidents
+      // Tooltip (pure HTML, no map autopan)
+      const tooltip = document.createElement('div');
+      tooltip.style.cssText = `
+        position: absolute;
+        left: 50%;
+        bottom: 26px;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.85);
+        color: #fff;
+        padding: 6px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        line-height: 1.2;
+        white-space: nowrap;
+        pointer-events: none;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        display: none;
+      `;
+      tooltip.innerHTML = `
+        <div style="font-weight:600; margin-bottom:2px;">${incident.incident_number}</div>
+        <div style="opacity:.9;">
+          ${incident.emergency_type} • P${incident.priority_level} • ${incident.status.replace('_', ' ')}
+        </div>
+      `;
+      markerElement.appendChild(tooltip);
+
+      // Add pulse animation for high priority incidents (visual only)
       if (incident.priority_level <= 2) {
         markerElement.style.animation = 'pulse 2s infinite';
       }
 
-      // Hover effect - use glow instead of scale to prevent position shifting
+      // Hover: show tooltip only (no size/transform changes)
       markerElement.addEventListener('mouseenter', () => {
-        markerElement.style.boxShadow = '0 0 0 4px rgba(59, 130, 246, 0.3), 0 2px 4px rgba(0,0,0,0.3)';
+        tooltip.style.display = 'block';
       });
       markerElement.addEventListener('mouseleave', () => {
-        markerElement.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+        tooltip.style.display = 'none';
       });
 
-      const marker = new mapboxgl.Marker({ element: markerElement })
+      const marker = new mapboxgl.Marker({ element: markerElement, anchor: 'bottom' })
         .setLngLat([incident.location_longitude, incident.location_latitude])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25, closeButton: true })
-            .setHTML(`
-              <div class="p-3 min-w-[200px]">
-                <div class="font-semibold text-sm mb-2">${incident.incident_number}</div>
-                <div class="space-y-1 text-xs">
-                  <div class="flex justify-between">
-                    <span class="text-gray-600">Type:</span>
-                    <span class="font-medium capitalize">${incident.emergency_type}</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-gray-600">Priority:</span>
-                    <span class="font-medium">Level ${incident.priority_level}</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-gray-600">Status:</span>
-                    <span class="font-medium capitalize">${incident.status.replace('_', ' ')}</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-gray-600">Reported:</span>
-                    <span class="font-medium">${new Date(incident.reported_at).toLocaleTimeString()}</span>
-                  </div>
-                  ${incident.incident_uac ? `
-                    <div class="flex justify-between">
-                      <span class="text-gray-600">UAC:</span>
-                      <span class="font-mono text-xs">${incident.incident_uac}</span>
-                    </div>
-                  ` : ''}
-                </div>
-                <button 
-                  onclick="window.selectIncident('${incident.id}')" 
-                  class="w-full mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
-                >
-                  View Details
-                </button>
-              </div>
-            `)
-        )
         .addTo(map.current);
 
       // Handle marker click
