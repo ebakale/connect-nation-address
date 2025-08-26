@@ -91,19 +91,19 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     assigned_units: [] as string[]
   });
   const [newUnit, setNewUnit] = useState('');
-  const [availableUnits, setAvailableUnits] = useState<{ unit_code: string; unit_name: string; status: string }[]>([]);
+  const [availableUnits, setAvailableUnits] = useState<{ unit_code: string; unit_name: string; status: string; coverage_city?: string }[]>([]);
   const [unitNames, setUnitNames] = useState<Record<string, string>>({});
   const [userNames, setUserNames] = useState<Record<string, string>>({});
   const [reporterInfo, setReporterInfo] = useState<{ name?: string; email?: string; contact?: string }>({});
   const [userUnits, setUserUnits] = useState<string[]>([]);
   const [assigningUnit, setAssigningUnit] = useState('');
-  const [availableOfficers, setAvailableOfficers] = useState<{id: string, label: string}[]>([]);
+  const [availableOfficers, setAvailableOfficers] = useState<{id: string, label: string, coverage_city?: string}[]>([]);
 
   // Fetch available emergency units for assignment
   const fetchAvailableOfficers = async () => {
     try {
-      // Get emergency units (available ones)
-      const { data: units, error: unitsError } = await supabase
+      // Get available emergency units, filtered by incident city when available
+      let query = supabase
         .from('emergency_units')
         .select(`
           id,
@@ -111,24 +111,26 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
           unit_name,
           unit_type,
           status,
-          emergency_unit_members(
-            officer_id,
-            role,
-            is_lead,
-            profiles(full_name)
-          )
+          coverage_city,
+          emergency_unit_members(officer_id)
         `)
         .eq('status', 'available');
 
+      if (incident.city) {
+        query = query.eq('coverage_city', incident.city);
+      }
+
+      const { data: units, error: unitsError } = await query;
       if (unitsError) throw unitsError;
 
-      const unitOptions = units?.map(unit => {
+      const unitOptions = (units || []).map((unit: any) => {
         const memberCount = unit.emergency_unit_members?.length || 0;
         return {
           id: unit.id,
-          label: `${unit.unit_code} - ${unit.unit_name} (${unit.unit_type.toUpperCase()}) - ${memberCount} officers`
+          label: `${unit.unit_code} - ${unit.unit_name} (${String(unit.unit_type).toUpperCase()}) - ${memberCount} officers`,
+          coverage_city: unit.coverage_city || undefined,
         };
-      }) || [];
+      });
 
       setAvailableOfficers(unitOptions);
     } catch (error) {
@@ -165,23 +167,29 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     try {
       const { data: units, error } = await supabase
         .from('emergency_units')
-        .select('id, unit_code, unit_name, status');
+        .select('id, unit_code, unit_name, status, coverage_city');
       
       if (error) throw error;
       
       const unitNameMap: Record<string, string> = {};
-      let unitsData: { unit_code: string; unit_name: string; status: string }[] = [];
+      let unitsData: { unit_code: string; unit_name: string; status: string; coverage_city?: string }[] = [];
       
-      units?.forEach(unit => {
+      units?.forEach((unit: any) => {
         // Map both unit_code and ID to unit_name for compatibility
         unitNameMap[unit.unit_code] = unit.unit_name;
         unitNameMap[unit.id] = unit.unit_name;
         unitsData.push({
           unit_code: unit.unit_code,
           unit_name: unit.unit_name,
-          status: unit.status
+          status: unit.status,
+          coverage_city: unit.coverage_city || undefined,
         });
       });
+
+      // Filter by incident city if available
+      if (incident.city) {
+        unitsData = unitsData.filter(u => u.coverage_city === incident.city);
+      }
 
       // Filter available units based on user role and permissions
       // Supervisors and dispatchers can assign to any unit (no filtering needed)
@@ -555,7 +563,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                     <SelectTrigger className="w-40">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-background z-50">
                       <SelectItem value="1">1 - Critical</SelectItem>
                       <SelectItem value="2">2 - High</SelectItem>
                       <SelectItem value="3">3 - Medium</SelectItem>
@@ -579,7 +587,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                     <SelectTrigger className="w-40">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-background z-50">
                       <SelectItem value="reported">Reported</SelectItem>
                       <SelectItem value="dispatched">Dispatched</SelectItem>
                       <SelectItem value="responding">Responding</SelectItem>
@@ -976,7 +984,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                   <SelectTrigger className="w-full sm:w-48">
                     <SelectValue placeholder="Assign to unit..." />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-background z-50">
                     {availableOfficers.map((unit) => (
                       <SelectItem key={unit.id} value={unit.id}>
                         {unit.label}

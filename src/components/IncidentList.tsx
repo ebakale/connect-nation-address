@@ -96,7 +96,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [assignDialog, setAssignDialog] = useState<string | null>(null);
   const [assigningUnit, setAssigningUnit] = useState('');
-  const [availableOfficers, setAvailableOfficers] = useState<{id: string, label: string}[]>([]);
+  const [availableOfficers, setAvailableOfficers] = useState<{id: string, label: string, coverage_city?: string}[]>([]);
   const [unitNames, setUnitNames] = useState<Record<string, string>>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
@@ -118,24 +118,21 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
           unit_name,
           unit_type,
           status,
-          emergency_unit_members(
-            officer_id,
-            role,
-            is_lead,
-            profiles(full_name)
-          )
+          coverage_city,
+          emergency_unit_members(officer_id)
         `)
         .eq('status', 'available');
 
       if (unitsError) throw unitsError;
 
-      const unitOptions = units?.map(unit => {
+      const unitOptions = (units || []).map((unit: any) => {
         const memberCount = unit.emergency_unit_members?.length || 0;
         return {
           id: unit.id,
-          label: `${unit.unit_code} - ${unit.unit_name} (${unit.unit_type.toUpperCase()}) - ${memberCount} officers`
+          label: `${unit.unit_code} - ${unit.unit_name} (${String(unit.unit_type).toUpperCase()}) - ${memberCount} officers`,
+          coverage_city: unit.coverage_city || undefined,
         };
-      }) || [];
+      });
 
       setAvailableOfficers(unitOptions);
     } catch (error) {
@@ -551,12 +548,18 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
               <SelectTrigger>
                 <SelectValue placeholder="Select a unit" />
               </SelectTrigger>
-              <SelectContent>
-                {availableOfficers.map((officer) => (
-                  <SelectItem key={officer.id} value={officer.id}>
-                    {officer.label}
-                  </SelectItem>
-                ))}
+              <SelectContent className="bg-background z-50">
+                {availableOfficers
+                  .filter((officer) => {
+                    const inc = incidents.find((i) => i.id === assignDialog);
+                    if (!inc || !inc.city) return true;
+                    return officer.coverage_city === inc.city;
+                  })
+                  .map((officer) => (
+                    <SelectItem key={officer.id} value={officer.id}>
+                      {officer.label}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
             <div className="flex justify-end gap-2">
