@@ -1070,8 +1070,49 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
               )}
             </div>
 
-            {/* Quick Dispatch Section */}
-            {(isPoliceSupervisor || isPoliceDispatcher) && (
+            {/* Quick Action Section */}
+            {isPoliceSupervisor && (
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                <Select onValueChange={(value) => setEditData({...editData, assigned_operator_id: value})} value={editData.assigned_operator_id}>
+                  <SelectTrigger className="w-full sm:w-48">
+                    <SelectValue placeholder="Assign dispatcher..." />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background z-50">
+                    <SelectItem value="">Unassigned</SelectItem>
+                    {availableOperators.map((operator) => (
+                      <SelectItem key={operator.id} value={operator.id}>
+                        {operator.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button 
+                  onClick={async () => {
+                    try {
+                      await supabase.functions.invoke('police-incident-actions', {
+                        body: {
+                          action: 'assignOperator',
+                          incidentId: incident.id,
+                          data: {
+                            operatorId: editData.assigned_operator_id || null
+                          }
+                        }
+                      });
+                      toast.success('Dispatcher assigned successfully');
+                      onUpdate?.();
+                    } catch (error) {
+                      console.error('Error assigning dispatcher:', error);
+                      toast.error('Failed to assign dispatcher');
+                    }
+                  }}
+                  disabled={!editData.assigned_operator_id}
+                  className="w-full sm:w-auto"
+                >
+                  Assign Dispatcher
+                </Button>
+              </div>
+            )}
+            {isPoliceDispatcher && (
               <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                 <Select onValueChange={setDispatchingUnit} value={dispatchingUnit}>
                   <SelectTrigger className="w-full sm:w-48">
