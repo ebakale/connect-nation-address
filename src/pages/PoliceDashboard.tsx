@@ -590,62 +590,101 @@ const PoliceDashboard = () => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
+      {/* Main Content - Optimized Layout */}
+      <main className="px-2 sm:px-4 py-3">
         {/* Show admin panel directly if user has only admin access */}
         {hasPoliceAdminAccess && !isPoliceOperator && !isPoliceDispatcher && !isPoliceSupervisor ? (
-          <div className="space-y-6">
+          <div className="max-w-7xl mx-auto">
             <PoliceAdminDashboard />
           </div>
         ) : (
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
-          {/* Field Operators have limited tab access */}
-          {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher ? (
-            <TabsList className="flex w-full flex-wrap gap-1">
-              <TabsTrigger value="field" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-                <Radio className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="truncate">{t('myUnit')}</span>
-              </TabsTrigger>
-              <TabsTrigger value="support" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-                <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="truncate">Support</span>
-              </TabsTrigger>
-            </TabsList>
-          ) : (
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
-              {/* Only show MY UNIT tab for field operators, not supervisors or admins */}
-              {!hasPoliceAdminAccess && !isPoliceSupervisor && isPoliceOperator && (
-                <TabsTrigger value="field" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-                  <Radio className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="truncate">{t('myUnit')}</span>
-                </TabsTrigger>
+          <div className="max-w-7xl mx-auto">
+            {/* Quick Stats Bar */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+              <Card className="p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 text-destructive" />
+                    <span className="text-sm font-medium">Active</span>
+                  </div>
+                  <Badge variant="destructive">{dashboardStats.activeIncidents}</Badge>
+                </div>
+              </Card>
+              <Card className="p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Activity className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-medium">Total</span>
+                  </div>
+                  <Badge variant="secondary">{dashboardStats.totalIncidents}</Badge>
+                </div>
+              </Card>
+              <Card className="p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4 text-green-600" />
+                    <span className="text-sm font-medium">Units</span>
+                  </div>
+                  <Badge variant="outline">{dashboardStats.availableUnits}</Badge>
+                </div>
+              </Card>
+              <Card className="p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-orange-500" />
+                    <span className="text-sm font-medium">Response</span>
+                  </div>
+                  <Badge variant="outline">{dashboardStats.avgResponseTime}m</Badge>
+                </div>
+              </Card>
+            </div>
+
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
+              {/* Compact Tab Navigation */}
+              {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher ? (
+                <TabsList className="grid grid-cols-2 h-9">
+                  <TabsTrigger value="field" className="text-sm">
+                    <Radio className="h-4 w-4 mr-2" />
+                    {t('myUnit')}
+                  </TabsTrigger>
+                  <TabsTrigger value="support" className="text-sm">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Support
+                  </TabsTrigger>
+                </TabsList>
+              ) : (
+                <TabsList className="grid grid-cols-2 lg:grid-cols-4 h-9">
+                  {!hasPoliceAdminAccess && !isPoliceSupervisor && isPoliceOperator && (
+                    <TabsTrigger value="field" className="text-sm">
+                      <Radio className="h-4 w-4 mr-2" />
+                      {t('myUnit')}
+                    </TabsTrigger>
+                  )}
+                  {(isPoliceDispatcher || isAdmin) ? (
+                    <TabsTrigger value="dispatch" className="text-sm">
+                      <Activity className="h-4 w-4 mr-2" />
+                      {t('dispatchCenter')}
+                    </TabsTrigger>
+                  ) : isPoliceSupervisor ? (
+                    <TabsTrigger value="coordination" className="text-sm">
+                      <Users className="h-4 w-4 mr-2" />
+                      {t('coordinationCenter')}
+                    </TabsTrigger>
+                  ) : null}
+                  {(isPoliceSupervisor || isAdmin) && (
+                    <TabsTrigger value="management" className="text-sm">
+                      <Users className="h-4 w-4 mr-2" />
+                      Management
+                    </TabsTrigger>
+                  )}
+                  {hasPoliceAdminAccess && (
+                    <TabsTrigger value="admin" className="text-sm">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Admin
+                    </TabsTrigger>
+                  )}
+                </TabsList>
               )}
-              {/* Different tab based on role */}
-              {(isPoliceDispatcher || isAdmin) ? (
-                <TabsTrigger value="dispatch" className="flex items-center gap-2">
-                  <Activity className="h-4 w-4" />
-                   {t('dispatchCenter')}
-                </TabsTrigger>
-              ) : isPoliceSupervisor ? (
-                <TabsTrigger value="coordination" className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  {t('coordinationCenter')}
-                </TabsTrigger>
-              ) : null}
-              {(isPoliceSupervisor || isAdmin) && (
-                <TabsTrigger value="management" className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  Management
-                </TabsTrigger>
-              )}
-              {hasPoliceAdminAccess && (
-                <TabsTrigger value="admin" className="flex items-center gap-2">
-                  <Settings className="h-4 w-4" />
-                  Admin
-                </TabsTrigger>
-              )}
-            </TabsList>
-          )}
 
           {/* Field Operations Tab */}
           <TabsContent value="field" className="space-y-6">
@@ -1221,7 +1260,8 @@ const PoliceDashboard = () => {
               <PoliceAdminDashboard />
             </TabsContent>
           )}
-        </Tabs>
+            </Tabs>
+          </div>
         )}
       </main>
     </div>
