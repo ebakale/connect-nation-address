@@ -88,6 +88,14 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
     is_lead: false
   });
 
+  const [editUnit, setEditUnit] = useState({
+    unit_code: '',
+    unit_name: '',
+    unit_type: 'patrol',
+    radio_frequency: '',
+    vehicle_id: ''
+  });
+
   useEffect(() => {
     fetchUnits();
     fetchAvailableOfficers();
@@ -325,6 +333,51 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
     }
   };
 
+  const updateUnit = async () => {
+    try {
+      const { error } = await supabase
+        .from('emergency_units')
+        .update({
+          unit_code: editUnit.unit_code,
+          unit_name: editUnit.unit_name,
+          unit_type: editUnit.unit_type,
+          radio_frequency: editUnit.radio_frequency || null,
+          vehicle_id: editUnit.vehicle_id || null
+        })
+        .eq('id', selectedUnit?.id);
+
+      if (error) throw error;
+
+      await fetchUnits();
+      setIsEditDialogOpen(false);
+      setSelectedUnit(null);
+
+      toast({
+        title: "Success",
+        description: "Unit information updated successfully"
+      });
+    } catch (error) {
+      console.error('Error updating unit:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update unit information",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const openEditDialog = (unit: UnitWithMembers) => {
+    setSelectedUnit(unit);
+    setEditUnit({
+      unit_code: unit.unit_code,
+      unit_name: unit.unit_name,
+      unit_type: unit.unit_type,
+      radio_frequency: unit.radio_frequency || '',
+      vehicle_id: unit.vehicle_id || ''
+    });
+    setIsEditDialogOpen(true);
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'available': return 'bg-green-500';
@@ -472,6 +525,76 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Edit Unit Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Edit Unit Information</DialogTitle>
+              <DialogDescription>Update the unit details and configuration</DialogDescription>
+            </DialogHeader>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit_unit_name">Unit Name</Label>
+                <Input
+                  id="edit_unit_name"
+                  value={editUnit.unit_name}
+                  onChange={(e) => setEditUnit({ ...editUnit, unit_name: e.target.value })}
+                  placeholder="Alpha Unit"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit_unit_code">Unit Code</Label>
+                <Input
+                  id="edit_unit_code"
+                  value={editUnit.unit_code}
+                  onChange={(e) => setEditUnit({ ...editUnit, unit_code: e.target.value })}
+                  placeholder="UNIT-001"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit_unit_type">Police Unit Type</Label>
+                <Select
+                  value={editUnit.unit_type}
+                  onValueChange={(value) => setEditUnit({ ...editUnit, unit_type: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="patrol">Patrol Unit</SelectItem>
+                    <SelectItem value="rapid_response">Rapid Response Team</SelectItem>
+                    <SelectItem value="traffic">Traffic Enforcement</SelectItem>
+                    <SelectItem value="investigation">Investigation Unit</SelectItem>
+                    <SelectItem value="special">Special Operations</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit_vehicle_id">Vehicle ID</Label>
+                <Input
+                  id="edit_vehicle_id"
+                  value={editUnit.vehicle_id}
+                  onChange={(e) => setEditUnit({ ...editUnit, vehicle_id: e.target.value })}
+                  placeholder="POL-001"
+                />
+              </div>
+              <div className="col-span-2 space-y-2">
+                <Label htmlFor="edit_radio_frequency">Radio Frequency</Label>
+                <Input
+                  id="edit_radio_frequency"
+                  value={editUnit.radio_frequency}
+                  onChange={(e) => setEditUnit({ ...editUnit, radio_frequency: e.target.value })}
+                  placeholder="154.920 MHz"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Cancel</Button>
+              <Button onClick={updateUnit}>Update Unit</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Summary Cards */}
@@ -616,6 +739,11 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm">Actions</h4>
                           <div className="flex flex-wrap gap-2">
+                            <Button size="sm" variant="outline" onClick={() => openEditDialog(unit)}>
+                              <Edit className="h-3 w-3 mr-1" />
+                              Edit Unit
+                            </Button>
+                            
                             <Dialog open={isAssignDialogOpen} onOpenChange={setIsAssignDialogOpen}>
                               <DialogTrigger asChild>
                                 <Button size="sm" variant="outline" onClick={() => setSelectedUnit(unit)}>
