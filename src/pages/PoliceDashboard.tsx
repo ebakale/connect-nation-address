@@ -286,26 +286,17 @@ const PoliceDashboard = () => {
         reporter_email: ''
       })) || [];
 
-      // Filter incidents - only show unassigned ones to dispatchers/supervisors
+      // Filter incidents for UI panels
       const validIncidents = enrichedIncidents.filter(incident => {
-        // Show unassigned incidents only to dispatchers/supervisors
-        if (!incident.assigned_units || incident.assigned_units.length === 0) {
-          return isPoliceDispatcher || isPoliceSupervisor || isAdmin;
+        // Dispatchers/Supervisors/Admin: see all active incidents in their city
+        if (isPoliceDispatcher || isPoliceSupervisor || isAdmin) {
+          return true;
         }
         
-        // For assigned incidents, show based on role and unit membership
-        const validUnits = ['UNIT-001', 'UNIT-002', 'UNIT-003', 'UNIT-004', 'UNIT-005', 'UNIT-006', 'UNIT-007', 'UNIT-008'];
-        const hasValidUnit = incident.assigned_units.some((unit: string) => validUnits.includes(unit));
-        
-        // Supervisors can see incidents assigned to their units
-        const userUnitCodes = userUnits.map(u => u.unit_code);
-        const hasUserUnit = incident.assigned_units.some((unit: string) => userUnitCodes.includes(unit));
-        
-        // Show to all roles who have management access, or to operators if it's assigned to their unit
-        if (isPoliceSupervisor || isPoliceDispatcher || isAdmin) {
-          return hasValidUnit || hasUserUnit;
-        } else if (isPoliceOperator) {
-          return hasUserUnit; // Operators only see incidents assigned to their units
+        // Operators: only incidents assigned to their units
+        if (isPoliceOperator) {
+          const userUnitCodes = userUnits.map(u => u.unit_code);
+          return (incident.assigned_units || []).some((unit: string) => userUnitCodes.includes(unit));
         }
         
         return false;
