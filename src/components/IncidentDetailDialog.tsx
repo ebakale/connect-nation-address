@@ -158,6 +158,21 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     }
   };
 
+  // Quick assign dispatcher helper
+  const assignDispatcher = async (operatorId: string) => {
+    try {
+      await supabase.functions.invoke('police-incident-actions', {
+        body: { action: 'assignOperator', incidentId: incident.id, data: { operatorId } }
+      });
+      toast.success('Dispatcher assigned successfully');
+      setEditData((prev) => ({ ...prev, assigned_operator_id: operatorId }));
+      onUpdate?.();
+    } catch (error) {
+      console.error('Error assigning dispatcher:', error);
+      toast.error('Failed to assign dispatcher');
+    }
+  };
+
   // Load user's units for assignment restrictions (only for operators)
   const loadUserUnits = async () => {
     if (!user?.id || !isPoliceOperator) return;
@@ -828,7 +843,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
               </label>
               {isEditing && isPoliceSupervisor ? (
                 <div className="mt-2">
-                  <Select value={editData.assigned_operator_id} onValueChange={(value) => setEditData({...editData, assigned_operator_id: value})}>
+                  <Select value={editData.assigned_operator_id} onValueChange={(value) => { setEditData({...editData, assigned_operator_id: value}); assignDispatcher(value); }}>
                   <SelectTrigger className="w-full bg-background border border-input">
                     <SelectValue placeholder="Assign to dispatcher..." />
                   </SelectTrigger>
@@ -1064,11 +1079,11 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
             {/* Quick Action Section */}
             {isPoliceSupervisor && (
               <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                <Select onValueChange={(value) => setEditData({...editData, assigned_operator_id: value})} value={editData.assigned_operator_id}>
+                <Select onValueChange={(value) => { setEditData({...editData, assigned_operator_id: value}); assignDispatcher(value); }} value={editData.assigned_operator_id}>
                   <SelectTrigger className="w-full sm:w-48">
                     <SelectValue placeholder="Assign dispatcher..." />
                   </SelectTrigger>
-                  <SelectContent className="bg-background z-50">
+                  <SelectContent className="bg-background border border-input z-50">
                     {availableOperators.map((operator) => (
                       <SelectItem key={operator.id} value={operator.id}>
                         {operator.name}
