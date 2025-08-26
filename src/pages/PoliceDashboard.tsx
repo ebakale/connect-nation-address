@@ -378,30 +378,28 @@ const PoliceDashboard = () => {
     }
   };
   const calculateDashboardStats = (incidents: EmergencyIncident[]): DashboardStats => {
-    // Filter incidents based on user role and area scope
-    const filteredIncidents = incidents.filter(incident => {
-      // For dispatchers and supervisors, show incidents in their assigned city
-      if (isPoliceDispatcher || isPoliceSupervisor) {
-        return !userCity || incident.city === userCity;
-      }
-      
-      // For operators, only show incidents assigned to their units
-      if (isPoliceOperator) {
-        const userUnitCodes = userUnits.map(u => u.unit_code);
-        return (incident.assigned_units || []).some((unit: string) => userUnitCodes.includes(unit));
-      }
-      
-      // Admins see all incidents
-      if (isAdmin) {
-        return true;
-      }
-      
-      return false;
-    });
+    // For dispatchers and supervisors, count all incidents from the database query
+    // (which is already filtered by city and status)
+    let relevantIncidents = incidents;
     
-    const activeIncidents = filteredIncidents.filter(i => !['resolved', 'closed'].includes(i.status)).length;
-    const totalIncidents = filteredIncidents.length;
-    const resolvedIncidents = filteredIncidents.filter(i => ['resolved', 'closed'].includes(i.status)).length;
+    // Only apply additional filtering for field operators
+    if (isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher) {
+      const userUnitCodes = userUnits.map(u => u.unit_code);
+      relevantIncidents = incidents.filter(incident => {
+        return (incident.assigned_units || []).some((unit: string) => userUnitCodes.includes(unit));
+      });
+    }
+    
+    const activeIncidents = relevantIncidents.filter(i => !['resolved', 'closed'].includes(i.status)).length;
+    const totalIncidents = relevantIncidents.length;
+    const resolvedIncidents = relevantIncidents.filter(i => ['resolved', 'closed'].includes(i.status)).length;
+    
+    console.log('📈 Dashboard stats calculation:', {
+      totalRetrieved: incidents.length,
+      afterRoleFiltering: relevantIncidents.length,
+      activeCount: activeIncidents,
+      role: { isPoliceDispatcher, isPoliceSupervisor, isPoliceOperator }
+    });
     
     return {
       activeIncidents,
