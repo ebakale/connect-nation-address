@@ -14,7 +14,7 @@ serve(async (req) => {
   try {
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
     const authHeader = req.headers.get('Authorization')!;
@@ -84,7 +84,7 @@ serve(async (req) => {
         if (perfError) throw perfError;
 
         // Process performance data
-        const operatorStats = {};
+        const operatorStats: Record<string, any> = {};
         performance?.forEach(log => {
           if (!operatorStats[log.user_id]) {
             operatorStats[log.user_id] = {
@@ -94,7 +94,6 @@ serve(async (req) => {
               units_assigned: 0
             };
           }
-          
           if (log.action === 'incident_created') operatorStats[log.user_id].incidents_created++;
           if (log.action === 'incident_resolved') operatorStats[log.user_id].incidents_resolved++;
           if (log.action === 'units_assigned') operatorStats[log.user_id].units_assigned++;
@@ -129,7 +128,7 @@ serve(async (req) => {
 
         if (todayError) throw todayError;
 
-        const stats = {
+        const stats: any = {
           total_today: todayIncidents?.length || 0,
           by_status: {},
           by_priority: {},
@@ -143,6 +142,53 @@ serve(async (req) => {
         });
 
         result = { success: true, data: stats };
+        break;
+
+      case 'getDispatchersInScope':
+        // Determine supervisor/admin scope
+        const { data: rolesWithMeta, error: scopeErr } = await supabase
+          .from('user_roles')
+          .select('id, role, user_role_metadata(scope_type, scope_value)')
+          .eq('user_id', user.id);
+        if (scopeErr) throw scopeErr;
+
+        const supScope = (rolesWithMeta || []).find((r: any) => r.role === 'police_supervisor')?.user_role_metadata?.[0];
+
+        let dispatcherUserIds: string[] = [];
+        if (supScope && supScope.scope_type && supScope.scope_value) {
+          const { data: dispatcherRoles, error: drErr } = await supabase
+            .from('user_roles')
+            .select('user_id, user_role_metadata!inner(scope_type, scope_value)')
+            .eq('role', 'police_dispatcher')
+            .eq('user_role_metadata.scope_type', supScope.scope_type)
+            .eq('user_role_metadata.scope_value', supScope.scope_value);
+          if (drErr) throw drErr;
+          dispatcherUserIds = Array.from(new Set((dispatcherRoles || []).map((r: any) => r.user_id)));
+        } else {
+          // No scope found (admin or unspecific) -> list all dispatchers
+          const { data: dispatcherRoles, error: drErr } = await supabase
+            .from('user_roles')
+            .select('user_id')
+            .eq('role', 'police_dispatcher');
+          if (drErr) throw drErr;
+          dispatcherUserIds = Array.from(new Set((dispatcherRoles || []).map((r: any) => r.user_id)));
+        }
+
+        let dispatchers: any[] = [];
+        if (dispatcherUserIds.length > 0) {
+          const { data: profiles, error: profErr } = await supabase
+            .from('profiles')
+            .select('user_id, full_name, email')
+            .in('user_id', dispatcherUserIds);
+          if (profErr) throw profErr;
+          dispatchers = (profiles || []).map((p: any) => ({
+            id: p.user_id,
+            name: p.full_name || p.email || p.user_id,
+            role: 'police_dispatcher'
+          }));
+        }
+
+        result = { success: true, data: dispatchers };
         break;
 
       default:

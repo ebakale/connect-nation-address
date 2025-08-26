@@ -140,59 +140,19 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     }
   };
 
-  // Fetch available operators for assignment (only dispatchers in the same scope)
+  // Fetch available operators via edge function (scope-aware)
   const fetchAvailableOperators = async () => {
     try {
-      // First, get the current user's scope information
-      const { data: userRoles, error: userRoleError } = await supabase
-        .from('user_roles')
-        .select(`
-          role,
-          user_role_metadata!fk_user_role_metadata_user_role(scope_type, scope_value)
-        `)
-        .eq('user_id', user?.id);
-
-      if (userRoleError) throw userRoleError;
-
-      // Get the supervisor's scope (city, region, etc.)
-      const supervisorScope = userRoles?.[0]?.user_role_metadata?.[0];
-      
-      if (!supervisorScope) {
-        console.log('No scope found for supervisor, showing all dispatchers');
-        // Fallback to all dispatchers if no scope is found
-      }
-
-      // Build the query to get dispatchers
-      let query = supabase
-        .from('profiles')
-        .select(`
-          user_id,
-          full_name,
-          user_roles!inner(
-            role,
-            user_role_metadata!fk_user_role_metadata_user_role(scope_type, scope_value)
-          )
-        `)
-        .eq('user_roles.role', 'police_dispatcher');
-
-      // If supervisor has scope, filter dispatchers by the same scope
-      if (supervisorScope) {
-        query = query
-          .eq('user_roles.user_role_metadata.scope_type', supervisorScope.scope_type)
-          .eq('user_roles.user_role_metadata.scope_value', supervisorScope.scope_value);
-      }
-
-      const { data: operators, error } = await query;
-
+      const { data, error } = await supabase.functions.invoke('police-operator-management', {
+        body: { action: 'getDispatchersInScope' }
+      });
       if (error) throw error;
-
-      const operatorOptions = (operators || []).map((operator: any) => ({
-        id: operator.user_id,
-        name: operator.full_name || operator.user_id,
+      const ops = (data?.data || []).map((op: any) => ({
+        id: op.id,
+        name: op.name,
         role: 'police_dispatcher'
       }));
-
-      setAvailableOperators(operatorOptions);
+      setAvailableOperators(ops);
     } catch (error) {
       console.error('Error fetching operators:', error);
     }
@@ -869,21 +829,20 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
               {isEditing && isPoliceSupervisor ? (
                 <div className="mt-2">
                   <Select value={editData.assigned_operator_id} onValueChange={(value) => setEditData({...editData, assigned_operator_id: value})}>
-                    <SelectTrigger className="w-full bg-background border border-input">
-                      <SelectValue placeholder="Assign to operator..." />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background border border-input z-50">
-                      <SelectItem value="">Unassigned</SelectItem>
-                      {availableOperators.map((operator) => (
-                        <SelectItem key={operator.id} value={operator.id}>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">{operator.name}</span>
-                            <span className="text-muted-foreground">(dispatcher)</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <SelectTrigger className="w-full bg-background border border-input">
+                    <SelectValue placeholder="Assign to dispatcher..." />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border border-input z-50">
+                    {availableOperators.map((operator) => (
+                      <SelectItem key={operator.id} value={operator.id}>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{operator.name}</span>
+                          <span className="text-muted-foreground">(dispatcher)</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 </div>
               ) : isEditing && !isPoliceSupervisor ? (
                 <div className="mt-1 p-3 bg-yellow-50 border border-yellow-200 rounded">
@@ -1095,7 +1054,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-4 border-t">
             <div className="flex flex-wrap gap-2">
               {canComplete && incident.status !== 'resolved' && incident.status !== 'closed' && (
-                <Button onClick={handleMarkComplete} className="bg-green-600 hover:bg-green-700">
+                <Button onClick={handleMarkComplete}>
                   <CheckCircle className="h-4 w-4 mr-2" />
                   Mark Complete
                 </Button>
@@ -1105,12 +1064,11 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
             {/* Quick Action Section */}
             {isPoliceSupervisor && (
               <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                <Select onValueChange={(value) => setEditData({...editData, assigned_operator_id: value === 'unassigned' ? '' : value})} value={editData.assigned_operator_id || 'unassigned'}>
+                <Select onValueChange={(value) => setEditData({...editData, assigned_operator_id: value})} value={editData.assigned_operator_id}>
                   <SelectTrigger className="w-full sm:w-48">
                     <SelectValue placeholder="Assign dispatcher..." />
                   </SelectTrigger>
                   <SelectContent className="bg-background z-50">
-                    <SelectItem value="unassigned">Unassigned</SelectItem>
                     {availableOperators.map((operator) => (
                       <SelectItem key={operator.id} value={operator.id}>
                         {operator.name}
@@ -1121,13 +1079,12 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                 <Button 
                   onClick={async () => {
                     try {
-                      const operatorId = editData.assigned_operator_id === 'unassigned' ? null : editData.assigned_operator_id;
                       await supabase.functions.invoke('police-incident-actions', {
                         body: {
                           action: 'assignOperator',
                           incidentId: incident.id,
                           data: {
-                            operatorId: operatorId
+                            operatorId: editData.assigned_operator_id || null
                           }
                         }
                       });
@@ -1138,6 +1095,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                       toast.error('Failed to assign dispatcher');
                     }
                   }}
+                  disabled={!editData.assigned_operator_id}
                   className="w-full sm:w-auto"
                 >
                   Assign Dispatcher
