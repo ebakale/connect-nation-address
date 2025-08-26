@@ -385,13 +385,13 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
           </p>
           {/* Unassigned incidents alert */}
           {(() => {
-            const undispatchedCount = filteredIncidents.filter(i => !i.assigned_units || i.assigned_units.length === 0).length;
-            const urgentUndispatched = filteredIncidents.filter(i => (!i.assigned_units || i.assigned_units.length === 0) && i.status === 'reported').length;
+            const unassignedCount = filteredIncidents.filter(i => !i.assigned_operator_id).length;
+            const urgentUnassigned = filteredIncidents.filter(i => !i.assigned_operator_id && i.status === 'reported').length;
             
-            if (undispatchedCount > 0) {
+            if (unassignedCount > 0) {
               return (
                 <div className="text-xs text-red-600 font-medium mt-1">
-                  🚨 {urgentUndispatched} urgent undispatched, {undispatchedCount} total undispatched
+                  🚨 {urgentUnassigned} urgent unassigned, {unassignedCount} total unassigned
                 </div>
               );
             }
@@ -441,8 +441,8 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
       {/* Simplified incident list */}
       <div className="space-y-2">
         {paginatedIncidents.map((incident) => {
-          const isUndispatched = !incident.assigned_units || incident.assigned_units.length === 0;
-          const needsDispatch = incident.status === 'reported';
+          const isUnassigned = !incident.assigned_operator_id;
+          const needsAssignment = incident.status === 'reported';
           
           return (
             <div 
@@ -450,9 +450,9 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
               className={`border rounded-lg p-3 hover:bg-muted/50 cursor-pointer transition-colors ${
                 selectedIncident?.id === incident.id ? 'bg-primary/5 border-primary' : ''
               } ${
-                isUndispatched && needsDispatch ? 'border-l-4 border-l-red-500 bg-red-50/50' : ''
+                isUnassigned && needsAssignment ? 'border-l-4 border-l-red-500 bg-red-50/50' : ''
               } ${
-                isUndispatched && !needsDispatch ? 'border-l-4 border-l-orange-500 bg-orange-50/50' : ''
+                isUnassigned && !needsAssignment ? 'border-l-4 border-l-orange-500 bg-orange-50/50' : ''
               }`}
               onClick={() => {
                 onSelectIncident(incident);
