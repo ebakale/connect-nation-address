@@ -270,7 +270,10 @@ const PoliceDashboard = () => {
 
       // Filter by user's assigned city
       if (userCity) {
+        console.log('🏙️ Dispatcher assigned city:', userCity);
         query = query.eq('city', userCity);
+      } else {
+        console.log('⚠️ No assigned city found for dispatcher');
       }
 
       const { data: incidentsData, error } = await query;
@@ -309,6 +312,12 @@ const PoliceDashboard = () => {
       });
 
       setIncidents(validIncidents);
+      console.log('📊 Incidents loaded:', {
+        total: enrichedIncidents.length,
+        afterFiltering: validIncidents.length,
+        userCity,
+        userRole: { isPoliceDispatcher, isPoliceSupervisor, isPoliceOperator, isAdmin }
+      });
       
       // Calculate stats
       const stats = calculateDashboardStats(enrichedIncidents);
