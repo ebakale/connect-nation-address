@@ -1059,74 +1059,108 @@ const PoliceDashboard = () => {
 
           {/* Management Tab - Supervisors Only */}
           {(isPoliceSupervisor || isAdmin) && (
-            <TabsContent value="management" className="space-y-6">
-              <div className="flex items-center gap-4 mb-4">
-                <Badge variant="outline" className="flex items-center gap-2">
-                  <Users className="h-3 w-3" />
-                  Unit Management
-                </Badge>
-                <p className="text-sm text-muted-foreground">
+            <TabsContent value="management" className="space-y-8">
+              <div className="border-b pb-4">
+                <div className="flex items-center gap-4 mb-2">
+                  <Badge variant="outline" className="flex items-center gap-2">
+                    <Users className="h-3 w-3" />
+                    Unit Management
+                  </Badge>
+                </div>
+                <p className="text-muted-foreground">
                   Manage emergency units, officer assignments, and performance analytics
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <Card className="cursor-pointer hover:shadow-lg transition-shadow"
-                      onClick={() => window.location.href = '/units-profiles'}>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Users className="h-5 w-5" />
-                      Units & Profiles
-                    </CardTitle>
-                    <CardDescription>
-                      Manage emergency units and officer profiles
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button variant="outline" className="w-full">
-                      Open Management Console
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5" />
-                      Performance Analytics
-                    </CardTitle>
-                    <CardDescription>
-                      Response times and unit performance metrics
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponseTimeTracker showRecentOnly={false} />
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Shield className="h-5 w-5" />
-                      System Status
-                    </CardTitle>
-                    <CardDescription>
-                      Overall system health and statistics
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div className="text-center">
-                        <p className="font-bold text-lg">{dashboardStats.totalIncidents}</p>
-                        <p className="text-muted-foreground">Total Incidents</p>
+              {/* Quick Actions Section */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Quick Actions
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className="cursor-pointer hover:shadow-md transition-all hover:-translate-y-1"
+                        onClick={() => window.location.href = '/units-profiles'}>
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-primary/10 rounded-lg">
+                          <Users className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium">Units & Profiles</h4>
+                          <p className="text-sm text-muted-foreground">Manage emergency units and officers</p>
+                        </div>
                       </div>
-                      <div className="text-center">
-                        <p className="font-bold text-lg">{dashboardStats.resolvedIncidents}</p>
-                        <p className="text-muted-foreground">Resolved</p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="cursor-pointer hover:shadow-md transition-all hover:-translate-y-1">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-blue-500/10 rounded-lg">
+                          <Shield className="h-5 w-5 text-blue-500" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium">System Overview</h4>
+                          <p className="text-sm text-muted-foreground">View system health and statistics</p>
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Analytics Section */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Performance Analytics
+                </h3>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Response Time Analytics */}
+                  <Card>
+                    <CardHeader className="pb-4">
+                      <CardTitle className="text-base">Response Time Metrics</CardTitle>
+                      <CardDescription>
+                        Unit performance and response time analysis
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponseTimeTracker showRecentOnly={false} />
+                    </CardContent>
+                  </Card>
+
+                  {/* System Statistics */}
+                  <Card>
+                    <CardHeader className="pb-4">
+                      <CardTitle className="text-base">System Statistics</CardTitle>
+                      <CardDescription>
+                        Overall incident management metrics
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="text-center p-4 bg-muted/50 rounded-lg">
+                          <p className="text-2xl font-bold text-primary">{dashboardStats.totalIncidents}</p>
+                          <p className="text-sm text-muted-foreground mt-1">Total Incidents</p>
+                        </div>
+                        <div className="text-center p-4 bg-muted/50 rounded-lg">
+                          <p className="text-2xl font-bold text-green-600">{dashboardStats.resolvedIncidents}</p>
+                          <p className="text-sm text-muted-foreground mt-1">Resolved</p>
+                        </div>
+                        <div className="text-center p-4 bg-muted/50 rounded-lg col-span-2">
+                          <p className="text-xl font-bold text-blue-600">
+                            {dashboardStats.totalIncidents > 0 
+                              ? ((dashboardStats.resolvedIncidents / dashboardStats.totalIncidents) * 100).toFixed(1)
+                              : 0}%
+                          </p>
+                          <p className="text-sm text-muted-foreground mt-1">Resolution Rate</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             </TabsContent>
           )}
