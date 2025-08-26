@@ -433,7 +433,8 @@ const UserManager: React.FC = () => {
               <p className="text-muted-foreground">Loading users...</p>
             </div>
           ) : (
-            <div className="border rounded-lg">
+            <div>
+              <div className="border rounded-lg">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -565,10 +566,12 @@ const UserManager: React.FC = () => {
               </div>
             )}
 
-          {filteredUsers.length === 0 && !loading && (
-            <div className="text-center py-8">
-              <UserCog className="mx-auto h-12 w-12 text-muted-foreground" />
-              <p className="mt-2 text-muted-foreground">No police users found</p>
+            {filteredUsers.length === 0 && (
+              <div className="text-center py-8">
+                <UserCog className="mx-auto h-12 w-12 text-muted-foreground" />
+                <p className="mt-2 text-muted-foreground">No police users found</p>
+              </div>
+            )}
             </div>
           )}
 
