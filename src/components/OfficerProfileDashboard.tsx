@@ -53,6 +53,8 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
   const [officers, setOfficers] = useState<OfficerProfile[]>([]);
   const [officerStats, setOfficerStats] = useState<Record<string, OfficerStats>>({});
   const [expandedOfficers, setExpandedOfficers] = useState<Set<string>>(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
 
   useEffect(() => {
     fetchOfficers();
@@ -426,7 +428,15 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
         </CardHeader>
         <CardContent className="p-0">
           <div className="divide-y">
-            {officers.map((officer) => {
+            {/* Pagination calculations */}
+            {(() => {
+              const totalPages = Math.ceil(officers.length / ITEMS_PER_PAGE);
+              const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+              const paginatedOfficers = officers.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+              
+              return (
+                <>
+                  {paginatedOfficers.map((officer) => {
               const stats = officerStats[officer.user_id];
               const primaryRole = officer.user_roles[0]?.role || '';
               const performance = stats ? getPerformanceBadge(stats.rank_score) : null;
@@ -558,6 +568,46 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
                 </Collapsible>
               );
             })}
+
+            {/* Pagination controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center gap-2 mt-4 p-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </Button>
+                
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCurrentPage(page)}
+                      className="min-w-[36px]"
+                    >
+                      {page}
+                    </Button>
+                  ))}
+                </div>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </Button>
+              </div>
+            )}
+                </>
+              );
+            })()}
           </div>
         </CardContent>
       </Card>

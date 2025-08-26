@@ -54,6 +54,8 @@ const UnitManagement: React.FC = () => {
   const [units, setUnits] = useState<EmergencyUnit[]>([]);
   const [officers, setOfficers] = useState<Officer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -354,6 +356,11 @@ const UnitManagement: React.FC = () => {
     }
   };
 
+  // Pagination calculations
+  const totalPages = Math.ceil(units.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedUnits = units.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -510,7 +517,8 @@ const UnitManagement: React.FC = () => {
             </CardContent>
           </Card>
         ) : (
-          units.map((unit) => (
+          <>
+            {paginatedUnits.map((unit) => (
           <Card key={unit.id}>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -611,7 +619,46 @@ const UnitManagement: React.FC = () => {
               )}
             </CardContent>
           </Card>
-        )))}
+            ))}
+
+            {/* Pagination controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center gap-2 mt-6">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </Button>
+                
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCurrentPage(page)}
+                      className="min-w-[36px]"
+                    >
+                      {page}
+                    </Button>
+                  ))}
+                </div>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </Button>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       {/* Edit Dialog */}

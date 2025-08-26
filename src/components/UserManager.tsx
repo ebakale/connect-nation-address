@@ -35,6 +35,8 @@ const UserManager: React.FC = () => {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
   const [selectedRole, setSelectedRole] = useState<string>('');
   const [selectedGeographicScope, setSelectedGeographicScope] = useState<string>('');
   const [showScopeDialog, setShowScopeDialog] = useState(false);
@@ -364,6 +366,16 @@ const UserManager: React.FC = () => {
     user.organization.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Reset to first page when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
   if (!hasPoliceAdminAccess) {
     return (
       <Card>
@@ -433,7 +445,7 @@ const UserManager: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredUsers.map((user) => (
+                  {paginatedUsers.map((user) => (
                     <TableRow key={user.user_id}>
                       <TableCell>
                         <div>
@@ -515,7 +527,43 @@ const UserManager: React.FC = () => {
                 </TableBody>
               </Table>
             </div>
-          )}
+
+            {/* Pagination controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center gap-2 mt-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </Button>
+                
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCurrentPage(page)}
+                      className="min-w-[36px]"
+                    >
+                      {page}
+                    </Button>
+                  ))}
+                </div>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </Button>
+              </div>
+            )}
 
           {filteredUsers.length === 0 && !loading && (
             <div className="text-center py-8">
@@ -523,6 +571,7 @@ const UserManager: React.FC = () => {
               <p className="mt-2 text-muted-foreground">No police users found</p>
             </div>
           )}
+
         </CardContent>
       </Card>
 
