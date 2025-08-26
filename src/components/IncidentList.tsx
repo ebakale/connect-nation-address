@@ -100,6 +100,10 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
   const [unitNames, setUnitNames] = useState<Record<string, string>>({});
   const [decryptedInfo, setDecryptedInfo] = useState<Record<string, { message: string; address: string; coordinates?: { lat: number; lng: number }; uac?: string }>>({});
   const [showDetailDialog, setShowDetailDialog] = useState(false);
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const incidentsPerPage = 5;
 
   // Fetch available emergency units for assignment
   const fetchAvailableOfficers = async () => {
@@ -362,6 +366,16 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
     return true;
   });
 
+  // Reset pagination when incidents change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [incidents, statusFilter, priorityFilter]);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredIncidents.length / incidentsPerPage);
+  const startIndex = (currentPage - 1) * incidentsPerPage;
+  const paginatedIncidents = filteredIncidents.slice(startIndex, startIndex + incidentsPerPage);
+
   return (
     <div className="space-y-4">
       {/* Header with filters */}
@@ -403,9 +417,19 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
         </div>
       </div>
 
+      {/* Pagination info */}
+      <div className="flex items-center justify-between text-sm text-muted-foreground">
+        <span>
+          Showing {startIndex + 1}-{Math.min(startIndex + incidentsPerPage, filteredIncidents.length)} of {filteredIncidents.length} incidents
+        </span>
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+      </div>
+
       {/* Simplified incident list */}
       <div className="space-y-2">
-        {filteredIncidents.map((incident) => (
+        {paginatedIncidents.map((incident) => (
           <div 
             key={incident.id}
             className={`border rounded-lg p-3 hover:bg-muted/50 cursor-pointer transition-colors ${
@@ -467,13 +491,87 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
           </div>
         ))}
         
-        {filteredIncidents.length === 0 && (
+        {paginatedIncidents.length === 0 && (
           <div className="p-8 text-center text-muted-foreground">
             <AlertTriangle className="h-8 w-8 mx-auto mb-2 opacity-50" />
             <p>No incidents match the current filters</p>
           </div>
         )}
       </div>
+
+      {/* Pagination controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Button>
+          
+          <div className="flex items-center gap-1">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+              <Button
+                key={page}
+                variant={currentPage === page ? "default" : "outline"}
+                size="sm"
+                onClick={() => setCurrentPage(page)}
+                className="min-w-[36px]"
+              >
+                {page}
+              </Button>
+            ))}
+          </div>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </Button>
+        </div>
+      )}
+
+      {/* Assignment Dialog */}
+      <Dialog open={!!assignDialog} onOpenChange={() => setAssignDialog(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Assign Unit to Incident</DialogTitle>
+            <DialogDescription>
+              Select an available unit to assign to this incident
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Select value={assigningUnit} onValueChange={setAssigningUnit}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a unit" />
+              </SelectTrigger>
+              <SelectContent>
+                {availableOfficers.map((officer) => (
+                  <SelectItem key={officer.id} value={officer.id}>
+                    {officer.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setAssignDialog(null)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={() => assignDialog && handleAssignIncident(assignDialog)}
+                disabled={!assigningUnit}
+              >
+                Assign Unit
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Single incident detail dialog */}
       {selectedIncident && showDetailDialog && (
