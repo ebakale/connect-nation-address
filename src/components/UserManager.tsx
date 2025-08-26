@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useUserRole } from '@/hooks/useUserRole';
-import { Users, Search, UserCog, MapPin, Edit, Trash2, UserPlus } from 'lucide-react';
+import { Users, Search, UserCog, MapPin, Edit, Trash2, UserPlus, RefreshCw } from 'lucide-react';
 
 interface UserProfile {
   id: string;
@@ -88,6 +88,11 @@ const UserManager: React.FC = () => {
       fetchUsers();
     }
   }, [hasPoliceAdminAccess]);
+
+  // Add a manual refresh function
+  const refreshUsers = () => {
+    fetchUsers();
+  };
 
   const fetchUsers = async () => {
     try {
@@ -430,7 +435,8 @@ const UserManager: React.FC = () => {
                 </Button>
               </DialogTrigger>
             </Dialog>
-            <Button onClick={fetchUsers} variant="outline">
+            <Button onClick={fetchUsers} variant="outline" className="flex items-center gap-2">
+              <RefreshCw className="h-4 w-4" />
               Refresh
             </Button>
           </div>
