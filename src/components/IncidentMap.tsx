@@ -118,14 +118,12 @@ const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: Incident
         markerElement.style.animation = 'pulse 2s infinite';
       }
 
-      // Hover effect - scale from bottom center to prevent position shifting
+      // Hover effect - use glow instead of scale to prevent position shifting
       markerElement.addEventListener('mouseenter', () => {
-        markerElement.style.transform = 'scale(1.2)';
-        markerElement.style.transformOrigin = 'center bottom';
+        markerElement.style.boxShadow = '0 0 0 4px rgba(59, 130, 246, 0.3), 0 2px 4px rgba(0,0,0,0.3)';
       });
       markerElement.addEventListener('mouseleave', () => {
-        markerElement.style.transform = 'scale(1)';
-        markerElement.style.transformOrigin = 'center bottom';
+        markerElement.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
       });
 
       const marker = new mapboxgl.Marker({ element: markerElement })
