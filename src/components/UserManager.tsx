@@ -39,6 +39,7 @@ const UserManager: React.FC = () => {
   const ITEMS_PER_PAGE = 5;
   const [selectedRole, setSelectedRole] = useState<string>('');
   const [selectedGeographicScope, setSelectedGeographicScope] = useState<string>('');
+  const [selectedCity, setSelectedCity] = useState<string>('');
   const [showScopeDialog, setShowScopeDialog] = useState(false);
   const [pendingAssignment, setPendingAssignment] = useState<{userId: string, role: string} | null>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
@@ -68,10 +69,19 @@ const UserManager: React.FC = () => {
     'police_operator', 'police_supervisor', 'police_dispatcher', 'police_admin'
   ] as const;
 
-  const geographicScopes = [
-    'Annobón', 'Bioko Norte', 'Bioko Sur', 'Centro Sur', 'Djibloho',
-    'Kié-Ntem', 'Litoral', 'Wele-Nzas'
-  ] as const;
+  // Region to cities mapping for Equatorial Guinea
+  const regionCities: Record<string, string[]> = {
+    'Bioko Norte': ['Malabo', 'Baney', 'Rebola'],
+    'Bioko Sur': ['Luba', 'Riaba'],
+    'Litoral': ['Bata', 'Mbini', 'Kogo'],
+    'Centro Sur': ['Evinayong', 'Acurenam', 'Niefang'],
+    'Kié-Ntem': ['Ebebiyín', 'Mikomeseng', 'Nsonk Nsomo'],
+    'Wele-Nzas': ['Mongomo', 'Añisoc', 'Aconibe', 'Nsork'],
+    'Annobón': ['San Antonio de Palé'],
+    'Djibloho': ['Ciudad de la Paz']
+  };
+
+  const geographicScopes = Object.keys(regionCities);
 
   useEffect(() => {
     if (hasPoliceAdminAccess) {
@@ -151,10 +161,17 @@ const UserManager: React.FC = () => {
   };
 
   const assignRole = async (userId: string, role: string) => {
+    // Check if role requires city scope (dispatcher or supervisor)
+    if (role === 'police_dispatcher' || role === 'police_supervisor') {
+      setPendingAssignment({ userId, role });
+      setShowScopeDialog(true);
+      return;
+    }
+    
     await assignRoleWithScope(userId, role, null);
   };
 
-  const assignRoleWithScope = async (userId: string, role: string, geographicScope: string | null) => {
+  const assignRoleWithScope = async (userId: string, role: string, cityScope: string | null) => {
     try {
       const { data: userRoleData, error: roleError } = await supabase
         .from('user_roles')
@@ -167,14 +184,14 @@ const UserManager: React.FC = () => {
 
       if (roleError) throw roleError;
 
-      // If geographic scope is provided, add metadata
-      if (geographicScope && userRoleData) {
+      // If city scope is provided, add metadata
+      if (cityScope && userRoleData) {
         const { error: metadataError } = await supabase
           .from('user_role_metadata')
           .insert({
             user_role_id: userRoleData.id,
-            scope_type: 'geographic',
-            scope_value: geographicScope
+            scope_type: 'city',
+            scope_value: cityScope
           });
 
         if (metadataError) throw metadataError;
@@ -182,13 +199,14 @@ const UserManager: React.FC = () => {
 
       toast({
         title: "Success",
-        description: `Role assigned successfully${geographicScope ? ' with geographic scope' : ''}`
+        description: `Role assigned successfully${cityScope ? ' with city scope' : ''}`
       });
 
       await fetchUsers();
       setShowScopeDialog(false);
       setPendingAssignment(null);
       setSelectedGeographicScope('');
+      setSelectedCity('');
     } catch (error) {
       console.error('Error assigning role:', error);
       toast({
@@ -490,6 +508,9 @@ const UserManager: React.FC = () => {
                               ).map((role) => (
                                 <SelectItem key={role} value={role}>
                                   {role.replace('_', ' ')}
+                                  {(role === 'police_dispatcher' || role === 'police_supervisor') && (
+                                    <span className="text-xs text-muted-foreground ml-1">(requires city scope)</span>
+                                  )}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -570,18 +591,21 @@ const UserManager: React.FC = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <MapPin className="h-5 w-5" />
-              Assign Geographic Scope
+              Assign City Scope
             </DialogTitle>
             <DialogDescription>
-              Field agents must be assigned to a specific geographic region in Equatorial Guinea.
+              Police dispatchers and supervisors must be assigned to a specific city in Equatorial Guinea.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="geographic-scope">Select Region</Label>
+              <Label htmlFor="region-scope">Select Region</Label>
               <Select
                 value={selectedGeographicScope}
-                onValueChange={setSelectedGeographicScope}
+                onValueChange={(value) => {
+                  setSelectedGeographicScope(value);
+                  setSelectedCity(''); // Reset city when region changes
+                }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Choose a region..." />
@@ -595,6 +619,27 @@ const UserManager: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="city-scope">Select City</Label>
+              <Select
+                value={selectedCity}
+                onValueChange={setSelectedCity}
+                disabled={!selectedGeographicScope}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={selectedGeographicScope ? "Choose a city..." : "Select region first"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {selectedGeographicScope && regionCities[selectedGeographicScope]?.map((city) => (
+                    <SelectItem key={city} value={city}>
+                      {city}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
             <div className="flex justify-end gap-2">
               <Button
                 variant="outline"
@@ -602,21 +647,22 @@ const UserManager: React.FC = () => {
                   setShowScopeDialog(false);
                   setPendingAssignment(null);
                   setSelectedGeographicScope('');
+                  setSelectedCity('');
                 }}
               >
                 Cancel
               </Button>
               <Button
                 onClick={() => {
-                  if (pendingAssignment && selectedGeographicScope) {
+                  if (pendingAssignment && selectedCity) {
                     assignRoleWithScope(
                       pendingAssignment.userId,
                       pendingAssignment.role,
-                      selectedGeographicScope
+                      selectedCity
                     );
                   }
                 }}
-                disabled={!selectedGeographicScope}
+                disabled={!selectedCity}
               >
                 Assign Role
               </Button>
