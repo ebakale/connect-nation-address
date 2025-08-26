@@ -141,6 +141,18 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
     }
   };
 
+  const handleEmergencyDispatch = () => {
+    // Open emergency dispatch dialog or redirect to dispatch page
+    toast.success('Emergency dispatch initiated');
+    // This could open a modal for emergency dispatching
+  };
+
+  const handleBroadcastAlert = () => {
+    // Open broadcast alert dialog
+    toast.info('Broadcast alert system opened');
+    // This could open a modal for broadcasting alerts to all units
+  };
+
   return (
     <div className="space-y-4">
       {/* Current Operator Status */}
@@ -258,12 +270,22 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
           <CardTitle className="text-lg">Quick Actions</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          <Button size="sm" variant="outline" className="w-full justify-start">
-            <PhoneCall className="mr-2 h-4 w-4" />
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="w-full justify-start hover:bg-red-50 hover:border-red-200"
+            onClick={handleEmergencyDispatch}
+          >
+            <PhoneCall className="mr-2 h-4 w-4 text-red-600" />
             Emergency Dispatch
           </Button>
-          <Button size="sm" variant="outline" className="w-full justify-start">
-            <AlertTriangle className="mr-2 h-4 w-4" />
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="w-full justify-start hover:bg-orange-50 hover:border-orange-200"
+            onClick={handleBroadcastAlert}
+          >
+            <AlertTriangle className="mr-2 h-4 w-4 text-orange-600" />
             Broadcast Alert
           </Button>
         </CardContent>
