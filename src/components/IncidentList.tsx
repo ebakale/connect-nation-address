@@ -95,7 +95,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [assignDialog, setAssignDialog] = useState<string | null>(null);
-  const [assigningUnit, setAssigningUnit] = useState('');
+  const [dispatchingUnit, setDispatchingUnit] = useState('');
   const [availableOfficers, setAvailableOfficers] = useState<{id: string, label: string, coverage_city?: string}[]>([]);
   const [unitNames, setUnitNames] = useState<Record<string, string>>({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -281,9 +281,9 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
     }
   };
 
-  const handleAssignIncident = async (incidentId: string) => {
-    if (!assigningUnit.trim()) {
-      toast.error('Please select a unit to assign');
+  const handleDispatchIncident = async (incidentId: string) => {
+    if (!dispatchingUnit.trim()) {
+      toast.error('Please select a unit to dispatch');
       return;
     }
 
@@ -292,7 +292,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
       const { data: unitData, error: unitError } = await supabase
         .from('emergency_units')
         .select('unit_code, unit_name')
-        .eq('id', assigningUnit)
+        .eq('id', dispatchingUnit)
         .single();
 
       if (unitError) throw unitError;
@@ -344,9 +344,9 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
         })
         .eq('id', incidentId);
 
-      toast.success(`Incident assigned to ${unitData.unit_name} (${unitCode})`);
+      toast.success(`Unit ${unitData.unit_name} (${unitCode}) dispatched to incident`);
       setAssignDialog(null);
-      setAssigningUnit('');
+      setDispatchingUnit('');
       
       // Trigger refresh of incident data
       if (onUpdate) {
@@ -385,13 +385,13 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
           </p>
           {/* Unassigned incidents alert */}
           {(() => {
-            const unassignedCount = filteredIncidents.filter(i => !i.assigned_units || i.assigned_units.length === 0).length;
-            const urgentUnassigned = filteredIncidents.filter(i => (!i.assigned_units || i.assigned_units.length === 0) && i.status === 'reported').length;
+            const undispatchedCount = filteredIncidents.filter(i => !i.assigned_units || i.assigned_units.length === 0).length;
+            const urgentUndispatched = filteredIncidents.filter(i => (!i.assigned_units || i.assigned_units.length === 0) && i.status === 'reported').length;
             
-            if (unassignedCount > 0) {
+            if (undispatchedCount > 0) {
               return (
                 <div className="text-xs text-red-600 font-medium mt-1">
-                  🚨 {urgentUnassigned} urgent unassigned, {unassignedCount} total unassigned
+                  🚨 {urgentUndispatched} urgent undispatched, {undispatchedCount} total undispatched
                 </div>
               );
             }
@@ -441,7 +441,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
       {/* Simplified incident list */}
       <div className="space-y-2">
         {paginatedIncidents.map((incident) => {
-          const isUnassigned = !incident.assigned_units || incident.assigned_units.length === 0;
+          const isUndispatched = !incident.assigned_units || incident.assigned_units.length === 0;
           const needsDispatch = incident.status === 'reported';
           
           return (
@@ -450,9 +450,9 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
               className={`border rounded-lg p-3 hover:bg-muted/50 cursor-pointer transition-colors ${
                 selectedIncident?.id === incident.id ? 'bg-primary/5 border-primary' : ''
               } ${
-                isUnassigned && needsDispatch ? 'border-l-4 border-l-red-500 bg-red-50/50' : ''
+                isUndispatched && needsDispatch ? 'border-l-4 border-l-red-500 bg-red-50/50' : ''
               } ${
-                isUnassigned && !needsDispatch ? 'border-l-4 border-l-orange-500 bg-orange-50/50' : ''
+                isUndispatched && !needsDispatch ? 'border-l-4 border-l-orange-500 bg-orange-50/50' : ''
               }`}
               onClick={() => {
                 onSelectIncident(incident);
@@ -501,9 +501,9 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
                     ).join(', ')}
                     {incident.assigned_units.length > 2 && ` +${incident.assigned_units.length - 2}`}
                   </span>
-                ) : (
-                  <span className="text-orange-600">Unassigned</span>
-                )}
+                 ) : (
+                   <span className="text-orange-600">Undispatched</span>
+                 )}
               </div>
               <span className="text-xs text-primary">Click for details →</span>
             </div>
@@ -559,13 +559,13 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
       <Dialog open={!!assignDialog} onOpenChange={() => setAssignDialog(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Assign Unit to Incident</DialogTitle>
+            <DialogTitle>Dispatch Unit to Incident</DialogTitle>
             <DialogDescription>
-              Select an available unit to assign to this incident
+              Select an available unit to dispatch to this incident
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <Select value={assigningUnit} onValueChange={setAssigningUnit}>
+            <Select value={dispatchingUnit} onValueChange={setDispatchingUnit}>
               <SelectTrigger>
                 <SelectValue placeholder="Select a unit" />
               </SelectTrigger>
@@ -588,10 +588,10 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
                 Cancel
               </Button>
               <Button 
-                onClick={() => assignDialog && handleAssignIncident(assignDialog)}
-                disabled={!assigningUnit}
+                onClick={() => assignDialog && handleDispatchIncident(assignDialog)}
+                disabled={!dispatchingUnit}
               >
-                Assign Unit
+                Dispatch Unit
               </Button>
             </div>
           </div>

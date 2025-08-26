@@ -88,7 +88,8 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     status: '',
     priority_level: 1,
     dispatcher_notes: '',
-    assigned_units: [] as string[]
+    assigned_units: [] as string[],
+    assigned_operator_id: ''
   });
   const [newUnit, setNewUnit] = useState('');
   const [availableUnits, setAvailableUnits] = useState<{ unit_code: string; unit_name: string; status: string; coverage_city?: string }[]>([]);
@@ -96,10 +97,11 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   const [userNames, setUserNames] = useState<Record<string, string>>({});
   const [reporterInfo, setReporterInfo] = useState<{ name?: string; email?: string; contact?: string }>({});
   const [userUnits, setUserUnits] = useState<string[]>([]);
-  const [assigningUnit, setAssigningUnit] = useState('');
+  const [dispatchingUnit, setDispatchingUnit] = useState('');
   const [availableOfficers, setAvailableOfficers] = useState<{id: string, label: string, coverage_city?: string}[]>([]);
+  const [availableOperators, setAvailableOperators] = useState<{id: string, name: string, role: string}[]>([]);
 
-  // Fetch available emergency units for assignment
+  // Fetch available emergency units for dispatch
   const fetchAvailableOfficers = async () => {
     try {
       // Get available emergency units, filtered by incident city when available
@@ -135,6 +137,32 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
       setAvailableOfficers(unitOptions);
     } catch (error) {
       console.error('Error fetching units:', error);
+    }
+  };
+
+  // Fetch available operators for assignment
+  const fetchAvailableOperators = async () => {
+    try {
+      const { data: operators, error } = await supabase
+        .from('profiles')
+        .select(`
+          user_id,
+          full_name,
+          user_roles(role)
+        `)
+        .in('user_roles.role', ['police_operator', 'police_dispatcher', 'police_supervisor']);
+
+      if (error) throw error;
+
+      const operatorOptions = (operators || []).map((operator: any) => ({
+        id: operator.user_id,
+        name: operator.full_name || operator.user_id,
+        role: operator.user_roles?.[0]?.role || 'police_operator'
+      }));
+
+      setAvailableOperators(operatorOptions);
+    } catch (error) {
+      console.error('Error fetching operators:', error);
     }
   };
 
@@ -284,8 +312,15 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   useEffect(() => {
     loadIncidentLogs();
     fetchAvailableOfficers();
+    fetchAvailableOperators();
     loadUserUnits();
   }, [incident.id, user?.id]);
+
+  useEffect(() => {
+    if (incident.assigned_operator_id) {
+      loadUserNamesFromLogs([...logs, { user_id: incident.assigned_operator_id }]);
+    }
+  }, [logs, incident.assigned_operator_id]);
 
   useEffect(() => {
     if (userUnits.length > 0 || isPoliceDispatcher || isPoliceSupervisor) {
@@ -322,7 +357,8 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
       status: incident.status,
       priority_level: incident.priority_level,
       dispatcher_notes: incident.dispatcher_notes || '',
-      assigned_units: incident.assigned_units || []
+      assigned_units: incident.assigned_units || [],
+      assigned_operator_id: incident.assigned_operator_id || ''
     });
     setIsEditing(true);
   };
@@ -366,6 +402,19 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
             incidentId: incident.id,
             data: {
               notes: editData.dispatcher_notes
+            }
+          }
+        });
+      }
+
+      // Update operator assignment if changed
+      if (editData.assigned_operator_id !== incident.assigned_operator_id) {
+        await supabase.functions.invoke('police-incident-actions', {
+          body: {
+            action: 'assignOperator',
+            incidentId: incident.id,
+            data: {
+              operatorId: editData.assigned_operator_id || null
             }
           }
         });
@@ -434,9 +483,9 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     });
   };
 
-  const handleAssignIncident = async () => {
-    if (!assigningUnit.trim()) {
-      toast.error('Please select a unit to assign');
+  const handleDispatchIncident = async () => {
+    if (!dispatchingUnit.trim()) {
+      toast.error('Please select a unit to dispatch');
       return;
     }
 
@@ -445,7 +494,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
       const { data: unitData, error: unitError } = await supabase
         .from('emergency_units')
         .select('unit_code, unit_name')
-        .eq('id', assigningUnit)
+        .eq('id', dispatchingUnit)
         .single();
 
       if (unitError) throw unitError;
@@ -496,8 +545,8 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
         })
         .eq('id', incident.id);
 
-      toast.success(`Incident assigned to ${unitData.unit_name} (${unitCode})`);
-      setAssigningUnit('');
+      toast.success(`Unit ${unitData.unit_name} (${unitCode}) dispatched to incident`);
+      setDispatchingUnit('');
       
       // Trigger refresh of incident data
       if (onUpdate) {
@@ -779,10 +828,54 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Operator Assignment */}
+            <div>
+              <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <User className="h-4 w-4" />
+                Assigned Operator
+              </label>
+              {isEditing && isPoliceSupervisor ? (
+                <div className="mt-2">
+                  <Select value={editData.assigned_operator_id} onValueChange={(value) => setEditData({...editData, assigned_operator_id: value})}>
+                    <SelectTrigger className="w-full bg-background border border-input">
+                      <SelectValue placeholder="Assign to operator..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border border-input z-50">
+                      <SelectItem value="">Unassigned</SelectItem>
+                      {availableOperators.map((operator) => (
+                        <SelectItem key={operator.id} value={operator.id}>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{operator.name}</span>
+                            <span className="text-muted-foreground">({operator.role.replace('police_', '')})</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : isEditing && !isPoliceSupervisor ? (
+                <div className="mt-1 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                  <p className="text-sm text-yellow-800">
+                    Only supervisors can assign incidents to operators.
+                  </p>
+                </div>
+              ) : (
+                <div className="mt-1">
+                  {incident.assigned_operator_id ? (
+                    <Badge variant="secondary">
+                      {userNames[incident.assigned_operator_id] || `Operator ${incident.assigned_operator_id.slice(0,8)}`}
+                    </Badge>
+                  ) : (
+                    <span className="text-muted-foreground">No operator assigned</span>
+                  )}
+                </div>
+              )}
+            </div>
+            
             <div>
               <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <Users className="h-4 w-4" />
-                Assigned Units
+                Dispatched Units
               </label>
                {isEditing && canAssignUnits ? (
                  <div className="mt-2 space-y-3">
@@ -791,21 +884,21 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                        <SelectTrigger className="flex-1 bg-background border border-input">
                          <SelectValue placeholder="Select a unit to assign" />
                        </SelectTrigger>
-                       <SelectContent className="bg-background border border-input z-50">
-                         {availableUnits
-                           .filter(unit => !editData.assigned_units.includes(unit.unit_code))
-                           .map((unit) => (
-                             <SelectItem key={unit.unit_code} value={unit.unit_code}>
-                               <div className="flex items-center gap-2">
-                                 <span className="font-medium">{unit.unit_code}</span>
-                                 <span className="text-muted-foreground">- {unit.unit_name}</span>
-                                 <Badge variant={unit.status === 'available' ? 'default' : 'secondary'} className="text-xs">
-                                   {unit.status}
-                                 </Badge>
-                               </div>
-                             </SelectItem>
-                           ))}
-                       </SelectContent>
+                        <SelectContent className="bg-background border border-input z-50">
+                          {availableUnits
+                            .filter(unit => !editData.assigned_units.includes(unit.unit_code))
+                            .map((unit) => (
+                              <SelectItem key={unit.unit_code} value={unit.unit_code}>
+                                <div className="flex items-center gap-2">
+                                  <span className="font-medium">{unit.unit_code}</span>
+                                  <span className="text-muted-foreground">- {unit.unit_name}</span>
+                                  <Badge variant={unit.status === 'available' ? 'default' : 'secondary'} className="text-xs">
+                                    {unit.status}
+                                  </Badge>
+                                </div>
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
                      </Select>
                      <Button onClick={addUnit} size="sm" disabled={!newUnit}>Add</Button>
                    </div>
@@ -818,12 +911,12 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                      ))}
                    </div>
                  </div>
-               ) : isEditing && !canAssignUnits ? (
-                 <div className="mt-1 p-3 bg-yellow-50 border border-yellow-200 rounded">
-                   <p className="text-sm text-yellow-800">
-                     Only dispatchers can assign or reassign units to incidents.
-                   </p>
-                 </div>
+                ) : isEditing && !canAssignUnits ? (
+                  <div className="mt-1 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                    <p className="text-sm text-yellow-800">
+                      Only dispatchers can dispatch or reassign units to incidents.
+                    </p>
+                  </div>
               ) : (
                 <div className="mt-1 flex flex-wrap gap-2">
                   {(incident.assigned_units?.length ? incident.assigned_units : []).map((unit, index) => (
@@ -831,9 +924,9 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                       {unitNames[unit] || unit}
                     </Badge>
                   ))}
-                  {(!incident.assigned_units || incident.assigned_units.length === 0) && (
-                    <span className="text-muted-foreground">No units assigned</span>
-                  )}
+                   {(!incident.assigned_units || incident.assigned_units.length === 0) && (
+                     <span className="text-muted-foreground">No units dispatched</span>
+                   )}
                 </div>
               )}
             </div>
@@ -977,12 +1070,12 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
               )}
             </div>
 
-            {/* Quick Assignment Section */}
+            {/* Quick Dispatch Section */}
             {(isPoliceSupervisor || isPoliceDispatcher) && (
               <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                <Select onValueChange={setAssigningUnit} value={assigningUnit}>
+                <Select onValueChange={setDispatchingUnit} value={dispatchingUnit}>
                   <SelectTrigger className="w-full sm:w-48">
-                    <SelectValue placeholder="Assign to unit..." />
+                    <SelectValue placeholder="Dispatch unit..." />
                   </SelectTrigger>
                   <SelectContent className="bg-background z-50">
                     {availableOfficers.map((unit) => (
@@ -993,11 +1086,11 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                   </SelectContent>
                 </Select>
                 <Button 
-                  onClick={handleAssignIncident}
-                  disabled={!assigningUnit}
+                  onClick={handleDispatchIncident}
+                  disabled={!dispatchingUnit}
                   className="w-full sm:w-auto"
                 >
-                  Assign Unit
+                  Dispatch Unit
                 </Button>
               </div>
             )}
