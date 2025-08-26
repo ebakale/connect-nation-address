@@ -502,7 +502,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
                     {incident.assigned_units.length > 2 && ` +${incident.assigned_units.length - 2}`}
                   </span>
                  ) : (
-                   <span className="text-orange-600">Undispatched</span>
+                   <span className="text-orange-600">{incident.assigned_operator_id ? 'No units dispatched' : 'Unassigned'}</span>
                  )}
               </div>
               <span className="text-xs text-primary">Click for details →</span>
