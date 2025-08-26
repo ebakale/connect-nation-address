@@ -337,10 +337,6 @@ const PoliceAnalytics: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">Police Analytics Dashboard</h2>
-          <p className="text-muted-foreground">Performance metrics and operational insights</p>
-        </div>
         <div className="flex items-center gap-2">
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger className="w-40">

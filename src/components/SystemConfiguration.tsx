@@ -193,11 +193,7 @@ const SystemConfiguration: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">System Configuration</h2>
-          <p className="text-muted-foreground">Configure system settings and security policies</p>
-        </div>
+      <div className="flex items-center justify-end">
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={backupSystem}>
             <Download className="h-4 w-4 mr-2" />

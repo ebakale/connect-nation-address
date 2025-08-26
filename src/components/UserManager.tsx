@@ -394,18 +394,7 @@ const UserManager: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            Police User Management
-          </CardTitle>
-          <CardDescription>
-            Manage police system users and their role assignments
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-4 mb-6">
+      <div className="flex gap-4 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
@@ -574,9 +563,6 @@ const UserManager: React.FC = () => {
             )}
             </div>
           )}
-
-        </CardContent>
-      </Card>
 
       {/* Geographic Scope Assignment Dialog */}
       <Dialog open={showScopeDialog} onOpenChange={setShowScopeDialog}>
