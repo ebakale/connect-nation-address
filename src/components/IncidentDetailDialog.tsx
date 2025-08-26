@@ -140,17 +140,49 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     }
   };
 
-  // Fetch available operators for assignment (only dispatchers)
+  // Fetch available operators for assignment (only dispatchers in the same scope)
   const fetchAvailableOperators = async () => {
     try {
-      const { data: operators, error } = await supabase
+      // First, get the current user's scope information
+      const { data: userRoles, error: userRoleError } = await supabase
+        .from('user_roles')
+        .select(`
+          role,
+          user_role_metadata!fk_user_role_metadata_user_role(scope_type, scope_value)
+        `)
+        .eq('user_id', user?.id);
+
+      if (userRoleError) throw userRoleError;
+
+      // Get the supervisor's scope (city, region, etc.)
+      const supervisorScope = userRoles?.[0]?.user_role_metadata?.[0];
+      
+      if (!supervisorScope) {
+        console.log('No scope found for supervisor, showing all dispatchers');
+        // Fallback to all dispatchers if no scope is found
+      }
+
+      // Build the query to get dispatchers
+      let query = supabase
         .from('profiles')
         .select(`
           user_id,
           full_name,
-          user_roles!inner(role)
+          user_roles!inner(
+            role,
+            user_role_metadata!fk_user_role_metadata_user_role(scope_type, scope_value)
+          )
         `)
-        .eq('user_roles.role', 'police_dispatcher'); // Only fetch dispatchers
+        .eq('user_roles.role', 'police_dispatcher');
+
+      // If supervisor has scope, filter dispatchers by the same scope
+      if (supervisorScope) {
+        query = query
+          .eq('user_roles.user_role_metadata.scope_type', supervisorScope.scope_type)
+          .eq('user_roles.user_role_metadata.scope_value', supervisorScope.scope_value);
+      }
+
+      const { data: operators, error } = await query;
 
       if (error) throw error;
 
