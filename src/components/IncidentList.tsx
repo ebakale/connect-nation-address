@@ -98,11 +98,12 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
   const [assigningUnit, setAssigningUnit] = useState('');
   const [availableOfficers, setAvailableOfficers] = useState<{id: string, label: string}[]>([]);
   const [unitNames, setUnitNames] = useState<Record<string, string>>({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
   const [decryptedInfo, setDecryptedInfo] = useState<Record<string, { message: string; address: string; coordinates?: { lat: number; lng: number }; uac?: string }>>({});
   const [showDetailDialog, setShowDetailDialog] = useState(false);
   
-  // Pagination states
-  const [currentPage, setCurrentPage] = useState(1);
+  // Pagination constants
   const incidentsPerPage = 5;
 
   // Fetch available emergency units for assignment
