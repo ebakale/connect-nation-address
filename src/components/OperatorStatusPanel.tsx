@@ -9,7 +9,8 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { toast } from "sonner";
+import EmergencyDispatchDialog from "./EmergencyDispatchDialog";
+import BroadcastAlertDialog from "./BroadcastAlertDialog";
 
 interface OperatorSession {
   id: string;
@@ -31,6 +32,8 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
   const [status, setStatus] = useState<string>('active');
   const [sessionDuration, setSessionDuration] = useState<string>('0m');
   const [activeOperators, setActiveOperators] = useState<any[]>([]);
+  const [showEmergencyDialog, setShowEmergencyDialog] = useState(false);
+  const [showBroadcastDialog, setShowBroadcastDialog] = useState(false);
 
   useEffect(() => {
     if (operatorSession) {
@@ -116,10 +119,10 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
       if (error) throw error;
 
       setStatus(newStatus);
-      toast.success(`Status updated to ${newStatus}`);
+      // Note: We'll implement proper toast notifications when shadcn toast is properly set up
     } catch (error) {
       console.error('Error updating status:', error);
-      toast.error('Failed to update status');
+      // Note: We'll implement proper error toast notifications when shadcn toast is properly set up
     }
   };
 
@@ -142,15 +145,11 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
   };
 
   const handleEmergencyDispatch = () => {
-    // Open emergency dispatch dialog or redirect to dispatch page
-    toast.success('Emergency dispatch initiated');
-    // This could open a modal for emergency dispatching
+    setShowEmergencyDialog(true);
   };
 
   const handleBroadcastAlert = () => {
-    // Open broadcast alert dialog
-    toast.info('Broadcast alert system opened');
-    // This could open a modal for broadcasting alerts to all units
+    setShowBroadcastDialog(true);
   };
 
   return (
@@ -290,6 +289,16 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
           </Button>
         </CardContent>
       </Card>
+
+      <EmergencyDispatchDialog 
+        open={showEmergencyDialog} 
+        onOpenChange={setShowEmergencyDialog} 
+      />
+      
+      <BroadcastAlertDialog 
+        open={showBroadcastDialog} 
+        onOpenChange={setShowBroadcastDialog} 
+      />
     </div>
   );
 };
