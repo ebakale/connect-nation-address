@@ -593,30 +593,53 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   };
 
   return (
-    <div className="space-y-6">
-        {/* Basic Information */}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto">
+      {/* Left Column - Main Information */}
+      <div className="space-y-4">
+        {/* Basic Information - Compact */}
         <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Basic Information</CardTitle>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center justify-between">
+              Basic Information
+              {canEdit && (
+                isEditing ? (
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={handleSave}>
+                      <Save className="h-4 w-4 mr-1" />
+                      Save
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => setIsEditing(false)}>
+                      <X className="h-4 w-4 mr-1" />
+                      Cancel
+                    </Button>
+                  </div>
+                ) : (
+                  <Button size="sm" variant="outline" onClick={handleEdit}>
+                    <Edit className="h-4 w-4 mr-1" />
+                    Edit
+                  </Button>
+                )
+              )}
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-             <div className="grid grid-cols-2 gap-4">
+          <CardContent className="space-y-3">
+            <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <label className="text-sm font-medium text-muted-foreground">Incident Number</label>
-                <p className="font-mono text-lg">{incident.incident_number}</p>
+                <label className="text-xs font-medium text-muted-foreground">Incident #</label>
+                <p className="font-mono">{incident.incident_number}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-muted-foreground">Emergency Type</label>
-                <p className="text-lg capitalize">{incident.emergency_type}</p>
+                <label className="text-xs font-medium text-muted-foreground">Type</label>
+                <p className="capitalize">{incident.emergency_type}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-muted-foreground">Priority Level</label>
+                <label className="text-xs font-medium text-muted-foreground">Priority</label>
                 {isEditing ? (
                   <Select 
                     value={editData.priority_level.toString()} 
                     onValueChange={(value) => setEditData({...editData, priority_level: parseInt(value)})}
                   >
-                    <SelectTrigger className="w-40">
+                    <SelectTrigger className="h-8">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-background z-50">
@@ -628,19 +651,19 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                     </SelectContent>
                   </Select>
                 ) : (
-                  <Badge className={getPriorityColor(incident.priority_level)}>
+                  <Badge className={getPriorityColor(incident.priority_level)} variant="outline">
                     Priority {incident.priority_level}
                   </Badge>
                 )}
               </div>
               <div>
-                <label className="text-sm font-medium text-muted-foreground">Current Status</label>
+                <label className="text-xs font-medium text-muted-foreground">Status</label>
                 {isEditing ? (
                   <Select 
                     value={editData.status} 
                     onValueChange={(value) => setEditData({...editData, status: value})}
                   >
-                    <SelectTrigger className="w-40">
+                    <SelectTrigger className="h-8">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-background z-50">
@@ -1035,6 +1058,46 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
             )}
           </div>
         )}
+      </div>
+
+      {/* Right Column - Could be used for additional info if needed */}
+      <div className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Timeline</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-blue-600" />
+                <span className="font-medium">Reported:</span>
+                <span>{new Date(incident.reported_at).toLocaleString()}</span>
+              </div>
+              {incident.dispatched_at && (
+                <div className="flex items-center gap-2">
+                  <Play className="h-4 w-4 text-orange-600" />
+                  <span className="font-medium">Dispatched:</span>
+                  <span>{new Date(incident.dispatched_at).toLocaleString()}</span>
+                </div>
+              )}
+              {incident.responded_at && (
+                <div className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-purple-600" />
+                  <span className="font-medium">Responded:</span>
+                  <span>{new Date(incident.responded_at).toLocaleString()}</span>
+                </div>
+              )}
+              {incident.resolved_at && (
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <span className="font-medium">Resolved:</span>
+                  <span>{new Date(incident.resolved_at).toLocaleString()}</span>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
