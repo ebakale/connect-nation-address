@@ -383,6 +383,19 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
           <p className="text-xs text-muted-foreground">
             {filteredIncidents.length} of {incidents.length} {t('emergencyIncidents').toLowerCase()}
           </p>
+          {/* Unassigned incidents alert */}
+          {(() => {
+            const unassignedCount = filteredIncidents.filter(i => !i.assigned_units || i.assigned_units.length === 0).length;
+            const urgentUnassigned = filteredIncidents.filter(i => (!i.assigned_units || i.assigned_units.length === 0) && i.status === 'reported').length;
+            
+            if (unassignedCount > 0) {
+              return (
+                <div className="text-xs text-red-600 font-medium mt-1">
+                  🚨 {urgentUnassigned} urgent unassigned, {unassignedCount} total unassigned
+                </div>
+              );
+            }
+          })()}
         </div>
         
         <div className="flex flex-wrap gap-2 w-full sm:w-auto">
@@ -427,17 +440,25 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
 
       {/* Simplified incident list */}
       <div className="space-y-2">
-        {paginatedIncidents.map((incident) => (
-          <div 
-            key={incident.id}
-            className={`border rounded-lg p-3 hover:bg-muted/50 cursor-pointer transition-colors ${
-              selectedIncident?.id === incident.id ? 'bg-primary/5 border-primary' : ''
-            }`}
-            onClick={() => {
-              onSelectIncident(incident);
-              setShowDetailDialog(true);
-            }}
-          >
+        {paginatedIncidents.map((incident) => {
+          const isUnassigned = !incident.assigned_units || incident.assigned_units.length === 0;
+          const needsDispatch = incident.status === 'reported';
+          
+          return (
+            <div 
+              key={incident.id}
+              className={`border rounded-lg p-3 hover:bg-muted/50 cursor-pointer transition-colors ${
+                selectedIncident?.id === incident.id ? 'bg-primary/5 border-primary' : ''
+              } ${
+                isUnassigned && needsDispatch ? 'border-l-4 border-l-red-500 bg-red-50/50' : ''
+              } ${
+                isUnassigned && !needsDispatch ? 'border-l-4 border-l-orange-500 bg-orange-50/50' : ''
+              }`}
+              onClick={() => {
+                onSelectIncident(incident);
+                setShowDetailDialog(true);
+              }}
+            >
             <div className="flex items-start justify-between gap-3">
               {/* Left side - Main info */}
               <div className="flex items-center gap-3 min-w-0">
@@ -486,9 +507,9 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
               </div>
               <span className="text-xs text-primary">Click for details →</span>
             </div>
-          </div>
-        ))}
-        
+            </div>
+          );
+        })}
         {paginatedIncidents.length === 0 && (
           <div className="p-8 text-center text-muted-foreground">
             <AlertTriangle className="h-8 w-8 mx-auto mb-2 opacity-50" />
