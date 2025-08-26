@@ -46,6 +46,9 @@ interface EmergencyIncident {
   reporter_id?: string;
   reporter_name?: string;
   reporter_email?: string;
+  city?: string;
+  region?: string;
+  country?: string;
 }
 
 interface DashboardStats {
@@ -366,9 +369,30 @@ const PoliceDashboard = () => {
     }
   };
   const calculateDashboardStats = (incidents: EmergencyIncident[]): DashboardStats => {
-    const activeIncidents = incidents.filter(i => !['resolved', 'closed'].includes(i.status)).length;
-    const totalIncidents = incidents.length;
-    const resolvedIncidents = incidents.filter(i => ['resolved', 'closed'].includes(i.status)).length;
+    // Filter incidents based on user role and area scope
+    const filteredIncidents = incidents.filter(incident => {
+      // For dispatchers and supervisors, show incidents in their assigned city
+      if (isPoliceDispatcher || isPoliceSupervisor) {
+        return !userCity || incident.city === userCity;
+      }
+      
+      // For operators, only show incidents assigned to their units
+      if (isPoliceOperator) {
+        const userUnitCodes = userUnits.map(u => u.unit_code);
+        return (incident.assigned_units || []).some((unit: string) => userUnitCodes.includes(unit));
+      }
+      
+      // Admins see all incidents
+      if (isAdmin) {
+        return true;
+      }
+      
+      return false;
+    });
+    
+    const activeIncidents = filteredIncidents.filter(i => !['resolved', 'closed'].includes(i.status)).length;
+    const totalIncidents = filteredIncidents.length;
+    const resolvedIncidents = filteredIncidents.filter(i => ['resolved', 'closed'].includes(i.status)).length;
     
     return {
       activeIncidents,
