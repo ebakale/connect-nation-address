@@ -145,17 +145,20 @@ serve(async (req) => {
         break;
 
       case 'getDispatchersInScope':
-        // Determine supervisor/admin scope
+        // Get supervisor/admin roles with explicit join to metadata
         const { data: rolesWithMeta, error: scopeErr } = await supabase
           .from('user_roles')
-          .select('id, role, user_role_metadata(scope_type, scope_value)')
+          .select('id, role, user_role_metadata!fk_user_role_metadata_user_role(scope_type, scope_value)')
           .eq('user_id', user.id);
         if (scopeErr) throw scopeErr;
 
-        const supScope = (rolesWithMeta || []).find((r: any) => r.role === 'police_supervisor')?.user_role_metadata?.[0];
+        // Prefer police_supervisor scope; if none, fall back to any available scope
+        const supRole = (rolesWithMeta || []).find((r: any) => r.role === 'police_supervisor');
+        const supScope = supRole?.user_role_metadata?.[0] || rolesWithMeta?.[0]?.user_role_metadata?.[0];
 
         let dispatcherUserIds: string[] = [];
         if (supScope && supScope.scope_type && supScope.scope_value) {
+          // Find dispatchers with the same scope (explicit inner join alias)
           const { data: dispatcherRoles, error: drErr } = await supabase
             .from('user_roles')
             .select('user_id, user_role_metadata!inner(scope_type, scope_value)')
@@ -165,7 +168,7 @@ serve(async (req) => {
           if (drErr) throw drErr;
           dispatcherUserIds = Array.from(new Set((dispatcherRoles || []).map((r: any) => r.user_id)));
         } else {
-          // No scope found (admin or unspecific) -> list all dispatchers
+          // No specific scope: list all dispatchers
           const { data: dispatcherRoles, error: drErr } = await supabase
             .from('user_roles')
             .select('user_id')
