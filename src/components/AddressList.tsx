@@ -33,6 +33,8 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
   const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'verified' | 'unverified' | 'public' | 'private'>('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const addressesPerPage = 5;
 
   // Filter addresses based on search query and status
   const filteredAddresses = addresses.filter(address => {
@@ -51,6 +53,16 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
 
     return matchesSearch && matchesFilter;
   });
+
+  // Reset pagination when addresses change
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [addresses, searchQuery, filterStatus]);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredAddresses.length / addressesPerPage);
+  const startIndex = (currentPage - 1) * addressesPerPage;
+  const paginatedAddresses = filteredAddresses.slice(startIndex, startIndex + addressesPerPage);
 
   const handleToggleVerified = async (address: Address) => {
     await updateAddressStatus(address.id, { verified: !address.verified });
@@ -182,8 +194,20 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
         </CardContent>
       </Card>
 
+      {/* Results count and pagination info */}
+      <div className="flex items-center justify-between text-sm text-muted-foreground">
+        <span>
+          Showing {startIndex + 1}-{Math.min(startIndex + addressesPerPage, filteredAddresses.length)} of {filteredAddresses.length} addresses
+        </span>
+        {totalPages > 1 && (
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+        )}
+      </div>
+
       {/* Address List */}
-      {filteredAddresses.length === 0 ? (
+      {paginatedAddresses.length === 0 ? (
         <Card>
           <CardContent className="p-8 text-center">
             <MapPin className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
@@ -197,7 +221,7 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
         </Card>
       ) : (
         <div className="grid gap-4">
-          {filteredAddresses.map((address) => (
+          {paginatedAddresses.map((address) => (
             <Card key={address.id} className="hover:shadow-md transition-shadow cursor-pointer group">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
@@ -348,6 +372,43 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
               </CardContent>
             </Card>
           ))}
+        </div>
+      )}
+
+      {/* Pagination controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-6">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Button>
+          
+          <div className="flex items-center gap-1">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+              <Button
+                key={page}
+                variant={currentPage === page ? "default" : "outline"}
+                size="sm"
+                onClick={() => setCurrentPage(page)}
+                className="min-w-[36px]"
+              >
+                {page}
+              </Button>
+            ))}
+          </div>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </Button>
         </div>
       )}
     </div>

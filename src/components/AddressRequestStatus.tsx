@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { CalendarDays, MapPin, MessageSquare, RefreshCw } from 'lucide-react';
+import { CalendarDays, MapPin, MessageSquare, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface AddressRequest {
@@ -37,6 +37,8 @@ const statusConfig = {
 export const AddressRequestStatus = () => {
   const [requests, setRequests] = useState<AddressRequest[]>([]);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const requestsPerPage = 5;
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -68,6 +70,16 @@ export const AddressRequestStatus = () => {
   useEffect(() => {
     fetchRequests();
   }, [user]);
+
+  // Reset pagination when requests change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [requests]);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(requests.length / requestsPerPage);
+  const startIndex = (currentPage - 1) * requestsPerPage;
+  const paginatedRequests = requests.slice(startIndex, startIndex + requestsPerPage);
 
   const getStatusBadge = (status: AddressRequest['status']) => {
     const config = statusConfig[status];
@@ -120,24 +132,37 @@ export const AddressRequestStatus = () => {
             <p className="text-sm">Submit your first address request to get started</p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {requests.map((request) => (
-              <Card key={request.id} className="border-l-4 border-l-primary">
-                <CardContent className="pt-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <MapPin className="w-4 h-4 text-muted-foreground" />
-                        <h3 className="font-semibold">{formatAddress(request)}</h3>
-                      </div>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <CalendarDays className="w-4 h-4" />
-                          <span>Submitted: {format(new Date(request.created_at), 'MMM dd, yyyy')}</span>
+          <>
+            {/* Results count and pagination info */}
+            <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+              <span>
+                Showing {startIndex + 1}-{Math.min(startIndex + requestsPerPage, requests.length)} of {requests.length} requests
+              </span>
+              {totalPages > 1 && (
+                <span>
+                  Page {currentPage} of {totalPages}
+                </span>
+              )}
+            </div>
+
+            <div className="space-y-4">
+              {paginatedRequests.map((request) => (
+                <Card key={request.id} className="border-l-4 border-l-primary">
+                  <CardContent className="pt-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <MapPin className="w-4 h-4 text-muted-foreground" />
+                          <h3 className="font-semibold">{formatAddress(request)}</h3>
                         </div>
-                        <span>Type: {request.address_type}</span>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <CalendarDays className="w-4 h-4" />
+                            <span>Submitted: {format(new Date(request.created_at), 'MMM dd, yyyy')}</span>
+                          </div>
+                          <span>Type: {request.address_type}</span>
+                        </div>
                       </div>
-                    </div>
                     <div className="ml-4">
                       {getStatusBadge(request.status)}
                     </div>
@@ -179,9 +204,49 @@ export const AddressRequestStatus = () => {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
-          </div>
+                </Card>
+              ))}
+            </div>
+
+            {/* Pagination controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center gap-2 mt-6">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  Previous
+                </Button>
+                
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCurrentPage(page)}
+                      className="min-w-[36px]"
+                    >
+                      {page}
+                    </Button>
+                  ))}
+                </div>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </CardContent>
     </Card>

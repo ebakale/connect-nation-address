@@ -56,6 +56,18 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
   const [selectedMapAddress, setSelectedMapAddress] = useState<FlaggedAddress | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<EditableFlaggedAddress | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const addressesPerPage = 5;
+
+  // Reset pagination when addresses change
+  useState(() => {
+    setCurrentPage(1);
+  });
+
+  // Calculate pagination
+  const totalPages = Math.ceil(addresses.length / addressesPerPage);
+  const startIndex = (currentPage - 1) * addressesPerPage;
+  const paginatedAddresses = addresses.slice(startIndex, startIndex + addressesPerPage);
 
   const handleApprove = async (requestId: string, updatedData?: Partial<FlaggedAddress>) => {
     setProcessing(requestId);
@@ -153,8 +165,20 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
 
   return (
     <>
+      {/* Results count and pagination info */}
+      <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+        <span>
+          Showing {startIndex + 1}-{Math.min(startIndex + addressesPerPage, addresses.length)} of {addresses.length} flagged addresses
+        </span>
+        {totalPages > 1 && (
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+        )}
+      </div>
+
       <div className="space-y-4 max-w-full">
-        {addresses.map((address) => (
+        {paginatedAddresses.map((address) => (
           <Card key={address.id} className="border-l-4 border-l-red-500 max-w-full overflow-hidden">
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -439,6 +463,43 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
           </Card>
         ))}
       </div>
+
+      {/* Pagination controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-6">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Button>
+          
+          <div className="flex items-center gap-1">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+              <Button
+                key={page}
+                variant={currentPage === page ? "default" : "outline"}
+                size="sm"
+                onClick={() => setCurrentPage(page)}
+                className="min-w-[36px]"
+              >
+                {page}
+              </Button>
+            ))}
+          </div>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </Button>
+        </div>
+      )}
 
       <AddressRejectionDialog
         isOpen={rejectionDialogOpen}
