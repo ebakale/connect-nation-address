@@ -389,7 +389,8 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
                     request={request}
                     onClick={() => {
                       setSelectedRequest(request);
-                      if (!request.read && request.id.startsWith('notification-')) {
+                      // Mark as read if it's an unread notification (not a fallback incident)
+                      if (!request.read && !request.id.startsWith('incident-')) {
                         markAsRead(request.id);
                       }
                     }}
