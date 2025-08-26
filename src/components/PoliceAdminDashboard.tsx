@@ -45,28 +45,6 @@ export const PoliceAdminDashboard = () => {
     }
   }, [hasPoliceAdminAccess]);
 
-  const generateMissingUACs = async () => {
-    try {
-      toast.info("Generating UACs for incidents without them...");
-      
-      const { data, error } = await supabase.functions.invoke('generate-missing-uacs', {});
-      
-      if (error) {
-        console.error('Error generating UACs:', error);
-        toast.error("Failed to generate UACs");
-        return;
-      }
-      
-      const result = data;
-      toast.success(`Successfully generated UACs for ${result.updated} incidents`);
-      
-      // Refresh stats after updating
-      fetchPoliceStats();
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error("An error occurred while generating UACs");
-    }
-  };
 
   const fetchPoliceStats = async () => {
     try {
@@ -191,16 +169,10 @@ export const PoliceAdminDashboard = () => {
             Manage police system users, units, and configurations
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={generateMissingUACs} className="flex items-center gap-2" variant="outline">
-            <Database className="h-4 w-4" />
-            Generate Missing UACs
-          </Button>
-          <Button onClick={createPoliceUsers} className="flex items-center gap-2">
-            <UserPlus className="h-4 w-4" />
-            Create Police Users
-          </Button>
-        </div>
+        <Button onClick={createPoliceUsers} className="flex items-center gap-2">
+          <UserPlus className="h-4 w-4" />
+          Create Police Users
+        </Button>
       </div>
 
       {/* Statistics Overview */}
