@@ -39,9 +39,13 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
   const [receivedRequests, setReceivedRequests] = useState<BackupRequest[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<BackupRequest | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sentPage, setSentPage] = useState(1);
+  const [receivedPage, setReceivedPage] = useState(1);
   const { user } = useAuth();
   const { isPoliceSupervisor, isPoliceDispatcher, isAdmin } = useUserRole();
   const { toast } = useToast();
+
+  const ITEMS_PER_PAGE = 5;
 
   useEffect(() => {
     if (user) {
@@ -366,13 +370,41 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
                   <p>No backup requests sent</p>
                 </div>
               ) : (
-                sentRequests.map((request) => (
-                  <RequestListItem
-                    key={request.id}
-                    request={request}
-                    onClick={() => setSelectedRequest(request)}
-                  />
-                ))
+                <>
+                  {sentRequests
+                    .slice((sentPage - 1) * ITEMS_PER_PAGE, sentPage * ITEMS_PER_PAGE)
+                    .map((request) => (
+                      <RequestListItem
+                        key={request.id}
+                        request={request}
+                        onClick={() => setSelectedRequest(request)}
+                      />
+                    ))}
+                  
+                  {Math.ceil(sentRequests.length / ITEMS_PER_PAGE) > 1 && (
+                    <div className="flex justify-center gap-2 mt-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSentPage(prev => Math.max(1, prev - 1))}
+                        disabled={sentPage === 1}
+                      >
+                        Previous
+                      </Button>
+                      <span className="text-sm text-muted-foreground px-2 py-1">
+                        Page {sentPage} of {Math.ceil(sentRequests.length / ITEMS_PER_PAGE)}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSentPage(prev => Math.min(Math.ceil(sentRequests.length / ITEMS_PER_PAGE), prev + 1))}
+                        disabled={sentPage === Math.ceil(sentRequests.length / ITEMS_PER_PAGE)}
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  )}
+                </>
               )}
             </TabsContent>
             
@@ -383,19 +415,47 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
                   <p>No backup requests received</p>
                 </div>
               ) : (
-                receivedRequests.map((request) => (
-                  <RequestListItem
-                    key={request.id}
-                    request={request}
-                    onClick={() => {
-                      setSelectedRequest(request);
-                      // Mark as read if it's an unread notification (not a fallback incident)
-                      if (!request.read && !request.id.startsWith('incident-')) {
-                        markAsRead(request.id);
-                      }
-                    }}
-                  />
-                ))
+                <>
+                  {receivedRequests
+                    .slice((receivedPage - 1) * ITEMS_PER_PAGE, receivedPage * ITEMS_PER_PAGE)
+                    .map((request) => (
+                      <RequestListItem
+                        key={request.id}
+                        request={request}
+                        onClick={() => {
+                          setSelectedRequest(request);
+                          // Mark as read if it's an unread notification (not a fallback incident)
+                          if (!request.read && !request.id.startsWith('incident-')) {
+                            markAsRead(request.id);
+                          }
+                        }}
+                      />
+                    ))}
+                  
+                  {Math.ceil(receivedRequests.length / ITEMS_PER_PAGE) > 1 && (
+                    <div className="flex justify-center gap-2 mt-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setReceivedPage(prev => Math.max(1, prev - 1))}
+                        disabled={receivedPage === 1}
+                      >
+                        Previous
+                      </Button>
+                      <span className="text-sm text-muted-foreground px-2 py-1">
+                        Page {receivedPage} of {Math.ceil(receivedRequests.length / ITEMS_PER_PAGE)}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setReceivedPage(prev => Math.min(Math.ceil(receivedRequests.length / ITEMS_PER_PAGE), prev + 1))}
+                        disabled={receivedPage === Math.ceil(receivedRequests.length / ITEMS_PER_PAGE)}
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  )}
+                </>
               )}
             </TabsContent>
           </Tabs>

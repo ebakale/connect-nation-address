@@ -39,6 +39,9 @@ export const BackupNotificationManager: React.FC<BackupNotificationManagerProps>
   const [notifications, setNotifications] = useState<BackupNotification[]>([]);
   const [selectedNotification, setSelectedNotification] = useState<BackupNotification | null>(null);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const ITEMS_PER_PAGE = 5;
 
   useEffect(() => {
     fetchBackupNotifications();
@@ -201,48 +204,70 @@ export const BackupNotificationManager: React.FC<BackupNotificationManagerProps>
               <p className="text-muted-foreground">No backup requests</p>
             </div>
           ) : (
-            notifications.slice(0, 5).map((notification) => (
-              <div
-                key={notification.id}
-                className={`p-3 border rounded-lg cursor-pointer transition-colors hover:bg-muted/50 ${
-                  !notification.read ? 'bg-blue-50 border-blue-200' : ''
-                }`}
-                onClick={() => {
-                  setSelectedNotification(notification);
-                  if (!notification.read) {
-                    markAsRead(notification.id);
-                  }
-                }}
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${getPriorityColor(notification.priority_level)}`} />
-                    <span className="font-medium text-sm">
-                      {notification.metadata?.incident_number || 'Unknown Incident'}
-                    </span>
-                    {!notification.read && (
-                      <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                    )}
+            <>
+              {notifications
+                .slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
+                .map((notification) => (
+                  <div
+                    key={notification.id}
+                    className={`p-3 border rounded-lg cursor-pointer transition-colors hover:bg-muted/50 ${
+                      !notification.read ? 'bg-blue-50 border-blue-200' : ''
+                    }`}
+                    onClick={() => {
+                      setSelectedNotification(notification);
+                      if (!notification.read) {
+                        markAsRead(notification.id);
+                      }
+                    }}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${getPriorityColor(notification.priority_level)}`} />
+                        <span className="font-medium text-sm">
+                          {notification.metadata?.incident_number || 'Unknown Incident'}
+                        </span>
+                        {!notification.read && (
+                          <div className="w-2 h-2 bg-blue-500 rounded-full" />
+                        )}
+                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(notification.created_at).toLocaleTimeString()}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-1">
+                      Unit {notification.metadata?.requesting_unit || 'Unknown'} requesting backup
+                    </p>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <MapPin className="h-3 w-3" />
+                      {notification.metadata?.location || 'Location unavailable'}
+                    </div>
                   </div>
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(notification.created_at).toLocaleTimeString()}
+                ))}
+              
+              {Math.ceil(notifications.length / ITEMS_PER_PAGE) > 1 && (
+                <div className="flex justify-center gap-2 mt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    Previous
+                  </Button>
+                  <span className="text-sm text-muted-foreground px-2 py-1">
+                    Page {currentPage} of {Math.ceil(notifications.length / ITEMS_PER_PAGE)}
                   </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(prev => Math.min(Math.ceil(notifications.length / ITEMS_PER_PAGE), prev + 1))}
+                    disabled={currentPage === Math.ceil(notifications.length / ITEMS_PER_PAGE)}
+                  >
+                    Next
+                  </Button>
                 </div>
-                <p className="text-sm text-muted-foreground mb-1">
-                  Unit {notification.metadata?.requesting_unit || 'Unknown'} requesting backup
-                </p>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <MapPin className="h-3 w-3" />
-                  {notification.metadata?.location || 'Location unavailable'}
-                </div>
-              </div>
-            ))
-          )}
-          
-          {notifications.length > 5 && (
-            <Button variant="outline" size="sm" className="w-full">
-              View All Notifications ({notifications.length})
-            </Button>
+              )}
+            </>
           )}
         </CardContent>
       </Card>
