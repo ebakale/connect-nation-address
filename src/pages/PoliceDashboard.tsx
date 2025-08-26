@@ -288,9 +288,14 @@ const PoliceDashboard = () => {
 
       // Filter incidents for UI panels
       const validIncidents = enrichedIncidents.filter(incident => {
-        // Dispatchers/Supervisors/Admin: see all active incidents in their city
-        if (isPoliceDispatcher || isPoliceSupervisor || isAdmin) {
+        // Supervisors/Admin: see all active incidents in their city
+        if (isPoliceSupervisor || isAdmin) {
           return true;
+        }
+        
+        // Dispatchers: only see incidents assigned to them
+        if (isPoliceDispatcher) {
+          return incident.assigned_operator_id === user?.id;
         }
         
         // Operators: only incidents assigned to their units
