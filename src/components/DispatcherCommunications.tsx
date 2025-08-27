@@ -212,15 +212,15 @@ const DispatcherCommunications: React.FC = () => {
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
 
-  // Recent Communications (all messages)
-  const allFilteredMessages = messages.filter(message => {
+  // Recent Communications (unacknowledged messages only)
+  const recentCommMessages = messages.filter(message => {
     const priorityMatch = filterPriority === 'all' || message.priority_level.toString() === filterPriority;
-    return priorityMatch;
+    return !message.acknowledged && priorityMatch;
   }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-  // Pagination for all messages
-  const totalPages = Math.ceil(allFilteredMessages.length / ITEMS_PER_PAGE);
-  const paginatedAllMessages = allFilteredMessages.slice(
+  // Pagination for recent communications
+  const totalPages = Math.ceil(recentCommMessages.length / ITEMS_PER_PAGE);
+  const paginatedRecentMessages = recentCommMessages.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
@@ -358,8 +358,8 @@ const DispatcherCommunications: React.FC = () => {
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold text-lg flex items-center gap-2">
                     Recent Communications
-                    {allFilteredMessages.length > 0 && (
-                      <Badge variant="secondary">{allFilteredMessages.length}</Badge>
+                    {recentCommMessages.length > 0 && (
+                      <Badge variant="secondary">{recentCommMessages.length}</Badge>
                     )}
                   </h3>
                   {totalPages > 1 && (
@@ -387,12 +387,12 @@ const DispatcherCommunications: React.FC = () => {
                   )}
                 </div>
                 <div className="space-y-3">
-                  {paginatedAllMessages.length === 0 ? (
+                  {paginatedRecentMessages.length === 0 ? (
                     <div className="text-center text-muted-foreground py-8">
                       No recent messages
                     </div>
                   ) : (
-                    paginatedAllMessages.map((message) => (
+                    paginatedRecentMessages.map((message) => (
                       <div 
                         key={message.id} 
                         className="border rounded-lg p-3 space-y-2 opacity-75"
