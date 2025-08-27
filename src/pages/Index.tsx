@@ -527,9 +527,9 @@ const navigationItems = [
         return (
           <div className="space-y-8">
             <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold">User Manual</h2>
+              <h2 className="text-3xl font-bold">Platform User Manual</h2>
               <p className="text-lg text-muted-foreground">
-                Step-by-step guide to using the Equatorial Guinea Address Registry.
+                Comprehensive guide for using both Address Registry and Emergency Management systems.
               </p>
             </div>
 
@@ -593,7 +593,7 @@ const navigationItems = [
 
               <Card className="shadow-card">
                 <CardHeader>
-                  <CardTitle>User Roles</CardTitle>
+                  <CardTitle>Address Registry User Roles</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
@@ -619,6 +619,66 @@ const navigationItems = [
                       <h4 className="font-semibold">Registrars</h4>
                       <p className="text-sm text-muted-foreground">
                         Generate official UAC codes and publish verified addresses to the national registry.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="shadow-card">
+                <CardHeader>
+                  <CardTitle>Emergency Management System</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <h4 className="font-semibold">Emergency Alert System</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Citizens can send emergency alerts directly to police and emergency services. The system includes GPS location sharing and real-time communication.
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="font-semibold">Incident Management</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Police and emergency operators manage incidents through real-time dashboards, unit dispatch, and status tracking.
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="font-semibold">Unit Coordination</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Emergency units can communicate, request backup, and coordinate response efforts through integrated communication tools.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="shadow-card">
+                <CardHeader>
+                  <CardTitle>Emergency System User Roles</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <h4 className="font-semibold">Emergency Operators</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Receive and process emergency alerts, dispatch units, and monitor incident status.
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">Police Units</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Respond to incidents, update status, communicate with operations, and request backup when needed.
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">Unit Leaders</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Coordinate field operations, manage unit assignments, and oversee response activities.
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">Police Administration</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Monitor system performance, generate reports, and manage overall emergency response strategy.
                       </p>
                     </div>
                   </div>
@@ -791,10 +851,10 @@ const navigationItems = [
               </div>
             </div>
             <p className="text-cyan-light font-medium">
-              &copy; 2024 Republic of Equatorial Guinea - Next-Gen Address Registry
+              &copy; 2024 Republic of Equatorial Guinea - ConnectNation Platform
             </p>
             <p className="text-sm text-muted-foreground">
-              Powered by Advanced AI • Secured by Quantum Encryption • Built for the Future
+              Unified Digital Addressing & Emergency Management • Connecting Citizens, Services & Safety
             </p>
           </div>
         </div>
