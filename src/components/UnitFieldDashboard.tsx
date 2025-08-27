@@ -1697,44 +1697,6 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
         </Card>
       )}
 
-      {/* Recent Communications */}
-      {communicationLog.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5" />
-              Recent Communications
-              {unreadCount > 0 && <Badge variant="destructive">{unreadCount} unread</Badge>}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2 max-h-40 overflow-y-auto">
-              {communicationLog.slice(0, 10).map((comm) => (
-                <div key={comm.id} className={`flex items-start justify-between p-2 border rounded text-sm ${
-                  comm.type === 'outgoing' ? 'bg-blue-50 border-blue-200' : 'bg-gray-50'
-                }`}>
-                  <div className="flex-1">
-                    {comm.is_radio_code && (
-                      <Badge variant="outline" className="text-xs mb-1">
-                        {comm.radio_code}
-                      </Badge>
-                    )}
-                    <p className="text-sm">{comm.message_content}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(comm.timestamp || comm.created_at).toLocaleTimeString()}
-                      {comm.type === 'outgoing' && (
-                        <span className="ml-2">
-                          {comm.acknowledged ? '✓ Acknowledged' : 'Pending'}
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Evidence Files */}
       {evidenceFiles.length > 0 && (
