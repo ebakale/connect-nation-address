@@ -586,7 +586,7 @@ const PoliceDashboard = () => {
                   )}
                  {isUnitLead && (
                    <Badge variant="default" className="bg-yellow-100 text-yellow-800">
-                     Unit Lead
+                      {t('unitLead')}
                    </Badge>
                  )}
               </div>
@@ -650,7 +650,7 @@ const PoliceDashboard = () => {
                   {hasPoliceAdminAccess && (
                     <TabsTrigger value="admin" className="text-sm">
                       <Settings className="h-4 w-4 mr-2" />
-                      Admin
+                       {t('admin')}
                     </TabsTrigger>
                   )}
                 </TabsList>
@@ -661,16 +661,16 @@ const PoliceDashboard = () => {
             <div className="flex items-center gap-4 mb-4">
               <Badge variant="outline" className="flex items-center gap-2">
                 <Radio className="h-3 w-3" />
-                {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher 
-                  ? "My Field Operations" 
-                  : "Field Operations"
-                }
+                 {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher 
+                   ? t('myFieldOperations')
+                   : t('fieldOperations')
+                 }
               </Badge>
               <p className="text-sm text-muted-foreground">
-                {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher 
-                  ? "Manage your assignments, unit status, and field communications"
-                  : "Manage your unit assignments and field activities"
-                }
+                 {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher 
+                   ? t('manageAssignments')
+                   : t('manageUnitAssignments')
+                 }
               </p>
               
               {/* Show Unit Lead Dashboard if user is a unit lead */}
@@ -707,7 +707,7 @@ const PoliceDashboard = () => {
                   variant="outline" 
                   onClick={() => setShowUnitLeadDashboard(false)}
                 >
-                  Return to Field Operations
+                  {t('returnToFieldOperations')}
                 </Button>
               </div>
             )}
@@ -734,19 +734,19 @@ const PoliceDashboard = () => {
                 <Card className="p-3">
                   <div className="text-center">
                     <p className="text-xl font-bold text-red-600">{dashboardStats.activeIncidents}</p>
-                    <p className="text-xs text-muted-foreground">Active</p>
+                    <p className="text-xs text-muted-foreground">{t('active')}</p>
                   </div>
                 </Card>
                 <Card className="p-3">
                   <div className="text-center">
                     <p className="text-xl font-bold text-green-600">{dashboardStats.availableUnits}</p>
-                    <p className="text-xs text-muted-foreground">Units</p>
+                    <p className="text-xs text-muted-foreground">{t('units')}</p>
                   </div>
                 </Card>
                 <Card className="p-3">
                   <div className="text-center">
                     <p className="text-xl font-bold text-blue-600">{dashboardStats.avgResponseTime}m</p>
-                    <p className="text-xs text-muted-foreground">Response</p>
+                    <p className="text-xs text-muted-foreground">{t('response')}</p>
                   </div>
                 </Card>
                 <Card className="p-3">
@@ -813,7 +813,7 @@ const PoliceDashboard = () => {
                     <CardHeader className="pb-3">
                       <CardTitle className="flex items-center gap-2">
                         <MapPin className="h-5 w-5" />
-                        Live Incident Map
+                        {t('liveIncidentMap')}
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -845,7 +845,7 @@ const PoliceDashboard = () => {
                         </Button>
                         {userUnit && (
                           <div className="space-y-2">
-                            <h4 className="font-medium">My Unit</h4>
+                            <h4 className="font-medium">{t('myUnit')}</h4>
                             <p className="text-sm text-muted-foreground">
                               {userUnit.unit_name} ({userUnit.unit_code})
                             </p>
@@ -860,7 +860,7 @@ const PoliceDashboard = () => {
                     
                     <Card>
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-base">Unit Management</CardTitle>
+                        <CardTitle className="text-base">{t('unitManagement')}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         {(isPoliceSupervisor || isAdmin) && (
@@ -903,7 +903,7 @@ const PoliceDashboard = () => {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <Card>
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-base">Backup Requests</CardTitle>
+                        <CardTitle className="text-base">{t('backupRequests')}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <BackupRequestsPanel />
@@ -912,7 +912,7 @@ const PoliceDashboard = () => {
                     
                     <Card>
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-base">Backup Notifications</CardTitle>
+                        <CardTitle className="text-base">{t('backupNotifications')}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <BackupNotificationManager />
@@ -955,7 +955,7 @@ const PoliceDashboard = () => {
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-muted-foreground">Available Units</p>
+                        <p className="text-sm text-muted-foreground">{t('availableUnits')}</p>
                         <p className="text-2xl font-bold text-green-600">{dashboardStats.availableUnits}</p>
                       </div>
                       <CheckCircle className="h-5 w-5 text-green-600" />
@@ -967,7 +967,7 @@ const PoliceDashboard = () => {
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-muted-foreground">Avg Response Time</p>
+                        <p className="text-sm text-muted-foreground">{t('avgResponseTime')}</p>
                         <p className="text-2xl font-bold text-blue-600">{dashboardStats.avgResponseTime}m</p>
                       </div>
                       <Clock className="h-5 w-5 text-blue-600" />
@@ -1007,8 +1007,8 @@ const PoliceDashboard = () => {
                   <BackupRequestsPanel />
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-lg">Coordination Actions</CardTitle>
-                      <CardDescription>Supervisor coordination tools</CardDescription>
+                       <CardTitle className="text-lg">{t('coordinationActions')}</CardTitle>
+                       <CardDescription>{t('supervisorCoordinationTools')}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <Button 
@@ -1017,7 +1017,7 @@ const PoliceDashboard = () => {
                         className="w-full"
                       >
                         <Users className="h-4 w-4 mr-2" />
-                        Manage My Units
+                        {t('manageMyUnits')}
                       </Button>
                       <RequestBackupDialog>
                         <Button 
@@ -1025,7 +1025,7 @@ const PoliceDashboard = () => {
                           className="w-full"
                         >
                           <MessageSquare className="h-4 w-4 mr-2" />
-                          Request Regional Backup
+                          {t('requestRegionalBackup')}
                         </Button>
                       </RequestBackupDialog>
                     </CardContent>
@@ -1057,7 +1057,7 @@ const PoliceDashboard = () => {
                 <div className="flex items-center gap-4 mb-2">
                   <Badge variant="outline" className="flex items-center gap-2">
                     <Users className="h-3 w-3" />
-                    Unit Management
+                    {t('unitManagement')}
                   </Badge>
                 </div>
                 <p className="text-muted-foreground">
@@ -1095,7 +1095,7 @@ const PoliceDashboard = () => {
                         </div>
                         <div>
                           <h4 className="font-medium">System Overview</h4>
-                          <p className="text-sm text-muted-foreground">View system health and statistics</p>
+                          <p className="text-sm text-muted-foreground">{t('viewSystemHealthStats')}</p>
                         </div>
                       </div>
                     </CardContent>

@@ -12,6 +12,16 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 const translations = {
   es: {
+    
+    // Emergency Management System
+    emergencyManagement: 'Gestión de Emergencias',
+    policeEmergencyServices: 'Policía y Servicios de Emergencia',
+    integratedEmergencyResponse: 'Plataforma integrada de respuesta a emergencias que conecta policía, servicios de emergencia y ciudadanos para la gestión rápida de incidentes.',
+    realtimeIncidentReporting: 'Reportes de incidentes en tiempo real',
+    gpsBasedUnitDispatch: 'Despacho de unidades basado en GPS',
+    multiChannelCommunications: 'Comunicaciones multicanal',
+    analyticsResponseTracking: 'Análisis y seguimiento de respuesta',
+
     // ConnectEG Branding
     accessPlatform: 'Acceder a la Plataforma',
     learnMore: 'Aprende Más',
@@ -118,7 +128,7 @@ const translations = {
     economicDesc: 'y expansión del comercio electrónico con sistemas de entrega confiables y servicios basados en ubicación.',
     businessGrowth: 'crecimiento empresarial',
     
-    loading: 'Cargando...',
+    cargando: 'Cargando...',
     
     // Language names
     spanish: 'Español',
@@ -199,11 +209,44 @@ const translations = {
     policeCommandCenter: 'Centro de Comando Policial',
     emergencyIncidents: 'Incidentes de Emergencia',
     dispatchCenter: 'Centro de Despacho',
-    unitOperations: 'Operaciones de Unidad',
-    coordinationCenter: 'Centro de Coordinación',
+    
+    // Police Dashboard - Additional translations
+    unitLead: 'Líder de Unidad',
+    myFieldOperations: 'Mis Operaciones de Campo',
     fieldOperations: 'Operaciones de Campo',
-    myAssignments: 'Mis Asignaciones',
+    manageAssignments: 'Gestionar asignaciones, estado de la unidad y comunicaciones de campo',
+    manageUnitAssignments: 'Gestionar asignaciones de unidad y actividades de campo',
+    returnToFieldOperations: 'Volver a Operaciones de Campo',
+    active: 'Activo',
+    units: 'Unidades',
+    response: 'Respuesta',
+    liveIncidentMap: 'Mapa de Incidentes en Vivo',
     myUnit: 'Mi Unidad',
+    unitManagement: 'Gestión de Unidades',
+    communications: 'Comunicaciones',
+    backup: 'Respaldo',
+    backupRequests: 'Solicitudes de Respaldo',
+    backupNotifications: 'Notificaciones de Respaldo',
+    coordinationCenter: 'Centro de Coordinación',
+    availableUnits: 'Unidades Disponibles',
+    avgResponseTime: 'Tiempo de Respuesta Promedio',
+    coordinationActions: 'Acciones de Coordinación',
+    supervisorCoordinationTools: 'Herramientas de coordinación de supervisor',
+    manageMyUnits: 'Gestionar Mis Unidades',
+    requestRegionalBackup: 'Solicitar Respaldo Regional',
+    systemHealth: 'Salud del Sistema',
+    viewSystemHealthStats: 'Ver estado del sistema y estadísticas',
+    responseTimeAnalytics: 'Análisis de Tiempo de Respuesta',
+    admin: 'Admin',
+    
+    // Emergency Management System
+    emergencyManagement: 'Gestión de Emergencias',
+    policeEmergencyServices: 'Policía y Servicios de Emergencia',
+    integratedEmergencyResponse: 'Plataforma integrada de respuesta a emergencias que conecta policía, servicios de emergencia y ciudadanos para la gestión rápida de incidentes.',
+    realtimeIncidentReporting: 'Reportes de incidentes en tiempo real',
+    gpsBasedUnitDispatch: 'Despacho de unidades basado en GPS',
+    multiChannelCommunications: 'Comunicaciones multicanal',
+    analyticsResponseTracking: 'Análisis y seguimiento de respuesta',
     myArea: 'Mi Área',
     unitsOverview: 'Vista General de Unidades',
     activeIncidents: 'Incidentes Activos',
@@ -292,10 +335,8 @@ const translations = {
     totalUsers: 'Total de Usuarios',
     fromLastMonth: '+12% desde el mes pasado',
     activeRoles: 'Roles Activos',
-    allSystemRoles: 'Todos los roles del sistema',
     pendingApprovals: 'Aprobaciones Pendientes',
-    requiresAttention: 'Requiere atención',
-    systemHealth: 'Salud del Sistema',
+    systemHealthStats: 'Salud del Sistema',
     uptime: 'Tiempo activo',
     systemDocumentation: 'Documentación del Sistema',
     generateDocumentation: 'Generar documentación integral para roles y permisos del sistema',
