@@ -621,10 +621,6 @@ const PoliceDashboard = () => {
                     <Radio className="h-4 w-4 mr-2" />
                     {t('myUnit')}
                   </TabsTrigger>
-                  <TabsTrigger value="support" className="text-sm">
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    Support
-                  </TabsTrigger>
                 </TabsList>
               ) : (
                 <TabsList className="grid grid-cols-2 lg:grid-cols-4 h-9">
@@ -1053,80 +1049,6 @@ const PoliceDashboard = () => {
             </TabsContent>
           )}
 
-          {/* Support Tab - Field Officers */}
-          {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher && (
-            <TabsContent value="support" className="space-y-6">
-              <div className="flex items-center gap-4 mb-4">
-                <Badge variant="outline" className="flex items-center gap-2">
-                  <MessageSquare className="h-3 w-3" />
-                  Support & Resources
-                </Badge>
-                <p className="text-sm text-muted-foreground">
-                  Access support resources and communication tools
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Phone className="h-5 w-5" />
-                      Emergency Contacts
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <div className="p-2 border rounded">
-                      <p className="font-medium">Dispatch Center</p>
-                      <p className="text-sm text-muted-foreground">911 or Internal: 100</p>
-                    </div>
-                    <div className="p-2 border rounded">
-                      <p className="font-medium">Supervisor</p>
-                      <p className="text-sm text-muted-foreground">Internal: 200</p>
-                    </div>
-                    <div className="p-2 border rounded">
-                      <p className="font-medium">Medical Support</p>
-                      <p className="text-sm text-muted-foreground">Internal: 300</p>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                 <Card>
-                   <CardHeader>
-                     <CardTitle className="flex items-center gap-2">
-                       <MessageSquare className="h-5 w-5" />
-                       Field Actions
-                     </CardTitle>
-                   </CardHeader>
-                   <CardContent className="space-y-3">
-                     <Button 
-                       variant="outline" 
-                       className="w-full"
-                       onClick={() => setActiveTab('field')}
-                     >
-                       <Users className="h-4 w-4 mr-2" />
-                       Request Backup
-                     </Button>
-                     <Button 
-                       variant="outline" 
-                       className="w-full"
-                       onClick={() => setActiveTab('field')}
-                     >
-                       <Flag className="h-4 w-4 mr-2" />
-                       Update Status
-                     </Button>
-                     <Button 
-                       variant="outline" 
-                       className="w-full"
-                       onClick={() => setActiveTab('field')}
-                     >
-                       <Radio className="h-4 w-4 mr-2" />
-                       Go to My Unit
-                     </Button>
-                   </CardContent>
-                 </Card>
-              </div>
-            </TabsContent>
-          )}
 
           {/* Management Tab - Supervisors Only */}
           {(isPoliceSupervisor || isAdmin) && (
