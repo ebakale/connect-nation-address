@@ -137,7 +137,7 @@ const PoliceDashboard = () => {
         }
       } catch (error) {
         console.error('Error initializing operator session:', error);
-        toast.error('Failed to initialize operator session');
+        toast.error(t('failedToInitializeSession'));
       }
     };
 
@@ -232,7 +232,7 @@ const PoliceDashboard = () => {
 
       const enrichedIncidents = incidentsData?.map(incident => ({
         ...incident,
-        reporter_name: 'Unknown',
+        reporter_name: t('unknown'),
         reporter_email: ''
       })) || [];
 
@@ -283,7 +283,7 @@ const PoliceDashboard = () => {
 
       const enrichedIncidents = incidentsData?.map(incident => ({
         ...incident,
-        reporter_name: 'Unknown',
+        reporter_name: t('unknown'),
         reporter_email: ''
       })) || [];
 
@@ -351,7 +351,7 @@ const PoliceDashboard = () => {
 
       const enrichedIncidents = incidentsData?.map(incident => ({
         ...incident,
-        reporter_name: 'Unknown',
+        reporter_name: t('unknown'),
         reporter_email: ''
       })) || [];
 

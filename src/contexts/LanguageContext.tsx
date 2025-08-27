@@ -323,6 +323,21 @@ const translations = {
     accessDenied: 'Acceso Denegado',
     needPoliceAdminPrivileges: 'Necesitas privilegios de administrador policial para acceder a esta sección.',
     total: 'total',
+    // UI Common
+    of: 'de',
+    cancel: 'Cancelar',
+    unknown: 'Desconocido',
+    officers: 'oficiales',
+    clickForDetails: 'Ver detalles',
+    selectAUnit: 'Seleccione una unidad',
+    // Toasts / Errors
+    failedToInitializeSession: 'No se pudo inicializar la sesión del operador',
+    failedToLoadPoliceStatistics: 'No se pudieron cargar las estadísticas policiales',
+    failedToCreatePoliceUsers: 'No se pudieron crear usuarios policiales',
+    successfullyCreated: 'Creado con éxito',
+    policeUsers: 'usuarios policiales',
+    // Status additions
+    closed: 'Cerrado',
     totalOfficersNew: 'Total de Oficiales',
     currentlyActiveNew: 'actualmente activos',
     policeUnitsNew: 'Unidades Policiales',
@@ -837,6 +852,21 @@ const translations = {
     availableForDeploymentNew: 'available for deployment',
     createPoliceUsersNew: 'Create Police Users',
     managePoliceSystemNew: 'Manage police system users, units, and configurations',
+    // UI Common
+    of: 'of',
+    cancel: 'Cancel',
+    unknown: 'Unknown',
+    officers: 'officers',
+    clickForDetails: 'Click for details',
+    selectAUnit: 'Select a unit',
+    // Toasts / Errors
+    failedToInitializeSession: 'Failed to initialize operator session',
+    failedToLoadPoliceStatistics: 'Failed to load police statistics',
+    failedToCreatePoliceUsers: 'Failed to create police users',
+    successfullyCreated: 'Successfully created',
+    policeUsers: 'police users',
+    // Status additions
+    closed: 'Closed',
   },
   fr: {
     // Navigation
@@ -1170,6 +1200,21 @@ const translations = {
     availableForDeploymentNew: 'disponibles pour le déploiement',
     createPoliceUsersNew: 'Créer des Utilisateurs Policiers',
     managePoliceSystemNew: 'Gérer les utilisateurs du système policier, les unités et les configurations',
+    // UI Common
+    of: 'sur',
+    cancel: 'Annuler',
+    unknown: 'Inconnu',
+    officers: 'officiers',
+    clickForDetails: 'Cliquer pour les détails',
+    selectAUnit: 'Sélectionnez une unité',
+    // Toasts / Errors
+    failedToInitializeSession: 'Échec de l’initialisation de la session opérateur',
+    failedToLoadPoliceStatistics: 'Échec du chargement des statistiques policières',
+    failedToCreatePoliceUsers: 'Échec de la création des utilisateurs policiers',
+    successfullyCreated: 'Créé avec succès',
+    policeUsers: 'utilisateurs policiers',
+    // Status additions
+    closed: 'Fermé',
   }
 };
 
