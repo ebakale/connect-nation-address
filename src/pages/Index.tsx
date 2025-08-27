@@ -13,7 +13,7 @@ import { useUserRole } from '@/hooks/useUserRole';
 import heroImage from '@/assets/hero-address-system.jpg';
 import featureSearch from '@/assets/feature-address-search.jpg';
 import featureRegistration from '@/assets/feature-address-registration.jpg';
-import featureVerification from '@/assets/feature-address-verification.jpg';
+import featureEmergencyManagement from '@/assets/feature-emergency-management.jpg';
 import EmergencyAlertProcessor from '@/components/EmergencyAlertProcessor';
 
 const Index = () => {
@@ -183,7 +183,7 @@ const navigationItems = [
                 {/* Emergency Management Module */}
                 <Card className="group relative overflow-hidden bg-gradient-to-br from-white to-destructive/5 border-2 border-destructive/10 hover:border-destructive/30 shadow-xl hover:shadow-red transform hover:scale-105 transition-all duration-300">
                   <div className="absolute inset-0 bg-gradient-to-br from-destructive/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative h-64 bg-cover bg-center" style={{ backgroundImage: `url(${featureVerification})` }}>
+                  <div className="relative h-64 bg-cover bg-center" style={{ backgroundImage: `url(${featureEmergencyManagement})` }}>
                     <div className="absolute inset-0 bg-gradient-to-t from-destructive/90 via-destructive/40 to-transparent"></div>
                     <div className="absolute bottom-6 left-6 right-6">
                       <div className="flex items-center gap-4 mb-3">
