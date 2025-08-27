@@ -412,6 +412,11 @@ const translations = {
     geographicDistribution: 'Distribución Geográfica',
     incidentsByRegion: 'Incidentes por Región',
     incidentsByCity: 'Incidentes por Ciudad',
+    // Better tab labels
+    systemManagement: 'Configuración del Sistema',
+    analyticsReports: 'Informes y Análisis',
+    unitsManagement: 'Gestión de Unidades',
+    usersManagement: 'Gestión de Usuarios',
     totalOfficersNew: 'Total de Oficiales',
     currentlyActiveNew: 'actualmente activos',
     policeUnitsNew: 'Unidades Policiales',
@@ -1019,6 +1024,11 @@ const translations = {
     geographicDistribution: 'Geographic Distribution',
     incidentsByRegion: 'Incidents by Region',
     incidentsByCity: 'Incidents by City',
+    // Better tab labels
+    systemManagement: 'System Management',
+    analyticsReports: 'Analytics & Reports',
+    unitsManagement: 'Units Management',
+    usersManagement: 'Users Management',
   },
   fr: {
     // Navigation
@@ -1445,6 +1455,11 @@ const translations = {
     geographicDistribution: 'Distribution Géographique',
     incidentsByRegion: 'Incidents par Région',
     incidentsByCity: 'Incidents par Ville',
+    // Better tab labels
+    systemManagement: 'Gestion Système',
+    analyticsReports: 'Analyses et Rapports',
+    unitsManagement: 'Gestion des Unités',
+    usersManagement: 'Gestion des Utilisateurs',
   }
 };
 

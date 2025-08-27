@@ -235,10 +235,10 @@ export const PoliceAdminDashboard = () => {
       {/* Admin Tabs */}
       <Tabs defaultValue="users" className="w-full">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="users">{t('userManagement')}</TabsTrigger>
-          <TabsTrigger value="units">{t('unitManagement')}</TabsTrigger>
-          <TabsTrigger value="system">{t('systemConfig')}</TabsTrigger>
-          <TabsTrigger value="analytics">{t('analytics')}</TabsTrigger>
+          <TabsTrigger value="users">{t('usersManagement')}</TabsTrigger>
+          <TabsTrigger value="units">{t('unitsManagement')}</TabsTrigger>
+          <TabsTrigger value="system">{t('systemManagement')}</TabsTrigger>
+          <TabsTrigger value="analytics">{t('analyticsReports')}</TabsTrigger>
         </TabsList>
         
         <TabsContent value="users" className="space-y-4">
