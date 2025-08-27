@@ -12,25 +12,66 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 const translations = {
   es: {
+    // ConnectEG Branding
+    connectEGPlatform: 'Plataforma ConnectEG',
+    connectEG: 'ConnectEG',
+    connectEGDescription: 'Plataforma unificada para direccionamiento digital y gestión de emergencias en Guinea Ecuatorial.',
+    connectingCitizensServices: 'Conectando ciudadanos, direcciones y servicios de emergencia',
+    innovativeTechnology: 'a través de tecnología innovadora e integración perfecta.',
+    
+    // Core Modules
+    dualCorePlatform: 'Plataforma de Núcleo Dual',
+    coreFunctionalities: 'Funcionalidades Principales',
+    twoIntegratedSystems: 'Dos sistemas integrados trabajando juntos para modernizar la infraestructura digital y capacidades de respuesta a emergencias de Guinea Ecuatorial.',
+    
+    // Address Registry System
+    addressRegistrySystem: 'Sistema de Registro de Direcciones',
+    digitalAddressingInfrastructure: 'Infraestructura de Direccionamiento Digital',
+    comprehensiveDigitalAddressing: 'Sistema integral de direccionamiento digital para registrar, verificar y gestionar direcciones en toda Guinea Ecuatorial.',
+    gpsBasedRegistration: 'Registro basado en GPS',
+    multiLevelVerification: 'Flujo de verificación multinivel',
+    smartSearchDiscovery: 'Búsqueda inteligente y descubrimiento',
+    digitalDocumentationQR: 'Documentación digital y códigos QR',
+    
+    // Emergency Management System
+    emergencyManagement: 'Gestión de Emergencias',
+    policeEmergencyServices: 'Policía y Servicios de Emergencia',
+    integratedEmergencyResponse: 'Plataforma integrada de respuesta a emergencias que conecta policía, servicios de emergencia y ciudadanos para la gestión rápida de incidentes.',
+    realtimeIncidentReporting: 'Reportes de incidentes en tiempo real',
+    gpsBasedUnitDispatch: 'Despacho de unidades basado en GPS',
+    multiChannelCommunications: 'Comunicaciones multicanal',
+    analyticsResponseTracking: 'Análisis y seguimiento de respuesta',
+    
+    // Additional Features
+    roleBasedAccess: 'Acceso Basado en Roles',
+    advancedRoleManagement: 'Gestión avanzada de roles con permisos granulares para diferentes tipos de usuarios y departamentos.',
+    digitalDocumentationFeature: 'Documentación Digital',
+    automatedDocumentGeneration: 'Generación automática de documentos, integración de códigos QR y gestión de certificados digitales.',
+    realtimeAnalyticsFeature: 'Análisis en Tiempo Real',
+    comprehensiveReporting: 'Reportes comprehensivos y análisis para operaciones de direccionamiento y respuesta a emergencias.',
+    multiLanguageFeature: 'Multi-idioma',
+    fullPlatformLocalization: 'Localización completa de la plataforma soportando español, francés y portugués para accesibilidad nacional.',
+    
+    // Platform Objectives
+    strategicGoals: 'Objetivos Estratégicos',
+    platformObjectives: 'Objetivos de la Plataforma',
+    transformingEquatorialGuinea: 'Transformando Guinea Ecuatorial a través de sistemas integrados de direccionamiento digital y gestión de emergencias que mejoran los servicios ciudadanos y la seguridad pública.',
+    
+    // Digital Infrastructure
+    digitalInfrastructure: 'Infraestructura Digital',
+    establishComprehensiveAddressing: 'Establecer infraestructura integral de direccionamiento digital para mejorar la entrega de servicios, logística y desarrollo económico en todas las regiones.',
+    
+    // Public Safety Enhancement  
+    publicSafetyEnhancement: 'Mejora de la Seguridad Pública',
+    modernizeEmergencyResponse: 'Modernizar las capacidades de respuesta a emergencias con gestión de incidentes en tiempo real, despacho basado en GPS y sistemas de comunicación integrados.',
+    
+    // Citizen Empowerment
+    citizenEmpowerment: 'Empoderamiento Ciudadano',
+    provideDirectAccess: 'Proporcionar a los ciudadanos acceso directo a servicios gubernamentales, asistencia de emergencia y documentación digital a través del acceso unificado a la plataforma.',
+    
+    aboutConnectEG: 'La Plataforma ConnectEG es una iniciativa de BIAKAM para modernizar la infraestructura de direcciones y sistemas de gestión de emergencias de Guinea Ecuatorial, mejorando la entrega de servicios a nivel nacional.',
+    
     // Navigation
-    overview: 'Resumen',
-    about: 'Acerca de',
-    help: 'Ayuda',
-    manual: 'Manual',
-    login: 'Iniciar Sesión',
-    logout: 'Cerrar Sesión',
-    
-    // Hero Section
-    nationalAddressRegistry: 'Sistema Nacional de Registro de Direcciones',
-    equatorialGuinea: 'Guinea Ecuatorial',
-    addressRegistration: 'Registro de Direcciones',
-    heroSubtitle: 'Transformando la gestión de direcciones con tecnología de vanguardia.',
-    heroDescription: 'Seguro, preciso y accesible',
-    heroDescriptionExtended: 'para cada ciudadano y empresa en todas las provincias.',
-    accessSystemNow: 'Acceder al Sistema',
-    discoverMore: 'Descubrir Más',
-    
-    // Features
     platformCapabilities: 'CAPACIDADES DE LA PLATAFORMA',
     advancedFeatures: 'Características Avanzadas',
     featuresSubtitle: 'Tecnología de vanguardia se encuentra con soluciones prácticas para la gestión integral de direcciones en todo el país',

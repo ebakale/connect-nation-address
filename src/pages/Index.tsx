@@ -68,25 +68,25 @@ const navigationItems = [
                   {/* Badge */}
                   <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white shadow-lg backdrop-blur-sm border border-white/20">
                     <MapPin className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                    <span className="text-sm sm:text-base font-semibold">ConnectEG Platform</span>
+                    <span className="text-sm sm:text-base font-semibold">{t('connectEGPlatform')}</span>
                   </div>
                   
                   {/* Main Heading */}
                   <div className="space-y-2 sm:space-y-3">
                     <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent leading-tight mobile-container">
-                      <span className="block">ConnectEG</span>
-                      <span className="block text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-foreground/90 mt-1">
-                        Digital Platform
-                      </span>
+                       <span className="block">{t('connectEG')}</span>
+                       <span className="block text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-foreground/90 mt-1">
+                         Digital Platform
+                       </span>
                     </h1>
                   </div>
                   
                   {/* Subtitle */}
-                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-foreground/70 max-w-4xl mx-auto leading-relaxed font-light mobile-text-responsive mobile-container">
-                    Unified platform for digital addressing and emergency management in Equatorial Guinea.
-                    <span className="text-primary font-medium"> Connecting citizens, addresses, and emergency services </span>
-                    through innovative technology and seamless integration.
-                  </p>
+                   <p className="text-sm sm:text-base md:text-lg lg:text-xl text-foreground/70 max-w-4xl mx-auto leading-relaxed font-light mobile-text-responsive mobile-container">
+                     {t('connectEGDescription')}
+                     <span className="text-primary font-medium"> {t('connectingCitizensServices')} </span>
+                     {t('innovativeTechnology')}
+                   </p>
                   
                   {/* CTA Buttons */}
                   <div className="flex flex-col gap-3 sm:gap-4 justify-center pt-4 sm:pt-6 mobile-container">
@@ -123,14 +123,14 @@ const navigationItems = [
                 <div className="inline-block p-3 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl">
                   <div className="flex items-center gap-2 px-4 py-2">
                     <div className="h-2 w-2 bg-primary rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium text-primary">Dual-Core Platform</span>
+                    <span className="text-sm font-medium text-primary">{t('dualCorePlatform')}</span>
                   </div>
                 </div>
                 <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent">
-                  Core Functionalities
+                  {t('coreFunctionalities')}
                 </h2>
                 <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                  Two integrated systems working together to modernize Equatorial Guinea's digital infrastructure and emergency response capabilities.
+                  {t('twoIntegratedSystems')}
                 </p>
               </div>
 
@@ -147,8 +147,8 @@ const navigationItems = [
                           <MapPin className="h-8 w-8 text-white" />
                         </div>
                         <div>
-                          <h3 className="text-3xl font-bold text-white">Address Registry System</h3>
-                          <p className="text-blue-100 text-lg">Digital Addressing Infrastructure</p>
+                          <h3 className="text-3xl font-bold text-white">{t('addressRegistrySystem')}</h3>
+                          <p className="text-blue-100 text-lg">{t('digitalAddressingInfrastructure')}</p>
                         </div>
                       </div>
                     </div>
@@ -156,24 +156,24 @@ const navigationItems = [
                   <CardContent className="relative p-8">
                     <div className="space-y-4">
                       <p className="text-muted-foreground leading-relaxed text-lg">
-                        Comprehensive digital addressing system for registering, verifying, and managing addresses across Equatorial Guinea.
+                        {t('comprehensiveDigitalAddressing')}
                       </p>
                       <div className="space-y-3">
                         <div className="flex items-center gap-3">
                           <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">GPS-based address registration</span>
+                          <span className="text-sm">{t('gpsBasedRegistration')}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">Multi-level verification workflow</span>
+                          <span className="text-sm">{t('multiLevelVerification')}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">Smart search and discovery</span>
+                          <span className="text-sm">{t('smartSearchDiscovery')}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">Digital documentation & QR codes</span>
+                          <span className="text-sm">{t('digitalDocumentationQR')}</span>
                         </div>
                       </div>
                     </div>
@@ -400,8 +400,7 @@ const navigationItems = [
              <div className="text-center space-y-4">
                <h2 className="text-3xl font-bold">About Us</h2>
                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                 The ConnectEG Platform is a BIAKAM initiative to modernize 
-                 Equatorial Guinea's address infrastructure and emergency management systems, improving service delivery nationwide.
+                 {t('aboutConnectEG')}
                </p>
              </div>
 
@@ -780,7 +779,7 @@ const navigationItems = [
               <div className="p-2 rounded-xl bg-gradient-primary glow-pulse">
                 <MapPin className="h-8 w-8 text-primary-foreground" />
               </div>
-              <span className="text-2xl font-bold text-gradient">ConnectEG Platform</span>
+              <span className="text-2xl font-bold text-gradient">{t('connectEGPlatform')}</span>
             </div>
             {user ? (
               <Button 
