@@ -203,7 +203,7 @@ const DispatcherCommunications: React.FC = () => {
   // Quick Comm messages (unacknowledged only)
   const quickCommMessages = messages.filter(message => {
     const priorityMatch = filterPriority === 'all' || message.priority_level.toString() === filterPriority;
-    return !message.acknowledged && priorityMatch;
+    return message.acknowledged === false && priorityMatch;
   }).sort((a, b) => {
     // Sort by priority (high priority first) then by date (newest first)
     if (a.priority_level !== b.priority_level) {
@@ -215,7 +215,7 @@ const DispatcherCommunications: React.FC = () => {
   // Recent Communications (unacknowledged messages only)
   const recentCommMessages = messages.filter(message => {
     const priorityMatch = filterPriority === 'all' || message.priority_level.toString() === filterPriority;
-    return !message.acknowledged && priorityMatch;
+    return message.acknowledged === false && priorityMatch;
   }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   // Pagination for recent communications
