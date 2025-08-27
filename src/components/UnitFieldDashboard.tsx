@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
@@ -599,6 +600,26 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
     const files = Array.from(event.target.files || []);
     setEvidenceFiles(prev => [...prev, ...files]);
     toast({ title: 'Evidence added', description: `${files.length} file(s) added to evidence` });
+  };
+
+  const getCurrentLocation = () => {
+    if (!gpsEnabled || !('geolocation' in navigator)) {
+      toast({ title: 'GPS unavailable', description: 'Location services are not available', variant: 'destructive' });
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        updateUnitLocationCoordinates(latitude, longitude);
+        toast({ title: 'Location updated', description: 'GPS coordinates updated successfully' });
+      },
+      (error) => {
+        console.error('GPS error:', error);
+        toast({ title: 'GPS error', description: 'Failed to get current location', variant: 'destructive' });
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
   };
 
   const fetchAssignments = async () => {
@@ -1250,279 +1271,352 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
         )}
       </div>
 
-      {/* Control Panel */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Unit Status Controls */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
+      {/* My Unit - Tabbed Interface */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 mb-4">
+          <Settings className="h-6 w-6 text-primary" />
+          <h2 className="text-2xl font-bold">My Unit</h2>
+        </div>
+        
+        <Tabs defaultValue="controls" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="controls" className="flex items-center gap-2">
               <Settings className="h-4 w-4" />
               Unit Controls
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="grid grid-cols-2 gap-2">
-              <Button 
-                variant={shiftStatus === 'on_duty' ? 'destructive' : 'default'}
-                size="sm"
-                onClick={toggleShift}
-                className="flex items-center gap-1"
-              >
-                {shiftStatus === 'on_duty' ? (
-                  <>
-                    <LogOut className="h-3 w-3" />
-                    End Shift
-                  </>
-                ) : (
-                  <>
-                    <LogIn className="h-3 w-3" />
-                    Start Shift
-                  </>
-                )}
-              </Button>
-              
-              <Button 
-                variant="destructive"
-                size="sm"
-                onClick={triggerEmergency}
-                disabled={emergencyMode}
-                className="flex items-center gap-1"
-              >
-                <AlertCircle className="h-3 w-3" />
-                Emergency
-              </Button>
-            </div>
-            
-            <Select value={unitStatus} onValueChange={updateUnitStatus}>
-              <SelectTrigger className="h-8">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="available">Available</SelectItem>
-                <SelectItem value="busy">Busy</SelectItem>
-                <SelectItem value="en_route">En Route</SelectItem>
-                <SelectItem value="on_scene">On Scene</SelectItem>
-                <SelectItem value="out_of_service">Out of Service</SelectItem>
-              </SelectContent>
-            </Select>
-          </CardContent>
-        </Card>
-
-        {/* Quick Communication */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
+            </TabsTrigger>
+            <TabsTrigger value="communication" className="flex items-center gap-2">
               <MessageSquare className="h-4 w-4" />
-              Quick Comm 
+              Communication
               {unreadCount > 0 && (
-                <Badge variant="destructive" className="ml-1 text-xs flex items-center gap-1">
-                  <AlertTriangle className="h-3 w-3" />
-                  {unreadCount} New
+                <Badge variant="destructive" className="ml-1 text-xs">
+                  {unreadCount}
                 </Badge>
               )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {/* Recent Messages - Improved with visual hierarchy */}
-            <div className="bg-muted/30 rounded p-2 h-32 overflow-y-auto">
-              <div className="text-xs font-medium mb-2 text-muted-foreground flex items-center justify-between">
-                Recent Communications
-                {communicationLog.length > 0 && (
-                  <Badge variant="outline" className="text-xs">
-                    {communicationLog.length}
-                  </Badge>
-                )}
-              </div>
-              {communicationLog.length === 0 ? (
-                <div className="text-xs text-muted-foreground italic text-center py-4">
-                  No recent communications
-                </div>
-              ) : (
-                <div className="space-y-1">
-                  {communicationLog.slice(0, 5).map((comm) => (
-                    <div key={comm.id} className={`text-xs p-2 rounded border-l-2 ${
-                      comm.type === 'outgoing' 
-                        ? 'bg-primary/10 border-l-primary text-primary-foreground/90'
-                        : !comm.acknowledged 
-                          ? 'bg-accent border-l-accent-foreground font-medium'
-                          : 'bg-muted border-l-muted-foreground opacity-75'
-                    }`}>
-                      <div className="flex items-start gap-1">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-1 mb-1">
-                            {comm.is_radio_code && (
-                              <Badge variant="secondary" className="text-xs py-0 px-1 h-4">
-                                <Radio className="h-2 w-2 mr-1" />
-                                {comm.radio_code}
-                              </Badge>
-                            )}
-                            <span className="text-xs opacity-75">
-                              {comm.type === 'outgoing' ? 'TO DISPATCH' : 'FROM DISPATCH'}
-                            </span>
-                          </div>
-                          <div className="font-medium">{comm.message_content}</div>
-                          <div className="flex items-center justify-between mt-1">
-                            <span className="text-xs opacity-75">
-                              {new Date(comm.timestamp || comm.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                            </span>
-                            {comm.type === 'outgoing' && (
-                              <span className={`text-xs ${comm.acknowledged ? 'text-green-600' : 'text-yellow-600'}`}>
-                                {comm.acknowledged ? '✓ Acknowledged' : '⏳ Pending'}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            
-            {/* Send Message */}
-            <div className="flex gap-1">
-              <input
-                type="text"
-                placeholder="Message dispatch..."
-                value={quickMessage}
-                onChange={(e) => setQuickMessage(e.target.value)}
-                className="flex-1 px-2 py-1 text-xs border rounded"
-                onKeyPress={(e) => e.key === 'Enter' && sendQuickMessage()}
-              />
-              <Button size="sm" onClick={sendQuickMessage} disabled={!quickMessage.trim()}>
-                <Send className="h-3 w-3" />
-              </Button>
-            </div>
-            
-            {/* Radio Codes - Enhanced */}
-            <div className="space-y-2">
-              <div className="text-xs font-medium text-muted-foreground">Quick Radio Codes</div>
-              <div className="grid grid-cols-2 gap-1">
-                <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-4', '10-4 Acknowledged')} className="text-xs">
-                  <Radio className="h-3 w-3 mr-1" />
-                  10-4
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-8', '10-8 In Service')} className="text-xs">
-                  <Radio className="h-3 w-3 mr-1" />
-                  10-8
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-23', '10-23 Arrived')} className="text-xs">
-                  <Radio className="h-3 w-3 mr-1" />
-                  10-23
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-24', '10-24 Complete')} className="text-xs">
-                  <Radio className="h-3 w-3 mr-1" />
-                  10-24
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-20', '10-20 Location Status')} className="text-xs">
-                  <Radio className="h-3 w-3 mr-1" />
-                  10-20
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-99', '10-99 Emergency!')} className="text-xs bg-destructive/10 hover:bg-destructive/20">
-                  <Radio className="h-3 w-3 mr-1" />
-                  10-99
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Quick Actions */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
+            </TabsTrigger>
+            <TabsTrigger value="actions" className="flex items-center gap-2">
               <Zap className="h-4 w-4" />
               Quick Actions
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {/* Request Backup Button - Always Available */}
-            <Dialog open={showBackupDialog} onOpenChange={setShowBackupDialog}>
-              <DialogTrigger asChild>
-                <Button variant="destructive" className="w-full mb-2">
-                  <Users className="h-4 w-4 mr-2" />
-                  Request Backup
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Request Backup</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <Textarea
-                    value={backupReason}
-                    onChange={(e) => setBackupReason(e.target.value)}
-                    placeholder="Describe the reason for backup request..."
-                    rows={3}
-                  />
-                  <Button onClick={requestBackup} disabled={!backupReason.trim()}>
-                    Send Backup Request
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="controls" className="space-y-4">
+            <Card>
+              <CardContent className="pt-6 space-y-4">
+                <div className="grid grid-cols-2 gap-2">
+                  <Button 
+                    variant={shiftStatus === 'on_duty' ? 'destructive' : 'default'}
+                    size="sm"
+                    onClick={toggleShift}
+                    className="flex items-center gap-1"
+                  >
+                    {shiftStatus === 'on_duty' ? (
+                      <>
+                        <LogOut className="h-3 w-3" />
+                        End Shift
+                      </>
+                    ) : (
+                      <>
+                        <LogIn className="h-3 w-3" />
+                        Start Shift
+                      </>
+                    )}
+                  </Button>
+                  
+                  <Button 
+                    variant="destructive"
+                    size="sm"
+                    onClick={triggerEmergency}
+                    disabled={emergencyMode}
+                    className="flex items-center gap-1"
+                  >
+                    <AlertCircle className="h-3 w-3" />
+                    Emergency
                   </Button>
                 </div>
-              </DialogContent>
-            </Dialog>
-            
-            <div className="grid grid-cols-2 gap-1">
-              <Dialog open={showResourceDialog} onOpenChange={setShowResourceDialog}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <Car className="h-3 w-3 mr-1" />
-                    <span className="text-xs">Resources</span>
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Request Resources</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <Textarea
-                      value={resourceRequest}
-                      onChange={(e) => setResourceRequest(e.target.value)}
-                      placeholder="Describe the resources needed..."
-                      rows={3}
+                
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Unit Status</label>
+                  <Select value={unitStatus} onValueChange={updateUnitStatus}>
+                    <SelectTrigger className="h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="available">Available</SelectItem>
+                      <SelectItem value="busy">Busy</SelectItem>
+                      <SelectItem value="en_route">En Route</SelectItem>
+                      <SelectItem value="on_scene">On Scene</SelectItem>
+                      <SelectItem value="out_of_service">Out of Service</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Location Update */}
+                <div className="space-y-3 pt-4 border-t">
+                  <h4 className="font-medium flex items-center gap-2">
+                    <MapPin className="h-4 w-4" />
+                    Location Update
+                  </h4>
+                  {isFieldOperatorMode && (
+                    <div className="bg-blue-50 border border-blue-200 rounded p-3">
+                      <p className="text-sm text-blue-800">
+                        <Shield className="h-4 w-4 inline mr-1" />
+                        You can only update your own unit's location
+                      </p>
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder={isFieldOperatorMode ? "Update my location..." : "Update location manually..."}
+                      value={currentLocation}
+                      onChange={(e) => setCurrentLocation(e.target.value)}
+                      className="flex-1 px-3 py-2 border rounded-md text-sm"
                     />
-                    <Button onClick={requestResource} disabled={!resourceRequest.trim()}>
-                      Send Request
+                    <Button 
+                      onClick={updateUnitLocation}
+                      disabled={!currentLocation.trim() || isUpdatingLocation}
+                      size="sm"
+                    >
+                      {isUpdatingLocation ? 'Updating...' : 'Update'}
                     </Button>
                   </div>
-                </DialogContent>
-              </Dialog>
-              
-              <Button variant="outline" size="sm" onClick={() => setShowHistory(!showHistory)}>
-                <History className="h-3 w-3 mr-1" />
-                <span className="text-xs">History</span>
-              </Button>
-              
-              <label className="cursor-pointer">
-                <Button variant="outline" size="sm" asChild>
-                  <span>
-                    <Camera className="h-3 w-3 mr-1" />
-                    <span className="text-xs">Evidence</span>
-                  </span>
-                </Button>
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*,video/*,audio/*"
-                  className="hidden"
-                  onChange={handleEvidenceUpload}
-                />
-              </label>
-              
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => navigator.geolocation.getCurrentPosition((pos) => {
-                  updateUnitLocationCoordinates(pos.coords.latitude, pos.coords.longitude);
-                  toast({ title: 'Location updated', description: 'GPS coordinates synced' });
-                })}
-              >
-                <RefreshCw className="h-3 w-3 mr-1" />
-                <span className="text-xs">GPS</span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+                  
+                  {unitInfo && unitInfo.current_location && (
+                    <p className="text-sm text-muted-foreground">
+                      Current: {unitInfo.current_location}
+                    </p>
+                  )}
+                  
+                  {unitInfo && unitInfo.location_latitude && unitInfo.location_longitude && (
+                    <p className="text-xs text-muted-foreground font-mono">
+                      GPS: {unitInfo.location_latitude.toFixed(6)}, {unitInfo.location_longitude.toFixed(6)}
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="communication" className="space-y-4">
+            <Card>
+              <CardContent className="pt-6 space-y-4">
+                {/* Recent Messages */}
+                <div className="bg-muted/30 rounded p-3 h-48 overflow-y-auto">
+                  <div className="text-sm font-medium mb-3 text-muted-foreground flex items-center justify-between">
+                    Recent Communications
+                    {communicationLog.length > 0 && (
+                      <Badge variant="outline" className="text-xs">
+                        {communicationLog.length}
+                      </Badge>
+                    )}
+                  </div>
+                  {communicationLog.length === 0 ? (
+                    <div className="text-sm text-muted-foreground italic text-center py-8">
+                      No recent communications
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {communicationLog.slice(0, 8).map((comm) => (
+                        <div key={comm.id} className={`text-sm p-3 rounded border-l-3 ${
+                          comm.type === 'outgoing' 
+                            ? 'bg-primary/10 border-l-primary text-primary-foreground/90'
+                            : !comm.acknowledged 
+                              ? 'bg-accent border-l-accent-foreground font-medium'
+                              : 'bg-muted border-l-muted-foreground opacity-75'
+                        }`}>
+                          <div className="flex items-start gap-2">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                {comm.is_radio_code && (
+                                  <Badge variant="secondary" className="text-xs py-0 px-2 h-5">
+                                    <Radio className="h-3 w-3 mr-1" />
+                                    {comm.radio_code}
+                                  </Badge>
+                                )}
+                                <span className="text-xs opacity-75">
+                                  {comm.type === 'outgoing' ? 'TO DISPATCH' : 'FROM DISPATCH'}
+                                </span>
+                              </div>
+                              <div className="font-medium">{comm.message_content}</div>
+                              <div className="flex items-center justify-between mt-1">
+                                <span className="text-xs opacity-75">
+                                  {new Date(comm.timestamp || comm.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                </span>
+                                {comm.type === 'outgoing' && (
+                                  <span className={`text-xs ${comm.acknowledged ? 'text-green-600' : 'text-yellow-600'}`}>
+                                    {comm.acknowledged ? '✓ Acknowledged' : '⏳ Pending'}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Send Message */}
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Message dispatch..."
+                    value={quickMessage}
+                    onChange={(e) => setQuickMessage(e.target.value)}
+                    className="flex-1 px-3 py-2 text-sm border rounded"
+                    onKeyPress={(e) => e.key === 'Enter' && sendQuickMessage()}
+                  />
+                  <Button size="sm" onClick={sendQuickMessage} disabled={!quickMessage.trim()}>
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </div>
+                
+                {/* Radio Codes */}
+                <div className="space-y-3">
+                  <div className="text-sm font-medium text-muted-foreground">Quick Radio Codes</div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-4', '10-4 Acknowledged')} className="text-xs">
+                      <Radio className="h-3 w-3 mr-1" />
+                      10-4
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-8', '10-8 In Service')} className="text-xs">
+                      <Radio className="h-3 w-3 mr-1" />
+                      10-8
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-23', '10-23 Arrived')} className="text-xs">
+                      <Radio className="h-3 w-3 mr-1" />
+                      10-23
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-24', '10-24 Complete')} className="text-xs">
+                      <Radio className="h-3 w-3 mr-1" />
+                      10-24
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-20', '10-20 Location Status')} className="text-xs">
+                      <Radio className="h-3 w-3 mr-1" />
+                      10-20
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-99', '10-99 Emergency!')} className="text-xs bg-destructive/10 hover:bg-destructive/20">
+                      <Radio className="h-3 w-3 mr-1" />
+                      10-99
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="actions" className="space-y-4">
+            <Card>
+              <CardContent className="pt-6 space-y-4">
+                {/* Request Backup Button - Always Available */}
+                <Dialog open={showBackupDialog} onOpenChange={setShowBackupDialog}>
+                  <DialogTrigger asChild>
+                    <Button variant="destructive" className="w-full">
+                      <Users className="h-4 w-4 mr-2" />
+                      Request Backup
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Request Backup</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <Textarea
+                        value={backupReason}
+                        onChange={(e) => setBackupReason(e.target.value)}
+                        placeholder="Describe the reason for backup request..."
+                        rows={3}
+                      />
+                      <Button onClick={requestBackup} disabled={!backupReason.trim()}>
+                        Send Backup Request
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+                
+                <div className="grid grid-cols-2 gap-2">
+                  <Dialog open={showResourceDialog} onOpenChange={setShowResourceDialog}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        <Car className="h-4 w-4 mr-2" />
+                        Resources
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Request Resources</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <Textarea
+                          value={resourceRequest}
+                          onChange={(e) => setResourceRequest(e.target.value)}
+                          placeholder="Describe the resources needed..."
+                          rows={3}
+                        />
+                        <Button onClick={requestResource} disabled={!resourceRequest.trim()}>
+                          Send Request
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                  
+                  <Button variant="outline" size="sm" onClick={() => setShowHistory(!showHistory)}>
+                    <History className="h-4 w-4 mr-2" />
+                    History
+                  </Button>
+                  
+                  <label className="cursor-pointer">
+                    <Button variant="outline" size="sm" asChild>
+                      <span>
+                        <Camera className="h-4 w-4 mr-2" />
+                        Evidence
+                      </span>
+                    </Button>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*,video/*"
+                      className="hidden"
+                      onChange={handleEvidenceUpload}
+                    />
+                  </label>
+                  
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={getCurrentLocation}
+                    disabled={!gpsEnabled}
+                    className={`${!gpsEnabled ? 'opacity-50' : ''}`}
+                  >
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    GPS
+                  </Button>
+                </div>
+
+                {/* Status Indicators */}
+                <div className="pt-4 border-t space-y-2">
+                  <h4 className="text-sm font-medium text-muted-foreground">System Status</h4>
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    <div className="flex items-center gap-1">
+                      <Battery className="h-3 w-3" />
+                      <span>{batteryLevel}%</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Wifi className="h-3 w-3" />
+                      <span>Signal {signalStrength}/4</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Locate className="h-3 w-3" />
+                      <span className={gpsEnabled ? 'text-green-600' : 'text-red-600'}>
+                        {gpsEnabled ? 'GPS On' : 'GPS Off'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Location Update - Own unit only for field operators */}
