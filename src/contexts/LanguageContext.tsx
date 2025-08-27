@@ -198,8 +198,9 @@ const translations = {
     french: 'Français',
     
     // Authentication
+    nationalAddressRegistry: 'Sistema de Direccionamiento Unificado y Gestión de Emergencias',
     secureAccess: 'Acceso Seguro',
-    accessNationalSystem: 'Acceder al sistema nacional de direccionamiento',
+    accessNationalSystem: 'Acceder al ConnectEG',
     signIn: 'Iniciar Sesión',
     signUp: 'Registrarse',
     emailAddress: 'Dirección de Correo',
