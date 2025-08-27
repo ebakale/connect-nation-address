@@ -6,7 +6,8 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-const translations = {
+// English-only translations
+const translations: Record<string, string> = {
   // Emergency Management System
   emergencyManagement: 'Emergency Management',
   policeEmergencyServices: 'Police and Emergency Services',
@@ -473,7 +474,7 @@ interface LanguageProviderProps {
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
   const t = (key: string): string => {
-    return translations[key as keyof typeof translations] || key;
+    return translations[key] || key;
   };
 
   const value: LanguageContextType = {
