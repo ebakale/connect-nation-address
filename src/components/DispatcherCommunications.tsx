@@ -200,8 +200,8 @@ const DispatcherCommunications: React.FC = () => {
     }
   };
 
-  // Separate pending and acknowledged messages
-  const pendingMessages = messages.filter(message => {
+  // Quick Comm messages (unacknowledged only)
+  const quickCommMessages = messages.filter(message => {
     const priorityMatch = filterPriority === 'all' || message.priority_level.toString() === filterPriority;
     return !message.acknowledged && priorityMatch;
   }).sort((a, b) => {
@@ -212,19 +212,20 @@ const DispatcherCommunications: React.FC = () => {
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
 
-  const acknowledgedMessages = messages.filter(message => {
+  // Recent Communications (all messages)
+  const allFilteredMessages = messages.filter(message => {
     const priorityMatch = filterPriority === 'all' || message.priority_level.toString() === filterPriority;
-    return message.acknowledged && priorityMatch;
-  }).sort((a, b) => new Date(b.acknowledged_at || b.created_at).getTime() - new Date(a.acknowledged_at || a.created_at).getTime());
+    return priorityMatch;
+  }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-  // Pagination for acknowledged messages
-  const totalPages = Math.ceil(acknowledgedMessages.length / ITEMS_PER_PAGE);
-  const paginatedAcknowledgedMessages = acknowledgedMessages.slice(
+  // Pagination for all messages
+  const totalPages = Math.ceil(allFilteredMessages.length / ITEMS_PER_PAGE);
+  const paginatedAllMessages = allFilteredMessages.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
 
-  const unreadCount = pendingMessages.length;
+  const unreadCount = quickCommMessages.length;
 
   if (loading) {
     return (
@@ -284,24 +285,24 @@ const DispatcherCommunications: React.FC = () => {
             </TabsList>
             
             <TabsContent value="messages" className="mt-4 space-y-6">
-              {/* Pending Messages Section */}
+              {/* Quick Comm Section */}
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold text-lg flex items-center gap-2">
-                    Pending Messages
-                    {pendingMessages.length > 0 && (
-                      <Badge variant="destructive">{pendingMessages.length}</Badge>
+                    Quick Comm
+                    {quickCommMessages.length > 0 && (
+                      <Badge variant="destructive">{quickCommMessages.length}</Badge>
                     )}
                   </h3>
                 </div>
                 <ScrollArea className="h-64">
                   <div className="space-y-3">
-                    {pendingMessages.length === 0 ? (
+                    {quickCommMessages.length === 0 ? (
                       <div className="text-center text-muted-foreground py-8">
-                        No pending messages
+                        No unacknowledged messages
                       </div>
                     ) : (
-                      pendingMessages.map((message) => (
+                      quickCommMessages.map((message) => (
                         <div 
                           key={message.id} 
                           className="border rounded-lg p-3 space-y-2 border-l-4 border-l-primary bg-accent/50"
@@ -357,8 +358,8 @@ const DispatcherCommunications: React.FC = () => {
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold text-lg flex items-center gap-2">
                     Recent Communications
-                    {acknowledgedMessages.length > 0 && (
-                      <Badge variant="secondary">{acknowledgedMessages.length}</Badge>
+                    {allFilteredMessages.length > 0 && (
+                      <Badge variant="secondary">{allFilteredMessages.length}</Badge>
                     )}
                   </h3>
                   {totalPages > 1 && (
@@ -386,12 +387,12 @@ const DispatcherCommunications: React.FC = () => {
                   )}
                 </div>
                 <div className="space-y-3">
-                  {paginatedAcknowledgedMessages.length === 0 ? (
+                  {paginatedAllMessages.length === 0 ? (
                     <div className="text-center text-muted-foreground py-8">
-                      No acknowledged messages
+                      No recent messages
                     </div>
                   ) : (
-                    paginatedAcknowledgedMessages.map((message) => (
+                    paginatedAllMessages.map((message) => (
                       <div 
                         key={message.id} 
                         className="border rounded-lg p-3 space-y-2 opacity-75"
