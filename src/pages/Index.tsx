@@ -117,100 +117,128 @@ const navigationItems = [
               </div>
             </div>
 
-            {/* Features Grid */}
+            {/* Core Modules Section */}
             <div className="space-y-16">
               <div className="text-center space-y-6">
                 <div className="inline-block p-3 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl">
                   <div className="flex items-center gap-2 px-4 py-2">
                     <div className="h-2 w-2 bg-primary rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium text-primary">{t('platformCapabilities')}</span>
+                    <span className="text-sm font-medium text-primary">Dual-Core Platform</span>
                   </div>
                 </div>
                 <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent">
-                  {t('advancedFeatures')}
+                  Core Functionalities
                 </h2>
                 <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                  {t('featuresSubtitle')}
+                  Two integrated systems working together to modernize Equatorial Guinea's digital infrastructure and emergency response capabilities.
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {/* Feature Card 1 - Search */}
-                <Card className="group relative overflow-hidden bg-gradient-to-br from-white to-primary/5 border-2 border-primary/10 hover:border-primary/30 shadow-lg hover:shadow-blue transform hover:scale-105 transition-all duration-300">
+              {/* Main Module Cards */}
+              <div className="grid md:grid-cols-2 gap-12 mb-16">
+                {/* Address Registry Module */}
+                <Card className="group relative overflow-hidden bg-gradient-to-br from-white to-primary/5 border-2 border-primary/10 hover:border-primary/30 shadow-xl hover:shadow-blue transform hover:scale-105 transition-all duration-300">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative h-56 bg-cover bg-center" style={{ backgroundImage: `url(${featureSearch})` }}>
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent"></div>
-                    <div className="absolute bottom-4 left-6 right-6">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
-                          <Search className="h-6 w-6 text-white" />
+                  <div className="relative h-64 bg-cover bg-center" style={{ backgroundImage: `url(${featureSearch})` }}>
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/40 to-transparent"></div>
+                    <div className="absolute bottom-6 left-6 right-6">
+                      <div className="flex items-center gap-4 mb-3">
+                        <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
+                          <MapPin className="h-8 w-8 text-white" />
                         </div>
-                        <h3 className="text-2xl font-bold text-white">{t('smartSearch')}</h3>
+                        <div>
+                          <h3 className="text-3xl font-bold text-white">Address Registry System</h3>
+                          <p className="text-blue-100 text-lg">Digital Addressing Infrastructure</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <CardContent className="relative p-6">
-                    <p className="text-muted-foreground leading-relaxed">
-                      {t('smartSearchDesc')}
-                    </p>
-                  </CardContent>
-                </Card>
-
-                {/* Feature Card 2 - Registration */}
-                <Card className="group relative overflow-hidden bg-gradient-to-br from-white to-secondary/5 border-2 border-secondary/10 hover:border-secondary/30 shadow-lg hover:shadow-green transform hover:scale-105 transition-all duration-300">
-                  <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative h-56 bg-cover bg-center" style={{ backgroundImage: `url(${featureRegistration})` }}>
-                    <div className="absolute inset-0 bg-gradient-to-t from-secondary/80 via-secondary/20 to-transparent"></div>
-                    <div className="absolute bottom-4 left-6 right-6">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
-                          <MapPin className="h-6 w-6 text-white" />
+                  <CardContent className="relative p-8">
+                    <div className="space-y-4">
+                      <p className="text-muted-foreground leading-relaxed text-lg">
+                        Comprehensive digital addressing system for registering, verifying, and managing addresses across Equatorial Guinea.
+                      </p>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                          <CheckCircle className="h-5 w-5 text-primary" />
+                          <span className="text-sm">GPS-based address registration</span>
                         </div>
-                        <h3 className="text-2xl font-bold text-white">{t('quickRegistration')}</h3>
+                        <div className="flex items-center gap-3">
+                          <CheckCircle className="h-5 w-5 text-primary" />
+                          <span className="text-sm">Multi-level verification workflow</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <CheckCircle className="h-5 w-5 text-primary" />
+                          <span className="text-sm">Smart search and discovery</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <CheckCircle className="h-5 w-5 text-primary" />
+                          <span className="text-sm">Digital documentation & QR codes</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <CardContent className="relative p-6">
-                    <p className="text-muted-foreground leading-relaxed">
-                      {t('quickRegistrationDesc')}
-                    </p>
                   </CardContent>
                 </Card>
 
-                {/* Feature Card 3 - Verification */}
-                <Card className="group relative overflow-hidden bg-gradient-to-br from-white to-destructive/5 border-2 border-destructive/10 hover:border-destructive/30 shadow-lg hover:shadow-red transform hover:scale-105 transition-all duration-300">
+                {/* Emergency Management Module */}
+                <Card className="group relative overflow-hidden bg-gradient-to-br from-white to-destructive/5 border-2 border-destructive/10 hover:border-destructive/30 shadow-xl hover:shadow-red transform hover:scale-105 transition-all duration-300">
                   <div className="absolute inset-0 bg-gradient-to-br from-destructive/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative h-56 bg-cover bg-center" style={{ backgroundImage: `url(${featureVerification})` }}>
-                    <div className="absolute inset-0 bg-gradient-to-t from-destructive/80 via-destructive/20 to-transparent"></div>
-                    <div className="absolute bottom-4 left-6 right-6">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
-                          <Shield className="h-6 w-6 text-white" />
+                  <div className="relative h-64 bg-cover bg-center" style={{ backgroundImage: `url(${featureVerification})` }}>
+                    <div className="absolute inset-0 bg-gradient-to-t from-destructive/90 via-destructive/40 to-transparent"></div>
+                    <div className="absolute bottom-6 left-6 right-6">
+                      <div className="flex items-center gap-4 mb-3">
+                        <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
+                          <Shield className="h-8 w-8 text-white" />
                         </div>
-                        <h3 className="text-2xl font-bold text-white">{t('secureVerification')}</h3>
+                        <div>
+                          <h3 className="text-3xl font-bold text-white">Emergency Management</h3>
+                          <p className="text-red-100 text-lg">Police & Emergency Services</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <CardContent className="relative p-6">
-                    <p className="text-muted-foreground leading-relaxed">
-                      {t('secureVerificationDesc')}
-                    </p>
+                  <CardContent className="relative p-8">
+                    <div className="space-y-4">
+                      <p className="text-muted-foreground leading-relaxed text-lg">
+                        Integrated emergency response platform connecting police, emergency services, and citizens for rapid incident management.
+                      </p>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                          <CheckCircle className="h-5 w-5 text-destructive" />
+                          <span className="text-sm">Real-time incident reporting</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <CheckCircle className="h-5 w-5 text-destructive" />
+                          <span className="text-sm">GPS-based unit dispatch</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <CheckCircle className="h-5 w-5 text-destructive" />
+                          <span className="text-sm">Multi-channel communications</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <CheckCircle className="h-5 w-5 text-destructive" />
+                          <span className="text-sm">Analytics & response tracking</span>
+                        </div>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
+              </div>
 
-                {/* Additional Feature Cards */}
+              {/* Additional Features Grid */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card className="group bg-gradient-to-br from-white to-secondary/5 border-2 border-secondary/10 hover:border-secondary/30 shadow-lg hover:shadow-green transform hover:scale-105 transition-all duration-300">
                   <CardHeader className="pb-4">
                     <div className="flex items-center gap-3">
                       <div className="p-3 bg-gradient-to-br from-secondary to-secondary/80 rounded-2xl">
                         <Users className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-xl font-bold">{t('advancedRoleSystem')}</CardTitle>
+                      <CardTitle className="text-lg font-bold">Role-Based Access</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {t('roleSystemDesc')}
+                    <p className="text-muted-foreground leading-relaxed text-sm">
+                      Advanced role management with granular permissions for different user types and departments.
                     </p>
                   </CardContent>
                 </Card>
@@ -221,12 +249,12 @@ const navigationItems = [
                       <div className="p-3 bg-gradient-to-br from-primary to-primary/80 rounded-2xl">
                         <FileText className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-xl font-bold">{t('digitalDocumentation')}</CardTitle>
+                      <CardTitle className="text-lg font-bold">Digital Documentation</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {t('digitalDocDesc')}
+                    <p className="text-muted-foreground leading-relaxed text-sm">
+                      Automated document generation, QR code integration, and digital certificate management.
                     </p>
                   </CardContent>
                 </Card>
@@ -237,12 +265,28 @@ const navigationItems = [
                       <div className="p-3 bg-gradient-to-br from-destructive to-destructive/80 rounded-2xl">
                         <BarChart3 className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-xl font-bold">{t('realtimeAnalytics')}</CardTitle>
+                      <CardTitle className="text-lg font-bold">Real-time Analytics</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {t('analyticsDesc')}
+                    <p className="text-muted-foreground leading-relaxed text-sm">
+                      Comprehensive reporting and analytics for both addressing and emergency response operations.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="group bg-gradient-to-br from-white to-accent/5 border-2 border-accent/10 hover:border-accent/30 shadow-lg hover:shadow-yellow transform hover:scale-105 transition-all duration-300">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 bg-gradient-to-br from-accent to-accent/80 rounded-2xl">
+                        <Globe className="h-6 w-6 text-white" />
+                      </div>
+                      <CardTitle className="text-lg font-bold">Multi-Language</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground leading-relaxed text-sm">
+                      Full platform localization supporting Spanish, French, and Portuguese for nationwide accessibility.
                     </p>
                   </CardContent>
                 </Card>
@@ -258,45 +302,60 @@ const navigationItems = [
                   <div className="inline-block p-3 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl">
                     <div className="flex items-center gap-2 px-4 py-2">
                       <CheckCircle className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-medium text-primary">{t('nationalImpact')}</span>
+                      <span className="text-sm font-medium text-primary">Strategic Goals</span>
                     </div>
                   </div>
                   <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent">
-                    {t('systemObjectives')}
+                    Platform Objectives
                   </h2>
                   <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                    {t('objectivesSubtitle')}
+                    Transforming Equatorial Guinea through integrated digital addressing and emergency management systems that enhance citizen services and public safety.
                   </p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                   <div className="group p-8 bg-gradient-to-br from-white to-primary/5 rounded-2xl border-2 border-primary/10 hover:border-primary/30 shadow-lg hover:shadow-blue transform hover:scale-105 transition-all duration-300">
                     <div className="flex items-start gap-4 mb-4">
                       <div className="p-3 bg-gradient-to-br from-primary to-primary/80 rounded-2xl shadow-lg">
-                        <CheckCircle className="h-6 w-6 text-white" />
+                        <MapPin className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('enhancedServiceDelivery')}</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">Digital Infrastructure</h3>
                         <div className="h-1 w-16 bg-gradient-to-r from-primary to-primary/60 rounded-full mb-3"></div>
                       </div>
                     </div>
                     <p className="text-muted-foreground leading-relaxed">
-                      {t('serviceDeliveryDesc')}
+                      Establish comprehensive digital addressing infrastructure to improve service delivery, logistics, and economic development across all regions.
                     </p>
                   </div>
                   
+                  <div className="group p-8 bg-gradient-to-br from-white to-destructive/5 rounded-2xl border-2 border-destructive/10 hover:border-destructive/30 shadow-lg hover:shadow-red transform hover:scale-105 transition-all duration-300">
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="p-3 bg-gradient-to-br from-destructive to-destructive/80 rounded-2xl shadow-lg">
+                        <Shield className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">Public Safety Enhancement</h3>
+                        <div className="h-1 w-16 bg-gradient-to-r from-destructive to-destructive/60 rounded-full mb-3"></div>
+                      </div>
+                    </div>
+                    <p className="text-muted-foreground leading-relaxed">
+                      Modernize emergency response capabilities with real-time incident management, GPS-based dispatch, and integrated communication systems.
+                    </p>
+                  </div>
+
                   <div className="group p-8 bg-gradient-to-br from-white to-secondary/5 rounded-2xl border-2 border-secondary/10 hover:border-secondary/30 shadow-lg hover:shadow-green transform hover:scale-105 transition-all duration-300">
                     <div className="flex items-start gap-4 mb-4">
                       <div className="p-3 bg-gradient-to-br from-secondary to-secondary/80 rounded-2xl shadow-lg">
-                        <Globe className="h-6 w-6 text-white" />
+                        <Users className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('economicAcceleration')}</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">Citizen Empowerment</h3>
                         <div className="h-1 w-16 bg-gradient-to-r from-secondary to-secondary/60 rounded-full mb-3"></div>
                       </div>
                     </div>
                     <p className="text-muted-foreground leading-relaxed">
-                      {t('economicDesc')}
+                      Provide citizens with direct access to government services, emergency assistance, and digital documentation through unified platform access.
                     </p>
                   </div>
                   
