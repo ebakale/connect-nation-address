@@ -397,13 +397,13 @@ const navigationItems = [
       case 'about':
         return (
           <div className="space-y-8">
-            <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold">About Us</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                The Equatorial Guinea Address Registry is a government initiative to modernize 
-                the country's address infrastructure and improve service delivery nationwide.
-              </p>
-            </div>
+             <div className="text-center space-y-4">
+               <h2 className="text-3xl font-bold">About Us</h2>
+               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                 The ConnectNation Platform is a BIAKAM initiative to modernize 
+                 Equatorial Guinea's address infrastructure and emergency management systems, improving service delivery nationwide.
+               </p>
+             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
               <Card className="shadow-card">
