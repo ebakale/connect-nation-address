@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { MessageSquare, Send, CheckCheck, Clock, Radio, Filter, AlertTriangle } from 'lucide-react';
+import { MessageSquare, Send, CheckCheck, Clock, Radio, Filter, AlertTriangle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 interface CommunicationMessage {
@@ -55,7 +55,8 @@ const DispatcherCommunications: React.FC = () => {
   const [selectedUnitId, setSelectedUnitId] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [filterPriority, setFilterPriority] = useState<string>('all');
-  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
 
   useEffect(() => {
     if (session?.user?.id) {
@@ -199,28 +200,31 @@ const DispatcherCommunications: React.FC = () => {
     }
   };
 
-  const filteredMessages = messages.filter(message => {
+  // Separate pending and acknowledged messages
+  const pendingMessages = messages.filter(message => {
     const priorityMatch = filterPriority === 'all' || message.priority_level.toString() === filterPriority;
-    const statusMatch = filterStatus === 'all' || 
-      (filterStatus === 'unread' && !message.acknowledged) ||
-      (filterStatus === 'read' && message.acknowledged);
-    return priorityMatch && statusMatch;
-  });
-
-  const sortedMessages = [...filteredMessages].sort((a, b) => {
-    // Unacknowledged messages first
-    if (a.acknowledged !== b.acknowledged) {
-      return a.acknowledged ? 1 : -1;
-    }
-    // Then by priority (high priority first)
+    return !message.acknowledged && priorityMatch;
+  }).sort((a, b) => {
+    // Sort by priority (high priority first) then by date (newest first)
     if (a.priority_level !== b.priority_level) {
       return a.priority_level - b.priority_level;
     }
-    // Finally by date (newest first)
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
 
-  const unreadCount = messages.filter(m => !m.acknowledged).length;
+  const acknowledgedMessages = messages.filter(message => {
+    const priorityMatch = filterPriority === 'all' || message.priority_level.toString() === filterPriority;
+    return message.acknowledged && priorityMatch;
+  }).sort((a, b) => new Date(b.acknowledged_at || b.created_at).getTime() - new Date(a.acknowledged_at || a.created_at).getTime());
+
+  // Pagination for acknowledged messages
+  const totalPages = Math.ceil(acknowledgedMessages.length / ITEMS_PER_PAGE);
+  const paginatedAcknowledgedMessages = acknowledgedMessages.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const unreadCount = pendingMessages.length;
 
   if (loading) {
     return (
@@ -258,16 +262,6 @@ const DispatcherCommunications: React.FC = () => {
             </div>
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
-              <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Messages</SelectItem>
-                  <SelectItem value="unread">Unread</SelectItem>
-                  <SelectItem value="read">Acknowledged</SelectItem>
-                </SelectContent>
-              </Select>
               <Select value={filterPriority} onValueChange={setFilterPriority}>
                 <SelectTrigger className="w-32">
                   <SelectValue />
@@ -289,24 +283,118 @@ const DispatcherCommunications: React.FC = () => {
               <TabsTrigger value="compose">Compose</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="messages" className="mt-4">
-              <ScrollArea className="h-96">
+            <TabsContent value="messages" className="mt-4 space-y-6">
+              {/* Pending Messages Section */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-semibold text-lg flex items-center gap-2">
+                    Pending Messages
+                    {pendingMessages.length > 0 && (
+                      <Badge variant="destructive">{pendingMessages.length}</Badge>
+                    )}
+                  </h3>
+                </div>
+                <ScrollArea className="h-64">
+                  <div className="space-y-3">
+                    {pendingMessages.length === 0 ? (
+                      <div className="text-center text-muted-foreground py-8">
+                        No pending messages
+                      </div>
+                    ) : (
+                      pendingMessages.map((message) => (
+                        <div 
+                          key={message.id} 
+                          className="border rounded-lg p-3 space-y-2 border-l-4 border-l-primary bg-accent/50"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline" className="text-xs">
+                                {message.emergency_units?.unit_code || 'Unknown Unit'}
+                              </Badge>
+                              <Badge variant={getPriorityColor(message.priority_level)} className="text-xs">
+                                {getPriorityLabel(message.priority_level)}
+                              </Badge>
+                              {message.is_radio_code && (
+                                <Badge variant="outline" className="text-xs flex items-center gap-1">
+                                  <Radio className="h-3 w-3" />
+                                  {message.radio_code}
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => acknowledgeMessage(message.id)}
+                              >
+                                Acknowledge
+                              </Button>
+                            </div>
+                          </div>
+                          
+                          <div className="text-sm font-medium">
+                            {message.message_content}
+                          </div>
+                          
+                          <div className="flex items-center justify-between text-xs text-muted-foreground">
+                            <span>
+                              From: {message.profiles?.full_name || 'Unknown Officer'}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
+                            </span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </ScrollArea>
+              </div>
+
+              {/* Recent Communications Section */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-semibold text-lg flex items-center gap-2">
+                    Recent Communications
+                    {acknowledgedMessages.length > 0 && (
+                      <Badge variant="secondary">{acknowledgedMessages.length}</Badge>
+                    )}
+                  </h3>
+                  {totalPages > 1 && (
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                        disabled={currentPage === 1}
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </Button>
+                      <span className="text-sm text-muted-foreground">
+                        Page {currentPage} of {totalPages}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                        disabled={currentPage === totalPages}
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
                 <div className="space-y-3">
-                  {sortedMessages.length === 0 ? (
+                  {paginatedAcknowledgedMessages.length === 0 ? (
                     <div className="text-center text-muted-foreground py-8">
-                      {filteredMessages.length === 0 && messages.length > 0 
-                        ? "No messages match your filters" 
-                        : "No communications received yet"}
+                      No acknowledged messages
                     </div>
                   ) : (
-                    sortedMessages.map((message) => (
+                    paginatedAcknowledgedMessages.map((message) => (
                       <div 
                         key={message.id} 
-                        className={`border rounded-lg p-3 space-y-2 transition-all ${
-                          !message.acknowledged 
-                            ? 'border-l-4 border-l-primary bg-accent/50' 
-                            : 'opacity-75'
-                        }`}
+                        className="border rounded-lg p-3 space-y-2 opacity-75"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -323,25 +411,13 @@ const DispatcherCommunications: React.FC = () => {
                               </Badge>
                             )}
                           </div>
-                          <div className="flex items-center gap-2">
-                            {message.acknowledged ? (
-                              <div className="flex items-center gap-1 text-green-600">
-                                <CheckCheck className="h-4 w-4" />
-                                <span className="text-xs">Acknowledged</span>
-                              </div>
-                            ) : (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => acknowledgeMessage(message.id)}
-                              >
-                                Acknowledge
-                              </Button>
-                            )}
+                          <div className="flex items-center gap-1 text-green-600">
+                            <CheckCheck className="h-4 w-4" />
+                            <span className="text-xs">Acknowledged</span>
                           </div>
                         </div>
                         
-                        <div className={`text-sm ${!message.acknowledged ? 'font-medium' : ''}`}>
+                        <div className="text-sm">
                           {message.message_content}
                         </div>
                         
@@ -351,14 +427,14 @@ const DispatcherCommunications: React.FC = () => {
                           </span>
                           <span className="flex items-center gap-1">
                             <Clock className="h-3 w-3" />
-                            {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
+                            {formatDistanceToNow(new Date(message.acknowledged_at || message.created_at), { addSuffix: true })}
                           </span>
                         </div>
                       </div>
                     ))
                   )}
                 </div>
-              </ScrollArea>
+              </div>
             </TabsContent>
             
             <TabsContent value="compose" className="mt-4">
