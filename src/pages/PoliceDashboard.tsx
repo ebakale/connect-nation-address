@@ -27,6 +27,7 @@ import { UnitLeadActions } from '@/components/UnitLeadActions';
 import { PoliceAdminDashboard } from '@/components/PoliceAdminDashboard';
 import { RequestBackupDialog } from '@/components/RequestBackupDialog';
 import { BackupRequestsPanel } from '@/components/BackupRequestsPanel';
+import DispatcherCommunications from '@/components/DispatcherCommunications';
 import { toast } from "sonner";
 
 interface EmergencyIncident {
@@ -762,7 +763,7 @@ const PoliceDashboard = () => {
 
               {/* Main Content Tabs */}
               <Tabs defaultValue="incidents" className="w-full">
-                <TabsList className="grid w-full grid-cols-5">
+                <TabsList className="grid w-full grid-cols-6">
                   <TabsTrigger value="incidents" className="flex items-center gap-1">
                     <AlertTriangle className="h-3 w-3" />
                     Incidents
@@ -774,6 +775,10 @@ const PoliceDashboard = () => {
                   <TabsTrigger value="units" className="flex items-center gap-1">
                     <Shield className="h-3 w-3" />
                     Units
+                  </TabsTrigger>
+                  <TabsTrigger value="communications" className="flex items-center gap-1">
+                    <MessageSquare className="h-3 w-3" />
+                    Comms
                   </TabsTrigger>
                   <TabsTrigger value="metrics" className="flex items-center gap-1">
                     <TrendingUp className="h-3 w-3" />
@@ -878,6 +883,10 @@ const PoliceDashboard = () => {
                       </CardContent>
                     </Card>
                   </div>
+                </TabsContent>
+
+                <TabsContent value="communications" className="mt-4">
+                  <DispatcherCommunications />
                 </TabsContent>
 
                 <TabsContent value="metrics" className="mt-4">
