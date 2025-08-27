@@ -10,6 +10,7 @@ import FieldMap from "@/components/FieldMap";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useLanguage } from '@/contexts/LanguageContext';
+import Footer from '@/components/Footer';
 
 
 const FieldAgentDashboard = () => {
@@ -199,6 +200,7 @@ const FieldAgentDashboard = () => {
           </Card>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

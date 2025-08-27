@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 import { useUserRole } from '@/hooks/useUserRole';
+import Footer from '@/components/Footer';
 
 const Auth = () => {
   const [loading, setLoading] = useState(false);
@@ -217,15 +218,9 @@ const Auth = () => {
             </CardContent>
           </Card>
 
-          {/* Footer */}
-          <div className="text-center space-y-2">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-              <p className="text-white/90 font-medium text-sm">{t('governmentEG')} • ConnectEG</p>
-              <p className="text-white/70 text-xs">{t('secureReliableNationwide')}</p>
-            </div>
-          </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

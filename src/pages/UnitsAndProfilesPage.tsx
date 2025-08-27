@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Shield, Users } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import Footer from '@/components/Footer';
 
 export const UnitsAndProfilesPage: React.FC = () => {
   const { role, loading } = useUserRole();
@@ -76,6 +77,7 @@ export const UnitsAndProfilesPage: React.FC = () => {
           <OfficerProfileDashboard onClose={() => navigate('/police')} />
         </TabsContent>
       </Tabs>
+      <Footer />
     </div>
   );
 };

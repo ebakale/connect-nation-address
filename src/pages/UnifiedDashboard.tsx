@@ -11,6 +11,7 @@ import {
   Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map, User, Phone
 } from "lucide-react";
 import { useLanguage } from '@/contexts/LanguageContext';
+import Footer from '@/components/Footer';
 
 import { useNavigate } from "react-router-dom";
 
@@ -324,9 +325,10 @@ const UnifiedDashboard = () => {
                 <LogOut className="h-4 w-4" />
                 {t('logout')}
               </Button>
-            </div>
-          </div>
         </div>
+      </div>
+      <Footer />
+    </div>
 
         {/* Admin Metrics */}
         {hasAdminAccess && (

@@ -7,6 +7,7 @@ import AdminPanel from "@/components/AdminPanel";
 import { Shield, Users, Settings, BarChart3, LogOut, FileText } from "lucide-react";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
 import { useLanguage } from '@/contexts/LanguageContext';
+import Footer from '@/components/Footer';
 
 
 const AdminDashboard = () => {
@@ -145,6 +146,7 @@ const AdminDashboard = () => {
           <AdminPanel />
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

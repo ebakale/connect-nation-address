@@ -13,6 +13,7 @@ import {
   Navigation, MessageSquare, Flag
 } from "lucide-react";
 import { useLanguage } from '@/contexts/LanguageContext';
+import Footer from '@/components/Footer';
 
 import IncidentMap from '@/components/IncidentMap';
 import IncidentList from '@/components/IncidentList';
@@ -550,6 +551,7 @@ const PoliceDashboard = () => {
   }
 
   return (
+    <>
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b bg-card">
@@ -1168,6 +1170,8 @@ const PoliceDashboard = () => {
         )}
       </main>
     </div>
+    <Footer />
+    </>
   );
 };
 

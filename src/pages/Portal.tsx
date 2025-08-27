@@ -25,6 +25,7 @@ import {
   Home,
   Database
 } from 'lucide-react';
+import Footer from '@/components/Footer';
 
 interface SystemMetrics {
   totalAddresses: number;
@@ -384,6 +385,7 @@ const Portal = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

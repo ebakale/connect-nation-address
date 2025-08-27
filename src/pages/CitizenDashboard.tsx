@@ -5,6 +5,7 @@ import EmergencyContacts from "@/components/EmergencyContacts";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from '@/contexts/LanguageContext';
+import Footer from '@/components/Footer';
 
 import AddressSearch from "@/components/AddressSearch";
 import AddressMapViewer from "@/components/AddressMapViewer";
@@ -74,9 +75,10 @@ const CitizenDashboard = () => {
                 <LogOut className="h-4 w-4" />
                 {t('logout')}
               </Button>
-            </div>
-          </div>
         </div>
+      </div>
+      <Footer />
+    </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <Card className="min-w-0">

@@ -10,6 +10,7 @@ import { AddressRequestApproval } from "@/components/AddressRequestApproval";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useLanguage } from '@/contexts/LanguageContext';
+import Footer from '@/components/Footer';
 
 
 const VerifierDashboard = () => {
@@ -213,6 +214,7 @@ const VerifierDashboard = () => {
           </Card>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

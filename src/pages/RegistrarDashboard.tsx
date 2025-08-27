@@ -9,6 +9,7 @@ import { AddressUnpublishingQueue } from "@/components/AddressUnpublishingQueue"
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useLanguage } from '@/contexts/LanguageContext';
+import Footer from '@/components/Footer';
 
 
 const RegistrarDashboard = () => {
@@ -198,6 +199,7 @@ const RegistrarDashboard = () => {
           </Card>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
