@@ -1272,6 +1272,55 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
         </Card>
       </div>
 
+      {/* Location Update - Own unit only for field operators */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MapPin className="h-5 w-5" />
+            {isFieldOperatorMode ? "My Location" : "Location Management"}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {isFieldOperatorMode && (
+              <div className="bg-blue-50 border border-blue-200 rounded p-3 mb-3">
+                <p className="text-sm text-blue-800">
+                  <Shield className="h-4 w-4 inline mr-1" />
+                  You can only update your own unit's location
+                </p>
+              </div>
+            )}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder={isFieldOperatorMode ? "Update my location..." : "Update location manually..."}
+                value={currentLocation}
+                onChange={(e) => setCurrentLocation(e.target.value)}
+                className="flex-1 px-3 py-2 border rounded-md"
+              />
+              <Button 
+                onClick={updateUnitLocation}
+                disabled={!currentLocation.trim() || isUpdatingLocation}
+              >
+                {isUpdatingLocation ? 'Updating...' : 'Update'}
+              </Button>
+            </div>
+            
+            {unitInfo.current_location && (
+              <p className="text-sm text-muted-foreground">
+                Current: {unitInfo.current_location}
+              </p>
+            )}
+            
+            {unitInfo.location_latitude && unitInfo.location_longitude && (
+              <p className="text-xs text-muted-foreground font-mono">
+                GPS: {unitInfo.location_latitude.toFixed(6)}, {unitInfo.location_longitude.toFixed(6)}
+              </p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Unit Members - Restricted for field operators */}
       {unitMembers.length > 0 && !isFieldOperatorMode && (
         <Card>
@@ -1339,6 +1388,8 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
           </CardContent>
         </Card>
       )}
+
+      {/* Evidence Files */}
       {evidenceFiles.length > 0 && (
         <Card>
           <CardHeader>
@@ -1387,56 +1438,20 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
         </Card>
       )}
 
-      {/* Location Update - Own unit only for field operators */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
-            {isFieldOperatorMode ? "My Location" : "Location Management"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {isFieldOperatorMode && (
-              <div className="bg-blue-50 border border-blue-200 rounded p-3 mb-3">
-                <p className="text-sm text-blue-800">
-                  <Shield className="h-4 w-4 inline mr-1" />
-                  You can only update your own unit's location
-                </p>
-              </div>
-            )}
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder={isFieldOperatorMode ? "Update my location..." : "Update location manually..."}
-                value={currentLocation}
-                onChange={(e) => setCurrentLocation(e.target.value)}
-                className="flex-1 px-3 py-2 border rounded-md"
-              />
-              <Button 
-                onClick={updateUnitLocation}
-                disabled={!currentLocation.trim() || isUpdatingLocation}
-              >
-                {isUpdatingLocation ? 'Updating...' : 'Update'}
-              </Button>
-            </div>
-            
-            {unitInfo.current_location && (
-              <p className="text-sm text-muted-foreground">
-                Current: {unitInfo.current_location}
-              </p>
-            )}
-            
-            {unitInfo.location_latitude && unitInfo.location_longitude && (
-              <p className="text-xs text-muted-foreground font-mono">
-                GPS: {unitInfo.location_latitude.toFixed(6)}, {unitInfo.location_longitude.toFixed(6)}
-              </p>
-            )}
+      {/* INCIDENT MANAGEMENT - Principal Activity (Moved to Last) */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 mb-4 p-4 bg-primary/5 rounded-lg border-l-4 border-l-primary">
+          <AlertTriangle className="h-6 w-6 text-primary" />
+          <div>
+            <h2 className="text-2xl font-bold text-primary">Incident Management</h2>
+            <p className="text-sm text-muted-foreground">Principal Activity - Active Assignments</p>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Active Assignments */}
+          {assignments.length > 0 && (
+            <Badge variant="destructive" className="ml-auto">
+              {assignments.length} Active
+            </Badge>
+          )}
+        </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {assignments.length === 0 ? (
           <Card className="lg:col-span-2 xl:col-span-3">
@@ -1613,6 +1628,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
             </Card>
           ))
         )}
+      </div>
       </div>
     </div>
   );
