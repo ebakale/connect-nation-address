@@ -1149,9 +1149,12 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   };
 
   const t = (key: string): string => {
-    return translations[currentLanguage][key] || key;
+    const fromCurrent = translations[currentLanguage]?.[key as keyof typeof translations[Language extends never ? never : keyof typeof translations]] as string | undefined;
+    if (fromCurrent) return fromCurrent;
+    // Fallback to Spanish to avoid showing raw keys when translations are missing
+    const fromSpanish = (translations.es as Record<string, string>)[key];
+    return fromSpanish || key;
   };
-
   const value: LanguageContextType = {
     currentLanguage,
     setLanguage,
