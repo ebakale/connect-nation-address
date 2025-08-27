@@ -354,11 +354,17 @@ const PoliceDashboard = () => {
         reporter_email: ''
       })) || [];
 
-      // Filter area incidents - supervisors/dispatchers/admin see all active incidents in their city
+      // Filter area incidents - only assigned incidents for dispatchers
       const validAreaIncidents = enrichedIncidents.filter(incident => {
-        if (isPoliceSupervisor || isPoliceDispatcher || isAdmin) {
+        if (isPoliceSupervisor || isAdmin) {
           return true;
         }
+        
+        // Dispatchers: only see incidents assigned to them
+        if (isPoliceDispatcher) {
+          return incident.assigned_operator_id === user?.id;
+        }
+        
         // Operators: only incidents assigned to their units
         if (isPoliceOperator) {
           const userUnitCodes = userUnits.map(u => u.unit_code);
@@ -374,11 +380,17 @@ const PoliceDashboard = () => {
     }
   };
   const calculateDashboardStats = (incidents: EmergencyIncident[]): DashboardStats => {
-    // For dispatchers and supervisors, count all incidents from the database query
-    // (which is already filtered by city and status)
+    // Apply role-specific filtering for stats calculation
     let relevantIncidents = incidents;
     
-    // Only apply additional filtering for field operators
+    // Dispatchers: only count incidents assigned to them
+    if (isPoliceDispatcher && !isPoliceSupervisor) {
+      relevantIncidents = incidents.filter(incident => {
+        return incident.assigned_operator_id === user?.id;
+      });
+    }
+    
+    // Field operators: only count incidents assigned to their units
     if (isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher) {
       const userUnitCodes = userUnits.map(u => u.unit_code);
       relevantIncidents = incidents.filter(incident => {
