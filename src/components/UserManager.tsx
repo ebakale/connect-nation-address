@@ -59,14 +59,19 @@ const UserManager: React.FC = () => {
     organization: '',
     phone: '',
     password: '',
-    role: 'police_operator'
+    role: 'citizen'
   });
-  const { hasPoliceAdminAccess, hasAdminAccess } = useUserRole();
+  const { hasPoliceAdminAccess, hasAdminAccess, isNDAAAdmin } = useUserRole();
   const { toast } = useToast();
 
-  // Only police-related roles for police system (excluding general admin)
+  // Define role sets based on user access
   const policeRoles = [
     'police_operator', 'police_supervisor', 'police_dispatcher', 'police_admin'
+  ] as const;
+  
+  const addressingRoles = [
+    'admin', 'ndaa_admin', 'registrar', 'verifier', 'field_agent', 'citizen', 
+    'property_claimant', 'partner', 'auditor', 'data_steward'
   ] as const;
 
   // Region to cities mapping for Equatorial Guinea
@@ -105,7 +110,8 @@ const UserManager: React.FC = () => {
 
       if (profilesError) throw profilesError;
 
-      // Then fetch all user roles with metadata - only police-related roles
+      // Fetch user roles based on user's access level
+      const rolesToShow = hasPoliceAdminAccess ? policeRoles : addressingRoles;
       const { data: userRoles, error: rolesError } = await supabase
         .from('user_roles')
         .select(`
@@ -116,18 +122,18 @@ const UserManager: React.FC = () => {
             scope_value
           )
         `)
-        .in('role', ['police_operator', 'police_supervisor', 'police_dispatcher', 'police_admin']);
+        .in('role', rolesToShow);
 
       if (rolesError) throw rolesError;
 
-      // Transform the data to group roles by user - only users with police roles
+      // Transform the data to group roles by user
       const usersMap = new Map<string, UserProfile>();
       
-      // Create user entries from profiles, but only for users with police roles
-      const policeUserIds = new Set(userRoles?.map((ur: any) => ur.user_id) || []);
+      // Create user entries from profiles for users with relevant roles
+      const relevantUserIds = new Set(userRoles?.map((ur: any) => ur.user_id) || []);
       
       profiles?.forEach((profile: any) => {
-        if (policeUserIds.has(profile.user_id)) {
+        if (relevantUserIds.has(profile.user_id)) {
           usersMap.set(profile.user_id, {
             id: profile.id,
             user_id: profile.user_id,
@@ -405,7 +411,7 @@ const UserManager: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            User Management
+            {hasPoliceAdminAccess ? 'Police User Management' : 'User Management'}
           </CardTitle>
           <CardDescription>
             Access denied. Admin privileges required.
@@ -509,7 +515,7 @@ const UserManager: React.FC = () => {
                               <SelectValue placeholder="Assign role" />
                             </SelectTrigger>
                             <SelectContent>
-                              {policeRoles.filter(role => 
+                              {(hasPoliceAdminAccess ? policeRoles : addressingRoles).filter(role => 
                                 !user.roles.some(userRole => userRole.role === role)
                               ).map((role) => (
                                 <SelectItem key={role} value={role}>
@@ -585,7 +591,7 @@ const UserManager: React.FC = () => {
             {filteredUsers.length === 0 && (
               <div className="text-center py-8">
                 <UserCog className="mx-auto h-12 w-12 text-muted-foreground" />
-                <p className="mt-2 text-muted-foreground">No police users found</p>
+                <p className="mt-2 text-muted-foreground">No {hasPoliceAdminAccess ? 'police' : 'addressing'} users found</p>
               </div>
             )}
             </div>
@@ -761,10 +767,10 @@ const UserManager: React.FC = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <UserPlus className="h-5 w-5" />
-              Create New Police User
+              {hasPoliceAdminAccess ? 'Create New Police User' : 'Create New User'}
             </DialogTitle>
             <DialogDescription>
-              Create a new user account for the police system.
+              {hasPoliceAdminAccess ? 'Create a new user account for the police system.' : 'Create a new user account for the addressing system.'}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -828,7 +834,7 @@ const UserManager: React.FC = () => {
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
                 <SelectContent>
-                  {policeRoles.map((role) => (
+                  {(hasPoliceAdminAccess ? policeRoles : addressingRoles).map((role) => (
                     <SelectItem key={role} value={role}>
                       {role.replace('_', ' ')}
                     </SelectItem>
@@ -847,7 +853,7 @@ const UserManager: React.FC = () => {
                     organization: '',
                     phone: '',
                     password: '',
-                    role: 'police_operator'
+                    role: 'citizen'
                   });
                 }}
               >
