@@ -417,6 +417,15 @@ const translations = {
     analyticsReports: 'Informes y Análisis',
     unitsManagement: 'Gestión de Unidades',
     usersManagement: 'Gestión de Usuarios',
+    // Additional tabs
+    tabGeneral: 'General',
+    tabEmergency: 'Emergencia',
+    tabNotifications: 'Notificaciones',
+    tabSecurity: 'Seguridad',
+    tabLocation: 'Ubicación',
+    tabAPI: 'API',
+    // Analytics empty state
+    noAnalyticsData: 'No hay datos de análisis disponibles',
     totalOfficersNew: 'Total de Oficiales',
     currentlyActiveNew: 'actualmente activos',
     policeUnitsNew: 'Unidades Policiales',
@@ -1029,6 +1038,15 @@ const translations = {
     analyticsReports: 'Analytics & Reports',
     unitsManagement: 'Units Management',
     usersManagement: 'Users Management',
+    // Additional tabs
+    tabGeneral: 'General',
+    tabEmergency: 'Emergency',
+    tabNotifications: 'Notifications',
+    tabSecurity: 'Security',
+    tabLocation: 'Location',
+    tabAPI: 'API',
+    // Analytics empty state
+    noAnalyticsData: 'No analytics data available',
   },
   fr: {
     // Navigation
@@ -1460,6 +1478,15 @@ const translations = {
     analyticsReports: 'Analyses et Rapports',
     unitsManagement: 'Gestion des Unités',
     usersManagement: 'Gestion des Utilisateurs',
+    // Additional tabs
+    tabGeneral: 'Général',
+    tabEmergency: 'Urgence',
+    tabNotifications: 'Notifications',
+    tabSecurity: 'Sécurité',
+    tabLocation: 'Localisation',
+    tabAPI: 'API',
+    // Analytics empty state
+    noAnalyticsData: 'Aucune donnée d\'analyse disponible',
   }
 };
 

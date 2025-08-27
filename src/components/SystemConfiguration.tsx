@@ -199,23 +199,23 @@ const SystemConfiguration: React.FC = () => {
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={backupSystem}>
             <Download className="h-4 w-4 mr-2" />
-            Backup
+            {t('backup')}
           </Button>
           <Button variant="outline" onClick={restoreSystem}>
             <Upload className="h-4 w-4 mr-2" />
-            Restore
+            {t('restore')}
           </Button>
         </div>
       </div>
 
       <Tabs defaultValue="general" className="space-y-4">
         <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="general">General</TabsTrigger>
-          <TabsTrigger value="emergency">Emergency</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
-          <TabsTrigger value="location">Location</TabsTrigger>
-          <TabsTrigger value="api">API</TabsTrigger>
+          <TabsTrigger value="general">{t('tabGeneral')}</TabsTrigger>
+          <TabsTrigger value="emergency">{t('tabEmergency')}</TabsTrigger>
+          <TabsTrigger value="notifications">{t('tabNotifications')}</TabsTrigger>
+          <TabsTrigger value="security">{t('tabSecurity')}</TabsTrigger>
+          <TabsTrigger value="location">{t('tabLocation')}</TabsTrigger>
+          <TabsTrigger value="api">{t('tabAPI')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-4">
@@ -223,14 +223,14 @@ const SystemConfiguration: React.FC = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Settings className="h-5 w-5" />
-                General Settings
+                {t('generalSettings')}
               </CardTitle>
-              <CardDescription>Basic system configuration</CardDescription>
+              <CardDescription>{t('basicSystemConfiguration')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="system_name">System Name</Label>
+                  <Label htmlFor="system_name">{t('systemName')}</Label>
                   <Input
                     id="system_name"
                     value={systemName}
@@ -238,7 +238,7 @@ const SystemConfiguration: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="default_language">Default Language</Label>
+                  <Label htmlFor="default_language">{t('defaultLanguage')}</Label>
                   <Select value={defaultLanguage} onValueChange={setDefaultLanguage}>
                     <SelectTrigger>
                       <SelectValue />
@@ -253,7 +253,7 @@ const SystemConfiguration: React.FC = () => {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="timezone">Timezone</Label>
+                  <Label htmlFor="timezone">{t('timezone')}</Label>
                   <Select value={timezone} onValueChange={setTimezone}>
                     <SelectTrigger>
                       <SelectValue />
