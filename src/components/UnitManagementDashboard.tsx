@@ -17,6 +17,7 @@ import {
   Trash2, Clock, TrendingUp, AlertCircle, CheckCircle,
   Phone, Mail, Shield, Navigation, ArrowLeft, Star, Award, ChevronDown, ChevronRight
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface EmergencyUnit {
   id: string;
@@ -65,6 +66,7 @@ interface UnitManagementDashboardProps {
 export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = ({ onClose }) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [units, setUnits] = useState<UnitWithMembers[]>([]);
   const [availableOfficers, setAvailableOfficers] = useState<Officer[]>([]);
   const [selectedUnit, setSelectedUnit] = useState<UnitWithMembers | null>(null);
@@ -447,15 +449,15 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Unit Management</h1>
-          <p className="text-muted-foreground">Manage emergency units and officer assignments</p>
+          <h1 className="text-3xl font-bold">{t('unitManagement')}</h1>
+          <p className="text-muted-foreground">{t('manageEmergencyUnitsAndAssignments')}</p>
         </div>
         
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              Create Police Unit
+              {t('createPoliceUnit')}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">

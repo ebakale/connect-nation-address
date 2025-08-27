@@ -15,6 +15,7 @@ import {
   Database, Key, AlertTriangle, CheckCircle, Save,
   RefreshCw, Download, Upload, Globe, Lock
 } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface SystemConfig {
   id?: string;
@@ -28,6 +29,7 @@ interface SystemConfig {
 }
 
 const SystemConfiguration: React.FC = () => {
+  const { t } = useLanguage();
   const [configs, setConfigs] = useState<SystemConfig[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
