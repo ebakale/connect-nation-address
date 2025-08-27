@@ -19,6 +19,7 @@ import {
   Zap, Heart, Siren, LogIn, LogOut, RefreshCw,
   Headphones, Mic, Volume2, Navigation2, Locate
 } from 'lucide-react';
+import { IncidentStatusUpdateDialog } from './IncidentStatusUpdateDialog';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface IncidentAssignment {
@@ -95,7 +96,7 @@ const fieldActions: FieldAction[] = [
   {
     action: 'update_status',
     label: 'Update Status',
-    icon: MessageSquare,
+    icon: Flag,
     color: 'bg-purple-500',
     requiresNotes: true
   },
@@ -1171,82 +1172,102 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                 <div className="space-y-2">
                   <h4 className="font-medium">Available Actions</h4>
                   <div className="grid grid-cols-2 gap-2">
-                    {fieldActions.map((action) => {
-                      const isApplicable = 
-                        (action.action === 'accept_assignment' && selectedIncident.status === 'dispatched') ||
-                        (action.action === 'en_route' && ['dispatched'].includes(selectedIncident.status)) ||
-                        (action.action === 'on_scene' && ['dispatched', 'en_route', 'responded'].includes(selectedIncident.status)) ||
-                        (action.action === 'request_backup') ||
-                        (action.action === 'update_status') ||
-                        (action.action === 'complete_incident' && ['on_scene', 'responded'].includes(selectedIncident.status));
+                     {fieldActions.map((action) => {
+                       const isApplicable = 
+                         (action.action === 'accept_assignment' && selectedIncident.status === 'dispatched') ||
+                         (action.action === 'en_route' && ['dispatched'].includes(selectedIncident.status)) ||
+                         (action.action === 'on_scene' && ['dispatched', 'en_route', 'responded'].includes(selectedIncident.status)) ||
+                         (action.action === 'request_backup') ||
+                         (action.action === 'update_status') ||
+                         (action.action === 'complete_incident' && ['on_scene', 'responded'].includes(selectedIncident.status));
 
-                      if (!isApplicable) return null;
+                       if (!isApplicable) return null;
 
-                      return (
-                        <Dialog
-                          key={action.action}
-                          open={actionDialog?.action.action === action.action && actionDialog?.incident.id === selectedIncident.id}
-                          onOpenChange={(open) => {
-                            if (open) {
-                              setActionDialog({ action, incident: selectedIncident });
-                            } else {
-                              setActionDialog(null);
-                              setActionNotes('');
-                            }
-                          }}
-                        >
-                          <DialogTrigger asChild>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-xs"
-                            >
-                              <action.icon className="h-3 w-3 mr-1" />
-                              {action.label}
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>
-                                {action.label} - {selectedIncident.incident_number}
-                              </DialogTitle>
-                            </DialogHeader>
-                            <div className="space-y-4">
-                              <div className="p-4 bg-muted/30 rounded">
-                                <p className="font-medium">{selectedIncident.emergency_type.toUpperCase()}</p>
-                                <p className="text-sm text-muted-foreground">
-                                  Priority {selectedIncident.priority_level} • {formatLocation(selectedIncident)}
-                                </p>
-                              </div>
-                              
-                              {action.requiresNotes && (
-                                <div>
-                                  <label className="text-sm font-medium">
-                                    {action.action === 'request_backup' ? 'Reason for backup request:' : 'Notes:'}
-                                  </label>
-                                  <Textarea
-                                    value={actionNotes}
-                                    onChange={(e) => setActionNotes(e.target.value)}
-                                    placeholder={action.action === 'request_backup' 
-                                      ? "Describe the situation requiring backup..." 
-                                      : "Add any relevant notes..."
-                                    }
-                                    rows={3}
-                                  />
-                                </div>
-                              )}
-                              
-                              <Button 
-                                onClick={executeFieldAction} 
-                                className="w-full"
-                                disabled={action.requiresNotes && !actionNotes.trim()}
-                              >
-                                {action.label}
-                              </Button>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
-                      );
+                       // Use special status update dialog for status updates
+                       if (action.action === 'update_status') {
+                         return (
+                           <IncidentStatusUpdateDialog
+                             key={action.action}
+                             incident={selectedIncident}
+                             onUpdate={fetchAssignments}
+                           >
+                             <Button
+                               variant="outline"
+                               size="sm"
+                               className="text-xs"
+                             >
+                               <action.icon className="h-3 w-3 mr-1" />
+                               {action.label}
+                             </Button>
+                           </IncidentStatusUpdateDialog>
+                         );
+                       }
+
+                       return (
+                         <Dialog
+                           key={action.action}
+                           open={actionDialog?.action.action === action.action && actionDialog?.incident.id === selectedIncident.id}
+                           onOpenChange={(open) => {
+                             if (open) {
+                               setActionDialog({ action, incident: selectedIncident });
+                             } else {
+                               setActionDialog(null);
+                               setActionNotes('');
+                             }
+                           }}
+                         >
+                           <DialogTrigger asChild>
+                             <Button
+                               variant="outline"
+                               size="sm"
+                               className="text-xs"
+                             >
+                               <action.icon className="h-3 w-3 mr-1" />
+                               {action.label}
+                             </Button>
+                           </DialogTrigger>
+                           <DialogContent>
+                             <DialogHeader>
+                               <DialogTitle>
+                                 {action.label} - {selectedIncident.incident_number}
+                               </DialogTitle>
+                             </DialogHeader>
+                             <div className="space-y-4">
+                               <div className="p-4 bg-muted/30 rounded">
+                                 <p className="font-medium">{selectedIncident.emergency_type.toUpperCase()}</p>
+                                 <p className="text-sm text-muted-foreground">
+                                   Priority {selectedIncident.priority_level} • {formatLocation(selectedIncident)}
+                                 </p>
+                               </div>
+                               
+                               {action.requiresNotes && (
+                                 <div>
+                                   <label className="text-sm font-medium">
+                                     {action.action === 'request_backup' ? 'Reason for backup request:' : 'Notes:'}
+                                   </label>
+                                   <Textarea
+                                     value={actionNotes}
+                                     onChange={(e) => setActionNotes(e.target.value)}
+                                     placeholder={action.action === 'request_backup' 
+                                       ? "Describe the situation requiring backup..." 
+                                       : "Add any relevant notes..."
+                                     }
+                                     rows={3}
+                                   />
+                                 </div>
+                               )}
+                               
+                               <Button 
+                                 onClick={executeFieldAction} 
+                                 className="w-full"
+                                 disabled={action.requiresNotes && !actionNotes.trim()}
+                               >
+                                 {action.label}
+                               </Button>
+                             </div>
+                           </DialogContent>
+                         </Dialog>
+                       );
                     })}
                   </div>
                 </div>
