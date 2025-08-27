@@ -200,6 +200,14 @@ const DispatcherCommunications: React.FC = () => {
     }
   };
 
+  // Debug logging
+  console.log('All messages:', messages.map(m => ({ 
+    id: m.id, 
+    content: m.message_content, 
+    acknowledged: m.acknowledged, 
+    acknowledged_type: typeof m.acknowledged 
+  })));
+
   // Quick Comm messages (unacknowledged only)
   const quickCommMessages = messages.filter(message => {
     const priorityMatch = filterPriority === 'all' || message.priority_level.toString() === filterPriority;
