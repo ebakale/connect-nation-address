@@ -68,24 +68,24 @@ const navigationItems = [
                   {/* Badge */}
                   <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white shadow-lg backdrop-blur-sm border border-white/20">
                     <MapPin className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                    <span className="text-sm sm:text-base font-semibold">{t('nationalAddressRegistry')}</span>
+                    <span className="text-sm sm:text-base font-semibold">ConnectNation Platform</span>
                   </div>
                   
                   {/* Main Heading */}
                   <div className="space-y-2 sm:space-y-3">
                     <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent leading-tight mobile-container">
-                      <span className="block">{t('equatorialGuinea')}</span>
+                      <span className="block">ConnectNation</span>
                       <span className="block text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-foreground/90 mt-1">
-                        {t('addressRegistration')}
+                        Digital Platform
                       </span>
                     </h1>
                   </div>
                   
                   {/* Subtitle */}
                   <p className="text-sm sm:text-base md:text-lg lg:text-xl text-foreground/70 max-w-4xl mx-auto leading-relaxed font-light mobile-text-responsive mobile-container">
-                    {t('heroSubtitle')} 
-                    <span className="text-primary font-medium"> {t('heroDescription')} </span>
-                    {t('heroDescriptionExtended')}
+                    Unified platform for digital addressing and emergency management in Equatorial Guinea.
+                    <span className="text-primary font-medium"> Connecting citizens, addresses, and emergency services </span>
+                    through innovative technology and seamless integration.
                   </p>
                   
                   {/* CTA Buttons */}
@@ -96,7 +96,7 @@ const navigationItems = [
                       size="lg"
                     >
                       <LogIn className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                      {t('accessSystemNow')}
+                      Access Platform
                     </Button>
                     <Button 
                       onClick={() => setActiveSection('about')}
@@ -105,7 +105,7 @@ const navigationItems = [
                       size="lg"
                     >
                       <Globe className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                      {t('discoverMore')}
+                      Learn More
                     </Button>
                   </div>
 
@@ -661,7 +661,7 @@ const navigationItems = [
               <div className="p-2 rounded-xl bg-gradient-primary glow-pulse">
                 <MapPin className="h-8 w-8 text-primary-foreground" />
               </div>
-              <span className="text-2xl font-bold text-gradient">EG Digital Registry</span>
+              <span className="text-2xl font-bold text-gradient">ConnectNation Platform</span>
             </div>
             {user ? (
               <Button 
