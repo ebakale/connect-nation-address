@@ -137,7 +137,7 @@ const PoliceDashboard = () => {
         }
       } catch (error) {
         console.error('Error initializing operator session:', error);
-        toast.error(t('failedToInitializeSession'));
+        toast.error('Failed to initialize operator session');
       }
     };
 
@@ -232,7 +232,7 @@ const PoliceDashboard = () => {
 
       const enrichedIncidents = incidentsData?.map(incident => ({
         ...incident,
-        reporter_name: t('unknown'),
+        reporter_name: 'Unknown',
         reporter_email: ''
       })) || [];
 
@@ -283,7 +283,7 @@ const PoliceDashboard = () => {
 
       const enrichedIncidents = incidentsData?.map(incident => ({
         ...incident,
-        reporter_name: t('unknown'),
+        reporter_name: 'Unknown',
         reporter_email: ''
       })) || [];
 
@@ -351,7 +351,7 @@ const PoliceDashboard = () => {
 
       const enrichedIncidents = incidentsData?.map(incident => ({
         ...incident,
-        reporter_name: t('unknown'),
+        reporter_name: 'Unknown',
         reporter_email: ''
       })) || [];
 
@@ -792,9 +792,9 @@ const PoliceDashboard = () => {
                       <div className="flex items-center justify-between">
                         <CardTitle className="flex items-center gap-2">
                           <AlertTriangle className="h-5 w-5" />
-                          {t('emergencyIncidents')}
+                          Emergency Incidents
                         </CardTitle>
-                        <Badge variant="secondary">{incidents.length} {t('total')}</Badge>
+                        <Badge variant="secondary">{incidents.length} total</Badge>
                       </div>
                     </CardHeader>
                     <CardContent>

@@ -15,7 +15,6 @@ import {
   CheckCircle, MapPin, Calendar, Download, RefreshCw,
   BarChart3, Activity, Target, Zap
 } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AnalyticsData {
   incidents: {
@@ -45,7 +44,6 @@ interface AnalyticsData {
 }
 
 const PoliceAnalytics: React.FC = () => {
-  const { t } = useLanguage();
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('30d');
