@@ -487,7 +487,7 @@ const translations = {
     logout: 'Logout',
     
     // Hero Section
-    nationalAddressRegistry: 'National Address Registry System',
+    nationalAddressRegistry: 'National Address Registry and Emergency Management System',
     equatorialGuinea: 'Equatorial Guinea',
     addressRegistration: 'Address Registration',
     heroSubtitle: 'Transforming address management with cutting-edge technology.',
@@ -812,7 +812,7 @@ const translations = {
     logout: 'Déconnexion',
     
     // Hero Section
-    nationalAddressRegistry: 'Système National de Registre d\'Adresses',
+    nationalAddressRegistry: 'Système National de Registre d\'Adresses et de Gestion d\'Urgence',
     equatorialGuinea: 'Guinée Équatoriale',
     addressRegistration: 'Enregistrement d\'Adresses',
     heroSubtitle: 'Transformant la gestion des adresses avec une technologie de pointe.',
