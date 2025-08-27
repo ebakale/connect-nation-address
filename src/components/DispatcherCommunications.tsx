@@ -5,10 +5,12 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { MessageSquare, Send, CheckCheck, Clock, Radio } from 'lucide-react';
+import { MessageSquare, Send, CheckCheck, Clock, Radio, Filter, AlertTriangle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 interface CommunicationMessage {
@@ -33,6 +35,18 @@ interface CommunicationMessage {
   };
 }
 
+const RADIO_CODES = [
+  { code: '10-4', message: 'Acknowledged/Copy' },
+  { code: '10-8', message: 'In Service' },
+  { code: '10-7', message: 'Out of Service' },
+  { code: '10-20', message: 'Location' },
+  { code: '10-23', message: 'Arrived at Scene' },
+  { code: '10-24', message: 'Assignment Completed' },
+  { code: '10-97', message: 'Arrived at Scene' },
+  { code: '10-98', message: 'Assignment Complete' },
+  { code: '10-99', message: 'Officer Safety/Emergency' },
+];
+
 const DispatcherCommunications: React.FC = () => {
   const { session } = useAuth();
   const { toast } = useToast();
@@ -40,6 +54,8 @@ const DispatcherCommunications: React.FC = () => {
   const [replyMessage, setReplyMessage] = useState('');
   const [selectedUnitId, setSelectedUnitId] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [filterPriority, setFilterPriority] = useState<string>('all');
+  const [filterStatus, setFilterStatus] = useState<string>('all');
 
   useEffect(() => {
     if (session?.user?.id) {
@@ -126,17 +142,19 @@ const DispatcherCommunications: React.FC = () => {
     }
   };
 
-  const sendReply = async () => {
-    if (!replyMessage.trim() || !selectedUnitId) return;
+  const sendReply = async (message: string = replyMessage, isRadioCode: boolean = false, radioCode?: string) => {
+    if (!message.trim() || !selectedUnitId) return;
 
     try {
       const { error } = await supabase.functions.invoke('unit-communications', {
         body: {
           action: 'send_message',
           to_unit_id: selectedUnitId,
-          message_content: replyMessage,
+          message_content: message,
           message_type: 'text',
-          priority_level: 2
+          priority_level: 2,
+          is_radio_code: isRadioCode,
+          radio_code: radioCode
         }
       });
 
@@ -159,6 +177,10 @@ const DispatcherCommunications: React.FC = () => {
     }
   };
 
+  const sendQuickCode = (code: string, message: string) => {
+    sendReply(message, true, code);
+  };
+
   const getPriorityColor = (priority: number) => {
     switch (priority) {
       case 1: return 'destructive';
@@ -176,6 +198,29 @@ const DispatcherCommunications: React.FC = () => {
       default: return 'Normal';
     }
   };
+
+  const filteredMessages = messages.filter(message => {
+    const priorityMatch = filterPriority === 'all' || message.priority_level.toString() === filterPriority;
+    const statusMatch = filterStatus === 'all' || 
+      (filterStatus === 'unread' && !message.acknowledged) ||
+      (filterStatus === 'read' && message.acknowledged);
+    return priorityMatch && statusMatch;
+  });
+
+  const sortedMessages = [...filteredMessages].sort((a, b) => {
+    // Unacknowledged messages first
+    if (a.acknowledged !== b.acknowledged) {
+      return a.acknowledged ? 1 : -1;
+    }
+    // Then by priority (high priority first)
+    if (a.priority_level !== b.priority_level) {
+      return a.priority_level - b.priority_level;
+    }
+    // Finally by date (newest first)
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
+
+  const unreadCount = messages.filter(m => !m.acknowledged).length;
 
   if (loading) {
     return (
@@ -196,107 +241,194 @@ const DispatcherCommunications: React.FC = () => {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <MessageSquare className="h-5 w-5" />
-          Unit Communications
-          <Badge variant="secondary">{messages.length}</Badge>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Quick Reply Section */}
-        <div className="space-y-2">
-          <div className="text-sm font-medium">Quick Reply</div>
-          <div className="flex gap-2">
-            <select
-              value={selectedUnitId}
-              onChange={(e) => setSelectedUnitId(e.target.value)}
-              className="flex h-9 w-32 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option value="">Select Unit</option>
-              {Array.from(new Set(messages.map(m => m.from_unit_id))).map(unitId => {
-                const unit = messages.find(m => m.from_unit_id === unitId)?.emergency_units;
-                return (
-                  <option key={unitId} value={unitId}>
-                    {unit?.unit_code || `Unit ${unitId?.slice(0, 8)}`}
-                  </option>
-                );
-              })}
-            </select>
-            <Input
-              placeholder="Type your message..."
-              value={replyMessage}
-              onChange={(e) => setReplyMessage(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && sendReply()}
-              className="flex-1"
-            />
-            <Button onClick={sendReply} disabled={!replyMessage.trim() || !selectedUnitId}>
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+    <div className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <MessageSquare className="h-5 w-5" />
+              Unit Communications
+              <Badge variant="secondary">{messages.length}</Badge>
+              {unreadCount > 0 && (
+                <Badge variant="destructive" className="flex items-center gap-1">
+                  <AlertTriangle className="h-3 w-3" />
+                  {unreadCount} Unread
+                </Badge>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4" />
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Messages</SelectItem>
+                  <SelectItem value="unread">Unread</SelectItem>
+                  <SelectItem value="read">Acknowledged</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={filterPriority} onValueChange={setFilterPriority}>
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Priority</SelectItem>
+                  <SelectItem value="1">High Priority</SelectItem>
+                  <SelectItem value="2">Medium Priority</SelectItem>
+                  <SelectItem value="3">Low Priority</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="messages" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="messages">Messages</TabsTrigger>
+              <TabsTrigger value="compose">Compose</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="messages" className="mt-4">
+              <ScrollArea className="h-96">
+                <div className="space-y-3">
+                  {sortedMessages.length === 0 ? (
+                    <div className="text-center text-muted-foreground py-8">
+                      {filteredMessages.length === 0 && messages.length > 0 
+                        ? "No messages match your filters" 
+                        : "No communications received yet"}
+                    </div>
+                  ) : (
+                    sortedMessages.map((message) => (
+                      <div 
+                        key={message.id} 
+                        className={`border rounded-lg p-3 space-y-2 transition-all ${
+                          !message.acknowledged 
+                            ? 'border-l-4 border-l-primary bg-accent/50' 
+                            : 'opacity-75'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-xs">
+                              {message.emergency_units?.unit_code || 'Unknown Unit'}
+                            </Badge>
+                            <Badge variant={getPriorityColor(message.priority_level)} className="text-xs">
+                              {getPriorityLabel(message.priority_level)}
+                            </Badge>
+                            {message.is_radio_code && (
+                              <Badge variant="outline" className="text-xs flex items-center gap-1">
+                                <Radio className="h-3 w-3" />
+                                {message.radio_code}
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {message.acknowledged ? (
+                              <div className="flex items-center gap-1 text-green-600">
+                                <CheckCheck className="h-4 w-4" />
+                                <span className="text-xs">Acknowledged</span>
+                              </div>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => acknowledgeMessage(message.id)}
+                              >
+                                Acknowledge
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className={`text-sm ${!message.acknowledged ? 'font-medium' : ''}`}>
+                          {message.message_content}
+                        </div>
+                        
+                        <div className="flex items-center justify-between text-xs text-muted-foreground">
+                          <span>
+                            From: {message.profiles?.full_name || 'Unknown Officer'}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </ScrollArea>
+            </TabsContent>
+            
+            <TabsContent value="compose" className="mt-4">
+              <div className="space-y-4">
+                {/* Unit Selection */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Select Unit</label>
+                  <Select value={selectedUnitId} onValueChange={setSelectedUnitId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose unit to message" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from(new Set(messages.map(m => m.from_unit_id))).map(unitId => {
+                        const unit = messages.find(m => m.from_unit_id === unitId)?.emergency_units;
+                        return (
+                          <SelectItem key={unitId} value={unitId}>
+                            {unit?.unit_code || `Unit ${unitId?.slice(0, 8)}`}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-        {/* Messages List */}
-        <ScrollArea className="h-96">
-          <div className="space-y-3">
-            {messages.length === 0 ? (
-              <div className="text-center text-muted-foreground py-8">
-                No communications received yet
-              </div>
-            ) : (
-              messages.map((message) => (
-                <div key={message.id} className="border rounded-lg p-3 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="text-xs">
-                        {message.emergency_units?.unit_code || 'Unknown Unit'}
-                      </Badge>
-                      <Badge variant={getPriorityColor(message.priority_level)} className="text-xs">
-                        {getPriorityLabel(message.priority_level)}
-                      </Badge>
-                      {message.is_radio_code && (
-                        <Badge variant="outline" className="text-xs flex items-center gap-1">
-                          <Radio className="h-3 w-3" />
-                          {message.radio_code}
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {message.acknowledged ? (
-                        <CheckCheck className="h-4 w-4 text-green-600" />
-                      ) : (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => acknowledgeMessage(message.id)}
-                        >
-                          Acknowledge
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="text-sm">
-                    {message.message_content}
-                  </div>
-                  
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>
-                      From: {message.profiles?.full_name || 'Unknown Officer'}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
-                    </span>
+                {/* Quick Radio Codes */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Quick Radio Codes</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {RADIO_CODES.map((code) => (
+                      <Button
+                        key={code.code}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => sendQuickCode(code.code, code.message)}
+                        disabled={!selectedUnitId}
+                        className="text-xs"
+                      >
+                        {code.code}
+                      </Button>
+                    ))}
                   </div>
                 </div>
-              ))
-            )}
-          </div>
-        </ScrollArea>
-      </CardContent>
-    </Card>
+
+                {/* Custom Message */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Custom Message</label>
+                  <div className="flex gap-2">
+                    <Textarea
+                      placeholder="Type your custom message..."
+                      value={replyMessage}
+                      onChange={(e) => setReplyMessage(e.target.value)}
+                      className="flex-1"
+                      rows={3}
+                    />
+                  </div>
+                  <Button 
+                    onClick={() => sendReply()} 
+                    disabled={!replyMessage.trim() || !selectedUnitId}
+                    className="w-full"
+                  >
+                    <Send className="h-4 w-4 mr-2" />
+                    Send Message
+                  </Button>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

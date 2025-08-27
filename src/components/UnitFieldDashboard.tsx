@@ -1060,37 +1060,66 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               <MessageSquare className="h-4 w-4" />
-              Quick Comm {unreadCount > 0 && <Badge variant="destructive" className="ml-1 text-xs">{unreadCount}</Badge>}
+              Quick Comm 
+              {unreadCount > 0 && (
+                <Badge variant="destructive" className="ml-1 text-xs flex items-center gap-1">
+                  <AlertTriangle className="h-3 w-3" />
+                  {unreadCount} New
+                </Badge>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {/* Recent Messages - Always visible */}
-            <div className="bg-muted/30 rounded p-2 h-24 overflow-y-auto">
-              <div className="text-xs font-medium mb-1 text-muted-foreground">Recent Messages:</div>
+            {/* Recent Messages - Improved with visual hierarchy */}
+            <div className="bg-muted/30 rounded p-2 h-32 overflow-y-auto">
+              <div className="text-xs font-medium mb-2 text-muted-foreground flex items-center justify-between">
+                Recent Communications
+                {communicationLog.length > 0 && (
+                  <Badge variant="outline" className="text-xs">
+                    {communicationLog.length}
+                  </Badge>
+                )}
+              </div>
               {communicationLog.length === 0 ? (
-                <div className="text-xs text-muted-foreground italic">No recent communications</div>
+                <div className="text-xs text-muted-foreground italic text-center py-4">
+                  No recent communications
+                </div>
               ) : (
                 <div className="space-y-1">
-                  {communicationLog.slice(0, 3).map((comm) => (
-                    <div key={comm.id} className={`text-xs p-1 rounded ${
-                      comm.type === 'outgoing' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
+                  {communicationLog.slice(0, 5).map((comm) => (
+                    <div key={comm.id} className={`text-xs p-2 rounded border-l-2 ${
+                      comm.type === 'outgoing' 
+                        ? 'bg-primary/10 border-l-primary text-primary-foreground/90'
+                        : !comm.acknowledged 
+                          ? 'bg-accent border-l-accent-foreground font-medium'
+                          : 'bg-muted border-l-muted-foreground opacity-75'
                     }`}>
-                      <div className="flex items-center gap-1">
-                        {comm.is_radio_code && (
-                          <Badge variant="secondary" className="text-xs py-0 px-1 h-4">
-                            {comm.radio_code}
-                          </Badge>
-                        )}
-                        <span className="flex-1 truncate">{comm.message_content}</span>
-                        <span className="text-xs opacity-75">
-                          {new Date(comm.timestamp || comm.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                        </span>
-                      </div>
-                      {comm.type === 'outgoing' && (
-                        <div className="text-xs opacity-75">
-                          {comm.acknowledged ? '✓ Acknowledged' : 'Pending'}
+                      <div className="flex items-start gap-1">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-1 mb-1">
+                            {comm.is_radio_code && (
+                              <Badge variant="secondary" className="text-xs py-0 px-1 h-4">
+                                <Radio className="h-2 w-2 mr-1" />
+                                {comm.radio_code}
+                              </Badge>
+                            )}
+                            <span className="text-xs opacity-75">
+                              {comm.type === 'outgoing' ? 'TO DISPATCH' : 'FROM DISPATCH'}
+                            </span>
+                          </div>
+                          <div className="font-medium">{comm.message_content}</div>
+                          <div className="flex items-center justify-between mt-1">
+                            <span className="text-xs opacity-75">
+                              {new Date(comm.timestamp || comm.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                            </span>
+                            {comm.type === 'outgoing' && (
+                              <span className={`text-xs ${comm.acknowledged ? 'text-green-600' : 'text-yellow-600'}`}>
+                                {comm.acknowledged ? '✓ Acknowledged' : '⏳ Pending'}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                      )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -1112,20 +1141,35 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
               </Button>
             </div>
             
-            {/* Radio Codes */}
-            <div className="grid grid-cols-2 gap-1">
-              <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-4', '10-4 Acknowledged')}>
-                <span className="text-xs">10-4</span>
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-8', '10-8 In Service')}>
-                <span className="text-xs">10-8</span>
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-23', '10-23 Arrived')}>
-                <span className="text-xs">10-23</span>
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-24', '10-24 Assignment Complete')}>
-                <span className="text-xs">10-24</span>
-              </Button>
+            {/* Radio Codes - Enhanced */}
+            <div className="space-y-2">
+              <div className="text-xs font-medium text-muted-foreground">Quick Radio Codes</div>
+              <div className="grid grid-cols-2 gap-1">
+                <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-4', '10-4 Acknowledged')} className="text-xs">
+                  <Radio className="h-3 w-3 mr-1" />
+                  10-4
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-8', '10-8 In Service')} className="text-xs">
+                  <Radio className="h-3 w-3 mr-1" />
+                  10-8
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-23', '10-23 Arrived')} className="text-xs">
+                  <Radio className="h-3 w-3 mr-1" />
+                  10-23
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-24', '10-24 Complete')} className="text-xs">
+                  <Radio className="h-3 w-3 mr-1" />
+                  10-24
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-20', '10-20 Location Status')} className="text-xs">
+                  <Radio className="h-3 w-3 mr-1" />
+                  10-20
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-99', '10-99 Emergency!')} className="text-xs bg-destructive/10 hover:bg-destructive/20">
+                  <Radio className="h-3 w-3 mr-1" />
+                  10-99
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
