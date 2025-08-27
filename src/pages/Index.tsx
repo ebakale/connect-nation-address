@@ -851,7 +851,7 @@ const navigationItems = [
               </div>
             </div>
             <p className="text-cyan-light font-medium">
-              &copy; 2024 Republic of Equatorial Guinea - ConnectNation Platform
+              &copy; 2025 BIAKAM - ConnectNation Platform for Republic of Equatorial Guinea
             </p>
             <p className="text-sm text-muted-foreground">
               Unified Digital Addressing & Emergency Management • Connecting Citizens, Services & Safety
