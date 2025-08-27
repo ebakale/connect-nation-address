@@ -79,7 +79,6 @@ const Auth = () => {
             </div>
             <div className="space-y-2">
               <h1 className="text-4xl font-bold text-white tracking-tight">ConnectEG</h1>
-              <h2 className="text-xl font-semibold text-white/90">NDAS</h2>
               <p className="text-white/80 max-w-md mx-auto leading-relaxed">{t('nationalAddressRegistry')}</p>
             </div>
           </div>

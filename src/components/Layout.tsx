@@ -65,7 +65,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage = 'dashboard', on
                 <Globe className="h-5 w-5 text-white" />
               </div>
               <div className="min-w-0">
-                <h1 className="text-sm font-bold text-foreground truncate">NDAS</h1>
+                <h1 className="text-sm font-bold text-foreground truncate">ConnectEG</h1>
                 <p className="text-xs text-muted-foreground hidden sm:block">Digital Address System</p>
               </div>
             </div>
@@ -119,7 +119,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage = 'dashboard', on
           <div className="absolute bottom-4 left-4 right-4 hidden sm:block">
             <div className="p-3 bg-muted/50 rounded-lg">
               <p className="text-xs font-medium">System Version</p>
-              <p className="text-xs text-muted-foreground">NDAS v2.1.0</p>
+              <p className="text-xs text-muted-foreground">ConnectEG v2.1.0</p>
               <p className="text-xs text-muted-foreground mt-1">Updated today</p>
             </div>
           </div>
