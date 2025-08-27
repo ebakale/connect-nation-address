@@ -6,7 +6,6 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useUserRole } from '@/hooks/useUserRole';
 
 // Import professional images
@@ -771,7 +770,7 @@ const navigationItems = [
               <span className="text-2xl font-bold text-gradient">{t('connectEGPlatform')}</span>
             </div>
             <div className="flex items-center gap-3">
-              <LanguageSwitcher />
+              
               {user ? (
                 <Button 
                   onClick={() => navigate(isPoliceRole ? '/police' : '/portal')} 

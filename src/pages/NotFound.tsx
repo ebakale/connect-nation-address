@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useLanguage } from '@/contexts/LanguageContext';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+
 
 const NotFound = () => {
   const location = useLocation();
@@ -17,7 +17,7 @@ const NotFound = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 relative">
       <div className="absolute top-4 right-4">
-        <LanguageSwitcher />
+        
       </div>
       <div className="text-center space-y-6">
         <h1 className="text-8xl font-bold text-primary mb-4">404</h1>

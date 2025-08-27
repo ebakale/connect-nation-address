@@ -7,7 +7,7 @@ import AdminPanel from "@/components/AdminPanel";
 import { Shield, Users, Settings, BarChart3, LogOut, FileText } from "lucide-react";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
 import { useLanguage } from '@/contexts/LanguageContext';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+
 
 const AdminDashboard = () => {
   const { role, loading } = useUserRole();
@@ -32,7 +32,7 @@ const AdminDashboard = () => {
               <p className="text-muted-foreground">{t('manageUsersRoles')}</p>
             </div>
             <div className="flex gap-2">
-              <LanguageSwitcher />
+              
               <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
                 <LogOut className="h-4 w-4" />
                 {t('logout')}

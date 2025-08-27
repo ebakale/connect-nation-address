@@ -5,7 +5,7 @@ import EmergencyContacts from "@/components/EmergencyContacts";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from '@/contexts/LanguageContext';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+
 import AddressSearch from "@/components/AddressSearch";
 import AddressMapViewer from "@/components/AddressMapViewer";
 import { AddressRequestForm } from "@/components/AddressRequestForm";
@@ -69,7 +69,7 @@ const CitizenDashboard = () => {
               <p className="text-muted-foreground">{t('searchVerifiedAddresses')}</p>
             </div>
             <div className="flex gap-2">
-              <LanguageSwitcher />
+              
               <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
                 <LogOut className="h-4 w-4" />
                 {t('logout')}

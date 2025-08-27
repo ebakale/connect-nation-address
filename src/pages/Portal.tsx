@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+
 import { 
   MapPin, 
   Shield, 
@@ -148,7 +148,7 @@ const Portal = () => {
                   3
                 </Badge>
               </Button>
-              <LanguageSwitcher />
+              
               <Button variant="outline" onClick={signOut}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out

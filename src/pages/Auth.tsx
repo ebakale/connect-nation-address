@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Globe, Shield, Lock, Mail } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+
 import { useUserRole } from '@/hooks/useUserRole';
 
 const Auth = () => {
@@ -68,7 +68,7 @@ const Auth = () => {
           {/* Language Switcher */}
           <div className="flex justify-end">
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-1">
-              <LanguageSwitcher />
+              
             </div>
           </div>
           

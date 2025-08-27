@@ -11,7 +11,7 @@ import {
   Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map, User, Phone
 } from "lucide-react";
 import { useLanguage } from '@/contexts/LanguageContext';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+
 import { useNavigate } from "react-router-dom";
 
 // Component imports
@@ -311,7 +311,7 @@ const UnifiedDashboard = () => {
             </div>
 
             <div className="flex gap-2">
-              <LanguageSwitcher />
+              
               <Button 
                 variant="outline" 
                 onClick={() => setProfileOpen(true)}

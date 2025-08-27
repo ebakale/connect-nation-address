@@ -10,7 +10,7 @@ import FieldMap from "@/components/FieldMap";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useLanguage } from '@/contexts/LanguageContext';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+
 
 const FieldAgentDashboard = () => {
   const { role, loading, getGeographicScope } = useUserRole();
@@ -49,7 +49,7 @@ const FieldAgentDashboard = () => {
               )}
             </div>
             <div className="flex gap-2">
-              <LanguageSwitcher />
+              
               <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
                 <LogOut className="h-4 w-4" />
                 {t('logout')}
