@@ -55,159 +55,176 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
-        {/* Language Switcher */}
-        <div className="flex justify-end">
-          <LanguageSwitcher />
-        </div>
-        
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <div className="mx-auto w-16 h-16 bg-gradient-to-r from-primary to-secondary rounded-2xl flex items-center justify-center shadow-card">
-            <Globe className="h-8 w-8 text-white" />
+    <div className="min-h-screen bg-gradient-primary relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-white/10 rounded-full blur-xl animate-float"></div>
+        <div className="absolute bottom-32 right-20 w-24 h-24 bg-white/5 rounded-full blur-2xl animate-float" style={{animationDelay: '1s'}}></div>
+        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-white/5 rounded-full blur-lg animate-float" style={{animationDelay: '2s'}}></div>
+      </div>
+      
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-lg space-y-8">
+          {/* Language Switcher */}
+          <div className="flex justify-end">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-1">
+              <LanguageSwitcher />
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">NDAS</h1>
-            <p className="text-sm text-muted-foreground">{t('nationalAddressRegistry')}</p>
-          </div>
-        </div>
-
-        {/* Auth Card */}
-        <Card className="shadow-card">
-          <CardHeader className="text-center pb-4">
-            <CardTitle className="flex items-center justify-center gap-2">
-              <Shield className="h-5 w-5 text-primary" />
-              {t('secureAccess')}
-            </CardTitle>
-            <CardDescription>
-              {t('accessNationalSystem')}
-            </CardDescription>
-          </CardHeader>
           
-          <CardContent>
-            <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">{t('signIn')}</TabsTrigger>
-                <TabsTrigger value="signup">{t('signUp')}</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="signin" className="space-y-4 mt-4">
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">{t('emailAddress')}</label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        type="email"
-                        placeholder={t('enterEmail')}
-                        className="pl-10"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">{t('password')}</label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        type="password"
-                        placeholder={t('enterPassword')}
-                        className="pl-10"
-                        value={formData.password}
-                        onChange={(e) => handleInputChange('password', e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                  
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
-                    disabled={loading}
-                  >
-                    {loading ? t('signingIn') : t('signIn')}
-                  </Button>
-                </form>
-              </TabsContent>
-              
-              <TabsContent value="signup" className="space-y-4 mt-4">
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">{t('fullName')}</label>
-                    <Input
-                      placeholder={t('enterFullName')}
-                      value={formData.fullName}
-                      onChange={(e) => handleInputChange('fullName', e.target.value)}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">{t('emailAddress')}</label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        type="email"
-                        placeholder={t('enterEmail')}
-                        className="pl-10"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">{t('password')}</label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        type="password"
-                        placeholder={t('createPassword')}
-                        className="pl-10"
-                        value={formData.password}
-                        onChange={(e) => handleInputChange('password', e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">{t('confirmPassword')}</label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        type="password"
-                        placeholder={t('confirmYourPassword')}
-                        className="pl-10"
-                        value={formData.confirmPassword}
-                        onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                  
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
-                    disabled={loading || formData.password !== formData.confirmPassword}
-                  >
-                    {loading ? t('creatingAccount') : t('createAccount')}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+          {/* Header */}
+          <div className="text-center space-y-6">
+            <div className="mx-auto w-24 h-24 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-card border border-white/20 animate-glow-pulse">
+              <Globe className="h-12 w-12 text-white" />
+            </div>
+            <div className="space-y-2">
+              <h1 className="text-4xl font-bold text-white tracking-tight">ConnectEG</h1>
+              <h2 className="text-xl font-semibold text-white/90">NDAS</h2>
+              <p className="text-white/80 max-w-md mx-auto leading-relaxed">{t('nationalAddressRegistry')}</p>
+            </div>
+          </div>
 
-        {/* Footer */}
-        <div className="text-center text-xs text-muted-foreground">
-          <p>{t('governmentEG')}</p>
-          <p>{t('secureReliableNationwide')}</p>
+          {/* Auth Card */}
+          <Card className="shadow-card bg-white/95 backdrop-blur-sm border-0 animate-scale-in">
+            <CardHeader className="text-center pb-6 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-t-lg">
+              <CardTitle className="flex items-center justify-center gap-3 text-xl">
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <Shield className="h-6 w-6 text-primary" />
+                </div>
+                {t('secureAccess')}
+              </CardTitle>
+              <CardDescription className="text-base mt-2">
+                {t('accessNationalSystem')}
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent className="p-8">
+              <Tabs defaultValue="signin" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 bg-muted/50 p-1 h-12">
+                  <TabsTrigger value="signin" className="text-sm font-medium">{t('signIn')}</TabsTrigger>
+                  <TabsTrigger value="signup" className="text-sm font-medium">{t('signUp')}</TabsTrigger>
+                </TabsList>
+              
+                <TabsContent value="signin" className="space-y-6 mt-6">
+                  <form onSubmit={handleSignIn} className="space-y-6">
+                    <div className="space-y-3">
+                      <label className="text-sm font-semibold text-foreground">{t('emailAddress')}</label>
+                      <div className="relative">
+                        <Mail className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
+                        <Input
+                          type="email"
+                          placeholder={t('enterEmail')}
+                          className="pl-12 h-12 text-base border-2 focus:border-primary transition-colors"
+                          value={formData.email}
+                          onChange={(e) => handleInputChange('email', e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <label className="text-sm font-semibold text-foreground">{t('password')}</label>
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
+                        <Input
+                          type="password"
+                          placeholder={t('enterPassword')}
+                          className="pl-12 h-12 text-base border-2 focus:border-primary transition-colors"
+                          value={formData.password}
+                          onChange={(e) => handleInputChange('password', e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      type="submit" 
+                      className="w-full h-12 text-base font-semibold bg-gradient-primary hover:opacity-90 transition-opacity shadow-card" 
+                      disabled={loading}
+                    >
+                      {loading ? t('signingIn') : t('signIn')}
+                    </Button>
+                  </form>
+                </TabsContent>
+                
+                <TabsContent value="signup" className="space-y-6 mt-6">
+                  <form onSubmit={handleSignUp} className="space-y-6">
+                    <div className="space-y-3">
+                      <label className="text-sm font-semibold text-foreground">{t('fullName')}</label>
+                      <Input
+                        placeholder={t('enterFullName')}
+                        className="h-12 text-base border-2 focus:border-primary transition-colors"
+                        value={formData.fullName}
+                        onChange={(e) => handleInputChange('fullName', e.target.value)}
+                        required
+                      />
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <label className="text-sm font-semibold text-foreground">{t('emailAddress')}</label>
+                      <div className="relative">
+                        <Mail className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
+                        <Input
+                          type="email"
+                          placeholder={t('enterEmail')}
+                          className="pl-12 h-12 text-base border-2 focus:border-primary transition-colors"
+                          value={formData.email}
+                          onChange={(e) => handleInputChange('email', e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <label className="text-sm font-semibold text-foreground">{t('password')}</label>
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
+                        <Input
+                          type="password"
+                          placeholder={t('createPassword')}
+                          className="pl-12 h-12 text-base border-2 focus:border-primary transition-colors"
+                          value={formData.password}
+                          onChange={(e) => handleInputChange('password', e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <label className="text-sm font-semibold text-foreground">{t('confirmPassword')}</label>
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
+                        <Input
+                          type="password"
+                          placeholder={t('confirmYourPassword')}
+                          className="pl-12 h-12 text-base border-2 focus:border-primary transition-colors"
+                          value={formData.confirmPassword}
+                          onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      type="submit" 
+                      className="w-full h-12 text-base font-semibold bg-gradient-primary hover:opacity-90 transition-opacity shadow-card" 
+                      disabled={loading || formData.password !== formData.confirmPassword}
+                    >
+                      {loading ? t('creatingAccount') : t('createAccount')}
+                    </Button>
+                  </form>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+
+          {/* Footer */}
+          <div className="text-center space-y-2">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+              <p className="text-white/90 font-medium text-sm">{t('governmentEG')}</p>
+              <p className="text-white/70 text-xs">{t('secureReliableNationwide')}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
