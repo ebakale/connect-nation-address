@@ -61,7 +61,7 @@ const UserManager: React.FC = () => {
     password: '',
     role: 'police_operator'
   });
-  const { hasPoliceAdminAccess } = useUserRole();
+  const { hasPoliceAdminAccess, hasAdminAccess } = useUserRole();
   const { toast } = useToast();
 
   // Only police-related roles for police system (excluding general admin)
@@ -84,10 +84,10 @@ const UserManager: React.FC = () => {
   const geographicScopes = Object.keys(regionCities);
 
   useEffect(() => {
-    if (hasPoliceAdminAccess) {
+    if (hasPoliceAdminAccess || hasAdminAccess) {
       fetchUsers();
     }
-  }, [hasPoliceAdminAccess]);
+  }, [hasPoliceAdminAccess, hasAdminAccess]);
 
   // Add a manual refresh function
   const refreshUsers = () => {
@@ -399,16 +399,16 @@ const UserManager: React.FC = () => {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedUsers = filteredUsers.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-  if (!hasPoliceAdminAccess) {
+  if (!hasPoliceAdminAccess && !hasAdminAccess) {
     return (
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            Police User Management
+            User Management
           </CardTitle>
           <CardDescription>
-            Access denied. Police admin privileges required.
+            Access denied. Admin privileges required.
           </CardDescription>
         </CardHeader>
       </Card>
