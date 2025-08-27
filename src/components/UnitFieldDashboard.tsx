@@ -997,6 +997,200 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
         </div>
       )}
 
+      {/* INCIDENT MANAGEMENT - Principal Activity (Top Priority) */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 mb-4 p-4 bg-primary/5 rounded-lg border-l-4 border-l-primary">
+          <AlertTriangle className="h-6 w-6 text-primary" />
+          <div>
+            <h2 className="text-2xl font-bold text-primary">Incident Management</h2>
+            <p className="text-sm text-muted-foreground">Principal Activity - Active Assignments</p>
+          </div>
+          {assignments.length > 0 && (
+            <Badge variant="destructive" className="ml-auto">
+              {assignments.length} Active
+            </Badge>
+          )}
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {assignments.length === 0 ? (
+            <Card className="lg:col-span-2 xl:col-span-3">
+              <CardContent className="p-8 text-center">
+                <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">No Active Assignments</h3>
+                <p className="text-muted-foreground">
+                  Your unit currently has no active incident assignments.
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            assignments.map((incident) => (
+              <Card key={incident.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-3">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-lg">{incident.incident_number}</CardTitle>
+                      <p className="text-sm text-muted-foreground">
+                        {incident.emergency_type.toUpperCase()}
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <div className={`w-3 h-3 rounded-full ${getPriorityColor(incident.priority_level)}`} 
+                           title={`Priority ${incident.priority_level}`} />
+                      <Badge variant="outline" className={getIncidentStatusColor(incident.status)}>
+                        {incident.status.toUpperCase()}
+                      </Badge>
+                    </div>
+                  </div>
+                </CardHeader>
+                
+                <CardContent className="space-y-4">
+                  {/* Location */}
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm">
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium">Location:</span>
+                    </div>
+                    <p className="text-sm bg-muted/30 rounded p-2">
+                      {formatLocation(incident)}
+                    </p>
+                  </div>
+
+                  {/* Incident Details */}
+                  {incident.incident_message && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Details:</p>
+                      <p className="text-sm bg-muted/30 rounded p-2">
+                        {incident.incident_message}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Dispatcher Notes */}
+                  {incident.dispatcher_notes && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Dispatcher Notes:</p>
+                      <p className="text-sm bg-blue-50 border border-blue-200 rounded p-2">
+                        {incident.dispatcher_notes}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Time Information */}
+                  <div className="text-xs text-muted-foreground">
+                    {incident.dispatched_at && (
+                      <p>Dispatched: {new Date(incident.dispatched_at).toLocaleString()}</p>
+                    )}
+                    {incident.responded_at && (
+                      <p>Responded: {new Date(incident.responded_at).toLocaleString()}</p>
+                    )}
+                  </div>
+
+                  <Separator />
+
+                  {/* Field Actions */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {fieldActions.map((action) => {
+                      const isApplicable = 
+                        (action.action === 'accept_assignment' && incident.status === 'dispatched') ||
+                        (action.action === 'en_route' && ['dispatched'].includes(incident.status)) ||
+                        (action.action === 'on_scene' && ['dispatched', 'en_route', 'responded'].includes(incident.status)) ||
+                        (action.action === 'request_backup') || // Always available for any incident
+                        (action.action === 'update_status') ||
+                        (action.action === 'complete_incident' && ['on_scene', 'responded'].includes(incident.status));
+
+                      if (!isApplicable) return null;
+
+                      return (
+                        <Dialog
+                          key={action.action}
+                          open={actionDialog?.action.action === action.action && actionDialog?.incident.id === incident.id}
+                          onOpenChange={(open) => {
+                            if (open) {
+                              setActionDialog({ action, incident });
+                            } else {
+                              setActionDialog(null);
+                              setActionNotes('');
+                            }
+                          }}
+                        >
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-xs"
+                            >
+                              <action.icon className="h-3 w-3 mr-1" />
+                              {action.label}
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>
+                                {action.label} - {incident.incident_number}
+                              </DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div className="p-4 bg-muted/30 rounded">
+                                <p className="font-medium">{incident.emergency_type.toUpperCase()}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  Priority {incident.priority_level} • {formatLocation(incident)}
+                                </p>
+                              </div>
+                              
+                              {action.requiresNotes && (
+                                <div>
+                                  <label className="text-sm font-medium">
+                                    {action.action === 'request_backup' ? 'Reason for backup request:' : 'Notes:'}
+                                  </label>
+                                  <Textarea
+                                    value={actionNotes}
+                                    onChange={(e) => setActionNotes(e.target.value)}
+                                    placeholder={action.action === 'request_backup' 
+                                      ? "Describe the situation requiring backup..." 
+                                      : "Add any relevant notes..."
+                                    }
+                                    rows={3}
+                                  />
+                                </div>
+                              )}
+                              
+                              <Button 
+                                onClick={executeFieldAction} 
+                                className="w-full"
+                                disabled={action.requiresNotes && !actionNotes.trim()}
+                              >
+                                {action.label}
+                              </Button>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      );
+                    })}
+                  </div>
+
+                  {/* Quick Navigation */}
+                  {(incident.location_latitude && incident.location_longitude) && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const url = `https://www.google.com/maps/dir/?api=1&destination=${incident.location_latitude},${incident.location_longitude}`;
+                        window.open(url, '_blank');
+                      }}
+                      className="w-full"
+                    >
+                      <Navigation className="h-4 w-4 mr-2" />
+                      Navigate to Incident
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
+      </div>
+
       {/* Control Panel */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Unit Status Controls */}
@@ -1438,198 +1632,6 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
         </Card>
       )}
 
-      {/* INCIDENT MANAGEMENT - Principal Activity (Moved to Last) */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 mb-4 p-4 bg-primary/5 rounded-lg border-l-4 border-l-primary">
-          <AlertTriangle className="h-6 w-6 text-primary" />
-          <div>
-            <h2 className="text-2xl font-bold text-primary">Incident Management</h2>
-            <p className="text-sm text-muted-foreground">Principal Activity - Active Assignments</p>
-          </div>
-          {assignments.length > 0 && (
-            <Badge variant="destructive" className="ml-auto">
-              {assignments.length} Active
-            </Badge>
-          )}
-        </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {assignments.length === 0 ? (
-          <Card className="lg:col-span-2 xl:col-span-3">
-            <CardContent className="p-8 text-center">
-              <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">No Active Assignments</h3>
-              <p className="text-muted-foreground">
-                Your unit currently has no active incident assignments.
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          assignments.map((incident) => (
-            <Card key={incident.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg">{incident.incident_number}</CardTitle>
-                    <p className="text-sm text-muted-foreground">
-                      {incident.emergency_type.toUpperCase()}
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <div className={`w-3 h-3 rounded-full ${getPriorityColor(incident.priority_level)}`} 
-                         title={`Priority ${incident.priority_level}`} />
-                    <Badge variant="outline" className={getIncidentStatusColor(incident.status)}>
-                      {incident.status.toUpperCase()}
-                    </Badge>
-                  </div>
-                </div>
-              </CardHeader>
-              
-              <CardContent className="space-y-4">
-                {/* Location */}
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm">
-                    <MapPin className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-medium">Location:</span>
-                  </div>
-                  <p className="text-sm bg-muted/30 rounded p-2">
-                    {formatLocation(incident)}
-                  </p>
-                </div>
-
-                {/* Incident Details */}
-                {incident.incident_message && (
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">Details:</p>
-                    <p className="text-sm bg-muted/30 rounded p-2">
-                      {incident.incident_message}
-                    </p>
-                  </div>
-                )}
-
-                {/* Dispatcher Notes */}
-                {incident.dispatcher_notes && (
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">Dispatcher Notes:</p>
-                    <p className="text-sm bg-blue-50 border border-blue-200 rounded p-2">
-                      {incident.dispatcher_notes}
-                    </p>
-                  </div>
-                )}
-
-                {/* Time Information */}
-                <div className="text-xs text-muted-foreground">
-                  {incident.dispatched_at && (
-                    <p>Dispatched: {new Date(incident.dispatched_at).toLocaleString()}</p>
-                  )}
-                  {incident.responded_at && (
-                    <p>Responded: {new Date(incident.responded_at).toLocaleString()}</p>
-                  )}
-                </div>
-
-                <Separator />
-
-                {/* Field Actions */}
-                <div className="grid grid-cols-2 gap-2">
-                  {fieldActions.map((action) => {
-                    const isApplicable = 
-                      (action.action === 'accept_assignment' && incident.status === 'dispatched') ||
-                      (action.action === 'en_route' && ['dispatched'].includes(incident.status)) ||
-                      (action.action === 'on_scene' && ['dispatched', 'en_route', 'responded'].includes(incident.status)) ||
-                      (action.action === 'request_backup') || // Always available for any incident
-                      (action.action === 'update_status') ||
-                      (action.action === 'complete_incident' && ['on_scene', 'responded'].includes(incident.status));
-
-                    if (!isApplicable) return null;
-
-                    return (
-                      <Dialog
-                        key={action.action}
-                        open={actionDialog?.action.action === action.action && actionDialog?.incident.id === incident.id}
-                        onOpenChange={(open) => {
-                          if (open) {
-                            setActionDialog({ action, incident });
-                          } else {
-                            setActionDialog(null);
-                            setActionNotes('');
-                          }
-                        }}
-                      >
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="text-xs"
-                          >
-                            <action.icon className="h-3 w-3 mr-1" />
-                            {action.label}
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>
-                              {action.label} - {incident.incident_number}
-                            </DialogTitle>
-                          </DialogHeader>
-                          <div className="space-y-4">
-                            <div className="p-4 bg-muted/30 rounded">
-                              <p className="font-medium">{incident.emergency_type.toUpperCase()}</p>
-                              <p className="text-sm text-muted-foreground">
-                                Priority {incident.priority_level} • {formatLocation(incident)}
-                              </p>
-                            </div>
-                            
-                            {action.requiresNotes && (
-                              <div>
-                                <label className="text-sm font-medium">
-                                  {action.action === 'request_backup' ? 'Reason for backup request:' : 'Notes:'}
-                                </label>
-                                <Textarea
-                                  value={actionNotes}
-                                  onChange={(e) => setActionNotes(e.target.value)}
-                                  placeholder={action.action === 'request_backup' 
-                                    ? "Describe the situation requiring backup..." 
-                                    : "Add any relevant notes..."
-                                  }
-                                  rows={3}
-                                />
-                              </div>
-                            )}
-                            
-                            <Button 
-                              onClick={executeFieldAction} 
-                              className="w-full"
-                              disabled={action.requiresNotes && !actionNotes.trim()}
-                            >
-                              {action.label}
-                            </Button>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    );
-                  })}
-                </div>
-
-                {/* Quick Navigation */}
-                {(incident.location_latitude && incident.location_longitude) && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      const url = `https://www.google.com/maps/dir/?api=1&destination=${incident.location_latitude},${incident.location_longitude}`;
-                      window.open(url, '_blank');
-                    }}
-                    className="w-full"
-                  >
-                    <Navigation className="h-4 w-4 mr-2" />
-                    Navigate to Incident
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
-      </div>
     </div>
   );
 };
