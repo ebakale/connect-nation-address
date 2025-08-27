@@ -68,13 +68,13 @@ const navigationItems = [
                   {/* Badge */}
                   <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white shadow-lg backdrop-blur-sm border border-white/20">
                     <MapPin className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                    <span className="text-sm sm:text-base font-semibold">ConnectNation Platform</span>
+                    <span className="text-sm sm:text-base font-semibold">EGConnect Platform</span>
                   </div>
                   
                   {/* Main Heading */}
                   <div className="space-y-2 sm:space-y-3">
                     <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent leading-tight mobile-container">
-                      <span className="block">ConnectNation</span>
+                      <span className="block">EGConnect</span>
                       <span className="block text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-foreground/90 mt-1">
                         Digital Platform
                       </span>
@@ -400,7 +400,7 @@ const navigationItems = [
              <div className="text-center space-y-4">
                <h2 className="text-3xl font-bold">About Us</h2>
                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                 The ConnectNation Platform is a BIAKAM initiative to modernize 
+                 The EGConnect Platform is a BIAKAM initiative to modernize 
                  Equatorial Guinea's address infrastructure and emergency management systems, improving service delivery nationwide.
                </p>
              </div>
@@ -780,7 +780,7 @@ const navigationItems = [
               <div className="p-2 rounded-xl bg-gradient-primary glow-pulse">
                 <MapPin className="h-8 w-8 text-primary-foreground" />
               </div>
-              <span className="text-2xl font-bold text-gradient">ConnectNation Platform</span>
+              <span className="text-2xl font-bold text-gradient">EGConnect Platform</span>
             </div>
             {user ? (
               <Button 
@@ -851,7 +851,7 @@ const navigationItems = [
               </div>
             </div>
             <p className="text-cyan-light font-medium">
-              &copy; 2025 BIAKAM - ConnectNation Platform for Republic of Equatorial Guinea
+              &copy; 2025 BIAKAM - EGConnect Platform for Republic of Equatorial Guinea
             </p>
             <p className="text-sm text-muted-foreground">
               Unified Digital Addressing & Emergency Management • Connecting Citizens, Services & Safety
