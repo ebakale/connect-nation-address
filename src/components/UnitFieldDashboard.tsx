@@ -1012,102 +1012,162 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
           )}
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-          {assignments.length === 0 ? (
-            <Card className="lg:col-span-2 xl:col-span-3">
-              <CardContent className="p-8 text-center">
+        <Card>
+          <CardContent className="p-0">
+            {assignments.length === 0 ? (
+              <div className="p-8 text-center">
                 <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2">No Active Assignments</h3>
                 <p className="text-muted-foreground">
                   Your unit currently has no active incident assignments.
                 </p>
-              </CardContent>
-            </Card>
-          ) : (
-            assignments.map((incident) => (
-              <Card key={incident.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle className="text-lg">{incident.incident_number}</CardTitle>
-                      <p className="text-sm text-muted-foreground">
-                        {incident.emergency_type.toUpperCase()}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <div className={`w-3 h-3 rounded-full ${getPriorityColor(incident.priority_level)}`} 
-                           title={`Priority ${incident.priority_level}`} />
-                      <Badge variant="outline" className={getIncidentStatusColor(incident.status)}>
-                        {incident.status.toUpperCase()}
-                      </Badge>
+              </div>
+            ) : (
+              <div className="divide-y">
+                {assignments.map((incident) => (
+                  <div 
+                    key={incident.id} 
+                    className={`p-4 cursor-pointer transition-colors hover:bg-muted/50 ${
+                      selectedIncident?.id === incident.id ? 'bg-muted/30 border-l-4 border-l-primary' : ''
+                    }`}
+                    onClick={() => setSelectedIncident(incident)}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h4 className="font-semibold">{incident.incident_number}</h4>
+                          <Badge 
+                            variant={
+                              incident.priority_level === 1 ? 'destructive' :
+                              incident.priority_level === 2 ? 'default' : 'secondary'
+                            }
+                            className="text-xs"
+                          >
+                            P{incident.priority_level}
+                          </Badge>
+                          <Badge variant="outline" className={`text-xs ${getIncidentStatusColor(incident.status)}`}>
+                            {incident.status.toUpperCase()}
+                          </Badge>
+                        </div>
+                        <p className="text-sm font-medium text-muted-foreground mb-1">
+                          {incident.emergency_type.toUpperCase()}
+                        </p>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <MapPin className="h-4 w-4" />
+                          <span className="truncate">{formatLocation(incident)}</span>
+                        </div>
+                        {incident.dispatched_at && (
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                            <Clock className="h-3 w-3" />
+                            Dispatched: {new Date(incident.dispatched_at).toLocaleTimeString()}
+                          </div>
+                        )}
+                      </div>
+                      <ArrowRight className="h-5 w-5 text-muted-foreground ml-4 flex-shrink-0" />
                     </div>
                   </div>
-                </CardHeader>
-                
-                <CardContent className="space-y-4">
-                  {/* Location */}
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Incident Detail Dialog */}
+        {selectedIncident && (
+          <Dialog open={!!selectedIncident} onOpenChange={() => setSelectedIncident(null)}>
+            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5" />
+                  {selectedIncident.incident_number} - {selectedIncident.emergency_type.toUpperCase()}
+                </DialogTitle>
+              </DialogHeader>
+              
+              <div className="space-y-4">
+                {/* Status and Priority */}
+                <div className="flex gap-2">
+                  <Badge 
+                    variant={
+                      selectedIncident.priority_level === 1 ? 'destructive' :
+                      selectedIncident.priority_level === 2 ? 'default' : 'secondary'
+                    }
+                  >
+                    Priority {selectedIncident.priority_level}
+                  </Badge>
+                  <Badge variant="outline" className={getIncidentStatusColor(selectedIncident.status)}>
+                    {selectedIncident.status.toUpperCase()}
+                  </Badge>
+                </div>
+
+                {/* Location */}
+                <div className="space-y-2">
+                  <h4 className="font-medium flex items-center gap-2">
+                    <MapPin className="h-4 w-4" />
+                    Location
+                  </h4>
+                  <p className="text-sm bg-muted/30 rounded p-3">
+                    {formatLocation(selectedIncident)}
+                  </p>
+                </div>
+
+                {/* Incident Details */}
+                {selectedIncident.incident_message && (
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium">Location:</span>
-                    </div>
-                    <p className="text-sm bg-muted/30 rounded p-2">
-                      {formatLocation(incident)}
+                    <h4 className="font-medium">Incident Details</h4>
+                    <p className="text-sm bg-muted/30 rounded p-3">
+                      {selectedIncident.incident_message}
                     </p>
                   </div>
+                )}
 
-                  {/* Incident Details */}
-                  {incident.incident_message && (
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium">Details:</p>
-                      <p className="text-sm bg-muted/30 rounded p-2">
-                        {incident.incident_message}
-                      </p>
-                    </div>
-                  )}
+                {/* Dispatcher Notes */}
+                {selectedIncident.dispatcher_notes && (
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Dispatcher Notes</h4>
+                    <p className="text-sm bg-blue-50 border border-blue-200 rounded p-3">
+                      {selectedIncident.dispatcher_notes}
+                    </p>
+                  </div>
+                )}
 
-                  {/* Dispatcher Notes */}
-                  {incident.dispatcher_notes && (
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium">Dispatcher Notes:</p>
-                      <p className="text-sm bg-blue-50 border border-blue-200 rounded p-2">
-                        {incident.dispatcher_notes}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Time Information */}
-                  <div className="text-xs text-muted-foreground">
-                    {incident.dispatched_at && (
-                      <p>Dispatched: {new Date(incident.dispatched_at).toLocaleString()}</p>
+                {/* Time Information */}
+                <div className="space-y-2">
+                  <h4 className="font-medium flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    Timeline
+                  </h4>
+                  <div className="text-sm space-y-1 bg-muted/30 rounded p-3">
+                    {selectedIncident.dispatched_at && (
+                      <p>Dispatched: {new Date(selectedIncident.dispatched_at).toLocaleString()}</p>
                     )}
-                    {incident.responded_at && (
-                      <p>Responded: {new Date(incident.responded_at).toLocaleString()}</p>
+                    {selectedIncident.responded_at && (
+                      <p>Responded: {new Date(selectedIncident.responded_at).toLocaleString()}</p>
                     )}
                   </div>
+                </div>
 
-                  <Separator />
-
-                  {/* Field Actions */}
+                {/* Field Actions */}
+                <div className="space-y-2">
+                  <h4 className="font-medium">Available Actions</h4>
                   <div className="grid grid-cols-2 gap-2">
                     {fieldActions.map((action) => {
                       const isApplicable = 
-                        (action.action === 'accept_assignment' && incident.status === 'dispatched') ||
-                        (action.action === 'en_route' && ['dispatched'].includes(incident.status)) ||
-                        (action.action === 'on_scene' && ['dispatched', 'en_route', 'responded'].includes(incident.status)) ||
-                        (action.action === 'request_backup') || // Always available for any incident
+                        (action.action === 'accept_assignment' && selectedIncident.status === 'dispatched') ||
+                        (action.action === 'en_route' && ['dispatched'].includes(selectedIncident.status)) ||
+                        (action.action === 'on_scene' && ['dispatched', 'en_route', 'responded'].includes(selectedIncident.status)) ||
+                        (action.action === 'request_backup') ||
                         (action.action === 'update_status') ||
-                        (action.action === 'complete_incident' && ['on_scene', 'responded'].includes(incident.status));
+                        (action.action === 'complete_incident' && ['on_scene', 'responded'].includes(selectedIncident.status));
 
                       if (!isApplicable) return null;
 
                       return (
                         <Dialog
                           key={action.action}
-                          open={actionDialog?.action.action === action.action && actionDialog?.incident.id === incident.id}
+                          open={actionDialog?.action.action === action.action && actionDialog?.incident.id === selectedIncident.id}
                           onOpenChange={(open) => {
                             if (open) {
-                              setActionDialog({ action, incident });
+                              setActionDialog({ action, incident: selectedIncident });
                             } else {
                               setActionDialog(null);
                               setActionNotes('');
@@ -1127,14 +1187,14 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                           <DialogContent>
                             <DialogHeader>
                               <DialogTitle>
-                                {action.label} - {incident.incident_number}
+                                {action.label} - {selectedIncident.incident_number}
                               </DialogTitle>
                             </DialogHeader>
                             <div className="space-y-4">
                               <div className="p-4 bg-muted/30 rounded">
-                                <p className="font-medium">{incident.emergency_type.toUpperCase()}</p>
+                                <p className="font-medium">{selectedIncident.emergency_type.toUpperCase()}</p>
                                 <p className="text-sm text-muted-foreground">
-                                  Priority {incident.priority_level} • {formatLocation(incident)}
+                                  Priority {selectedIncident.priority_level} • {formatLocation(selectedIncident)}
                                 </p>
                               </div>
                               
@@ -1168,27 +1228,26 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                       );
                     })}
                   </div>
+                </div>
 
-                  {/* Quick Navigation */}
-                  {(incident.location_latitude && incident.location_longitude) && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        const url = `https://www.google.com/maps/dir/?api=1&destination=${incident.location_latitude},${incident.location_longitude}`;
-                        window.open(url, '_blank');
-                      }}
-                      className="w-full"
-                    >
-                      <Navigation className="h-4 w-4 mr-2" />
-                      Navigate to Incident
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            ))
-          )}
-        </div>
+                {/* Quick Navigation */}
+                {(selectedIncident.location_latitude && selectedIncident.location_longitude) && (
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      const url = `https://www.google.com/maps/dir/?api=1&destination=${selectedIncident.location_latitude},${selectedIncident.location_longitude}`;
+                      window.open(url, '_blank');
+                    }}
+                    className="w-full"
+                  >
+                    <Navigation className="h-4 w-4 mr-2" />
+                    Navigate to Incident
+                  </Button>
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
 
       {/* Control Panel */}
