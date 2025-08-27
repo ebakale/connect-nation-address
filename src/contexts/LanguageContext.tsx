@@ -185,6 +185,14 @@ const translations: Record<string, string> = {
   economicDesc: 'and e-commerce expansion with reliable delivery systems and location-based services.',
   businessGrowth: 'business growth',
   
+  // Smart Urban Planning
+  smartUrbanPlanning: 'Smart Urban Planning',
+  smartUrbanPlanningDesc: 'Leverage precise address data for urban development, infrastructure planning, and city management with data-driven insights.',
+  
+  // Data Excellence
+  dataExcellence: 'Data Excellence',
+  dataExcellenceDesc: 'Maintain the highest standards of data quality, security, and integrity across all address registry operations.',
+  
   loading: 'Loading...',
   
   // Authentication
