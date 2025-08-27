@@ -764,8 +764,8 @@ const navigationItems = [
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-gradient-primary glow-pulse">
-                <MapPin className="h-8 w-8 text-primary-foreground" />
+              <div className="p-2 rounded-xl bg-white shadow-lg">
+                <img src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" alt="BIAKAM Logo" className="h-8 w-auto" />
               </div>
               <span className="text-2xl font-bold text-gradient">{t('connectEGPlatform')}</span>
             </div>
@@ -836,8 +836,8 @@ const navigationItems = [
         <div className="container mx-auto px-4">
           <div className="text-center space-y-4">
             <div className="flex justify-center">
-              <div className="p-3 rounded-xl bg-gradient-primary glow-pulse">
-                <MapPin className="h-6 w-6 text-primary-foreground" />
+              <div className="p-3 rounded-xl bg-white shadow-lg">
+                <img src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" alt="BIAKAM Logo" className="h-8 w-auto" />
               </div>
             </div>
              <p className="text-cyan-light font-medium">

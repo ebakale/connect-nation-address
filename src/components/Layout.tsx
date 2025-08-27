@@ -61,8 +61,8 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage = 'dashboard', on
             </Button>
             
             <div className="flex items-center gap-2 min-w-0">
-              <div className="p-1.5 bg-gradient-to-r from-primary to-secondary rounded-lg shrink-0">
-                <Globe className="h-5 w-5 text-white" />
+              <div className="p-1.5 bg-white rounded-lg shrink-0">
+                <img src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" alt="BIAKAM Logo" className="h-5 w-auto" />
               </div>
               <div className="min-w-0">
                 <h1 className="text-sm font-bold text-foreground truncate">ConnectEG</h1>
