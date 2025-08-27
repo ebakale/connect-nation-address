@@ -214,7 +214,7 @@ const translations = {
     signingIn: 'Iniciando Sesión...',
     creatingAccount: 'Creando Cuenta...',
     createAccount: 'Crear Cuenta',
-    governmentEG: 'Gobierno de Guinea Ecuatorial',
+    governmentEG: 'ConnectEG',
     secureReliableNationwide: 'Seguro • Confiable • Nacional',
     
     // 404 Page
@@ -562,7 +562,7 @@ const translations = {
     signingIn: 'Signing In...',
     creatingAccount: 'Creating Account...',
     createAccount: 'Create Account',
-    governmentEG: 'Government of Equatorial Guinea',
+    governmentEG: 'ConnectEG',
     secureReliableNationwide: 'Secure • Reliable • Nationwide',
     
     // 404 Page
@@ -887,7 +887,7 @@ const translations = {
     signingIn: 'Connexion...',
     creatingAccount: 'Création du Compte...',
     createAccount: 'Créer un Compte',
-    governmentEG: 'Gouvernement de Guinée Équatoriale',
+    governmentEG: 'ConnectEG',
     secureReliableNationwide: 'Sécurisé • Fiable • National',
     
     // 404 Page
