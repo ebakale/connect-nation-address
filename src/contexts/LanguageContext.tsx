@@ -13,6 +13,10 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 const translations = {
   es: {
     // ConnectEG Branding
+    accessPlatform: 'Acceder a la Plataforma',
+    learnMore: 'Aprende Más',
+    emergency: 'Emergencia',
+    digitalPlatform: 'Plataforma Digital',
     connectEGPlatform: 'Plataforma ConnectEG',
     connectEG: 'ConnectEG',
     connectEGDescription: 'Plataforma unificada para direccionamiento digital y gestión de emergencias en Guinea Ecuatorial.',

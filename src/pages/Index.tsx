@@ -39,7 +39,7 @@ const Index = () => {
 const navigationItems = [
     { id: 'overview', label: t('overview'), icon: MapPin },
     { id: 'about', label: t('about'), icon: Users },
-    { id: 'emergency', label: 'Emergency', icon: Shield },
+    { id: 'emergency', label: t('emergency'), icon: Shield },
     { id: 'help', label: t('help'), icon: HelpCircle },
     { id: 'manual', label: t('manual'), icon: Book },
     { id: 'login', label: t('login'), icon: LogIn },
@@ -75,9 +75,9 @@ const navigationItems = [
                   <div className="space-y-2 sm:space-y-3">
                     <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent leading-tight mobile-container">
                        <span className="block">{t('connectEG')}</span>
-                       <span className="block text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-foreground/90 mt-1">
-                         Digital Platform
-                       </span>
+                        <span className="block text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-foreground/90 mt-1">
+                          {t('digitalPlatform')}
+                        </span>
                     </h1>
                   </div>
                   
@@ -88,31 +88,27 @@ const navigationItems = [
                      {t('innovativeTechnology')}
                    </p>
                   
-                  {/* CTA Buttons */}
-                  <div className="flex flex-col gap-3 sm:gap-4 justify-center pt-4 sm:pt-6 mobile-container">
-                    <Button 
-                      onClick={() => navigate('/auth')} 
-                      className="touch-target px-6 py-3 text-sm sm:text-base font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-blue transition-all duration-200"
-                      size="lg"
-                    >
-                      <LogIn className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                      Access Platform
-                    </Button>
-                    <Button 
-                      onClick={() => setActiveSection('about')}
-                      variant="outline" 
-                      className="touch-target px-6 py-3 text-sm sm:text-base font-semibold border-2 border-secondary text-secondary hover:bg-secondary hover:text-white shadow-green transition-all duration-200"
-                      size="lg"
-                    >
-                      <Globe className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                      Learn More
-                    </Button>
-                  </div>
+                   {/* CTA Buttons */}
+                   <div className="flex flex-col gap-3 sm:gap-4 justify-center pt-4 sm:pt-6 mobile-container">
+                     <Button 
+                       onClick={() => navigate('/auth')} 
+                       className="touch-target px-6 py-3 text-sm sm:text-base font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-blue transition-all duration-200"
+                       size="lg"
+                     >
+                       <LogIn className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                       {t('accessPlatform')}
+                     </Button>
+                     <Button 
+                       onClick={() => setActiveSection('about')}
+                       variant="outline" 
+                       className="touch-target px-6 py-3 text-sm sm:text-base font-semibold border-2 border-secondary text-secondary hover:bg-secondary hover:text-white shadow-green transition-all duration-200"
+                       size="lg"
+                     >
+                       <Globe className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                       {t('learnMore')}
+                     </Button>
+                   </div>
 
-                  {/* Language Switcher */}
-                  <div className="pt-4">
-                    <LanguageSwitcher />
-                  </div>
                 </div>
               </div>
             </div>
@@ -191,34 +187,34 @@ const navigationItems = [
                           <Shield className="h-8 w-8 text-white" />
                         </div>
                         <div>
-                          <h3 className="text-3xl font-bold text-white">Emergency Management</h3>
-                          <p className="text-red-100 text-lg">Police & Emergency Services</p>
+                          <h3 className="text-3xl font-bold text-white">{t('emergencyManagement')}</h3>
+                          <p className="text-red-100 text-lg">{t('policeEmergencyServices')}</p>
                         </div>
                       </div>
                     </div>
                   </div>
                   <CardContent className="relative p-8">
                     <div className="space-y-4">
-                      <p className="text-muted-foreground leading-relaxed text-lg">
-                        Integrated emergency response platform connecting police, emergency services, and citizens for rapid incident management.
-                      </p>
+                       <p className="text-muted-foreground leading-relaxed text-lg">
+                         {t('integratedEmergencyResponse')}
+                       </p>
                       <div className="space-y-3">
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="h-5 w-5 text-destructive" />
-                          <span className="text-sm">Real-time incident reporting</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="h-5 w-5 text-destructive" />
-                          <span className="text-sm">GPS-based unit dispatch</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="h-5 w-5 text-destructive" />
-                          <span className="text-sm">Multi-channel communications</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="h-5 w-5 text-destructive" />
-                          <span className="text-sm">Analytics & response tracking</span>
-                        </div>
+                         <div className="flex items-center gap-3">
+                           <CheckCircle className="h-5 w-5 text-destructive" />
+                           <span className="text-sm">{t('realtimeIncidentReporting')}</span>
+                         </div>
+                         <div className="flex items-center gap-3">
+                           <CheckCircle className="h-5 w-5 text-destructive" />
+                           <span className="text-sm">{t('gpsBasedUnitDispatch')}</span>
+                         </div>
+                         <div className="flex items-center gap-3">
+                           <CheckCircle className="h-5 w-5 text-destructive" />
+                           <span className="text-sm">{t('multiChannelCommunications')}</span>
+                         </div>
+                         <div className="flex items-center gap-3">
+                           <CheckCircle className="h-5 w-5 text-destructive" />
+                           <span className="text-sm">{t('analyticsResponseTracking')}</span>
+                         </div>
                       </div>
                     </div>
                   </CardContent>
@@ -233,13 +229,13 @@ const navigationItems = [
                       <div className="p-3 bg-gradient-to-br from-secondary to-secondary/80 rounded-2xl">
                         <Users className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg font-bold">Role-Based Access</CardTitle>
+                      <CardTitle className="text-lg font-bold">{t('roleBasedAccess')}</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground leading-relaxed text-sm">
-                      Advanced role management with granular permissions for different user types and departments.
-                    </p>
+                     <p className="text-muted-foreground leading-relaxed text-sm">
+                       {t('advancedRoleManagement')}
+                     </p>
                   </CardContent>
                 </Card>
 
@@ -249,13 +245,13 @@ const navigationItems = [
                       <div className="p-3 bg-gradient-to-br from-primary to-primary/80 rounded-2xl">
                         <FileText className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg font-bold">Digital Documentation</CardTitle>
+                      <CardTitle className="text-lg font-bold">{t('digitalDocumentationFeature')}</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground leading-relaxed text-sm">
-                      Automated document generation, QR code integration, and digital certificate management.
-                    </p>
+                     <p className="text-muted-foreground leading-relaxed text-sm">
+                       {t('automatedDocumentGeneration')}
+                     </p>
                   </CardContent>
                 </Card>
 
@@ -265,13 +261,13 @@ const navigationItems = [
                       <div className="p-3 bg-gradient-to-br from-destructive to-destructive/80 rounded-2xl">
                         <BarChart3 className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg font-bold">Real-time Analytics</CardTitle>
+                      <CardTitle className="text-lg font-bold">{t('realtimeAnalyticsFeature')}</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground leading-relaxed text-sm">
-                      Comprehensive reporting and analytics for both addressing and emergency response operations.
-                    </p>
+                     <p className="text-muted-foreground leading-relaxed text-sm">
+                       {t('comprehensiveReporting')}
+                     </p>
                   </CardContent>
                 </Card>
 
@@ -281,13 +277,13 @@ const navigationItems = [
                       <div className="p-3 bg-gradient-to-br from-accent to-accent/80 rounded-2xl">
                         <Globe className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg font-bold">Multi-Language</CardTitle>
+                      <CardTitle className="text-lg font-bold">{t('multiLanguageFeature')}</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground leading-relaxed text-sm">
-                      Full platform localization supporting Spanish, French, and Portuguese for nationwide accessibility.
-                    </p>
+                     <p className="text-muted-foreground leading-relaxed text-sm">
+                       {t('fullPlatformLocalization')}
+                     </p>
                   </CardContent>
                 </Card>
               </div>
@@ -302,15 +298,15 @@ const navigationItems = [
                   <div className="inline-block p-3 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl">
                     <div className="flex items-center gap-2 px-4 py-2">
                       <CheckCircle className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-medium text-primary">Strategic Goals</span>
+                      <span className="text-sm font-medium text-primary">{t('strategicGoals')}</span>
                     </div>
                   </div>
-                  <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent">
-                    Platform Objectives
-                  </h2>
-                  <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                    Transforming Equatorial Guinea through integrated digital addressing and emergency management systems that enhance citizen services and public safety.
-                  </p>
+                   <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent">
+                     {t('platformObjectives')}
+                   </h2>
+                   <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                     {t('transformingEquatorialGuinea')}
+                   </p>
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -320,13 +316,13 @@ const navigationItems = [
                         <MapPin className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">Digital Infrastructure</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('digitalInfrastructure')}</h3>
                         <div className="h-1 w-16 bg-gradient-to-r from-primary to-primary/60 rounded-full mb-3"></div>
                       </div>
                     </div>
-                    <p className="text-muted-foreground leading-relaxed">
-                      Establish comprehensive digital addressing infrastructure to improve service delivery, logistics, and economic development across all regions.
-                    </p>
+                     <p className="text-muted-foreground leading-relaxed">
+                       {t('establishComprehensiveAddressing')}
+                     </p>
                   </div>
                   
                   <div className="group p-8 bg-gradient-to-br from-white to-destructive/5 rounded-2xl border-2 border-destructive/10 hover:border-destructive/30 shadow-lg hover:shadow-red transform hover:scale-105 transition-all duration-300">
@@ -335,13 +331,13 @@ const navigationItems = [
                         <Shield className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">Public Safety Enhancement</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('publicSafetyEnhancement')}</h3>
                         <div className="h-1 w-16 bg-gradient-to-r from-destructive to-destructive/60 rounded-full mb-3"></div>
                       </div>
                     </div>
-                    <p className="text-muted-foreground leading-relaxed">
-                      Modernize emergency response capabilities with real-time incident management, GPS-based dispatch, and integrated communication systems.
-                    </p>
+                     <p className="text-muted-foreground leading-relaxed">
+                       {t('modernizeEmergencyResponse')}
+                     </p>
                   </div>
 
                   <div className="group p-8 bg-gradient-to-br from-white to-secondary/5 rounded-2xl border-2 border-secondary/10 hover:border-secondary/30 shadow-lg hover:shadow-green transform hover:scale-105 transition-all duration-300">
@@ -350,13 +346,13 @@ const navigationItems = [
                         <Users className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">Citizen Empowerment</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('citizenEmpowerment')}</h3>
                         <div className="h-1 w-16 bg-gradient-to-r from-secondary to-secondary/60 rounded-full mb-3"></div>
                       </div>
                     </div>
-                    <p className="text-muted-foreground leading-relaxed">
-                      Provide citizens with direct access to government services, emergency assistance, and digital documentation through unified platform access.
-                    </p>
+                     <p className="text-muted-foreground leading-relaxed">
+                       {t('provideDirectAccess')}
+                     </p>
                   </div>
                   
                   <div className="group p-8 bg-gradient-to-br from-white to-destructive/5 rounded-2xl border-2 border-destructive/10 hover:border-destructive/30 shadow-lg hover:shadow-red transform hover:scale-105 transition-all duration-300">
@@ -781,24 +777,27 @@ const navigationItems = [
               </div>
               <span className="text-2xl font-bold text-gradient">{t('connectEGPlatform')}</span>
             </div>
-            {user ? (
-              <Button 
-                onClick={() => navigate(isPoliceRole ? '/police' : '/portal')} 
-                className="glass hover:shadow-neon transition-all duration-300"
-                variant="outline"
-              >
-                <LogIn className="h-4 w-4 mr-2" />
-                Dashboard
-              </Button>
-            ) : (
-              <Button 
-                onClick={() => navigate('/auth')} 
-                className="glass hover:shadow-neon glow-pulse transition-all duration-300"
-              >
-                <LogIn className="h-4 w-4 mr-2" />
-                Enter System
-              </Button>
-            )}
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher />
+              {user ? (
+                <Button 
+                  onClick={() => navigate(isPoliceRole ? '/police' : '/portal')} 
+                  className="glass hover:shadow-neon transition-all duration-300"
+                  variant="outline"
+                >
+                  <LogIn className="h-4 w-4 mr-2" />
+                  Dashboard
+                </Button>
+              ) : (
+                <Button 
+                  onClick={() => navigate('/auth')} 
+                  className="glass hover:shadow-neon glow-pulse transition-all duration-300"
+                >
+                  <LogIn className="h-4 w-4 mr-2" />
+                  Enter System
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </header>
