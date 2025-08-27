@@ -220,10 +220,10 @@ const DispatcherCommunications: React.FC = () => {
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
 
-  // Recent Communications (unacknowledged messages only)
+  // Recent Communications (all messages with pagination)
   const recentCommMessages = messages.filter(message => {
     const priorityMatch = filterPriority === 'all' || message.priority_level.toString() === filterPriority;
-    return message.acknowledged === false && priorityMatch;
+    return priorityMatch;
   }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   // Pagination for recent communications
@@ -403,7 +403,9 @@ const DispatcherCommunications: React.FC = () => {
                     paginatedRecentMessages.map((message) => (
                       <div 
                         key={message.id} 
-                        className="border rounded-lg p-3 space-y-2 opacity-75"
+                        className={`border rounded-lg p-3 space-y-2 ${
+                          message.acknowledged ? 'opacity-75' : 'border-l-4 border-l-primary bg-accent/50'
+                        }`}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -420,9 +422,21 @@ const DispatcherCommunications: React.FC = () => {
                               </Badge>
                             )}
                           </div>
-                          <div className="flex items-center gap-1 text-green-600">
-                            <CheckCheck className="h-4 w-4" />
-                            <span className="text-xs">Acknowledged</span>
+                          <div className="flex items-center gap-1">
+                            {message.acknowledged ? (
+                              <div className="flex items-center gap-1 text-green-600">
+                                <CheckCheck className="h-4 w-4" />
+                                <span className="text-xs">Acknowledged</span>
+                              </div>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => acknowledgeMessage(message.id)}
+                              >
+                                Acknowledge
+                              </Button>
+                            )}
                           </div>
                         </div>
                         
