@@ -302,6 +302,34 @@ const translations = {
     responseTimeAnalytics: 'Análisis de Tiempo de Respuesta',
     admin: 'Admin',
     
+    // Police Admin Dashboard
+    policeAdministration: 'Administración Policial',
+    managePoliceSystem: 'Gestionar usuarios del sistema policial, unidades y configuraciones',
+    createPoliceUsers: 'Crear Usuarios Policiales',
+    totalOfficers: 'Total de Oficiales',
+    currentlyActive: 'actualmente activos',
+    policeUnits: 'Unidades Policiales',
+    availableForDeployment: 'disponibles para despliegue',
+    policeAdministrationTitle: 'Total de Incidentes',
+    last30Days: 'Últimos 30 días',
+    policeUserManagement: 'Gestión de Usuarios Policiales',
+    managePoliceOfficersDispatchers: 'Gestionar oficiales de policía, despachadores y supervisores',
+    policeUnitManagement: 'Gestión de Unidades Policiales',
+    createEditManageUnits: 'Crear, editar y gestionar unidades de patrulla policial, equipos de respuesta rápida y unidades especializadas',
+    systemConfiguration: 'Configuración del Sistema',
+    configurePoliceSettings: 'Configurar ajustes del sistema policial e integraciones',
+    policeAnalytics: 'Análisis Policial',
+    viewPerformanceMetrics: 'Ver métricas de rendimiento y análisis operacionales',
+    accessDenied: 'Acceso Denegado',
+    needPoliceAdminPrivileges: 'Necesitas privilegios de administrador policial para acceder a esta sección.',
+    total: 'total',
+    totalOfficersNew: 'Total de Oficiales',
+    currentlyActiveNew: 'actualmente activos',
+    policeUnitsNew: 'Unidades Policiales',
+    availableForDeploymentNew: 'disponibles para despliegue',
+    createPoliceUsersNew: 'Crear Usuarios Policiales',
+    managePoliceSystemNew: 'Gestionar usuarios del sistema policial, unidades y configuraciones',
+    
     myArea: 'Mi Área',
     unitsOverview: 'Vista General de Unidades',
     activeIncidents: 'Incidentes Activos',
@@ -381,7 +409,7 @@ const translations = {
     field: 'Campo',
     supervisor: 'Supervisor',
     emergencyResponse: 'Respuesta de Emergencia',
-    accessDenied: 'Acceso Denegado',
+    accessDeniedRole: 'Acceso Denegado',
     private: 'Privado',
     
     // Dashboard sections
@@ -472,7 +500,7 @@ const translations = {
     // Officer Profile translations
     officerProfilesAndPerformance: 'Perfiles y Rendimiento de Oficiales',
     viewOfficerProfiles: 'Ver perfiles de oficiales, asignaciones y métricas de rendimiento',
-    totalOfficers: 'Total de Oficiales',
+    totalOfficersProfile: 'Total de Oficiales',
     currentAssignment: 'Asignación Actual:',
     avgResponse: 'Respuesta Promedio',
     needsImprovement: 'Necesita Mejora',
@@ -801,6 +829,14 @@ const translations = {
     currentAssignment: 'Current Assignment:',
     avgResponse: 'Avg Response',
     needsImprovement: 'Needs Improvement',
+    
+    // Police Admin Dashboard - English
+    totalOfficersNew: 'Total Officers',
+    currentlyActiveNew: 'currently active',
+    policeUnitsNew: 'Police Units', 
+    availableForDeploymentNew: 'available for deployment',
+    createPoliceUsersNew: 'Create Police Users',
+    managePoliceSystemNew: 'Manage police system users, units, and configurations',
   },
   fr: {
     // Navigation
@@ -1126,6 +1162,14 @@ const translations = {
     currentAssignment: 'Affectation Actuelle:',
     avgResponse: 'Réponse Moyenne',
     needsImprovement: 'Nécessite Amélioration',
+    
+    // Police Admin Dashboard - French
+    totalOfficersNew: 'Total des Officiers',
+    currentlyActiveNew: 'actuellement actifs',
+    policeUnitsNew: 'Unités de Police',
+    availableForDeploymentNew: 'disponibles pour le déploiement',
+    createPoliceUsersNew: 'Créer des Utilisateurs Policiers',
+    managePoliceSystemNew: 'Gérer les utilisateurs du système policier, les unités et les configurations',
   }
 };
 

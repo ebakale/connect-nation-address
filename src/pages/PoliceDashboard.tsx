@@ -792,9 +792,9 @@ const PoliceDashboard = () => {
                       <div className="flex items-center justify-between">
                         <CardTitle className="flex items-center gap-2">
                           <AlertTriangle className="h-5 w-5" />
-                          Emergency Incidents
+                          {t('emergencyIncidents')}
                         </CardTitle>
-                        <Badge variant="secondary">{incidents.length} total</Badge>
+                        <Badge variant="secondary">{incidents.length} {t('total')}</Badge>
                       </div>
                     </CardHeader>
                     <CardContent>
