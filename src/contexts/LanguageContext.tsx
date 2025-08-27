@@ -548,7 +548,7 @@ const translations = {
     
     // Authentication
     secureAccess: 'Secure Access',
-    accessNationalSystem: 'Access the national addressing system',
+    accessNationalSystem: 'Access the National Address Registry and Emergency Management System',
     signIn: 'Sign In',
     signUp: 'Sign Up',
     emailAddress: 'Email Address',
@@ -873,7 +873,7 @@ const translations = {
     
     // Authentication
     secureAccess: 'Accès Sécurisé',
-    accessNationalSystem: 'Accéder au système national d\'adressage',
+    accessNationalSystem: 'Accéder au Système National de Registre d\'Adresses et de Gestion d\'Urgence',
     signIn: 'Se Connecter',
     signUp: 'S\'Inscrire',
     emailAddress: 'Adresse Email',
