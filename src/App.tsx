@@ -8,6 +8,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Portal from "./pages/Portal";
 import UnifiedDashboard from "./pages/UnifiedDashboard";
 import PoliceDashboard from "./pages/PoliceDashboard";
 import { UnitsAndProfilesPage } from "./pages/UnitsAndProfilesPage";
@@ -25,6 +26,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/portal" element={<Portal />} />
             <Route path="/dashboard" element={<UnifiedDashboard />} />
             <Route path="/police" element={<PoliceDashboard />} />
             <Route path="/units-profiles" element={<UnitsAndProfilesPage />} />

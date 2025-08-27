@@ -599,7 +599,7 @@ const navigationItems = [
               <CardContent className="space-y-4">
                 {user ? (
                   <Button 
-                    onClick={() => navigate(isPoliceRole ? '/police' : '/dashboard')} 
+                    onClick={() => navigate(isPoliceRole ? '/police' : '/portal')} 
                     className="w-full"
                     variant="hero"
                   >
@@ -665,7 +665,7 @@ const navigationItems = [
             </div>
             {user ? (
               <Button 
-                onClick={() => navigate(isPoliceRole ? '/police' : '/dashboard')} 
+                onClick={() => navigate(isPoliceRole ? '/police' : '/portal')} 
                 className="glass hover:shadow-neon transition-all duration-300"
                 variant="outline"
               >
@@ -696,7 +696,7 @@ const navigationItems = [
                   key={item.id}
                   onClick={() => {
                     if (item.id === 'login') {
-                      user ? navigate(isPoliceRole ? '/police' : '/dashboard') : navigate('/auth');
+                      user ? navigate(isPoliceRole ? '/police' : '/portal') : navigate('/auth');
                     } else {
                       setActiveSection(item.id);
                     }
