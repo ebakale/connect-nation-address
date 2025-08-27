@@ -394,7 +394,7 @@ const navigationItems = [
         return (
           <div className="space-y-8">
              <div className="text-center space-y-4">
-               <h2 className="text-3xl font-bold">About Us</h2>
+               <h2 className="text-3xl font-bold">{t('about')}</h2>
                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                  {t('aboutConnectEG')}
                </p>
@@ -403,26 +403,22 @@ const navigationItems = [
             <div className="grid md:grid-cols-2 gap-8">
               <Card className="shadow-card">
                 <CardHeader>
-                  <CardTitle>Our Mission</CardTitle>
+                  <CardTitle>{t('ourMission')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    To create a comprehensive, accurate, and accessible national address system that 
-                    serves as the foundation for improved public services, economic development, 
-                    and quality of life for all citizens of Equatorial Guinea.
+                    {t('missionDescription')}
                   </p>
                 </CardContent>
               </Card>
 
               <Card className="shadow-card">
                 <CardHeader>
-                  <CardTitle>Our Vision</CardTitle>
+                  <CardTitle>{t('ourVision')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    To be the leading digital address infrastructure in Central Africa, enabling 
-                    efficient service delivery, supporting business growth, and connecting every 
-                    location in Equatorial Guinea to the digital economy.
+                    {t('visionDescription')}
                   </p>
                 </CardContent>
               </Card>
@@ -430,21 +426,21 @@ const navigationItems = [
 
             <Card className="shadow-card">
               <CardHeader>
-                <CardTitle>Key Partners</CardTitle>
+                <CardTitle>{t('keyPartners')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="text-center p-4 border rounded-lg">
-                    <h3 className="font-semibold">Ministry of Interior</h3>
-                    <p className="text-sm text-muted-foreground">Government oversight and policy</p>
+                    <h3 className="font-semibold">{t('ministryOfInterior')}</h3>
+                    <p className="text-sm text-muted-foreground">{t('governmentOversightPolicy')}</p>
                   </div>
                   <div className="text-center p-4 border rounded-lg">
-                    <h3 className="font-semibold">Local Governments</h3>
-                    <p className="text-sm text-muted-foreground">Provincial implementation</p>
+                    <h3 className="font-semibold">{t('localGovernments')}</h3>
+                    <p className="text-sm text-muted-foreground">{t('provincialImplementation')}</p>
                   </div>
                   <div className="text-center p-4 border rounded-lg">
-                    <h3 className="font-semibold">Technology Partners</h3>
-                    <p className="text-sm text-muted-foreground">Platform development and maintenance</p>
+                    <h3 className="font-semibold">{t('technologyPartners')}</h3>
+                    <p className="text-sm text-muted-foreground">{t('platformDevelopmentMaintenance')}</p>
                   </div>
                 </div>
               </CardContent>
@@ -456,37 +452,34 @@ const navigationItems = [
         return (
           <div className="space-y-8">
             <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold">Help & Support</h2>
+              <h2 className="text-3xl font-bold">{t('helpAndSupport')}</h2>
               <p className="text-lg text-muted-foreground">
-                Find answers to common questions and get assistance with using the platform.
+                {t('findAnswersQuestions')}
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
               <Card className="shadow-card">
                 <CardHeader>
-                  <CardTitle>Frequently Asked Questions</CardTitle>
+                  <CardTitle>{t('frequentlyAskedQuestions')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <h4 className="font-semibold">How do I register a new address?</h4>
+                    <h4 className="font-semibold">{t('howRegisterNewAddress')}</h4>
                     <p className="text-sm text-muted-foreground">
-                      Log in to your account, navigate to "Add Address", fill in the required information 
-                      including coordinates, and submit for verification.
+                      {t('howRegisterAnswer')}
                     </p>
                   </div>
                   <div>
-                    <h4 className="font-semibold">How long does verification take?</h4>
+                    <h4 className="font-semibold">{t('howLongVerification')}</h4>
                     <p className="text-sm text-muted-foreground">
-                      Address verification typically takes 3-5 business days, depending on location 
-                      and complexity of the submission.
+                      {t('verificationTimeAnswer')}
                     </p>
                   </div>
                   <div>
-                    <h4 className="font-semibold">Can I update an existing address?</h4>
+                    <h4 className="font-semibold">{t('canUpdateExistingAddress')}</h4>
                     <p className="text-sm text-muted-foreground">
-                      Yes, you can request updates to existing addresses. Changes must be verified 
-                      by authorized personnel before being approved.
+                      {t('updateAddressAnswer')}
                     </p>
                   </div>
                 </CardContent>
@@ -522,7 +515,7 @@ const navigationItems = [
         return (
           <div className="space-y-8">
             <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold">Platform User Manual</h2>
+              <h2 className="text-3xl font-bold">{t('platformUserManual')}</h2>
               <p className="text-lg text-muted-foreground">
                 Comprehensive guide for using both Address Registry and Emergency Management systems.
               </p>
@@ -708,7 +701,7 @@ const navigationItems = [
 
             <Card className="shadow-card">
               <CardHeader>
-                <CardTitle className="text-center">Login Required</CardTitle>
+                <CardTitle className="text-center">{t('loginRequired')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {user ? (
@@ -718,7 +711,7 @@ const navigationItems = [
                     variant="hero"
                   >
                     <LogIn className="h-4 w-4 mr-2" />
-                    Go to Dashboard
+                    {t('goToDashboard')}
                   </Button>
                 ) : (
                   <Button 
@@ -727,7 +720,7 @@ const navigationItems = [
                     variant="hero"
                   >
                     <LogIn className="h-4 w-4 mr-2" />
-                    Go to Login Page
+                    {t('goToLoginPage')}
                   </Button>
                 )}
               </CardContent>
@@ -786,7 +779,7 @@ const navigationItems = [
                   variant="outline"
                 >
                   <LogIn className="h-4 w-4 mr-2" />
-                  Dashboard
+                   {t('dashboard')}
                 </Button>
               ) : (
                 <Button 
@@ -794,7 +787,7 @@ const navigationItems = [
                   className="glass hover:shadow-neon glow-pulse transition-all duration-300"
                 >
                   <LogIn className="h-4 w-4 mr-2" />
-                  Enter System
+                  {t('enterSystem')}
                 </Button>
               )}
             </div>
@@ -848,12 +841,12 @@ const navigationItems = [
                 <MapPin className="h-6 w-6 text-primary-foreground" />
               </div>
             </div>
-            <p className="text-cyan-light font-medium">
-              &copy; 2025 BIAKAM - ConnectEG Platform for Republic of Equatorial Guinea
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Unified Digital Addressing & Emergency Management • Connecting Citizens, Services & Safety
-            </p>
+             <p className="text-cyan-light font-medium">
+               {t('copyrightBiakam')}
+             </p>
+             <p className="text-sm text-muted-foreground">
+               {t('footerDescription')}
+             </p>
           </div>
         </div>
       </footer>
