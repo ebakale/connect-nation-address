@@ -45,7 +45,7 @@ export const SystemManualPDF: React.FC = () => {
     // Title Page
     pdf.setFontSize(24);
     pdf.setFont('helvetica', 'bold');
-    pdf.text('Connect Nation Address System', pageWidth / 2, 50, { align: 'center' });
+    pdf.text('Connect Nation Unified Platform', pageWidth / 2, 50, { align: 'center' });
     
     pdf.setFontSize(18);
     pdf.text('Comprehensive Manual', pageWidth / 2, 70, { align: 'center' });
@@ -63,13 +63,14 @@ export const SystemManualPDF: React.FC = () => {
     addHeading('Table of Contents', 1);
     const tocItems = [
       '1. System Overview',
-      '2. User Roles and Permissions',
-      '3. Core Workflows',
-      '4. Feature Descriptions',
-      '5. Administrator Guide',
-      '6. User Guides by Role',
-      '7. Technical Documentation',
-      '8. Troubleshooting'
+      '2. Module Overview',
+      '3. User Roles and Permissions',
+      '4. Core Workflows',
+      '5. Feature Descriptions',
+      '6. Administrator Guide',
+      '7. User Guides by Role',
+      '8. Technical Documentation',
+      '9. Troubleshooting'
     ];
     
     tocItems.forEach(item => {
@@ -81,27 +82,50 @@ export const SystemManualPDF: React.FC = () => {
 
     // Content
     addHeading('1. System Overview', 1);
-    addText('The Connect Nation Address System is a comprehensive digital platform for managing address registration, verification, and distribution in Equatorial Guinea. The system enables efficient location management through a role-based workflow that ensures data quality and security.');
+    addText('The Connect Nation Unified Platform is a comprehensive digital ecosystem for managing both address registration and police operations in Equatorial Guinea. The platform consists of two integrated modules that work together to provide enhanced public services, emergency response, and urban planning capabilities.');
 
-    addHeading('Key Objectives', 2);
+    addHeading('2. Module Overview', 1);
+    
+    addHeading('Address Registry Module', 2);
+    addText('The address registry system manages the complete lifecycle of address registration, verification, and distribution. Key features include:');
+    addText('• Address registration and verification workflow');
+    addText('• Geographic information system (GIS) integration');
+    addText('• Unified Address Code (UAC) generation');
+    addText('• Evidence management and photo capture');
+    addText('• Multi-role approval process');
+
+    addHeading('Police Operations Module', 2);
+    addText('The police operations system provides comprehensive incident management, emergency response coordination, and law enforcement support capabilities. Key features include:');
+    addText('• Real-time incident reporting and tracking');
+    addText('• Emergency dispatch and unit coordination');
+    addText('• Officer dashboard and performance monitoring');
+    addText('• Communication systems for field operations');
+    addText('• Analytics and reporting tools');
+
+    addHeading('Platform Benefits', 2);
     addText('• Enhanced Service Delivery: Improve emergency response, postal delivery, and public services through accurate addressing');
     addText('• Economic Acceleration: Enable e-commerce, delivery services, and location-based business growth');
     addText('• Smart Urban Planning: Support infrastructure development and city planning with precise location data');
     addText('• Digital Infrastructure: Create a foundation for IoT, smart city initiatives, and digital governance');
+    addText('• Integrated Emergency Response: Seamless coordination between address verification and police operations');
+    addText('• Data-Driven Policing: Evidence-based decision making through comprehensive analytics');
 
     addHeading('System Architecture', 2);
     addText('• Frontend: React-based web application with responsive design');
     addText('• Backend: Supabase with PostgreSQL database');
-    addText('• Authentication: Secure role-based access control');
+    addText('• Authentication: Secure role-based access control with module-specific permissions');
     addText('• Storage: Cloud-based file storage for evidence and documentation');
+    addText('• Real-time Communication: WebSocket support for live updates and dispatch');
     addText('• APIs: RESTful APIs for integration with external systems');
+    addText('• Security: End-to-end encryption for sensitive police data');
 
     pdf.addPage();
     currentY = margin;
 
-    addHeading('2. User Roles and Permissions', 1);
+    addHeading('3. User Roles and Permissions', 1);
+    addText('The unified platform supports two distinct role hierarchies - one for the Address Registry Module and one for the Police Operations Module. Users can have roles in one or both modules based on their responsibilities.');
 
-    addHeading('Role Hierarchy', 2);
+    addHeading('Address Registry Module Roles', 2);
 
     addHeading('1. Citizen (Default Role)', 3);
     addText('Purpose: General public users who can search for verified addresses');
@@ -182,7 +206,34 @@ export const SystemManualPDF: React.FC = () => {
     pdf.addPage();
     currentY = margin;
 
-    addHeading('3. Core Workflows', 1);
+    addHeading('Police Operations Module Roles', 2);
+
+    addHeading('1. Police Admin', 3);
+    addText('Purpose: System administrators for police operations with full oversight');
+    addText('Permissions: Manage all police system users and roles, configure system settings, access all incident data and analytics, manage unit structures, override operational decisions, full audit trail access');
+    addText('Scope: System-wide police operations');
+
+    addHeading('2. Police Supervisor', 3);
+    addText('Purpose: Senior officers responsible for operational oversight and unit management');
+    addText('Permissions: Monitor all incidents within jurisdiction, assign units to incidents, access real-time unit status, review officer performance metrics, approve backup requests, generate operational reports');
+    addText('Scope: Regional or departmental oversight');
+
+    addHeading('3. Police Dispatcher', 3);
+    addText('Purpose: Emergency response coordinators managing incident dispatch');
+    addText('Permissions: Receive and process emergency calls, create and update incident records, dispatch units to incidents, monitor unit status, coordinate emergency response, communicate with field units');
+    addText('Scope: Dispatch center operations');
+
+    addHeading('4. Police Operator', 3);
+    addText('Purpose: Field officers and operational personnel');
+    addText('Permissions: View assigned incidents, update incident status, request backup and resources, submit field reports and evidence, access incident history, communicate with dispatch and units');
+    addText('Scope: Field operations and assigned incidents');
+
+    pdf.addPage();
+    currentY = margin;
+
+    addHeading('4. Core Workflows', 1);
+
+    addHeading('Address Registry Module Workflows', 2);
 
     addHeading('1. Standard Address Creation Workflow', 2);
     addText('Participants: Citizen → Field Agent → Verifier → Registrar');
@@ -233,10 +284,27 @@ export const SystemManualPDF: React.FC = () => {
     addText('   • Generate UACs for all new addresses');
     addText('   • Send confirmation webhooks to partners');
 
+    addHeading('Police Operations Module Workflows', 2);
+
+    addHeading('1. Emergency Incident Response Workflow', 3);
+    addText('Participants: Citizen → Police Dispatcher → Police Operator → Police Supervisor');
+    addText('1. Incident Report: Emergency call received, details captured, location verified, priority assigned');
+    addText('2. Dispatch Coordination: Units identified, optimal unit selected, incident assigned, communication established');
+    addText('3. Field Response: Unit dispatched, status updates provided, on-scene assessment, evidence collected');
+    addText('4. Supervision: Monitor progress, coordinate resources, review resolution, performance evaluation');
+
+    addHeading('2. Backup Request Workflow', 3);
+    addText('Participants: Police Operator → Police Dispatcher → Police Supervisor');
+    addText('1. Backup Request: Assess situation, submit request with justification, provide details');
+    addText('2. Resource Coordination: Evaluate request, identify available units, coordinate deployment');
+    addText('3. Approval and Deployment: Review and approve allocation, monitor coordination, ensure utilization');
+
     pdf.addPage();
     currentY = margin;
 
-    addHeading('4. Feature Descriptions', 1);
+    addHeading('5. Feature Descriptions', 1);
+
+    addHeading('Address Registry Module Features', 2);
 
     addHeading('Address Search', 2);
     addText('• Smart Search: Natural language and coordinate-based search');
@@ -268,7 +336,36 @@ export const SystemManualPDF: React.FC = () => {
     addText('• Check Digits: Built-in validation for accuracy');
     addText('• Batch Generation: Efficient bulk UAC creation');
 
-    addHeading('5. Technical Support', 1);
+    addHeading('Police Operations Module Features', 2);
+
+    addHeading('Incident Management', 3);
+    addText('• Real-time incident tracking with live status updates');
+    addText('• Priority classification based on severity and type');
+    addText('• Location integration with address registry');
+    addText('• Evidence management and secure storage');
+
+    addHeading('Dispatch Operations', 3);
+    addText('• Unit tracking with real-time location monitoring');
+    addText('• Optimal assignment based on proximity and availability');
+    addText('• Communication hub for dispatch and field units');
+    addText('• Emergency protocols for high-priority incidents');
+
+    addHeading('Performance Analytics', 3);
+    addText('• Response time tracking and efficiency metrics');
+    addText('• Officer and unit performance monitoring');
+    addText('• Crime pattern analysis and trend identification');
+    addText('• Resource utilization analysis');
+
+    addHeading('Unit Management', 3);
+    addText('• Team organization and hierarchical structure');
+    addText('• Shift scheduling and duty assignment');
+    addText('• Backup coordination and deployment');
+    addText('• Status monitoring and availability tracking');
+
+    pdf.addPage();
+    currentY = margin;
+
+    addHeading('6. Technical Support', 1);
     addText('For technical assistance:');
     addText('• Email: tech-support@address-system.gq');
     addText('• Phone: +240-XXX-XXXX');
@@ -286,11 +383,11 @@ export const SystemManualPDF: React.FC = () => {
     for (let i = 1; i <= totalPages; i++) {
       pdf.setPage(i);
       pdf.text(`Page ${i} of ${totalPages}`, pageWidth - margin, pageHeight - 10, { align: 'right' });
-      pdf.text('Connect Nation Address System - User Manual', margin, pageHeight - 10);
+      pdf.text('Connect Nation Unified Platform - User Manual', margin, pageHeight - 10);
     }
 
     // Save the PDF
-    pdf.save('Connect-Nation-Address-System-Manual.pdf');
+    pdf.save('Connect-Nation-Unified-Platform-Manual.pdf');
   };
 
   return (
@@ -304,8 +401,9 @@ export const SystemManualPDF: React.FC = () => {
       <CardContent>
         <div className="space-y-4">
           <p className="text-muted-foreground">
-            Download the complete system manual as a PDF document. This includes all user roles, 
-            workflows, features, and administrative guidelines.
+            Download the complete system manual as a PDF document. This comprehensive guide covers both 
+            the Address Registry and Police Operations modules, including all user roles, workflows, 
+            features, and administrative guidelines.
           </p>
           <Button onClick={generatePDF} className="flex items-center gap-2">
             <Download className="h-4 w-4" />

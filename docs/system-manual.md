@@ -1,39 +1,68 @@
-# Connect Nation Address System - Comprehensive Manual
+# Connect Nation Unified Platform - Comprehensive Manual
 
 ## Table of Contents
 1. [System Overview](#system-overview)
-2. [User Roles and Permissions](#user-roles-and-permissions)
-3. [Core Workflows](#core-workflows)
-4. [Feature Descriptions](#feature-descriptions)
-5. [Administrator Guide](#administrator-guide)
-6. [User Guides by Role](#user-guides-by-role)
-7. [Technical Documentation](#technical-documentation)
-8. [Troubleshooting](#troubleshooting)
+2. [Module Overview](#module-overview)
+3. [User Roles and Permissions](#user-roles-and-permissions)
+4. [Core Workflows](#core-workflows)
+5. [Feature Descriptions](#feature-descriptions)
+6. [Administrator Guide](#administrator-guide)
+7. [User Guides by Role](#user-guides-by-role)
+8. [Technical Documentation](#technical-documentation)
+9. [Troubleshooting](#troubleshooting)
 
 ---
 
 ## System Overview
 
-The Connect Nation Address System is a comprehensive digital platform for managing address registration, verification, and distribution in Equatorial Guinea. The system enables efficient location management through a role-based workflow that ensures data quality and security.
+The Connect Nation Unified Platform is a comprehensive digital ecosystem for managing both address registration and police operations in Equatorial Guinea. The platform consists of two integrated modules that work together to provide enhanced public services, emergency response, and urban planning capabilities.
 
-### Key Objectives
+## Module Overview
+
+### Address Registry Module
+The address registry system manages the complete lifecycle of address registration, verification, and distribution. It enables efficient location management through a role-based workflow that ensures data quality and security.
+
+**Key Features:**
+- Address registration and verification workflow
+- Geographic information system (GIS) integration
+- Unified Address Code (UAC) generation
+- Evidence management and photo capture
+- Multi-role approval process
+
+### Police Operations Module
+The police operations system provides comprehensive incident management, emergency response coordination, and law enforcement support capabilities.
+
+**Key Features:**
+- Real-time incident reporting and tracking
+- Emergency dispatch and unit coordination
+- Officer dashboard and performance monitoring
+- Communication systems for field operations
+- Analytics and reporting tools
+
+### Unified Platform Benefits
 - **Enhanced Service Delivery**: Improve emergency response, postal delivery, and public services through accurate addressing
 - **Economic Acceleration**: Enable e-commerce, delivery services, and location-based business growth
 - **Smart Urban Planning**: Support infrastructure development and city planning with precise location data
 - **Digital Infrastructure**: Create a foundation for IoT, smart city initiatives, and digital governance
+- **Integrated Emergency Response**: Seamless coordination between address verification and police operations
+- **Data-Driven Policing**: Evidence-based decision making through comprehensive analytics
 
 ### System Architecture
 - **Frontend**: React-based web application with responsive design
 - **Backend**: Supabase with PostgreSQL database
-- **Authentication**: Secure role-based access control
+- **Authentication**: Secure role-based access control with module-specific permissions
 - **Storage**: Cloud-based file storage for evidence and documentation
+- **Real-time Communication**: WebSocket support for live updates and dispatch
 - **APIs**: RESTful APIs for integration with external systems
+- **Security**: End-to-end encryption for sensitive police data
 
 ---
 
 ## User Roles and Permissions
 
-### Role Hierarchy
+The unified platform supports two distinct role hierarchies - one for the Address Registry Module and one for the Police Operations Module. Users can have roles in one or both modules based on their responsibilities.
+
+### Address Registry Module Roles
 
 #### 1. **Citizen** (Default Role)
 **Purpose**: General public users who can search for verified addresses
@@ -158,11 +187,70 @@ The Connect Nation Address System is a comprehensive digital platform for managi
 
 **Focus**: User assistance and support
 
+### Police Operations Module Roles
+
+#### 1. **Police Admin**
+**Purpose**: System administrators for police operations with full oversight
+**Permissions**:
+- ✅ Manage all police system users and roles
+- ✅ Configure system settings and parameters
+- ✅ Access all incident data and analytics
+- ✅ Manage unit structures and assignments
+- ✅ Override operational decisions
+- ✅ Full audit trail access
+
+**Scope**: System-wide police operations
+
+#### 2. **Police Supervisor**
+**Purpose**: Senior officers responsible for operational oversight and unit management
+**Permissions**:
+- ✅ Monitor all incidents within jurisdiction
+- ✅ Assign and reassign units to incidents
+- ✅ Access real-time unit status and locations
+- ✅ Review officer performance metrics
+- ✅ Approve backup requests and resource allocation
+- ✅ Generate operational reports
+
+**Scope**: Regional or departmental oversight
+
+#### 3. **Police Dispatcher**
+**Purpose**: Emergency response coordinators managing incident dispatch
+**Permissions**:
+- ✅ Receive and process emergency calls
+- ✅ Create and update incident records
+- ✅ Dispatch units to incidents
+- ✅ Monitor unit status and availability
+- ✅ Coordinate emergency response
+- ✅ Communication with field units
+
+**Scope**: Dispatch center operations
+
+#### 4. **Police Operator**
+**Purpose**: Field officers and operational personnel
+**Permissions**:
+- ✅ View assigned incidents and details
+- ✅ Update incident status and progress
+- ✅ Request backup and resources
+- ✅ Submit field reports and evidence
+- ✅ Access incident history for patrols
+- ✅ Communicate with dispatch and units
+
+**Scope**: Field operations and assigned incidents
+
+### Cross-Module Integration
+Users with roles in both modules benefit from enhanced capabilities:
+- **Emergency Response**: Police can access verified addresses for faster response
+- **Incident Location**: Address verification can be fast-tracked for emergency locations
+- **Data Sharing**: Seamless integration of location and incident data
+- **Unified Analytics**: Cross-module reporting and analysis
+
 ---
 
 ## Core Workflows
 
-### 1. Standard Address Creation Workflow
+### Address Registry Module Workflows
+
+#### 1. Standard Address Creation Workflow
 **Participants**: Citizen → Field Agent → Verifier → Registrar
 
 1. **Submit Request** (Citizen)
@@ -229,11 +317,83 @@ The Connect Nation Address System is a comprehensive digital platform for managi
    - Generate temporary UAC if needed
    - Send priority webhook confirmation
 
+### Police Operations Module Workflows
+
+#### 1. Emergency Incident Response Workflow
+**Participants**: Citizen → Police Dispatcher → Police Operator → Police Supervisor
+
+1. **Incident Report** (Citizen/System)
+   - Emergency call received through dispatch
+   - Incident details captured and categorized
+   - Location verified using address registry
+   - Initial assessment and priority assignment
+
+2. **Dispatch Coordination** (Police Dispatcher)
+   - Available units identified and assessed
+   - Optimal unit selected based on proximity and capability
+   - Incident assignment and initial briefing
+   - Real-time communication established
+
+3. **Field Response** (Police Operator)
+   - Unit dispatched to incident location
+   - Status updates provided during transit
+   - On-scene assessment and response
+   - Evidence collection and documentation
+
+4. **Supervision and Follow-up** (Police Supervisor)
+   - Monitor response progress and effectiveness
+   - Coordinate additional resources if needed
+   - Review incident resolution and outcomes
+   - Performance evaluation and reporting
+
+#### 2. Backup Request and Resource Allocation Workflow
+**Participants**: Police Operator → Police Dispatcher → Police Supervisor
+
+1. **Backup Request** (Police Operator)
+   - Assess situation requiring additional support
+   - Submit backup request with justification
+   - Provide incident details and requirements
+   - Maintain situation awareness
+
+2. **Resource Coordination** (Police Dispatcher)
+   - Evaluate backup request urgency
+   - Identify available units and resources
+   - Coordinate deployment and timing
+   - Facilitate communication between units
+
+3. **Approval and Deployment** (Police Supervisor)
+   - Review and approve resource allocation
+   - Monitor multi-unit coordination
+   - Ensure effective resource utilization
+   - Document decision rationale
+
+### Cross-Module Integration Workflows
+
+#### 1. Emergency Address Verification Workflow
+**Participants**: Police Dispatcher → Address Verifier → Address Registrar
+
+1. **Emergency Location Issue** (Police Dispatcher)
+   - Incident reported at unverified location
+   - Request urgent address verification
+   - Provide incident context and urgency
+
+2. **Priority Verification** (Address Verifier)
+   - Fast-track address verification process
+   - Coordinate with field agents if needed
+   - Expedite quality assurance checks
+
+3. **Emergency Publication** (Address Registrar)
+   - Immediate address registry update
+   - Generate emergency UAC
+   - Notify police dispatch of completion
+
 ---
 
 ## Feature Descriptions
 
-### Address Search
+### Address Registry Module Features
+
+#### Address Search
 - **Smart Search**: Natural language and coordinate-based search
 - **Filter Options**: By verification status, date, location type
 - **Map Integration**: Visual search with interactive maps
@@ -257,11 +417,43 @@ The Connect Nation Address System is a comprehensive digital platform for managi
 - **Workflow Monitoring**: Track progress through stages
 - **Analytics Dashboard**: System usage and performance metrics
 
-### UAC Generation
+#### UAC Generation
 - **Unified Address Codes**: Standardized address identifiers
 - **Hierarchical Structure**: Country-Region-City-Unique format
 - **Check Digits**: Built-in validation for accuracy
 - **Batch Generation**: Efficient bulk UAC creation
+
+### Police Operations Module Features
+
+#### Incident Management
+- **Real-time Incident Tracking**: Live updates on incident status and progress
+- **Priority Classification**: Automatic categorization based on severity and type
+- **Location Integration**: Seamless integration with address registry for accurate positioning
+- **Evidence Management**: Secure storage and tracking of incident-related evidence
+
+#### Dispatch Operations
+- **Unit Tracking**: Real-time location and status monitoring of police units
+- **Optimal Assignment**: Intelligent unit selection based on proximity and availability
+- **Communication Hub**: Centralized communication between dispatch and field units
+- **Emergency Protocols**: Specialized workflows for high-priority incidents
+
+#### Performance Analytics
+- **Response Time Tracking**: Detailed metrics on incident response efficiency
+- **Officer Performance**: Individual and unit performance monitoring
+- **Crime Pattern Analysis**: Data-driven insights into crime trends and hotspots
+- **Resource Utilization**: Analysis of unit deployment and effectiveness
+
+#### Unit Management
+- **Team Organization**: Hierarchical unit structure management
+- **Shift Scheduling**: Automated scheduling and duty assignment
+- **Backup Coordination**: Streamlined process for requesting and deploying backup
+- **Status Monitoring**: Real-time visibility into unit availability and activities
+
+#### Communications
+- **Secure Messaging**: Encrypted communication channels for sensitive operations
+- **Broadcast Alerts**: System-wide notifications for critical situations
+- **Field Reporting**: Mobile-friendly tools for field report submission
+- **Emergency Notifications**: Automated alerts for priority incidents
 
 ---
 
