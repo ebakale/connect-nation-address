@@ -611,45 +611,6 @@ const PoliceDashboard = () => {
           </div>
         ) : (
           <div className="max-w-7xl mx-auto">
-            {/* Quick Stats Bar */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-              <Card className="p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4 text-destructive" />
-                    <span className="text-sm font-medium">Active</span>
-                  </div>
-                  <Badge variant="destructive">{dashboardStats.activeIncidents}</Badge>
-                </div>
-              </Card>
-              <Card className="p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Activity className="h-4 w-4 text-primary" />
-                    <span className="text-sm font-medium">Total</span>
-                  </div>
-                  <Badge variant="secondary">{dashboardStats.totalIncidents}</Badge>
-                </div>
-              </Card>
-              <Card className="p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-green-600" />
-                    <span className="text-sm font-medium">Units</span>
-                  </div>
-                  <Badge variant="outline">{dashboardStats.availableUnits}</Badge>
-                </div>
-              </Card>
-              <Card className="p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-orange-500" />
-                    <span className="text-sm font-medium">Response</span>
-                  </div>
-                  <Badge variant="outline">{dashboardStats.avgResponseTime}m</Badge>
-                </div>
-              </Card>
-            </div>
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
               {/* Compact Tab Navigation */}
