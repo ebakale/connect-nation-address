@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 import IncidentMap from '@/components/IncidentMap';
 import IncidentList from '@/components/IncidentList';
@@ -535,6 +536,7 @@ const PoliceDashboard = () => {
                 </div>
               </div>
               <div className="flex items-center gap-2">
+                <LanguageSwitcher />
                 <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-2">
                   <LogOut className="h-4 w-4" />
                   {t('logout')}
@@ -594,7 +596,7 @@ const PoliceDashboard = () => {
             </div>
 
             <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-              
+              <LanguageSwitcher />
               <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
                 <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline">{t('logout')}</span>
