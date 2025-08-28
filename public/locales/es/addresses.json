@@ -248,5 +248,57 @@
   "claimantType": "Tipo de Solicitante",
   "industrial": "Industrial",
   "educational": "Educativo",
-  "healthcare": "Salud"
+  "healthcare": "Salud",
+  "rejection": {
+    "dialogTitle": "Rechazar",
+    "addressRequest": "Solicitud de Dirección",
+    "flaggedRequest": "Solicitud Marcada",
+    "flaggedAddress": "Dirección Marcada",
+    "rejectionReason": "Motivo de Rechazo",
+    "additionalNotes": "Notas Adicionales y Comentarios",
+    "optional": "Opcional",
+    "selectReason": "Seleccione un motivo de rechazo",
+    "notesPlaceholder": "Proporcione orientación específica sobre lo que necesita ser corregido para reenvío...",
+    "charactersLimit": "caracteres",
+    "rejecting": "Rechazando...",
+    "rejectSendFeedback": "Rechazar y Enviar Comentarios",
+    "important": "Importante:",
+    "requestSentBack": "Esta solicitud será devuelta al usuario con sus comentarios para correcciones y reenvío.",
+    "flaggedRequestRejected": "Esta solicitud marcada será rechazada. El usuario necesitará enviar una nueva solicitud corregida.",
+    "addressMarkedRejected": "Esta dirección será marcada como rechazada con sus comentarios. El usuario puede abordar los problemas y solicitar re-verificación."
+  },
+  "search": {
+    "searchingStatus": "Buscando...",
+    "viewOnMapLabel": "Ver en mapa",
+    "viewOnMapTitle": "Ver en mapa",
+    "noAddressesFoundQuery": "No se encontraron direcciones para",
+    "tryDifferentSearch": "Intente buscar con un término diferente o código UAC"
+  },
+  "fileUpload": {
+    "fileTooLarge": "Archivo demasiado grande",
+    "selectSmallerImage": "Por favor seleccione una imagen menor a 5MB",
+    "invalidFileType": "Tipo de archivo inválido",
+    "selectImageFile": "Por favor seleccione un archivo de imagen",
+    "uploadFailed": "Carga falló",
+    "failedToUpload": "Error al subir la foto. Por favor inténtelo de nuevo.",
+    "missingInformation": "Información faltante",
+    "fillAllRequired": "Por favor complete todos los campos obligatorios"
+  },
+  "publishing": {
+    "publishingQueue": "Cola de Publicación",
+    "publishAllAction": "Publicar Todo",
+    "publishToRegistry": "Publicar en Registro Nacional",
+    "loadingQueue": "Cargando cola de publicación...",
+    "publishedAddresses": "Direcciones Publicadas",
+    "removeAllPublic": "Remover Todo del Registro Público",
+    "removeFromRegistry": "Remover del Registro Público",
+    "loadingPublished": "Cargando direcciones publicadas...",
+    "successPublished": "publicado exitosamente",
+    "successUnpublished": "despublicado exitosamente",
+    "addressesPublished": "direcciones publicadas exitosamente",
+    "addressesRemoved": "direcciones removidas del registro público",
+    "failedPublish": "Error al publicar algunas direcciones",
+    "failedRemove": "Error al remover algunas direcciones del registro público",
+    "successRemoved": "Dirección removida del registro público exitosamente"
+  }
 }

@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Search, MapPin, Navigation } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAddresses } from '@/hooks/useAddresses';
+import { useTranslation } from 'react-i18next';
 
 interface SearchResult {
   uac: string;
@@ -23,6 +24,7 @@ interface AddressSearchProps {
 }
 
 const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, className }) => {
+  const { t } = useTranslation('addresses');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -98,7 +100,7 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
       <div className="flex gap-2">
         <div className="relative flex-1">
           <Input
-            placeholder="Search by address, UAC code, or landmark..."
+            placeholder={t('search.placeholder')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyPress={handleKeyPress}
@@ -111,7 +113,7 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
           disabled={isSearching || !query.trim()}
           variant="hero"
         >
-          {isSearching ? "Searching..." : "Search"}
+          {isSearching ? t('search.searchingStatus') : t('search.title')}
         </Button>
       </div>
 
@@ -158,8 +160,8 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
                         variant="ghost"
                         size="icon"
                         onClick={(e) => { e.stopPropagation(); handleSelectResult(result); }}
-                        aria-label="View on map"
-                        title="View on map"
+                        aria-label={t('search.viewOnMapLabel')}
+                        title={t('search.viewOnMapTitle')}
                       >
                         <MapPin className="h-4 w-4 text-muted-foreground" />
                       </Button>
@@ -170,8 +172,8 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
             ) : (
               <div className="p-6 text-center text-muted-foreground">
                 <Search className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p>No addresses found for "{query}"</p>
-                <p className="text-sm mt-1">Try searching with a different term or UAC code</p>
+                <p>{t('search.noAddressesFoundQuery')} "{query}"</p>
+                <p className="text-sm mt-1">{t('search.tryDifferentSearch')}</p>
               </div>
             )}
           </CardContent>

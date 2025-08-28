@@ -248,5 +248,57 @@
   "claimantType": "Claimant Type",
   "industrial": "Industrial",
   "educational": "Educational",
-  "healthcare": "Healthcare"
+  "healthcare": "Healthcare",
+  "rejection": {
+    "dialogTitle": "Reject",
+    "addressRequest": "Address Request",
+    "flaggedRequest": "Flagged Request", 
+    "flaggedAddress": "Flagged Address",
+    "rejectionReason": "Rejection Reason",
+    "additionalNotes": "Additional Notes & Feedback",
+    "optional": "Optional",
+    "selectReason": "Select a rejection reason",
+    "notesPlaceholder": "Provide specific guidance on what needs to be corrected for resubmission...",
+    "charactersLimit": "characters",
+    "rejecting": "Rejecting...",
+    "rejectSendFeedback": "Reject & Send Feedback",
+    "important": "Important:",
+    "requestSentBack": "This request will be sent back to the user with your feedback for corrections and resubmission.",
+    "flaggedRequestRejected": "This flagged request will be rejected. The user will need to submit a new corrected request.",
+    "addressMarkedRejected": "This address will be marked as rejected with your feedback. The user can address the issues and request re-verification."
+  },
+  "search": {
+    "searchingStatus": "Searching...",
+    "viewOnMapLabel": "View on map",
+    "viewOnMapTitle": "View on map",
+    "noAddressesFoundQuery": "No addresses found for",
+    "tryDifferentSearch": "Try searching with a different term or UAC code"
+  },
+  "fileUpload": {
+    "fileTooLarge": "File too large",
+    "selectSmallerImage": "Please select an image smaller than 5MB",
+    "invalidFileType": "Invalid file type", 
+    "selectImageFile": "Please select an image file",
+    "uploadFailed": "Upload failed",
+    "failedToUpload": "Failed to upload photo. Please try again.",
+    "missingInformation": "Missing information",
+    "fillAllRequired": "Please fill in all required fields"
+  },
+  "publishing": {
+    "publishingQueue": "Publishing Queue",
+    "publishAllAction": "Publish All",
+    "publishToRegistry": "Publish to National Registry",
+    "loadingQueue": "Loading publishing queue...",
+    "publishedAddresses": "Published Addresses",
+    "removeAllPublic": "Remove All from Public Registry",
+    "removeFromRegistry": "Remove from Public Registry",
+    "loadingPublished": "Loading published addresses...",
+    "successPublished": "published successfully",
+    "successUnpublished": "unpublished successfully",
+    "addressesPublished": "addresses published successfully",
+    "addressesRemoved": "addresses removed from public registry",
+    "failedPublish": "Failed to publish some addresses",
+    "failedRemove": "Failed to remove some addresses from public registry",
+    "successRemoved": "Address removed from public registry successfully"
+  }
 }

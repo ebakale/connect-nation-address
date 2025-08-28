@@ -115,8 +115,8 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
     if (file) {
       if (file.size > 5 * 1024 * 1024) { // 5MB limit
         toast({
-          title: "File too large",
-          description: "Please select an image smaller than 5MB",
+          title: t('fileUpload.fileTooLarge'),
+          description: t('fileUpload.selectSmallerImage'),
           variant: "destructive"
         });
         return;
@@ -124,8 +124,8 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
 
       if (!file.type.startsWith('image/')) {
         toast({
-          title: "Invalid file type",
-          description: "Please select an image file",
+          title: t('fileUpload.invalidFileType'),
+          description: t('fileUpload.selectImageFile'),
           variant: "destructive"
         });
         return;
@@ -162,8 +162,8 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
     } catch (error) {
       console.error('Error uploading photo:', error);
       toast({
-        title: "Upload failed",
-        description: "Failed to upload photo. Please try again.",
+        title: t('fileUpload.uploadFailed'),
+        description: t('fileUpload.failedToUpload'),
         variant: "destructive"
       });
       return null;
@@ -184,8 +184,8 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
     
     if (!formData.region || !formData.city || !formData.street) {
       toast({
-        title: "Missing information",
-        description: "Please fill in all required fields",
+        title: t('fileUpload.missingInformation'),
+        description: t('fileUpload.fillAllRequired'),
         variant: "destructive"
       });
       return;
@@ -222,8 +222,8 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
         onSave?.();
       } else {
         toast({
-          title: "Error",
-          description: "Failed to update address",
+          title: t('common:error'),
+          description: t('common:failedToUpdate'),
           variant: "destructive"
         });
       }
