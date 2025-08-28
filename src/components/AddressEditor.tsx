@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Save, MapPin, CheckCircle, XCircle } from 'lucide-react';
 import { Address, useAddresses } from '@/hooks/useAddresses';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 
 interface AddressEditorProps {
   address?: Address | null;
@@ -30,6 +31,7 @@ interface EditableAddressData {
 const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }) => {
   const { updateAddressStatus } = useAddresses();
   const { toast } = useToast();
+  const { t } = useTranslation('addresses');
   const [loading, setLoading] = useState(false);
   
   const [formData, setFormData] = useState<EditableAddressData>({
@@ -71,8 +73,8 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
     // Validate required fields
     if (!formData.country || !formData.region || !formData.city || !formData.street || !formData.latitude || !formData.longitude) {
       toast({
-        title: "Validation Error",
-        description: "Please fill in all required fields",
+        title: t('validation.validationError'),
+        description: t('validation.fillRequired'),
         variant: "destructive",
       });
       return;
@@ -90,8 +92,8 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
       // For now, we're only updating the status fields that are supported by the hook
       
       toast({
-        title: "Success",
-        description: "Address updated successfully",
+        title: t('messages.saveSuccess'),
+        description: t('messages.saveSuccess'),
       });
 
       // Create updated address object for callback
@@ -105,8 +107,8 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
       onSave?.(updatedAddress);
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to update address",
+        title: t('messages.saveError'),
+        description: t('messages.saveError'),
         variant: "destructive",
       });
     } finally {
@@ -118,10 +120,10 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
     return (
       <Card>
         <CardContent className="p-8 text-center">
-          <p className="text-muted-foreground">No address selected for editing</p>
+          <p className="text-muted-foreground">{t('noAddressSelected')}</p>
           <Button onClick={onBack} className="mt-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to List
+            {t('backToList')}
           </Button>
         </CardContent>
       </Card>

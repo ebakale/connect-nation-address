@@ -167,5 +167,24 @@
       "technicalIssues": "Technical issues prevent processing",
       "requiresAdditionalReview": "Request requires additional review and verification"
     }
-  }
+  },
+  "validation": {
+    "validationError": "Validation Error",
+    "fillRequired": "Please fill in all required fields"
+  },
+  "noAddressSelected": "No address selected for editing",
+  "editAddress": "Edit Address",
+  "modifyAddressDetails": "Modify address details and status",
+  "addressDetails": "Address Details",
+  "backToList": "Back to List",
+  "propertyType": "Property Type",
+  "addressStatus": "Address Status",
+  "verifiedAddress": "Verified Address (Address has been confirmed and validated)",
+  "publicAddress": "Public Address (Visible in public searches - for businesses, landmarks, etc.)",
+  "saveChanges": "Save Changes",
+  "saving": "Saving...",
+  "cancel": "Cancel",
+  "currentAddressInfo": "Current Address Information",
+  "created": "Created",
+  "lastUpdated": "Last Updated"
 }
