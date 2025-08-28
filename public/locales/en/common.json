@@ -296,5 +296,23 @@
   "smartUrbanPlanning": "Smart Urban Planning",
   "smartUrbanPlanningDesc": "Enable data-driven city planning and development.",
   "dataExcellence": "Data Excellence",
-  "dataExcellenceDesc": "Ensure reliable, standardized, high-quality national datasets."
+  "dataExcellenceDesc": "Ensure reliable, standardized, high-quality national datasets.",
+
+  "platformUserManual": "Platform User Manual",
+  "manualIntro": "Comprehensive guide for using both Address Registry and Emergency Management systems.",
+  "manualGettingStarted": "Getting Started",
+  "manualAccountRegistration": "1. Account Registration",
+  "manualAccountRegistrationDesc": "Create an account using your email address and a secure password. Verify your email to activate your account.",
+  "manualProfileSetup": "2. Profile Setup",
+  "manualProfileSetupDesc": "Complete your profile with accurate personal information. This helps us verify your identity for address submissions.",
+  "manualAddressRegistrationProcess": "Address Registration Process",
+  "manualStep1LocationInfo": "Step 1: Location Information",
+  "manualStep1LocationInfoDesc": "Select the correct province and city, then provide street and building details.",
+  "manualStep2Coordinates": "Step 2: Coordinates",
+  "manualStep2CoordinatesDesc": "Use the 'Get Current Location' button or manually enter GPS coordinates. Accurate coordinates are essential for verification.",
+  "manualStep3Documentation": "Step 3: Documentation",
+  "manualStep3DocumentationDesc": "Upload a clear photo of the location and provide any additional description that helps identify the address.",
+  "manualStep4Verification": "Step 4: Verification",
+  "manualStep4VerificationDesc": "Submit your request for review. Field agents will verify the location and registrars will approve the final address code."
 }
+

@@ -296,5 +296,23 @@
   "smartUrbanPlanning": "Planificación Urbana Inteligente",
   "smartUrbanPlanningDesc": "Permitir planificación y desarrollo urbano basados en datos.",
   "dataExcellence": "Excelencia de Datos",
-  "dataExcellenceDesc": "Garantizar conjuntos de datos nacionales confiables, estandarizados y de alta calidad."
+  "dataExcellenceDesc": "Garantizar conjuntos de datos nacionales confiables, estandarizados y de alta calidad.",
+
+  "platformUserManual": "Manual de Usuario de la Plataforma",
+  "manualIntro": "Guía integral para usar tanto el Sistema de Registro de Direcciones como el de Gestión de Emergencias.",
+  "manualGettingStarted": "Primeros Pasos",
+  "manualAccountRegistration": "1. Registro de Cuenta",
+  "manualAccountRegistrationDesc": "Cree una cuenta usando su correo electrónico y una contraseña segura. Verifique su correo para activar su cuenta.",
+  "manualProfileSetup": "2. Configuración de Perfil",
+  "manualProfileSetupDesc": "Complete su perfil con información personal precisa. Esto nos ayuda a verificar su identidad para el envío de direcciones.",
+  "manualAddressRegistrationProcess": "Proceso de Registro de Direcciones",
+  "manualStep1LocationInfo": "Paso 1: Información de Ubicación",
+  "manualStep1LocationInfoDesc": "Seleccione la provincia y ciudad correctas, luego proporcione los detalles de calle y edificio.",
+  "manualStep2Coordinates": "Paso 2: Coordenadas",
+  "manualStep2CoordinatesDesc": "Use el botón 'Obtener ubicación actual' o ingrese manualmente las coordenadas GPS. Las coordenadas precisas son esenciales para la verificación.",
+  "manualStep3Documentation": "Paso 3: Documentación",
+  "manualStep3DocumentationDesc": "Cargue una foto clara del lugar y proporcione cualquier descripción adicional que ayude a identificar la dirección.",
+  "manualStep4Verification": "Paso 4: Verificación",
+  "manualStep4VerificationDesc": "Envíe su solicitud para revisión. Los agentes de campo verificarán la ubicación y los registradores aprobarán el código final de la dirección."
 }
+
