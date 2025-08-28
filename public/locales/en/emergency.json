@@ -1,0 +1,71 @@
+{
+  "contacts": {
+    "police": "Police",
+    "policeDescription": "Emergency police assistance",
+    "emergencyServices": "Emergency Services", 
+    "emergencyServicesDescription": "Fire, medical, and other emergencies",
+    "call": "Call",
+    "sendLocationAlert": "Send Location Alert"
+  },
+  "alert": {
+    "emergencyAlert": "Emergency Alert",
+    "sendLocationToService": "Send your location to {{service}}",
+    "automaticallyGettingLocation": "Automatically getting your location...",
+    "locationNeededForAlert": "Location is needed to send an alert",
+    "locationDetected": "Location detected",
+    "emergencyMessage": "Emergency Message",
+    "describeEmergency": "Describe the emergency situation...",
+    "gettingLocation": "Getting location...",
+    "retryLocation": "Retry location",
+    "sending": "Sending...",
+    "sent": "Sent!",
+    "sendAlert": "Send Alert",
+    "emergencyAlertSent": "Emergency alert sent successfully",
+    "emergencyAlertFailed": "Failed to send emergency alert",
+    "locationRequired": "Location is required to send alert"
+  },
+  "types": {
+    "medical": "Medical Emergency",
+    "fire": "Fire Emergency",
+    "police": "Police Emergency",
+    "accident": "Traffic Accident",
+    "crime": "Crime in Progress",
+    "other": "Other Emergency"
+  },
+  "dispatch": {
+    "emergencyDispatch": "Emergency Dispatch",
+    "createNewIncident": "Create New Emergency Incident",
+    "incidentType": "Incident Type",
+    "selectType": "Select type",
+    "priority": "Priority",
+    "location": "Location",
+    "streetAddress": "Street address or description",
+    "description": "Description",
+    "detailedDescription": "Detailed description of the emergency",
+    "callerInfo": "Caller Information",
+    "callerName": "Caller's name",
+    "contactNumber": "Contact number",
+    "dispatchUnits": "Dispatch Units",
+    "createIncident": "Create Incident"
+  },
+  "incidents": {
+    "activeIncidents": "Active Incidents",
+    "incidentDetails": "Incident Details",
+    "assignedUnits": "Assigned Units",
+    "assignUnit": "Assign Unit",
+    "updateStatus": "Update Status",
+    "viewDetails": "View Details",
+    "dispatchUnit": "Dispatch Unit",
+    "addNotes": "Add notes about this incident...",
+    "assignDispatcher": "Assign dispatcher...",
+    "selectUnit": "Select a unit"
+  },
+  "status": {
+    "reported": "Reported",
+    "dispatched": "Dispatched", 
+    "responding": "Responding",
+    "onScene": "On Scene",
+    "resolved": "Resolved",
+    "cancelled": "Cancelled"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "dashboard": {
+    "policeCommandCenter": "Centro de Comando Policial",
+    "emergencyIncidents": "Incidentes de Emergencia",
+    "dispatchCenter": "Centro de Despacho",
+    "fieldOperations": "Operaciones de Campo",
+    "myFieldOperations": "Mis Operaciones de Campo",
+    "unitLead": "Líder de Unidad",
+    "manageAssignments": "Gestionar asignaciones, estado de unidad y comunicaciones de campo",
+    "manageUnitAssignments": "Gestionar asignaciones de unidad y actividades de campo",
+    "returnToFieldOperations": "Volver a Operaciones de Campo"
+  },
+  "stats": {
+    "activeUnits": "Unidades Activas",
+    "responseTime": "Tiempo de Respuesta",
+    "avgResponseTime": "Tiempo Promedio de Respuesta",
+    "liveIncidentMap": "Mapa de Incidentes en Vivo",
+    "myUnit": "Mi Unidad",
+    "availableUnits": "Unidades Disponibles",
+    "coordinationActions": "Acciones de Coordinación",
+    "systemHealth": "Estado del Sistema"
+  },
+  "sections": {
+    "unitManagement": "Gestión de Unidades",
+    "communications": "Comunicaciones",
+    "backup": "Refuerzo",
+    "backupRequests": "Solicitudes de Refuerzo",
+    "backupNotifications": "Notificaciones de Refuerzo",
+    "coordinationCenter": "Centro de Coordinación",
+    "responseTimeAnalytics": "Análisis de Tiempo de Respuesta",
+    "unitsOverview": "Resumen de Unidades",
+    "myArea": "Mi Área"
+  },
+  "actions": {
+    "supervisorCoordinationTools": "Herramientas de coordinación de supervisor",
+    "manageMyUnits": "Gestionar Mis Unidades",
+    "requestRegionalBackup": "Solicitar Refuerzo Regional",
+    "viewSystemHealthStats": "Ver estadísticas de estado del sistema"
+  },
+  "filters": {
+    "allStatus": "Todos los Estados",
+    "allPriority": "Todas las Prioridades"
+  },
+  "units": {
+    "unitStatus": "Estado de Unidad",
+    "unitStatusUpdated": "Estado de Unidad Actualizado",
+    "assignToDispatcher": "Asignar a despachador...",
+    "chooseUnitToMessage": "Elegir unidad para mensaje",
+    "typeCustomMessage": "Escriba su mensaje personalizado..."
+  },
+  "roles": {
+    "dispatch": "Despacho",
+    "field": "Campo",
+    "supervisor": "Supervisor",
+    "emergencyResponse": "Respuesta de Emergencia",
+    "admin": "Administrador"
+  }
+}

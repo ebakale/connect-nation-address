@@ -1,0 +1,58 @@
+{
+  "dashboard": {
+    "policeCommandCenter": "Police Command Center",
+    "emergencyIncidents": "Emergency Incidents",
+    "dispatchCenter": "Dispatch Center",
+    "fieldOperations": "Field Operations",
+    "myFieldOperations": "My Field Operations",
+    "unitLead": "Unit Lead",
+    "manageAssignments": "Manage assignments, unit status, and field communications",
+    "manageUnitAssignments": "Manage unit assignments and field activities",
+    "returnToFieldOperations": "Return to Field Operations"
+  },
+  "stats": {
+    "activeUnits": "Active Units",
+    "responseTime": "Response Time",
+    "avgResponseTime": "Avg Response Time",
+    "liveIncidentMap": "Live Incident Map",
+    "myUnit": "My Unit",
+    "availableUnits": "Available Units",
+    "coordinationActions": "Coordination Actions",
+    "systemHealth": "System Health"
+  },
+  "sections": {
+    "unitManagement": "Unit Management",
+    "communications": "Communications",
+    "backup": "Backup",
+    "backupRequests": "Backup Requests",
+    "backupNotifications": "Backup Notifications",
+    "coordinationCenter": "Coordination Center",
+    "responseTimeAnalytics": "Response Time Analytics",
+    "unitsOverview": "Units Overview",
+    "myArea": "My Area"
+  },
+  "actions": {
+    "supervisorCoordinationTools": "Supervisor coordination tools",
+    "manageMyUnits": "Manage My Units",
+    "requestRegionalBackup": "Request Regional Backup",
+    "viewSystemHealthStats": "View system health and stats"
+  },
+  "filters": {
+    "allStatus": "All Status",
+    "allPriority": "All Priority"
+  },
+  "units": {
+    "unitStatus": "Unit Status",
+    "unitStatusUpdated": "Unit Status Updated",
+    "assignToDispatcher": "Assign to dispatcher...",
+    "chooseUnitToMessage": "Choose unit to message",
+    "typeCustomMessage": "Type your custom message..."
+  },
+  "roles": {
+    "dispatch": "Dispatch",
+    "field": "Field", 
+    "supervisor": "Supervisor",
+    "emergencyResponse": "Emergency Response",
+    "admin": "Admin"
+  }
+}

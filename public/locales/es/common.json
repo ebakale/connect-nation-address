@@ -1,0 +1,105 @@
+{
+  "navigation": {
+    "overview": "Resumen",
+    "about": "Acerca de",
+    "help": "Ayuda",
+    "manual": "Manual",
+    "login": "Iniciar Sesión",
+    "dashboard": "Panel de Control",
+    "enterSystem": "Entrar al Sistema"
+  },
+  "loading": "Cargando...",
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "view": "Ver",
+    "close": "Cerrar",
+    "submit": "Enviar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "export": "Exportar",
+    "import": "Importar",
+    "refresh": "Actualizar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "add": "Agregar",
+    "remove": "Eliminar",
+    "update": "Actualizar",
+    "create": "Crear",
+    "confirm": "Confirmar",
+    "retry": "Reintentar",
+    "upload": "Subir",
+    "download": "Descargar"
+  },
+  "status": {
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "pending": "Pendiente",
+    "approved": "Aprobado",
+    "rejected": "Rechazado",
+    "completed": "Completado",
+    "draft": "Borrador",
+    "published": "Publicado",
+    "verified": "Verificado",
+    "available": "Disponible",
+    "busy": "Ocupado",
+    "offline": "Desconectado",
+    "onBreak": "En Descanso"
+  },
+  "priority": {
+    "low": "Baja",
+    "medium": "Media",
+    "high": "Alta",
+    "critical": "Crítica",
+    "urgent": "Urgente"
+  },
+  "addressTypes": {
+    "residential": "Residencial",
+    "commercial": "Comercial",
+    "industrial": "Industrial",
+    "government": "Gubernamental",
+    "educational": "Educativo",
+    "healthcare": "Sanitario",
+    "other": "Otro"
+  },
+  "notifications": {
+    "success": "Éxito",
+    "error": "Error",
+    "warning": "Advertencia",
+    "info": "Información"
+  },
+  "accessibility": {
+    "toggleSidebar": "Alternar Barra Lateral",
+    "viewOnMap": "Ver en el mapa",
+    "getDirections": "Obtener Direcciones",
+    "viewDetails": "Ver Detalles",
+    "editAddress": "Editar Dirección",
+    "deleteAddress": "Eliminar Dirección",
+    "goToPreviousPage": "Ir a la página anterior",
+    "goToNextPage": "Ir a la página siguiente"
+  },
+  "time": {
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "thisWeek": "Esta Semana",
+    "thisMonth": "Este Mes",
+    "thisYear": "Este Año",
+    "lastWeek": "Semana Pasada",
+    "lastMonth": "Mes Pasado",
+    "lastYear": "Año Pasado"
+  },
+  "units": {
+    "minutes": "minutos",
+    "hours": "horas",
+    "days": "días",
+    "weeks": "semanas",
+    "months": "meses"
+  },
+  "footer": {
+    "copyright": "© 2025 BIAKAM - Plataforma ConnectEG para la República de Guinea Ecuatorial",
+    "description": "Direccionamiento Digital Unificado y Gestión de Emergencias • Conectando Ciudadanos, Servicios y Seguridad"
+  }
+}

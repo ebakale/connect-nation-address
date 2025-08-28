@@ -1,0 +1,71 @@
+{
+  "contacts": {
+    "police": "Policía",
+    "policeDescription": "Asistencia policial de emergencia",
+    "emergencyServices": "Servicios de Emergencia",
+    "emergencyServicesDescription": "Bomberos, médicos y otras emergencias",
+    "call": "Llamar",
+    "sendLocationAlert": "Enviar Alerta de Ubicación"
+  },
+  "alert": {
+    "emergencyAlert": "Alerta de Emergencia",
+    "sendLocationToService": "Enviar su ubicación a {{service}}",
+    "automaticallyGettingLocation": "Obteniendo su ubicación automáticamente...",
+    "locationNeededForAlert": "Se necesita la ubicación para enviar una alerta",
+    "locationDetected": "Ubicación detectada",
+    "emergencyMessage": "Mensaje de Emergencia",
+    "describeEmergency": "Describa la situación de emergencia...",
+    "gettingLocation": "Obteniendo ubicación...",
+    "retryLocation": "Reintentar ubicación",
+    "sending": "Enviando...",
+    "sent": "¡Enviado!",
+    "sendAlert": "Enviar Alerta",
+    "emergencyAlertSent": "Alerta de emergencia enviada exitosamente",
+    "emergencyAlertFailed": "Error al enviar la alerta de emergencia",
+    "locationRequired": "Se requiere la ubicación para enviar la alerta"
+  },
+  "types": {
+    "medical": "Emergencia Médica",
+    "fire": "Emergencia de Incendio",
+    "police": "Emergencia Policial",
+    "accident": "Accidente de Tráfico",
+    "crime": "Crimen en Progreso",
+    "other": "Otra Emergencia"
+  },
+  "dispatch": {
+    "emergencyDispatch": "Despacho de Emergencia",
+    "createNewIncident": "Crear Nuevo Incidente de Emergencia",
+    "incidentType": "Tipo de Incidente",
+    "selectType": "Seleccionar tipo",
+    "priority": "Prioridad",
+    "location": "Ubicación",
+    "streetAddress": "Dirección de la calle o descripción",
+    "description": "Descripción",
+    "detailedDescription": "Descripción detallada de la emergencia",
+    "callerInfo": "Información del Llamador",
+    "callerName": "Nombre del llamador",
+    "contactNumber": "Número de contacto",
+    "dispatchUnits": "Despachar Unidades",
+    "createIncident": "Crear Incidente"
+  },
+  "incidents": {
+    "activeIncidents": "Incidentes Activos",
+    "incidentDetails": "Detalles del Incidente",
+    "assignedUnits": "Unidades Asignadas",
+    "assignUnit": "Asignar Unidad",
+    "updateStatus": "Actualizar Estado",
+    "viewDetails": "Ver Detalles",
+    "dispatchUnit": "Despachar Unidad",
+    "addNotes": "Añadir notas sobre este incidente...",
+    "assignDispatcher": "Asignar despachador...",
+    "selectUnit": "Seleccionar una unidad"
+  },
+  "status": {
+    "reported": "Reportado",
+    "dispatched": "Despachado",
+    "responding": "Respondiendo",
+    "onScene": "En Escena",
+    "resolved": "Resuelto",
+    "cancelled": "Cancelado"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "email": "Por favor ingrese una dirección de correo electrónico válida",
+    "password": "La contraseña debe tener al menos 8 caracteres",
+    "passwordMatch": "Las contraseñas deben coincidir",
+    "phoneNumber": "Por favor ingrese un número de teléfono válido",
+    "minLength": "Debe tener al menos {{min}} caracteres",
+    "maxLength": "No debe tener más de {{max}} caracteres"
+  },
+  "placeholders": {
+    "search": "Buscar...",
+    "enterText": "Ingrese texto aquí...",
+    "selectOption": "Seleccione una opción",
+    "chooseFile": "Elegir archivo",
+    "enterPhoneNumber": "Ingrese su número de teléfono",
+    "enterNewPassword": "Ingrese nueva contraseña",
+    "confirmNewPassword": "Confirme nueva contraseña"
+  },
+  "labels": {
+    "required": "Obligatorio",
+    "optional": "Opcional",
+    "recommended": "Recomendado"
+  },
+  "messages": {
+    "saveSuccess": "Cambios guardados exitosamente",
+    "saveError": "Error al guardar cambios",
+    "uploadSuccess": "Archivo subido exitosamente",
+    "uploadError": "Error al subir archivo",
+    "deleteConfirm": "¿Está seguro que desea eliminar este elemento?",
+    "noResults": "No se encontraron resultados",
+    "loading": "Cargando...",
+    "tryAgain": "Por favor inténtelo de nuevo"
+  },
+  "fileUpload": {
+    "dragAndDrop": "Arrastre y suelte archivos aquí, o haga clic para seleccionar",
+    "maxFileSize": "Tamaño máximo de archivo: {{size}}MB",
+    "allowedTypes": "Tipos de archivo permitidos: {{types}}",
+    "uploading": "Subiendo...",
+    "uploadComplete": "Subida completa",
+    "uploadFailed": "Error en la subida"
+  },
+  "dateTime": {
+    "selectDate": "Seleccionar fecha",
+    "selectTime": "Seleccionar hora",
+    "today": "Hoy",
+    "tomorrow": "Mañana",
+    "pickDate": "Elegir una fecha"
+  }
+}

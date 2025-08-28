@@ -1,0 +1,105 @@
+{
+  "navigation": {
+    "overview": "Overview",
+    "about": "About",
+    "help": "Help",
+    "manual": "Manual",
+    "login": "Login",
+    "dashboard": "Dashboard",
+    "enterSystem": "Enter System"
+  },
+  "loading": "Loading...",
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "close": "Close",
+    "submit": "Submit",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import",
+    "refresh": "Refresh",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "add": "Add",
+    "remove": "Remove",
+    "update": "Update",
+    "create": "Create",
+    "confirm": "Confirm",
+    "retry": "Retry",
+    "upload": "Upload",
+    "download": "Download"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "completed": "Completed",
+    "draft": "Draft",
+    "published": "Published",
+    "verified": "Verified",
+    "available": "Available",
+    "busy": "Busy",
+    "offline": "Offline",
+    "onBreak": "On Break"
+  },
+  "priority": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "critical": "Critical",
+    "urgent": "Urgent"
+  },
+  "addressTypes": {
+    "residential": "Residential",
+    "commercial": "Commercial", 
+    "industrial": "Industrial",
+    "government": "Government",
+    "educational": "Educational",
+    "healthcare": "Healthcare",
+    "other": "Other"
+  },
+  "notifications": {
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Information"
+  },
+  "accessibility": {
+    "toggleSidebar": "Toggle Sidebar",
+    "viewOnMap": "View on map",
+    "getDirections": "Get Directions",
+    "viewDetails": "View Details",
+    "editAddress": "Edit Address",
+    "deleteAddress": "Delete Address",
+    "goToPreviousPage": "Go to previous page",
+    "goToNextPage": "Go to next page"
+  },
+  "time": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "thisWeek": "This Week",
+    "thisMonth": "This Month",
+    "thisYear": "This Year",
+    "lastWeek": "Last Week",
+    "lastMonth": "Last Month",
+    "lastYear": "Last Year"
+  },
+  "units": {
+    "minutes": "minutes",
+    "hours": "hours",
+    "days": "days",
+    "weeks": "weeks",
+    "months": "months"
+  },
+  "footer": {
+    "copyright": "© 2025 BIAKAM - ConnectEG Platform for the Republic of Equatorial Guinea",
+    "description": "Unified Digital Addressing and Emergency Management • Connecting Citizens, Services, and Safety"
+  }
+}

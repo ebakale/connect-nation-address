@@ -1,0 +1,42 @@
+{
+  "titles": {
+    "pageNotFound": "Page not found",
+    "accessDenied": "Access Denied",
+    "serverError": "Server Error",
+    "networkError": "Network Error"
+  },
+  "messages": {
+    "oopsPageNotFound": "Oops! Page not found",
+    "pageDoesNotExist": "The page you're looking for doesn't exist",
+    "returnToHome": "Return to Home",
+    "unauthorizedAccess": "You don't have permission to access this resource",
+    "pleaseLogIn": "Please log in to continue",
+    "serverUnavailable": "Server is currently unavailable",
+    "tryAgainLater": "Please try again later",
+    "connectionFailed": "Failed to connect to server",
+    "checkConnection": "Please check your internet connection"
+  },
+  "auth": {
+    "loginRequired": "Login Required",
+    "sessionExpired": "Your session has expired",
+    "invalidCredentials": "Invalid email or password",
+    "accountLocked": "Account has been locked",
+    "emailNotVerified": "Please verify your email address"
+  },
+  "validation": {
+    "invalidInput": "Invalid input provided",
+    "missingRequiredFields": "Please fill in all required fields",
+    "invalidEmail": "Please enter a valid email address",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "passwordsDoNotMatch": "Passwords do not match"
+  },
+  "api": {
+    "requestFailed": "Request failed",
+    "timeout": "Request timed out",
+    "serverError": "Internal server error",
+    "badRequest": "Bad request",
+    "notFound": "Resource not found",
+    "forbidden": "Access forbidden",
+    "unauthorized": "Unauthorized access"
+  }
+}
