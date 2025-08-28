@@ -170,7 +170,9 @@
     "settings": "Settings",
     "profile": "Profile",
     "help": "Help",
-    "about": "About"
+    "about": "About",
+    "manual": "Manual",
+    "emergency": "Emergency"
   },
   "actions": {
     "view": "View",
@@ -243,5 +245,56 @@
   "noDataAvailable": "No data available",
   "addressTypeDistribution": "Address Type Distribution",
   "totalByType": "Total by Type",
-  "registrationTrends": "Registration Trends"
+  "registrationTrends": "Registration Trends",
+  
+  "connectEGPlatform": "ConnectEG Platform",
+  "connectEG": "ConnectEG",
+  "digitalPlatform": "National Digital Governance Platform",
+  "connectEGDescription": "A unified national platform for addresses, emergency response, and public safety.",
+  "connectingCitizensServices": "connecting citizens and services",
+  "innovativeTechnology": "through innovative technology.",
+  
+  "dualCorePlatform": "Dual-Core Platform",
+  "coreFunctionalities": "Core Functionalities",
+  "twoIntegratedSystems": "Two integrated systems powering national operations",
+  
+  "addressRegistrySystem": "Address Registry System",
+  "digitalAddressingInfrastructure": "Digital addressing infrastructure for the nation",
+  "comprehensiveDigitalAddressing": "Comprehensive digital addressing with national coverage and smart verification.",
+  "gpsBasedRegistration": "GPS-based registration",
+  "multiLevelVerification": "Multi-level verification",
+  "smartSearchDiscovery": "Smart search and discovery",
+  "digitalDocumentationQR": "Digital documentation & QR",
+  
+  "emergencyManagement": "Emergency Management",
+  "policeEmergencyServices": "Police & Emergency Services",
+  "integratedEmergencyResponse": "Integrated emergency response across units and regions.",
+  "realtimeIncidentReporting": "Real-time incident reporting",
+  "gpsBasedUnitDispatch": "GPS-based unit dispatch",
+  "multiChannelCommunications": "Multi-channel communications",
+  "analyticsResponseTracking": "Analytics & response tracking",
+  
+  "roleBasedAccess": "Role-Based Access",
+  "advancedRoleManagement": "Advanced role and permission management",
+  "digitalDocumentationFeature": "Digital Documentation",
+  "automatedDocumentGeneration": "Automated document generation (PDF/QR)",
+  "realtimeAnalyticsFeature": "Real-time Analytics",
+  "comprehensiveReporting": "Comprehensive reporting & insights",
+  "multiLanguageFeature": "Multi-language Support",
+  "fullPlatformLocalization": "Full platform localization (ES/EN)",
+  
+  "strategicGoals": "Strategic Goals",
+  "platformObjectives": "Platform Objectives",
+  "transformingEquatorialGuinea": "Transforming Equatorial Guinea through digital infrastructure.",
+  
+  "digitalInfrastructure": "Digital Infrastructure",
+  "establishComprehensiveAddressing": "Establish comprehensive, verifiable digital addressing.",
+  "publicSafetyEnhancement": "Public Safety Enhancement",
+  "modernizeEmergencyResponse": "Modernize emergency response operations and coordination.",
+  "citizenEmpowerment": "Citizen Empowerment",
+  "provideDirectAccess": "Provide direct access to trusted public services.",
+  "smartUrbanPlanning": "Smart Urban Planning",
+  "smartUrbanPlanningDesc": "Enable data-driven city planning and development.",
+  "dataExcellence": "Data Excellence",
+  "dataExcellenceDesc": "Ensure reliable, standardized, high-quality national datasets."
 }

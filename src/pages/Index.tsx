@@ -96,7 +96,7 @@ const navigationItems = [
                        size="lg"
                      >
                        <LogIn className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                       {t('accessPlatform')}
+                       {t('common:accessPlatform')}
                      </Button>
                      <Button 
                        onClick={() => setActiveSection('about')}
@@ -105,7 +105,7 @@ const navigationItems = [
                        size="lg"
                      >
                        <Globe className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                       {t('learnMore')}
+                       {t('common:learnMore')}
                      </Button>
                    </div>
 

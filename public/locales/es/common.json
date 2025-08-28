@@ -170,7 +170,9 @@
     "settings": "Configuración",
     "profile": "Perfil",
     "help": "Ayuda",
-    "about": "Acerca de"
+    "about": "Acerca de",
+    "manual": "Manual",
+    "emergency": "Emergencia"
   },
   "actions": {
     "view": "Ver",
@@ -243,5 +245,56 @@
   "noDataAvailable": "No hay datos disponibles",
   "addressTypeDistribution": "Distribución de Tipos de Direcciones",
   "totalByType": "Total por Tipo",
-  "registrationTrends": "Tendencias de Registro"
+  "registrationTrends": "Tendencias de Registro",
+
+  "connectEGPlatform": "Plataforma ConnectEG",
+  "connectEG": "ConnectEG",
+  "digitalPlatform": "Plataforma Nacional de Gobernanza Digital",
+  "connectEGDescription": "Una plataforma nacional unificada para direcciones, respuesta a emergencias y seguridad pública.",
+  "connectingCitizensServices": "conectando ciudadanos y servicios",
+  "innovativeTechnology": "a través de tecnología innovadora.",
+
+  "dualCorePlatform": "Plataforma de Núcleo Dual",
+  "coreFunctionalities": "Funcionalidades Clave",
+  "twoIntegratedSystems": "Dos sistemas integrados que impulsan operaciones nacionales",
+
+  "addressRegistrySystem": "Sistema de Registro de Direcciones",
+  "digitalAddressingInfrastructure": "Infraestructura de direccionamiento digital para la nación",
+  "comprehensiveDigitalAddressing": "Direccionamiento digital integral con cobertura nacional y verificación inteligente.",
+  "gpsBasedRegistration": "Registro basado en GPS",
+  "multiLevelVerification": "Verificación de múltiples niveles",
+  "smartSearchDiscovery": "Búsqueda y descubrimiento inteligente",
+  "digitalDocumentationQR": "Documentación digital y QR",
+
+  "emergencyManagement": "Gestión de Emergencias",
+  "policeEmergencyServices": "Servicios Policiales y de Emergencia",
+  "integratedEmergencyResponse": "Respuesta de emergencia integrada entre unidades y regiones.",
+  "realtimeIncidentReporting": "Reporte de incidentes en tiempo real",
+  "gpsBasedUnitDispatch": "Despacho de unidades basado en GPS",
+  "multiChannelCommunications": "Comunicaciones multicanal",
+  "analyticsResponseTracking": "Analítica y seguimiento de respuesta",
+
+  "roleBasedAccess": "Acceso Basado en Roles",
+  "advancedRoleManagement": "Gestión avanzada de roles y permisos",
+  "digitalDocumentationFeature": "Documentación Digital",
+  "automatedDocumentGeneration": "Generación automática de documentos (PDF/QR)",
+  "realtimeAnalyticsFeature": "Analítica en Tiempo Real",
+  "comprehensiveReporting": "Reportes e insights integrales",
+  "multiLanguageFeature": "Soporte Multilenguaje",
+  "fullPlatformLocalization": "Localización completa de la plataforma (ES/EN)",
+
+  "strategicGoals": "Objetivos Estratégicos",
+  "platformObjectives": "Objetivos de la Plataforma",
+  "transformingEquatorialGuinea": "Transformando Guinea Ecuatorial mediante infraestructura digital.",
+
+  "digitalInfrastructure": "Infraestructura Digital",
+  "establishComprehensiveAddressing": "Establecer direccionamiento digital integral y verificable.",
+  "publicSafetyEnhancement": "Mejora de la Seguridad Pública",
+  "modernizeEmergencyResponse": "Modernizar las operaciones y coordinación de respuesta a emergencias.",
+  "citizenEmpowerment": "Empoderamiento Ciudadano",
+  "provideDirectAccess": "Proporcionar acceso directo a servicios públicos confiables.",
+  "smartUrbanPlanning": "Planificación Urbana Inteligente",
+  "smartUrbanPlanningDesc": "Permitir planificación y desarrollo urbano basados en datos.",
+  "dataExcellence": "Excelencia de Datos",
+  "dataExcellenceDesc": "Garantizar conjuntos de datos nacionales confiables, estandarizados y de alta calidad."
 }
