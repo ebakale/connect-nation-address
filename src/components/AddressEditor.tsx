@@ -225,16 +225,16 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Property Type</label>
+              <label className="text-sm font-medium">{t('propertyType')}</label>
               <select
                 value={formData.address_type}
                 onChange={(e) => setFormData(prev => ({ ...prev, address_type: e.target.value }))}
                 className="border rounded-md px-3 py-2 w-full text-sm"
               >
-                <option value="residential">Residential</option>
-                <option value="commercial">Commercial</option>
-                <option value="government">Government</option>
-                <option value="landmark">Landmark</option>
+                <option value="residential">{t('registration.types.residential')}</option>
+                <option value="commercial">{t('registration.types.commercial')}</option>
+                <option value="government">{t('registration.types.government')}</option>
+                <option value="landmark">{t('registration.types.other')}</option>
               </select>
             </div>
           </div>
@@ -263,7 +263,7 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
           </div>
 
           <div>
-            <label className="text-sm font-medium">Description</label>
+            <label className="text-sm font-medium">{t('registration.form.description')}</label>
             <Input 
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
@@ -273,7 +273,7 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
 
           {/* Status Controls */}
           <div className="space-y-3 pt-4 border-t">
-            <h4 className="font-medium">Address Status</h4>
+            <h4 className="font-medium">{t('addressStatus')}</h4>
             
             <div className="flex items-center gap-3">
               <input

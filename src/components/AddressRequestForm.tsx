@@ -357,7 +357,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="country">Country</Label>
+              <Label htmlFor="country">{t('registration.form.country')}</Label>
               <Input
                 id="country"
                 value={formData.country}
@@ -431,33 +431,33 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="address_type">Address Type</Label>
+              <Label htmlFor="address_type">{t('registration.form.addressType')}</Label>
               <Select value={formData.address_type} onValueChange={(value) => setFormData(prev => ({ ...prev, address_type: value }))}>
                 <SelectTrigger className="bg-background">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-background border shadow-lg z-50">
-                  <SelectItem value="residential">Residential</SelectItem>
-                  <SelectItem value="commercial">Commercial</SelectItem>
-                  <SelectItem value="industrial">Industrial</SelectItem>
-                  <SelectItem value="government">Government</SelectItem>
-                  <SelectItem value="educational">Educational</SelectItem>
-                  <SelectItem value="healthcare">Healthcare</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="residential">{t('registration.types.residential')}</SelectItem>
+                  <SelectItem value="commercial">{t('registration.types.commercial')}</SelectItem>
+                  <SelectItem value="industrial">{t('industrial')}</SelectItem>
+                  <SelectItem value="government">{t('registration.types.government')}</SelectItem>
+                  <SelectItem value="educational">{t('educational')}</SelectItem>
+                  <SelectItem value="healthcare">{t('healthcare')}</SelectItem>
+                  <SelectItem value="other">{t('other')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label htmlFor="claimant_type">Claimant Type</Label>
+              <Label htmlFor="claimant_type">{t('claimantType')}</Label>
               <Select value={formData.claimant_type} onValueChange={(value) => setFormData(prev => ({ ...prev, claimant_type: value }))}>
                 <SelectTrigger className="bg-background">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-background border shadow-lg z-50">
-                  <SelectItem value="owner">Property Owner</SelectItem>
-                  <SelectItem value="resident">Resident</SelectItem>
-                  <SelectItem value="representative">Authorized Representative</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="owner">{t('propertyOwner')}</SelectItem>
+                  <SelectItem value="resident">{t('resident')}</SelectItem>
+                  <SelectItem value="representative">{t('authorizedRepresentative')}</SelectItem>
+                  <SelectItem value="other">{t('other')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -679,7 +679,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
         <Dialog open={cameraOpen} onOpenChange={setCameraOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Take Photo</DialogTitle>
+              <DialogTitle>{t('takePhoto')}</DialogTitle>
             </DialogHeader>
             <CameraCapture
               onCapture={(file, dataUrl) => {

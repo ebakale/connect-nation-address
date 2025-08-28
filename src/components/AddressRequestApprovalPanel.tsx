@@ -7,6 +7,7 @@ import { AutoVerificationTools } from "./AutoVerificationTools";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckSquare, Zap } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from 'react-i18next';
 
 interface AddressRequest {
   id: string;
@@ -26,6 +27,7 @@ interface AddressRequest {
 }
 
 export function AddressRequestApprovalPanel() {
+  const { t } = useTranslation('addresses');
   const [addressRequests, setAddressRequests] = useState<AddressRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -58,7 +60,7 @@ export function AddressRequestApprovalPanel() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Address Request Approval</CardTitle>
+          <CardTitle>{t('addressRequestApproval')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="requests" className="w-full">
