@@ -86,8 +86,8 @@ const ApiWebhookManager: React.FC = () => {
   const handleAddApiKey = () => {
     if (!newApiKey.name || !newApiKey.service || !newApiKey.key) {
       toast({
-        title: "Error",
-        description: "Please fill in all required fields",
+        title: t('common:error'),
+        description: t('common:messages.fillRequiredFields'),
         variant: "destructive",
       });
       return;
@@ -105,16 +105,16 @@ const ApiWebhookManager: React.FC = () => {
     setNewApiKey({ name: '', service: '', key: '' });
     
     toast({
-      title: "Success",
-      description: "API key added successfully",
+      title: t('common:success'),
+      description: t('common:messages.apiKeyAdded'),
     });
   };
 
   const handleAddWebhook = () => {
     if (!newWebhook.name || !newWebhook.url || newWebhook.events.length === 0) {
       toast({
-        title: "Error",
-        description: "Please fill in all required fields and select at least one event",
+        title: t('common:error'),
+        description: t('common:messages.fillRequiredFieldsAndSelectEvent'),
         variant: "destructive",
       });
       return;
@@ -132,8 +132,8 @@ const ApiWebhookManager: React.FC = () => {
     setNewWebhook({ name: '', url: '', events: [] });
     
     toast({
-      title: "Success",
-      description: "Webhook added successfully",
+      title: t('common:success'),
+      description: t('common:messages.webhookAdded'),
     });
   };
 
@@ -144,16 +144,16 @@ const ApiWebhookManager: React.FC = () => {
   const deleteApiKey = (keyId: string) => {
     setApiKeys(apiKeys.filter(key => key.id !== keyId));
     toast({
-      title: "Success",
-      description: "API key deleted successfully",
+      title: t('common:success'),
+      description: t('common:messages.apiKeyDeleted'),
     });
   };
 
   const deleteWebhook = (webhookId: string) => {
     setWebhooks(webhooks.filter(webhook => webhook.id !== webhookId));
     toast({
-      title: "Success",
-      description: "Webhook deleted successfully",
+      title: t('common:success'),
+      description: t('common:messages.webhookDeleted'),
     });
   };
 
@@ -181,16 +181,16 @@ const ApiWebhookManager: React.FC = () => {
 
       if (response.ok) {
         toast({
-          title: "Success",
-          description: "Webhook test successful",
+          title: t('common:success'),
+          description: t('common:messages.webhookTestSuccess'),
         });
       } else {
         throw new Error('Webhook test failed');
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Webhook test failed. Please check the URL and try again.",
+        title: t('common:error'),
+        description: t('common:messages.webhookTestFailed'),
         variant: "destructive",
       });
     }

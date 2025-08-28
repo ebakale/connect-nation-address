@@ -199,6 +199,23 @@
     "failed": "Falló",
     "cancelled": "Cancelado"
   },
+  "messages": {
+    "fillRequiredFields": "Por favor complete todos los campos obligatorios",
+    "fillRequiredFieldsAndSelectEvent": "Por favor complete todos los campos obligatorios y seleccione al menos un evento",
+    "apiKeyAdded": "Clave de API agregada exitosamente",
+    "apiKeyDeleted": "Clave de API eliminada exitosamente",
+    "webhookAdded": "Webhook agregado exitosamente",
+    "webhookDeleted": "Webhook eliminado exitosamente",
+    "webhookTestSuccess": "Prueba de webhook exitosa",
+    "webhookTestFailed": "La prueba de webhook falló. Por favor verifique la URL e intente de nuevo.",
+    "failedToFetch": "Error al obtener",
+    "failedToCreate": "Error al crear",
+    "failedToUpdate": "Error al actualizar",
+    "failedToDelete": "Error al eliminar",
+    "createdSuccessfully": "Creado exitosamente",
+    "updatedSuccessfully": "Actualizado exitosamente",
+    "deletedSuccessfully": "Eliminado exitosamente"
+  },
   "accessPlatform": "Acceder a la Plataforma",
   "learnMore": "Aprender Más",
   "private": "Privado",
