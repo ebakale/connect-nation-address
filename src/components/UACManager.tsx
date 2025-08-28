@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -44,6 +45,7 @@ interface UACRecord {
 }
 
 export const UACManager: React.FC = () => {
+  const { t } = useTranslation('addresses');
   const [uacRecords, setUacRecords] = useState<UACRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -76,8 +78,8 @@ export const UACManager: React.FC = () => {
     } catch (error) {
       console.error('Error fetching UAC records:', error);
       toast({
-        title: "Error",
-        description: "Failed to fetch UAC records",
+        title: t('common.error'),
+        description: t('common.failedToFetch') + " UAC records",
         variant: "destructive"
       });
     } finally {
@@ -88,8 +90,8 @@ export const UACManager: React.FC = () => {
   const handleValidateUAC = () => {
     if (!validationUAC.trim()) {
       toast({
-        title: "Error",
-        description: "Please enter a UAC to validate",
+        title: t('common.error'),
+        description: t('common.fillAllRequired'),
         variant: "destructive"
       });
       return;
@@ -123,8 +125,8 @@ export const UACManager: React.FC = () => {
     } catch (error) {
       console.error('Error generating UAC:', error);
       toast({
-        title: "Error", 
-        description: "Failed to generate UAC",
+        title: t('common.error'), 
+        description: t('common.failedToCreate') + " UAC",
         variant: "destructive"
       });
     }
@@ -300,7 +302,7 @@ export const UACManager: React.FC = () => {
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search UAC records..."
+                  placeholder={t('common.search') + " UAC records..."}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"

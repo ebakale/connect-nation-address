@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -51,6 +52,7 @@ interface Officer {
 }
 
 const UnitManagement: React.FC = () => {
+  const { t } = useTranslation('addresses');
   const [units, setUnits] = useState<EmergencyUnit[]>([]);
   const [officers, setOfficers] = useState<Officer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -666,7 +668,7 @@ const UnitManagement: React.FC = () => {
           </DialogHeader>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="edit_unit_name">Unit Name</Label>
+              <Label htmlFor="edit_unit_name">{t('common.name')}</Label>
               <Input
                 id="edit_unit_name"
                 value={unitForm.unit_name}
