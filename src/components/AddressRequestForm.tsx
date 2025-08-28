@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { MapPin, Camera, Upload, X, Image } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import CameraCapture from '@/components/CameraCapture';
+import { useTranslation } from 'react-i18next';
 interface AddressRequestFormProps {
   onCancel?: () => void;
   onSuccess?: () => void;
@@ -68,6 +69,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation('addresses');
 
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -346,9 +348,9 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Submit Address Request</CardTitle>
+        <CardTitle>{t('submitAddressRequest')}</CardTitle>
         <CardDescription>
-          Request a new address to be added to the national addressing system
+          {t('requestNewAddress')}
         </CardDescription>
       </CardHeader>
       <CardContent>

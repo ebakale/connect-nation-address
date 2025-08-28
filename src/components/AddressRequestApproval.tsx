@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useTranslation } from 'react-i18next';
 
 interface AddressRequest {
   id: string;
@@ -38,6 +39,7 @@ interface AddressRequestApprovalProps {
 }
 
 export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApprovalProps) {
+  const { t } = useTranslation('addresses');
   const [processing, setProcessing] = useState<string | null>(null);
   const [autoVerifying, setAutoVerifying] = useState<string | null>(null);
   const [rejectionDialogOpen, setRejectionDialogOpen] = useState(false);
@@ -162,7 +164,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
     return (
       <div className="text-center py-8">
         <CheckCircle className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-        <h3 className="text-lg font-medium">No pending requests</h3>
+        <h3 className="text-lg font-medium">{t('noPendingRequests')}</h3>
         <p className="text-muted-foreground">All address requests have been processed.</p>
       </div>
     );
@@ -187,7 +189,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
           <Card key={request.id} className="border-l-4 border-l-yellow-500">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Address Request</CardTitle>
+                <CardTitle className="text-lg">{t('addressRequest')}</CardTitle>
                 <Badge variant="outline" className="bg-yellow-50 text-yellow-700">
                   Pending Approval
                 </Badge>
@@ -198,7 +200,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">Location</span>
+                    <span className="text-sm font-medium">{t('location')}</span>
                   </div>
                   <p className="text-sm pl-6">
                     {request.building && `${request.building}, `}
@@ -212,7 +214,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <Building className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">Type</span>
+                    <span className="text-sm font-medium">{t('type')}</span>
                   </div>
                   <p className="text-sm pl-6 capitalize">{request.address_type}</p>
                 </div>
@@ -220,13 +222,13 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
 
               {request.description && (
                 <div className="space-y-2">
-                  <span className="text-sm font-medium">Description</span>
+                  <span className="text-sm font-medium">{t('registration.form.description')}</span>
                   <p className="text-sm text-muted-foreground">{request.description}</p>
                 </div>
               )}
 
               <div className="space-y-2">
-                <span className="text-sm font-medium">Justification</span>
+                <span className="text-sm font-medium">{t('justification')}</span>
                 <p className="text-sm text-muted-foreground">{request.justification}</p>
               </div>
 
@@ -239,7 +241,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
 
               {request.photo_url && (
                 <div className="space-y-2">
-                  <span className="text-sm font-medium">Photo</span>
+                  <span className="text-sm font-medium">{t('photo')}</span>
                   <img 
                     src={request.photo_url} 
                     alt="Address verification photo"
@@ -362,7 +364,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
         <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Edit Address Request</DialogTitle>
+              <DialogTitle>{t('editAddressRequest')}</DialogTitle>
             </DialogHeader>
             <EditRequestForm
               request={editingRequest}
@@ -383,6 +385,7 @@ interface EditRequestFormProps {
 }
 
 function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
+  const { t } = useTranslation('addresses');
   const [formData, setFormData] = useState<EditableRequest>(request);
 
   const handleSave = () => {
@@ -393,7 +396,7 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="country">Country</Label>
+          <Label htmlFor="country">{t('registration.form.country')}</Label>
           <Input
             id="country"
             value={formData.country}
@@ -401,7 +404,7 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
           />
         </div>
         <div>
-          <Label htmlFor="region">Region</Label>
+          <Label htmlFor="region">{t('registration.form.region')}</Label>
           <Input
             id="region"
             value={formData.region}
@@ -409,7 +412,7 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
           />
         </div>
         <div>
-          <Label htmlFor="city">City</Label>
+          <Label htmlFor="city">{t('registration.form.city')}</Label>
           <Input
             id="city"
             value={formData.city}
@@ -417,7 +420,7 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
           />
         </div>
         <div>
-          <Label htmlFor="street">Street</Label>
+          <Label htmlFor="street">{t('registration.form.street')}</Label>
           <Input
             id="street"
             value={formData.street}
@@ -433,21 +436,21 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
           />
         </div>
         <div>
-          <Label htmlFor="address_type">Address Type</Label>
+          <Label htmlFor="address_type">{t('registration.form.addressType')}</Label>
           <Select value={formData.address_type} onValueChange={(value) => setFormData(prev => ({ ...prev, address_type: value }))}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="residential">Residential</SelectItem>
-              <SelectItem value="commercial">Commercial</SelectItem>
-              <SelectItem value="government">Government</SelectItem>
-              <SelectItem value="landmark">Landmark</SelectItem>
+              <SelectItem value="residential">{t('registration.types.residential')}</SelectItem>
+              <SelectItem value="commercial">{t('registration.types.commercial')}</SelectItem>
+              <SelectItem value="government">{t('registration.types.government')}</SelectItem>
+              <SelectItem value="landmark">{t('registration.types.other')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div>
-          <Label htmlFor="latitude">Latitude</Label>
+          <Label htmlFor="latitude">{t('registration.form.latitude')}</Label>
           <Input
             id="latitude"
             type="number"
@@ -457,7 +460,7 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
           />
         </div>
         <div>
-          <Label htmlFor="longitude">Longitude</Label>
+          <Label htmlFor="longitude">{t('registration.form.longitude')}</Label>
           <Input
             id="longitude"
             type="number"
@@ -468,7 +471,7 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
         </div>
       </div>
       <div>
-        <Label htmlFor="description">Description</Label>
+        <Label htmlFor="description">{t('registration.form.description')}</Label>
         <Textarea
           id="description"
           value={formData.description || ''}
