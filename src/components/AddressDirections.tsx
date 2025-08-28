@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { useAddresses } from '@/hooks/useAddresses';
 import { useToast } from '@/hooks/use-toast';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface SearchResult {
   uac: string;
@@ -47,7 +47,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
   const [locationError, setLocationError] = useState<string | null>(null);
   const { searchAddresses } = useAddresses();
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
 
   // Get current location on component mount
   useEffect(() => {

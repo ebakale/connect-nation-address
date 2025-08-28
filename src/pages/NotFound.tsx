@@ -1,12 +1,12 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 import Footer from '@/components/Footer';
 
 
 const NotFound = () => {
   const location = useLocation();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
 
   useEffect(() => {
     console.error(

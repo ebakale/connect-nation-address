@@ -16,7 +16,7 @@ import {
   Home
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface DashboardStats {
   totalAddresses: number;
@@ -32,7 +32,7 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [stats, setStats] = useState<DashboardStats>({
     totalAddresses: 0,
     verifiedAddresses: 0,

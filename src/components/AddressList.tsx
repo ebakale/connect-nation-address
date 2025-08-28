@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { useAddresses, Address } from '@/hooks/useAddresses';
 import { useToast } from '@/hooks/use-toast';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AddressListProps {
   onEditAddress?: (address: Address) => void;
@@ -30,7 +30,7 @@ interface AddressListProps {
 const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress, onViewOnMap }) => {
   const { addresses, loading, updateAddressStatus, deleteAddress } = useAddresses();
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'verified' | 'unverified' | 'public' | 'private'>('all');
   const [currentPage, setCurrentPage] = useState(1);

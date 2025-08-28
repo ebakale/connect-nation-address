@@ -13,7 +13,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import CameraCapture from "@/components/CameraCapture";
-import { useTranslation } from 'react-i18next';
 
 interface AddressCaptureFormProps {
   onSave?: () => void;
@@ -35,7 +34,6 @@ interface AddressCaptureFormProps {
 
 export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCaptureFormProps) => {
   const { user } = useAuth();
-  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     country: initialData?.country || "Equatorial Guinea",
     region: initialData?.region || "",
@@ -95,14 +93,14 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
             longitude: position.coords.longitude.toString()
           }));
           toast({
-            title: t("locationCaptured"),
-            description: t("gpsCoordinatesSet")
+            title: "Location captured",
+            description: "GPS coordinates have been set"
           });
         },
         (error) => {
           toast({
-            title: t("locationError"),
-            description: t("couldNotGetLocation"),
+            title: "Location error",
+            description: "Could not get current location",
             variant: "destructive"
           });
         }
@@ -115,8 +113,8 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
     if (file) {
       if (file.size > 5 * 1024 * 1024) { // 5MB limit
         toast({
-          title: t("fileTooLarge"),
-          description: t("selectImageSmaller5MB"),
+          title: "File too large",
+          description: "Please select an image smaller than 5MB",
           variant: "destructive"
         });
         return;
@@ -124,8 +122,8 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
 
       if (!file.type.startsWith('image/')) {
         toast({
-          title: t("invalidFileType"),
-          description: t("pleaseSelectImageFile"),
+          title: "Invalid file type",
+          description: "Please select an image file",
           variant: "destructive"
         });
         return;
@@ -162,8 +160,8 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
     } catch (error) {
       console.error('Error uploading photo:', error);
       toast({
-        title: t("uploadFailed"),
-        description: t("failedUploadPhoto"),
+        title: "Upload failed",
+        description: "Failed to upload photo. Please try again.",
         variant: "destructive"
       });
       return null;
@@ -184,8 +182,8 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
     
     if (!formData.region || !formData.city || !formData.street) {
       toast({
-        title: t("missingInformation"),
-        description: t("fillAllRequiredFields"),
+        title: "Missing information",
+        description: "Please fill in all required fields",
         variant: "destructive"
       });
       return;
@@ -216,14 +214,14 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
       
       if (!error) {
         toast({
-          title: t("addressUpdated"),
-          description: t("draftUpdatedSuccessfully")
+          title: "Address updated",
+          description: "Your draft has been updated successfully"
         });
         onSave?.();
       } else {
         toast({
-          title: t("error"),
-          description: t("failedUpdateAddress"),
+          title: "Error",
+          description: "Failed to update address",
           variant: "destructive"
         });
       }
@@ -246,17 +244,17 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MapPin className="h-5 w-5" />
-          {initialData ? t('editAddress') : t('captureNewAddress')}
+          {initialData ? 'Edit Address' : 'Capture New Address'}
         </CardTitle>
         <CardDescription>
-          {initialData ? t('updateAddressDetails') : t('fillAddressDetails')}
+          {initialData ? 'Update the address details' : 'Fill in the address details and capture GPS coordinates'}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="country">{t('country')}</Label>
+              <Label htmlFor="country">Country</Label>
               <Input
                 id="country"
                 value={formData.country}
@@ -265,7 +263,7 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
               />
             </div>
             <div>
-              <Label htmlFor="region">{t('provinceRegion')} *</Label>
+              <Label htmlFor="region">Province/Region *</Label>
               <Select 
                 value={formData.region} 
                 onValueChange={(value) => {
@@ -273,7 +271,7 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
                 }}
               >
                 <SelectTrigger className="bg-background">
-                  <SelectValue placeholder={t('selectProvince')} />
+                  <SelectValue placeholder="Select a province" />
                 </SelectTrigger>
                 <SelectContent className="bg-background border shadow-lg z-50">
                   {regions.map((region) => (
@@ -288,14 +286,14 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="city">{t('city')} *</Label>
+              <Label htmlFor="city">City *</Label>
               <Select 
                 value={formData.city} 
                 onValueChange={(value) => setFormData(prev => ({ ...prev, city: value }))}
                 disabled={!formData.region}
               >
                 <SelectTrigger className="bg-background">
-                  <SelectValue placeholder={formData.region ? t('selectCity') : t('selectProvinceFirst')} />
+                  <SelectValue placeholder={formData.region ? "Select a city" : "Select province first"} />
                 </SelectTrigger>
                 <SelectContent className="bg-background border shadow-lg z-50">
                   {availableCities.map((city) => (
@@ -307,24 +305,24 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
               </Select>
             </div>
             <div>
-              <Label htmlFor="street">{t('streetAddress')} *</Label>
+              <Label htmlFor="street">Street Address *</Label>
               <Input
                 id="street"
                 value={formData.street}
                 onChange={(e) => setFormData(prev => ({ ...prev, street: e.target.value }))}
-                placeholder={t('streetAddressExample')}
+                placeholder="e.g., Calle de la Independencia 123"
                 required
               />
             </div>
           </div>
 
           <div>
-            <Label htmlFor="building">{t('buildingApartment')} ({t('optional')})</Label>
+            <Label htmlFor="building">Building/Apartment (Optional)</Label>
             <Input
               id="building"
               value={formData.building}
               onChange={(e) => setFormData(prev => ({ ...prev, building: e.target.value }))}
-              placeholder={t('buildingExample')}
+              placeholder="e.g., Edificio Central, Apt 4B"
             />
           </div>
 

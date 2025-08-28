@@ -5,10 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useUserRole } from '@/hooks/useUserRole';
 import Footer from '@/components/Footer';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 // Import professional images
 import heroImage from '@/assets/hero-address-system.jpg';
@@ -20,7 +19,7 @@ import EmergencyAlertProcessor from '@/components/EmergencyAlertProcessor';
 const Index = () => {
   const [activeSection, setActiveSection] = useState('overview');
   const { user, loading } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { isPoliceRole } = useUserRole();
 
@@ -772,7 +771,7 @@ const navigationItems = [
               <span className="text-2xl font-bold text-gradient">{t('connectEGPlatform')}</span>
             </div>
             <div className="flex items-center gap-3">
-              <LanguageSwitcher />
+              
               {user ? (
                 <Button 
                   onClick={() => navigate(isPoliceRole ? '/police' : '/portal')} 

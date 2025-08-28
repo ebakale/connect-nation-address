@@ -20,7 +20,7 @@ import {
   Headphones, Mic, Volume2, Navigation2, Locate
 } from 'lucide-react';
 import { IncidentStatusUpdateDialog } from './IncidentStatusUpdateDialog';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface IncidentAssignment {
   id: string;
@@ -124,7 +124,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
   const [unitInfo, setUnitInfo] = useState<UnitInfo | null>(null);
   const [assignments, setAssignments] = useState<IncidentAssignment[]>([]);
   const [selectedIncident, setSelectedIncident] = useState<IncidentAssignment | null>(null);
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [actionDialog, setActionDialog] = useState<{ action: FieldAction; incident: IncidentAssignment } | null>(null);
   const [actionNotes, setActionNotes] = useState('');
   const [currentLocation, setCurrentLocation] = useState('');

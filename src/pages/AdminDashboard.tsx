@@ -6,14 +6,14 @@ import { useAuth } from "@/hooks/useAuth";
 import AdminPanel from "@/components/AdminPanel";
 import { Shield, Users, Settings, BarChart3, LogOut, FileText } from "lucide-react";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 import Footer from '@/components/Footer';
 
 
 const AdminDashboard = () => {
   const { role, loading } = useUserRole();
   const { user, signOut } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
 
   if (loading) {
     return (

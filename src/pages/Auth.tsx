@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Globe, Shield, Lock, Mail } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 import { useUserRole } from '@/hooks/useUserRole';
 import Footer from '@/components/Footer';
@@ -21,7 +21,7 @@ const Auth = () => {
   });
   const { signIn, signUp, user } = useAuth();
   const { isPoliceRole, loading: roleLoading } = useUserRole();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
 
   if (user) {
     if (roleLoading) return null;

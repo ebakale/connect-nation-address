@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, QrCode, Copy, ExternalLink, Check, Navigation } from 'lucide-react';
 import QRCode from 'qrcode';
-import { useTranslation } from 'react-i18next';
 
 interface AddressData {
   uac: string;
@@ -30,7 +29,6 @@ interface AddressCardProps {
 }
 
 const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
-  const { t } = useTranslation();
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [copied, setCopied] = useState(false);
 
