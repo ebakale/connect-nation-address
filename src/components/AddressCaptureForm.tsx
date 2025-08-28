@@ -295,7 +295,7 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
                 disabled={!formData.region}
               >
                 <SelectTrigger className="bg-background">
-                  <SelectValue placeholder={formData.region ? "Select a city" : "Select province first"} />
+                  <SelectValue placeholder={formData.region ? t('addresses:selectCity') : t('addresses:selectProvinceFirst')} />
                 </SelectTrigger>
                 <SelectContent className="bg-background border shadow-lg z-50">
                   {availableCities.map((city) => (
@@ -307,66 +307,67 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
               </Select>
             </div>
             <div>
-              <Label htmlFor="street">Street Address *</Label>
+              <Label htmlFor="street">{t('addresses:streetAddress')} *</Label>
               <Input
                 id="street"
                 value={formData.street}
                 onChange={(e) => setFormData(prev => ({ ...prev, street: e.target.value }))}
-                placeholder="e.g., Calle de la Independencia 123"
+                placeholder={t('addresses:streetPlaceholder')}
+                className="bg-background"
                 required
               />
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="building">Building/Apartment (Optional)</Label>
+            <div>
+              <Label htmlFor="building">{t('addresses:buildingApartment')}</Label>
             <Input
               id="building"
               value={formData.building}
               onChange={(e) => setFormData(prev => ({ ...prev, building: e.target.value }))}
-              placeholder="e.g., Edificio Central, Apt 4B"
+              placeholder={t('addresses:buildingPlaceholder')}
             />
           </div>
 
           <div>
-            <Label htmlFor="address_type">Address Type</Label>
+            <Label htmlFor="address_type">{t('addresses:addressType')}</Label>
             <Select value={formData.address_type} onValueChange={(value) => setFormData(prev => ({ ...prev, address_type: value }))}>
               <SelectTrigger className="bg-background">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-background border shadow-lg z-50">
-                <SelectItem value="residential">Residential</SelectItem>
-                <SelectItem value="commercial">Commercial</SelectItem>
-                <SelectItem value="industrial">Industrial</SelectItem>
-                <SelectItem value="government">Government</SelectItem>
-                <SelectItem value="educational">Educational</SelectItem>
-                <SelectItem value="healthcare">Healthcare</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
+                <SelectItem value="residential">{t('forms:addressTypes.residential')}</SelectItem>
+                <SelectItem value="commercial">{t('forms:addressTypes.commercial')}</SelectItem>
+                <SelectItem value="industrial">{t('forms:addressTypes.industrial')}</SelectItem>
+                <SelectItem value="government">{t('forms:addressTypes.government')}</SelectItem>
+                <SelectItem value="educational">{t('forms:addressTypes.educational')}</SelectItem>
+                <SelectItem value="healthcare">{t('forms:addressTypes.healthcare')}</SelectItem>
+                <SelectItem value="other">{t('forms:addressTypes.other')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <Label htmlFor="latitude">Latitude (Optional)</Label>
+              <Label htmlFor="latitude">{t('addresses:latitude')}</Label>
               <Input
                 id="latitude"
                 type="number"
                 step="any"
                 value={formData.latitude}
                 onChange={(e) => setFormData(prev => ({ ...prev, latitude: e.target.value }))}
-                placeholder="e.g., 1.5000"
+                placeholder={t('addresses:latPlaceholder')}
               />
             </div>
             <div>
-              <Label htmlFor="longitude">Longitude (Optional)</Label>
+              <Label htmlFor="longitude">{t('addresses:longitude')}</Label>
               <Input
                 id="longitude"
                 type="number"
                 step="any"
                 value={formData.longitude}
                 onChange={(e) => setFormData(prev => ({ ...prev, longitude: e.target.value }))}
-                placeholder="e.g., 9.7500"
+                placeholder={t('addresses:longPlaceholder')}
               />
             </div>
             <div className="flex items-end">
@@ -377,21 +378,21 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
                 className="w-full"
               >
                 <MapPin className="mr-2 h-4 w-4" />
-                Capture Current Location
+                {t('addresses:captureCurrentLocation')}
               </Button>
             </div>
           </div>
 
           {/* Photo Upload Section */}
           <div className="space-y-4">
-            <Label>Address Photo (Optional)</Label>
+            <Label>{t('addresses:addressPhoto')}</Label>
             <div className="border-2 border-dashed border-border rounded-lg p-6">
               {photoPreview ? (
                 <div className="space-y-4">
                   <div className="relative">
                     <img
                       src={photoPreview}
-                      alt="Address preview"
+                      alt={t('addresses:addressPreview')}
                       className="w-full max-h-64 object-cover rounded-lg"
                     />
                     <Button
@@ -405,14 +406,14 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
                     </Button>
                   </div>
                   <p className="text-sm text-muted-foreground text-center">
-                    Photo ready to upload with address
+                    {t('addresses:photoReady')}
                   </p>
                 </div>
               ) : (
                 <div className="text-center space-y-4">
                   <Image className="h-12 w-12 text-muted-foreground mx-auto" />
                   <p className="text-muted-foreground">
-                    Add a photo of the address location
+                    {t('addresses:addPhotoLocation')}
                   </p>
                   <div className="flex flex-col sm:flex-row gap-2 justify-center">
                     <Button
@@ -421,7 +422,7 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
                       onClick={() => setCameraOpen(true)}
                     >
                       <Camera className="mr-2 h-4 w-4" />
-                      Take Photo
+                      {t('addresses:takePhoto')}
                     </Button>
                     <Button
                       type="button"
@@ -429,11 +430,11 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
                       onClick={() => fileInputRef.current?.click()}
                     >
                       <Upload className="mr-2 h-4 w-4" />
-                      Upload Photo
+                      {t('addresses:uploadPhoto')}
                     </Button>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Max file size: 5MB. Supported formats: JPG, PNG, WEBP
+                    {t('addresses:maxFileSize')}
                   </p>
                 </div>
               )}
@@ -458,12 +459,12 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
           </div>
 
           <div>
-            <Label htmlFor="description">Description/Notes</Label>
+            <Label htmlFor="description">{t('addresses:descriptionNotes')}</Label>
             <Textarea
               id="description"
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              placeholder="Additional details about the address or location"
+              placeholder={t('addresses:descriptionPlaceholder')}
               rows={3}
             />
           </div>
@@ -471,11 +472,11 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
           <div className="flex gap-2 pt-4">
             <Button type="submit" disabled={loading} className="flex-1">
               <Save className="mr-2 h-4 w-4" />
-              {loading ? "Saving..." : "Save Address"}
+              {loading ? t('addresses:saving') : t('addresses:saveAddress')}
             </Button>
             {onCancel && (
               <Button type="button" variant="outline" onClick={onCancel}>
-                Cancel
+                {t('addresses:cancel')}
               </Button>
             )}
           </div>
@@ -483,7 +484,7 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
         <Dialog open={cameraOpen} onOpenChange={setCameraOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Take Photo</DialogTitle>
+              <DialogTitle>{t('forms:mapLabels.takePhoto')}</DialogTitle>
             </DialogHeader>
             <CameraCapture
               onCapture={(file, dataUrl) => {
