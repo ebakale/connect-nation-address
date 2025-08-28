@@ -1,0 +1,86 @@
+{
+  "title": "Panel de Control",
+  "welcome": "Bienvenido/a de nuevo",
+  "overview": "Resumen",
+  "analytics": "Análisis",
+  "reports": "Informes",
+  "notifications": "Notificaciones",
+  "activity": "Actividad Reciente",
+  "quickActions": "Acciones Rápidas",
+  "metrics": {
+    "totalAddresses": "Total de Direcciones",
+    "verifiedAddresses": "Direcciones Verificadas",
+    "pendingVerification": "Pendientes de Verificación",
+    "publicAddresses": "Direcciones Públicas",
+    "coverage": "Cobertura",
+    "verificationRate": "Tasa de Verificación",
+    "activeIncidents": "Incidentes Activos",
+    "responseTime": "Tiempo de Respuesta Promedio",
+    "unitsAvailable": "Unidades Disponibles",
+    "systemHealth": "Estado del Sistema"
+  },
+  "charts": {
+    "registrationTrends": "Tendencias de Registro",
+    "verificationProgress": "Progreso de Verificación",
+    "regionalDistribution": "Distribución Regional",
+    "addressTypes": "Tipos de Direcciones",
+    "responseTimeAnalytics": "Análisis de Tiempo de Respuesta",
+    "incidentTypes": "Tipos de Incidentes"
+  },
+  "periods": {
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "thisWeek": "Esta Semana",
+    "lastWeek": "Semana Pasada",
+    "thisMonth": "Este Mes",
+    "lastMonth": "Mes Pasado",
+    "thisYear": "Este Año",
+    "lastYear": "Año Pasado",
+    "custom": "Rango Personalizado",
+    "last7Days": "Últimos 7 Días",
+    "last30Days": "Últimos 30 Días",
+    "last90Days": "Últimos 90 Días"
+  },
+  "filters": {
+    "region": "Región",
+    "type": "Tipo",
+    "status": "Estado",
+    "priority": "Prioridad",
+    "dateRange": "Rango de Fechas",
+    "assignedTo": "Asignado a"
+  },
+  "actions": {
+    "viewAll": "Ver Todos",
+    "exportData": "Exportar Datos",
+    "refreshData": "Actualizar Datos",
+    "viewDetails": "Ver Detalles",
+    "generateReport": "Generar Informe",
+    "scheduleReport": "Programar Informe"
+  },
+  "tables": {
+    "columns": {
+      "id": "ID",
+      "name": "Nombre",
+      "type": "Tipo",
+      "status": "Estado",
+      "location": "Ubicación",
+      "createdAt": "Creado",
+      "updatedAt": "Actualizado",
+      "assignedTo": "Asignado a",
+      "priority": "Prioridad",
+      "actions": "Acciones"
+    },
+    "pagination": {
+      "showing": "Mostrando {{start}} a {{end}} de {{total}} entradas",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "itemsPerPage": "Elementos por página"
+    }
+  },
+  "empty": {
+    "noData": "No hay datos disponibles",
+    "noResults": "No se encontraron resultados",
+    "noNotifications": "No hay nuevas notificaciones",
+    "noActivity": "No hay actividad reciente"
+  }
+}

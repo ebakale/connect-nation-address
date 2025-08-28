@@ -24,6 +24,12 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
       "@typescript-eslint/no-unused-vars": "off",
+      // Prevent hardcoded strings in JSX
+      "no-literal-strings": ["error", {
+        "mode": "jsx-only",
+        "exclude": ["test", "spec", "config"],
+        "allowedStrings": ["className", "href", "src", "id", "data-", "aria-", "role"]
+      }]
     },
   }
 );

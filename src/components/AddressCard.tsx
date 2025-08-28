@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, QrCode, Copy, ExternalLink, Check, Navigation } from 'lucide-react';
 import QRCode from 'qrcode';
+import { useTranslation } from 'react-i18next';
 
 interface AddressData {
   uac: string;
@@ -29,6 +30,7 @@ interface AddressCardProps {
 }
 
 const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
+  const { t } = useTranslation('common');
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [copied, setCopied] = useState(false);
 
@@ -124,7 +126,7 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
         <div className="bg-muted/50 p-3 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Unique Address Code</p>
+              <p className="text-sm font-medium text-muted-foreground">{t('uniqueAddressCode')}</p>
               <p className="text-lg font-mono font-bold text-primary">{address.uac}</p>
             </div>
             <Button
@@ -140,7 +142,7 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
 
         {/* Readable Address */}
         <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground">Readable Address</p>
+          <p className="text-sm font-medium text-muted-foreground">{t('readableAddress')}</p>
           <div className="space-y-1">
             <p className="font-semibold">{address.country}</p>
             <p className="text-sm">{address.region}</p>
@@ -159,7 +161,7 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
 
         {/* Metadata */}
         <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground">Property Details</p>
+          <p className="text-sm font-medium text-muted-foreground">{t('propertyDetails')}</p>
           <div className="flex gap-2">
             <Badge variant="outline">{address.metadata.type}</Badge>
           </div>

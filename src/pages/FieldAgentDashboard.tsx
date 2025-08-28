@@ -9,14 +9,14 @@ import DraftManager from "@/components/DraftManager";
 import FieldMap from "@/components/FieldMap";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
 
 
 const FieldAgentDashboard = () => {
   const { role, loading, getGeographicScope } = useUserRole();
   const { user, signOut } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation('dashboard');
   const [captureOpen, setCaptureOpen] = useState(false);
   const [draftsOpen, setDraftsOpen] = useState(false);
   const [mapOpen, setMapOpen] = useState(false);
