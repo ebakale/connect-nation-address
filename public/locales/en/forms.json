@@ -149,5 +149,35 @@
     "published": "Published",
     "draft": "Draft",
     "archived": "Archived"
+  },
+  "addressTypes": {
+    "residential": "Residential",
+    "commercial": "Commercial",
+    "industrial": "Industrial",
+    "government": "Government",
+    "educational": "Educational",
+    "healthcare": "Healthcare",
+    "landmark": "Landmark",
+    "other": "Other"
+  },
+  "propertyTypes": {
+    "residential": "Residential",
+    "commercial": "Commercial",
+    "government": "Government",
+    "landmark": "Landmark"
+  },
+  "mapLabels": {
+    "uniqueAddressCode": "Unique Address Code",
+    "readableAddress": "Readable Address",
+    "propertyDetails": "Property Details",
+    "destination": "Destination",
+    "startingPoint": "Starting Point",
+    "currentLocation": "Current Location",
+    "searchResults": "Search Results",
+    "navigationApps": "Navigation Apps",
+    "locationInformation": "Location Information",
+    "takePhoto": "Take Photo",
+    "mapboxTokenRequired": "Mapbox Token Required",
+    "mapboxPublicToken": "Mapbox Public Token"
   }
 }

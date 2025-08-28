@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import CameraCapture from "@/components/CameraCapture";
+import { useTranslation } from 'react-i18next';
 
 interface AddressCaptureFormProps {
   onSave?: () => void;
@@ -34,6 +35,7 @@ interface AddressCaptureFormProps {
 
 export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCaptureFormProps) => {
   const { user } = useAuth();
+  const { t } = useTranslation(['forms', 'addresses']);
   const [formData, setFormData] = useState({
     country: initialData?.country || "Equatorial Guinea",
     region: initialData?.region || "",
@@ -244,17 +246,17 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MapPin className="h-5 w-5" />
-          {initialData ? 'Edit Address' : 'Capture New Address'}
+          {initialData ? t('addresses:edit') : t('addresses:captureNew')}
         </CardTitle>
         <CardDescription>
-          {initialData ? 'Update the address details' : 'Fill in the address details and capture GPS coordinates'}
+          {initialData ? t('addresses:updateDetails') : t('addresses:fillDetailsAndGPS')}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="country">Country</Label>
+              <Label htmlFor="country">{t('forms:labels.country')}</Label>
               <Input
                 id="country"
                 value={formData.country}
@@ -263,7 +265,7 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
               />
             </div>
             <div>
-              <Label htmlFor="region">Province/Region *</Label>
+              <Label htmlFor="region">{t('addresses:provinceRegion')} *</Label>
               <Select 
                 value={formData.region} 
                 onValueChange={(value) => {
@@ -271,7 +273,7 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
                 }}
               >
                 <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Select a province" />
+                  <SelectValue placeholder={t('addresses:selectProvince')} />
                 </SelectTrigger>
                 <SelectContent className="bg-background border shadow-lg z-50">
                   {regions.map((region) => (
@@ -286,7 +288,7 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="city">City *</Label>
+              <Label htmlFor="city">{t('forms:labels.city')} *</Label>
               <Select 
                 value={formData.city} 
                 onValueChange={(value) => setFormData(prev => ({ ...prev, city: value }))}
