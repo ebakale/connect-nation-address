@@ -14,6 +14,10 @@ const i18nConfig = {
   
   backend: {
     loadPath: '/locales/{{lng}}/{{ns}}.json',
+    // Cache translations for performance
+    requestOptions: {
+      cache: 'default',
+    },
   },
   
   detection: {
@@ -28,12 +32,24 @@ const i18nConfig = {
   react: {
     useSuspense: false,
   },
+  
+  // Load namespaces on demand for performance
+  partialBundledLanguages: true,
 };
 
 i18n
   .use(Backend)
   .use(LanguageDetector)
   .use(initReactI18next)
-  .init(i18nConfig);
+  .init(i18nConfig)
+  .then(() => {
+    // Update HTML lang attribute on language change
+    i18n.on('languageChanged', (lng) => {
+      document.documentElement.lang = lng;
+    });
+    
+    // Set initial HTML lang
+    document.documentElement.lang = i18n.language;
+  });
 
 export default i18n;

@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { useUserRole } from '@/hooks/useUserRole';
 import Footer from '@/components/Footer';
 
@@ -19,7 +19,7 @@ import EmergencyAlertProcessor from '@/components/EmergencyAlertProcessor';
 const Index = () => {
   const [activeSection, setActiveSection] = useState('overview');
   const { user, loading } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation(['common', 'dashboard']);
   const navigate = useNavigate();
   const { isPoliceRole } = useUserRole();
 
@@ -28,7 +28,7 @@ const Index = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">{t('loading')}</p>
+          <p className="text-muted-foreground">{t('common:loading')}</p>
         </div>
       </div>
     );
@@ -37,12 +37,12 @@ const Index = () => {
   // Main page is always accessible regardless of authentication status
 
 const navigationItems = [
-    { id: 'overview', label: t('overview'), icon: MapPin },
-    { id: 'about', label: t('about'), icon: Users },
-    { id: 'emergency', label: t('emergency'), icon: Shield },
-    { id: 'help', label: t('help'), icon: HelpCircle },
-    { id: 'manual', label: t('manual'), icon: Book },
-    { id: 'login', label: t('login'), icon: LogIn },
+    { id: 'overview', label: t('common:navigation.overview'), icon: MapPin },
+    { id: 'about', label: t('common:navigation.about'), icon: Users },
+    { id: 'emergency', label: t('emergency:contacts.emergencyServices'), icon: Shield },
+    { id: 'help', label: t('common:navigation.help'), icon: HelpCircle },
+    { id: 'manual', label: t('common:navigation.manual'), icon: Book },
+    { id: 'login', label: t('common:navigation.login'), icon: LogIn },
   ];
 
   const renderContent = () => {

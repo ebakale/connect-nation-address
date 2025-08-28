@@ -1,12 +1,12 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
 
 
 const NotFound = () => {
   const location = useLocation();
-  const { t } = useLanguage();
+  const { t } = useTranslation('errors');
 
   useEffect(() => {
     console.error(
@@ -22,12 +22,12 @@ const NotFound = () => {
       </div>
       <div className="text-center space-y-6">
         <h1 className="text-8xl font-bold text-primary mb-4">404</h1>
-        <p className="text-xl text-muted-foreground mb-6">{t('oopsPageNotFound')}</p>
+        <p className="text-xl text-muted-foreground mb-6">{t('messages.oopsPageNotFound')}</p>
         <a 
           href="/" 
           className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
         >
-          {t('returnToHome')}
+          {t('messages.returnToHome')}
         </a>
       </div>
     </div>
