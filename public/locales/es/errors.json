@@ -1,0 +1,98 @@
+{
+  "general": {
+    "somethingWentWrong": "Algo salió mal",
+    "unknownError": "Ocurrió un error desconocido",
+    "tryAgain": "Por favor intente nuevamente",
+    "contactSupport": "Por favor contacte soporte si el problema persiste",
+    "errorCode": "Código de error: {{code}}"
+  },
+  "network": {
+    "connectionError": "Error de conexión",
+    "timeoutError": "Tiempo de espera agotado",
+    "serverError": "Error del servidor",
+    "notFound": "Recurso no encontrado",
+    "unauthorized": "Acceso no autorizado",
+    "forbidden": "Acceso prohibido",
+    "rateLimited": "Demasiadas solicitudes. Por favor intente más tarde.",
+    "offline": "Actualmente está fuera de línea"
+  },
+  "validation": {
+    "invalidInput": "Entrada inválida",
+    "missingRequired": "Falta campo requerido",
+    "invalidFormat": "Formato inválido",
+    "valueTooLong": "El valor es muy largo",
+    "valueTooShort": "El valor es muy corto",
+    "invalidEmail": "Dirección de correo inválida",
+    "invalidPhone": "Número de teléfono inválido",
+    "invalidUrl": "URL inválida",
+    "passwordTooWeak": "La contraseña es muy débil",
+    "passwordMismatch": "Las contraseñas no coinciden"
+  },
+  "auth": {
+    "loginFailed": "Error al iniciar sesión",
+    "logoutFailed": "Error al cerrar sesión",
+    "registrationFailed": "Error en el registro",
+    "invalidCredentials": "Credenciales inválidas",
+    "accountLocked": "La cuenta está bloqueada",
+    "accountDisabled": "La cuenta está deshabilitada",
+    "sessionExpired": "La sesión ha expirado",
+    "tokenExpired": "El token de acceso ha expirado",
+    "emailNotVerified": "Dirección de correo no verificada",
+    "passwordResetFailed": "Error al restablecer contraseña"
+  },
+  "data": {
+    "loadingFailed": "Error al cargar datos",
+    "savingFailed": "Error al guardar datos",
+    "deletingFailed": "Error al eliminar datos",
+    "uploadFailed": "Error en la subida",
+    "downloadFailed": "Error en la descarga",
+    "syncFailed": "Error de sincronización",
+    "importFailed": "Error en la importación",
+    "exportFailed": "Error en la exportación"
+  },
+  "permissions": {
+    "accessDenied": "Acceso denegado",
+    "insufficientPermissions": "Permisos insuficientes",
+    "operationNotAllowed": "Operación no permitida",
+    "resourceProtected": "El recurso está protegido"
+  },
+  "addresses": {
+    "registrationFailed": "Error en el registro de dirección",
+    "verificationFailed": "Error en la verificación de dirección",
+    "notFound": "Dirección no encontrada",
+    "invalidCoordinates": "Coordenadas GPS inválidas",
+    "duplicateAddress": "La dirección ya existe",
+    "outsideJurisdiction": "La dirección está fuera de la jurisdicción"
+  },
+  "emergency": {
+    "alertFailed": "Error al enviar alerta de emergencia",
+    "dispatchFailed": "Error en el despacho",
+    "locationRequired": "Se requiere ubicación",
+    "serviceUnavailable": "El servicio de emergencia no está disponible actualmente"
+  },
+  "police": {
+    "incidentCreationFailed": "Error al crear incidente",
+    "unitAssignmentFailed": "Error al asignar unidad",
+    "communicationFailed": "Error de comunicación",
+    "backupRequestFailed": "Error en solicitud de refuerzo"
+  },
+  "technical": {
+    "internalError": "Error interno del servidor",
+    "databaseError": "Error de base de datos",
+    "configurationError": "Error de configuración",
+    "serviceUnavailable": "Servicio temporalmente no disponible",
+    "maintenanceMode": "El sistema está en mantenimiento"
+  },
+  "file": {
+    "uploadFailed": "Error al subir archivo",
+    "fileTooLarge": "El archivo es muy grande",
+    "invalidFileType": "Tipo de archivo inválido",
+    "corruptedFile": "El archivo parece estar corrupto",
+    "virusDetected": "Amenaza de seguridad potencial detectada en el archivo"
+  },
+  "pageNotFound": {
+    "title": "Página no encontrada",
+    "message": "La página que busca no existe",
+    "returnHome": "Volver al Inicio"
+  }
+}

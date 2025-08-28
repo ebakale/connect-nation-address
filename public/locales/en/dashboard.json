@@ -1,0 +1,86 @@
+{
+  "title": "Dashboard",
+  "welcome": "Welcome back",
+  "overview": "Overview",
+  "analytics": "Analytics",
+  "reports": "Reports",
+  "notifications": "Notifications",
+  "activity": "Recent Activity",
+  "quickActions": "Quick Actions",
+  "metrics": {
+    "totalAddresses": "Total Addresses",
+    "verifiedAddresses": "Verified Addresses",
+    "pendingVerification": "Pending Verification",
+    "publicAddresses": "Public Addresses",
+    "coverage": "Coverage",
+    "verificationRate": "Verification Rate",
+    "activeIncidents": "Active Incidents",
+    "responseTime": "Avg Response Time",
+    "unitsAvailable": "Available Units",
+    "systemHealth": "System Health"
+  },
+  "charts": {
+    "registrationTrends": "Registration Trends",
+    "verificationProgress": "Verification Progress",
+    "regionalDistribution": "Regional Distribution",
+    "addressTypes": "Address Types",
+    "responseTimeAnalytics": "Response Time Analytics",
+    "incidentTypes": "Incident Types"
+  },
+  "periods": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "thisWeek": "This Week",
+    "lastWeek": "Last Week",
+    "thisMonth": "This Month",
+    "lastMonth": "Last Month",
+    "thisYear": "This Year",
+    "lastYear": "Last Year",
+    "custom": "Custom Range",
+    "last7Days": "Last 7 Days",
+    "last30Days": "Last 30 Days",
+    "last90Days": "Last 90 Days"
+  },
+  "filters": {
+    "region": "Region",
+    "type": "Type", 
+    "status": "Status",
+    "priority": "Priority",
+    "dateRange": "Date Range",
+    "assignedTo": "Assigned To"
+  },
+  "actions": {
+    "viewAll": "View All",
+    "exportData": "Export Data",
+    "refreshData": "Refresh Data",
+    "viewDetails": "View Details",
+    "generateReport": "Generate Report",
+    "scheduleReport": "Schedule Report"
+  },
+  "tables": {
+    "columns": {
+      "id": "ID",
+      "name": "Name",
+      "type": "Type",
+      "status": "Status",
+      "location": "Location",
+      "createdAt": "Created",
+      "updatedAt": "Updated",
+      "assignedTo": "Assigned To",
+      "priority": "Priority",
+      "actions": "Actions"
+    },
+    "pagination": {
+      "showing": "Showing {{start}} to {{end}} of {{total}} entries",
+      "previous": "Previous",
+      "next": "Next",
+      "itemsPerPage": "Items per page"
+    }
+  },
+  "empty": {
+    "noData": "No data available",
+    "noResults": "No results found",
+    "noNotifications": "No new notifications",
+    "noActivity": "No recent activity"
+  }
+}

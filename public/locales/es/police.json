@@ -1,0 +1,114 @@
+{
+  "title": "Operaciones Policiales",
+  "dashboard": {
+    "title": "Panel Policial",
+    "commandCenter": "Centro de Comando Policial",
+    "fieldOperations": "Operaciones de Campo",
+    "myFieldOperations": "Mis Operaciones de Campo",
+    "dispatchCenter": "Centro de Despacho",
+    "coordinationCenter": "Centro de Coordinación"
+  },
+  "units": {
+    "title": "Unidades",
+    "myUnit": "Mi Unidad",
+    "unitManagement": "Gestión de Unidades",
+    "unitsOverview": "Resumen de Unidades",
+    "availableUnits": "Unidades Disponibles",
+    "activeUnits": "Unidades Activas",
+    "totalUnits": "Total de Unidades",
+    "unitLead": "Jefe de Unidad",
+    "unitMember": "Miembro de Unidad",
+    "unitStatus": "Estado de Unidad",
+    "status": {
+      "available": "Disponible",
+      "busy": "Ocupado",
+      "onBreak": "En Descanso",
+      "offline": "Fuera de Línea",
+      "patrolling": "Patrullando",
+      "responding": "Respondiendo",
+      "onScene": "En Escena"
+    },
+    "actions": {
+      "updateStatus": "Actualizar Estado",
+      "assignTask": "Asignar Tarea",
+      "requestBackup": "Solicitar Refuerzo",
+      "communicate": "Comunicar",
+      "viewLocation": "Ver Ubicación"
+    }
+  },
+  "incidents": {
+    "title": "Incidentes",
+    "activeIncidents": "Incidentes Activos",
+    "myIncidents": "Mis Incidentes",
+    "recentIncidents": "Incidentes Recientes",
+    "emergencyIncidents": "Incidentes de Emergencia",
+    "newIncident": "Nuevo Incidente",
+    "incidentDetails": "Detalles del Incidente",
+    "incidentReport": "Reporte de Incidente"
+  },
+  "communications": {
+    "title": "Comunicaciones",
+    "dispatchComms": "Comunicaciones de Despacho",
+    "unitComms": "Comunicaciones de Unidad",
+    "emergencyComms": "Comunicaciones de Emergencia",
+    "broadcastAlert": "Alerta de Transmisión",
+    "directMessage": "Mensaje Directo"
+  },
+  "operations": {
+    "title": "Operaciones",
+    "patrol": "Patrulla",
+    "investigation": "Investigación",
+    "traffic": "Control de Tráfico",
+    "security": "Seguridad",
+    "emergency": "Respuesta de Emergencia",
+    "community": "Policía Comunitaria"
+  },
+  "analytics": {
+    "title": "Análisis",
+    "responseTime": "Tiempo de Respuesta",
+    "responseTimeAnalytics": "Análisis de Tiempo de Respuesta",
+    "avgResponseTime": "Tiempo de Respuesta Promedio",
+    "incidentTypes": "Tipos de Incidentes",
+    "unitPerformance": "Rendimiento de Unidades",
+    "areaStatistics": "Estadísticas del Área",
+    "trends": "Tendencias"
+  },
+  "admin": {
+    "title": "Administración",
+    "roleManagement": "Gestión de Roles",
+    "permissionManagement": "Gestión de Permisos",
+    "userManagement": "Gestión de Usuarios",
+    "systemConfiguration": "Configuración del Sistema",
+    "auditLog": "Registro de Auditoría"
+  },
+  "backup": {
+    "title": "Refuerzo",
+    "requestBackup": "Solicitar Refuerzo",
+    "backupRequests": "Solicitudes de Refuerzo",
+    "backupNotifications": "Notificaciones de Refuerzo",
+    "regionalBackup": "Refuerzo Regional",
+    "approveBackup": "Aprobar Refuerzo",
+    "denyBackup": "Denegar Refuerzo"
+  },
+  "profiles": {
+    "title": "Perfiles",
+    "officerProfile": "Perfil del Oficial",
+    "editProfile": "Editar Perfil",
+    "personalInfo": "Información Personal",
+    "serviceRecord": "Registro de Servicio",
+    "qualifications": "Calificaciones",
+    "assignments": "Asignaciones"
+  },
+  "areas": {
+    "myArea": "Mi Área",
+    "areaOverview": "Resumen del Área",
+    "areaStatistics": "Estadísticas del Área",
+    "areaMap": "Mapa del Área"
+  },
+  "system": {
+    "systemHealth": "Estado del Sistema",
+    "operatorStatus": "Estado del Operador",
+    "notifications": "Notificaciones",
+    "alerts": "Alertas"
+  }
+}

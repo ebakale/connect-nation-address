@@ -1,0 +1,128 @@
+{
+  "title": "Emergency Management",
+  "contacts": {
+    "title": "Emergency Contacts",
+    "police": "Police",
+    "fire": "Fire Department",
+    "medical": "Medical Emergency",
+    "rescue": "Rescue Services",
+    "description": {
+      "police": "Emergency police assistance",
+      "fire": "Fire and rescue services",
+      "medical": "Medical emergency services",
+      "rescue": "Search and rescue operations"
+    },
+    "actions": {
+      "call": "Call",
+      "sendLocationAlert": "Send Location Alert"
+    }
+  },
+  "alert": {
+    "title": "Emergency Alert",
+    "subtitle": "Send your location to emergency services",
+    "message": "Emergency Message",
+    "location": {
+      "getting": "Getting location...",
+      "detected": "Location detected",
+      "required": "Location is required to send alert",
+      "error": "Could not get current location",
+      "retry": "Retry location"
+    },
+    "placeholders": {
+      "message": "Describe the emergency situation...",
+      "phone": "Phone number (optional)"
+    },
+    "actions": {
+      "send": "Send Alert",
+      "sending": "Sending...",
+      "sent": "Sent!",
+      "cancel": "Cancel"
+    },
+    "status": {
+      "success": "Emergency alert sent successfully",
+      "failed": "Failed to send emergency alert",
+      "locationRequired": "Location is required to send alert"
+    }
+  },
+  "incidents": {
+    "title": "Incidents",
+    "active": "Active Incidents",
+    "reported": "Reported",
+    "dispatched": "Dispatched",
+    "responding": "Responding",
+    "onScene": "On Scene",
+    "resolved": "Resolved",
+    "cancelled": "Cancelled",
+    "priority": {
+      "critical": "Critical",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "types": {
+      "fire": "Fire",
+      "medical": "Medical",
+      "accident": "Accident",
+      "crime": "Crime",
+      "rescue": "Rescue",
+      "hazmat": "Hazmat",
+      "natural": "Natural Disaster",
+      "other": "Other"
+    },
+    "details": {
+      "id": "Incident ID",
+      "type": "Type",
+      "priority": "Priority",
+      "status": "Status",
+      "location": "Location",
+      "description": "Description",
+      "reportedBy": "Reported By",
+      "reportedAt": "Reported At",
+      "assignedUnits": "Assigned Units",
+      "responseTime": "Response Time",
+      "notes": "Notes"
+    },
+    "actions": {
+      "viewDetails": "View Details",
+      "updateStatus": "Update Status",
+      "assignUnit": "Assign Unit",
+      "addNote": "Add Note",
+      "closeIncident": "Close Incident"
+    }
+  },
+  "dispatch": {
+    "title": "Dispatch Center",
+    "available": "Available",
+    "busy": "Busy",
+    "onBreak": "On Break",
+    "offline": "Offline",
+    "units": {
+      "available": "Available Units",
+      "total": "Total Units",
+      "active": "Active Units",
+      "response": "In Response"
+    },
+    "actions": {
+      "dispatch": "Dispatch",
+      "recall": "Recall",
+      "backup": "Request Backup",
+      "communicate": "Communicate"
+    }
+  },
+  "communications": {
+    "title": "Communications",
+    "broadcast": "Broadcast",
+    "directMessage": "Direct Message",
+    "unitComms": "Unit Communications",
+    "dispatchComms": "Dispatch Communications",
+    "emergencyComms": "Emergency Communications"
+  },
+  "backup": {
+    "title": "Backup Requests",
+    "request": "Request Backup",
+    "approve": "Approve Backup",
+    "deny": "Deny Backup",
+    "pending": "Pending Backup",
+    "active": "Active Backup"
+  }
+}

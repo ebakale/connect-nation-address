@@ -1,0 +1,171 @@
+{
+  "title": "Gestión de Direcciones",
+  "search": {
+    "title": "Buscar Direcciones",
+    "placeholder": "Buscar por dirección, código UAC o punto de referencia...",
+    "filters": "Filtros",
+    "results": "Resultados de Búsqueda",
+    "noResults": "No se encontraron direcciones",
+    "searching": "Buscando...",
+    "advanced": "Búsqueda Avanzada"
+  },
+  "registration": {
+    "title": "Registro de Direcciones",
+    "subtitle": "Registrar una nueva dirección",
+    "form": {
+      "country": "País",
+      "region": "Provincia/Región",
+      "city": "Ciudad",
+      "street": "Dirección",
+      "building": "Edificio/Apartamento",
+      "addressType": "Tipo de Dirección",
+      "coordinates": "Coordenadas GPS",
+      "latitude": "Latitud",
+      "longitude": "Longitud",
+      "description": "Descripción",
+      "photo": "Foto de la Ubicación",
+      "justification": "Justificación"
+    },
+    "types": {
+      "residential": "Residencial",
+      "commercial": "Comercial",
+      "industrial": "Industrial",
+      "government": "Gubernamental",
+      "educational": "Educativo",
+      "healthcare": "Sanitario",
+      "other": "Otro"
+    },
+    "placeholders": {
+      "selectProvince": "Seleccione una provincia",
+      "selectCity": "Seleccione una ciudad",
+      "selectProvinceFirst": "Seleccione primero la provincia",
+      "street": "ej., Calle de la Independencia 123",
+      "building": "ej., Edificio Central, Apt 4B",
+      "latitude": "ej., 1.5000",
+      "longitude": "ej., 9.7500",
+      "description": "Detalles adicionales sobre la dirección o ubicación",
+      "justification": "Por favor explique por qué esta dirección necesita ser añadida al sistema"
+    },
+    "actions": {
+      "getCurrentLocation": "Obtener Ubicación Actual",
+      "uploadPhoto": "Subir Foto",
+      "takePhoto": "Tomar Foto",
+      "submit": "Enviar Solicitud",
+      "saveDraft": "Guardar Borrador"
+    },
+    "validation": {
+      "regionRequired": "La provincia/región es requerida",
+      "cityRequired": "La ciudad es requerida",
+      "streetRequired": "La dirección es requerida",
+      "justificationRequired": "La justificación es requerida",
+      "photoTooLarge": "La foto debe ser menor a 5MB",
+      "invalidFileType": "Por favor seleccione un archivo de imagen"
+    }
+  },
+  "verification": {
+    "title": "Verificación de Direcciones",
+    "queue": "Cola de Verificación",
+    "pending": "Pendiente de Verificación",
+    "approved": "Aprobado",
+    "rejected": "Rechazado",
+    "inReview": "En Revisión",
+    "fieldVerification": "Verificación de Campo",
+    "registrarApproval": "Aprobación del Registrador",
+    "autoVerification": "Auto-Verificación",
+    "verificationPhoto": "Foto de Verificación",
+    "fieldNotes": "Notas de Campo",
+    "actions": {
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "requestFieldVisit": "Solicitar Visita de Campo",
+      "generateUAC": "Generar UAC",
+      "publish": "Publicar",
+      "flagForReview": "Marcar para Revisión"
+    }
+  },
+  "display": {
+    "uac": "UAC",
+    "address": "Dirección",
+    "coordinates": "Coordenadas",
+    "type": "Tipo",
+    "verified": "Verificado",
+    "public": "Público",
+    "private": "Privado",
+    "status": "Estado",
+    "createdAt": "Creado",
+    "updatedAt": "Actualizado",
+    "viewOnMap": "Ver en Mapa",
+    "getDirections": "Obtener Direcciones",
+    "copyUAC": "Copiar UAC",
+    "copyCoordinates": "Copiar Coordenadas",
+    "downloadQR": "Descargar Código QR",
+    "qrCode": "Código QR"
+  },
+  "management": {
+    "edit": "Editar Dirección",
+    "delete": "Eliminar Dirección",
+    "publish": "Publicar Dirección",
+    "unpublish": "Despublicar Dirección",
+    "flag": "Marcar Dirección",
+    "unflag": "Desmarcar Dirección",
+    "bulkActions": "Acciones Masivas",
+    "export": "Exportar Direcciones",
+    "import": "Importar Direcciones"
+  },
+  "locations": {
+    "provinces": {
+      "biokoNorte": "Bioko Norte",
+      "biokoSur": "Bioko Sur",
+      "centroSur": "Centro Sur",
+      "djibloho": "Djibloho",
+      "kieNtem": "Kié-Ntem",
+      "litoral": "Litoral",
+      "weleNzas": "Wele-Nzas"
+    },
+    "cities": {
+      "malabo": "Malabo",
+      "bata": "Bata",
+      "ebebiyin": "Ebebiyín",
+      "mongomo": "Mongomo",
+      "evinayong": "Evinayong",
+      "luba": "Luba",
+      "ciudadDeLaPaz": "Ciudad de la Paz"
+    }
+  },
+  "messages": {
+    "locationCaptured": "Las coordenadas GPS han sido establecidas",
+    "locationError": "No se pudo obtener la ubicación actual",
+    "uploadSuccess": "Foto subida exitosamente",
+    "uploadError": "Error al subir la foto",
+    "saveSuccess": "Dirección guardada exitosamente",
+    "saveError": "Error al guardar la dirección",
+    "deleteSuccess": "Dirección eliminada exitosamente",
+    "deleteError": "Error al eliminar la dirección",
+    "copySuccess": "Copiado al portapapeles",
+    "copyError": "Error al copiar al portapapeles"
+  },
+  "rejectionReasons": {
+    "request": {
+      "incompleteInformation": "Información incompleta proporcionada",
+      "invalidCoordinates": "Coordenadas GPS inválidas o inexactas",
+      "insufficientJustification": "Justificación insuficiente para el registro",
+      "duplicateAddress": "La dirección ya existe en el sistema",
+      "outsideJurisdiction": "Ubicación fuera del área de cobertura",
+      "poorPhotoQuality": "Calidad de foto insuficiente para verificación",
+      "addressNotFound": "La dirección no pudo ser localizada o verificada"
+    },
+    "flaggedAddress": {
+      "coordinateInaccuracy": "Las coordenadas GPS no coinciden con la ubicación física",
+      "outdatedInformation": "La información de la dirección está desactualizada o es incorrecta",
+      "accessibilityIssues": "La ubicación tiene problemas de accesibilidad o seguridad",
+      "duplicateEntry": "Entrada de dirección duplicada detectada",
+      "dataInconsistency": "Datos de dirección inconsistentes o conflictivos"
+    },
+    "flaggedRequest": {
+      "suspiciousActivity": "Actividad sospechosa o fraudulenta detectada",
+      "violatesPolicy": "La solicitud viola las políticas del sistema",
+      "technicalIssues": "Problemas técnicos impiden el procesamiento",
+      "requiresAdditionalReview": "La solicitud requiere revisión y verificación adicional"
+    }
+  }
+}
