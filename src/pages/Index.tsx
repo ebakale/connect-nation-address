@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { useUserRole } from '@/hooks/useUserRole';
 import Footer from '@/components/Footer';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 // Import professional images
 import heroImage from '@/assets/hero-address-system.jpg';
@@ -766,6 +767,7 @@ const navigationItems = [
               <span className="text-2xl font-bold text-gradient">{t('connectEGPlatform')}</span>
             </div>
             <div className="flex items-center gap-3">
+              <LanguageSwitcher />
               
               {user ? (
                 <Button 

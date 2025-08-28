@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 import { useNavigate } from "react-router-dom";
 
@@ -312,6 +313,7 @@ const UnifiedDashboard = () => {
             </div>
 
             <div className="flex gap-2">
+              <LanguageSwitcher />
               
               <Button 
                 variant="outline" 
