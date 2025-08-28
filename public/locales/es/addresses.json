@@ -89,6 +89,7 @@
     "coordinates": "Coordenadas",
     "type": "Tipo",
     "verified": "Verificado",
+    "unverified": "No Verificado",
     "public": "Público",
     "private": "Privado",
     "status": "Estado",

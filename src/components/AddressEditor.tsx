@@ -136,11 +136,11 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
       <div className="flex items-center gap-4">
         <Button variant="ghost" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to List
+          {t('backToList')}
         </Button>
         <div>
-          <h2 className="text-2xl font-bold">Edit Address</h2>
-          <p className="text-muted-foreground">Modify address details and status</p>
+          <h2 className="text-2xl font-bold">{t('editAddress')}</h2>
+          <p className="text-muted-foreground">{t('modifyAddressDetails')}</p>
         </div>
       </div>
 
@@ -165,12 +165,12 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
             {address.verified ? (
               <Badge variant="outline" className="border-success text-success">
                 <CheckCircle className="h-3 w-3 mr-1" />
-                Verified
+                {t('display.verified')}
               </Badge>
             ) : (
               <Badge variant="outline" className="border-warning text-warning">
                 <XCircle className="h-3 w-3 mr-1" />
-                Unverified
+                {t('display.unverified')}
               </Badge>
             )}
           </div>
@@ -180,7 +180,7 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
       {/* Edit Form */}
       <Card>
         <CardHeader>
-          <CardTitle>Address Details</CardTitle>
+          <CardTitle>{t('addressDetails')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -306,10 +306,10 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
           <div className="flex gap-3 pt-4 border-t">
             <Button onClick={handleSave} disabled={loading} className="flex-1">
               <Save className="h-4 w-4 mr-2" />
-              {loading ? 'Saving...' : 'Save Changes'}
+              {loading ? t('saving') : t('saveChanges')}
             </Button>
             <Button variant="outline" onClick={onBack} disabled={loading}>
-              Cancel
+              {t('cancel')}
             </Button>
           </div>
         </CardContent>
@@ -318,7 +318,7 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
       {/* Current Address Info */}
       <Card>
         <CardHeader>
-          <CardTitle>Current Address Information</CardTitle>
+          <CardTitle>{t('currentAddressInfo')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-sm space-y-2">
