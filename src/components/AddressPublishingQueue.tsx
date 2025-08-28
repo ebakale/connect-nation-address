@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAddresses } from "@/hooks/useAddresses";
 import { Globe, Eye, EyeOff, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AddressPublishingQueueProps {
   onClose?: () => void;
@@ -14,7 +14,7 @@ interface AddressPublishingQueueProps {
 export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps) => {
   const { addresses, loading, updateAddressStatus, fetchAddresses } = useAddresses();
   const { toast } = useToast();
-  const { t } = useTranslation('addresses');
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetchAddresses();

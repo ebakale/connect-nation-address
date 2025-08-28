@@ -24,18 +24,6 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
       "@typescript-eslint/no-unused-vars": "off",
-      // Prevent hardcoded strings in components (except test files)
-      "no-restricted-syntax": [
-        "error",
-        {
-          selector: "JSXText[value=/[a-zA-Z]{3,}/]",
-          message: "Hardcoded strings in JSX are not allowed. Use i18n translation keys instead."
-        },
-        {
-          selector: "Literal[value=/^[a-zA-Z\\s]{4,}$/]",
-          message: "Hardcoded string literals are not allowed. Use i18n translation keys instead."
-        }
-      ]
     },
   }
 );

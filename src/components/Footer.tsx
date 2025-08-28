@@ -1,8 +1,8 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Footer = () => {
-  const { t } = useTranslation('common');
+  const { t } = useLanguage();
 
   return (
     <footer className="border-t border-primary/20 glass py-12 mt-20">
@@ -14,10 +14,10 @@ const Footer = () => {
             </div>
           </div>
           <p className="text-cyan-light font-medium">
-            {t('footer.copyright')}
+            {t('copyrightBiakam')}
           </p>
           <p className="text-sm text-muted-foreground">
-            {t('footer.description')}
+            {t('footerDescription')}
           </p>
         </div>
       </div>

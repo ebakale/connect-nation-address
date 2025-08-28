@@ -6,7 +6,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Phone, Shield, MapPin, AlertTriangle, Loader2, CheckCircle } from "lucide-react";
 import { useState } from "react";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -24,7 +24,7 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber }: Emerg
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [sent, setSent] = useState(false);
-  const { t } = useTranslation('emergency');
+  const { t } = useLanguage();
   const { user } = useAuth();
   
   const {
@@ -223,7 +223,7 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber }: Emerg
 };
 
 const EmergencyContacts = () => {
-  const { t } = useTranslation('emergency');
+  const { t } = useLanguage();
   
   const emergencyContacts: EmergencyContactProps[] = [
     {
