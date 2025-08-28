@@ -62,6 +62,7 @@ interface TimeSeriesData {
 }
 
 export const AnalyticsReports = () => {
+  const { t } = useTranslation('addresses');
   const [loading, setLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState("30d");
   const [addressStats, setAddressStats] = useState<AddressStats>({
@@ -76,7 +77,6 @@ export const AnalyticsReports = () => {
   const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesData[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const { toast } = useToast();
-  const { t } = useTranslation('dashboard');
 
   // Specific colors for each address type using semantic design tokens
   const typeColorMap: Record<string, string> = {
@@ -112,8 +112,8 @@ export const AnalyticsReports = () => {
     } catch (error) {
       console.error("Error fetching addresses:", error);
       toast({
-        title: "Error",
-        description: "Failed to fetch address data",
+        title: t('common.error'),
+        description: t('common.failedToFetch') + " address data",
         variant: "destructive",
       });
     } finally {

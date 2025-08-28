@@ -108,8 +108,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     if (file) {
       if (file.size > 5 * 1024 * 1024) { // 5MB limit
         toast({
-          title: "File too large",
-          description: "Please select an image smaller than 5MB",
+          title: t('addresses:fileUpload.fileTooLarge'),
+          description: t('addresses:fileUpload.selectSmallerImage'),
           variant: "destructive"
         });
         return;
@@ -117,8 +117,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
 
       if (!file.type.startsWith('image/')) {
         toast({
-          title: "Invalid file type",
-          description: "Please select an image file",
+          title: t('addresses:fileUpload.invalidFileType'),
+          description: t('addresses:fileUpload.selectImageFile'),
           variant: "destructive"
         });
         return;
@@ -177,7 +177,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     if (file) {
       if (file.size > 10 * 1024 * 1024) { // 10MB limit for documents
         toast({
-          title: "File too large",
+          title: t('addresses:fileUpload.fileTooLarge'),
           description: "Please select a document smaller than 10MB",
           variant: "destructive"
         });
@@ -187,7 +187,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
       const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
       if (!allowedTypes.includes(file.type)) {
         toast({
-          title: "Invalid file type",
+          title: t('addresses:fileUpload.invalidFileType'),
           description: "Please select a PDF or image file",
           variant: "destructive"
         });
@@ -250,7 +250,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     
     if (!user) {
       toast({
-        title: "Error",
+        title: t('addresses:common.error'),
         description: "You must be logged in to submit requests",
         variant: "destructive"
       });
@@ -260,8 +260,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     // Validate required fields
     if (!formData.region || !formData.city || !formData.street || !formData.justification) {
       toast({
-        title: "Error",
-        description: "Please fill in all required fields",
+        title: t('addresses:common.error'),
+        description: t('addresses:fileUpload.fillAllRequired'),
         variant: "destructive"
       });
       return;
@@ -309,7 +309,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
       if (error) throw error;
 
       toast({
-        title: "Success",
+        title: t('addresses:common.success'),
         description: "Address request submitted successfully! You can track its status in the Address Status section."
       });
 
@@ -336,7 +336,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     } catch (error: any) {
       console.error('Error submitting request:', error);
       toast({
-        title: "Error",
+        title: t('addresses:common.error'),
         description: error.message || "Failed to submit address request",
         variant: "destructive"
       });
@@ -659,7 +659,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
               id="justification"
               value={formData.justification}
               onChange={(e) => setFormData(prev => ({ ...prev, justification: e.target.value }))}
-              placeholder="Please explain why this address needs to be added to the system (e.g., new building, missing coverage, business need)"
+              placeholder={t('addresses:registration.placeholders.justification')}
               rows={4}
               required
             />

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -28,6 +29,7 @@ interface WebhookConfig {
 }
 
 const ApiWebhookManager: React.FC = () => {
+  const { t } = useTranslation('addresses');
   const { toast } = useToast();
   const [showApiKey, setShowApiKey] = useState<Record<string, boolean>>({});
   const [newApiKey, setNewApiKey] = useState({ name: '', service: '', key: '' });

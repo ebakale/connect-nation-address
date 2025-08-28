@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -32,6 +33,7 @@ interface UserProfile {
 }
 
 const UserManager: React.FC = () => {
+  const { t } = useTranslation('addresses');
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -162,8 +164,8 @@ const UserManager: React.FC = () => {
     } catch (error) {
       console.error('Error fetching users:', error);
       toast({
-        title: "Error",
-        description: "Failed to fetch users",
+        title: t('common.error'),
+        description: t('common.failedToFetch') + " users",
         variant: "destructive"
       });
     } finally {
@@ -209,7 +211,7 @@ const UserManager: React.FC = () => {
       }
 
       toast({
-        title: "Success",
+        title: t('common.success'),
         description: `Role assigned successfully${cityScope ? ' with city scope' : ''}`
       });
 
@@ -221,7 +223,7 @@ const UserManager: React.FC = () => {
     } catch (error) {
       console.error('Error assigning role:', error);
       toast({
-        title: "Error",
+        title: t('common.error'),
         description: "Failed to assign role",
         variant: "destructive"
       });
@@ -239,7 +241,7 @@ const UserManager: React.FC = () => {
       if (error) throw error;
 
       toast({
-        title: "Success",
+        title: t('common.success'),
         description: "Role removed successfully"
       });
 
@@ -247,7 +249,7 @@ const UserManager: React.FC = () => {
     } catch (error) {
       console.error('Error removing role:', error);
       toast({
-        title: "Error",
+        title: t('common.error'),
         description: "Failed to remove role",
         variant: "destructive"
       });
@@ -289,8 +291,8 @@ const UserManager: React.FC = () => {
       }
 
       toast({
-        title: "Success",
-        description: "User information updated successfully"
+        title: t('common.success'),
+        description: t('common.updatedSuccessfully')
       });
 
       await fetchUsers();
@@ -299,8 +301,8 @@ const UserManager: React.FC = () => {
     } catch (error) {
       console.error('Error updating user:', error);
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to update user information",
+        title: t('common.error'),
+        description: error instanceof Error ? error.message : t('common.failedToUpdate'),
         variant: "destructive"
       });
     }
@@ -327,8 +329,8 @@ const UserManager: React.FC = () => {
       }
 
       toast({
-        title: "Success",
-        description: "User deleted successfully"
+        title: t('common.success'),
+        description: t('common.deletedSuccessfully')
       });
 
       await fetchUsers();
