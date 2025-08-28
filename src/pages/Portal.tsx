@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -44,7 +44,7 @@ const Portal = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { loading, isPoliceRole, isAdmin, isNDAAAdmin, roleMetadata, getGeographicScope } = useUserRole();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [metrics, setMetrics] = useState<SystemMetrics>({
     totalAddresses: 0,
     activeIncidents: 0,

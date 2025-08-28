@@ -11,12 +11,12 @@ import ApiWebhookManager from './ApiWebhookManager';
 import NotificationTester from './NotificationTester';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Shield, Hash } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 const AdminPanel: React.FC = () => {
   const { user } = useAuth();
   const { loading } = useUserRole();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
 
   if (!user) {
     return (

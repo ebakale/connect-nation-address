@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { Address } from '@/hooks/useAddresses';
 import { useToast } from '@/hooks/use-toast';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 interface AddressViewerProps {
   address?: Address | null;
@@ -27,7 +27,7 @@ interface AddressViewerProps {
 
 const AddressViewer: React.FC<AddressViewerProps> = ({ address, onBack, onEdit }) => {
   const { toast } = useToast();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text).then(() => {

@@ -12,7 +12,7 @@ import {
   Activity, Users, TrendingUp, AlertCircle, Radio,
   Navigation, MessageSquare, Flag
 } from "lucide-react";
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
 
 import IncidentMap from '@/components/IncidentMap';
@@ -65,7 +65,7 @@ interface DashboardStats {
 const PoliceDashboard = () => {
   const { user, signOut } = useAuth();
   const { role, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isPoliceAdmin, isAdmin, loading, hasPoliceAccess, hasPoliceAdminAccess, isUnitLead } = useUserRole();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   
   // Dashboard state
   const [activeTab, setActiveTab] = useState<string>('');

@@ -4,7 +4,7 @@ import { MapPin, Search, FileText, AlertCircle, Clock, LogOut, Phone } from "luc
 import EmergencyContacts from "@/components/EmergencyContacts";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
 
 import AddressSearch from "@/components/AddressSearch";
@@ -28,7 +28,7 @@ interface SearchResult {
 const CitizenDashboard = () => {
   const { role, loading } = useUserRole();
   const { user, signOut } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [searchOpen, setSearchOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<SearchResult | null>(null);
   const [showMapView, setShowMapView] = useState(false);

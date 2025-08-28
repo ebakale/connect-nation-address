@@ -374,5 +374,20 @@
   "loginRequired": "Login Required",
   "goToDashboard": "Go to Dashboard",
   "goToLoginPage": "Go to Login Page",
-  "enterSystem": "Enter System"
+  "enterSystem": "Enter System",
+  
+  "pleaseLogInToEditProfile": "Please log in to edit your profile",
+  "profileInformation": "Profile Information",
+  "updatePersonalInformation": "Update your personal information",
+  "fullName": "Full Name",
+  "enterFullName": "Enter your full name",
+  "enterPhoneNumber": "Enter your phone number",
+  "updating": "Updating...",
+  "updateProfile": "Update Profile",
+  "changePassword": "Change Password",
+  "updateAccountPassword": "Update your account password",
+  "newPassword": "New Password",
+  "enterNewPassword": "Enter new password",
+  "confirmNewPassword": "Confirm New Password",
+  "confirmNewPasswordPlaceholder": "Confirm your new password"
 }

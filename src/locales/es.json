@@ -374,5 +374,20 @@
   "loginRequired": "Inicio de Sesión Requerido",
   "goToDashboard": "Ir al Tablero",
   "goToLoginPage": "Ir a la Página de Inicio de Sesión",
-  "enterSystem": "Ingresar al Sistema"
+  "enterSystem": "Ingresar al Sistema",
+  
+  "pleaseLogInToEditProfile": "Por favor inicie sesión para editar su perfil",
+  "profileInformation": "Información del Perfil",
+  "updatePersonalInformation": "Actualice su información personal",
+  "fullName": "Nombre Completo",
+  "enterFullName": "Ingrese su nombre completo",
+  "enterPhoneNumber": "Ingrese su número de teléfono",
+  "updating": "Actualizando...",
+  "updateProfile": "Actualizar Perfil",
+  "changePassword": "Cambiar Contraseña",
+  "updateAccountPassword": "Actualice la contraseña de su cuenta",
+  "newPassword": "Nueva Contraseña",
+  "enterNewPassword": "Ingrese nueva contraseña",
+  "confirmNewPassword": "Confirmar Nueva Contraseña",
+  "confirmNewPasswordPlaceholder": "Confirme su nueva contraseña"
 }
