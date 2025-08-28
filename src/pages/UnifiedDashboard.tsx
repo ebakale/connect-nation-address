@@ -10,9 +10,8 @@ import {
   Shield, Users, Settings, BarChart3, LogOut, Search, FileText, Clock, AlertCircle,
   Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map, User, Phone
 } from "lucide-react";
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 import Footer from '@/components/Footer';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 import { useNavigate } from "react-router-dom";
 
@@ -91,7 +90,7 @@ const UnifiedDashboard = () => {
     isPoliceRole
   } = useUserRole();
   const { user, signOut } = useAuth();
-  const { t } = useTranslation('dashboard');
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   // Redirect police roles to dedicated dashboard if they land here
@@ -313,7 +312,6 @@ const UnifiedDashboard = () => {
             </div>
 
             <div className="flex gap-2">
-              <LanguageSwitcher />
               
               <Button 
                 variant="outline" 

@@ -32,7 +32,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Address } from "@/hooks/useAddresses";
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AddressStats {
   total: number;
@@ -62,7 +62,6 @@ interface TimeSeriesData {
 }
 
 export const AnalyticsReports = () => {
-  const { t } = useTranslation('addresses');
   const [loading, setLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState("30d");
   const [addressStats, setAddressStats] = useState<AddressStats>({
@@ -77,6 +76,7 @@ export const AnalyticsReports = () => {
   const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesData[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   // Specific colors for each address type using semantic design tokens
   const typeColorMap: Record<string, string> = {
@@ -112,8 +112,8 @@ export const AnalyticsReports = () => {
     } catch (error) {
       console.error("Error fetching addresses:", error);
       toast({
-        title: t('common.error'),
-        description: t('common.failedToFetch') + " address data",
+        title: "Error",
+        description: "Failed to fetch address data",
         variant: "destructive",
       });
     } finally {

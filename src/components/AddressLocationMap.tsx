@@ -85,8 +85,8 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
       .setPopup(
         new mapboxgl.Popup({ offset: 25 })
           .setHTML(`
-              <div class="p-2">
-              <h3 class="font-semibold text-sm mb-1">{t('requestedAddress')}</h3>
+            <div class="p-2">
+              <h3 class="font-semibold text-sm mb-1">Requested Address</h3>
               <p class="text-xs">
                 ${address.building ? `${address.building}, ` : ''}${address.street}<br/>
                 ${address.city}, ${address.region}<br/>

@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { Address } from '@/hooks/useAddresses';
 import { useToast } from '@/hooks/use-toast';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AddressViewerProps {
   address?: Address | null;
@@ -27,7 +27,7 @@ interface AddressViewerProps {
 
 const AddressViewer: React.FC<AddressViewerProps> = ({ address, onBack, onEdit }) => {
   const { toast } = useToast();
-  const { t } = useTranslation('addresses');
+  const { t } = useLanguage();
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -83,7 +83,7 @@ const AddressViewer: React.FC<AddressViewerProps> = ({ address, onBack, onEdit }
     return (
       <Card>
         <CardContent className="p-8 text-center">
-          <p className="text-muted-foreground">{t('noAddressSelectedViewing')}</p>
+          <p className="text-muted-foreground">No address selected for viewing</p>
           <Button onClick={onBack} className="mt-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to List
@@ -102,9 +102,9 @@ const AddressViewer: React.FC<AddressViewerProps> = ({ address, onBack, onEdit }
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to List
           </Button>
-        <div>
-          <h2 className="text-2xl font-bold">{t('addressDetails')}</h2>
-          <p className="text-muted-foreground">{t('viewCompleteAddress')}</p>
+          <div>
+            <h2 className="text-2xl font-bold">Address Details</h2>
+            <p className="text-muted-foreground">View complete address information</p>
           </div>
         </div>
         
@@ -254,7 +254,7 @@ const AddressViewer: React.FC<AddressViewerProps> = ({ address, onBack, onEdit }
       {/* Quick Actions */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('quickActions')}</CardTitle>
+          <CardTitle>Quick Actions</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

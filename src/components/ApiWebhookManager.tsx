@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -29,7 +28,6 @@ interface WebhookConfig {
 }
 
 const ApiWebhookManager: React.FC = () => {
-  const { t } = useTranslation('addresses');
   const { toast } = useToast();
   const [showApiKey, setShowApiKey] = useState<Record<string, boolean>>({});
   const [newApiKey, setNewApiKey] = useState({ name: '', service: '', key: '' });
@@ -86,8 +84,8 @@ const ApiWebhookManager: React.FC = () => {
   const handleAddApiKey = () => {
     if (!newApiKey.name || !newApiKey.service || !newApiKey.key) {
       toast({
-        title: t('common:error'),
-        description: t('common:messages.fillRequiredFields'),
+        title: "Error",
+        description: "Please fill in all required fields",
         variant: "destructive",
       });
       return;
@@ -105,16 +103,16 @@ const ApiWebhookManager: React.FC = () => {
     setNewApiKey({ name: '', service: '', key: '' });
     
     toast({
-      title: t('common:success'),
-      description: t('common:messages.apiKeyAdded'),
+      title: "Success",
+      description: "API key added successfully",
     });
   };
 
   const handleAddWebhook = () => {
     if (!newWebhook.name || !newWebhook.url || newWebhook.events.length === 0) {
       toast({
-        title: t('common:error'),
-        description: t('common:messages.fillRequiredFieldsAndSelectEvent'),
+        title: "Error",
+        description: "Please fill in all required fields and select at least one event",
         variant: "destructive",
       });
       return;
@@ -132,8 +130,8 @@ const ApiWebhookManager: React.FC = () => {
     setNewWebhook({ name: '', url: '', events: [] });
     
     toast({
-      title: t('common:success'),
-      description: t('common:messages.webhookAdded'),
+      title: "Success",
+      description: "Webhook added successfully",
     });
   };
 
@@ -144,16 +142,16 @@ const ApiWebhookManager: React.FC = () => {
   const deleteApiKey = (keyId: string) => {
     setApiKeys(apiKeys.filter(key => key.id !== keyId));
     toast({
-      title: t('common:success'),
-      description: t('common:messages.apiKeyDeleted'),
+      title: "Success",
+      description: "API key deleted successfully",
     });
   };
 
   const deleteWebhook = (webhookId: string) => {
     setWebhooks(webhooks.filter(webhook => webhook.id !== webhookId));
     toast({
-      title: t('common:success'),
-      description: t('common:messages.webhookDeleted'),
+      title: "Success",
+      description: "Webhook deleted successfully",
     });
   };
 
@@ -181,16 +179,16 @@ const ApiWebhookManager: React.FC = () => {
 
       if (response.ok) {
         toast({
-          title: t('common:success'),
-          description: t('common:messages.webhookTestSuccess'),
+          title: "Success",
+          description: "Webhook test successful",
         });
       } else {
         throw new Error('Webhook test failed');
       }
     } catch (error) {
       toast({
-        title: t('common:error'),
-        description: t('common:messages.webhookTestFailed'),
+        title: "Error",
+        description: "Webhook test failed. Please check the URL and try again.",
         variant: "destructive",
       });
     }

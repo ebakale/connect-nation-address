@@ -5,7 +5,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertTriangle, FileX } from "lucide-react";
-import { useTranslation } from 'react-i18next';
 
 interface AddressRejectionDialogProps {
   isOpen: boolean;
@@ -55,7 +54,6 @@ export const AddressRejectionDialog = ({
   itemType,
   item
 }: AddressRejectionDialogProps) => {
-  const { t } = useTranslation('addresses');
   const [selectedReason, setSelectedReason] = useState("");
   const [rejectionNotes, setRejectionNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -82,7 +80,7 @@ export const AddressRejectionDialog = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-destructive">
             <FileX className="h-5 w-5" />
-            {t('rejection.dialogTitle')} {itemType === 'request' ? t('rejection.addressRequest') : itemType === 'flagged_request' ? t('rejection.flaggedRequest') : t('rejection.flaggedAddress')}
+            Reject {itemType === 'request' ? 'Address Request' : itemType === 'flagged_request' ? 'Flagged Request' : 'Flagged Address'}
           </DialogTitle>
         </DialogHeader>
 
@@ -102,13 +100,13 @@ export const AddressRejectionDialog = ({
           <div className="flex items-start gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
             <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5 shrink-0" />
             <div className="text-sm">
-              <p className="text-yellow-800 font-medium">{t('rejection.important')}</p>
+              <p className="text-yellow-800 font-medium">Important:</p>
               <p className="text-yellow-700">
                 {itemType === 'request' 
-                  ? t('rejection.requestSentBack')
+                  ? "This request will be sent back to the user with your feedback for corrections and resubmission."
                   : itemType === 'flagged_request'
-                  ? t('rejection.flaggedRequestRejected')
-                  : t('rejection.addressMarkedRejected')
+                  ? "This flagged request will be rejected. The user will need to submit a new corrected request."
+                  : "This address will be marked as rejected with your feedback. The user can address the issues and request re-verification."
                 }
               </p>
             </div>
@@ -116,10 +114,10 @@ export const AddressRejectionDialog = ({
 
           {/* Rejection Reason */}
           <div className="space-y-2">
-            <Label htmlFor="rejection-reason">{t('rejection.rejectionReason')} *</Label>
+            <Label htmlFor="rejection-reason">Rejection Reason *</Label>
             <Select value={selectedReason} onValueChange={setSelectedReason}>
               <SelectTrigger>
-                <SelectValue placeholder={t('rejection.selectReason')} />
+                <SelectValue placeholder="Select a rejection reason" />
               </SelectTrigger>
               <SelectContent>
                 {reasons.map((reason) => (
@@ -134,33 +132,33 @@ export const AddressRejectionDialog = ({
           {/* Additional Notes */}
           <div className="space-y-2">
             <Label htmlFor="rejection-notes">
-              {t('rejection.additionalNotes')} 
-              <span className="text-sm text-muted-foreground">({t('rejection.optional')})</span>
+              Additional Notes & Feedback 
+              <span className="text-sm text-muted-foreground">(Optional)</span>
             </Label>
             <Textarea
               id="rejection-notes"
               value={rejectionNotes}
               onChange={(e) => setRejectionNotes(e.target.value)}
-              placeholder={t('rejection.notesPlaceholder')}
+              placeholder="Provide specific guidance on what needs to be corrected for resubmission..."
               className="min-h-[80px]"
               maxLength={500}
             />
             <p className="text-xs text-muted-foreground">
-              {rejectionNotes.length}/500 {t('rejection.charactersLimit')}
+              {rejectionNotes.length}/500 characters
             </p>
           </div>
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose} disabled={isSubmitting}>
-            {t('cancel')}
+            Cancel
           </Button>
           <Button 
             variant="destructive" 
             onClick={handleReject}
             disabled={!selectedReason || isSubmitting}
           >
-            {isSubmitting ? t('rejection.rejecting') : t('rejection.rejectSendFeedback')}
+            {isSubmitting ? "Rejecting..." : "Reject & Send Feedback"}
           </Button>
         </DialogFooter>
       </DialogContent>

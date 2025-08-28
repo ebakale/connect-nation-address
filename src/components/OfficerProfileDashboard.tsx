@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   Shield, Star, Clock, MapPin, Phone, Mail, 
   Crown, User, Users as UsersIcon, Calendar, Award, TrendingUp,
@@ -49,7 +49,7 @@ interface OfficerProfileDashboardProps {
 
 export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = ({ onClose }) => {
   const { user } = useAuth();
-  const { t } = useTranslation('police');
+  const { t } = useLanguage();
   const [officers, setOfficers] = useState<OfficerProfile[]>([]);
   const [officerStats, setOfficerStats] = useState<Record<string, OfficerStats>>({});
   const [expandedOfficers, setExpandedOfficers] = useState<Set<string>>(new Set());

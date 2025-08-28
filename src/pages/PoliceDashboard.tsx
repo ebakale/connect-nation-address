@@ -12,9 +12,8 @@ import {
   Activity, Users, TrendingUp, AlertCircle, Radio,
   Navigation, MessageSquare, Flag
 } from "lucide-react";
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 import Footer from '@/components/Footer';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 import IncidentMap from '@/components/IncidentMap';
 import IncidentList from '@/components/IncidentList';
@@ -66,7 +65,7 @@ interface DashboardStats {
 const PoliceDashboard = () => {
   const { user, signOut } = useAuth();
   const { role, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isPoliceAdmin, isAdmin, loading, hasPoliceAccess, hasPoliceAdminAccess, isUnitLead } = useUserRole();
-  const { t } = useTranslation('police');
+  const { t } = useLanguage();
   
   // Dashboard state
   const [activeTab, setActiveTab] = useState<string>('');
@@ -536,7 +535,6 @@ const PoliceDashboard = () => {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <LanguageSwitcher />
                 <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-2">
                   <LogOut className="h-4 w-4" />
                   {t('logout')}
@@ -596,7 +594,7 @@ const PoliceDashboard = () => {
             </div>
 
             <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-              <LanguageSwitcher />
+              
               <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
                 <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline">{t('logout')}</span>

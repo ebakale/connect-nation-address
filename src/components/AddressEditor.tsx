@@ -6,7 +6,6 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Save, MapPin, CheckCircle, XCircle } from 'lucide-react';
 import { Address, useAddresses } from '@/hooks/useAddresses';
 import { useToast } from '@/hooks/use-toast';
-import { useTranslation } from 'react-i18next';
 
 interface AddressEditorProps {
   address?: Address | null;
@@ -31,7 +30,6 @@ interface EditableAddressData {
 const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }) => {
   const { updateAddressStatus } = useAddresses();
   const { toast } = useToast();
-  const { t } = useTranslation('addresses');
   const [loading, setLoading] = useState(false);
   
   const [formData, setFormData] = useState<EditableAddressData>({
@@ -73,8 +71,8 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
     // Validate required fields
     if (!formData.country || !formData.region || !formData.city || !formData.street || !formData.latitude || !formData.longitude) {
       toast({
-        title: t('validation.validationError'),
-        description: t('validation.fillRequired'),
+        title: "Validation Error",
+        description: "Please fill in all required fields",
         variant: "destructive",
       });
       return;
@@ -92,8 +90,8 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
       // For now, we're only updating the status fields that are supported by the hook
       
       toast({
-        title: t('messages.saveSuccess'),
-        description: t('messages.saveSuccess'),
+        title: "Success",
+        description: "Address updated successfully",
       });
 
       // Create updated address object for callback
@@ -107,8 +105,8 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
       onSave?.(updatedAddress);
     } catch (error) {
       toast({
-        title: t('messages.saveError'),
-        description: t('messages.saveError'),
+        title: "Error",
+        description: "Failed to update address",
         variant: "destructive",
       });
     } finally {
@@ -120,10 +118,10 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
     return (
       <Card>
         <CardContent className="p-8 text-center">
-          <p className="text-muted-foreground">{t('noAddressSelected')}</p>
+          <p className="text-muted-foreground">No address selected for editing</p>
           <Button onClick={onBack} className="mt-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            {t('backToList')}
+            Back to List
           </Button>
         </CardContent>
       </Card>
@@ -136,11 +134,11 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
       <div className="flex items-center gap-4">
         <Button variant="ghost" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          {t('backToList')}
+          Back to List
         </Button>
         <div>
-          <h2 className="text-2xl font-bold">{t('editAddress')}</h2>
-          <p className="text-muted-foreground">{t('modifyAddressDetails')}</p>
+          <h2 className="text-2xl font-bold">Edit Address</h2>
+          <p className="text-muted-foreground">Modify address details and status</p>
         </div>
       </div>
 
@@ -165,12 +163,12 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
             {address.verified ? (
               <Badge variant="outline" className="border-success text-success">
                 <CheckCircle className="h-3 w-3 mr-1" />
-                {t('display.verified')}
+                Verified
               </Badge>
             ) : (
               <Badge variant="outline" className="border-warning text-warning">
                 <XCircle className="h-3 w-3 mr-1" />
-                {t('display.unverified')}
+                Unverified
               </Badge>
             )}
           </div>
@@ -180,7 +178,7 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
       {/* Edit Form */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('addressDetails')}</CardTitle>
+          <CardTitle>Address Details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -225,16 +223,16 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
               />
             </div>
             <div>
-              <label className="text-sm font-medium">{t('propertyType')}</label>
+              <label className="text-sm font-medium">Property Type</label>
               <select
                 value={formData.address_type}
                 onChange={(e) => setFormData(prev => ({ ...prev, address_type: e.target.value }))}
                 className="border rounded-md px-3 py-2 w-full text-sm"
               >
-                <option value="residential">{t('registration.types.residential')}</option>
-                <option value="commercial">{t('registration.types.commercial')}</option>
-                <option value="government">{t('registration.types.government')}</option>
-                <option value="landmark">{t('registration.types.other')}</option>
+                <option value="residential">Residential</option>
+                <option value="commercial">Commercial</option>
+                <option value="government">Government</option>
+                <option value="landmark">Landmark</option>
               </select>
             </div>
           </div>
@@ -263,7 +261,7 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
           </div>
 
           <div>
-            <label className="text-sm font-medium">{t('registration.form.description')}</label>
+            <label className="text-sm font-medium">Description</label>
             <Input 
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
@@ -273,7 +271,7 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
 
           {/* Status Controls */}
           <div className="space-y-3 pt-4 border-t">
-            <h4 className="font-medium">{t('addressStatus')}</h4>
+            <h4 className="font-medium">Address Status</h4>
             
             <div className="flex items-center gap-3">
               <input
@@ -306,10 +304,10 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
           <div className="flex gap-3 pt-4 border-t">
             <Button onClick={handleSave} disabled={loading} className="flex-1">
               <Save className="h-4 w-4 mr-2" />
-              {loading ? t('saving') : t('saveChanges')}
+              {loading ? 'Saving...' : 'Save Changes'}
             </Button>
             <Button variant="outline" onClick={onBack} disabled={loading}>
-              {t('cancel')}
+              Cancel
             </Button>
           </div>
         </CardContent>
@@ -318,7 +316,7 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
       {/* Current Address Info */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('currentAddressInfo')}</CardTitle>
+          <CardTitle>Current Address Information</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-sm space-y-2">

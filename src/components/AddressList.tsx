@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { useAddresses, Address } from '@/hooks/useAddresses';
 import { useToast } from '@/hooks/use-toast';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AddressListProps {
   onEditAddress?: (address: Address) => void;
@@ -30,7 +30,7 @@ interface AddressListProps {
 const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress, onViewOnMap }) => {
   const { addresses, loading, updateAddressStatus, deleteAddress } = useAddresses();
   const { toast } = useToast();
-  const { t } = useTranslation('addresses');
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'verified' | 'unverified' | 'public' | 'private'>('all');
   const [currentPage, setCurrentPage] = useState(1);
@@ -155,8 +155,8 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
       {/* Header and Controls */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">{t('managementTitle')}</h2>
-          <p className="text-muted-foreground">{t('managementDescription')}</p>
+          <h2 className="text-2xl font-bold">Address Management</h2>
+          <p className="text-muted-foreground">View and manage all registered addresses</p>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="outline">{filteredAddresses.length} addresses</Badge>
@@ -170,7 +170,7 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder={t('searchPlaceholder')}
+                placeholder="Search by UAC, street, city, building, or type..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -183,11 +183,11 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
                 onChange={(e) => setFilterStatus(e.target.value as any)}
                 className="border rounded-md px-3 py-2 text-sm"
               >
-                <option value="all">{t('allAddresses')}</option>
-                <option value="verified">{t('verifiedOnly')}</option>
-                <option value="unverified">{t('unverifiedOnly')}</option>
-                <option value="public">{t('publicOnly')}</option>
-                <option value="private">{t('privateOnly')}</option>
+                <option value="all">All Addresses</option>
+                <option value="verified">Verified Only</option>
+                <option value="unverified">Unverified Only</option>
+                <option value="public">Public Only</option>
+                <option value="private">{t('private')} Only</option>
               </select>
             </div>
           </div>
@@ -211,11 +211,11 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
         <Card>
           <CardContent className="p-8 text-center">
             <MapPin className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-lg font-semibold mb-2">{t('noAddressesFound')}</h3>
+            <h3 className="text-lg font-semibold mb-2">No addresses found</h3>
             <p className="text-muted-foreground">
               {searchQuery || filterStatus !== 'all' 
-                ? t('adjustSearch')
-                : t('registerFirst')}
+                ? 'Try adjusting your search or filter criteria.' 
+                : 'Start by registering your first address.'}
             </p>
           </CardContent>
         </Card>
@@ -353,7 +353,7 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
                         }}
                         className={`text-xs ${address.verified ? 'border-success text-success' : 'border-warning text-warning'}`}
                       >
-                        {address.verified ? t('unverify') : t('display.verified')}
+                        {address.verified ? 'Unverify' : 'Verify'}
                       </Button>
                       <Button
                         variant="outline"
@@ -364,7 +364,7 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
                         }}
                         className={`text-xs ${address.public ? 'border-primary text-primary' : ''}`}
                       >
-                        {address.public ? t('makePrivate') : t('display.public')}
+                        {address.public ? `Make ${t('private')}` : `Make ${t('public')}`}
                       </Button>
                     </div>
                   </div>
@@ -384,7 +384,7 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             disabled={currentPage === 1}
           >
-            {t('previous')}
+            Previous
           </Button>
           
           <div className="flex items-center gap-1">
@@ -407,7 +407,7 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
             disabled={currentPage === totalPages}
           >
-            {t('next')}
+            Next
           </Button>
         </div>
       )}

@@ -7,13 +7,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Shield, Users } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 import Footer from '@/components/Footer';
 
 export const UnitsAndProfilesPage: React.FC = () => {
   const { role, loading } = useUserRole();
   const navigate = useNavigate();
-  const { t } = useTranslation('common');
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('units');
 
   if (loading) {

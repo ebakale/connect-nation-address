@@ -11,7 +11,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { MapPin, Camera, Upload, X, Image } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import CameraCapture from '@/components/CameraCapture';
-import { useTranslation } from 'react-i18next';
 interface AddressRequestFormProps {
   onCancel?: () => void;
   onSuccess?: () => void;
@@ -69,7 +68,6 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
-  const { t } = useTranslation('addresses');
 
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -108,8 +106,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     if (file) {
       if (file.size > 5 * 1024 * 1024) { // 5MB limit
         toast({
-          title: t('addresses:fileUpload.fileTooLarge'),
-          description: t('addresses:fileUpload.selectSmallerImage'),
+          title: "File too large",
+          description: "Please select an image smaller than 5MB",
           variant: "destructive"
         });
         return;
@@ -117,8 +115,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
 
       if (!file.type.startsWith('image/')) {
         toast({
-          title: t('addresses:fileUpload.invalidFileType'),
-          description: t('addresses:fileUpload.selectImageFile'),
+          title: "Invalid file type",
+          description: "Please select an image file",
           variant: "destructive"
         });
         return;
@@ -177,7 +175,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     if (file) {
       if (file.size > 10 * 1024 * 1024) { // 10MB limit for documents
         toast({
-          title: t('addresses:fileUpload.fileTooLarge'),
+          title: "File too large",
           description: "Please select a document smaller than 10MB",
           variant: "destructive"
         });
@@ -187,7 +185,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
       const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
       if (!allowedTypes.includes(file.type)) {
         toast({
-          title: t('addresses:fileUpload.invalidFileType'),
+          title: "Invalid file type",
           description: "Please select a PDF or image file",
           variant: "destructive"
         });
@@ -250,7 +248,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     
     if (!user) {
       toast({
-        title: t('addresses:common.error'),
+        title: "Error",
         description: "You must be logged in to submit requests",
         variant: "destructive"
       });
@@ -260,8 +258,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     // Validate required fields
     if (!formData.region || !formData.city || !formData.street || !formData.justification) {
       toast({
-        title: t('addresses:common.error'),
-        description: t('addresses:fileUpload.fillAllRequired'),
+        title: "Error",
+        description: "Please fill in all required fields",
         variant: "destructive"
       });
       return;
@@ -309,7 +307,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
       if (error) throw error;
 
       toast({
-        title: t('addresses:common.success'),
+        title: "Success",
         description: "Address request submitted successfully! You can track its status in the Address Status section."
       });
 
@@ -336,7 +334,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     } catch (error: any) {
       console.error('Error submitting request:', error);
       toast({
-        title: t('addresses:common.error'),
+        title: "Error",
         description: error.message || "Failed to submit address request",
         variant: "destructive"
       });
@@ -348,16 +346,16 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>{t('submitAddressRequest')}</CardTitle>
+        <CardTitle>Submit Address Request</CardTitle>
         <CardDescription>
-          {t('requestNewAddress')}
+          Request a new address to be added to the national addressing system
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="country">{t('registration.form.country')}</Label>
+              <Label htmlFor="country">Country</Label>
               <Input
                 id="country"
                 value={formData.country}
@@ -431,33 +429,33 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="address_type">{t('registration.form.addressType')}</Label>
+              <Label htmlFor="address_type">Address Type</Label>
               <Select value={formData.address_type} onValueChange={(value) => setFormData(prev => ({ ...prev, address_type: value }))}>
                 <SelectTrigger className="bg-background">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-background border shadow-lg z-50">
-                  <SelectItem value="residential">{t('registration.types.residential')}</SelectItem>
-                  <SelectItem value="commercial">{t('registration.types.commercial')}</SelectItem>
-                  <SelectItem value="industrial">{t('industrial')}</SelectItem>
-                  <SelectItem value="government">{t('registration.types.government')}</SelectItem>
-                  <SelectItem value="educational">{t('educational')}</SelectItem>
-                  <SelectItem value="healthcare">{t('healthcare')}</SelectItem>
-                  <SelectItem value="other">{t('other')}</SelectItem>
+                  <SelectItem value="residential">Residential</SelectItem>
+                  <SelectItem value="commercial">Commercial</SelectItem>
+                  <SelectItem value="industrial">Industrial</SelectItem>
+                  <SelectItem value="government">Government</SelectItem>
+                  <SelectItem value="educational">Educational</SelectItem>
+                  <SelectItem value="healthcare">Healthcare</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label htmlFor="claimant_type">{t('claimantType')}</Label>
+              <Label htmlFor="claimant_type">Claimant Type</Label>
               <Select value={formData.claimant_type} onValueChange={(value) => setFormData(prev => ({ ...prev, claimant_type: value }))}>
                 <SelectTrigger className="bg-background">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-background border shadow-lg z-50">
-                  <SelectItem value="owner">{t('propertyOwner')}</SelectItem>
-                  <SelectItem value="resident">{t('resident')}</SelectItem>
-                  <SelectItem value="representative">{t('authorizedRepresentative')}</SelectItem>
-                  <SelectItem value="other">{t('other')}</SelectItem>
+                  <SelectItem value="owner">Property Owner</SelectItem>
+                  <SelectItem value="resident">Resident</SelectItem>
+                  <SelectItem value="representative">Authorized Representative</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -659,7 +657,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
               id="justification"
               value={formData.justification}
               onChange={(e) => setFormData(prev => ({ ...prev, justification: e.target.value }))}
-              placeholder={t('addresses:registration.placeholders.justification')}
+              placeholder="Please explain why this address needs to be added to the system (e.g., new building, missing coverage, business need)"
               rows={4}
               required
             />
@@ -679,7 +677,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
         <Dialog open={cameraOpen} onOpenChange={setCameraOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{t('takePhoto')}</DialogTitle>
+              <DialogTitle>Take Photo</DialogTitle>
             </DialogHeader>
             <CameraCapture
               onCapture={(file, dataUrl) => {

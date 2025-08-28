@@ -7,7 +7,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { CalendarDays, MapPin, MessageSquare, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { format } from 'date-fns';
-import { useTranslation } from 'react-i18next';
 
 interface AddressRequest {
   id: string;
@@ -36,7 +35,6 @@ const statusConfig = {
 };
 
 export const AddressRequestStatus = () => {
-  const { t } = useTranslation('addresses');
   const [requests, setRequests] = useState<AddressRequest[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -60,8 +58,8 @@ export const AddressRequestStatus = () => {
     } catch (error: any) {
       console.error('Error fetching requests:', error);
       toast({
-        title: t('addresses:common.error'),
-        description: t('addresses:common.failedToFetch') + " address requests",
+        title: "Error",
+        description: "Failed to fetch address requests",
         variant: "destructive"
       });
     } finally {

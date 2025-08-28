@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { useAddresses } from '@/hooks/useAddresses';
 import { useToast } from '@/hooks/use-toast';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface SearchResult {
   uac: string;
@@ -47,7 +47,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
   const [locationError, setLocationError] = useState<string | null>(null);
   const { searchAddresses } = useAddresses();
   const { toast } = useToast();
-  const { t } = useTranslation('addresses');
+  const { t } = useLanguage();
 
   // Get current location on component mount
   useEffect(() => {
@@ -277,13 +277,13 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Navigation className="h-5 w-5 text-primary" />
-          {t('getDirectionsTitle')}
+          Get Directions
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Destination Info */}
         <div className="space-y-2">
-          <Label className="text-sm font-medium">{t('destination')}</Label>
+          <Label className="text-sm font-medium">Destination</Label>
           <div className="p-3 bg-muted rounded-lg">
             <div className="flex items-start justify-between">
               <div className="flex-1">
@@ -293,7 +293,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
                   </span>
                   {destination.verified && (
                     <Badge variant="secondary" className="text-xs">
-                      {t('display.verified')}
+                      Verified
                     </Badge>
                   )}
                 </div>
@@ -326,7 +326,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
 
         {/* Origin Selection */}
         <div className="space-y-4">
-          <Label className="text-sm font-medium">{t('startingPoint')}</Label>
+          <Label className="text-sm font-medium">Starting Point</Label>
           
           <div className="grid grid-cols-2 gap-2">
             <Button 
@@ -342,7 +342,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
               ) : (
                 <Target className="h-5 w-5" />
               )}
-              <span className="text-sm">{t('currentLocation')}</span>
+              <span className="text-sm">Current Location</span>
             </Button>
             <Button 
               variant={originType === 'uac' ? 'default' : 'outline'}
@@ -350,7 +350,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
               className="h-auto p-3 flex flex-col items-center gap-2"
             >
               <Search className="h-5 w-5" />
-              <span className="text-sm">{t('registration.form.street')}</span>
+              <span className="text-sm">Address/UAC</span>
             </Button>
           </div>
 
@@ -367,7 +367,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
                 <div className="p-3 bg-muted rounded-lg">
                   <div className="flex items-center gap-2 mb-1">
                     <CheckCircle className="h-4 w-4 text-green-500" />
-                    <span className="text-sm font-medium text-foreground">{t('currentLocation')}</span>
+                    <span className="text-sm font-medium text-foreground">Current Location</span>
                   </div>
                   <span className="text-xs text-muted-foreground flex items-center gap-1">
                     <MapPin className="h-3 w-3" />
@@ -410,7 +410,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
               {/* Search Results */}
               {searchResults.length > 0 && !originAddress && (
                 <div className="space-y-2 max-h-60 overflow-y-auto">
-                  <Label className="text-xs text-muted-foreground">{t('searchResults')}</Label>
+                  <Label className="text-xs text-muted-foreground">Search Results</Label>
                   {searchResults.map((result, index) => (
                     <div 
                       key={index}

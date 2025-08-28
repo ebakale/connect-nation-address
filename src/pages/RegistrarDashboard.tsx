@@ -8,14 +8,14 @@ import { AddressPublishingQueue } from "@/components/AddressPublishingQueue";
 import { AddressUnpublishingQueue } from "@/components/AddressUnpublishingQueue";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 import Footer from '@/components/Footer';
 
 
 const RegistrarDashboard = () => {
   const { role, loading, getGeographicScope } = useUserRole();
   const { user, signOut } = useAuth();
-  const { t } = useTranslation('dashboard');
+  const { t } = useLanguage();
   const [publishOpen, setPublishOpen] = useState(false);
   const [unpublishOpen, setUnpublishOpen] = useState(false);
 

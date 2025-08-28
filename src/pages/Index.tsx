@@ -5,10 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useUserRole } from '@/hooks/useUserRole';
 import Footer from '@/components/Footer';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 // Import professional images
 import heroImage from '@/assets/hero-address-system.jpg';
@@ -20,7 +19,7 @@ import EmergencyAlertProcessor from '@/components/EmergencyAlertProcessor';
 const Index = () => {
   const [activeSection, setActiveSection] = useState('overview');
   const { user, loading } = useAuth();
-  const { t } = useTranslation('common');
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { isPoliceRole } = useUserRole();
 
@@ -38,12 +37,12 @@ const Index = () => {
   // Main page is always accessible regardless of authentication status
 
 const navigationItems = [
-    { id: 'overview', label: t('common:overview'), icon: MapPin },
-    { id: 'about', label: t('common:about'), icon: Users },
-    { id: 'emergency', label: t('common:emergency'), icon: Shield },
-    { id: 'help', label: t('common:help'), icon: HelpCircle },
-    { id: 'manual', label: t('common:manual'), icon: Book },
-    { id: 'login', label: t('common:login'), icon: LogIn },
+    { id: 'overview', label: t('overview'), icon: MapPin },
+    { id: 'about', label: t('about'), icon: Users },
+    { id: 'emergency', label: t('emergency'), icon: Shield },
+    { id: 'help', label: t('help'), icon: HelpCircle },
+    { id: 'manual', label: t('manual'), icon: Book },
+    { id: 'login', label: t('login'), icon: LogIn },
   ];
 
   const renderContent = () => {
@@ -97,7 +96,7 @@ const navigationItems = [
                        size="lg"
                      >
                        <LogIn className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                       {t('common:accessPlatform')}
+                       {t('accessPlatform')}
                      </Button>
                      <Button 
                        onClick={() => setActiveSection('about')}
@@ -106,7 +105,7 @@ const navigationItems = [
                        size="lg"
                      >
                        <Globe className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                       {t('common:learnMore')}
+                       {t('learnMore')}
                      </Button>
                    </div>
 
@@ -516,28 +515,30 @@ const navigationItems = [
         return (
           <div className="space-y-8">
             <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold">{t('common:platformUserManual')}</h2>
+              <h2 className="text-3xl font-bold">{t('platformUserManual')}</h2>
               <p className="text-lg text-muted-foreground">
-                {t('common:manualIntro')}
+                Comprehensive guide for using both Address Registry and Emergency Management systems.
               </p>
             </div>
 
             <div className="space-y-6">
               <Card className="shadow-card">
                 <CardHeader>
-                  <CardTitle>{t('common:manualGettingStarted')}</CardTitle>
+                  <CardTitle>Getting Started</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <h4 className="font-semibold">{t('common:manualAccountRegistration')}</h4>
+                    <h4 className="font-semibold">1. Account Registration</h4>
                     <p className="text-sm text-muted-foreground">
-                      {t('common:manualAccountRegistrationDesc')}
+                      Create an account using your email address and a secure password. 
+                      Verify your email to activate your account.
                     </p>
                   </div>
                   <div className="space-y-2">
-                    <h4 className="font-semibold">{t('common:manualProfileSetup')}</h4>
+                    <h4 className="font-semibold">2. Profile Setup</h4>
                     <p className="text-sm text-muted-foreground">
-                      {t('common:manualProfileSetupDesc')}
+                      Complete your profile with accurate personal information. 
+                      This helps us verify your identity for address submissions.
                     </p>
                   </div>
                 </CardContent>
@@ -545,31 +546,34 @@ const navigationItems = [
 
               <Card className="shadow-card">
                 <CardHeader>
-                  <CardTitle>{t('common:manualAddressRegistrationProcess')}</CardTitle>
+                  <CardTitle>Address Registration Process</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <h4 className="font-semibold">{t('common:manualStep1LocationInfo')}</h4>
+                    <h4 className="font-semibold">Step 1: Location Information</h4>
                     <p className="text-sm text-muted-foreground">
-                      {t('common:manualStep1LocationInfoDesc')}
+                      Select the correct province and city, then provide street and building details.
                     </p>
                   </div>
                   <div className="space-y-2">
-                    <h4 className="font-semibold">{t('common:manualStep2Coordinates')}</h4>
+                    <h4 className="font-semibold">Step 2: Coordinates</h4>
                     <p className="text-sm text-muted-foreground">
-                      {t('common:manualStep2CoordinatesDesc')}
+                      Use the "Get Current Location" button or manually enter GPS coordinates. 
+                      Accurate coordinates are essential for verification.
                     </p>
                   </div>
                   <div className="space-y-2">
-                    <h4 className="font-semibold">{t('common:manualStep3Documentation')}</h4>
+                    <h4 className="font-semibold">Step 3: Documentation</h4>
                     <p className="text-sm text-muted-foreground">
-                      {t('common:manualStep3DocumentationDesc')}
+                      Upload a clear photo of the location and provide any additional description 
+                      that helps identify the address.
                     </p>
                   </div>
                   <div className="space-y-2">
-                    <h4 className="font-semibold">{t('common:manualStep4Verification')}</h4>
+                    <h4 className="font-semibold">Step 4: Verification</h4>
                     <p className="text-sm text-muted-foreground">
-                      {t('common:manualStep4VerificationDesc')}
+                      Submit your request for review. Field agents will verify the location 
+                      and registrars will approve the final address code.
                     </p>
                   </div>
                 </CardContent>
@@ -767,7 +771,6 @@ const navigationItems = [
               <span className="text-2xl font-bold text-gradient">{t('connectEGPlatform')}</span>
             </div>
             <div className="flex items-center gap-3">
-              <LanguageSwitcher />
               
               {user ? (
                 <Button 
