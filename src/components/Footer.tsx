@@ -1,8 +1,7 @@
-import React from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
-  const { t } = useLanguage();
+  const { t } = useTranslation('common');
 
   return (
     <footer className="border-t border-primary/20 glass py-12 mt-20">

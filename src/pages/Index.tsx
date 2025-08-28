@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { useUserRole } from '@/hooks/useUserRole';
 import Footer from '@/components/Footer';
 
@@ -19,7 +19,7 @@ import EmergencyAlertProcessor from '@/components/EmergencyAlertProcessor';
 const Index = () => {
   const [activeSection, setActiveSection] = useState('overview');
   const { user, loading } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation('common');
   const navigate = useNavigate();
   const { isPoliceRole } = useUserRole();
 
