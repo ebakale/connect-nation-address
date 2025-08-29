@@ -153,7 +153,9 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
         totalUnits: unitsData?.length || 0,
         totalOfficers: allOfficers?.length || 0,
         availableUnits: unitsData?.filter(unit => unit.status === 'available').length || 0,
-        onDutyUnits: unitsData?.filter(unit => unit.status === 'dispatched' || unit.status === 'busy').length || 0,
+        onDutyUnits: unitsData?.filter(unit => 
+          ['dispatched', 'busy', 'on_duty', 'on_call'].includes(unit.status)
+        ).length || 0,
         unassignedOfficers: (allOfficers?.length || 0) - assignedOfficers.length
       };
       
