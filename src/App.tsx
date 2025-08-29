@@ -9,8 +9,6 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { useUnifiedAuth } from "./hooks/useUnifiedAuth";
 import { OfflineIndicator } from "./components/OfflineIndicator";
 import Index from "./pages/Index";
-import Auth from "./pages/Auth";
-import OfflineAuth from "./pages/OfflineAuth";
 import UnifiedAuth from "./pages/UnifiedAuth";
 import NotFound from "./pages/NotFound";
 import Portal from "./pages/Portal";
@@ -50,8 +48,6 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<UnifiedAuth />} />
-              <Route path="/auth-online" element={<Auth />} />
-              <Route path="/offline-auth" element={<OfflineAuth />} />
               <Route path="/portal" element={<Portal />} />
               <Route path="/dashboard" element={<ProtectedRoute><UnifiedDashboard /></ProtectedRoute>} />
               <Route path="/police" element={<ProtectedRoute><PoliceDashboard /></ProtectedRoute>} />
