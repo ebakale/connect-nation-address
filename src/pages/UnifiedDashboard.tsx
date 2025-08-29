@@ -34,7 +34,6 @@ import DraftManager from "@/components/DraftManager";
 import FieldMap from "@/components/FieldMap";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
 import { SystemManualPDF } from "@/components/SystemManualPDF";
-import GovernmentPresentationPDF from "@/components/GovernmentPresentationPDF";
 import EmergencyContacts from "@/components/EmergencyContacts";
 
 interface SearchResult {
@@ -452,7 +451,6 @@ const UnifiedDashboard = () => {
                   </p>
                   <RolesDocumentGenerator />
                   <SystemManualPDF />
-                  <GovernmentPresentationPDF />
                 </div>
               </CardContent>
             </Card>

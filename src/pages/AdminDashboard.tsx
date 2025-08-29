@@ -6,7 +6,6 @@ import { useAuth } from "@/hooks/useAuth";
 import AdminPanel from "@/components/AdminPanel";
 import { Shield, Users, Settings, BarChart3, LogOut, FileText } from "lucide-react";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
-import GovernmentPresentationPDF from "@/components/GovernmentPresentationPDF";
 import { useLanguage } from '@/contexts/LanguageContext';
 import Footer from '@/components/Footer';
 
@@ -141,10 +140,6 @@ const AdminDashboard = () => {
               </div>
             </CardContent>
           </Card>
-        </div>
-
-        <div className="mb-8">
-          <GovernmentPresentationPDF />
         </div>
 
         <div className="max-w-full overflow-hidden">
