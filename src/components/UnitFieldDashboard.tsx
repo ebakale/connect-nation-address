@@ -840,26 +840,35 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
 
     setIsUpdatingLocation(true);
     try {
+      // If on web, check browser permission state first for clearer UX
+      if ('permissions' in navigator && typeof (navigator as any).permissions.query === 'function') {
+        try {
+          const perm = await (navigator as any).permissions.query({ name: 'geolocation' as PermissionName });
+          if (perm.state === 'denied') {
+            throw new Error('Browser location permission denied. Please allow location access in your browser settings (click the lock icon) and try again.');
+          }
+        } catch {}
+      }
+
       let latitude: number | null = null;
       let longitude: number | null = null;
       try {
-        // Try Capacitor Geolocation first
+        // Try Capacitor Geolocation first (mobile & web)
         const perm = await Geolocation.requestPermissions();
-        // Capacitor v7 returns { location: 'granted' | 'denied' } on web/android
-        // iOS may return { location: 'granted' } as well
-        // Proceed if granted or if object has any granted field
         if ((perm as any)?.location === 'granted') {
           const pos = await Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 15000 });
           latitude = pos.coords.latitude;
           longitude = pos.coords.longitude;
         }
-      } catch {}
+      } catch (e) {
+        // Ignore and fall back to browser
+      }
 
       if (latitude === null || longitude === null) {
         // Fallback to browser geolocation
         const position = await new Promise<GeolocationPosition>((resolve, reject) => {
           if (!('geolocation' in navigator)) {
-            reject(new Error('Geolocation not supported'));
+            reject(new Error('Geolocation is not supported in this environment.'));
             return;
           }
           navigator.geolocation.getCurrentPosition(resolve, reject, {
@@ -878,7 +887,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
           search_query: '' 
         });
 
-      let nearestUAC = null;
+      let nearestUAC = null as any;
       let minDistance = Infinity;
 
       if (nearbyAddresses) {
@@ -888,7 +897,6 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
               latitude, longitude,
               Number(address.latitude), Number(address.longitude)
             );
-            
             if (distance <= 20 && distance < minDistance) {
               minDistance = distance;
               nearestUAC = address;
@@ -917,18 +925,19 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
       await fetchUnitInfo();
       
       toast({
-        title: "Location Updated",
+        title: 'Location Updated',
         description: nearestUAC 
           ? `Located near ${nearestUAC.uac} (${minDistance.toFixed(0)}m away)`
-          : "GPS coordinates updated successfully"
+          : 'GPS coordinates updated successfully'
       });
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('GPS error:', error);
+      const msg = error?.message || 'Failed to get current location. If you are in a browser preview, allow location for the page (or open in a new tab).';
       toast({
-        title: "GPS Error",
-        description: "Failed to get current location. Please try manual update.",
-        variant: "destructive"
+        title: 'GPS Error',
+        description: msg,
+        variant: 'destructive'
       });
     } finally {
       setIsUpdatingLocation(false);
