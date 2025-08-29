@@ -11,7 +11,7 @@ import {
   Shield, AlertTriangle, Clock, MapPin, Phone, User, 
   LogOut, Settings, Bell, CheckCircle, XCircle, Eye,
   Activity, Users, TrendingUp, AlertCircle, Radio,
-  Navigation, MessageSquare, Flag
+  Navigation, MessageSquare, Flag, Award
 } from "lucide-react";
 import { useLanguage } from '@/contexts/LanguageContext';
 import Footer from '@/components/Footer';
@@ -32,6 +32,8 @@ import { RequestBackupDialog } from '@/components/RequestBackupDialog';
 import { BackupRequestsPanel } from '@/components/BackupRequestsPanel';
 import DispatcherCommunications from '@/components/DispatcherCommunications';
 import { EnhancedSyncStatus } from '@/components/EnhancedSyncStatus';
+import { UnitLeadershipDashboard } from '@/components/UnitLeadershipDashboard';
+import { UnitPerformanceAnalytics } from '@/components/UnitPerformanceAnalytics';
 import { toast } from "sonner";
 
 interface EmergencyIncident {
@@ -628,7 +630,7 @@ const PoliceDashboard = () => {
                   </TabsTrigger>
                 </TabsList>
               ) : (
-                <TabsList className="grid grid-cols-2 lg:grid-cols-4 h-9">
+                <TabsList className="grid grid-cols-2 lg:grid-cols-5 h-9">
                   {!hasPoliceAdminAccess && !isPoliceSupervisor && isPoliceOperator && (
                     <TabsTrigger value="field" className="text-sm">
                       <Radio className="h-4 w-4 mr-2" />
@@ -646,12 +648,18 @@ const PoliceDashboard = () => {
                       {t('coordinationCenter')}
                     </TabsTrigger>
                   ) : null}
-                  {(isPoliceSupervisor || isAdmin) && (
-                    <TabsTrigger value="management" className="text-sm">
-                      <Users className="h-4 w-4 mr-2" />
-                      Management
-                    </TabsTrigger>
-                  )}
+                   {(isPoliceSupervisor || isAdmin) && (
+                     <TabsTrigger value="leadership" className="text-sm">
+                       <Award className="h-4 w-4 mr-2" />
+                       Leadership
+                     </TabsTrigger>
+                   )}
+                   {(isPoliceSupervisor || isAdmin) && (
+                     <TabsTrigger value="management" className="text-sm">
+                       <Users className="h-4 w-4 mr-2" />
+                       Management
+                     </TabsTrigger>
+                   )}
                   {hasPoliceAdminAccess && (
                     <TabsTrigger value="admin" className="text-sm">
                       <Settings className="h-4 w-4 mr-2" />
@@ -1057,6 +1065,38 @@ const PoliceDashboard = () => {
             </TabsContent>
           )}
 
+
+          {/* Leadership Tab - Supervisors and Unit Leads */}
+          {(isPoliceSupervisor || isAdmin || isUnitLead) && (
+            <TabsContent value="leadership" className="space-y-6">
+              <div className="border-b pb-4">
+                <div className="flex items-center gap-4 mb-2">
+                  <Badge variant="outline" className="flex items-center gap-2">
+                    <Award className="h-3 w-3" />
+                    Unit Leadership Tools
+                  </Badge>
+                </div>
+                <p className="text-muted-foreground">
+                  Manage your units, analyze performance, and coordinate team operations
+                </p>
+              </div>
+
+              <Tabs defaultValue="dashboard" className="space-y-4">
+                <TabsList>
+                  <TabsTrigger value="dashboard">Team Management</TabsTrigger>
+                  <TabsTrigger value="performance">Performance Analytics</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="dashboard">
+                  <UnitLeadershipDashboard />
+                </TabsContent>
+
+                <TabsContent value="performance">
+                  <UnitPerformanceAnalytics />
+                </TabsContent>
+              </Tabs>
+            </TabsContent>
+          )}
 
           {/* Management Tab - Supervisors Only */}
           {(isPoliceSupervisor || isAdmin) && (
