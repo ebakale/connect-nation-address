@@ -7,15 +7,22 @@ const corsHeaders = {
 }
 
 interface CommunicationRequest {
-  action: 'send_message' | 'acknowledge_message' | 'get_messages';
+  action?: 'send_message' | 'acknowledge_message' | 'get_messages';
+  type?: 'broadcast_alert';
   message_content?: string;
   message_type?: string;
   is_radio_code?: boolean;
   radio_code?: string;
   priority_level?: number;
+  priority?: string;
   to_user_id?: string;
   message_id?: string;
   unit_id?: string;
+  alert_type?: string;
+  subject?: string;
+  message?: string;
+  recipient_units?: string[];
+  sender_type?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -73,7 +80,121 @@ const handler = async (req: Request): Promise<Response> => {
       )
     }
 
-    const { action, message_content, message_type, is_radio_code, radio_code, priority_level, to_user_id, message_id, unit_id }: CommunicationRequest = await req.json()
+    const requestBody = await req.json()
+    const { 
+      action, 
+      type, 
+      message_content, 
+      message_type, 
+      is_radio_code, 
+      radio_code, 
+      priority_level, 
+      priority,
+      to_user_id, 
+      message_id, 
+      unit_id,
+      alert_type,
+      subject,
+      message,
+      recipient_units,
+      sender_type
+    }: CommunicationRequest = requestBody
+
+    // Handle broadcast alert requests
+    if (type === 'broadcast_alert') {
+      if (!subject || !message || !recipient_units || recipient_units.length === 0) {
+        return new Response(
+          JSON.stringify({ error: 'Subject, message, and recipient units are required for broadcast alerts' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+
+      // Get unit member information for recipient units
+      const { data: unitMembers, error: membersError } = await supabaseClient
+        .from('emergency_unit_members')
+        .select('officer_id, emergency_units!inner(unit_code)')
+        .in('unit_id', recipient_units)
+
+      if (membersError) {
+        console.error('Error fetching unit members:', membersError)
+        return new Response(
+          JSON.stringify({ error: 'Failed to fetch unit members' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+
+      // Convert priority string to number
+      const priorityNumber = priority === 'high' ? 1 : priority === 'medium' ? 2 : 3
+
+      // Create broadcast communications for each unit
+      const communications = recipient_units.map(unitId => ({
+        from_user_id: user.id,
+        from_unit_id: null, // Broadcast from dispatch
+        message_type: 'broadcast_alert',
+        message_content: `[${alert_type?.toUpperCase()}] ${subject}: ${message}`,
+        priority_level: priorityNumber,
+        metadata: {
+          alert_type,
+          subject,
+          sender_type: sender_type || 'emergency_operator',
+          broadcast_timestamp: new Date().toISOString(),
+          target_unit_id: unitId
+        }
+      }))
+
+      // Insert all communications
+      const { data: insertedComms, error: insertError } = await supabaseClient
+        .from('unit_communications')
+        .insert(communications)
+        .select()
+
+      if (insertError) {
+        console.error('Error inserting broadcast communications:', insertError)
+        return new Response(
+          JSON.stringify({ error: 'Failed to send broadcast alert' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+
+      // Create emergency notifications for all unit members
+      if (unitMembers && unitMembers.length > 0) {
+        const notifications = unitMembers.map(member => ({
+          user_id: member.officer_id,
+          type: 'broadcast_alert',
+          title: `${alert_type?.toUpperCase()} Alert`,
+          message: `${subject}: ${message}`,
+          priority_level: priorityNumber,
+          metadata: {
+            alert_type,
+            subject,
+            sender_id: user.id,
+            broadcast_timestamp: new Date().toISOString()
+          }
+        }))
+
+        const { error: notificationError } = await supabaseClient
+          .from('emergency_notifications')
+          .insert(notifications)
+
+        if (notificationError) {
+          console.warn('Error creating notifications:', notificationError)
+          // Don't fail the broadcast if notifications fail
+        }
+      }
+
+      console.log(`Broadcast alert sent to ${recipient_units.length} units by user ${user.id}`)
+
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          communications: insertedComms,
+          units_notified: recipient_units.length,
+          officers_notified: unitMembers?.length || 0,
+          message: 'Broadcast alert sent successfully' 
+        }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
 
     switch (action) {
       case 'send_message': {
