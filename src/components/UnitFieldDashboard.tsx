@@ -852,59 +852,89 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
 
     setIsUpdatingLocation(true);
     try {
-      // Check if we're in an iframe (editor preview)
       const isInIframe = window !== window.top;
-      
       if (isInIframe) {
         throw new Error('GPS location is not available in the editor preview. Please open the app in a new browser tab to use GPS functionality.');
       }
 
-      // If on web, check browser permission state first for clearer UX
+      // Require HTTPS for browser geolocation (except localhost)
+      if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+        throw new Error('Location only works over HTTPS. Please open the secure (https) version of this site.');
+      }
+
+      // Browser permission pre-check (for clearer messaging)
       if ('permissions' in navigator && typeof (navigator as any).permissions.query === 'function') {
         try {
           const perm = await (navigator as any).permissions.query({ name: 'geolocation' as PermissionName });
           if (perm.state === 'denied') {
-            throw new Error('Browser location permission denied. Please allow location access in your browser settings (click the lock icon) and try again.');
+            throw new Error('Browser location permission denied. Click the lock icon in the address bar and allow Location, then try again.');
           }
         } catch {}
       }
 
+      // Helper to get position via browser with robust fallbacks
+      const browserGetPosition = async (): Promise<GeolocationPosition> => {
+        if (!('geolocation' in navigator)) throw new Error('Geolocation API not available in this browser.');
+
+        // First attempt: getCurrentPosition (fast path)
+        try {
+          const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+              enableHighAccuracy: true,
+              timeout: 20000,
+              maximumAge: 0,
+            });
+          });
+          return pos;
+        } catch (err: any) {
+          // Second attempt: watchPosition to wait for first fix (better on cold start)
+          const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
+            const timer = setTimeout(() => {
+              try { navigator.geolocation.clearWatch(watchId); } catch {}
+              reject(new Error('Timed out waiting for GPS fix. Move to open sky and try again.'));
+            }, 25000);
+            const watchId = navigator.geolocation.watchPosition(
+              (p) => {
+                clearTimeout(timer);
+                try { navigator.geolocation.clearWatch(watchId); } catch {}
+                resolve(p);
+              },
+              (watchErr) => {
+                clearTimeout(timer);
+                try { navigator.geolocation.clearWatch(watchId); } catch {}
+                reject(watchErr);
+              },
+              { enableHighAccuracy: true, maximumAge: 0 }
+            );
+          });
+          return pos;
+        }
+      };
+
       let latitude: number | null = null;
       let longitude: number | null = null;
+
+      // Try Capacitor first (mobile/web plugin), then browser
       try {
-        // Try Capacitor Geolocation first (mobile & web)
         const perm = await Geolocation.requestPermissions();
         if ((perm as any)?.location === 'granted') {
-          const pos = await Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 15000 });
+          const pos = await Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 20000 });
           latitude = pos.coords.latitude;
           longitude = pos.coords.longitude;
         }
-      } catch (e) {
-        // Ignore and fall back to browser
-      }
+      } catch {}
 
       if (latitude === null || longitude === null) {
-        // Fallback to browser geolocation
-        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-          if (!('geolocation' in navigator)) {
-            reject(new Error('Geolocation is not supported in this environment.'));
-            return;
-          }
-          navigator.geolocation.getCurrentPosition(resolve, reject, {
-            enableHighAccuracy: true,
-            timeout: 15000,
-            maximumAge: 0,
-          });
-        });
+        const position = await browserGetPosition();
         latitude = position.coords.latitude;
         longitude = position.coords.longitude;
       }
 
-      // Check for nearby UACs within 20 meters
-      const deltaLat = 20 / 111320; // approx degrees latitude for 20m
+      // Check for nearby UACs within 20 meters using a small bounding box then precise distance filter
+      const deltaLat = 20 / 111320; // ~degrees for 20m latitude
       const deltaLon = 20 / (111320 * Math.cos(latitude * Math.PI / 180) || 1);
 
-      const { data: nearbyAddresses, error: addrError } = await supabase
+      const { data: nearbyAddresses } = await supabase
         .from('addresses')
         .select('uac, latitude, longitude, street, building')
         .gte('latitude', latitude - deltaLat)
@@ -912,16 +942,15 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
         .gte('longitude', longitude - deltaLon)
         .lte('longitude', longitude + deltaLon);
 
-      let nearestUAC = null as any;
+      let nearestUAC: any = null;
       let minDistance = Infinity;
 
-      if (nearbyAddresses) {
+      if (nearbyAddresses && Array.isArray(nearbyAddresses)) {
         for (const address of nearbyAddresses) {
-          if (address.latitude && address.longitude) {
-            const distance = calculateDistance(
-              latitude, longitude,
-              Number(address.latitude), Number(address.longitude)
-            );
+          const aLat = Number(address.latitude);
+          const aLon = Number(address.longitude);
+          if (!isNaN(aLat) && !isNaN(aLon)) {
+            const distance = calculateDistance(latitude, longitude, aLat, aLon);
             if (distance <= 20 && distance < minDistance) {
               minDistance = distance;
               nearestUAC = address;
@@ -930,7 +959,6 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
         }
       }
 
-      // Generate location description
       let locationDescription = `GPS: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
       if (nearestUAC) {
         locationDescription = `${nearestUAC.street || 'Near'} ${nearestUAC.building || ''} (${nearestUAC.uac})`.trim();
@@ -938,32 +966,38 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
 
       const { error } = await supabase
         .from('emergency_units')
-        .update({ 
+        .update({
           current_location: locationDescription,
           location_latitude: latitude,
-          location_longitude: longitude
+          location_longitude: longitude,
+          location_updated_at: new Date().toISOString(),
         })
         .eq('id', unitInfo.id);
 
       if (error) throw error;
 
       await fetchUnitInfo();
-      
+
       toast({
         title: 'Location Updated',
-        description: nearestUAC 
+        description: nearestUAC
           ? `Located near ${nearestUAC.uac} (${minDistance.toFixed(0)}m away)`
           : 'GPS coordinates updated successfully'
       });
 
     } catch (error: any) {
       console.error('GPS error:', error);
-      const msg = error?.message || 'Failed to get current location. If you are in a browser preview, allow location for the page (or open in a new tab).';
-      toast({
-        title: 'GPS Error',
-        description: msg,
-        variant: 'destructive'
-      });
+      let msg = 'Failed to get current location.';
+      if (error?.code === 1 || /denied/i.test(error?.message || '')) {
+        msg = 'Location permission denied. Click the lock icon and allow Location, then retry.';
+      } else if (error?.code === 2) {
+        msg = 'Position unavailable. Move to an open area or check if location services are on.';
+      } else if (error?.code === 3 || /Timed out/i.test(error?.message || '')) {
+        msg = 'Location timed out. Move to open sky and try again.';
+      } else if (typeof error?.message === 'string') {
+        msg = error.message;
+      }
+      toast({ title: 'GPS Error', description: msg, variant: 'destructive' });
     } finally {
       setIsUpdatingLocation(false);
     }
