@@ -184,6 +184,27 @@ const PoliceDashboard = () => {
       const leadMembership = (unitMemberships || []).find((m: any) => m?.is_lead || m?.role === 'sergeant');
       const primaryUnit = leadMembership?.emergency_units || units[0] || null;
 
+      // If we have a primary unit, fetch its members
+      if (primaryUnit) {
+        const { data: unitMembers, error: membersError } = await supabase
+          .from('emergency_unit_members')
+          .select(`
+            id,
+            officer_id,
+            role,
+            is_lead,
+            profiles!emergency_unit_members_officer_id_fkey(full_name, email, phone)
+          `)
+          .eq('unit_id', primaryUnit.id);
+
+        if (!membersError && unitMembers) {
+          primaryUnit.emergency_unit_members = unitMembers;
+        } else {
+          console.error('Error fetching unit members:', membersError);
+          primaryUnit.emergency_unit_members = [];
+        }
+      }
+
       setUserUnits(units);
       setUserUnit(primaryUnit);
 
