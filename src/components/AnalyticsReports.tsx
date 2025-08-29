@@ -32,7 +32,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Address } from "@/hooks/useAddresses";
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AddressStats {
   total: number;
@@ -76,7 +76,7 @@ export const AnalyticsReports = () => {
   const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesData[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const { toast } = useToast();
-  const { t } = useTranslation('dashboard');
+  const { t } = useLanguage();
 
   // Specific colors for each address type using semantic design tokens
   const typeColorMap: Record<string, string> = {
