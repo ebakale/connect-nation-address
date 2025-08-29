@@ -9,7 +9,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, Plus, MapPin, Clock, User, Shield } from 'lucide-react';
+import { AlertTriangle, Plus, MapPin, Clock, User, Shield, RefreshCw } from 'lucide-react';
+import { EnhancedSyncStatus } from '@/components/EnhancedSyncStatus';
 import { toast } from 'sonner';
 
 export const OfflinePoliceIncidentManager = () => {
@@ -152,10 +153,13 @@ export const OfflinePoliceIncidentManager = () => {
           <Shield className="w-6 h-6" />
           Police Incidents (Offline)
         </h2>
-        <Button onClick={() => setShowForm(!showForm)} className="flex items-center gap-2">
-          <Plus className="w-4 h-4" />
-          New Incident
-        </Button>
+        <div className="flex items-center gap-4">
+          <EnhancedSyncStatus />
+          <Button onClick={() => setShowForm(!showForm)} className="flex items-center gap-2">
+            <Plus className="w-4 h-4" />
+            New Incident
+          </Button>
+        </div>
       </div>
 
       {showForm && (

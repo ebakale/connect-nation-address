@@ -7,6 +7,8 @@ import { toast } from 'sonner';
 export const useOfflineAddresses = () => {
   const [addresses, setAddresses] = useState<OfflineAddress[]>([]);
   const [loading, setLoading] = useState(true);
+  const [syncProgress, setSyncProgress] = useState({ current: 0, total: 0, syncing: false });
+  const [syncErrors, setSyncErrors] = useState<string[]>([]);
   const { user } = useAuth();
   const { isOnline } = useOffline();
 
@@ -52,23 +54,75 @@ export const useOfflineAddresses = () => {
     }
   };
 
-  const syncAddresses = async () => {
-    if (!isOnline) return;
+  const syncAddresses = async (retryCount = 0) => {
+    if (!isOnline) {
+      toast.error('Cannot sync while offline');
+      return;
+    }
 
     try {
+      setSyncErrors([]);
       const unsynced = await offlineStorage.getUnsyncedAddresses();
       
-      for (const address of unsynced) {
-        // Here you would normally sync with your backend
-        // For now, we'll just mark them as synced
-        await offlineStorage.markAddressSynced(address.id);
+      if (unsynced.length === 0) {
+        toast.info('No addresses to sync');
+        return;
+      }
+
+      setSyncProgress({ current: 0, total: unsynced.length, syncing: true });
+      let syncedCount = 0;
+      const errors: string[] = [];
+
+      for (let i = 0; i < unsynced.length; i++) {
+        const address = unsynced[i];
+        try {
+          setSyncProgress(prev => ({ ...prev, current: i + 1 }));
+          
+          // Here you would normally sync with your backend
+          // Simulate network delay and potential failure
+          await new Promise(resolve => setTimeout(resolve, 100));
+          
+          // For now, we'll just mark them as synced
+          await offlineStorage.markAddressSynced(address.id);
+          syncedCount++;
+        } catch (error) {
+          const errorMsg = `Failed to sync address ${address.street}: ${error}`;
+          errors.push(errorMsg);
+          console.error(errorMsg);
+        }
+      }
+
+      setSyncProgress({ current: 0, total: 0, syncing: false });
+      setSyncErrors(errors);
+
+      if (errors.length > 0) {
+        toast.warning(`Synced ${syncedCount}/${unsynced.length} addresses. ${errors.length} failed.`);
+        
+        // Auto-retry failed syncs with exponential backoff
+        if (retryCount < 3 && errors.length < unsynced.length / 2) {
+          const delay = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s
+          setTimeout(() => syncAddresses(retryCount + 1), delay);
+        }
+      } else {
+        toast.success(`Successfully synced ${syncedCount} addresses`);
       }
 
       await loadAddresses();
-      toast.success(`Synced ${unsynced.length} addresses`);
     } catch (error) {
+      setSyncProgress({ current: 0, total: 0, syncing: false });
       console.error('Failed to sync addresses:', error);
       toast.error('Failed to sync addresses');
+      setSyncErrors([`Sync failed: ${error}`]);
+    }
+  };
+
+  const getUnsyncedCount = async () => {
+    try {
+      const unsynced = await offlineStorage.getUnsyncedAddresses();
+      return unsynced.length;
+    } catch (error) {
+      console.error('Failed to get unsynced count:', error);
+      return 0;
     }
   };
 
@@ -77,13 +131,18 @@ export const useOfflineAddresses = () => {
     loading,
     saveAddress,
     syncAddresses,
-    refreshAddresses: loadAddresses
+    refreshAddresses: loadAddresses,
+    syncProgress,
+    syncErrors,
+    getUnsyncedCount
   };
 };
 
 export const useOfflineIncidents = () => {
   const [incidents, setIncidents] = useState<OfflineIncident[]>([]);
   const [loading, setLoading] = useState(true);
+  const [syncProgress, setSyncProgress] = useState({ current: 0, total: 0, syncing: false });
+  const [syncErrors, setSyncErrors] = useState<string[]>([]);
   const { isOnline } = useOffline();
 
   useEffect(() => {
@@ -128,22 +187,74 @@ export const useOfflineIncidents = () => {
     }
   };
 
-  const syncIncidents = async () => {
-    if (!isOnline) return;
+  const syncIncidents = async (retryCount = 0) => {
+    if (!isOnline) {
+      toast.error('Cannot sync while offline');
+      return;
+    }
 
     try {
+      setSyncErrors([]);
       const unsynced = await offlineStorage.getUnsyncedIncidents();
       
-      for (const incident of unsynced) {
-        // Here you would normally sync with your backend
-        await offlineStorage.markIncidentSynced(incident.id);
+      if (unsynced.length === 0) {
+        toast.info('No incidents to sync');
+        return;
+      }
+
+      setSyncProgress({ current: 0, total: unsynced.length, syncing: true });
+      let syncedCount = 0;
+      const errors: string[] = [];
+
+      for (let i = 0; i < unsynced.length; i++) {
+        const incident = unsynced[i];
+        try {
+          setSyncProgress(prev => ({ ...prev, current: i + 1 }));
+          
+          // Here you would normally sync with your backend
+          // Simulate network delay and potential failure
+          await new Promise(resolve => setTimeout(resolve, 100));
+          
+          await offlineStorage.markIncidentSynced(incident.id);
+          syncedCount++;
+        } catch (error) {
+          const errorMsg = `Failed to sync incident ${incident.incident_number}: ${error}`;
+          errors.push(errorMsg);
+          console.error(errorMsg);
+        }
+      }
+
+      setSyncProgress({ current: 0, total: 0, syncing: false });
+      setSyncErrors(errors);
+
+      if (errors.length > 0) {
+        toast.warning(`Synced ${syncedCount}/${unsynced.length} incidents. ${errors.length} failed.`);
+        
+        // Auto-retry failed syncs with exponential backoff
+        if (retryCount < 3 && errors.length < unsynced.length / 2) {
+          const delay = Math.pow(2, retryCount) * 1000;
+          setTimeout(() => syncIncidents(retryCount + 1), delay);
+        }
+      } else {
+        toast.success(`Successfully synced ${syncedCount} incidents`);
       }
 
       await loadIncidents();
-      toast.success(`Synced ${unsynced.length} incidents`);
     } catch (error) {
+      setSyncProgress({ current: 0, total: 0, syncing: false });
       console.error('Failed to sync incidents:', error);
       toast.error('Failed to sync incidents');
+      setSyncErrors([`Sync failed: ${error}`]);
+    }
+  };
+
+  const getUnsyncedCount = async () => {
+    try {
+      const unsynced = await offlineStorage.getUnsyncedIncidents();
+      return unsynced.length;
+    } catch (error) {
+      console.error('Failed to get unsynced count:', error);
+      return 0;
     }
   };
 
@@ -152,7 +263,10 @@ export const useOfflineIncidents = () => {
     loading,
     saveIncident,
     syncIncidents,
-    refreshIncidents: loadIncidents
+    refreshIncidents: loadIncidents,
+    syncProgress,
+    syncErrors,
+    getUnsyncedCount
   };
 };
 

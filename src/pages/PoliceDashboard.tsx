@@ -29,6 +29,7 @@ import { PoliceAdminDashboard } from '@/components/PoliceAdminDashboard';
 import { RequestBackupDialog } from '@/components/RequestBackupDialog';
 import { BackupRequestsPanel } from '@/components/BackupRequestsPanel';
 import DispatcherCommunications from '@/components/DispatcherCommunications';
+import { EnhancedSyncStatus } from '@/components/EnhancedSyncStatus';
 import { toast } from "sonner";
 
 interface EmergencyIncident {
@@ -727,6 +728,9 @@ const PoliceDashboard = () => {
                   <p className="text-sm text-muted-foreground">
                     {userCity ? `Coverage: ${userCity}` : 'All Areas'}
                   </p>
+                </div>
+                <div className="flex-shrink-0">
+                  <EnhancedSyncStatus />
                 </div>
               </div>
 
