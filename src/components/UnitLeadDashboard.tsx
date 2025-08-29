@@ -85,17 +85,29 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
       setActiveIncidents(incidents || []);
 
       // Calculate unit stats
-      const totalMembers = userUnit.emergency_unit_members.length;
-      const availableMembers = userUnit.emergency_unit_members.filter(m => 
-        // Add logic here for checking member availability
-        true
-      ).length;
+      const totalMembers = userUnit.emergency_unit_members?.length || 0;
+      
+      // For available members, assume members not currently assigned to active incidents are available
+      const busyMembers = incidents?.reduce((acc, incident) => {
+        return acc + (incident.assigned_units?.length || 0);
+      }, 0) || 0;
+      const availableMembers = Math.max(0, totalMembers - Math.min(busyMembers, totalMembers));
+      
+      // Calculate average response time from recent incidents
+      const respondedIncidents = incidents?.filter(i => i.responded_at && i.dispatched_at) || [];
+      const avgResponseTime = respondedIncidents.length > 0 
+        ? respondedIncidents.reduce((acc, incident) => {
+            const dispatchTime = new Date(incident.dispatched_at).getTime();
+            const responseTime = new Date(incident.responded_at).getTime();
+            return acc + ((responseTime - dispatchTime) / (1000 * 60)); // minutes
+          }, 0) / respondedIncidents.length
+        : 0;
 
       setUnitStats({
         totalMembers,
         availableMembers,
         activeIncidents: incidents?.length || 0,
-        responseTime: 0 // Calculate from recent incidents
+        responseTime: Math.round(avgResponseTime)
       });
 
     } catch (error) {
