@@ -815,8 +815,25 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                   <Button 
                     size="sm" 
                     variant="outline"
-                    onClick={() => {
-                      const url = `https://www.google.com/maps/dir/?api=1&origin=current+location&destination=${incident.location_latitude},${incident.location_longitude}`;
+                    onClick={async () => {
+                      const dest = `${incident.location_latitude},${incident.location_longitude}`;
+                      let origin: string | null = null;
+                      try {
+                        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+                          if (!('geolocation' in navigator)) return reject(new Error('Geolocation not supported'));
+                          navigator.geolocation.getCurrentPosition(resolve, reject, {
+                            enableHighAccuracy: true,
+                            timeout: 15000,
+                            maximumAge: 0,
+                          });
+                        });
+                        origin = `${position.coords.latitude},${position.coords.longitude}`;
+                      } catch (e) {
+                        // If we can't get current GPS, fall back to letting Maps pick the start
+                      }
+                      const url = origin
+                        ? `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}`
+                        : `https://www.google.com/maps/dir/?api=1&destination=${dest}`;
                       window.open(url, '_blank');
                     }}
                     className="w-full"
