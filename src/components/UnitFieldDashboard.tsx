@@ -1271,24 +1271,42 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                     variant="outline"
                     onClick={async () => {
                       const dest = `${selectedIncident.location_latitude},${selectedIncident.location_longitude}`;
-                      let origin: string | null = null;
+                      
                       try {
+                        // Request location permission and get current position
                         const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-                          if (!('geolocation' in navigator)) return reject(new Error('Geolocation not supported'));
-                          navigator.geolocation.getCurrentPosition(resolve, reject, {
-                            enableHighAccuracy: true,
-                            timeout: 15000,
-                            maximumAge: 0,
-                          });
+                          if (!('geolocation' in navigator)) {
+                            reject(new Error('Geolocation not supported'));
+                            return;
+                          }
+                          
+                          navigator.geolocation.getCurrentPosition(
+                            resolve,
+                            reject,
+                            {
+                              enableHighAccuracy: true,
+                              timeout: 10000,
+                              maximumAge: 0,
+                            }
+                          );
                         });
-                        origin = `${position.coords.latitude},${position.coords.longitude}`;
-                      } catch (e) {
-                        // If we can't get current GPS, fall back to letting Maps pick the start
+                        
+                        const origin = `${position.coords.latitude},${position.coords.longitude}`;
+                        const url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}`;
+                        window.open(url, '_blank');
+                        
+                      } catch (error) {
+                        // If GPS fails, show user a message and open maps anyway
+                        toast({
+                          title: "Location access required",
+                          description: "Please enable location services for navigation from your current position",
+                          variant: "destructive"
+                        });
+                        
+                        // Fallback: open with destination only (Maps will ask for current location)
+                        const url = `https://www.google.com/maps/dir/?api=1&destination=${dest}`;
+                        window.open(url, '_blank');
                       }
-                      const url = origin
-                        ? `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}`
-                        : `https://www.google.com/maps/dir/?api=1&destination=${dest}`;
-                      window.open(url, '_blank');
                     }}
                     className="w-full"
                   >
