@@ -1270,7 +1270,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                   <Button
                     variant="outline"
                     onClick={() => {
-                      const url = `https://www.google.com/maps/dir/?api=1&destination=${selectedIncident.location_latitude},${selectedIncident.location_longitude}`;
+                      const url = `https://www.google.com/maps/dir/?api=1&origin=current+location&destination=${selectedIncident.location_latitude},${selectedIncident.location_longitude}`;
                       window.open(url, '_blank');
                     }}
                     className="w-full"
