@@ -834,6 +834,104 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
     }
   };
 
+  const updateLocationWithGPS = async () => {
+    if (!unitInfo) return;
+
+    setIsUpdatingLocation(true);
+    try {
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        if (!('geolocation' in navigator)) {
+          reject(new Error('Geolocation not supported'));
+          return;
+        }
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0,
+        });
+      });
+
+      const { latitude, longitude } = position.coords;
+
+      // Check for nearby UACs within 20 meters
+      const { data: nearbyAddresses } = await supabase
+        .rpc('search_addresses_safely', { 
+          search_query: '' 
+        });
+
+      let nearestUAC = null;
+      let minDistance = Infinity;
+
+      if (nearbyAddresses) {
+        for (const address of nearbyAddresses) {
+          if (address.latitude && address.longitude) {
+            const distance = calculateDistance(
+              latitude, longitude,
+              Number(address.latitude), Number(address.longitude)
+            );
+            
+            if (distance <= 20 && distance < minDistance) {
+              minDistance = distance;
+              nearestUAC = address;
+            }
+          }
+        }
+      }
+
+      // Generate location description
+      let locationDescription = `GPS: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+      if (nearestUAC) {
+        locationDescription = `${nearestUAC.street || 'Near'} ${nearestUAC.building || ''} (${nearestUAC.uac})`.trim();
+      }
+
+      const { error } = await supabase
+        .from('emergency_units')
+        .update({ 
+          current_location: locationDescription,
+          location_latitude: latitude,
+          location_longitude: longitude
+        })
+        .eq('id', unitInfo.id);
+
+      if (error) throw error;
+
+      await fetchUnitInfo();
+      
+      toast({
+        title: "Location Updated",
+        description: nearestUAC 
+          ? `Located near ${nearestUAC.uac} (${minDistance.toFixed(0)}m away)`
+          : "GPS coordinates updated successfully"
+      });
+
+    } catch (error) {
+      console.error('GPS error:', error);
+      toast({
+        title: "GPS Error",
+        description: "Failed to get current location. Please try manual update.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUpdatingLocation(false);
+    }
+  };
+
+  // Helper function to calculate distance between two coordinates
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+    const R = 6371e3; // Earth's radius in meters
+    const φ1 = lat1 * Math.PI/180;
+    const φ2 = lat2 * Math.PI/180;
+    const Δφ = (lat2-lat1) * Math.PI/180;
+    const Δλ = (lon2-lon1) * Math.PI/180;
+
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    return R * c; // Distance in meters
+  };
+
   const getPriorityColor = (priority: number) => {
     switch (priority) {
       case 1: return 'bg-red-500';
@@ -1413,21 +1511,42 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                       </p>
                     </div>
                   )}
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder={isFieldOperatorMode ? "Update my location..." : "Update location manually..."}
-                      value={currentLocation}
-                      onChange={(e) => setCurrentLocation(e.target.value)}
-                      className="flex-1 px-3 py-2 border rounded-md text-sm"
-                    />
-                    <Button 
-                      onClick={updateUnitLocation}
-                      disabled={!currentLocation.trim() || isUpdatingLocation}
-                      size="sm"
-                    >
-                      {isUpdatingLocation ? 'Updating...' : 'Update'}
-                    </Button>
+                  <div className="space-y-3">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="Enter UAC code or location description..."
+                        value={currentLocation}
+                        onChange={(e) => setCurrentLocation(e.target.value)}
+                        className="flex-1 px-3 py-2 border rounded-md text-sm"
+                      />
+                      <Button 
+                        onClick={updateUnitLocation}
+                        disabled={!currentLocation.trim() || isUpdatingLocation}
+                        size="sm"
+                        variant="outline"
+                      >
+                        {isUpdatingLocation ? 'Updating...' : 'Update'}
+                      </Button>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={updateLocationWithGPS}
+                        disabled={isUpdatingLocation || !gpsEnabled}
+                        size="sm"
+                        className="flex-1"
+                      >
+                        <MapPin className="h-4 w-4 mr-2" />
+                        {isUpdatingLocation ? 'Getting GPS...' : 'Use Current GPS Location'}
+                      </Button>
+                    </div>
+                    
+                    {!gpsEnabled && (
+                      <p className="text-xs text-muted-foreground">
+                        GPS location services are not available or disabled
+                      </p>
+                    )}
                   </div>
                   
                   {unitInfo && unitInfo.current_location && (
