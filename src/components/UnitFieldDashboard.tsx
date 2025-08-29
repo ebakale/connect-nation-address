@@ -840,6 +840,13 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
 
     setIsUpdatingLocation(true);
     try {
+      // Check if we're in an iframe (editor preview)
+      const isInIframe = window !== window.top;
+      
+      if (isInIframe) {
+        throw new Error('GPS location is not available in the editor preview. Please open the app in a new browser tab to use GPS functionality.');
+      }
+
       // If on web, check browser permission state first for clearer UX
       if ('permissions' in navigator && typeof (navigator as any).permissions.query === 'function') {
         try {
