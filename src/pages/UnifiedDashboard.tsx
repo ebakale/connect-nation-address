@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from '@/contexts/LanguageContext';
 import Footer from '@/components/Footer';
+import { OfflineIndicator } from '@/components/OfflineIndicator';
 
 import { useNavigate } from "react-router-dom";
 
@@ -312,7 +313,7 @@ const UnifiedDashboard = () => {
             </div>
 
             <div className="flex gap-2">
-              
+              <OfflineIndicator />
               <Button 
                 variant="outline" 
                 onClick={() => setProfileOpen(true)}

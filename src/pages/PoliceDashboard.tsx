@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from '@/contexts/LanguageContext';
 import Footer from '@/components/Footer';
+import { OfflineIndicator } from '@/components/OfflineIndicator';
 
 import IncidentMap from '@/components/IncidentMap';
 import IncidentList from '@/components/IncidentList';
@@ -595,7 +596,7 @@ const PoliceDashboard = () => {
             </div>
 
             <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-              
+              <OfflineIndicator />
               <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
                 <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline">{t('logout')}</span>
