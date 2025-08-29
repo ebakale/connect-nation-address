@@ -55,7 +55,7 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
     totalOfficers: 0,
     availableUnits: 0,
     onDutyUnits: 0,
-    unassignedOfficers: 0
+    unassignedUnits: 0
   });
 
   useEffect(() => {
@@ -127,36 +127,25 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
 
       if (unitsError) throw unitsError;
 
-      // Fetch all police officers for total count (not filtered by city)
-      const { data: allOfficers, error: officersError } = await supabase
-        .from('user_roles')
-        .select(`
-          user_id,
-          role,
-          profiles!inner(
-            user_id,
-            full_name
-          )
-        `)
-        .in('role', ['police_operator', 'police_dispatcher', 'police_supervisor']);
-
-      if (officersError) throw officersError;
+      // Note: Total officers are computed from unit members in this view to match the current scope
 
       setUnits(unitsData || []);
       
       // Calculate statistics
-      const assignedOfficers = (unitsData || []).flatMap(unit => 
-        unit.emergency_unit_members.map(member => member.officer_id)
+      const uniqueOfficerIds = new Set<string>(
+        (unitsData || []).flatMap(unit =>
+          (unit.emergency_unit_members || []).map(member => member.officer_id)
+        )
       );
       
       const stats = {
         totalUnits: unitsData?.length || 0,
-        totalOfficers: allOfficers?.length || 0,
+        totalOfficers: uniqueOfficerIds.size,
         availableUnits: unitsData?.filter(unit => unit.status === 'available').length || 0,
         onDutyUnits: unitsData?.filter(unit => 
           ['dispatched', 'busy', 'on_duty', 'on_call'].includes(unit.status)
         ).length || 0,
-        unassignedOfficers: (allOfficers?.length || 0) - assignedOfficers.length
+        unassignedUnits: unitsData?.filter(unit => (unit.emergency_unit_members?.length || 0) === 0).length || 0
       };
       
       setStats(stats);
@@ -285,11 +274,11 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <User className="h-4 w-4 text-amber-600" />
-              Unassigned
+              Unassigned Units
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-amber-600">{stats.unassignedOfficers}</div>
+            <div className="text-2xl font-bold text-amber-600">{stats.unassignedUnits}</div>
           </CardContent>
         </Card>
       </div>
