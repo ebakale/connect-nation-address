@@ -276,16 +276,56 @@ const handler = async (req: Request): Promise<Response> => {
           )
         }
 
-        // Check if user can acknowledge (dispatchers/supervisors only)
-        const canAcknowledge = userRoles.some(role => 
-          ['police_dispatcher', 'police_supervisor', 'police_admin', 'admin'].includes(role.role)
-        )
+        // First get the message to check who sent it
+        const { data: messageData, error: messageError } = await supabaseClient
+          .from('unit_communications')
+          .select('from_user_id, message_type, metadata')
+          .eq('id', message_id)
+          .single()
 
-        if (!canAcknowledge) {
+        if (messageError || !messageData) {
+          console.error('Error fetching message:', messageError)
           return new Response(
-            JSON.stringify({ error: 'Only dispatchers and supervisors can acknowledge messages' }),
+            JSON.stringify({ error: 'Message not found' }),
+            { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          )
+        }
+
+        // Check if user is trying to acknowledge their own broadcast alert
+        if (messageData.from_user_id === user.id && messageData.message_type === 'broadcast_alert') {
+          return new Response(
+            JSON.stringify({ error: 'Cannot acknowledge your own broadcast alert' }),
             { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           )
+        }
+
+        // For broadcast alerts, only unit members can acknowledge, not dispatchers
+        if (messageData.message_type === 'broadcast_alert') {
+          // Check if user is a member of a unit (field officer)
+          const { data: unitMembership } = await supabaseClient
+            .from('emergency_unit_members')
+            .select('unit_id')
+            .eq('officer_id', user.id)
+            .single()
+
+          if (!unitMembership) {
+            return new Response(
+              JSON.stringify({ error: 'Only unit members can acknowledge broadcast alerts' }),
+              { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            )
+          }
+        } else {
+          // For regular messages, check if user can acknowledge (dispatchers/supervisors only)
+          const canAcknowledge = userRoles.some(role => 
+            ['police_dispatcher', 'police_supervisor', 'police_admin', 'admin'].includes(role.role)
+          )
+
+          if (!canAcknowledge) {
+            return new Response(
+              JSON.stringify({ error: 'Only dispatchers and supervisors can acknowledge regular messages' }),
+              { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            )
+          }
         }
 
         const { data: acknowledgment, error: ackError } = await supabaseClient
