@@ -390,11 +390,18 @@ const handler = async (req: Request): Promise<Response> => {
 
             const memberIds = unitMembers?.map(m => m.officer_id) || []
 
-            // Include:
-            // 1. Messages from their unit
-            // 2. Broadcast alerts targeted to their unit  
-            // 3. Messages sent TO any member of their unit
-            query = query.or(`from_unit_id.eq.${unitMembership.unit_id},and(message_type.eq.broadcast_alert,metadata->target_unit_id.eq.${unitMembership.unit_id}),to_user_id.in.(${memberIds.map(id => `"${id}"`).join(',')})`)
+            // Build OR conditions safely
+            const conditions: string[] = [
+              `from_unit_id.eq.${unitMembership.unit_id}`,
+              `and(message_type.eq.broadcast_alert,metadata->>target_unit_id.eq.${unitMembership.unit_id})`
+            ]
+
+            if (memberIds.length > 0) {
+              const inList = memberIds.map(id => `"${id}"`).join(',')
+              conditions.push(`to_user_id.in.(${inList})`)
+            }
+
+            query = query.or(conditions.join(','))
           }
         }
 
