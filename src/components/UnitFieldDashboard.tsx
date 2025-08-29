@@ -148,6 +148,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
   const [showResourceDialog, setShowResourceDialog] = useState(false);
   const [showBackupDialog, setShowBackupDialog] = useState(false);
   const [backupReason, setBackupReason] = useState('');
+  const [autoGPSAttempted, setAutoGPSAttempted] = useState(false);
 
   // Use the incidents passed from parent component
   useEffect(() => {
@@ -173,6 +174,17 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
       fetchAssignments();
     }
   }, [unitInfo]);
+
+  // Auto-update location on page load (browser tab only)
+  useEffect(() => {
+    if (autoGPSAttempted) return;
+    const isInIframe = window !== window.top;
+    if (isInIframe) return;
+    if (unitInfo) {
+      setAutoGPSAttempted(true);
+      updateLocationWithGPS();
+    }
+  }, [unitInfo, autoGPSAttempted]);
 
   useEffect(() => {
     // Set up real-time subscription for new assignments
@@ -889,10 +901,16 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
       }
 
       // Check for nearby UACs within 20 meters
-      const { data: nearbyAddresses } = await supabase
-        .rpc('search_addresses_safely', { 
-          search_query: '' 
-        });
+      const deltaLat = 20 / 111320; // approx degrees latitude for 20m
+      const deltaLon = 20 / (111320 * Math.cos(latitude * Math.PI / 180) || 1);
+
+      const { data: nearbyAddresses, error: addrError } = await supabase
+        .from('addresses')
+        .select('uac, latitude, longitude, street, building')
+        .gte('latitude', latitude - deltaLat)
+        .lte('latitude', latitude + deltaLat)
+        .gte('longitude', longitude - deltaLon)
+        .lte('longitude', longitude + deltaLon);
 
       let nearestUAC = null as any;
       let minDistance = Infinity;
