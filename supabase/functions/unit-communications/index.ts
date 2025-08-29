@@ -374,7 +374,7 @@ const handler = async (req: Request): Promise<Response> => {
           .limit(50)
 
         if (!isDispatcher) {
-          // Field officers see messages from their unit AND broadcast alerts targeted to their unit
+          // Field officers see messages from their unit, broadcast alerts targeted to their unit, and messages TO their unit
           const { data: unitMembership } = await supabaseClient
             .from('emergency_unit_members')
             .select('unit_id')
@@ -382,8 +382,19 @@ const handler = async (req: Request): Promise<Response> => {
             .single()
 
           if (unitMembership) {
-            // Include messages from their unit OR broadcast alerts targeted to their unit
-            query = query.or(`from_unit_id.eq.${unitMembership.unit_id},and(message_type.eq.broadcast_alert,metadata->target_unit_id.eq.${unitMembership.unit_id})`)
+            // Get all unit members for this unit to check for messages directed to them
+            const { data: unitMembers } = await supabaseClient
+              .from('emergency_unit_members')
+              .select('officer_id')
+              .eq('unit_id', unitMembership.unit_id)
+
+            const memberIds = unitMembers?.map(m => m.officer_id) || []
+
+            // Include:
+            // 1. Messages from their unit
+            // 2. Broadcast alerts targeted to their unit  
+            // 3. Messages sent TO any member of their unit
+            query = query.or(`from_unit_id.eq.${unitMembership.unit_id},and(message_type.eq.broadcast_alert,metadata->target_unit_id.eq.${unitMembership.unit_id}),to_user_id.in.(${memberIds.map(id => `"${id}"`).join(',')})`)
           }
         }
 
