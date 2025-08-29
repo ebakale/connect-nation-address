@@ -374,7 +374,7 @@ const handler = async (req: Request): Promise<Response> => {
           .limit(50)
 
         if (!isDispatcher) {
-          // Field officers only see messages from their unit
+          // Field officers see messages from their unit AND broadcast alerts targeted to their unit
           const { data: unitMembership } = await supabaseClient
             .from('emergency_unit_members')
             .select('unit_id')
@@ -382,7 +382,8 @@ const handler = async (req: Request): Promise<Response> => {
             .single()
 
           if (unitMembership) {
-            query = query.eq('from_unit_id', unitMembership.unit_id)
+            // Include messages from their unit OR broadcast alerts targeted to their unit
+            query = query.or(`from_unit_id.eq.${unitMembership.unit_id},and(message_type.eq.broadcast_alert,metadata->target_unit_id.eq.${unitMembership.unit_id})`)
           }
         }
 
