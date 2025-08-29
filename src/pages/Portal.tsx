@@ -90,15 +90,7 @@ const Portal = () => {
   }, [loading]);
 
   const handleModuleNavigation = (module: 'address' | 'emergency') => {
-    if (module === 'address') {
-      navigate('/dashboard');
-    } else if (module === 'emergency') {
-      if (isPoliceRole) {
-        navigate('/police');
-      } else {
-        navigate('/dashboard'); // Citizens can report from main dashboard
-      }
-    }
+    navigate('/dashboard');
   };
 
   const getHealthColor = (health: string) => {

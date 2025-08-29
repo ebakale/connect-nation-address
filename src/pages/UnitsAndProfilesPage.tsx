@@ -46,7 +46,7 @@ export const UnitsAndProfilesPage: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
-        <Button variant="outline" size="sm" onClick={() => navigate('/police')}>
+        <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           {t('back')}
         </Button>
@@ -70,11 +70,11 @@ export const UnitsAndProfilesPage: React.FC = () => {
         </TabsList>
 
         <TabsContent value="units" className="mt-6">
-          <UnitManagementDashboard onClose={() => navigate('/police')} />
+          <UnitManagementDashboard onClose={() => navigate('/dashboard')} />
         </TabsContent>
 
         <TabsContent value="officers" className="mt-6">
-          <OfficerProfileDashboard onClose={() => navigate('/police')} />
+          <OfficerProfileDashboard onClose={() => navigate('/dashboard')} />
         </TabsContent>
       </Tabs>
       <Footer />

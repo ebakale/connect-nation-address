@@ -25,8 +25,7 @@ const UnifiedAuth = () => {
   const { t } = useLanguage();
 
   if (user) {
-    if (roleLoading) return null;
-    return <Navigate to={isPoliceRole ? '/police' : '/dashboard'} replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   const handleInputChange = (field: string, value: string) => {
