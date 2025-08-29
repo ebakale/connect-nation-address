@@ -79,7 +79,7 @@ const fieldActions: FieldAction[] = [
     label: 'En Route',
     icon: Navigation,
     color: 'bg-blue-500',
-    newStatus: 'en_route'
+    newStatus: 'responding'
   },
   {
     action: 'on_scene',
@@ -702,7 +702,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
           updated_at: new Date().toISOString()
         };
 
-        if (action.newStatus === 'en_route' && !incident.responded_at) {
+        if (action.newStatus === 'responding' && !incident.responded_at) {
           updateData.responded_at = new Date().toISOString();
         }
         if (action.newStatus === 'resolved') {
@@ -718,11 +718,11 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
       }
 
       // Update unit status if needed
-      if (action.newStatus && ['en_route', 'on_scene'].includes(action.newStatus)) {
+      if (action.newStatus && ['responding', 'on_scene'].includes(action.newStatus)) {
         await supabase
           .from('emergency_units')
           .update({ 
-            status: action.newStatus === 'en_route' ? 'dispatched' : 'busy',
+            status: action.newStatus === 'responding' ? 'dispatched' : 'busy',
             updated_at: new Date().toISOString()
           })
           .eq('id', unitInfo.id);
