@@ -124,17 +124,18 @@ export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUp
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {unit.emergency_unit_members
-              .sort((a, b) => {
-                // Sort: lead first, then by role priority
-                if (a.is_lead && !b.is_lead) return -1;
-                if (!a.is_lead && b.is_lead) return 1;
-                
-                const rolePriority = { lieutenant: 5, sergeant: 4, corporal: 3, senior_officer: 2, officer: 1 };
-                return (rolePriority[b.role as keyof typeof rolePriority] || 1) - 
-                       (rolePriority[a.role as keyof typeof rolePriority] || 1);
-              })
-              .map((member) => (
+            {unit.emergency_unit_members && unit.emergency_unit_members.length > 0 ? (
+              unit.emergency_unit_members
+                .sort((a, b) => {
+                  // Sort: lead first, then by role priority
+                  if (a.is_lead && !b.is_lead) return -1;
+                  if (!a.is_lead && b.is_lead) return 1;
+                  
+                  const rolePriority = { lieutenant: 5, sergeant: 4, corporal: 3, senior_officer: 2, officer: 1 };
+                  return (rolePriority[b.role as keyof typeof rolePriority] || 1) - 
+                         (rolePriority[a.role as keyof typeof rolePriority] || 1);
+                })
+                .map((member) => (
               <Card key={member.id} className="border-l-4 border-l-primary/20">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
@@ -273,7 +274,14 @@ export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUp
                   </div>
                 </CardContent>
               </Card>
-            ))}
+            ))
+            ) : (
+              <div className="text-center py-8">
+                <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">No unit members found.</p>
+                <p className="text-sm text-muted-foreground">Contact your supervisor to be assigned to this unit.</p>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
