@@ -56,7 +56,7 @@ const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps)
       const { data, error } = await supabase
         .from('emergency_units')
         .select('id, unit_code, status, unit_type')
-        .eq('status', 'active')
+        .eq('status', 'available')
         .order('unit_code');
 
       if (error) throw error;
@@ -230,7 +230,7 @@ const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps)
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all_units">All Active Units</SelectItem>
+                <SelectItem value="all_units">All Available Units</SelectItem>
                 <SelectItem value="selected_units">Selected Units</SelectItem>
               </SelectContent>
             </Select>
@@ -267,7 +267,7 @@ const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps)
                         {unit.unit_type}
                       </Badge>
                       <Badge 
-                        variant={unit.status === 'active' ? 'default' : 'secondary'}
+                        variant={unit.status === 'available' ? 'default' : 'secondary'}
                         className="text-xs"
                       >
                         {unit.status}
@@ -279,7 +279,7 @@ const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps)
                 {units.length === 0 && (
                   <div className="text-center text-muted-foreground py-4">
                     <AlertTriangle className="h-6 w-6 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No active units available</p>
+                    <p className="text-sm">No available units</p>
                   </div>
                 )}
               </div>

@@ -29,7 +29,7 @@ interface OperatorStatusPanelProps {
 
 const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
   const { user } = useAuth();
-  const [status, setStatus] = useState<string>('active');
+  const [status, setStatus] = useState<string>('available');
   const [sessionDuration, setSessionDuration] = useState<string>('0m');
   const [activeOperators, setActiveOperators] = useState<any[]>([]);
   const [showEmergencyDialog, setShowEmergencyDialog] = useState(false);
