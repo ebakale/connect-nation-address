@@ -816,13 +816,13 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                     size="sm" 
                     variant="outline"
                     onClick={() => {
-                      const url = `https://www.google.com/maps?q=${incident.location_latitude},${incident.location_longitude}`;
+                      const url = `https://www.google.com/maps/dir/?api=1&origin=current+location&destination=${incident.location_latitude},${incident.location_longitude}`;
                       window.open(url, '_blank');
                     }}
                     className="w-full"
                   >
                     <Navigation className="h-4 w-4 mr-2" />
-                    Open in Google Maps
+                    Navigate to Incident
                   </Button>
                 </div>
               </div>
