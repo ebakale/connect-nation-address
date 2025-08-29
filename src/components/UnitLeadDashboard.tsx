@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { toast } from 'sonner';
+import { toast } from '@/hooks/use-toast';
 import { UnitStatusManager } from './UnitStatusManager';
 import { UnitMemberManager } from './UnitMemberManager';
 import { SendUnitMessageDialog } from './SendUnitMessageDialog';
@@ -65,9 +65,12 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
     responseTime: 0
   });
   const [loading, setLoading] = useState(true);
+  const [recentMessages, setRecentMessages] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     fetchUnitData();
+    fetchRecentMessages();
   }, [userUnit?.id]);
 
   const fetchUnitData = async () => {
@@ -114,9 +117,70 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
 
     } catch (error) {
       console.error('Error fetching unit data:', error);
-      toast.error("Failed to fetch unit data");
+      toast({
+        title: "Error",
+        description: "Failed to fetch unit data",
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchRecentMessages = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('unit-communications', {
+        body: {
+          action: 'get_messages'
+        }
+      });
+
+      if (error) throw error;
+
+      setRecentMessages(data.messages || []);
+      
+      // Count unread messages (not acknowledged)
+      const unread = (data.messages || []).filter((msg: any) => !msg.acknowledged && msg.type === 'incoming').length;
+      setUnreadCount(unread);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  };
+
+  const acknowledgeMessage = async (messageId: string) => {
+    try {
+      const { error } = await supabase.functions.invoke('unit-communications', {
+        body: { 
+          action: 'acknowledge_message',
+          message_id: messageId
+        }
+      });
+
+      if (error) throw error;
+
+      // Update local state
+      setRecentMessages(prev => 
+        prev.map(msg => 
+          msg.id === messageId 
+            ? { ...msg, acknowledged: true, acknowledged_at: new Date().toISOString() }
+            : msg
+        )
+      );
+
+      // Update unread count
+      setUnreadCount(prev => Math.max(0, prev - 1));
+
+      toast({
+        title: "Message Acknowledged",
+        description: "Message has been marked as acknowledged"
+      });
+    } catch (error) {
+      console.error('Error acknowledging message:', error);
+      toast({
+        title: "Error",
+        description: "Failed to acknowledge message",
+        variant: "destructive"
+      });
     }
   };
 
@@ -324,6 +388,77 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
                   </Button>
                 </RequestBackupDialog>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Recent Messages */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquare className="h-5 w-5" />
+                Recent Messages
+                {unreadCount > 0 && (
+                  <Badge variant="destructive" className="ml-2">
+                    {unreadCount} unread
+                  </Badge>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {recentMessages.length > 0 ? (
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {recentMessages.map((comm) => (
+                    <div key={comm.id} className="border rounded-lg p-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-2 h-2 rounded-full ${
+                            comm.type === 'incoming' ? 'bg-blue-500' : 'bg-green-500'
+                          }`} />
+                          <span className="font-medium text-sm">
+                            {comm.type === 'incoming' ? 'Dispatch' : 'Unit'}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(comm.timestamp).toLocaleTimeString()}
+                          </span>
+                        </div>
+                        {comm.acknowledged && (
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                        )}
+                      </div>
+                      <div className="mt-2">
+                        {comm.is_radio_code && (
+                          <div className="flex items-center gap-2 mb-1">
+                            <Radio className="h-3 w-3" />
+                            <span className="text-xs font-mono bg-muted px-1 rounded">
+                              {comm.radio_code}
+                            </span>
+                          </div>
+                        )}
+                        <p className="text-sm">{comm.message_content}</p>
+                        <div className="flex items-center justify-between mt-2">
+                          <div className="flex items-center gap-1">
+                            {comm.priority_level <= 2 && (
+                              <AlertTriangle className="h-3 w-3 text-red-500" />
+                            )}
+                          </div>
+                          {comm.type === 'incoming' && !comm.acknowledged && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-6 px-2 text-xs"
+                              onClick={() => acknowledgeMessage(comm.id)}
+                            >
+                              Acknowledge
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-muted-foreground text-center py-4">No recent communications</p>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
