@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
+import { OfflineIndicator } from '@/components/OfflineIndicator';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -72,6 +73,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage = 'dashboard', on
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            <OfflineIndicator />
             <Badge variant="outline" className="border-success text-success hidden md:flex text-xs">
               <Shield className="h-3 w-3 mr-1" />
               Secure
