@@ -90,11 +90,11 @@ const navigationItems = [
                   
                    {/* CTA Buttons */}
                    <div className="flex flex-col gap-3 sm:gap-4 justify-center pt-4 sm:pt-6 mobile-container">
-                       <Button 
-                         onClick={() => navigate('/auth')} 
-                         className="touch-target px-6 py-3 text-sm sm:text-base font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-blue transition-all duration-200"
-                         size="lg"
-                       >
+                      <Button 
+                        onClick={() => navigate('/offline-auth')} 
+                        className="touch-target px-6 py-3 text-sm sm:text-base font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-blue transition-all duration-200"
+                        size="lg"
+                      >
                         <LogIn className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                         {t('accessPlatform')}
                       </Button>
@@ -706,7 +706,7 @@ const navigationItems = [
               <CardContent className="space-y-4">
                 {user ? (
                   <Button 
-                    onClick={() => navigate('/dashboard')} 
+                    onClick={() => navigate(isPoliceRole ? '/police' : '/portal')} 
                     className="w-full"
                     variant="hero"
                   >
@@ -774,7 +774,7 @@ const navigationItems = [
               
               {user ? (
                 <Button 
-                  onClick={() => navigate('/dashboard')} 
+                  onClick={() => navigate(isPoliceRole ? '/police' : '/portal')} 
                   className="glass hover:shadow-neon transition-all duration-300"
                   variant="outline"
                 >
@@ -806,7 +806,7 @@ const navigationItems = [
                   key={item.id}
                   onClick={() => {
                     if (item.id === 'login') {
-                      user ? navigate('/dashboard') : navigate('/auth');
+                      user ? navigate(isPoliceRole ? '/police' : '/portal') : navigate('/auth');
                     } else {
                       setActiveSection(item.id);
                     }

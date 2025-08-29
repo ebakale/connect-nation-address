@@ -93,7 +93,12 @@ const UnifiedDashboard = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
 
-  // All users use the unified dashboard now
+  // Redirect police roles to dedicated dashboard if they land here
+  useEffect(() => {
+    if (!loading && isPoliceRole) {
+      navigate('/police', { replace: true });
+    }
+  }, [loading, isPoliceRole, navigate]);
 
   // Stats state
   const [stats, setStats] = useState<DashboardStats>({

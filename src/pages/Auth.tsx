@@ -4,14 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Globe, Shield, Lock, Mail, Wifi, WifiOff } from 'lucide-react';
-import { useUnifiedAuth } from '@/hooks/useUnifiedAuth';
+import { Globe, Shield, Lock, Mail } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
+
 import { useUserRole } from '@/hooks/useUserRole';
 import Footer from '@/components/Footer';
 
-const UnifiedAuth = () => {
+const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -19,8 +19,7 @@ const UnifiedAuth = () => {
     fullName: '',
     confirmPassword: ''
   });
-  
-  const { signIn, signUp, user, isOnlineMode } = useUnifiedAuth();
+  const { signIn, signUp, user } = useAuth();
   const { isPoliceRole, loading: roleLoading } = useUserRole();
   const { t } = useLanguage();
 
@@ -67,19 +66,11 @@ const UnifiedAuth = () => {
       
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-lg space-y-8">
-          {/* Connection Status Badge */}
-          <div className="flex justify-center">
-            <Badge 
-              variant="outline" 
-              className={`${
-                isOnlineMode 
-                  ? "text-green-700 border-green-200 bg-green-50/80" 
-                  : "text-orange-700 border-orange-200 bg-orange-50/80"
-              } backdrop-blur-sm`}
-            >
-              {isOnlineMode ? <Wifi className="w-3 h-3 mr-2" /> : <WifiOff className="w-3 h-3 mr-2" />}
-              {isOnlineMode ? 'Online Mode' : 'Offline Mode'}
-            </Badge>
+          {/* Language Switcher */}
+          <div className="flex justify-end">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-1">
+              
+            </div>
           </div>
           
           {/* Header */}
@@ -90,12 +81,6 @@ const UnifiedAuth = () => {
             <div className="space-y-2">
               <h1 className="text-4xl font-bold text-white tracking-tight">ConnectEG</h1>
               <p className="text-white/80 max-w-md mx-auto leading-relaxed">{t('nationalAddressRegistry')}</p>
-              <p className="text-white/60 text-sm">
-                {isOnlineMode 
-                  ? 'Connected to national database' 
-                  : 'Working offline - data will sync when connected'
-                }
-              </p>
             </div>
           </div>
 
@@ -109,7 +94,7 @@ const UnifiedAuth = () => {
                 {t('secureAccess')}
               </CardTitle>
               <CardDescription className="text-base mt-2">
-                {isOnlineMode ? t('accessNationalSystem') : 'Offline access to local system'}
+                {t('accessNationalSystem')}
               </CardDescription>
             </CardHeader>
             
@@ -240,4 +225,4 @@ const UnifiedAuth = () => {
   );
 };
 
-export default UnifiedAuth;
+export default Auth;
