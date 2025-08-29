@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { Geolocation } from '@capacitor/geolocation';
 import { useToast } from '@/hooks/use-toast';
 import { 
   AlertTriangle, Clock, MapPin, Navigation, CheckCircle, 
@@ -839,19 +840,37 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
 
     setIsUpdatingLocation(true);
     try {
-      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-        if (!('geolocation' in navigator)) {
-          reject(new Error('Geolocation not supported'));
-          return;
+      let latitude: number | null = null;
+      let longitude: number | null = null;
+      try {
+        // Try Capacitor Geolocation first
+        const perm = await Geolocation.requestPermissions();
+        // Capacitor v7 returns { location: 'granted' | 'denied' } on web/android
+        // iOS may return { location: 'granted' } as well
+        // Proceed if granted or if object has any granted field
+        if ((perm as any)?.location === 'granted') {
+          const pos = await Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 15000 });
+          latitude = pos.coords.latitude;
+          longitude = pos.coords.longitude;
         }
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
-          enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 0,
-        });
-      });
+      } catch {}
 
-      const { latitude, longitude } = position.coords;
+      if (latitude === null || longitude === null) {
+        // Fallback to browser geolocation
+        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+          if (!('geolocation' in navigator)) {
+            reject(new Error('Geolocation not supported'));
+            return;
+          }
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0,
+          });
+        });
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
+      }
 
       // Check for nearby UACs within 20 meters
       const { data: nearbyAddresses } = await supabase
@@ -1533,7 +1552,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                     <div className="flex gap-2">
                       <Button 
                         onClick={updateLocationWithGPS}
-                        disabled={isUpdatingLocation || !gpsEnabled}
+                        disabled={isUpdatingLocation}
                         size="sm"
                         className="flex-1"
                       >
