@@ -838,13 +838,39 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                         });
                         
                         const origin = `${position.coords.latitude},${position.coords.longitude}`;
-                        const url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}`;
-                        window.open(url, '_blank');
+                        
+                        // iOS-specific navigation handling
+                        const userAgent = navigator.userAgent || navigator.vendor;
+                        if (/iPad|iPhone|iPod/.test(userAgent)) {
+                          // Use Apple Maps on iOS
+                          const appleUrl = `maps://maps.apple.com/?saddr=${origin}&daddr=${dest}`;
+                          try {
+                            window.location.href = appleUrl;
+                          } catch (error) {
+                            // Fallback to web maps
+                            const webUrl = `https://maps.apple.com/?saddr=${origin}&daddr=${dest}`;
+                            window.location.href = webUrl;
+                          }
+                        } else {
+                          // Use Google Maps for other platforms
+                          const url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}`;
+                          window.open(url, '_blank');
+                        }
                         
                       } catch (error) {
-                        // Fallback: open with destination only (Maps will ask for current location)
-                        const url = `https://www.google.com/maps/dir/?api=1&destination=${dest}`;
-                        window.open(url, '_blank');
+                        // Fallback: open with destination only
+                        const userAgent = navigator.userAgent || navigator.vendor;
+                        if (/iPad|iPhone|iPod/.test(userAgent)) {
+                          const appleUrl = `maps://maps.apple.com/?daddr=${dest}`;
+                          try {
+                            window.location.href = appleUrl;
+                          } catch (error) {
+                            window.location.href = `https://maps.apple.com/?daddr=${dest}`;
+                          }
+                        } else {
+                          const url = `https://www.google.com/maps/dir/?api=1&destination=${dest}`;
+                          window.open(url, '_blank');
+                        }
                       }
                     }}
                     className="w-full"
