@@ -266,7 +266,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
             officer_id,
             role,
             is_lead,
-            profiles(full_name, email)
+            profiles!emergency_unit_members_officer_id_fkey(full_name, email)
           `)
           .eq('unit_id', unitMembership.unit_id);
 
