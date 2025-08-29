@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { IncidentStatusUpdateDialog } from './IncidentStatusUpdateDialog';
 import { useLanguage } from '@/contexts/LanguageContext';
+import MapLocationPicker from './MapLocationPicker';
 
 interface IncidentAssignment {
   id: string;
@@ -149,6 +150,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
   const [showBackupDialog, setShowBackupDialog] = useState(false);
   const [backupReason, setBackupReason] = useState('');
   const [autoGPSAttempted, setAutoGPSAttempted] = useState(false);
+  const [showLocationPicker, setShowLocationPicker] = useState(false);
 
   // Use the incidents passed from parent component
   useEffect(() => {
@@ -992,8 +994,10 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
         msg = 'Location permission denied. Click the lock icon and allow Location, then retry.';
       } else if (error?.code === 2) {
         msg = 'Position unavailable. Move to an open area or check if location services are on.';
+        setShowLocationPicker(true);
       } else if (error?.code === 3 || /Timed out/i.test(error?.message || '')) {
         msg = 'Location timed out. Move to open sky and try again.';
+        setShowLocationPicker(true);
       } else if (typeof error?.message === 'string') {
         msg = error.message;
       }
@@ -1627,6 +1631,15 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                         <MapPin className="h-4 w-4 mr-2" />
                         {isUpdatingLocation ? 'Getting GPS...' : 'Use Current GPS Location'}
                       </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => setShowLocationPicker(true)}
+                      >
+                        <Map className="h-4 w-4 mr-2" />
+                        Pick Location on Map
+                      </Button>
                     </div>
                     
                     {!gpsEnabled && (
@@ -1650,6 +1663,31 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                 </div>
               </CardContent>
             </Card>
+
+            <MapLocationPicker
+              open={showLocationPicker}
+              onOpenChange={setShowLocationPicker}
+              initialCenter={unitInfo?.location_longitude && unitInfo?.location_latitude ? [unitInfo.location_longitude, unitInfo.location_latitude] : undefined}
+              onConfirm={async (lat, lng) => {
+                if (!unitInfo) return;
+                const desc = `Manual: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                const { error } = await supabase
+                  .from('emergency_units')
+                  .update({
+                    current_location: desc,
+                    location_latitude: lat,
+                    location_longitude: lng,
+                    location_updated_at: new Date().toISOString(),
+                  })
+                  .eq('id', unitInfo.id);
+                if (error) {
+                  toast({ title: 'Error', description: 'Failed to save manual location', variant: 'destructive' });
+                  return;
+                }
+                setUnitInfo(prev => prev ? { ...prev, current_location: desc, location_latitude: lat, location_longitude: lng } : prev);
+                toast({ title: 'Location Updated', description: 'Manual location set successfully' });
+              }}
+            />
           </TabsContent>
 
           <TabsContent value="communication" className="space-y-4">
