@@ -315,14 +315,21 @@ const handler = async (req: Request): Promise<Response> => {
             )
           }
         } else {
-          // For regular messages, check if user can acknowledge (dispatchers/supervisors only)
-          const canAcknowledge = userRoles.some(role => 
+          // For regular messages, allow both dispatchers and unit members to acknowledge
+          const isDispatcher = userRoles.some(role => 
             ['police_dispatcher', 'police_supervisor', 'police_admin', 'admin'].includes(role.role)
           )
+          
+          const isUnitMember = userRoles.some(role => 
+            ['police_operator'].includes(role.role)
+          )
 
-          if (!canAcknowledge) {
+          // Also check if the message is directed to this user specifically
+          const isMessageRecipient = messageData.to_user_id === user.id
+
+          if (!isDispatcher && !isUnitMember && !isMessageRecipient) {
             return new Response(
-              JSON.stringify({ error: 'Only dispatchers and supervisors can acknowledge regular messages' }),
+              JSON.stringify({ error: 'You do not have permission to acknowledge this message' }),
               { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
             )
           }

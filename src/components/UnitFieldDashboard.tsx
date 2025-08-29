@@ -522,6 +522,51 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
     }
   };
 
+  const acknowledgeMessage = async (messageId: string) => {
+    try {
+      const { error } = await supabase.functions.invoke('unit-communications', {
+        body: { 
+          action: 'acknowledge_message',
+          message_id: messageId
+        }
+      });
+
+      if (error) throw error;
+
+      // Update local state
+      setCommunicationLog(prev => 
+        prev.map(msg => 
+          msg.id === messageId 
+            ? { ...msg, acknowledged: true, acknowledged_at: new Date().toISOString() }
+            : msg
+        )
+      );
+
+      setRecentMessages(prev => 
+        prev.map(msg => 
+          msg.id === messageId 
+            ? { ...msg, acknowledged: true, acknowledged_at: new Date().toISOString() }
+            : msg
+        )
+      );
+
+      // Update unread count
+      setUnreadCount(prev => Math.max(0, prev - 1));
+
+      toast({
+        title: "Message Acknowledged",
+        description: "Message has been marked as acknowledged"
+      });
+    } catch (error) {
+      console.error('Error acknowledging message:', error);
+      toast({
+        title: "Error",
+        description: "Failed to acknowledge message",
+        variant: "destructive"
+      });
+    }
+  };
+
   const setupRealtimeSubscription = () => {
     if (!user?.id) return;
 
@@ -1768,9 +1813,19 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                                 )}
                               </div>
                             </div>
-                          </div>
-                        </div>
-                      ))}
+                            {comm.type === 'incoming' && !comm.acknowledged && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-6 px-2 text-xs"
+                                onClick={() => acknowledgeMessage(comm.id)}
+                              >
+                                Acknowledge
+                              </Button>
+                             )}
+                           </div>
+                         </div>
+                       ))}
                     </div>
                   )}
                 </div>
