@@ -101,26 +101,57 @@ export const UnifiedAuthProvider = ({ children }: { children: ReactNode }) => {
     offlineAuth.loading
   ]);
 
-  // Handle mode switching
+  // Handle mode switching and sync
   useEffect(() => {
     const handleModeSwitch = async () => {
       console.log(`Auth mode switched to: ${isOnlineMode ? 'Online' : 'Offline'}`);
       
-      // If switching from offline to online and user is authenticated offline
-      if (isOnlineMode && offlineAuth.user && !onlineAuth.user) {
-        console.log('User authenticated offline, attempting online sync...');
-        // Could implement sync logic here if needed
-      }
-      
-      // If switching from online to offline and user is authenticated online
-      if (!isOnlineMode && onlineAuth.user && !offlineAuth.user) {
-        console.log('User authenticated online, switching to offline mode...');
-        // Could cache user data locally here if needed
+      // If switching to online mode and there's an authenticated online user, sync them
+      if (isOnlineMode && onlineAuth.user) {
+        await syncCurrentOnlineUser();
       }
     };
 
     handleModeSwitch();
-  }, [isOnlineMode]);
+  }, [isOnlineMode, onlineAuth.user]);
+
+  // Sync current online user to offline storage
+  const syncCurrentOnlineUser = async () => {
+    if (!onlineAuth.user) return;
+
+    try {
+      console.log('Syncing current online user to offline storage...');
+      
+      // Import supabase and fetch user profile and role
+      const { supabase } = await import('@/integrations/supabase/client');
+      
+      // Fetch user profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', onlineAuth.user.id)
+        .single();
+
+      // Fetch user role
+      const { data: userRole } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', onlineAuth.user.id)
+        .single();
+
+      // Sync to local storage
+      const { localAuth } = await import('@/lib/localAuth');
+      await localAuth.syncOnlineUser(
+        onlineAuth.user, 
+        profile, 
+        userRole?.role
+      );
+
+      console.log('Successfully synced online user to offline storage');
+    } catch (error) {
+      console.error('Failed to sync online user to offline storage:', error);
+    }
+  };
 
   const signIn = async (email: string, password: string) => {
     try {
