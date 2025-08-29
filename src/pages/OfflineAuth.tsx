@@ -21,11 +21,20 @@ const OfflineAuth = () => {
     password: ''
   });
   
-  const [signupForm, setSignupForm] = useState({
+  const [signupForm, setSignupForm] = useState<{
+    email: string;
+    password: string;
+    confirmPassword: string;
+    role: 'admin' | 'police_officer' | 'emergency_operator' | 'citizen' | 'field_agent' | 'registrar' | 'verifier';
+    displayName: string;
+    badgeNumber: string;
+    unit: string;
+    rank: string;
+  }>({
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'citizen' as const,
+    role: 'citizen',
     displayName: '',
     badgeNumber: '',
     unit: '',
@@ -224,7 +233,7 @@ const OfflineAuth = () => {
                     <Label htmlFor="role">Role</Label>
                     <Select
                       value={signupForm.role}
-                      onValueChange={(value) => setSignupForm(prev => ({ ...prev, role: value as any }))}
+                      onValueChange={(value: typeof signupForm.role) => setSignupForm(prev => ({ ...prev, role: value }))}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -240,7 +249,7 @@ const OfflineAuth = () => {
                     </Select>
                   </div>
 
-                  {(signupForm.role === 'police_officer' || signupForm.role === 'emergency_operator' || signupForm.role === 'field_agent') && (
+                  {['police_officer', 'emergency_operator', 'field_agent'].includes(signupForm.role) && (
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="badge-number">Badge Number</Label>
