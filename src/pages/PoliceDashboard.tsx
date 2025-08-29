@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -65,6 +66,7 @@ interface DashboardStats {
 }
 
 const PoliceDashboard = () => {
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { role, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isPoliceAdmin, isAdmin, loading, hasPoliceAccess, hasPoliceAdminAccess, isUnitLead } = useUserRole();
   const { t } = useLanguage();
@@ -870,14 +872,14 @@ const PoliceDashboard = () => {
                       </CardHeader>
                       <CardContent>
                         {(isPoliceSupervisor || isAdmin) && (
-                          <Button 
-                            onClick={() => window.location.href = '/units-profiles'}
-                            variant="outline" 
-                            className="w-full mb-4"
-                          >
-                            <Users className="h-4 w-4 mr-2" />
-                            Manage Units & Profiles
-                          </Button>
+          <Button 
+            onClick={() => navigate('/units-profiles')}
+            variant="outline" 
+            className="w-full mb-4"
+          >
+            <Users className="h-4 w-4 mr-2" />
+            Manage Units & Profiles
+          </Button>
                         )}
                         <OperatorStatusPanel 
                           operatorSession={operatorSession}
@@ -1018,7 +1020,7 @@ const PoliceDashboard = () => {
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <Button 
-                        onClick={() => window.location.href = '/units-profiles'}
+                        onClick={() => navigate('/units-profiles')}
                         variant="outline" 
                         className="w-full"
                       >
@@ -1079,7 +1081,7 @@ const PoliceDashboard = () => {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Card className="cursor-pointer hover:shadow-md transition-all hover:-translate-y-1"
-                        onClick={() => window.location.href = '/units-profiles'}>
+                        onClick={() => navigate('/units-profiles')}>
                     <CardContent className="p-6">
                       <div className="flex items-center gap-3">
                         <div className="p-2 bg-primary/10 rounded-lg">

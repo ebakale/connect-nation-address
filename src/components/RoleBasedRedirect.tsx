@@ -13,15 +13,15 @@ export const RoleBasedRedirect = () => {
 
     // Redirect based on role hierarchy
     if (isAdmin || isNDAAAdmin) {
-      navigate('/admin');
+      navigate('/dashboard'); // Admin users go to main dashboard
     } else if (isPoliceRole) {
       navigate('/police');
     } else if (isRegistrar) {
-      navigate('/registrar');
+      navigate('/dashboard'); // Registrar users go to main dashboard
     } else if (isVerifier) {
-      navigate('/verifier');
+      navigate('/dashboard'); // Verifier users go to main dashboard
     } else if (isFieldAgent) {
-      navigate('/field-agent');
+      navigate('/dashboard'); // Field agent users go to main dashboard
     } else {
       navigate('/dashboard');
     }
