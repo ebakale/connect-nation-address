@@ -79,7 +79,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
         .from('emergency_incidents')
         .select('*')
         .contains('assigned_units', [userUnit.unit_code])
-        .in('status', ['reported', 'dispatched', 'responded']);
+        .in('status', ['reported', 'dispatched', 'responding', 'responded']);
 
       if (incidentsError) throw incidentsError;
       setActiveIncidents(incidents || []);
