@@ -13,6 +13,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { UnitStatusManager } from './UnitStatusManager';
 import { UnitMemberManager } from './UnitMemberManager';
+import { SendUnitMessageDialog } from './SendUnitMessageDialog';
+import { RequestBackupDialog } from './RequestBackupDialog';
 
 interface UnitInfo {
   id: string;
@@ -308,15 +310,19 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
                   <span className="text-sm">Radio: {userUnit.radio_frequency || 'Not assigned'}</span>
                 </div>
                 
-                <Button className="w-full" variant="outline">
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  Send Unit Message
-                </Button>
+                <SendUnitMessageDialog unitId={userUnit.id} unitCode={userUnit.unit_code}>
+                  <Button className="w-full" variant="outline">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Send Unit Message
+                  </Button>
+                </SendUnitMessageDialog>
                 
-                <Button className="w-full" variant="outline">
-                  <Navigation className="h-4 w-4 mr-2" />
-                  Request Backup
-                </Button>
+                <RequestBackupDialog unitId={userUnit.id} unitCode={userUnit.unit_code}>
+                  <Button className="w-full" variant="outline">
+                    <Navigation className="h-4 w-4 mr-2" />
+                    Request Backup
+                  </Button>
+                </RequestBackupDialog>
               </div>
             </CardContent>
           </Card>

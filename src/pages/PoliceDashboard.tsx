@@ -1035,10 +1035,14 @@ const PoliceDashboard = () => {
                         <Users className="h-4 w-4 mr-2" />
                         {t('manageMyUnits')}
                       </Button>
-                      <RequestBackupDialog>
+                      <RequestBackupDialog 
+                        unitId={userUnit?.id || ''} 
+                        unitCode={userUnit?.unit_code || ''}
+                      >
                         <Button 
                           variant="outline" 
                           className="w-full"
+                          disabled={!userUnit}
                         >
                           <MessageSquare className="h-4 w-4 mr-2" />
                           {t('requestRegionalBackup')}
