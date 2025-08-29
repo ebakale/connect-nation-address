@@ -74,11 +74,11 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
     try {
       setLoading(true);
       
-      // Fetch active incidents assigned to this unit (check both unit ID and unit code)
+      // Fetch active incidents assigned to this unit
       const { data: incidents, error: incidentsError } = await supabase
         .from('emergency_incidents')
         .select('*')
-        .or(`assigned_units.cs.{${userUnit.id}},assigned_units.cs.{${userUnit.unit_code}}`)
+        .contains('assigned_units', [userUnit.id])
         .in('status', ['reported', 'dispatched', 'responded']);
 
       if (incidentsError) throw incidentsError;
