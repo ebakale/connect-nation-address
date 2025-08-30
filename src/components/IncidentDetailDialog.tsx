@@ -620,8 +620,10 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     switch (status) {
       case 'reported': return 'bg-red-100 text-red-800';
       case 'dispatched': return 'bg-orange-100 text-orange-800';
+      case 'en_route': return 'bg-blue-100 text-blue-800';
       case 'responding': return 'bg-blue-100 text-blue-800';
       case 'on_scene': return 'bg-purple-100 text-purple-800';
+      case 'investigating': return 'bg-indigo-100 text-indigo-800';
       case 'resolved': return 'bg-green-100 text-green-800';
       case 'closed': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
@@ -752,8 +754,10 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                     <SelectContent className="bg-background z-50">
                       <SelectItem value="reported">Reported</SelectItem>
                       <SelectItem value="dispatched">Dispatched</SelectItem>
+                      <SelectItem value="en_route">En Route</SelectItem>
                       <SelectItem value="responding">Responding</SelectItem>
                       <SelectItem value="on_scene">On Scene</SelectItem>
+                      <SelectItem value="investigating">Investigating</SelectItem>
                       <SelectItem value="resolved">Resolved</SelectItem>
                       <SelectItem value="closed">Closed</SelectItem>
                     </SelectContent>
