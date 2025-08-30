@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
@@ -1755,6 +1755,12 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
       {selectedIncident && (
         <Dialog open={!!selectedIncident} onOpenChange={() => setSelectedIncident(null)}>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Incident Details: {selectedIncident.incident_number}</DialogTitle>
+              <DialogDescription>
+                View and manage incident information, status updates, and field actions.
+              </DialogDescription>
+            </DialogHeader>
             <IncidentDetailDialog
               incident={selectedIncident}
               onUpdate={() => {
