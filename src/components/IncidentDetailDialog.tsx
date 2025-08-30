@@ -11,12 +11,14 @@ import { useState, useEffect } from "react";
 import { 
   Eye, MapPin, Clock, User, Phone, MessageSquare, 
   AlertTriangle, Calendar, Shield, Navigation, CheckCircle,
-  Edit, Save, X, Users, Play
+  Edit, Save, X, Users, Play, Radio, FileText
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { toast } from "sonner";
+import { RequestBackupDialog } from "@/components/RequestBackupDialog";
+import { IncidentStatusUpdateDialog } from "@/components/IncidentStatusUpdateDialog";
 
 interface EmergencyIncident {
   id: string;
@@ -100,6 +102,8 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   const [dispatchingUnit, setDispatchingUnit] = useState('');
   const [availableOfficers, setAvailableOfficers] = useState<{id: string, label: string, coverage_city?: string}[]>([]);
   const [availableOperators, setAvailableOperators] = useState<{id: string, name: string, role: string}[]>([]);
+  const [newNote, setNewNote] = useState('');
+  const [addingNote, setAddingNote] = useState(false);
 
   // Fetch available emergency units for dispatch
   const fetchAvailableOfficers = async () => {
@@ -568,6 +572,38 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   const canEdit = isPoliceSupervisor || isPoliceDispatcher;
   const canComplete = isPoliceOperator || isPoliceSupervisor;
   const canAssignUnits = isPoliceDispatcher; // Only dispatchers can assign/reassign units
+  const canAddNotes = isPoliceSupervisor || isPoliceDispatcher || isPoliceOperator;
+  const canRequestBackup = isPoliceOperator;
+
+  const handleAddNote = async () => {
+    if (!newNote.trim()) {
+      toast.error('Please enter a note');
+      return;
+    }
+
+    setAddingNote(true);
+    try {
+      await supabase.functions.invoke('police-incident-actions', {
+        body: {
+          action: 'addNote',
+          incidentId: incident.id,
+          data: {
+            notes: newNote.trim()
+          }
+        }
+      });
+
+      toast.success('Note added successfully');
+      setNewNote('');
+      onUpdate?.();
+      loadIncidentLogs();
+    } catch (error) {
+      console.error('Error adding note:', error);
+      toast.error('Failed to add note');
+    } finally {
+      setAddingNote(false);
+    }
+  };
 
   const getPriorityColor = (priority: number) => {
     switch (priority) {
@@ -593,7 +629,54 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto">
+    <div className="space-y-4">
+      {/* Action Buttons */}
+      <div className="flex flex-wrap gap-2 p-4 bg-muted/50 rounded-lg">
+        {canRequestBackup && (
+          <RequestBackupDialog unitId={user?.id || ''} unitCode="OFFICER">
+            <Button variant="outline" size="sm">
+              <Radio className="h-4 w-4 mr-2" />
+              Request Backup
+            </Button>
+          </RequestBackupDialog>
+        )}
+        
+        {canEdit && (
+          <IncidentStatusUpdateDialog incident={incident} onUpdate={onUpdate}>
+            <Button variant="outline" size="sm">
+              <Edit className="h-4 w-4 mr-2" />
+              Change Status
+            </Button>
+          </IncidentStatusUpdateDialog>
+        )}
+
+        {canAddNotes && (
+          <div className="flex gap-2 items-center">
+            <Input
+              placeholder="Add a note..."
+              value={newNote}
+              onChange={(e) => setNewNote(e.target.value)}
+              className="flex-1 min-w-48"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleAddNote();
+                }
+              }}
+            />
+            <Button 
+              size="sm" 
+              onClick={handleAddNote}
+              disabled={addingNote || !newNote.trim()}
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              Add Note
+            </Button>
+          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto">
       {/* Left Column - Main Information */}
       <div className="space-y-4">
         {/* Basic Information - Compact */}
@@ -1151,6 +1234,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
             </div>
           </CardContent>
         </Card>
+      </div>
       </div>
     </div>
   );
