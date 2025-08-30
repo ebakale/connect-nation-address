@@ -657,7 +657,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
           </RequestBackupDialog>
         )}
         
-        {canEdit && (
+        {canUpdateStatus && (
           <IncidentStatusUpdateDialog incident={incident} onUpdate={onUpdate}>
             <Button variant="outline" size="sm">
               <Edit className="h-4 w-4 mr-2" />
