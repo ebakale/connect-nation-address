@@ -364,16 +364,12 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MessageSquare className="h-5 w-5" />
-                Unit Communications
+                Leadership Communications
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 p-3 bg-muted/50 rounded">
-                  <Radio className="h-4 w-4" />
-                  <span className="text-sm">Radio: {userUnit.radio_frequency || 'Not assigned'}</span>
-                </div>
-                
+            <CardContent className="space-y-4">
+              {/* Command Actions */}
+              <div className="grid grid-cols-2 gap-3">
                 <SendUnitMessageDialog unitId={userUnit.id} unitCode={userUnit.unit_code}>
                   <Button className="w-full" variant="outline">
                     <MessageSquare className="h-4 w-4 mr-2" />
@@ -388,77 +384,78 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
                   </Button>
                 </RequestBackupDialog>
               </div>
-            </CardContent>
-          </Card>
 
-          {/* Recent Messages */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5" />
-                Recent Messages
-                {unreadCount > 0 && (
-                  <Badge variant="destructive" className="ml-2">
-                    {unreadCount} unread
-                  </Badge>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {recentMessages.length > 0 ? (
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {recentMessages.map((comm) => (
-                    <div key={comm.id} className="border rounded-lg p-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${
-                            comm.type === 'incoming' ? 'bg-blue-500' : 'bg-green-500'
-                          }`} />
-                          <span className="font-medium text-sm">
-                            {comm.type === 'incoming' ? 'Dispatch' : 'Unit'}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(comm.timestamp).toLocaleTimeString()}
-                          </span>
-                        </div>
-                        {comm.acknowledged && (
-                          <CheckCircle className="h-4 w-4 text-green-500" />
-                        )}
-                      </div>
-                      <div className="mt-2">
-                        {comm.is_radio_code && (
-                          <div className="flex items-center gap-2 mb-1">
-                            <Radio className="h-3 w-3" />
-                            <span className="text-xs font-mono bg-muted px-1 rounded">
-                              {comm.radio_code}
+              <div className="flex items-center gap-2 p-3 bg-muted/50 rounded">
+                <Radio className="h-4 w-4" />
+                <span className="text-sm">Radio: {userUnit.radio_frequency || 'Not assigned'}</span>
+              </div>
+
+              {/* Recent Messages with Acknowledgment */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium">Recent Communications</h4>
+                  {unreadCount > 0 && (
+                    <Badge variant="destructive">
+                      {unreadCount} unread
+                    </Badge>
+                  )}
+                </div>
+                
+                {recentMessages.length > 0 ? (
+                  <div className="space-y-3 max-h-80 overflow-y-auto">
+                    {recentMessages.map((comm) => (
+                      <div key={comm.id} className="border rounded-lg p-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${
+                              comm.type === 'incoming' ? 'bg-blue-500' : 'bg-green-500'
+                            }`} />
+                            <span className="font-medium text-sm">
+                              {comm.type === 'incoming' ? 'Dispatch' : 'Unit'}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {new Date(comm.timestamp).toLocaleTimeString()}
                             </span>
                           </div>
-                        )}
-                        <p className="text-sm">{comm.message_content}</p>
-                        <div className="flex items-center justify-between mt-2">
-                          <div className="flex items-center gap-1">
-                            {comm.priority_level <= 2 && (
-                              <AlertTriangle className="h-3 w-3 text-red-500" />
-                            )}
-                          </div>
-                          {comm.type === 'incoming' && !comm.acknowledged && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="h-6 px-2 text-xs"
-                              onClick={() => acknowledgeMessage(comm.id)}
-                            >
-                              Acknowledge
-                            </Button>
+                          {comm.acknowledged && (
+                            <CheckCircle className="h-4 w-4 text-green-500" />
                           )}
                         </div>
+                        <div className="mt-2">
+                          {comm.is_radio_code && (
+                            <div className="flex items-center gap-2 mb-1">
+                              <Radio className="h-3 w-3" />
+                              <span className="text-xs font-mono bg-muted px-1 rounded">
+                                {comm.radio_code}
+                              </span>
+                            </div>
+                          )}
+                          <p className="text-sm">{comm.message_content}</p>
+                          <div className="flex items-center justify-between mt-2">
+                            <div className="flex items-center gap-1">
+                              {comm.priority_level <= 2 && (
+                                <AlertTriangle className="h-3 w-3 text-red-500" />
+                              )}
+                            </div>
+                            {comm.type === 'incoming' && !comm.acknowledged && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-6 px-2 text-xs"
+                                onClick={() => acknowledgeMessage(comm.id)}
+                              >
+                                Acknowledge
+                              </Button>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-muted-foreground text-center py-4">No recent communications</p>
-              )}
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground text-center py-4">No recent communications</p>
+                )}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

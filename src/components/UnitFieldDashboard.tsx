@@ -6,19 +6,16 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { Geolocation } from '@capacitor/geolocation';
 import { useToast } from '@/hooks/use-toast';
 import { 
   AlertTriangle, Clock, MapPin, Navigation, CheckCircle, 
-  Radio, Users, MessageSquare, Phone, Car, Shield,
-  ArrowRight, PlayCircle, StopCircle, Flag, AlertCircle,
-  Map, Camera, FileText, Send, Bell, Battery, Wifi,
-  UserCheck, Upload, Download, History, Settings,
-  Zap, Heart, Siren, LogIn, LogOut, RefreshCw,
-  Headphones, Mic, Volume2, Navigation2, Locate
+  Radio, Users, MessageSquare, Car, Shield,
+  ArrowRight, Flag, AlertCircle, Send, Battery, Wifi,
+  History, Settings, Zap, LogIn, LogOut, RefreshCw,
+  Navigation2, Locate, Camera, FileText
 } from 'lucide-react';
 import { IncidentStatusUpdateDialog } from './IncidentStatusUpdateDialog';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -96,13 +93,6 @@ const fieldActions: FieldAction[] = [
     requiresNotes: true
   },
   {
-    action: 'update_status',
-    label: 'Update Status',
-    icon: Flag,
-    color: 'bg-purple-500',
-    requiresNotes: true
-  },
-  {
     action: 'complete_incident',
     label: 'Complete Incident',
     icon: Flag,
@@ -164,7 +154,6 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
 
   useEffect(() => {
     fetchUnitInfo();
-    fetchUnitMembers();
     fetchRecentMessages();
     initializeGPS();
     checkBatteryStatus();
@@ -1154,6 +1143,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
       });
     }
   };
+
   if (!unitInfo) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -1170,777 +1160,269 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
   }
 
   return (
-    <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
-      {/* Unit Header */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-        <div className="min-w-0">
-          <h1 className="text-xl sm:text-3xl font-bold truncate">
-            {unitInfo.unit_code} - {isFieldOperatorMode ? "My Field Operations" : "Field Operations"}
-          </h1>
-          <p className="text-sm text-muted-foreground truncate">
-            {isFieldOperatorMode 
-              ? `Officer Dashboard - ${unitInfo.unit_name}` 
-              : unitInfo.unit_name
-            }
-          </p>
-        </div>
-        <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
-          <Badge variant="outline" className="flex items-center gap-1 sm:gap-2 text-xs">
-            <div className={`w-2 h-2 rounded-full ${getIncidentStatusColor(unitStatus)}`} />
-            <span className="truncate">{unitStatus.toUpperCase()}</span>
-          </Badge>
-          
-          {/* Shift Status */}
-          <Badge variant={shiftStatus === 'on_duty' ? 'default' : 'secondary'} 
-                 className="flex items-center gap-1 sm:gap-2 text-xs">
-            {shiftStatus === 'on_duty' ? <UserCheck className="h-3 w-3" /> : <LogOut className="h-3 w-3" />}
-            <span className="truncate">{shiftStatus.replace('_', ' ').toUpperCase()}</span>
-          </Badge>
-
-          {/* System Status Indicators */}
-          <div className="flex items-center gap-2">
-            {gpsEnabled && (
-              <Badge variant="outline" className="flex items-center gap-1">
-                <Locate className="h-3 w-3 text-green-600" />
-                GPS
-              </Badge>
-            )}
-            
-            <Badge variant="outline" className="flex items-center gap-1">
-              <Battery className="h-3 w-3" />
-              {batteryLevel}%
-            </Badge>
-            
-            <Badge variant="outline" className="flex items-center gap-1">
-              <Wifi className="h-3 w-3" />
-              {signalStrength}/4
-            </Badge>
-          </div>
-
-          {unitInfo.radio_frequency && (
-            <Badge variant="outline">
-              <Radio className="h-3 w-3 mr-1" />
-              {unitInfo.radio_frequency}
-            </Badge>
-          )}
-        </div>
-      </div>
-
-      {/* Emergency Alert Bar */}
-      {emergencyMode && (
-        <div className="bg-red-600 text-white p-4 rounded-lg animate-pulse">
+    <div className="space-y-6">
+      {/* Unit Info Header */}
+      <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10">
+        <CardHeader>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5" />
-              <span className="font-bold">EMERGENCY MODE ACTIVE</span>
+            <div>
+              <CardTitle className="text-xl flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                Field Operations Dashboard
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                {unitInfo ? `${unitInfo.unit_code} - ${unitInfo.unit_name}` : 'Loading unit info...'}
+              </p>
             </div>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => setEmergencyMode(false)}
-              className="bg-white text-red-600 hover:bg-gray-100"
-            >
-              Clear Alert
-            </Button>
+            <div className="flex items-center gap-2">
+              <Badge variant={shiftStatus === 'on_duty' ? 'default' : 'secondary'}>
+                {shiftStatus.replace('_', ' ').toUpperCase()}
+              </Badge>
+              <div className={`w-3 h-3 rounded-full ${
+                unitStatus === 'available' ? 'bg-green-500' :
+                unitStatus === 'busy' ? 'bg-red-500' :
+                unitStatus === 'en_route' ? 'bg-blue-500' :
+                unitStatus === 'on_scene' ? 'bg-orange-500' : 'bg-gray-500'
+              }`} />
+            </div>
           </div>
-        </div>
-      )}
+        </CardHeader>
+      </Card>
 
-      {/* INCIDENT MANAGEMENT - Principal Activity (Top Priority) */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 mb-4 p-4 bg-primary/5 rounded-lg border-l-4 border-l-primary">
-          <AlertTriangle className="h-6 w-6 text-primary" />
-          <div>
-            <h2 className="text-2xl font-bold text-primary">Incident Management</h2>
-            <p className="text-sm text-muted-foreground">Principal Activity - Active Assignments</p>
+      {/* System Status Bar */}
+      <Card>
+        <CardContent className="pt-4">
+          <div className="grid grid-cols-4 gap-4 text-sm">
+            <div className="flex items-center gap-2">
+              <Battery className="h-4 w-4" />
+              <span>Battery: {batteryLevel}%</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Wifi className="h-4 w-4" />
+              <span>Signal: {signalStrength}/4</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Locate className="h-4 w-4" />
+              <span className={gpsEnabled ? 'text-green-600' : 'text-red-600'}>
+                GPS: {gpsEnabled ? 'ON' : 'OFF'}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Radio className="h-4 w-4" />
+              <span>Radio: {unitInfo?.radio_frequency || 'N/A'}</span>
+            </div>
           </div>
-          {assignments.length > 0 && (
-            <Badge variant="destructive" className="ml-auto">
-              {assignments.length} Active
-            </Badge>
-          )}
-        </div>
-        
-        <Card>
-          <CardContent className="p-0">
-            {assignments.length === 0 ? (
-              <div className="p-8 text-center">
-                <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">No Active Assignments</h3>
-                <p className="text-muted-foreground">
-                  Your unit currently has no active incident assignments.
-                </p>
-              </div>
-            ) : (
-              <div className="divide-y">
-                {assignments.map((incident) => (
-                  <div 
-                    key={incident.id} 
-                    className={`p-4 cursor-pointer transition-colors hover:bg-muted/50 ${
-                      selectedIncident?.id === incident.id ? 'bg-muted/30 border-l-4 border-l-primary' : ''
-                    }`}
-                    onClick={() => setSelectedIncident(incident)}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h4 className="font-semibold">{incident.incident_number}</h4>
-                          <Badge 
-                            variant={
-                              incident.priority_level === 1 ? 'destructive' :
-                              incident.priority_level === 2 ? 'default' : 'secondary'
-                            }
-                            className="text-xs"
-                          >
-                            P{incident.priority_level}
-                          </Badge>
-                          <Badge variant="outline" className={`text-xs ${getIncidentStatusColor(incident.status)}`}>
-                            {incident.status.toUpperCase()}
-                          </Badge>
-                        </div>
-                        <p className="text-sm font-medium text-muted-foreground mb-1">
-                          {incident.emergency_type.toUpperCase()}
-                        </p>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <MapPin className="h-4 w-4" />
-                          <span className="truncate">{formatLocation(incident)}</span>
-                        </div>
-                        {incident.dispatched_at && (
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                            <Clock className="h-3 w-3" />
-                            Dispatched: {new Date(incident.dispatched_at).toLocaleTimeString()}
+        </CardContent>
+      </Card>
+
+      {/* Main Content Tabs */}
+      <Tabs defaultValue="incidents" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="incidents" className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4" />
+            Active Incidents
+          </TabsTrigger>
+          <TabsTrigger value="operations" className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            Field Operations
+          </TabsTrigger>
+          <TabsTrigger value="communication" className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4" />
+            Communications
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Active Incidents Tab */}
+        <TabsContent value="incidents" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5" />
+                Current Assignments
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {assignments.length > 0 ? (
+                <div className="space-y-3">
+                  {assignments.map((incident) => (
+                    <div key={incident.id} className="border rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-3 h-3 rounded-full ${
+                            incident.priority_level === 1 ? 'bg-red-500' :
+                            incident.priority_level === 2 ? 'bg-orange-500' :
+                            incident.priority_level === 3 ? 'bg-yellow-500' : 'bg-blue-500'
+                          }`} />
+                          <div>
+                            <p className="font-medium">{incident.incident_number}</p>
+                            <p className="text-sm text-muted-foreground">{incident.emergency_type}</p>
                           </div>
-                        )}
+                        </div>
+                        <Badge variant="outline">{incident.status}</Badge>
                       </div>
-                      <ArrowRight className="h-5 w-5 text-muted-foreground ml-4 flex-shrink-0" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Incident Detail Dialog */}
-        {selectedIncident && (
-          <Dialog open={!!selectedIncident} onOpenChange={() => setSelectedIncident(null)}>
-            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5" />
-                  {selectedIncident.incident_number} - {selectedIncident.emergency_type.toUpperCase()}
-                </DialogTitle>
-              </DialogHeader>
-              
-              <div className="space-y-4">
-                {/* Status and Priority */}
-                <div className="flex gap-2">
-                  <Badge 
-                    variant={
-                      selectedIncident.priority_level === 1 ? 'destructive' :
-                      selectedIncident.priority_level === 2 ? 'default' : 'secondary'
-                    }
-                  >
-                    Priority {selectedIncident.priority_level}
-                  </Badge>
-                  <Badge variant="outline" className={getIncidentStatusColor(selectedIncident.status)}>
-                    {selectedIncident.status.toUpperCase()}
-                  </Badge>
-                </div>
-
-                {/* Location */}
-                <div className="space-y-2">
-                  <h4 className="font-medium flex items-center gap-2">
-                    <MapPin className="h-4 w-4" />
-                    Location
-                  </h4>
-                  <p className="text-sm bg-muted/30 rounded p-3">
-                    {formatLocation(selectedIncident)}
-                  </p>
-                </div>
-
-                {/* Incident Details */}
-                {selectedIncident.incident_message && (
-                  <div className="space-y-2">
-                    <h4 className="font-medium">Incident Details</h4>
-                    <p className="text-sm bg-muted/30 rounded p-3">
-                      {selectedIncident.incident_message}
-                    </p>
-                  </div>
-                )}
-
-                {/* Dispatcher Notes */}
-                {selectedIncident.dispatcher_notes && (
-                  <div className="space-y-2">
-                    <h4 className="font-medium">Dispatcher Notes</h4>
-                    <p className="text-sm bg-blue-50 border border-blue-200 rounded p-3">
-                      {selectedIncident.dispatcher_notes}
-                    </p>
-                  </div>
-                )}
-
-                {/* Time Information */}
-                <div className="space-y-2">
-                  <h4 className="font-medium flex items-center gap-2">
-                    <Clock className="h-4 w-4" />
-                    Timeline
-                  </h4>
-                  <div className="text-sm space-y-1 bg-muted/30 rounded p-3">
-                    {selectedIncident.dispatched_at && (
-                      <p>Dispatched: {new Date(selectedIncident.dispatched_at).toLocaleString()}</p>
-                    )}
-                    {selectedIncident.responded_at && (
-                      <p>Responded: {new Date(selectedIncident.responded_at).toLocaleString()}</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Field Actions */}
-                <div className="space-y-2">
-                  <h4 className="font-medium">Available Actions</h4>
-                  <div className="grid grid-cols-2 gap-2">
-                     {fieldActions.map((action) => {
-                       const isApplicable = 
-                         (action.action === 'accept_assignment' && selectedIncident.status === 'dispatched') ||
-                         (action.action === 'en_route' && ['dispatched'].includes(selectedIncident.status)) ||
-                         (action.action === 'on_scene' && ['dispatched', 'en_route', 'responded'].includes(selectedIncident.status)) ||
-                         (action.action === 'request_backup') ||
-                         (action.action === 'update_status') ||
-                         (action.action === 'complete_incident' && ['on_scene', 'responded'].includes(selectedIncident.status));
-
-                       if (!isApplicable) return null;
-
-                       // Use special status update dialog for status updates
-                       if (action.action === 'update_status') {
-                         return (
-                           <IncidentStatusUpdateDialog
-                             key={action.action}
-                             incident={selectedIncident}
-                             onUpdate={fetchAssignments}
-                           >
-                             <Button
-                               variant="outline"
-                               size="sm"
-                               className="text-xs"
-                             >
-                               <action.icon className="h-3 w-3 mr-1" />
-                               {action.label}
-                             </Button>
-                           </IncidentStatusUpdateDialog>
-                         );
-                       }
-
-                       return (
-                         <Dialog
-                           key={action.action}
-                           open={actionDialog?.action.action === action.action && actionDialog?.incident.id === selectedIncident.id}
-                           onOpenChange={(open) => {
-                             if (open) {
-                               setActionDialog({ action, incident: selectedIncident });
-                             } else {
-                               setActionDialog(null);
-                               setActionNotes('');
-                             }
-                           }}
-                         >
-                           <DialogTrigger asChild>
-                             <Button
-                               variant="outline"
-                               size="sm"
-                               className="text-xs"
-                             >
-                               <action.icon className="h-3 w-3 mr-1" />
-                               {action.label}
-                             </Button>
-                           </DialogTrigger>
-                           <DialogContent>
-                             <DialogHeader>
-                               <DialogTitle>
-                                 {action.label} - {selectedIncident.incident_number}
-                               </DialogTitle>
-                             </DialogHeader>
-                             <div className="space-y-4">
-                               <div className="p-4 bg-muted/30 rounded">
-                                 <p className="font-medium">{selectedIncident.emergency_type.toUpperCase()}</p>
-                                 <p className="text-sm text-muted-foreground">
-                                   Priority {selectedIncident.priority_level} • {formatLocation(selectedIncident)}
-                                 </p>
-                               </div>
-                               
-                               {action.requiresNotes && (
-                                 <div>
-                                   <label className="text-sm font-medium">
-                                     {action.action === 'request_backup' ? 'Reason for backup request:' : 'Notes:'}
-                                   </label>
-                                   <Textarea
-                                     value={actionNotes}
-                                     onChange={(e) => setActionNotes(e.target.value)}
-                                     placeholder={action.action === 'request_backup' 
-                                       ? "Describe the situation requiring backup..." 
-                                       : "Add any relevant notes..."
-                                     }
-                                     rows={3}
-                                   />
-                                 </div>
-                               )}
-                               
-                               <Button 
-                                 onClick={executeFieldAction} 
-                                 className="w-full"
-                                 disabled={action.requiresNotes && !actionNotes.trim()}
-                               >
-                                 {action.label}
-                               </Button>
-                             </div>
-                           </DialogContent>
-                         </Dialog>
-                       );
-                    })}
-                  </div>
-                </div>
-
-                {/* Quick Navigation */}
-                {(selectedIncident.location_latitude && selectedIncident.location_longitude) && (
-                  <Button
-                    variant="outline"
-                    onClick={async () => {
-                      const dest = `${selectedIncident.location_latitude},${selectedIncident.location_longitude}`;
                       
-                      try {
-                        // Request location permission and get current position
-                        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-                          if (!('geolocation' in navigator)) {
-                            reject(new Error('Geolocation not supported'));
-                            return;
-                          }
-                          
-                          navigator.geolocation.getCurrentPosition(
-                            resolve,
-                            reject,
-                            {
-                              enableHighAccuracy: true,
-                              timeout: 10000,
-                              maximumAge: 0,
-                            }
-                          );
-                        });
-                        
-                        const origin = `${position.coords.latitude},${position.coords.longitude}`;
-                        
-                        // iOS-specific navigation handling
-                        const userAgent = navigator.userAgent || navigator.vendor;
-                        if (/iPad|iPhone|iPod/.test(userAgent)) {
-                          // Use Apple Maps on iOS
-                          const appleUrl = `maps://maps.apple.com/?saddr=${origin}&daddr=${dest}`;
-                          try {
-                            window.location.href = appleUrl;
-                          } catch (error) {
-                            // Fallback to web maps
-                            const webUrl = `https://maps.apple.com/?saddr=${origin}&daddr=${dest}`;
-                            window.location.href = webUrl;
-                          }
-                        } else {
-                          // Use Google Maps for other platforms
-                          const url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}`;
-                          window.open(url, '_blank');
-                        }
-                        
-                      } catch (error) {
-                        // If GPS fails, show user a message and open maps anyway
-                        toast({
-                          title: "Location access required",
-                          description: "Please enable location services for navigation from your current position",
-                          variant: "destructive"
-                        });
-                        
-                        // Fallback: open with destination only
-                        const userAgent = navigator.userAgent || navigator.vendor;
-                        if (/iPad|iPhone|iPod/.test(userAgent)) {
-                          const appleUrl = `maps://maps.apple.com/?daddr=${dest}`;
-                          try {
-                            window.location.href = appleUrl;
-                          } catch (error) {
-                            window.location.href = `https://maps.apple.com/?daddr=${dest}`;
-                          }
-                        } else {
-                          const url = `https://www.google.com/maps/dir/?api=1&destination=${dest}`;
-                          window.open(url, '_blank');
-                        }
-                      }
-                    }}
-                    className="w-full"
-                  >
-                    <Navigation className="h-4 w-4 mr-2" />
-                    Navigate to Incident
-                  </Button>
-                )}
-              </div>
-            </DialogContent>
-          </Dialog>
-        )}
-      </div>
-
-      {/* My Unit - Tabbed Interface */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 mb-4">
-          <Settings className="h-6 w-6 text-primary" />
-          <h2 className="text-2xl font-bold">My Unit</h2>
-        </div>
-        
-        <Tabs defaultValue="controls" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="controls" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              Unit Controls
-            </TabsTrigger>
-            <TabsTrigger value="communication" className="flex items-center gap-2">
-              <MessageSquare className="h-4 w-4" />
-              Communication
-              {unreadCount > 0 && (
-                <Badge variant="destructive" className="ml-1 text-xs">
-                  {unreadCount}
-                </Badge>
+                      {incident.location_address && (
+                        <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
+                          <MapPin className="h-4 w-4" />
+                          {incident.location_address}
+                        </div>
+                      )}
+                      
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                        {fieldActions.map((action) => (
+                          <Button
+                            key={action.action}
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setActionDialog({ action, incident })}
+                            className="flex items-center gap-1"
+                          >
+                            <action.icon className="h-3 w-3" />
+                            {action.label}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-muted-foreground text-center py-8">No active assignments</p>
               )}
-            </TabsTrigger>
-            <TabsTrigger value="actions" className="flex items-center gap-2">
-              <Zap className="h-4 w-4" />
-              Quick Actions
-            </TabsTrigger>
-          </TabsList>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-          <TabsContent value="controls" className="space-y-4">
-            <Card>
-              <CardContent className="pt-6 space-y-4">
+        {/* Field Operations Tab */}
+        <TabsContent value="operations" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-4 w-4" />
+                Field Operations Control
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Shift and Emergency Controls */}
+              <div className="grid grid-cols-2 gap-3">
+                <Button 
+                  variant={shiftStatus === 'on_duty' ? 'destructive' : 'default'}
+                  onClick={toggleShift}
+                  className="flex items-center gap-2"
+                >
+                  {shiftStatus === 'on_duty' ? (
+                    <>
+                      <LogOut className="h-4 w-4" />
+                      End Shift
+                    </>
+                  ) : (
+                    <>
+                      <LogIn className="h-4 w-4" />
+                      Start Shift
+                    </>
+                  )}
+                </Button>
+                
+                <Button 
+                  variant="destructive"
+                  onClick={triggerEmergency}
+                  disabled={emergencyMode}
+                  className="flex items-center gap-2"
+                >
+                  <AlertCircle className="h-4 w-4" />
+                  EMERGENCY
+                </Button>
+              </div>
+
+              {/* Unit Status */}
+              <div className="space-y-3">
+                <h4 className="font-medium">Unit Status</h4>
+                <Select value={unitStatus} onValueChange={updateUnitStatus}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="available">Available</SelectItem>
+                    <SelectItem value="busy">Busy</SelectItem>
+                    <SelectItem value="en_route">En Route</SelectItem>
+                    <SelectItem value="on_scene">On Scene</SelectItem>
+                    <SelectItem value="out_of_service">Out of Service</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Location Management */}
+              <div className="space-y-3">
+                <h4 className="font-medium flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  Location Management
+                </h4>
+                
                 <div className="grid grid-cols-2 gap-2">
                   <Button 
-                    variant={shiftStatus === 'on_duty' ? 'destructive' : 'default'}
-                    size="sm"
-                    onClick={toggleShift}
-                    className="flex items-center gap-1"
+                    onClick={updateLocationWithGPS}
+                    disabled={isUpdatingLocation}
+                    variant="outline"
+                    className="flex items-center gap-2"
                   >
-                    {shiftStatus === 'on_duty' ? (
-                      <>
-                        <LogOut className="h-3 w-3" />
-                        End Shift
-                      </>
-                    ) : (
-                      <>
-                        <LogIn className="h-3 w-3" />
-                        Start Shift
-                      </>
-                    )}
+                    <Navigation2 className="h-4 w-4" />
+                    {isUpdatingLocation ? 'Getting GPS...' : 'Update GPS'}
                   </Button>
                   
-                  <Button 
-                    variant="destructive"
-                    size="sm"
-                    onClick={triggerEmergency}
-                    disabled={emergencyMode}
-                    className="flex items-center gap-1"
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowLocationPicker(true)}
+                    className="flex items-center gap-2"
                   >
-                    <AlertCircle className="h-3 w-3" />
-                    Emergency
-                  </Button>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Unit Status</label>
-                  <Select value={unitStatus} onValueChange={updateUnitStatus}>
-                    <SelectTrigger className="h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="available">Available</SelectItem>
-                      <SelectItem value="busy">Busy</SelectItem>
-                      <SelectItem value="en_route">En Route</SelectItem>
-                      <SelectItem value="on_scene">On Scene</SelectItem>
-                      <SelectItem value="out_of_service">Out of Service</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Location Update */}
-                <div className="space-y-3 pt-4 border-t">
-                  <h4 className="font-medium flex items-center gap-2">
                     <MapPin className="h-4 w-4" />
-                    Location Update
-                  </h4>
-                  {isFieldOperatorMode && (
-                    <div className="bg-blue-50 border border-blue-200 rounded p-3">
-                      <p className="text-sm text-blue-800">
-                        <Shield className="h-4 w-4 inline mr-1" />
-                        You can only update your own unit's location
-                      </p>
-                    </div>
-                  )}
-                  <div className="space-y-3">
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        placeholder="Enter UAC code or location description..."
-                        value={currentLocation}
-                        onChange={(e) => setCurrentLocation(e.target.value)}
-                        className="flex-1 px-3 py-2 border rounded-md text-sm"
-                      />
-                      <Button 
-                        onClick={updateUnitLocation}
-                        disabled={!currentLocation.trim() || isUpdatingLocation}
-                        size="sm"
-                        variant="outline"
-                      >
-                        {isUpdatingLocation ? 'Updating...' : 'Update'}
-                      </Button>
-                    </div>
-                    
-                    <div className="flex gap-2">
-                      <Button 
-                        onClick={updateLocationWithGPS}
-                        disabled={isUpdatingLocation}
-                        size="sm"
-                        className="flex-1"
-                      >
-                        <MapPin className="h-4 w-4 mr-2" />
-                        {isUpdatingLocation ? 'Getting GPS...' : 'Use Current GPS Location'}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => setShowLocationPicker(true)}
-                      >
-                        <Map className="h-4 w-4 mr-2" />
-                        Pick Location on Map
-                      </Button>
-                    </div>
-                    
-                    {!gpsEnabled && (
-                      <p className="text-xs text-muted-foreground">
-                        GPS location services are not available or disabled
-                      </p>
-                    )}
-                  </div>
-                  
-                  {unitInfo && unitInfo.current_location && (
-                    <p className="text-sm text-muted-foreground">
-                      Current: {unitInfo.current_location}
-                    </p>
-                  )}
-                  
-                  {unitInfo && unitInfo.location_latitude && unitInfo.location_longitude && (
-                    <p className="text-xs text-muted-foreground font-mono">
-                      GPS: {unitInfo.location_latitude.toFixed(6)}, {unitInfo.location_longitude.toFixed(6)}
-                    </p>
-                  )}
+                    Pick on Map
+                  </Button>
                 </div>
-              </CardContent>
-            </Card>
 
-            <MapLocationPicker
-              open={showLocationPicker}
-              onOpenChange={setShowLocationPicker}
-              initialCenter={unitInfo?.location_longitude && unitInfo?.location_latitude ? [unitInfo.location_longitude, unitInfo.location_latitude] : undefined}
-              onConfirm={async (lat, lng) => {
-                if (!unitInfo) return;
-                const desc = `Manual: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-                const { error } = await supabase
-                  .from('emergency_units')
-                  .update({
-                    current_location: desc,
-                    location_latitude: lat,
-                    location_longitude: lng,
-                    location_updated_at: new Date().toISOString(),
-                  })
-                  .eq('id', unitInfo.id);
-                if (error) {
-                  toast({ title: 'Error', description: 'Failed to save manual location', variant: 'destructive' });
-                  return;
-                }
-                setUnitInfo(prev => prev ? { ...prev, current_location: desc, location_latitude: lat, location_longitude: lng } : prev);
-                toast({ title: 'Location Updated', description: 'Manual location set successfully' });
-              }}
-            />
-          </TabsContent>
-
-          <TabsContent value="communication" className="space-y-4">
-            <Card>
-              <CardContent className="pt-6 space-y-4">
-                {/* Recent Messages */}
-                <div className="bg-muted/30 rounded p-3 h-48 overflow-y-auto">
-                  <div className="text-sm font-medium mb-3 text-muted-foreground flex items-center justify-between">
-                    Recent Communications
-                    {communicationLog.length > 0 && (
-                      <Badge variant="outline" className="text-xs">
-                        {communicationLog.length}
-                      </Badge>
-                    )}
-                  </div>
-                  {communicationLog.length === 0 ? (
-                    <div className="text-sm text-muted-foreground italic text-center py-8">
-                      No recent communications
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      {communicationLog.slice(0, 8).map((comm) => (
-                        <div key={comm.id} className={`text-sm p-3 rounded border-l-3 ${
-                          comm.type === 'outgoing' 
-                            ? 'bg-primary/10 border-l-primary text-primary-foreground/90'
-                            : !comm.acknowledged 
-                              ? 'bg-accent border-l-accent-foreground font-medium'
-                              : 'bg-muted border-l-muted-foreground opacity-75'
-                        }`}>
-                          <div className="flex items-start gap-2">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                {comm.is_radio_code && (
-                                  <Badge variant="secondary" className="text-xs py-0 px-2 h-5">
-                                    <Radio className="h-3 w-3 mr-1" />
-                                    {comm.radio_code}
-                                  </Badge>
-                                )}
-                                <span className="text-xs opacity-75">
-                                  {comm.type === 'outgoing' ? 'TO DISPATCH' : 'FROM DISPATCH'}
-                                </span>
-                              </div>
-                              <div className="font-medium">{comm.message_content}</div>
-                              <div className="flex items-center justify-between mt-1">
-                                <span className="text-xs opacity-75">
-                                  {new Date(comm.timestamp || comm.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                </span>
-                                {comm.type === 'outgoing' && (
-                                  <span className={`text-xs ${comm.acknowledged ? 'text-green-600' : 'text-yellow-600'}`}>
-                                    {comm.acknowledged ? '✓ Acknowledged' : '⏳ Pending'}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                            {comm.type === 'incoming' && !comm.acknowledged && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="h-6 px-2 text-xs"
-                                onClick={() => acknowledgeMessage(comm.id)}
-                              >
-                                Acknowledge
-                              </Button>
-                             )}
-                           </div>
-                         </div>
-                       ))}
-                    </div>
-                  )}
-                </div>
-                
-                {/* Send Message */}
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="Message dispatch..."
-                    value={quickMessage}
-                    onChange={(e) => setQuickMessage(e.target.value)}
-                    className="flex-1 px-3 py-2 text-sm border rounded"
-                    onKeyPress={(e) => e.key === 'Enter' && sendQuickMessage()}
+                    placeholder="Enter UAC or location..."
+                    value={currentLocation}
+                    onChange={(e) => setCurrentLocation(e.target.value)}
+                    className="flex-1 px-3 py-2 border rounded-md text-sm"
                   />
-                  <Button size="sm" onClick={sendQuickMessage} disabled={!quickMessage.trim()}>
-                    <Send className="h-4 w-4" />
+                  <Button 
+                    onClick={updateUnitLocation}
+                    disabled={!currentLocation.trim() || isUpdatingLocation}
+                    size="sm"
+                  >
+                    Update
                   </Button>
                 </div>
                 
-                {/* Radio Codes */}
-                <div className="space-y-3">
-                  <div className="text-sm font-medium text-muted-foreground">Quick Radio Codes</div>
-                  <div className="grid grid-cols-3 gap-2">
-                    <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-4', '10-4 Acknowledged')} className="text-xs">
-                      <Radio className="h-3 w-3 mr-1" />
-                      10-4
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-8', '10-8 In Service')} className="text-xs">
-                      <Radio className="h-3 w-3 mr-1" />
-                      10-8
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-23', '10-23 Arrived')} className="text-xs">
-                      <Radio className="h-3 w-3 mr-1" />
-                      10-23
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-24', '10-24 Complete')} className="text-xs">
-                      <Radio className="h-3 w-3 mr-1" />
-                      10-24
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-20', '10-20 Location Status')} className="text-xs">
-                      <Radio className="h-3 w-3 mr-1" />
-                      10-20
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-99', '10-99 Emergency!')} className="text-xs bg-destructive/10 hover:bg-destructive/20">
-                      <Radio className="h-3 w-3 mr-1" />
-                      10-99
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+                {unitInfo?.current_location && (
+                  <p className="text-sm text-muted-foreground">
+                    Current: {unitInfo.current_location}
+                  </p>
+                )}
+              </div>
 
-          <TabsContent value="actions" className="space-y-4">
-            <Card>
-              <CardContent className="pt-6 space-y-4">
-                {/* Request Backup Button - Always Available */}
-                <Dialog open={showBackupDialog} onOpenChange={setShowBackupDialog}>
-                  <DialogTrigger asChild>
-                    <Button variant="destructive" className="w-full">
-                      <Users className="h-4 w-4 mr-2" />
-                      Request Backup
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Request Backup</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <Textarea
-                        value={backupReason}
-                        onChange={(e) => setBackupReason(e.target.value)}
-                        placeholder="Describe the reason for backup request..."
-                        rows={3}
-                      />
-                      <Button onClick={requestBackup} disabled={!backupReason.trim()}>
-                        Send Backup Request
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-                
+              {/* Quick Actions */}
+              <div className="space-y-3">
+                <h4 className="font-medium">Quick Actions</h4>
                 <div className="grid grid-cols-2 gap-2">
-                  <Dialog open={showResourceDialog} onOpenChange={setShowResourceDialog}>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" size="sm">
-                        <Car className="h-4 w-4 mr-2" />
-                        Resources
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Request Resources</DialogTitle>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <Textarea
-                          value={resourceRequest}
-                          onChange={(e) => setResourceRequest(e.target.value)}
-                          placeholder="Describe the resources needed..."
-                          rows={3}
-                        />
-                        <Button onClick={requestResource} disabled={!resourceRequest.trim()}>
-                          Send Request
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+                  <Button variant="outline" onClick={() => setShowBackupDialog(true)}>
+                    <Users className="h-4 w-4 mr-2" />
+                    Request Backup
+                  </Button>
                   
-                  <Button variant="outline" size="sm" onClick={() => setShowHistory(!showHistory)}>
+                  <Button variant="outline" onClick={() => setShowResourceDialog(true)}>
+                    <Car className="h-4 w-4 mr-2" />
+                    Request Resources
+                  </Button>
+                  
+                  <Button variant="outline" onClick={() => setShowHistory(!showHistory)}>
                     <History className="h-4 w-4 mr-2" />
-                    History
+                    View History
                   </Button>
                   
                   <label className="cursor-pointer">
-                    <Button variant="outline" size="sm" asChild>
+                    <Button variant="outline" asChild className="w-full">
                       <span>
                         <Camera className="h-4 w-4 mr-2" />
                         Evidence
@@ -1954,46 +1436,243 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                       onChange={handleEvidenceUpload}
                     />
                   </label>
-                  
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={getCurrentLocation}
-                    disabled={!gpsEnabled}
-                    className={`${!gpsEnabled ? 'opacity-50' : ''}`}
-                  >
-                    <RefreshCw className="h-4 w-4 mr-2" />
-                    GPS
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Communications Tab */}
+        <TabsContent value="communication" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquare className="h-4 w-4" />
+                Unit Communications
+                {unreadCount > 0 && (
+                  <Badge variant="destructive" className="ml-2">
+                    {unreadCount} unread
+                  </Badge>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Recent Messages */}
+              <div className="bg-muted/30 rounded-lg p-4 h-64 overflow-y-auto">
+                {recentMessages.length === 0 ? (
+                  <div className="text-sm text-muted-foreground text-center py-8">
+                    No recent communications
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {recentMessages.slice(0, 8).map((comm) => (
+                      <div key={comm.id} className={`text-sm p-3 rounded border-l-4 ${
+                        comm.type === 'outgoing' 
+                          ? 'bg-primary/10 border-l-primary'
+                          : !comm.acknowledged 
+                            ? 'bg-accent border-l-accent-foreground font-medium'
+                            : 'bg-muted border-l-muted-foreground opacity-75'
+                      }`}>
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              {comm.is_radio_code && (
+                                <Badge variant="secondary" className="text-xs">
+                                  <Radio className="h-3 w-3 mr-1" />
+                                  {comm.radio_code}
+                                </Badge>
+                              )}
+                              <span className="text-xs text-muted-foreground">
+                                {comm.type === 'outgoing' ? 'TO DISPATCH' : 'FROM DISPATCH'}
+                              </span>
+                            </div>
+                            <p className="mb-1">{comm.message_content}</p>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs text-muted-foreground">
+                                {new Date(comm.timestamp || comm.created_at).toLocaleTimeString()}
+                              </span>
+                              {comm.type === 'outgoing' && (
+                                <span className={`text-xs ${comm.acknowledged ? 'text-green-600' : 'text-yellow-600'}`}>
+                                  {comm.acknowledged ? '✓ Acknowledged' : '⏳ Pending'}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          {comm.type === 'incoming' && !comm.acknowledged && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-6 px-2 text-xs ml-2"
+                              onClick={() => acknowledgeMessage(comm.id)}
+                            >
+                              ACK
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {/* Send Message */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Send message to dispatch..."
+                  value={quickMessage}
+                  onChange={(e) => setQuickMessage(e.target.value)}
+                  className="flex-1 px-3 py-2 text-sm border rounded-md"
+                  onKeyPress={(e) => e.key === 'Enter' && sendQuickMessage()}
+                />
+                <Button onClick={sendQuickMessage} disabled={!quickMessage.trim()}>
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              {/* Radio Codes */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-medium">Quick Radio Codes</h4>
+                <div className="grid grid-cols-3 gap-2">
+                  <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-4', '10-4 Acknowledged')}>
+                    <Radio className="h-3 w-3 mr-1" />
+                    10-4
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-8', '10-8 In Service')}>
+                    <Radio className="h-3 w-3 mr-1" />
+                    10-8
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-23', '10-23 Arrived')}>
+                    <Radio className="h-3 w-3 mr-1" />
+                    10-23
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-24', '10-24 Complete')}>
+                    <Radio className="h-3 w-3 mr-1" />
+                    10-24
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-20', '10-20 Location Status')}>
+                    <Radio className="h-3 w-3 mr-1" />
+                    10-20
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-99', '10-99 Emergency!')} className="bg-destructive/10 hover:bg-destructive/20">
+                    <Radio className="h-3 w-3 mr-1" />
+                    10-99
                   </Button>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
-                {/* Status Indicators */}
-                <div className="pt-4 border-t space-y-2">
-                  <h4 className="text-sm font-medium text-muted-foreground">System Status</h4>
-                  <div className="grid grid-cols-3 gap-2 text-xs">
-                    <div className="flex items-center gap-1">
-                      <Battery className="h-3 w-3" />
-                      <span>{batteryLevel}%</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Wifi className="h-3 w-3" />
-                      <span>Signal {signalStrength}/4</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Locate className="h-3 w-3" />
-                      <span className={gpsEnabled ? 'text-green-600' : 'text-red-600'}>
-                        {gpsEnabled ? 'GPS On' : 'GPS Off'}
-                      </span>
-                    </div>
-                  </div>
+      {/* Dialog Components */}
+      <MapLocationPicker
+        open={showLocationPicker}
+        onOpenChange={setShowLocationPicker}
+        initialCenter={unitInfo?.location_longitude && unitInfo?.location_latitude ? [unitInfo.location_longitude, unitInfo.location_latitude] : undefined}
+        onConfirm={async (lat, lng) => {
+          if (!unitInfo) return;
+          const desc = `Manual: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+          const { error } = await supabase
+            .from('emergency_units')
+            .update({
+              current_location: desc,
+              location_latitude: lat,
+              location_longitude: lng,
+              location_updated_at: new Date().toISOString(),
+            })
+            .eq('id', unitInfo.id);
+          if (error) {
+            toast({ title: 'Error', description: 'Failed to save manual location', variant: 'destructive' });
+            return;
+          }
+          setUnitInfo(prev => prev ? { ...prev, current_location: desc, location_latitude: lat, location_longitude: lng } : prev);
+          toast({ title: 'Location Updated', description: 'Manual location set successfully' });
+        }}
+      />
+
+      <Dialog open={showBackupDialog} onOpenChange={setShowBackupDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Request Backup</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Textarea
+              value={backupReason}
+              onChange={(e) => setBackupReason(e.target.value)}
+              placeholder="Describe the reason for backup request..."
+              rows={3}
+            />
+            <Button onClick={requestBackup} disabled={!backupReason.trim()}>
+              Send Backup Request
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showResourceDialog} onOpenChange={setShowResourceDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Request Resources</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Textarea
+              value={resourceRequest}
+              onChange={(e) => setResourceRequest(e.target.value)}
+              placeholder="Describe the resources needed..."
+              rows={3}
+            />
+            <Button onClick={requestResource} disabled={!resourceRequest.trim()}>
+              Send Request
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {actionDialog && (
+        <Dialog open={!!actionDialog} onOpenChange={() => setActionDialog(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {actionDialog.action.label} - {actionDialog.incident.incident_number}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="p-4 bg-muted/30 rounded">
+                <p className="font-medium">{actionDialog.incident.emergency_type.toUpperCase()}</p>
+                <p className="text-sm text-muted-foreground">
+                  Priority {actionDialog.incident.priority_level} • {formatLocation(actionDialog.incident)}
+                </p>
+              </div>
+              
+              {actionDialog.action.requiresNotes && (
+                <div>
+                  <label className="text-sm font-medium">
+                    {actionDialog.action.action === 'request_backup' ? 'Reason for backup request:' : 'Notes:'}
+                  </label>
+                  <Textarea
+                    value={actionNotes}
+                    onChange={(e) => setActionNotes(e.target.value)}
+                    placeholder={actionDialog.action.action === 'request_backup' 
+                      ? "Describe the situation requiring backup..." 
+                      : "Add any relevant notes..."
+                    }
+                    rows={3}
+                  />
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
-
-
+              )}
+              
+              <Button 
+                onClick={executeFieldAction} 
+                className="w-full"
+                disabled={actionDialog.action.requiresNotes && !actionNotes.trim()}
+              >
+                {actionDialog.action.label}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
 
       {/* Evidence Files */}
       {evidenceFiles.length > 0 && (
@@ -2043,7 +1722,6 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
           </CardContent>
         </Card>
       )}
-
     </div>
   );
 };
