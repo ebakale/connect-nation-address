@@ -645,179 +645,105 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   };
 
   return (
-    <div className="space-y-4">
-      {/* Action Buttons */}
-      <div className="flex flex-wrap gap-2 p-4 bg-muted/50 rounded-lg">
-        {canRequestBackup && (
-          <RequestBackupDialog unitId={user?.id || ''} unitCode="OFFICER">
-            <Button variant="outline" size="sm">
-              <Radio className="h-4 w-4 mr-2" />
-              Request Backup
-            </Button>
-          </RequestBackupDialog>
-        )}
-        
-        {canUpdateStatus && (
-          <IncidentStatusUpdateDialog incident={incident} onUpdate={onUpdate}>
-            <Button variant="outline" size="sm">
-              <Edit className="h-4 w-4 mr-2" />
-              Change Status
-            </Button>
-          </IncidentStatusUpdateDialog>
-        )}
-
-        {canAddNotes && (
-          <div className="flex gap-2 items-center">
-            <Input
-              placeholder="Add a note..."
-              value={newNote}
-              onChange={(e) => setNewNote(e.target.value)}
-              className="flex-1 min-w-48"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleAddNote();
-                }
-              }}
-            />
-            <Button 
-              size="sm" 
-              onClick={handleAddNote}
-              disabled={addingNote || !newNote.trim()}
-            >
-              <FileText className="h-4 w-4 mr-2" />
-              Add Note
-            </Button>
+    <div className="space-y-6">
+      {/* Header with Key Information */}
+      <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-6 rounded-lg border border-primary/20">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <Badge variant="outline" className="font-mono text-base px-3 py-1">
+                {incident.incident_number}
+              </Badge>
+              <Badge className={getStatusColor(incident.status)} variant="secondary">
+                {incident.status.replace('_', ' ').toUpperCase()}
+              </Badge>
+              <Badge className={getPriorityColor(incident.priority_level)} variant="outline">
+                Priority {incident.priority_level}
+              </Badge>
+            </div>
+            <h3 className="text-xl font-semibold capitalize text-primary">
+              {incident.emergency_type}
+            </h3>
+            <p className="text-sm text-muted-foreground flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Reported: {new Date(incident.reported_at).toLocaleString()}
+            </p>
           </div>
-        )}
+          
+          {/* Quick Actions */}
+          <div className="flex flex-wrap gap-2">
+            {canRequestBackup && (
+              <RequestBackupDialog unitId={user?.id || ''} unitCode="OFFICER">
+                <Button variant="outline" size="sm">
+                  <Radio className="h-4 w-4 mr-2" />
+                  Request Backup
+                </Button>
+              </RequestBackupDialog>
+            )}
+            
+            {canUpdateStatus && (
+              <IncidentStatusUpdateDialog incident={incident} onUpdate={onUpdate}>
+                <Button variant="outline" size="sm">
+                  <Edit className="h-4 w-4 mr-2" />
+                  Change Status
+                </Button>
+              </IncidentStatusUpdateDialog>
+            )}
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto">
-      {/* Left Column - Main Information */}
-      <div className="space-y-4">
-        {/* Basic Information - Compact */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center justify-between">
-              Basic Information
-        {canUpdateStatus && (
-                isEditing ? (
-                  <div className="flex gap-2">
-                    <Button size="sm" onClick={handleSave}>
-                      <Save className="h-4 w-4 mr-1" />
-                      Save
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => setIsEditing(false)}>
-                      <X className="h-4 w-4 mr-1" />
-                      Cancel
-                    </Button>
-                  </div>
-                ) : (
-                  <Button size="sm" variant="outline" onClick={handleEdit}>
-                    <Edit className="h-4 w-4 mr-1" />
-                    Edit
-                  </Button>
-                )
-              )}
-            </CardTitle>
+      {/* Add Note Section */}
+      {canAddNotes && (
+        <Card className="border-accent/20 bg-accent/5">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-sm font-medium">Add Field Note</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div>
-                <label className="text-xs font-medium text-muted-foreground">Incident #</label>
-                <p className="font-mono">{incident.incident_number}</p>
-              </div>
-              <div>
-                <label className="text-xs font-medium text-muted-foreground">Type</label>
-                <p className="capitalize">{incident.emergency_type}</p>
-              </div>
-              <div>
-                <label className="text-xs font-medium text-muted-foreground">Priority</label>
-                {isEditing ? (
-                  <Select 
-                    value={editData.priority_level.toString()} 
-                    onValueChange={(value) => setEditData({...editData, priority_level: parseInt(value)})}
-                  >
-                    <SelectTrigger className="h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background z-50">
-                      <SelectItem value="1">1 - Critical</SelectItem>
-                      <SelectItem value="2">2 - High</SelectItem>
-                      <SelectItem value="3">3 - Medium</SelectItem>
-                      <SelectItem value="4">4 - Low</SelectItem>
-                      <SelectItem value="5">5 - Info</SelectItem>
-                    </SelectContent>
-                  </Select>
-                ) : (
-                  <Badge className={getPriorityColor(incident.priority_level)} variant="outline">
-                    Priority {incident.priority_level}
-                  </Badge>
-                )}
-              </div>
-              <div>
-                <label className="text-xs font-medium text-muted-foreground">Status</label>
-                {isEditing ? (
-                  <Select 
-                    value={editData.status} 
-                    onValueChange={(value) => setEditData({...editData, status: value})}
-                  >
-                    <SelectTrigger className="h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background z-50">
-                      <SelectItem value="reported">Reported</SelectItem>
-                      <SelectItem value="dispatched">Dispatched</SelectItem>
-                      <SelectItem value="en_route">En Route</SelectItem>
-                      <SelectItem value="responding">Responding</SelectItem>
-                      <SelectItem value="on_scene">On Scene</SelectItem>
-                      <SelectItem value="investigating">Investigating</SelectItem>
-                      <SelectItem value="resolved">Resolved</SelectItem>
-                      <SelectItem value="closed">Closed</SelectItem>
-                    </SelectContent>
-                  </Select>
-                ) : (
-                  <Badge className={getStatusColor(incident.status)}>
-                    {incident.status.replace('_', ' ').toUpperCase()}
-                  </Badge>
-                )}
-              </div>
+          <CardContent>
+            <div className="flex gap-3">
+              <Textarea
+                placeholder="Add field notes, observations, or updates..."
+                value={newNote}
+                onChange={(e) => setNewNote(e.target.value)}
+                className="flex-1 min-h-[80px] resize-none"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                    e.preventDefault();
+                    handleAddNote();
+                  }
+                }}
+              />
+              <Button 
+                onClick={handleAddNote}
+                disabled={addingNote || !newNote.trim()}
+                className="self-end"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Add Note
+              </Button>
             </div>
-            
-            <Separator />
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Reported At</label>
-                <p className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  {new Date(incident.reported_at).toLocaleString()}
-                </p>
-              </div>
-              {incident.dispatched_at && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Dispatched At</label>
-                  <p className="flex items-center gap-2">
-                    <Clock className="h-4 w-4" />
-                    {new Date(incident.dispatched_at).toLocaleString()}
-                  </p>
-                </div>
-              )}
-            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              Press Ctrl+Enter to quickly add note
+            </p>
           </CardContent>
         </Card>
+      )}
 
-        {/* Emergency Information - Now Immediately Accessible */}
-        <Card className="border-blue-200 bg-blue-50">
-          <CardHeader>
-            <CardTitle className="text-lg text-blue-800">
-              Emergency Information
-            </CardTitle>
-            <CardDescription className="text-blue-600">
-              Incident details for immediate police response
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        {/* Column 1: Emergency Information */}
+        <div className="xl:col-span-2 space-y-6">
+          {/* Emergency Information - Now Primary */}
+          <Card className="border-destructive/20 bg-destructive/5">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2 text-destructive">
+                <AlertTriangle className="h-5 w-5" />
+                Emergency Information
+              </CardTitle>
+              <CardDescription>
+                Critical incident details for immediate response
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
             {incident.incident_message && (
               <div>
                 <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -982,11 +908,11 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                 </div>
               </div>
             )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* Assignment Information */}
-        <Card>
+          {/* Assignment Information */}
+          <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center justify-between">
               Assignment & Notes
