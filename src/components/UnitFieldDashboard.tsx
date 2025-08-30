@@ -1228,10 +1228,14 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="incidents" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="incidents" className="flex items-center gap-2">
             <AlertTriangle className="h-4 w-4" />
             Active Incidents
+          </TabsTrigger>
+          <TabsTrigger value="map" className="flex items-center gap-2">
+            <MapPin className="h-4 w-4" />
+            Map
           </TabsTrigger>
           <TabsTrigger value="operations" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
@@ -1245,89 +1249,75 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
 
         {/* Active Incidents Tab */}
         <TabsContent value="incidents" className="space-y-4">
-          <Tabs defaultValue="list" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="list" className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4" />
-                Incident List
-              </TabsTrigger>
-              <TabsTrigger value="map" className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                Map
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="list" className="mt-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5" />
-                    Current Assignments
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {assignments.length > 0 ? (
-                    <div className="space-y-2">
-                      {assignments.map((incident) => (
-                        <div 
-                          key={incident.id} 
-                          className="border rounded-lg p-4 cursor-pointer hover:bg-muted/50 transition-colors"
-                          onClick={() => setSelectedIncident(incident)}
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-3">
-                              <div className={`w-3 h-3 rounded-full ${
-                                incident.priority_level === 1 ? 'bg-red-500' :
-                                incident.priority_level === 2 ? 'bg-orange-500' :
-                                incident.priority_level === 3 ? 'bg-yellow-500' : 'bg-blue-500'
-                              }`} />
-                              <div>
-                                <p className="font-medium">{incident.incident_number}</p>
-                                <p className="text-sm text-muted-foreground">{incident.emergency_type}</p>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline">{incident.status}</Badge>
-                              <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                            </div>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5" />
+                Current Assignments
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {assignments.length > 0 ? (
+                <div className="space-y-2">
+                  {assignments.map((incident) => (
+                    <div 
+                      key={incident.id} 
+                      className="border rounded-lg p-4 cursor-pointer hover:bg-muted/50 transition-colors"
+                      onClick={() => setSelectedIncident(incident)}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-3 h-3 rounded-full ${
+                            incident.priority_level === 1 ? 'bg-red-500' :
+                            incident.priority_level === 2 ? 'bg-orange-500' :
+                            incident.priority_level === 3 ? 'bg-yellow-500' : 'bg-blue-500'
+                          }`} />
+                          <div>
+                            <p className="font-medium">{incident.incident_number}</p>
+                            <p className="text-sm text-muted-foreground">{incident.emergency_type}</p>
                           </div>
-                          
-                          {incident.location_address && (
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <MapPin className="h-4 w-4" />
-                              {incident.location_address}
-                            </div>
-                          )}
                         </div>
-                      ))}
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">{incident.status}</Badge>
+                          <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                      </div>
+                      
+                      {incident.location_address && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <MapPin className="h-4 w-4" />
+                          {incident.location_address}
+                        </div>
+                      )}
                     </div>
-                  ) : (
-                    <p className="text-muted-foreground text-center py-8">No active assignments</p>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-muted-foreground text-center py-8">No active assignments</p>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-            <TabsContent value="map" className="mt-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5" />
-                    Incident Locations
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-96 rounded-lg overflow-hidden">
-                    <IncidentMap 
-                      incidents={assignments}
-                      selectedIncident={selectedIncident}
-                      onSelectIncident={(incident) => setSelectedIncident(incident)}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+        {/* Map Tab */}
+        <TabsContent value="map" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MapPin className="h-5 w-5" />
+                Incident Locations
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-96 rounded-lg overflow-hidden">
+                <IncidentMap 
+                  incidents={assignments}
+                  selectedIncident={selectedIncident}
+                  onSelectIncident={(incident) => setSelectedIncident(incident)}
+                />
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Field Operations Tab */}
@@ -1759,6 +1749,21 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Incident Detail Dialog */}
+      {selectedIncident && (
+        <Dialog open={!!selectedIncident} onOpenChange={() => setSelectedIncident(null)}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <IncidentDetailDialog
+              incident={selectedIncident}
+              onUpdate={() => {
+                fetchAssignments();
+                setSelectedIncident(null);
+              }}
+            />
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );
