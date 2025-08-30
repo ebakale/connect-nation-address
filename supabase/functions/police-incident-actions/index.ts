@@ -141,10 +141,15 @@ serve(async (req) => {
         break;
 
       case 'addNote':
+        // Determine which notes field to update based on user role
+        const isDispatcher = userRole === 'police_dispatcher' || userRole === 'police_supervisor';
+        const noteField = isDispatcher ? 'dispatcher_notes' : 'field_notes';
+        const actionType = isDispatcher ? 'dispatcher_note_added' : 'field_note_added';
+        
         const { error: noteError } = await supabase
           .from('emergency_incidents')
           .update({ 
-            dispatcher_notes: data.notes,
+            [noteField]: data.notes,
             updated_at: new Date().toISOString()
           })
           .eq('id', incidentId);
@@ -156,14 +161,16 @@ serve(async (req) => {
           .insert({
             incident_id: incidentId,
             user_id: user.id,
-            action: 'note_added',
+            action: actionType,
             details: { 
               notes: data.notes,
+              note_type: isDispatcher ? 'dispatcher' : 'field',
+              added_by: user.email || user.id,
               timestamp: new Date().toISOString()
             }
           });
 
-        result = { success: true, message: 'Note added to incident' };
+        result = { success: true, message: `${isDispatcher ? 'Dispatcher' : 'Field'} note added to incident` };
         break;
 
       case 'assignUnits':
