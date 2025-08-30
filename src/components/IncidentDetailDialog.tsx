@@ -575,6 +575,18 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   const canAddNotes = isPoliceSupervisor || isPoliceDispatcher || isPoliceOperator;
   const canRequestBackup = isPoliceOperator;
 
+  // Debug logging
+  console.log('Permission Debug:', {
+    isPoliceSupervisor,
+    isPoliceDispatcher,
+    isPoliceOperator,
+    canEdit,
+    canComplete,
+    canAddNotes,
+    canRequestBackup,
+    userId: user?.id
+  });
+
   const handleAddNote = async () => {
     if (!newNote.trim()) {
       toast.error('Please enter a note');
