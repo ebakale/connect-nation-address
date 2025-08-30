@@ -18,6 +18,8 @@ import {
   Navigation2, Locate, Camera, FileText
 } from 'lucide-react';
 import { IncidentStatusUpdateDialog } from './IncidentStatusUpdateDialog';
+import IncidentDetailDialog from './IncidentDetailDialog';
+import IncidentMap from './IncidentMap';
 import { useLanguage } from '@/contexts/LanguageContext';
 import MapLocationPicker from './MapLocationPicker';
 
@@ -27,18 +29,23 @@ interface IncidentAssignment {
   emergency_type: string;
   priority_level: number;
   status: string;
+  reported_at: string;
   location_address?: string;
   location_latitude?: number;
   location_longitude?: number;
   incident_message?: string;
   dispatched_at?: string;
   responded_at?: string;
+  resolved_at?: string;
+  assigned_operator_id?: string;
+  assigned_units?: string[];
+  dispatcher_notes?: string;
+  language_code?: string;
   street?: string;
   city?: string;
   region?: string;
   country?: string;
   incident_uac?: string;
-  dispatcher_notes?: string;
 }
 
 interface UnitInfo {
@@ -686,19 +693,23 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
           emergency_type,
           priority_level,
           status,
+          reported_at,
           location_address,
           location_latitude,
           location_longitude,
           incident_message,
           dispatched_at,
           responded_at,
+          resolved_at,
+          assigned_operator_id,
+          assigned_units,
+          dispatcher_notes,
+          language_code,
           street,
           city,
           region,
           country,
-          incident_uac,
-          dispatcher_notes,
-          assigned_units
+          incident_uac
         `)
         .contains('assigned_units', [unitInfo.unit_code])
         .order('priority_level', { ascending: false })
@@ -1234,62 +1245,89 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
 
         {/* Active Incidents Tab */}
         <TabsContent value="incidents" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5" />
-                Current Assignments
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {assignments.length > 0 ? (
-                <div className="space-y-3">
-                  {assignments.map((incident) => (
-                    <div key={incident.id} className="border rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-3 h-3 rounded-full ${
-                            incident.priority_level === 1 ? 'bg-red-500' :
-                            incident.priority_level === 2 ? 'bg-orange-500' :
-                            incident.priority_level === 3 ? 'bg-yellow-500' : 'bg-blue-500'
-                          }`} />
-                          <div>
-                            <p className="font-medium">{incident.incident_number}</p>
-                            <p className="text-sm text-muted-foreground">{incident.emergency_type}</p>
+          <Tabs defaultValue="list" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="list" className="flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4" />
+                Incident List
+              </TabsTrigger>
+              <TabsTrigger value="map" className="flex items-center gap-2">
+                <MapPin className="h-4 w-4" />
+                Map
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="list" className="mt-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5" />
+                    Current Assignments
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {assignments.length > 0 ? (
+                    <div className="space-y-2">
+                      {assignments.map((incident) => (
+                        <div 
+                          key={incident.id} 
+                          className="border rounded-lg p-4 cursor-pointer hover:bg-muted/50 transition-colors"
+                          onClick={() => setSelectedIncident(incident)}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-3 h-3 rounded-full ${
+                                incident.priority_level === 1 ? 'bg-red-500' :
+                                incident.priority_level === 2 ? 'bg-orange-500' :
+                                incident.priority_level === 3 ? 'bg-yellow-500' : 'bg-blue-500'
+                              }`} />
+                              <div>
+                                <p className="font-medium">{incident.incident_number}</p>
+                                <p className="text-sm text-muted-foreground">{incident.emergency_type}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline">{incident.status}</Badge>
+                              <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                            </div>
                           </div>
+                          
+                          {incident.location_address && (
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <MapPin className="h-4 w-4" />
+                              {incident.location_address}
+                            </div>
+                          )}
                         </div>
-                        <Badge variant="outline">{incident.status}</Badge>
-                      </div>
-                      
-                      {incident.location_address && (
-                        <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
-                          <MapPin className="h-4 w-4" />
-                          {incident.location_address}
-                        </div>
-                      )}
-                      
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                        {fieldActions.map((action) => (
-                          <Button
-                            key={action.action}
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setActionDialog({ action, incident })}
-                            className="flex items-center gap-1"
-                          >
-                            <action.icon className="h-3 w-3" />
-                            {action.label}
-                          </Button>
-                        ))}
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-muted-foreground text-center py-8">No active assignments</p>
-              )}
-            </CardContent>
-          </Card>
+                  ) : (
+                    <p className="text-muted-foreground text-center py-8">No active assignments</p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="map" className="mt-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MapPin className="h-5 w-5" />
+                    Incident Locations
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-96 rounded-lg overflow-hidden">
+                    <IncidentMap 
+                      incidents={assignments}
+                      selectedIncident={selectedIncident}
+                      onSelectIncident={(incident) => setSelectedIncident(incident)}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </TabsContent>
 
         {/* Field Operations Tab */}
