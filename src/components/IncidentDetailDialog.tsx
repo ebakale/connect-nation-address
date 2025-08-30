@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { useState, useEffect } from "react";
 import { 
   Eye, MapPin, Clock, User, Phone, MessageSquare, 
@@ -94,6 +95,8 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     assigned_operator_id: ''
   });
   const [newUnit, setNewUnit] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const logsPerPage = 5;
   const [availableUnits, setAvailableUnits] = useState<{ unit_code: string; unit_name: string; status: string; coverage_city?: string }[]>([]);
   const [unitNames, setUnitNames] = useState<Record<string, string>>({});
   const [userNames, setUserNames] = useState<Record<string, string>>({});
@@ -1185,38 +1188,81 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
             <CardTitle className="text-base">Activity Log</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3 max-h-64 overflow-y-auto">
+            <div className="space-y-3">
               {logs.length > 0 ? (
-                logs.map((log, index) => (
-                  <div key={log.id || index} className="border-l-2 border-gray-200 pl-3 pb-3">
-                    <div className="flex justify-between items-start mb-1">
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(log.timestamp).toLocaleString()}
-                      </span>
-                      <Badge variant="outline" className="text-xs">
-                        {log.action.replace(/_/g, ' ').toUpperCase()}
-                      </Badge>
+                <>
+                  {logs
+                    .slice((currentPage - 1) * logsPerPage, currentPage * logsPerPage)
+                    .map((log, index) => (
+                      <div key={log.id || index} className="border-l-2 border-gray-200 pl-3 pb-3">
+                        <div className="flex justify-between items-start mb-1">
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(log.timestamp).toLocaleString()}
+                          </span>
+                          <Badge variant="outline" className="text-xs">
+                            {log.action.replace(/_/g, ' ').toUpperCase()}
+                          </Badge>
+                        </div>
+                        <p className="text-sm font-medium mb-1">
+                          {userNames[log.user_id] || 'Unknown User'}
+                        </p>
+                        {log.details?.message && (
+                          <p className="text-sm text-gray-700 mb-1">{log.details.message}</p>
+                        )}
+                        {log.details?.unit_name && (
+                          <p className="text-xs text-muted-foreground">
+                            Unit: {log.details.unit_name} ({log.details.unit_code})
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  
+                  {/* Pagination */}
+                  {logs.length > logsPerPage && (
+                    <div className="mt-4 flex justify-center">
+                      <Pagination>
+                        <PaginationContent>
+                          <PaginationItem>
+                            <PaginationPrevious 
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                if (currentPage > 1) setCurrentPage(currentPage - 1);
+                              }}
+                              className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                            />
+                          </PaginationItem>
+                          
+                          {Array.from({ length: Math.ceil(logs.length / logsPerPage) }, (_, i) => i + 1).map((page) => (
+                            <PaginationItem key={page}>
+                              <PaginationLink
+                                href="#"
+                                isActive={currentPage === page}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setCurrentPage(page);
+                                }}
+                              >
+                                {page}
+                              </PaginationLink>
+                            </PaginationItem>
+                          ))}
+                          
+                          <PaginationItem>
+                            <PaginationNext 
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                if (currentPage < Math.ceil(logs.length / logsPerPage)) setCurrentPage(currentPage + 1);
+                              }}
+                              className={currentPage === Math.ceil(logs.length / logsPerPage) ? "pointer-events-none opacity-50" : ""}
+                            />
+                          </PaginationItem>
+                        </PaginationContent>
+                      </Pagination>
                     </div>
-                    <p className="text-sm font-medium text-foreground">
-                      {getActorDisplay(log)}
-                    </p>
-                    {log.details?.notes && (
-                      <p className="text-sm text-muted-foreground mt-1 italic">
-                        "{log.details.notes}"
-                      </p>
-                    )}
-                    {log.details?.note_type && (
-                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-md">
-                        {log.details.note_type === 'field' ? 'Field Note' : 'Dispatcher Note'}
-                      </span>
-                    )}
-                    {log.details?.unit_name && (
-                      <p className="text-xs text-muted-foreground">
-                        Unit: {log.details.unit_name} ({log.details.unit_code})
-                      </p>
-                    )}
-                  </div>
-                ))
+                  )}
+                </>
               ) : (
                 <p className="text-sm text-muted-foreground">No activity logs available</p>
               )}
