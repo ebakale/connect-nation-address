@@ -574,6 +574,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   const canAssignUnits = isPoliceDispatcher; // Only dispatchers can assign/reassign units
   const canAddNotes = isPoliceSupervisor || isPoliceDispatcher || isPoliceOperator;
   const canRequestBackup = isPoliceOperator;
+  const canUpdateStatus = isPoliceSupervisor || isPoliceDispatcher || isPoliceOperator; // Unit members can update status of their assigned incidents
 
   // Debug logging
   console.log('Permission Debug:', {
@@ -584,6 +585,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     canComplete,
     canAddNotes,
     canRequestBackup,
+    canUpdateStatus,
     userId: user?.id
   });
 
@@ -698,7 +700,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center justify-between">
               Basic Information
-              {canEdit && (
+        {canUpdateStatus && (
                 isEditing ? (
                   <div className="flex gap-2">
                     <Button size="sm" onClick={handleSave}>
