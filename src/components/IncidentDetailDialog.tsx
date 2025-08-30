@@ -1213,7 +1213,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
         )}
       </div>
 
-      {/* Right Column - Could be used for additional info if needed */}
+      {/* Right Column - Timeline and Detailed Logs */}
       <div className="space-y-4">
         <Card>
           <CardHeader>
@@ -1246,6 +1246,51 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                   <span className="font-medium">Resolved:</span>
                   <span>{new Date(incident.resolved_at).toLocaleString()}</span>
                 </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Detailed Activity Log */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Activity Log</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3 max-h-64 overflow-y-auto">
+              {logs.length > 0 ? (
+                logs.map((log, index) => (
+                  <div key={log.id || index} className="border-l-2 border-gray-200 pl-3 pb-3">
+                    <div className="flex justify-between items-start mb-1">
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(log.timestamp).toLocaleString()}
+                      </span>
+                      <Badge variant="outline" className="text-xs">
+                        {log.action.replace(/_/g, ' ').toUpperCase()}
+                      </Badge>
+                    </div>
+                    <p className="text-sm font-medium text-foreground">
+                      {getActorDisplay(log)}
+                    </p>
+                    {log.details?.notes && (
+                      <p className="text-sm text-muted-foreground mt-1 italic">
+                        "{log.details.notes}"
+                      </p>
+                    )}
+                    {log.details?.note_type && (
+                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-md">
+                        {log.details.note_type === 'field' ? 'Field Note' : 'Dispatcher Note'}
+                      </span>
+                    )}
+                    {log.details?.unit_name && (
+                      <p className="text-xs text-muted-foreground">
+                        Unit: {log.details.unit_name} ({log.details.unit_code})
+                      </p>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">No activity logs available</p>
               )}
             </div>
           </CardContent>
