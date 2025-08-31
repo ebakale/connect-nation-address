@@ -311,7 +311,7 @@ const UnifiedDashboard = () => {
               </div>
             </header>
             <main className="flex-1 overflow-auto">
-              <AdminDashboardContent activeSection={activeSection} />
+              <AdminDashboardContent activeSection={activeSection} onSectionChange={setActiveSection} />
             </main>
           </div>
         </div>

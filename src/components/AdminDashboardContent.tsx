@@ -30,9 +30,10 @@ interface DashboardStats {
 
 interface AdminDashboardContentProps {
   activeSection: string;
+  onSectionChange?: (section: string) => void;
 }
 
-export function AdminDashboardContent({ activeSection }: AdminDashboardContentProps) {
+export function AdminDashboardContent({ activeSection, onSectionChange }: AdminDashboardContentProps) {
   const { hasAdminAccess } = useUserRole();
   const [stats, setStats] = useState<DashboardStats>({
     totalUsers: 0,
@@ -212,7 +213,7 @@ export function AdminDashboardContent({ activeSection }: AdminDashboardContentPr
               size="sm" 
               variant="outline" 
               className="w-full justify-start"
-              onClick={() => window.location.href = '/dashboard'}
+              onClick={() => onSectionChange?.('users')}
             >
               <Users className="h-4 w-4 mr-2" />
               Manage Users
@@ -221,7 +222,7 @@ export function AdminDashboardContent({ activeSection }: AdminDashboardContentPr
               size="sm" 
               variant="outline" 
               className="w-full justify-start"
-              onClick={() => window.location.href = '/dashboard'}
+              onClick={() => onSectionChange?.('users')}
             >
               <Shield className="h-4 w-4 mr-2" />
               Assign Roles
@@ -230,7 +231,7 @@ export function AdminDashboardContent({ activeSection }: AdminDashboardContentPr
               size="sm" 
               variant="outline" 
               className="w-full justify-start"
-              onClick={() => window.location.href = '/dashboard'}
+              onClick={() => onSectionChange?.('approvals')}
             >
               <AlertTriangle className="h-4 w-4 mr-2" />
               Review Approvals
