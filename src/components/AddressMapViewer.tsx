@@ -14,6 +14,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import MapView from './MapView';
 import AddressDirections from './AddressDirections';
+import AddressCard from './AddressCard';
 
 interface SearchResult {
   uac: string;
@@ -102,101 +103,92 @@ const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack, au
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Address Info */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-mono font-semibold text-primary">
-                {address.uac}
-              </span>
-              {address.verified && (
-                <Badge variant="secondary">
-                  Verified
-                </Badge>
-              )}
-              <Badge variant="outline">
-                {address.type}
-              </Badge>
-            </div>
-            
-            <p className="text-foreground">{address.readable}</p>
-            
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground flex items-center gap-1">
-                <MapPin className="h-4 w-4" />
-                {address.coordinates.lat.toFixed(6)}, {address.coordinates.lng.toFixed(6)}
-              </span>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Quick Actions */}
-          <div className="grid grid-cols-2 gap-2">
-            <Button 
-              variant="default"
-              onClick={() => setShowDirections(true)}
-              className="flex items-center gap-2"
-            >
-              <Navigation className="h-4 w-4" />
-              Get Directions
-            </Button>
-            <Button 
-              variant="outline"
-              onClick={openInMaps}
-              className="flex items-center gap-2"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Open in Maps
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
-            <Button 
-              variant="secondary"
-              onClick={() => copyToClipboard(address.uac, "UAC Code")}
-              className="flex items-center gap-2"
-            >
-              <Copy className="h-4 w-4" />
-              Copy UAC
-            </Button>
-            <Button 
-              variant="secondary"
-              onClick={() => copyToClipboard(
-                `${address.coordinates.lat},${address.coordinates.lng}`, 
-                "Coordinates"
-              )}
-              className="flex items-center gap-2"
-            >
-              <Copy className="h-4 w-4" />
-              Copy Coords
-            </Button>
-          </div>
-        </CardContent>
       </Card>
 
-      {/* Interactive Map */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Maximize2 className="h-5 w-5" />
-            Interactive Map
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <MapView
-            center={[address.coordinates.lng, address.coordinates.lat]}
-            zoom={15}
-            locations={[mapLocation]}
-            onLocationSelect={(location) => {
-              toast({
-                title: "Address Selected",
-                description: `Selected ${location.uac}`,
-              });
+      {/* Address Card and Map Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Address Card with QR Code */}
+        <div className="space-y-4">
+          <AddressCard 
+            address={{
+              uac: address.uac,
+              country: address.readable.split(', ')[3] || 'Unknown',
+              region: address.readable.split(', ')[2] || 'Unknown',
+              city: address.readable.split(', ')[1] || 'Unknown',
+              street: address.readable.split(', ')[0] || 'Unknown',
+              building: '',
+              coordinates: address.coordinates,
+              metadata: {
+                type: address.type,
+                description: '',
+                verified: address.verified
+              }
             }}
+            onViewMap={openInMaps}
           />
-        </CardContent>
-      </Card>
+          
+          {/* Quick Actions */}
+          <Card>
+            <CardContent className="pt-6">
+              <div className="space-y-3">
+                <Button 
+                  variant="default"
+                  onClick={() => setShowDirections(true)}
+                  className="w-full flex items-center gap-2"
+                >
+                  <Navigation className="h-4 w-4" />
+                  Get Turn-by-Turn Directions
+                </Button>
+                
+                <div className="grid grid-cols-2 gap-2">
+                  <Button 
+                    variant="secondary"
+                    onClick={() => copyToClipboard(address.uac, "UAC Code")}
+                    className="flex items-center gap-2"
+                  >
+                    <Copy className="h-4 w-4" />
+                    Copy UAC
+                  </Button>
+                  <Button 
+                    variant="secondary"
+                    onClick={() => copyToClipboard(
+                      `${address.coordinates.lat},${address.coordinates.lng}`, 
+                      "Coordinates"
+                    )}
+                    className="flex items-center gap-2"
+                  >
+                    <Copy className="h-4 w-4" />
+                    Copy Coords
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Interactive Map */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Maximize2 className="h-5 w-5" />
+              Interactive Map
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <MapView
+              center={[address.coordinates.lng, address.coordinates.lat]}
+              zoom={15}
+              locations={[mapLocation]}
+              onLocationSelect={(location) => {
+                toast({
+                  title: "Address Selected",
+                  description: `Selected ${location.uac}`,
+                });
+              }}
+            />
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Additional Info */}
       <Card>
@@ -206,8 +198,9 @@ const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack, au
               <MapPin className="h-4 w-4 mt-0.5" />
               <div>
                 <p className="font-medium mb-1">Location Information</p>
+                <p>• The QR code contains the UAC, coordinates, and address information for easy sharing</p>
                 <p>• Click "Get Directions" to navigate from your current location or another address</p>
-                <p>• Use "Open in Maps" to view in your device's default map application</p>
+                <p>• Use "View on Map" button in the address card to open in your device's default map application</p>
                 <p>• Coordinates are provided with high precision for navigation</p>
               </div>
             </div>
