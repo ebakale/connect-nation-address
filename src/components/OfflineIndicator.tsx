@@ -1,7 +1,7 @@
 import { useOffline } from '@/hooks/useOffline';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Wifi, WifiOff, RefreshCw, Download } from 'lucide-react';
+import { Wifi, WifiOff, RefreshCw, Activity } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const OfflineIndicator = () => {
@@ -37,7 +37,7 @@ export const OfflineIndicator = () => {
           onClick={handleNetworkTest}
           className="p-1"
         >
-          <Download className="w-3 h-3" />
+          <Activity className="w-3 h-3" />
         </Button>
       </div>
     );

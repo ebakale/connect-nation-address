@@ -288,6 +288,7 @@ export type Database = {
           encrypted_longitude: string | null
           encrypted_message: string
           external_case_id: string | null
+          field_notes: string | null
           id: string
           incident_message: string | null
           incident_number: string
@@ -328,6 +329,7 @@ export type Database = {
           encrypted_longitude?: string | null
           encrypted_message: string
           external_case_id?: string | null
+          field_notes?: string | null
           id?: string
           incident_message?: string | null
           incident_number: string
@@ -368,6 +370,7 @@ export type Database = {
           encrypted_longitude?: string | null
           encrypted_message?: string
           external_case_id?: string | null
+          field_notes?: string | null
           id?: string
           incident_message?: string | null
           incident_number?: string

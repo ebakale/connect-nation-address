@@ -195,6 +195,24 @@ const translations: Record<string, string> = {
   
   loading: 'Loading...',
   
+  // Dashboard
+  unifiedPortal: 'Unified Digital Platform',
+  welcomeBack: 'Welcome back',
+  editProfile: 'Edit Profile',
+  logout: 'Logout',
+  systemOverview: 'System Overview',
+  clickToManageUsers: 'Click to manage users',
+  clickToManageRoles: 'Click to manage roles', 
+  clickToApproveRequests: 'Click to approve requests',
+  clickToViewAddresses: 'Click to view addresses',
+  total: 'total',
+  viewManageUsers: 'View and manage system users',
+  viewManageRoles: 'View and manage user roles',
+  addressRequestApprovals: 'Address Request Approvals',
+  reviewApproveCitizen: 'Review and approve citizen requests',
+  addressAnalytics: 'Address Analytics',
+  viewDetailedStats: 'View detailed statistics',
+  
   // Authentication
   nationalAddressRegistry: 'Unified Address System and Emergency Management',
   secureAccess: 'Secure Access',

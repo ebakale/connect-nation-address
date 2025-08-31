@@ -482,6 +482,38 @@ class OfflineStorage {
     });
   }
 
+  // Generic get/set methods for any store
+  async get(storeName: string, key?: string): Promise<any> {
+    const store = await this.getStore(storeName);
+    return new Promise((resolve, reject) => {
+      const request = key ? store.get(key) : store.getAll();
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  async set(storeName: string, data: any): Promise<void> {
+    const store = await this.getStore(storeName, 'readwrite');
+    return new Promise((resolve, reject) => {
+      const request = Array.isArray(data) ? 
+        Promise.all(data.map(item => {
+          return new Promise<void>((res, rej) => {
+            const req = store.put(item);
+            req.onsuccess = () => res();
+            req.onerror = () => rej(req.error);
+          });
+        })) :
+        store.put(data);
+      
+      if (request instanceof Promise) {
+        request.then(() => resolve()).catch(reject);
+      } else {
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      }
+    });
+  }
+
   // Clear all data
   async clearAll(): Promise<void> {
     if (!this.db) return;

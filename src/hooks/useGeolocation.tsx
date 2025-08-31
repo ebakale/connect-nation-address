@@ -26,7 +26,7 @@ export const useGeolocation = (options: GeolocationOptions = {}) => {
 
   const {
     enableHighAccuracy = true,
-    timeout = 15000,
+    timeout = 30000, // Increased to 30 seconds for web browsers
     maximumAge = 60000,
   } = options;
 
@@ -80,7 +80,7 @@ export const useGeolocation = (options: GeolocationOptions = {}) => {
             errorMessage = 'Location information is unavailable. Please check your connection.';
             break;
           case error.TIMEOUT:
-            errorMessage = 'Location request timed out. Please try again.';
+            errorMessage = 'Location timed out. Move to open sky and try again.';
             break;
           default:
             errorMessage = 'An unknown location error occurred.';

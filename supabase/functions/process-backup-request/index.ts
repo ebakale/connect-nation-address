@@ -46,7 +46,19 @@ Deno.serve(async (req) => {
 
     console.log('Processing backup request:', { incident_id, requesting_unit_code, incident_number, user_id: currentUserId })
 
-    // 1. First try to find the unit by unit_code, then by unit_name as fallback
+    // 1. Get incident data first to access assigned units
+    const { data: incident, error: incidentError } = await supabaseClient
+      .from('emergency_incidents')
+      .select('city, region, assigned_units')
+      .eq('id', incident_id)
+      .single()
+
+    if (incidentError) {
+      console.error('Error fetching incident:', incidentError)
+      throw new Error('Could not find incident')
+    }
+
+    // 2. First try to find the unit by unit_code, then by unit_name as fallback
     let requestingUnit = null
     let unitError = null
 
@@ -199,6 +211,7 @@ Deno.serve(async (req) => {
             priority_level: priority_level,
             location: location,
             notifications_sent: notifications.length,
+            original_units: incident.assigned_units || [],
             timestamp: new Date().toISOString()
           }
         })

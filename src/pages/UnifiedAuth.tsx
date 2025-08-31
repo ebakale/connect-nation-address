@@ -4,22 +4,29 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Globe, Shield, Lock, Mail } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Globe, Shield, Lock, Mail, Wifi, WifiOff, User } from 'lucide-react';
+import { useUnifiedAuth } from '@/hooks/useUnifiedAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
-
 import { useUserRole } from '@/hooks/useUserRole';
 import Footer from '@/components/Footer';
 
-const Auth = () => {
+const UnifiedAuth = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     fullName: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    role: 'citizen' as 'admin' | 'police_officer' | 'emergency_operator' | 'citizen' | 'field_agent' | 'registrar' | 'verifier',
+    badgeNumber: '',
+    unit: '',
+    rank: ''
   });
-  const { signIn, signUp, user } = useAuth();
+  
+  const { signIn, signUp, user, isOnlineMode } = useUnifiedAuth();
   const { isPoliceRole, loading: roleLoading } = useUserRole();
   const { t } = useLanguage();
 
@@ -50,7 +57,12 @@ const Auth = () => {
     
     setLoading(true);
     
-    const { error } = await signUp(formData.email, formData.password, formData.fullName);
+    if (isOnlineMode) {
+      const { error } = await signUp(formData.email, formData.password, formData.fullName);
+    } else {
+      // For offline mode, pass additional profile data
+      const { error } = await signUp(formData.email, formData.password, formData.fullName, formData.role);
+    }
     
     setLoading(false);
   };
@@ -66,11 +78,19 @@ const Auth = () => {
       
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-lg space-y-8">
-          {/* Language Switcher */}
-          <div className="flex justify-end">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-1">
-              
-            </div>
+          {/* Connection Status Badge */}
+          <div className="flex justify-center">
+            <Badge 
+              variant="outline" 
+              className={`${
+                isOnlineMode 
+                  ? "text-green-700 border-green-200 bg-green-50/80" 
+                  : "text-orange-700 border-orange-200 bg-orange-50/80"
+              } backdrop-blur-sm`}
+            >
+              {isOnlineMode ? <Wifi className="w-3 h-3 mr-2" /> : <WifiOff className="w-3 h-3 mr-2" />}
+              {isOnlineMode ? 'Online Mode' : 'Offline Mode'}
+            </Badge>
           </div>
           
           {/* Header */}
@@ -81,6 +101,12 @@ const Auth = () => {
             <div className="space-y-2">
               <h1 className="text-4xl font-bold text-white tracking-tight">ConnectEG</h1>
               <p className="text-white/80 max-w-md mx-auto leading-relaxed">{t('nationalAddressRegistry')}</p>
+              <p className="text-white/60 text-sm">
+                {isOnlineMode 
+                  ? 'Connected to national database' 
+                  : 'Working offline - data will sync when connected'
+                }
+              </p>
             </div>
           </div>
 
@@ -94,7 +120,7 @@ const Auth = () => {
                 {t('secureAccess')}
               </CardTitle>
               <CardDescription className="text-base mt-2">
-                {t('accessNationalSystem')}
+                {isOnlineMode ? t('accessNationalSystem') : 'Offline access to local system'}
               </CardDescription>
             </CardHeader>
             
@@ -149,16 +175,62 @@ const Auth = () => {
                 
                 <TabsContent value="signup" className="space-y-6 mt-6">
                   <form onSubmit={handleSignUp} className="space-y-6">
-                    <div className="space-y-3">
-                      <label className="text-sm font-semibold text-foreground">{t('fullName')}</label>
-                      <Input
-                        placeholder={t('enterFullName')}
-                        className="h-12 text-base border-2 focus:border-primary transition-colors"
-                        value={formData.fullName}
-                        onChange={(e) => handleInputChange('fullName', e.target.value)}
-                        required
-                      />
-                    </div>
+                     <div className="space-y-3">
+                       <label className="text-sm font-semibold text-foreground">{t('fullName')}</label>
+                       <Input
+                         placeholder={t('enterFullName')}
+                         className="h-12 text-base border-2 focus:border-primary transition-colors"
+                         value={formData.fullName}
+                         onChange={(e) => handleInputChange('fullName', e.target.value)}
+                         required
+                       />
+                     </div>
+                     
+                     {!isOnlineMode && (
+                       <div className="space-y-3">
+                         <label className="text-sm font-semibold text-foreground">Role</label>
+                         <Select
+                           value={formData.role}
+                           onValueChange={(value: typeof formData.role) => handleInputChange('role', value)}
+                         >
+                           <SelectTrigger className="h-12 text-base border-2 focus:border-primary transition-colors">
+                             <SelectValue />
+                           </SelectTrigger>
+                           <SelectContent>
+                             <SelectItem value="citizen">Citizen</SelectItem>
+                             <SelectItem value="police_officer">Police Officer</SelectItem>
+                             <SelectItem value="emergency_operator">Emergency Operator</SelectItem>
+                             <SelectItem value="field_agent">Field Agent</SelectItem>
+                             <SelectItem value="registrar">Registrar</SelectItem>
+                             <SelectItem value="verifier">Verifier</SelectItem>
+                             <SelectItem value="admin">Admin</SelectItem>
+                           </SelectContent>
+                         </Select>
+                       </div>
+                     )}
+                     
+                     {!isOnlineMode && ['police_officer', 'emergency_operator', 'field_agent'].includes(formData.role) && (
+                       <div className="grid grid-cols-2 gap-4">
+                         <div className="space-y-3">
+                           <label className="text-sm font-semibold text-foreground">Badge Number</label>
+                           <Input
+                             placeholder="Badge #"
+                             className="h-12 text-base border-2 focus:border-primary transition-colors"
+                             value={formData.badgeNumber}
+                             onChange={(e) => handleInputChange('badgeNumber', e.target.value)}
+                           />
+                         </div>
+                         <div className="space-y-3">
+                           <label className="text-sm font-semibold text-foreground">Unit</label>
+                           <Input
+                             placeholder="Unit assignment"
+                             className="h-12 text-base border-2 focus:border-primary transition-colors"
+                             value={formData.unit}
+                             onChange={(e) => handleInputChange('unit', e.target.value)}
+                           />
+                         </div>
+                       </div>
+                     )}
                     
                     <div className="space-y-3">
                       <label className="text-sm font-semibold text-foreground">{t('emailAddress')}</label>
@@ -213,10 +285,48 @@ const Auth = () => {
                       {loading ? t('creatingAccount') : t('createAccount')}
                     </Button>
                   </form>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
+                 </TabsContent>
+               </Tabs>
+             </CardContent>
+           </Card>
+
+           {/* Demo Credentials for Offline Mode */}
+           {!isOnlineMode && (
+             <Card className="shadow-card bg-white/95 backdrop-blur-sm border-0">
+               <CardHeader className="pb-4">
+                 <CardTitle className="text-sm flex items-center gap-2">
+                   <User className="h-4 w-4" />
+                   Demo Credentials
+                 </CardTitle>
+               </CardHeader>
+               <CardContent className="space-y-3">
+                 {[
+                   { role: 'Admin', email: 'admin@police.gq', password: 'admin123' },
+                   { role: 'Police Officer', email: 'officer@police.gq', password: 'officer123' },
+                   { role: 'Emergency Operator', email: 'operator@police.gq', password: 'operator123' },
+                   { role: 'Citizen', email: 'citizen@demo.gq', password: 'citizen123' }
+                 ].map((cred) => (
+                   <div key={cred.email} className="flex justify-between items-center p-3 bg-muted/30 rounded-lg">
+                     <div>
+                       <p className="font-medium text-sm">{cred.role}</p>
+                       <p className="text-xs text-muted-foreground">{cred.email}</p>
+                     </div>
+                     <Button
+                       size="sm"
+                       variant="outline"
+                       onClick={() => {
+                         setFormData(prev => ({ ...prev, email: cred.email, password: cred.password }));
+                         handleSignIn({ preventDefault: () => {} } as React.FormEvent);
+                       }}
+                       className="text-xs"
+                     >
+                       Quick Login
+                     </Button>
+                   </div>
+                 ))}
+               </CardContent>
+             </Card>
+           )}
 
         </div>
       </div>
@@ -225,4 +335,4 @@ const Auth = () => {
   );
 };
 
-export default Auth;
+export default UnifiedAuth;

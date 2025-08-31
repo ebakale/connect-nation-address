@@ -36,6 +36,86 @@ class LocalAuthManager {
     }
   }
 
+  // Sync a Supabase user to local storage
+  async syncOnlineUser(
+    supabaseUser: any, 
+    userProfile?: any, 
+    userRole?: string
+  ): Promise<{ user: LocalUser | null; error: Error | null }> {
+    try {
+      // Check if user already exists
+      const existingUser = await offlineStorage.getLocalUser(supabaseUser.email);
+
+      const syncedUser: LocalUser = {
+        id: supabaseUser.id,
+        email: supabaseUser.email,
+        password_hash: 'synced_from_online', // Placeholder since we don't have the password
+        role: this.mapSupabaseRoleToLocal(userRole),
+        profile: {
+          display_name: userProfile?.full_name || userProfile?.display_name || supabaseUser.user_metadata?.full_name || supabaseUser.email.split('@')[0],
+          badge_number: userProfile?.badge_number,
+          unit: userProfile?.unit,
+          rank: userProfile?.rank,
+          created_at: existingUser?.profile.created_at || new Date().toISOString(),
+        },
+        created_at: supabaseUser.created_at || new Date().toISOString(),
+        last_login: new Date().toISOString(),
+      };
+
+      // Save or update the user
+      await offlineStorage.saveLocalUser(syncedUser);
+      console.log(`Synced user ${supabaseUser.email} to offline storage`);
+      
+      return { user: syncedUser, error: null };
+    } catch (error) {
+      console.error('Failed to sync online user:', error);
+      return { user: null, error: error as Error };
+    }
+  }
+
+  // Map Supabase roles to local roles
+  private mapSupabaseRoleToLocal(supabaseRole?: string): LocalUser['role'] {
+    switch (supabaseRole) {
+      case 'admin':
+      case 'ndaa_admin':
+      case 'police_admin':
+        return 'admin';
+      case 'police_officer':
+      case 'police_operator':
+      case 'police_supervisor':
+      case 'police_dispatcher':
+        return 'police_officer';
+      case 'emergency_operator':
+        return 'emergency_operator';
+      case 'field_agent':
+        return 'field_agent';
+      case 'registrar':
+        return 'registrar';
+      case 'verifier':
+        return 'verifier';
+      case 'citizen':
+      default:
+        return 'citizen';
+    }
+  }
+
+  // Check if a user can sign in (either local password or synced from online)
+  async canSignIn(email: string, password: string): Promise<boolean> {
+    const users = await offlineStorage.get('localUsers') || [];
+    const user = users.find((u: LocalUser) => u.email === email);
+    
+    if (!user) return false;
+    
+    // If it's a synced user, allow any password (they'll use online auth when online)
+    if (user.password_hash === 'synced_from_online') {
+      return true;
+    }
+    
+    // Otherwise check the actual password
+    const hashedPassword = await this.hashPassword(password);
+    return user.password_hash === hashedPassword;
+  }
+
   private async hashPassword(password: string): Promise<string> {
     const encoder = new TextEncoder();
     const data = encoder.encode(password);
@@ -91,8 +171,18 @@ class LocalAuthManager {
         throw new Error('User not found');
       }
 
-      const password_hash = await this.hashPassword(password);
-      if (user.password_hash !== password_hash) {
+      // Check password based on user type
+      let validPassword = false;
+      if (user.password_hash === 'synced_from_online') {
+        // For synced users, accept any password in offline mode
+        validPassword = true;
+      } else {
+        // For local users, check actual password
+        const password_hash = await this.hashPassword(password);
+        validPassword = user.password_hash === password_hash;
+      }
+
+      if (!validPassword) {
         throw new Error('Invalid password');
       }
 

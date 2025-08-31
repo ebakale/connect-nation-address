@@ -61,7 +61,7 @@ const UserManager: React.FC = () => {
     password: '',
     role: 'citizen'
   });
-  const { hasPoliceAdminAccess, hasAdminAccess, isNDAAAdmin } = useUserRole();
+  const { hasPoliceAdminAccess, hasAdminAccess, hasNDAAAccess, hasSystemAdminAccess, isNDAAAdmin } = useUserRole();
   const { toast } = useToast();
 
   // Define role sets based on user access
@@ -69,10 +69,11 @@ const UserManager: React.FC = () => {
     'police_operator', 'police_supervisor', 'police_dispatcher', 'police_admin'
   ] as const;
   
-  const addressingRoles = [
-    'admin', 'ndaa_admin', 'registrar', 'verifier', 'field_agent', 'citizen', 
-    'property_claimant', 'partner', 'auditor', 'data_steward'
-  ] as const;
+  const addressingRoles = hasNDAAAccess 
+    ? ['admin', 'ndaa_admin', 'registrar', 'verifier', 'field_agent', 'citizen', 
+       'property_claimant', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user'] as const
+    : ['admin', 'registrar', 'verifier', 'field_agent', 'citizen', 
+       'property_claimant', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user'] as const; // System admin cannot assign NDAA role
 
   // Region to cities mapping for Equatorial Guinea
   const regionCities: Record<string, string[]> = {

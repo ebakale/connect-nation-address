@@ -10,9 +10,11 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { toast } from 'sonner';
+import { toast } from '@/hooks/use-toast';
 import { UnitStatusManager } from './UnitStatusManager';
 import { UnitMemberManager } from './UnitMemberManager';
+import { SendUnitMessageDialog } from './SendUnitMessageDialog';
+import { RequestBackupDialog } from './RequestBackupDialog';
 
 interface UnitInfo {
   id: string;
@@ -63,9 +65,12 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
     responseTime: 0
   });
   const [loading, setLoading] = useState(true);
+  const [recentMessages, setRecentMessages] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     fetchUnitData();
+    fetchRecentMessages();
   }, [userUnit?.id]);
 
   const fetchUnitData = async () => {
@@ -74,35 +79,108 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
     try {
       setLoading(true);
       
-      // Fetch active incidents assigned to this unit
+      // Fetch active incidents assigned to this unit (by unit code)
       const { data: incidents, error: incidentsError } = await supabase
         .from('emergency_incidents')
         .select('*')
-        .contains('assigned_units', [userUnit.id])
-        .in('status', ['reported', 'dispatched', 'responded']);
+        .contains('assigned_units', [userUnit.unit_code])
+        .in('status', ['reported', 'dispatched', 'responding', 'responded']);
 
       if (incidentsError) throw incidentsError;
       setActiveIncidents(incidents || []);
 
       // Calculate unit stats
-      const totalMembers = userUnit.emergency_unit_members.length;
-      const availableMembers = userUnit.emergency_unit_members.filter(m => 
-        // Add logic here for checking member availability
-        true
-      ).length;
+      const totalMembers = userUnit.emergency_unit_members?.length || 0;
+      
+      // For available members, assume members not currently assigned to active incidents are available
+      const busyMembers = incidents?.reduce((acc, incident) => {
+        return acc + (incident.assigned_units?.length || 0);
+      }, 0) || 0;
+      const availableMembers = Math.max(0, totalMembers - Math.min(busyMembers, totalMembers));
+      
+      // Calculate average response time from recent incidents
+      const respondedIncidents = incidents?.filter(i => i.responded_at && i.dispatched_at) || [];
+      const avgResponseTime = respondedIncidents.length > 0 
+        ? respondedIncidents.reduce((acc, incident) => {
+            const dispatchTime = new Date(incident.dispatched_at).getTime();
+            const responseTime = new Date(incident.responded_at).getTime();
+            return acc + ((responseTime - dispatchTime) / (1000 * 60)); // minutes
+          }, 0) / respondedIncidents.length
+        : 0;
 
       setUnitStats({
         totalMembers,
         availableMembers,
         activeIncidents: incidents?.length || 0,
-        responseTime: 0 // Calculate from recent incidents
+        responseTime: Math.round(avgResponseTime)
       });
 
     } catch (error) {
       console.error('Error fetching unit data:', error);
-      toast.error("Failed to fetch unit data");
+      toast({
+        title: "Error",
+        description: "Failed to fetch unit data",
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchRecentMessages = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('unit-communications', {
+        body: {
+          action: 'get_messages'
+        }
+      });
+
+      if (error) throw error;
+
+      setRecentMessages(data.messages || []);
+      
+      // Count unread messages (not acknowledged)
+      const unread = (data.messages || []).filter((msg: any) => !msg.acknowledged && msg.type === 'incoming').length;
+      setUnreadCount(unread);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  };
+
+  const acknowledgeMessage = async (messageId: string) => {
+    try {
+      const { error } = await supabase.functions.invoke('unit-communications', {
+        body: { 
+          action: 'acknowledge_message',
+          message_id: messageId
+        }
+      });
+
+      if (error) throw error;
+
+      // Update local state
+      setRecentMessages(prev => 
+        prev.map(msg => 
+          msg.id === messageId 
+            ? { ...msg, acknowledged: true, acknowledged_at: new Date().toISOString() }
+            : msg
+        )
+      );
+
+      // Update unread count
+      setUnreadCount(prev => Math.max(0, prev - 1));
+
+      toast({
+        title: "Message Acknowledged",
+        description: "Message has been marked as acknowledged"
+      });
+    } catch (error) {
+      console.error('Error acknowledging message:', error);
+      toast({
+        title: "Error",
+        description: "Failed to acknowledge message",
+        variant: "destructive"
+      });
     }
   };
 
@@ -286,25 +364,97 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MessageSquare className="h-5 w-5" />
-                Unit Communications
+                Leadership Communications
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 p-3 bg-muted/50 rounded">
-                  <Radio className="h-4 w-4" />
-                  <span className="text-sm">Radio: {userUnit.radio_frequency || 'Not assigned'}</span>
+            <CardContent className="space-y-4">
+              {/* Command Actions */}
+              <div className="grid grid-cols-2 gap-3">
+                <SendUnitMessageDialog unitId={userUnit.id} unitCode={userUnit.unit_code}>
+                  <Button className="w-full" variant="outline">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Send Unit Message
+                  </Button>
+                </SendUnitMessageDialog>
+                
+                <RequestBackupDialog unitId={userUnit.id} unitCode={userUnit.unit_code}>
+                  <Button className="w-full" variant="outline">
+                    <Navigation className="h-4 w-4 mr-2" />
+                    Request Backup
+                  </Button>
+                </RequestBackupDialog>
+              </div>
+
+              <div className="flex items-center gap-2 p-3 bg-muted/50 rounded">
+                <Radio className="h-4 w-4" />
+                <span className="text-sm">Radio: {userUnit.radio_frequency || 'Not assigned'}</span>
+              </div>
+
+              {/* Recent Messages with Acknowledgment */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium">Recent Communications</h4>
+                  {unreadCount > 0 && (
+                    <Badge variant="destructive">
+                      {unreadCount} unread
+                    </Badge>
+                  )}
                 </div>
                 
-                <Button className="w-full" variant="outline">
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  Send Unit Message
-                </Button>
-                
-                <Button className="w-full" variant="outline">
-                  <Navigation className="h-4 w-4 mr-2" />
-                  Request Backup
-                </Button>
+                {recentMessages.length > 0 ? (
+                  <div className="space-y-3 max-h-80 overflow-y-auto">
+                    {recentMessages.map((comm) => (
+                      <div key={comm.id} className="border rounded-lg p-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${
+                              comm.type === 'incoming' ? 'bg-blue-500' : 'bg-green-500'
+                            }`} />
+                            <span className="font-medium text-sm">
+                              {comm.type === 'incoming' ? 'Dispatch' : 'Unit'}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {new Date(comm.timestamp).toLocaleTimeString()}
+                            </span>
+                          </div>
+                          {comm.acknowledged && (
+                            <CheckCircle className="h-4 w-4 text-green-500" />
+                          )}
+                        </div>
+                        <div className="mt-2">
+                          {comm.is_radio_code && (
+                            <div className="flex items-center gap-2 mb-1">
+                              <Radio className="h-3 w-3" />
+                              <span className="text-xs font-mono bg-muted px-1 rounded">
+                                {comm.radio_code}
+                              </span>
+                            </div>
+                          )}
+                          <p className="text-sm">{comm.message_content}</p>
+                          <div className="flex items-center justify-between mt-2">
+                            <div className="flex items-center gap-1">
+                              {comm.priority_level <= 2 && (
+                                <AlertTriangle className="h-3 w-3 text-red-500" />
+                              )}
+                            </div>
+                            {comm.type === 'incoming' && !comm.acknowledged && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-6 px-2 text-xs"
+                                onClick={() => acknowledgeMessage(comm.id)}
+                              >
+                                Acknowledge
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground text-center py-4">No recent communications</p>
+                )}
               </div>
             </CardContent>
           </Card>

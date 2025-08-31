@@ -7,16 +7,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { useState, useEffect } from "react";
 import { 
   Eye, MapPin, Clock, User, Phone, MessageSquare, 
   AlertTriangle, Calendar, Shield, Navigation, CheckCircle,
-  Edit, Save, X, Users, Play
+  Edit, Save, X, Users, Play, Radio, FileText
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { toast } from "sonner";
+import { RequestBackupDialog } from "@/components/RequestBackupDialog";
+import { IncidentStatusUpdateDialog } from "@/components/IncidentStatusUpdateDialog";
 
 interface EmergencyIncident {
   id: string;
@@ -92,6 +95,8 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     assigned_operator_id: ''
   });
   const [newUnit, setNewUnit] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const logsPerPage = 5;
   const [availableUnits, setAvailableUnits] = useState<{ unit_code: string; unit_name: string; status: string; coverage_city?: string }[]>([]);
   const [unitNames, setUnitNames] = useState<Record<string, string>>({});
   const [userNames, setUserNames] = useState<Record<string, string>>({});
@@ -100,6 +105,8 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   const [dispatchingUnit, setDispatchingUnit] = useState('');
   const [availableOfficers, setAvailableOfficers] = useState<{id: string, label: string, coverage_city?: string}[]>([]);
   const [availableOperators, setAvailableOperators] = useState<{id: string, name: string, role: string}[]>([]);
+  const [newNote, setNewNote] = useState('');
+  const [addingNote, setAddingNote] = useState(false);
 
   // Fetch available emergency units for dispatch
   const fetchAvailableOfficers = async () => {
@@ -568,6 +575,52 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   const canEdit = isPoliceSupervisor || isPoliceDispatcher;
   const canComplete = isPoliceOperator || isPoliceSupervisor;
   const canAssignUnits = isPoliceDispatcher; // Only dispatchers can assign/reassign units
+  const canAddNotes = isPoliceSupervisor || isPoliceDispatcher || isPoliceOperator;
+  const canRequestBackup = isPoliceOperator;
+  const canUpdateStatus = isPoliceSupervisor || isPoliceDispatcher || isPoliceOperator; // Unit members can update status of their assigned incidents
+
+  // Debug logging
+  console.log('Permission Debug:', {
+    isPoliceSupervisor,
+    isPoliceDispatcher,
+    isPoliceOperator,
+    canEdit,
+    canComplete,
+    canAddNotes,
+    canRequestBackup,
+    canUpdateStatus,
+    userId: user?.id
+  });
+
+  const handleAddNote = async () => {
+    if (!newNote.trim()) {
+      toast.error('Please enter a note');
+      return;
+    }
+
+    setAddingNote(true);
+    try {
+      await supabase.functions.invoke('police-incident-actions', {
+        body: {
+          action: 'addNote',
+          incidentId: incident.id,
+          data: {
+            notes: newNote.trim()
+          }
+        }
+      });
+
+      toast.success('Note added successfully');
+      setNewNote('');
+      onUpdate?.();
+      loadIncidentLogs();
+    } catch (error) {
+      console.error('Error adding note:', error);
+      toast.error('Failed to add note');
+    } finally {
+      setAddingNote(false);
+    }
+  };
 
   const getPriorityColor = (priority: number) => {
     switch (priority) {
@@ -584,8 +637,10 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
     switch (status) {
       case 'reported': return 'bg-red-100 text-red-800';
       case 'dispatched': return 'bg-orange-100 text-orange-800';
+      case 'en_route': return 'bg-blue-100 text-blue-800';
       case 'responding': return 'bg-blue-100 text-blue-800';
       case 'on_scene': return 'bg-purple-100 text-purple-800';
+      case 'investigating': return 'bg-indigo-100 text-indigo-800';
       case 'resolved': return 'bg-green-100 text-green-800';
       case 'closed': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
@@ -593,130 +648,105 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto">
-      {/* Left Column - Main Information */}
-      <div className="space-y-4">
-        {/* Basic Information - Compact */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center justify-between">
-              Basic Information
-              {canEdit && (
-                isEditing ? (
-                  <div className="flex gap-2">
-                    <Button size="sm" onClick={handleSave}>
-                      <Save className="h-4 w-4 mr-1" />
-                      Save
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => setIsEditing(false)}>
-                      <X className="h-4 w-4 mr-1" />
-                      Cancel
-                    </Button>
-                  </div>
-                ) : (
-                  <Button size="sm" variant="outline" onClick={handleEdit}>
-                    <Edit className="h-4 w-4 mr-1" />
-                    Edit
-                  </Button>
-                )
-              )}
-            </CardTitle>
+    <div className="space-y-6">
+      {/* Header with Key Information */}
+      <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-6 rounded-lg border border-primary/20">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <Badge variant="outline" className="font-mono text-base px-3 py-1">
+                {incident.incident_number}
+              </Badge>
+              <Badge className={getStatusColor(incident.status)} variant="secondary">
+                {incident.status.replace('_', ' ').toUpperCase()}
+              </Badge>
+              <Badge className={getPriorityColor(incident.priority_level)} variant="outline">
+                Priority {incident.priority_level}
+              </Badge>
+            </div>
+            <h3 className="text-xl font-semibold capitalize text-primary">
+              {incident.emergency_type}
+            </h3>
+            <p className="text-sm text-muted-foreground flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Reported: {new Date(incident.reported_at).toLocaleString()}
+            </p>
+          </div>
+          
+          {/* Quick Actions */}
+          <div className="flex flex-wrap gap-2">
+            {canRequestBackup && (
+              <RequestBackupDialog unitId={user?.id || ''} unitCode="OFFICER">
+                <Button variant="outline" size="sm">
+                  <Radio className="h-4 w-4 mr-2" />
+                  Request Backup
+                </Button>
+              </RequestBackupDialog>
+            )}
+            
+            {canUpdateStatus && (
+              <IncidentStatusUpdateDialog incident={incident} onUpdate={onUpdate}>
+                <Button variant="outline" size="sm">
+                  <Edit className="h-4 w-4 mr-2" />
+                  Change Status
+                </Button>
+              </IncidentStatusUpdateDialog>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Add Note Section */}
+      {canAddNotes && (
+        <Card className="border-accent/20 bg-accent/5">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-sm font-medium">Add Field Note</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div>
-                <label className="text-xs font-medium text-muted-foreground">Incident #</label>
-                <p className="font-mono">{incident.incident_number}</p>
-              </div>
-              <div>
-                <label className="text-xs font-medium text-muted-foreground">Type</label>
-                <p className="capitalize">{incident.emergency_type}</p>
-              </div>
-              <div>
-                <label className="text-xs font-medium text-muted-foreground">Priority</label>
-                {isEditing ? (
-                  <Select 
-                    value={editData.priority_level.toString()} 
-                    onValueChange={(value) => setEditData({...editData, priority_level: parseInt(value)})}
-                  >
-                    <SelectTrigger className="h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background z-50">
-                      <SelectItem value="1">1 - Critical</SelectItem>
-                      <SelectItem value="2">2 - High</SelectItem>
-                      <SelectItem value="3">3 - Medium</SelectItem>
-                      <SelectItem value="4">4 - Low</SelectItem>
-                      <SelectItem value="5">5 - Info</SelectItem>
-                    </SelectContent>
-                  </Select>
-                ) : (
-                  <Badge className={getPriorityColor(incident.priority_level)} variant="outline">
-                    Priority {incident.priority_level}
-                  </Badge>
-                )}
-              </div>
-              <div>
-                <label className="text-xs font-medium text-muted-foreground">Status</label>
-                {isEditing ? (
-                  <Select 
-                    value={editData.status} 
-                    onValueChange={(value) => setEditData({...editData, status: value})}
-                  >
-                    <SelectTrigger className="h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background z-50">
-                      <SelectItem value="reported">Reported</SelectItem>
-                      <SelectItem value="dispatched">Dispatched</SelectItem>
-                      <SelectItem value="responding">Responding</SelectItem>
-                      <SelectItem value="on_scene">On Scene</SelectItem>
-                      <SelectItem value="resolved">Resolved</SelectItem>
-                      <SelectItem value="closed">Closed</SelectItem>
-                    </SelectContent>
-                  </Select>
-                ) : (
-                  <Badge className={getStatusColor(incident.status)}>
-                    {incident.status.replace('_', ' ').toUpperCase()}
-                  </Badge>
-                )}
-              </div>
+          <CardContent>
+            <div className="flex gap-3">
+              <Textarea
+                placeholder="Add field notes, observations, or updates..."
+                value={newNote}
+                onChange={(e) => setNewNote(e.target.value)}
+                className="flex-1 min-h-[80px] resize-none"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                    e.preventDefault();
+                    handleAddNote();
+                  }
+                }}
+              />
+              <Button 
+                onClick={handleAddNote}
+                disabled={addingNote || !newNote.trim()}
+                className="self-end"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Add Note
+              </Button>
             </div>
-            
-            <Separator />
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Reported At</label>
-                <p className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  {new Date(incident.reported_at).toLocaleString()}
-                </p>
-              </div>
-              {incident.dispatched_at && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Dispatched At</label>
-                  <p className="flex items-center gap-2">
-                    <Clock className="h-4 w-4" />
-                    {new Date(incident.dispatched_at).toLocaleString()}
-                  </p>
-                </div>
-              )}
-            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              Press Ctrl+Enter to quickly add note
+            </p>
           </CardContent>
         </Card>
+      )}
 
-        {/* Emergency Information - Now Immediately Accessible */}
-        <Card className="border-blue-200 bg-blue-50">
-          <CardHeader>
-            <CardTitle className="text-lg text-blue-800">
-              Emergency Information
-            </CardTitle>
-            <CardDescription className="text-blue-600">
-              Incident details for immediate police response
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        {/* Column 1: Emergency Information */}
+        <div className="xl:col-span-2 space-y-6">
+          {/* Emergency Information - Now Primary */}
+          <Card className="border-destructive/20 bg-destructive/5">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2 text-destructive">
+                <AlertTriangle className="h-5 w-5" />
+                Emergency Information
+              </CardTitle>
+              <CardDescription>
+                Critical incident details for immediate response
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
             {incident.incident_message && (
               <div>
                 <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -815,23 +845,77 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                   <Button 
                     size="sm" 
                     variant="outline"
-                    onClick={() => {
-                      const url = `https://www.google.com/maps?q=${incident.location_latitude},${incident.location_longitude}`;
-                      window.open(url, '_blank');
+                    onClick={async () => {
+                      const dest = `${incident.location_latitude},${incident.location_longitude}`;
+                      
+                      try {
+                        // Request location permission and get current position
+                        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+                          if (!('geolocation' in navigator)) {
+                            reject(new Error('Geolocation not supported'));
+                            return;
+                          }
+                          
+                          navigator.geolocation.getCurrentPosition(
+                            resolve,
+                            reject,
+                            {
+                              enableHighAccuracy: true,
+                              timeout: 10000,
+                              maximumAge: 0,
+                            }
+                          );
+                        });
+                        
+                        const origin = `${position.coords.latitude},${position.coords.longitude}`;
+                        
+                        // iOS-specific navigation handling
+                        const userAgent = navigator.userAgent || navigator.vendor;
+                        if (/iPad|iPhone|iPod/.test(userAgent)) {
+                          // Use Apple Maps on iOS
+                          const appleUrl = `maps://maps.apple.com/?saddr=${origin}&daddr=${dest}`;
+                          try {
+                            window.location.href = appleUrl;
+                          } catch (error) {
+                            // Fallback to web maps
+                            const webUrl = `https://maps.apple.com/?saddr=${origin}&daddr=${dest}`;
+                            window.location.href = webUrl;
+                          }
+                        } else {
+                          // Use Google Maps for other platforms
+                          const url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}`;
+                          window.open(url, '_blank');
+                        }
+                        
+                      } catch (error) {
+                        // Fallback: open with destination only
+                        const userAgent = navigator.userAgent || navigator.vendor;
+                        if (/iPad|iPhone|iPod/.test(userAgent)) {
+                          const appleUrl = `maps://maps.apple.com/?daddr=${dest}`;
+                          try {
+                            window.location.href = appleUrl;
+                          } catch (error) {
+                            window.location.href = `https://maps.apple.com/?daddr=${dest}`;
+                          }
+                        } else {
+                          const url = `https://www.google.com/maps/dir/?api=1&destination=${dest}`;
+                          window.open(url, '_blank');
+                        }
+                      }
                     }}
                     className="w-full"
                   >
                     <Navigation className="h-4 w-4 mr-2" />
-                    Open in Google Maps
+                    Navigate to Incident
                   </Button>
                 </div>
               </div>
             )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* Assignment Information */}
-        <Card>
+          {/* Assignment Information */}
+          <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center justify-between">
               Assignment & Notes
@@ -1060,7 +1144,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
         )}
       </div>
 
-      {/* Right Column - Could be used for additional info if needed */}
+      {/* Right Column - Timeline and Detailed Logs */}
       <div className="space-y-4">
         <Card>
           <CardHeader>
@@ -1097,6 +1181,95 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
             </div>
           </CardContent>
         </Card>
+
+        {/* Detailed Activity Log */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Activity Log</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {logs.length > 0 ? (
+                <>
+                  {logs
+                    .slice((currentPage - 1) * logsPerPage, currentPage * logsPerPage)
+                    .map((log, index) => (
+                      <div key={log.id || index} className="border-l-2 border-gray-200 pl-3 pb-3">
+                        <div className="flex justify-between items-start mb-1">
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(log.timestamp).toLocaleString()}
+                          </span>
+                          <Badge variant="outline" className="text-xs">
+                            {log.action.replace(/_/g, ' ').toUpperCase()}
+                          </Badge>
+                        </div>
+                        <p className="text-sm font-medium mb-1">
+                          {userNames[log.user_id] || 'Unknown User'}
+                        </p>
+                        {log.details?.message && (
+                          <p className="text-sm text-gray-700 mb-1">{log.details.message}</p>
+                        )}
+                        {log.details?.unit_name && (
+                          <p className="text-xs text-muted-foreground">
+                            Unit: {log.details.unit_name} ({log.details.unit_code})
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  
+                  {/* Pagination */}
+                  {logs.length > logsPerPage && (
+                    <div className="mt-4 flex justify-center">
+                      <Pagination>
+                        <PaginationContent>
+                          <PaginationItem>
+                            <PaginationPrevious 
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                if (currentPage > 1) setCurrentPage(currentPage - 1);
+                              }}
+                              className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                            />
+                          </PaginationItem>
+                          
+                          {Array.from({ length: Math.ceil(logs.length / logsPerPage) }, (_, i) => i + 1).map((page) => (
+                            <PaginationItem key={page}>
+                              <PaginationLink
+                                href="#"
+                                isActive={currentPage === page}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setCurrentPage(page);
+                                }}
+                              >
+                                {page}
+                              </PaginationLink>
+                            </PaginationItem>
+                          ))}
+                          
+                          <PaginationItem>
+                            <PaginationNext 
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                if (currentPage < Math.ceil(logs.length / logsPerPage)) setCurrentPage(currentPage + 1);
+                              }}
+                              className={currentPage === Math.ceil(logs.length / logsPerPage) ? "pointer-events-none opacity-50" : ""}
+                            />
+                          </PaginationItem>
+                        </PaginationContent>
+                      </Pagination>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <p className="text-sm text-muted-foreground">No activity logs available</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
       </div>
     </div>
   );

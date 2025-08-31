@@ -125,8 +125,10 @@ export const useUserRole = () => {
   const isPoliceAdmin = role === 'police_admin';
   const isPoliceRole = isPoliceOperator || isPoliceSupervisor || isPoliceDispatcher || isPoliceAdmin;
 
-  // Access level checks
-  const hasAdminAccess = role === 'admin' || role === 'ndaa_admin';
+  // Access level checks - clearly differentiated
+  const hasNDAAAccess = role === 'ndaa_admin'; // Highest authority - National Digital Address Authority
+  const hasSystemAdminAccess = role === 'admin'; // System administration
+  const hasAdminAccess = hasNDAAAccess || hasSystemAdminAccess; // General admin access (backwards compatibility)
   const hasRegistrarAccess = hasAdminAccess || role === 'registrar';
   const hasVerifierAccess = hasRegistrarAccess || role === 'verifier';
   const hasFieldAccess = hasVerifierAccess || role === 'field_agent';
@@ -210,7 +212,7 @@ export const useUserRole = () => {
   const canVerifyAddresses = role === 'verifier' || hasRegistrarAccess;
   const canPublishAddresses = hasRegistrarAccess;
   const canRetireAddresses = hasRegistrarAccess;
-  const canOverrideDecisions = role === 'ndaa_admin';
+  const canOverrideDecisions = hasNDAAAccess; // Only NDAA can override decisions
   
   // Record management permissions
   const canMergeRecords = role === 'verifier' || hasRegistrarAccess;
@@ -218,7 +220,8 @@ export const useUserRole = () => {
   
   // Hierarchy and boundary management
   const canEditHierarchy = () => {
-    if (role === 'ndaa_admin') return 'national';
+    if (hasNDAAAccess) return 'national'; // NDAA has national scope
+    if (hasSystemAdminAccess) return 'regional'; // System admin has regional scope
     if (role === 'registrar') return 'province';
     if (role === 'verifier') return 'district';
     if (role === 'data_steward') return 'suggest'; // Can only suggest changes
@@ -226,12 +229,14 @@ export const useUserRole = () => {
   };
   
   // API and webhook management
-  const canManageAPIKeys = role === 'ndaa_admin';
+  const canManageAPIKeys = hasNDAAAccess; // Only NDAA can manage API keys
+  const canManageWebhooks = hasAdminAccess; // Both admin types can manage webhooks
   const canRequestAPIAccess = role === 'partner';
   
   // Audit log access levels
   const getAuditLogAccess = () => {
-    if (role === 'ndaa_admin') return 'nation';
+    if (hasNDAAAccess) return 'nation'; // NDAA has national audit access
+    if (hasSystemAdminAccess) return 'system'; // System admin has system-wide access
     if (role === 'registrar') return 'province';
     if (role === 'verifier') return 'district';
     if (role === 'support') return 'read_only'; // Support can read logs for troubleshooting
@@ -317,6 +322,8 @@ export const useUserRole = () => {
     isPoliceRole,
     // Access checks
     hasAdminAccess,
+    hasNDAAAccess,
+    hasSystemAdminAccess,
     hasRegistrarAccess,
     hasVerifierAccess,
     hasFieldAccess,
@@ -342,6 +349,7 @@ export const useUserRole = () => {
     canSplitRecords,
     canEditHierarchy,
     canManageAPIKeys,
+    canManageWebhooks,
     canRequestAPIAccess,
     getAuditLogAccess,
     // ABAC and workflow

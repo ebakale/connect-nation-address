@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,10 +11,11 @@ import {
   Shield, AlertTriangle, Clock, MapPin, Phone, User, 
   LogOut, Settings, Bell, CheckCircle, XCircle, Eye,
   Activity, Users, TrendingUp, AlertCircle, Radio,
-  Navigation, MessageSquare, Flag
+  Navigation, MessageSquare, Flag, Award
 } from "lucide-react";
 import { useLanguage } from '@/contexts/LanguageContext';
 import Footer from '@/components/Footer';
+import { OfflineIndicator } from '@/components/OfflineIndicator';
 
 import IncidentMap from '@/components/IncidentMap';
 import IncidentList from '@/components/IncidentList';
@@ -27,9 +29,12 @@ import { UnitLeadDashboard } from '@/components/UnitLeadDashboard';
 import { UnitLeadActions } from '@/components/UnitLeadActions';
 import { PoliceAdminDashboard } from '@/components/PoliceAdminDashboard';
 import { RequestBackupDialog } from '@/components/RequestBackupDialog';
-import { BackupRequestsPanel } from '@/components/BackupRequestsPanel';
+import { BackupRequestsSentPanel } from '@/components/BackupRequestsSentPanel';
+import { BackupNotificationsPanel } from '@/components/BackupNotificationsPanel';
 import DispatcherCommunications from '@/components/DispatcherCommunications';
 import { EnhancedSyncStatus } from '@/components/EnhancedSyncStatus';
+import { UnitLeadershipDashboard } from '@/components/UnitLeadershipDashboard';
+import { UnitPerformanceAnalytics } from '@/components/UnitPerformanceAnalytics';
 import { toast } from "sonner";
 
 interface EmergencyIncident {
@@ -64,6 +69,7 @@ interface DashboardStats {
 }
 
 const PoliceDashboard = () => {
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { role, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isPoliceAdmin, isAdmin, loading, hasPoliceAccess, hasPoliceAdminAccess, isUnitLead } = useUserRole();
   const { t } = useLanguage();
@@ -178,6 +184,27 @@ const PoliceDashboard = () => {
 
       const leadMembership = (unitMemberships || []).find((m: any) => m?.is_lead || m?.role === 'sergeant');
       const primaryUnit = leadMembership?.emergency_units || units[0] || null;
+
+      // If we have a primary unit, fetch its members
+      if (primaryUnit) {
+        const { data: unitMembers, error: membersError } = await supabase
+          .from('emergency_unit_members')
+          .select(`
+            id,
+            officer_id,
+            role,
+            is_lead,
+            profiles!emergency_unit_members_officer_id_fkey(full_name, email, phone)
+          `)
+          .eq('unit_id', primaryUnit.id);
+
+        if (!membersError && unitMembers) {
+          primaryUnit.emergency_unit_members = unitMembers;
+        } else {
+          console.error('Error fetching unit members:', membersError);
+          primaryUnit.emergency_unit_members = [];
+        }
+      }
 
       setUserUnits(units);
       setUserUnit(primaryUnit);
@@ -595,7 +622,7 @@ const PoliceDashboard = () => {
             </div>
 
             <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-              
+              <OfflineIndicator />
               <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
                 <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline">{t('logout')}</span>
@@ -625,7 +652,7 @@ const PoliceDashboard = () => {
                   </TabsTrigger>
                 </TabsList>
               ) : (
-                <TabsList className="grid grid-cols-2 lg:grid-cols-4 h-9">
+                <TabsList className="grid grid-cols-2 lg:grid-cols-5 h-9">
                   {!hasPoliceAdminAccess && !isPoliceSupervisor && isPoliceOperator && (
                     <TabsTrigger value="field" className="text-sm">
                       <Radio className="h-4 w-4 mr-2" />
@@ -643,12 +670,18 @@ const PoliceDashboard = () => {
                       {t('coordinationCenter')}
                     </TabsTrigger>
                   ) : null}
-                  {(isPoliceSupervisor || isAdmin) && (
-                    <TabsTrigger value="management" className="text-sm">
-                      <Users className="h-4 w-4 mr-2" />
-                      Management
-                    </TabsTrigger>
-                  )}
+                   {(isPoliceSupervisor || isAdmin) && (
+                     <TabsTrigger value="leadership" className="text-sm">
+                       <Award className="h-4 w-4 mr-2" />
+                       Leadership
+                     </TabsTrigger>
+                   )}
+                   {(isPoliceSupervisor || isAdmin) && (
+                     <TabsTrigger value="management" className="text-sm">
+                       <Users className="h-4 w-4 mr-2" />
+                       Management
+                     </TabsTrigger>
+                   )}
                   {hasPoliceAdminAccess && (
                     <TabsTrigger value="admin" className="text-sm">
                       <Settings className="h-4 w-4 mr-2" />
@@ -869,14 +902,14 @@ const PoliceDashboard = () => {
                       </CardHeader>
                       <CardContent>
                         {(isPoliceSupervisor || isAdmin) && (
-                          <Button 
-                            onClick={() => window.location.href = '/units-profiles'}
-                            variant="outline" 
-                            className="w-full mb-4"
-                          >
-                            <Users className="h-4 w-4 mr-2" />
-                            Manage Units & Profiles
-                          </Button>
+          <Button 
+            onClick={() => navigate('/units-profiles')}
+            variant="outline" 
+            className="w-full mb-4"
+          >
+            <Users className="h-4 w-4 mr-2" />
+            Manage Units & Profiles
+          </Button>
                         )}
                         <OperatorStatusPanel 
                           operatorSession={operatorSession}
@@ -908,19 +941,25 @@ const PoliceDashboard = () => {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <Card>
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-base">{t('backupRequests')}</CardTitle>
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <Shield className="h-4 w-4" />
+                          Sent Requests
+                        </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <BackupRequestsPanel />
+                        <BackupRequestsSentPanel />
                       </CardContent>
                     </Card>
                     
                     <Card>
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-base">{t('backupNotifications')}</CardTitle>
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <AlertTriangle className="h-4 w-4" />
+                          Received Notifications
+                        </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <BackupNotificationManager />
+                        <BackupNotificationsPanel />
                       </CardContent>
                     </Card>
                   </div>
@@ -1009,7 +1048,7 @@ const PoliceDashboard = () => {
                 {/* Quick Actions for Supervisors */}
                 <div className="space-y-6">
                   {/* Backup Requests Panel */}
-                  <BackupRequestsPanel />
+                  <BackupRequestsSentPanel />
                   <Card>
                     <CardHeader>
                        <CardTitle className="text-lg">{t('coordinationActions')}</CardTitle>
@@ -1017,17 +1056,21 @@ const PoliceDashboard = () => {
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <Button 
-                        onClick={() => window.location.href = '/units-profiles'}
+                        onClick={() => navigate('/units-profiles')}
                         variant="outline" 
                         className="w-full"
                       >
                         <Users className="h-4 w-4 mr-2" />
                         {t('manageMyUnits')}
                       </Button>
-                      <RequestBackupDialog>
+                      <RequestBackupDialog 
+                        unitId={userUnit?.id || ''} 
+                        unitCode={userUnit?.unit_code || ''}
+                      >
                         <Button 
                           variant="outline" 
                           className="w-full"
+                          disabled={!userUnit}
                         >
                           <MessageSquare className="h-4 w-4 mr-2" />
                           {t('requestRegionalBackup')}
@@ -1055,6 +1098,38 @@ const PoliceDashboard = () => {
           )}
 
 
+          {/* Leadership Tab - Supervisors and Unit Leads */}
+          {(isPoliceSupervisor || isAdmin || isUnitLead) && (
+            <TabsContent value="leadership" className="space-y-6">
+              <div className="border-b pb-4">
+                <div className="flex items-center gap-4 mb-2">
+                  <Badge variant="outline" className="flex items-center gap-2">
+                    <Award className="h-3 w-3" />
+                    Unit Leadership Tools
+                  </Badge>
+                </div>
+                <p className="text-muted-foreground">
+                  Manage your units, analyze performance, and coordinate team operations
+                </p>
+              </div>
+
+              <Tabs defaultValue="dashboard" className="space-y-4">
+                <TabsList>
+                  <TabsTrigger value="dashboard">Team Management</TabsTrigger>
+                  <TabsTrigger value="performance">Performance Analytics</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="dashboard">
+                  <UnitLeadershipDashboard />
+                </TabsContent>
+
+                <TabsContent value="performance">
+                  <UnitPerformanceAnalytics />
+                </TabsContent>
+              </Tabs>
+            </TabsContent>
+          )}
+
           {/* Management Tab - Supervisors Only */}
           {(isPoliceSupervisor || isAdmin) && (
             <TabsContent value="management" className="space-y-8">
@@ -1078,7 +1153,7 @@ const PoliceDashboard = () => {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Card className="cursor-pointer hover:shadow-md transition-all hover:-translate-y-1"
-                        onClick={() => window.location.href = '/units-profiles'}>
+                        onClick={() => navigate('/units-profiles')}>
                     <CardContent className="p-6">
                       <div className="flex items-center gap-3">
                         <div className="p-2 bg-primary/10 rounded-lg">
