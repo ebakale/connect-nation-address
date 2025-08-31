@@ -173,6 +173,36 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unit, onUp
 
       if (error) throw error;
 
+      // Synchronize operator status with unit status
+      // Update all operators assigned to this unit to match the unit status
+      const operatorStatusMap: { [key: string]: string } = {
+        'available': 'active',
+        'dispatched': 'active', 
+        'en_route': 'active',
+        'on_scene': 'active',
+        'busy': 'active',
+        'unavailable': 'offline'
+      };
+
+      const operatorStatus = operatorStatusMap[selectedStatus] || 'active';
+
+      // Get all unit members and update their operator sessions
+      const { data: unitMembers } = await supabase
+        .from('emergency_unit_members')
+        .select('officer_id')
+        .eq('unit_id', unitStatus.id);
+
+      if (unitMembers && unitMembers.length > 0) {
+        const officerIds = unitMembers.map(member => member.officer_id);
+        
+        // Update active operator sessions for unit members
+        await supabase
+          .from('emergency_operator_sessions')
+          .update({ status: operatorStatus })
+          .in('operator_id', officerIds)
+          .is('session_end', null);
+      }
+
       // Log status change for all active incidents
       for (const assignment of assignments) {
         await supabase
