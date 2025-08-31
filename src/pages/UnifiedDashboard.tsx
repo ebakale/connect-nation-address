@@ -393,37 +393,6 @@ const UnifiedDashboard = () => {
               </Card>
             </div>
 
-            {/* System Documentation Panel */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  System Documentation & Manual
-                </CardTitle>
-                <CardDescription>
-                  Generate comprehensive documentation and user manuals for the platform
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    This section provides detailed explanations of all user roles in the National Digital Addressing Authority system, 
-                    including their permissions, geographic scope, workflow stages, and specific responsibilities.
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <h4 className="font-medium mb-2">System Roles Documentation</h4>
-                      <RolesDocumentGenerator />
-                    </div>
-                    <div>
-                      <h4 className="font-medium mb-2">User Manual</h4>
-                      <SystemManualPDF />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
             {/* Admin Panel */}
             <AdminPanel />
           </div>

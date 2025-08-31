@@ -7,6 +7,8 @@ import { PermissionMatrix } from './PermissionMatrix';
 import { WorkflowManager } from './WorkflowManager';
 import UserManager from './UserManager';
 import { UACManager } from './UACManager';
+import { RolesDocumentGenerator } from './RolesDocumentGenerator';
+import { SystemManualPDF } from './SystemManualPDF';
 import ApiWebhookManager from './ApiWebhookManager';
 import NotificationTester from './NotificationTester';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -62,12 +64,13 @@ const AdminPanel: React.FC = () => {
       </Card>
       
       <Tabs defaultValue="roles" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-1">
           <TabsTrigger value="roles" className="text-xs sm:text-sm px-2 sm:px-3">{t('roleManagement')}</TabsTrigger>
           <TabsTrigger value="permissions" className="text-xs sm:text-sm px-2 sm:px-3">{t('permissions')}</TabsTrigger>
           <TabsTrigger value="workflows" className="text-xs sm:text-sm px-2 sm:px-3">{t('workflows')}</TabsTrigger>
           <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">{t('userManagement')}</TabsTrigger>
           <TabsTrigger value="uac" className="text-xs sm:text-sm px-2 sm:px-3">{t('uacSystem')}</TabsTrigger>
+          <TabsTrigger value="documentation" className="text-xs sm:text-sm px-2 sm:px-3">Documentation</TabsTrigger>
           {hasNDAAAccess && (
             <TabsTrigger value="api-webhooks" className="text-xs sm:text-sm px-2 sm:px-3">{t('apiWebhooks')}</TabsTrigger>
           )}
@@ -91,6 +94,31 @@ const AdminPanel: React.FC = () => {
         
         <TabsContent value="uac">
           <UACManager />
+        </TabsContent>
+        
+        <TabsContent value="documentation">
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">System Roles Documentation</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Generate comprehensive documentation for all user roles, permissions, and system workflows.
+                  </p>
+                  <RolesDocumentGenerator />
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">User Manual</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Generate user manual with step-by-step guides and platform instructions.
+                  </p>
+                  <SystemManualPDF />
+                </div>
+              </div>
+            </div>
+          </div>
         </TabsContent>
         
         {hasNDAAAccess && (
