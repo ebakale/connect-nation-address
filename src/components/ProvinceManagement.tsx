@@ -189,11 +189,11 @@ export const ProvinceManagement = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold">Province Management</h2>
-          <p className="text-muted-foreground">Manage administrative provinces and regions</p>
+    <div className="space-y-4 sm:space-y-6 p-4 max-w-full overflow-hidden">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="min-w-0 flex-1">
+          <h2 className="text-xl sm:text-2xl font-bold break-words">Province Management</h2>
+          <p className="text-sm text-muted-foreground break-words">Manage administrative provinces and regions</p>
         </div>
         
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
@@ -214,7 +214,7 @@ export const ProvinceManagement = () => {
             </DialogHeader>
             
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="name">Province Name</Label>
                   <Input
@@ -247,7 +247,7 @@ export const ProvinceManagement = () => {
                 />
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="population">Population</Label>
                   <Input
@@ -271,11 +271,11 @@ export const ProvinceManagement = () => {
                 </div>
               </div>
               
-              <div className="flex gap-2">
-                <Button type="submit">
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button type="submit" className="w-full sm:w-auto">
                   {editingProvince ? "Update Province" : "Add Province"}
                 </Button>
-                <Button type="button" variant="outline" onClick={resetForm}>
+                <Button type="button" variant="outline" onClick={resetForm} className="w-full sm:w-auto">
                   Cancel
                 </Button>
               </div>
@@ -285,14 +285,14 @@ export const ProvinceManagement = () => {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Provinces</CardTitle>
             <MapPin className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{provinces.length}</div>
+            <div className="text-xl sm:text-2xl font-bold">{provinces.length}</div>
           </CardContent>
         </Card>
         
@@ -302,19 +302,19 @@ export const ProvinceManagement = () => {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-xl sm:text-2xl font-bold">
               {provinces.reduce((sum, p) => sum + (p.population || 0), 0).toLocaleString()}
             </div>
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="sm:col-span-2 lg:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Area</CardTitle>
             <Building className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-xl sm:text-2xl font-bold">
               {provinces.reduce((sum, p) => sum + (p.area || 0), 0).toLocaleString()} km²
             </div>
           </CardContent>
@@ -329,54 +329,58 @@ export const ProvinceManagement = () => {
             List of all administrative provinces
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Code</TableHead>
-                <TableHead>Region</TableHead>
-                <TableHead>Population</TableHead>
-                <TableHead>Area (km²)</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {provinces.map((province) => (
-                <TableRow key={province.id}>
-                  <TableCell className="font-medium">{province.name}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{province.code}</Badge>
-                  </TableCell>
-                  <TableCell>{province.region}</TableCell>
-                  <TableCell>
-                    {province.population ? province.population.toLocaleString() : "-"}
-                  </TableCell>
-                  <TableCell>
-                    {province.area ? province.area.toLocaleString() : "-"}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleEdit(province)}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => handleDelete(province.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
+        <CardContent className="overflow-x-auto">
+          <div className="min-w-full">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="min-w-[120px]">Name</TableHead>
+                  <TableHead className="min-w-[80px]">Code</TableHead>
+                  <TableHead className="min-w-[100px]">Region</TableHead>
+                  <TableHead className="min-w-[100px]">Population</TableHead>
+                  <TableHead className="min-w-[100px]">Area (km²)</TableHead>
+                  <TableHead className="min-w-[120px]">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {provinces.map((province) => (
+                  <TableRow key={province.id}>
+                    <TableCell className="font-medium break-words">{province.name}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="text-xs">{province.code}</Badge>
+                    </TableCell>
+                    <TableCell className="break-words">{province.region}</TableCell>
+                    <TableCell>
+                      {province.population ? province.population.toLocaleString() : "-"}
+                    </TableCell>
+                    <TableCell>
+                      {province.area ? province.area.toLocaleString() : "-"}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-1 sm:gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEdit(province)}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => handleDelete(province.id)}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
