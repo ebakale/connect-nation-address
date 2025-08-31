@@ -156,7 +156,7 @@ export const PermissionMatrix: React.FC = () => {
         </CardHeader>
         <CardContent>
           {/* Desktop Table View */}
-          <div className="hidden lg:block overflow-x-auto">
+          <div className="hidden xl:block overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="border-b">
@@ -197,25 +197,25 @@ export const PermissionMatrix: React.FC = () => {
           </div>
 
           {/* Mobile Card View */}
-          <div className="lg:hidden space-y-4">
+          <div className="xl:hidden space-y-4">
             {PERMISSION_MATRIX.map((row, index) => (
-              <Card key={index} className="p-4">
+              <Card key={index} className="p-3">
                 <div className="space-y-3">
-                  <h4 className="font-medium text-sm">{row.operation}</h4>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  <h4 className="font-medium text-sm break-words">{row.operation}</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {roleKeys.map(roleKey => {
                       const permission = row[roleKey as keyof typeof row];
                       return (
-                        <div key={roleKey} className="flex flex-col items-center gap-1 p-2 border rounded">
-                          <div className="flex items-center gap-1">
-                            <span className="text-xs font-medium">{roleKey.replace('_', ' ')}</span>
+                        <div key={roleKey} className="flex items-center justify-between p-2 border rounded text-xs">
+                          <div className="flex items-center gap-1 min-w-0 flex-1">
+                            <span className="font-medium truncate">{roleKey.replace('_', ' ')}</span>
                             {role === roleKey && (
-                              <Badge variant="secondary" className="text-xs">You</Badge>
+                              <Badge variant="secondary" className="text-xs flex-shrink-0">You</Badge>
                             )}
                           </div>
-                          <div className="flex flex-col items-center gap-1">
+                          <div className="flex items-center gap-1 flex-shrink-0 ml-2">
                             {getPermissionIcon(permission)}
-                            <span className={`text-xs px-2 py-1 rounded-full ${getPermissionColor(permission)}`}>
+                            <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${getPermissionColor(permission)}`}>
                               {getPermissionText(permission)}
                             </span>
                           </div>
