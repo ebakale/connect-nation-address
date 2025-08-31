@@ -74,11 +74,9 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
       .on(
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'emergency_incidents' },
-        (payload) => {
-          const updatedRow: any = payload.new;
-          if (updatedRow?.backup_requested) {
-            fetchBackupRequests();
-          }
+        () => {
+          // Refresh when incidents change (e.g., units assigned), to update fulfillment status
+          fetchBackupRequests();
         }
       )
       .subscribe();
@@ -256,7 +254,52 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
         if (sentSet.has(key)) return; // exclude if user is sender
         if (!combinedMap.has(key)) combinedMap.set(key, item);
       });
-      setReceivedRequests(Array.from(combinedMap.values()));
+      const combinedArr = Array.from(combinedMap.values());
+
+      // Enrich RECEIVED items with live incident data to compute backup status
+      if (combinedArr.length > 0) {
+        const receivedIds = combinedArr.map((i) => i.incident_id);
+        const { data: recIncidents, error: recErr } = await supabase
+          .from('emergency_incidents')
+          .select('id, assigned_units, backup_requesting_unit, incident_number, incident_uac')
+          .in('id', receivedIds);
+        if (!recErr && recIncidents) {
+          const recMap = new Map(recIncidents.map((inc: any) => [inc.id, inc]));
+          const enriched = combinedArr.map((item) => {
+            const inc = recMap.get(item.incident_id);
+            if (!inc) return item;
+            const currentUnits: string[] = inc.assigned_units || [];
+            const requestingUnit: string | undefined = item.metadata?.requesting_unit || inc.backup_requesting_unit;
+
+            let unitsAddedAfterRequest: string[] = [];
+            if (requestingUnit && currentUnits.length > 1 && currentUnits.includes(requestingUnit)) {
+              unitsAddedAfterRequest = currentUnits.filter((u: string) => u !== requestingUnit);
+            }
+
+            let backupStatus: 'pending' | 'fulfilled' | 'partially_fulfilled' = 'pending';
+            if (unitsAddedAfterRequest.length > 0) {
+              backupStatus = unitsAddedAfterRequest.length >= 2 ? 'fulfilled' : 'partially_fulfilled';
+            }
+
+            return {
+              ...item,
+              assigned_units: currentUnits,
+              units_added_after_request: unitsAddedAfterRequest,
+              backup_status: backupStatus,
+              metadata: {
+                ...item.metadata,
+                incident_number: inc.incident_number || item.metadata?.incident_number,
+                location: inc.incident_uac || item.metadata?.location,
+              }
+            } as BackupRequest;
+          });
+          setReceivedRequests(enriched);
+        } else {
+          setReceivedRequests(combinedArr);
+        }
+      } else {
+        setReceivedRequests(combinedArr);
+      }
 
     } catch (error) {
       console.error('Error fetching backup requests:', error);
@@ -312,16 +355,15 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
   const getBackupStatusBadge = (status?: string) => {
     switch (status) {
       case 'fulfilled':
-        return <Badge variant="secondary" className="text-green-600 bg-green-50"><ShieldCheck className="h-3 w-3 mr-1" />Fulfilled</Badge>;
+        return <Badge variant="secondary"><ShieldCheck className="h-3 w-3 mr-1" />Fulfilled</Badge>;
       case 'partially_fulfilled':
-        return <Badge variant="secondary" className="text-yellow-600 bg-yellow-50"><Shield className="h-3 w-3 mr-1" />Partial</Badge>;
+        return <Badge variant="default"><Shield className="h-3 w-3 mr-1" />Partial</Badge>;
       case 'pending':
-        return <Badge variant="outline" className="text-orange-600 bg-orange-50"><ShieldX className="h-3 w-3 mr-1" />Pending</Badge>;
+        return <Badge variant="outline"><ShieldX className="h-3 w-3 mr-1" />Pending</Badge>;
       default:
         return null;
     }
   };
-
   const RequestListItem = ({ request, onClick }: { request: BackupRequest; onClick: () => void }) => (
     <div
       className={`p-4 border rounded-lg cursor-pointer transition-all hover:bg-muted/50 ${
