@@ -142,11 +142,23 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
         sentRequestsData = (sentIncidents || []).map((incident: any) => {
           const logEntry = incidentLogs?.find((log: any) => log.incident_id === incident.id);
           const currentUnits = incident.assigned_units || [];
-          const originalUnits = (logEntry?.details as any)?.original_units || [];
-          const unitsAddedAfterRequest = currentUnits.filter((unit: string) => !originalUnits.includes(unit));
+          const originalUnits = (logEntry?.details as any)?.original_units;
           
           // Determine backup status
           let backupStatus: 'pending' | 'fulfilled' | 'partially_fulfilled' = 'pending';
+          let unitsAddedAfterRequest: string[] = [];
+          
+          if (originalUnits) {
+            // New logic: use stored original units
+            unitsAddedAfterRequest = currentUnits.filter((unit: string) => !originalUnits.includes(unit));
+          } else {
+            // Fallback logic for legacy requests: if more than just the requesting unit is assigned, consider it fulfilled
+            const requestingUnit = incident.backup_requesting_unit;
+            if (currentUnits.length > 1 && currentUnits.includes(requestingUnit)) {
+              unitsAddedAfterRequest = currentUnits.filter((unit: string) => unit !== requestingUnit);
+            }
+          }
+          
           if (unitsAddedAfterRequest.length > 0) {
             backupStatus = unitsAddedAfterRequest.length >= 2 ? 'fulfilled' : 'partially_fulfilled';
           }
