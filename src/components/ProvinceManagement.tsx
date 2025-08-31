@@ -321,7 +321,7 @@ export const ProvinceManagement = () => {
         </Card>
       </div>
 
-      {/* Provinces Table */}
+      {/* Provinces Table/Cards */}
       <Card>
         <CardHeader>
           <CardTitle>Provinces</CardTitle>
@@ -329,27 +329,28 @@ export const ProvinceManagement = () => {
             List of all administrative provinces
           </CardDescription>
         </CardHeader>
-        <CardContent className="overflow-x-auto">
-          <div className="min-w-full">
+        <CardContent>
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="min-w-[120px]">Name</TableHead>
-                  <TableHead className="min-w-[80px]">Code</TableHead>
-                  <TableHead className="min-w-[100px]">Region</TableHead>
-                  <TableHead className="min-w-[100px]">Population</TableHead>
-                  <TableHead className="min-w-[100px]">Area (km²)</TableHead>
-                  <TableHead className="min-w-[120px]">Actions</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Code</TableHead>
+                  <TableHead>Region</TableHead>
+                  <TableHead>Population</TableHead>
+                  <TableHead>Area (km²)</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {provinces.map((province) => (
                   <TableRow key={province.id}>
-                    <TableCell className="font-medium break-words">{province.name}</TableCell>
+                    <TableCell className="font-medium">{province.name}</TableCell>
                     <TableCell>
                       <Badge variant="outline" className="text-xs">{province.code}</Badge>
                     </TableCell>
-                    <TableCell className="break-words">{province.region}</TableCell>
+                    <TableCell>{province.region}</TableCell>
                     <TableCell>
                       {province.population ? province.population.toLocaleString() : "-"}
                     </TableCell>
@@ -357,14 +358,14 @@ export const ProvinceManagement = () => {
                       {province.area ? province.area.toLocaleString() : "-"}
                     </TableCell>
                     <TableCell>
-                      <div className="flex gap-1 sm:gap-2">
+                      <div className="flex gap-2">
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => handleEdit(province)}
                           className="h-8 w-8 p-0"
                         >
-                          <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
+                          <Edit className="h-4 w-4" />
                         </Button>
                         <Button
                           size="sm"
@@ -372,7 +373,7 @@ export const ProvinceManagement = () => {
                           onClick={() => handleDelete(province.id)}
                           className="h-8 w-8 p-0"
                         >
-                          <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>
@@ -380,6 +381,75 @@ export const ProvinceManagement = () => {
                 ))}
               </TableBody>
             </Table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-4">
+            {provinces.map((province) => (
+              <Card key={province.id} className="border">
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-base break-words">{province.name}</h3>
+                      <Badge variant="outline" className="text-xs mt-1">{province.code}</Badge>
+                    </div>
+                    <div className="flex gap-2 ml-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleEdit(province)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Edit className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDelete(province.id)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Region:</span>
+                      <span className="font-medium break-words text-right">{province.region}</span>
+                    </div>
+                    
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Population:</span>
+                      <span className="font-medium">
+                        {province.population ? province.population.toLocaleString() : "-"}
+                      </span>
+                    </div>
+                    
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Area:</span>
+                      <span className="font-medium">
+                        {province.area ? `${province.area.toLocaleString()} km²` : "-"}
+                      </span>
+                    </div>
+                    
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Created:</span>
+                      <span className="font-medium text-xs">
+                        {new Date(province.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+            
+            {provinces.length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No provinces found</p>
+                <p className="text-sm">Add your first province to get started</p>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
