@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useUnifiedAuth } from '@/hooks/useUnifiedAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
 import { RoleManager } from './RoleManager';
 import { PermissionMatrix } from './PermissionMatrix';
@@ -14,7 +14,7 @@ import { Shield, Hash } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const AdminPanel: React.FC = () => {
-  const { user } = useUnifiedAuth();
+  const { user } = useAuth();
   const { loading } = useUserRole();
   const { t } = useLanguage();
 
