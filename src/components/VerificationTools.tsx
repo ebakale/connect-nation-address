@@ -189,27 +189,27 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h3 className="text-lg font-semibold">Verification Tools</h3>
-          <p className="text-sm text-muted-foreground">Advanced tools for address verification and quality control</p>
+    <div className="space-y-4 p-4 max-w-full overflow-hidden">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="min-w-0 flex-1">
+          <h3 className="text-lg font-semibold break-words">Verification Tools</h3>
+          <p className="text-sm text-muted-foreground break-words">Advanced tools for address verification and quality control</p>
         </div>
         {onClose && (
-          <Button variant="outline" size="sm" onClick={onClose}>
+          <Button variant="outline" size="sm" onClick={onClose} className="self-start sm:self-center">
             <X className="h-4 w-4 mr-2" />
             Close
           </Button>
         )}
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm">Total Addresses</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="text-xl sm:text-2xl font-bold text-blue-600">
               {pendingAddresses.length}
             </div>
           </CardContent>
@@ -220,18 +220,18 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
             <CardTitle className="text-sm">Verified Today</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-xl sm:text-2xl font-bold text-green-600">
               {searchResults.filter(addr => addr.verified).length}
             </div>
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="sm:col-span-2 lg:col-span-1">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm">Quality Score</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="text-xl sm:text-2xl font-bold text-blue-600">
               {Math.round((coordinatesAccuracy + photoQualityScore) / 2)}%
             </div>
           </CardContent>
@@ -239,12 +239,27 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
       </div>
 
       <Tabs defaultValue="search" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="search">All Addresses</TabsTrigger>
-          <TabsTrigger value="individual">Individual Verify</TabsTrigger>
-          <TabsTrigger value="verify">Verification Tools</TabsTrigger>
-          <TabsTrigger value="flagged">Flagged Addresses</TabsTrigger>
-          <TabsTrigger value="quality">Quality Control</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 h-auto">
+          <TabsTrigger value="search" className="text-xs sm:text-sm p-2 sm:p-3">
+            <span className="hidden sm:inline">All Addresses</span>
+            <span className="sm:hidden">All</span>
+          </TabsTrigger>
+          <TabsTrigger value="individual" className="text-xs sm:text-sm p-2 sm:p-3">
+            <span className="hidden sm:inline">Individual Verify</span>
+            <span className="sm:hidden">Verify</span>
+          </TabsTrigger>
+          <TabsTrigger value="verify" className="text-xs sm:text-sm p-2 sm:p-3">
+            <span className="hidden lg:inline">Verification Tools</span>
+            <span className="lg:hidden">Tools</span>
+          </TabsTrigger>
+          <TabsTrigger value="flagged" className="text-xs sm:text-sm p-2 sm:p-3">
+            <span className="hidden sm:inline">Flagged Addresses</span>
+            <span className="sm:hidden">Flagged</span>
+          </TabsTrigger>
+          <TabsTrigger value="quality" className="text-xs sm:text-sm p-2 sm:p-3">
+            <span className="hidden sm:inline">Quality Control</span>
+            <span className="sm:hidden">Quality</span>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="search" className="space-y-4">
@@ -274,26 +289,26 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                       }`}
                       onClick={() => setSelectedAddress(address)}
                     >
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h4 className="font-medium">{address.uac}</h4>
-                            <p className="text-sm text-muted-foreground">
+                      <CardContent className="p-3 sm:p-4">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-medium text-sm sm:text-base break-words">{address.uac}</h4>
+                            <p className="text-xs sm:text-sm text-muted-foreground break-words">
                               {address.street}, {address.city}, {address.region}
                             </p>
                             <div className="flex items-center gap-2 mt-1">
-                              <MapPin className="h-3 w-3" />
-                              <span className="text-xs">{address.latitude}, {address.longitude}</span>
+                              <MapPin className="h-3 w-3 flex-shrink-0" />
+                              <span className="text-xs break-all">{address.latitude}, {address.longitude}</span>
                             </div>
                             <div className="text-xs text-muted-foreground mt-1">
                               Created: {new Date(address.created_at).toLocaleDateString()}
                             </div>
                           </div>
-                          <div className="flex gap-1">
-                            <Badge variant={address.verified ? "default" : "secondary"}>
-                              {address.verified ? "Verified" : "Pending Verification"}
+                          <div className="flex gap-1 flex-wrap">
+                            <Badge variant={address.verified ? "default" : "secondary"} className="text-xs">
+                              {address.verified ? "Verified" : "Pending"}
                             </Badge>
-                            <Badge variant={address.public ? "default" : "outline"}>
+                            <Badge variant={address.public ? "default" : "outline"} className="text-xs">
                               {address.public ? "Public" : "Private"}
                             </Badge>
                           </div>
@@ -382,7 +397,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                     )}
                   </div>
 
-                  <div className="flex gap-2 flex-wrap">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <Button
                       onClick={async () => {
                         try {
@@ -412,7 +427,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                           });
                         }
                       }}
-                      className="flex-1"
+                      className="w-full"
                       disabled={selectedAddress.verified}
                     >
                       <CheckCircle2 className="h-4 w-4 mr-2" />
@@ -449,7 +464,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                           });
                         }
                       }}
-                      className="flex-1"
+                      className="w-full"
                     >
                       <AlertTriangle className="h-4 w-4 mr-2" />
                       Reject Address
