@@ -155,7 +155,8 @@ export const PermissionMatrix: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden lg:block overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="border-b">
@@ -193,6 +194,38 @@ export const PermissionMatrix: React.FC = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="lg:hidden space-y-4">
+            {PERMISSION_MATRIX.map((row, index) => (
+              <Card key={index} className="p-4">
+                <div className="space-y-3">
+                  <h4 className="font-medium text-sm">{row.operation}</h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {roleKeys.map(roleKey => {
+                      const permission = row[roleKey as keyof typeof row];
+                      return (
+                        <div key={roleKey} className="flex flex-col items-center gap-1 p-2 border rounded">
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs font-medium">{roleKey.replace('_', ' ')}</span>
+                            {role === roleKey && (
+                              <Badge variant="secondary" className="text-xs">You</Badge>
+                            )}
+                          </div>
+                          <div className="flex flex-col items-center gap-1">
+                            {getPermissionIcon(permission)}
+                            <span className={`text-xs px-2 py-1 rounded-full ${getPermissionColor(permission)}`}>
+                              {getPermissionText(permission)}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </Card>
+            ))}
           </div>
         </CardContent>
       </Card>

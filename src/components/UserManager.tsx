@@ -453,46 +453,143 @@ const UserManager: React.FC = () => {
               <p className="text-muted-foreground">Loading users...</p>
             </div>
           ) : (
-            <div>
-              <div className="border rounded-lg">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>User</TableHead>
-                    <TableHead>Organization</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Roles</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {paginatedUsers.map((user) => (
-                    <TableRow key={user.user_id}>
-                      <TableCell>
-                        <div>
+            <div className="space-y-4">
+              {/* Desktop Table View */}
+              <div className="hidden md:block border rounded-lg">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>User</TableHead>
+                      <TableHead>Organization</TableHead>
+                      <TableHead>Contact</TableHead>
+                      <TableHead>Roles</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {paginatedUsers.map((user) => (
+                      <TableRow key={user.user_id}>
+                        <TableCell>
+                          <div>
+                            <p className="font-medium">{user.full_name || 'No name'}</p>
+                            <p className="text-sm text-muted-foreground">{user.email}</p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <p className="text-sm">{user.organization || 'Not specified'}</p>
+                        </TableCell>
+                        <TableCell>
+                          <p className="text-sm">{user.phone || 'Not provided'}</p>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-wrap gap-1">
+                            {user.roles.map((roleData, index) => (
+                              <Badge 
+                                key={index} 
+                                variant="secondary"
+                                className="cursor-pointer"
+                                onClick={() => removeRole(user.user_id, roleData.role)}
+                                title="Click to remove role"
+                              >
+                                {roleData.role}
+                                {roleData.metadata.length > 0 && (
+                                  <span className="ml-1 text-xs">
+                                    ({roleData.metadata.map(m => `${m.scope_type}:${m.scope_value}`).join(', ')})
+                                  </span>
+                                )}
+                              </Badge>
+                            ))}
+                            {user.roles.length === 0 && (
+                              <span className="text-sm text-muted-foreground">No roles assigned</span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Select
+                              value={selectedRole}
+                              onValueChange={(role) => {
+                                assignRole(user.user_id, role);
+                                setSelectedRole('');
+                              }}
+                            >
+                              <SelectTrigger className="w-32">
+                                <SelectValue placeholder="Assign role" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {(hasPoliceAdminAccess ? policeRoles : addressingRoles).filter(role => 
+                                  !user.roles.some(userRole => userRole.role === role)
+                                ).map((role) => (
+                                  <SelectItem key={role} value={role}>
+                                    {role.replace('_', ' ')}
+                                    {(role === 'police_dispatcher' || role === 'police_supervisor') && (
+                                      <span className="text-xs text-muted-foreground ml-1">(requires city scope)</span>
+                                    )}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => openEditDialog(user)}
+                              className="p-2"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => openDeleteDialog(user)}
+                              className="p-2 text-destructive hover:text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-4">
+                {paginatedUsers.map((user) => (
+                  <Card key={user.user_id} className="p-4">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
                           <p className="font-medium">{user.full_name || 'No name'}</p>
-                          <p className="text-sm text-muted-foreground">{user.email}</p>
+                          <p className="text-sm text-muted-foreground break-all">{user.email}</p>
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <p className="text-sm">{user.organization || 'Not specified'}</p>
-                      </TableCell>
-                      <TableCell>
-                        <p className="text-sm">{user.phone || 'Not provided'}</p>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-1">
+                      </div>
+                      
+                      <div className="grid grid-cols-1 gap-2 text-sm">
+                        <div>
+                          <span className="font-medium">Organization:</span>
+                          <span className="ml-2">{user.organization || 'Not specified'}</span>
+                        </div>
+                        <div>
+                          <span className="font-medium">Phone:</span>
+                          <span className="ml-2">{user.phone || 'Not provided'}</span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <span className="font-medium text-sm">Roles:</span>
+                        <div className="flex flex-wrap gap-1 mt-1">
                           {user.roles.map((roleData, index) => (
                             <Badge 
                               key={index} 
                               variant="secondary"
-                              className="cursor-pointer"
+                              className="cursor-pointer text-xs"
                               onClick={() => removeRole(user.user_id, roleData.role)}
-                              title="Click to remove role"
+                              title="Tap to remove role"
                             >
                               {roleData.role}
                               {roleData.metadata.length > 0 && (
-                                <span className="ml-1 text-xs">
+                                <span className="ml-1">
                                   ({roleData.metadata.map(m => `${m.scope_type}:${m.scope_value}`).join(', ')})
                                 </span>
                               )}
@@ -502,99 +599,102 @@ const UserManager: React.FC = () => {
                             <span className="text-sm text-muted-foreground">No roles assigned</span>
                           )}
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Select
-                            value={selectedRole}
-                            onValueChange={(role) => {
-                              assignRole(user.user_id, role);
-                              setSelectedRole('');
-                            }}
-                          >
-                            <SelectTrigger className="w-32">
-                              <SelectValue placeholder="Assign role" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {(hasPoliceAdminAccess ? policeRoles : addressingRoles).filter(role => 
-                                !user.roles.some(userRole => userRole.role === role)
-                              ).map((role) => (
-                                <SelectItem key={role} value={role}>
-                                  {role.replace('_', ' ')}
-                                  {(role === 'police_dispatcher' || role === 'police_supervisor') && (
-                                    <span className="text-xs text-muted-foreground ml-1">(requires city scope)</span>
-                                  )}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                      </div>
+
+                      <div className="flex flex-col gap-2 pt-2 border-t">
+                        <Select
+                          value={selectedRole}
+                          onValueChange={(role) => {
+                            assignRole(user.user_id, role);
+                            setSelectedRole('');
+                          }}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Assign role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {(hasPoliceAdminAccess ? policeRoles : addressingRoles).filter(role => 
+                              !user.roles.some(userRole => userRole.role === role)
+                            ).map((role) => (
+                              <SelectItem key={role} value={role}>
+                                {role.replace('_', ' ')}
+                                {(role === 'police_dispatcher' || role === 'police_supervisor') && (
+                                  <span className="text-xs text-muted-foreground ml-1">(requires city scope)</span>
+                                )}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        
+                        <div className="flex gap-2">
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => openEditDialog(user)}
-                            className="p-2"
+                            className="flex-1 flex items-center gap-2"
                           >
                             <Edit className="h-4 w-4" />
+                            Edit
                           </Button>
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => openDeleteDialog(user)}
-                            className="p-2 text-destructive hover:text-destructive"
+                            className="flex-1 flex items-center gap-2 text-destructive hover:text-destructive"
                           >
                             <Trash2 className="h-4 w-4" />
+                            Delete
                           </Button>
                         </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
 
-            {/* Pagination controls */}
-            {totalPages > 1 && (
-              <div className="flex justify-center gap-2 mt-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                  disabled={currentPage === 1}
-                >
-                  Previous
-                </Button>
-                
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                    <Button
-                      key={page}
-                      variant={currentPage === page ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setCurrentPage(page)}
-                      className="min-w-[36px]"
-                    >
-                      {page}
-                    </Button>
-                  ))}
+              {/* Pagination controls */}
+              {totalPages > 1 && (
+                <div className="flex justify-center gap-2 mt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    Previous
+                  </Button>
+                  
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                      <Button
+                        key={page}
+                        variant={currentPage === page ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCurrentPage(page)}
+                        className="min-w-[36px]"
+                      >
+                        {page}
+                      </Button>
+                    ))}
+                  </div>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </Button>
                 </div>
-                
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                  disabled={currentPage === totalPages}
-                >
-                  Next
-                </Button>
-              </div>
-            )}
+              )}
 
-            {filteredUsers.length === 0 && (
-              <div className="text-center py-8">
-                <UserCog className="mx-auto h-12 w-12 text-muted-foreground" />
-                <p className="mt-2 text-muted-foreground">No {hasPoliceAdminAccess ? 'police' : 'addressing'} users found</p>
-              </div>
-            )}
+              {filteredUsers.length === 0 && (
+                <div className="text-center py-8">
+                  <UserCog className="mx-auto h-12 w-12 text-muted-foreground" />
+                  <p className="mt-2 text-muted-foreground">No {hasPoliceAdminAccess ? 'police' : 'addressing'} users found</p>
+                </div>
+              )}
             </div>
           )}
 
