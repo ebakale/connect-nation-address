@@ -56,22 +56,23 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <div>
-          <h3 className="text-lg font-semibold">Publishing Queue ({unpublishedAddresses.length})</h3>
-          <p className="text-sm text-muted-foreground">Publish verified addresses to the national registry</p>
+    <div className="space-y-4 p-4 max-w-full overflow-hidden">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="min-w-0 flex-1">
+          <h3 className="text-lg font-semibold break-words">Publishing Queue ({unpublishedAddresses.length})</h3>
+          <p className="text-sm text-muted-foreground break-words">Publish verified addresses to the national registry</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           {unpublishedAddresses.length > 0 && (
-            <Button onClick={handlePublishAll} className="flex items-center gap-1">
-              <Globe className="h-4 w-4" />
-              Publish All ({unpublishedAddresses.length})
+            <Button onClick={handlePublishAll} className="flex items-center justify-center gap-1 text-xs sm:text-sm">
+              <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Publish All ({unpublishedAddresses.length})</span>
+              <span className="sm:hidden">Publish All</span>
             </Button>
           )}
           {onClose && (
-            <Button variant="outline" size="sm" onClick={onClose}>
-              <X className="h-4 w-4 mr-2" />
+            <Button variant="outline" size="sm" onClick={onClose} className="text-xs sm:text-sm">
+              <X className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
               Close
             </Button>
           )}
@@ -86,40 +87,41 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
         </Card>
       ) : (
         unpublishedAddresses.map((address) => (
-          <Card key={address.id}>
+          <Card key={address.id} className="max-w-full overflow-hidden">
             <CardHeader>
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-lg">{address.uac}</CardTitle>
-                  <CardDescription>
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                <div className="min-w-0 flex-1">
+                  <CardTitle className="text-base sm:text-lg break-words">{address.uac}</CardTitle>
+                  <CardDescription className="break-words">
                     {address.building && `${address.building}, `}
                     {address.street}, {address.city}, {address.region}
                   </CardDescription>
                 </div>
-                <div className="flex gap-2">
-                  <Badge variant="default">Verified</Badge>
-                  <Badge variant="outline">{t('private')}</Badge>
+                <div className="flex gap-2 flex-wrap">
+                  <Badge variant="default" className="text-xs">Verified</Badge>
+                  <Badge variant="outline" className="text-xs">{t('private')}</Badge>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 gap-4 text-sm mb-4">
-                <div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm mb-4">
+                <div className="break-words">
                   <span className="font-medium">Type:</span> {address.address_type}
                 </div>
-                <div>
+                <div className="break-words">
                   <span className="font-medium">Created:</span> {new Date(address.created_at).toLocaleDateString()}
                 </div>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Button
                   size="sm"
                   onClick={() => handlePublish(address.id, true)}
-                  className="flex items-center gap-1"
+                  className="flex items-center justify-center gap-1 text-xs sm:text-sm w-full sm:w-auto"
                 >
-                  <Globe className="h-4 w-4" />
-                  Publish to National Registry
+                  <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Publish to National Registry</span>
+                  <span className="sm:hidden">Publish</span>
                 </Button>
               </div>
             </CardContent>
