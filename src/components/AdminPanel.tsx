@@ -48,8 +48,7 @@ const AdminPanel: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-white/20 dark:border-slate-700/50 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
-        <Tabs defaultValue="roles" className="space-y-6">
+      <Tabs defaultValue="roles" className="space-y-6">
         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-1">
           <TabsTrigger value="roles" className="text-xs sm:text-sm px-2 sm:px-3">{t('roleManagement')}</TabsTrigger>
           <TabsTrigger value="permissions" className="text-xs sm:text-sm px-2 sm:px-3">{t('permissions')}</TabsTrigger>
@@ -113,7 +112,6 @@ const AdminPanel: React.FC = () => {
           </TabsContent>
         )}
       </Tabs>
-      </div>
     </div>
   );
 };
