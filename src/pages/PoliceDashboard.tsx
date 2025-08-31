@@ -134,7 +134,7 @@ const PoliceDashboard = () => {
             .from('emergency_operator_sessions')
             .insert({
               operator_id: user.id,
-              status: 'available'
+              status: 'active'
             })
             .select()
             .single();
