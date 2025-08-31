@@ -820,18 +820,20 @@ const UnifiedDashboard = () => {
            </DialogContent>
          </Dialog>
 
-         {/* Province Management Dialog */}
-         <Dialog open={showProvinceManagement} onOpenChange={setShowProvinceManagement}>
-           <DialogContent className="max-w-6xl max-h-[80vh] overflow-y-auto">
-             <DialogHeader>
-               <DialogTitle>Province Management</DialogTitle>
-               <DialogDescription>
-                 Manage administrative provinces and regions
-               </DialogDescription>
-             </DialogHeader>
-             <ProvinceManagement />
-           </DialogContent>
-         </Dialog>
+          {/* Province Management Dialog */}
+          <Dialog open={showProvinceManagement} onOpenChange={setShowProvinceManagement}>
+            <DialogContent className="w-[95vw] max-w-6xl h-[85vh] max-h-[85vh] overflow-y-auto p-4 sm:p-6">
+              <DialogHeader>
+                <DialogTitle className="text-lg sm:text-xl">Province Management</DialogTitle>
+                <DialogDescription className="text-sm break-words">
+                  Manage administrative provinces and regions
+                </DialogDescription>
+              </DialogHeader>
+              <div className="overflow-y-auto flex-1 min-h-0">
+                <ProvinceManagement />
+              </div>
+            </DialogContent>
+          </Dialog>
 
           {/* Analytics Dialog */}
           <Dialog open={showAnalytics} onOpenChange={setShowAnalytics}>
