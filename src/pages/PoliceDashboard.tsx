@@ -29,7 +29,8 @@ import { UnitLeadDashboard } from '@/components/UnitLeadDashboard';
 import { UnitLeadActions } from '@/components/UnitLeadActions';
 import { PoliceAdminDashboard } from '@/components/PoliceAdminDashboard';
 import { RequestBackupDialog } from '@/components/RequestBackupDialog';
-import { BackupRequestsPanel } from '@/components/BackupRequestsPanel';
+import { BackupRequestsSentPanel } from '@/components/BackupRequestsSentPanel';
+import { BackupNotificationsPanel } from '@/components/BackupNotificationsPanel';
 import DispatcherCommunications from '@/components/DispatcherCommunications';
 import { EnhancedSyncStatus } from '@/components/EnhancedSyncStatus';
 import { UnitLeadershipDashboard } from '@/components/UnitLeadershipDashboard';
@@ -940,19 +941,25 @@ const PoliceDashboard = () => {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <Card>
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-base">{t('backupRequests')}</CardTitle>
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <Shield className="h-4 w-4" />
+                          Sent Requests
+                        </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <BackupRequestsPanel />
+                        <BackupRequestsSentPanel />
                       </CardContent>
                     </Card>
                     
                     <Card>
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-base">{t('backupNotifications')}</CardTitle>
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <AlertTriangle className="h-4 w-4" />
+                          Received Notifications
+                        </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <BackupNotificationManager />
+                        <BackupNotificationsPanel />
                       </CardContent>
                     </Card>
                   </div>
@@ -1041,7 +1048,7 @@ const PoliceDashboard = () => {
                 {/* Quick Actions for Supervisors */}
                 <div className="space-y-6">
                   {/* Backup Requests Panel */}
-                  <BackupRequestsPanel />
+                  <BackupRequestsSentPanel />
                   <Card>
                     <CardHeader>
                        <CardTitle className="text-lg">{t('coordinationActions')}</CardTitle>
