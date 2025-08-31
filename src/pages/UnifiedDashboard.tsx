@@ -320,7 +320,8 @@ const UnifiedDashboard = () => {
                 className="flex items-center gap-2"
               >
                 <User className="h-4 w-4" />
-                {t('editProfile')}
+                <span className="hidden sm:inline">{t('editProfile')}</span>
+                <span className="sm:hidden">Profile</span>
               </Button>
               <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
                 <LogOut className="h-4 w-4" />
@@ -877,8 +878,8 @@ const UnifiedDashboard = () => {
            </Dialog>
 
          {/* Profile Editor Dialog */}
-         <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
-           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
+            <DialogContent className="w-[95vw] max-w-4xl h-[85vh] max-h-[85vh] overflow-y-auto p-4 sm:p-6">
              <DialogHeader>
                <DialogTitle>Edit Profile</DialogTitle>
                <DialogDescription>
