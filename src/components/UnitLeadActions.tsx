@@ -33,26 +33,6 @@ export const UnitLeadActions: React.FC<UnitLeadActionsProps> = ({ onOpenUnitDash
           Unit Command Dashboard
         </Button>
         
-        <div className="grid grid-cols-2 gap-2">
-          <Button 
-            variant="outline" 
-            size="sm"
-            className="border-yellow-300 text-yellow-800 hover:bg-yellow-100"
-          >
-            <Users className="h-4 w-4 mr-1" />
-            Team
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            size="sm"
-            className="border-yellow-300 text-yellow-800 hover:bg-yellow-100"
-          >
-            <Radio className="h-4 w-4 mr-1" />
-            Comms
-          </Button>
-        </div>
-        
         <div className="text-xs text-yellow-700 bg-yellow-100 p-2 rounded">
           <p className="font-medium mb-1">Leadership Privileges:</p>
           <ul className="space-y-1">
