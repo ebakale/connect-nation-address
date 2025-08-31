@@ -114,61 +114,61 @@ export function AddressMapDialog({ isOpen, onClose, address }: AddressMapDialogP
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-4xl h-[80vh]">
+      <DialogContent className="w-[95vw] max-w-4xl h-[85vh] max-h-[85vh] p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
+          <DialogTitle className="flex items-center gap-2 text-sm sm:text-base">
+            <MapPin className="h-4 w-4 sm:h-5 sm:w-5" />
             Address Location Map
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-h-0">
           {/* Address Info */}
-          <div className="mb-4 p-3 bg-muted rounded-lg">
-            <h3 className="font-medium">
+          <div className="mb-3 p-2 sm:p-3 bg-muted rounded-lg">
+            <h3 className="font-medium text-sm sm:text-base break-words">
               {address.building && `${address.building}, `}
               {address.street}
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs sm:text-sm text-muted-foreground break-words">
               {address.city}, {address.region}, {address.country}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground break-all">
               Coordinates: {address.latitude}, {address.longitude}
             </p>
           </div>
 
           {/* Map or Token Input */}
-          <div className="flex-1 relative">
+          <div className="flex-1 relative min-h-0">
             {loadingToken ? (
               <div className="absolute inset-0 flex items-center justify-center bg-muted rounded-lg">
                 <div className="text-center">
-                  <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
-                  <p className="text-sm text-muted-foreground">Loading map...</p>
+                  <div className="animate-spin h-6 w-6 sm:h-8 sm:w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Loading map...</p>
                 </div>
               </div>
             ) : showTokenInput ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-muted rounded-lg">
-                <div className="text-center space-y-4 p-6 max-w-md">
-                  <AlertCircle className="h-12 w-12 text-yellow-600 mx-auto" />
+              <div className="absolute inset-0 flex items-center justify-center bg-muted rounded-lg overflow-y-auto">
+                <div className="text-center space-y-3 sm:space-y-4 p-4 sm:p-6 max-w-sm w-full mx-2">
+                  <AlertCircle className="h-8 w-8 sm:h-12 sm:w-12 text-yellow-600 mx-auto" />
                   <div>
-                    <h3 className="font-medium mb-2">Mapbox Token Required</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
+                    <h3 className="font-medium mb-2 text-sm sm:text-base">Mapbox Token Required</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
                       To view the map, please enter your Mapbox public token. 
                       You can get one from <a href="https://mapbox.com/" target="_blank" rel="noopener noreferrer" className="text-primary underline">mapbox.com</a>
                     </p>
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-2 sm:space-y-3">
                     <div>
-                      <Label htmlFor="mapbox-token">Mapbox Public Token</Label>
+                      <Label htmlFor="mapbox-token" className="text-xs sm:text-sm">Mapbox Public Token</Label>
                       <Input
                         id="mapbox-token"
                         value={tokenInput}
                         onChange={(e) => setTokenInput(e.target.value)}
                         placeholder="pk.eyJ1IjoieW91ci11c2VybmFtZSI..."
-                        className="mt-1"
+                        className="mt-1 text-xs sm:text-sm"
                       />
                     </div>
-                    <Button onClick={handleTokenSubmit} disabled={!tokenInput.trim()}>
+                    <Button onClick={handleTokenSubmit} disabled={!tokenInput.trim()} className="w-full text-xs sm:text-sm">
                       Load Map
                     </Button>
                   </div>

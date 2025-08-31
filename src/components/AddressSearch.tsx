@@ -116,7 +116,7 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
       </div>
 
       {showResults && (
-        <Card className="mt-2 border shadow-lg">
+        <Card className="mt-2 border shadow-lg w-full">
           <CardContent className="p-0">
             {results.length > 0 ? (
               <div className="max-h-60 overflow-y-auto">
@@ -129,27 +129,27 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
                     )}
                     onClick={() => handleSelectResult(result)}
                   >
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-sm font-mono font-semibold text-primary">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <span className="text-xs sm:text-sm font-mono font-semibold text-primary break-all">
                             {result.uac}
                           </span>
                           {result.verified && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-success/10 text-success">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-success/10 text-success whitespace-nowrap">
                               Verified
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-foreground truncate">
+                        <p className="text-xs sm:text-sm text-foreground break-words line-clamp-2">
                           {result.readable}
                         </p>
-                        <div className="flex items-center gap-4 mt-1">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 mt-1">
                           <span className="text-xs text-muted-foreground flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            {result.coordinates.lat.toFixed(4)}, {result.coordinates.lng.toFixed(4)}
+                            <MapPin className="h-3 w-3 flex-shrink-0" />
+                            <span className="break-all">{result.coordinates.lat.toFixed(4)}, {result.coordinates.lng.toFixed(4)}</span>
                           </span>
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-xs text-muted-foreground capitalize">
                             {result.type}
                           </span>
                         </div>
@@ -160,18 +160,19 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
                         onClick={(e) => { e.stopPropagation(); handleSelectResult(result); }}
                         aria-label="View on map"
                         title="View on map"
+                        className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10"
                       >
-                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                        <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
                       </Button>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="p-6 text-center text-muted-foreground">
-                <Search className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p>No addresses found for "{query}"</p>
-                <p className="text-sm mt-1">Try searching with a different term or UAC code</p>
+              <div className="p-4 sm:p-6 text-center text-muted-foreground">
+                <Search className="h-6 w-6 sm:h-8 sm:w-8 mx-auto mb-2 opacity-50" />
+                <p className="text-sm sm:text-base">No addresses found for "{query}"</p>
+                <p className="text-xs sm:text-sm mt-1">Try searching with a different term or UAC code</p>
               </div>
             )}
           </CardContent>
