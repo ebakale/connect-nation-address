@@ -169,13 +169,24 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
         </div>
 
         {/* QR Code */}
-        {qrCodeUrl && (
-          <div className="flex justify-center">
-            <div className="bg-white p-2 rounded-lg border">
-              <img src={qrCodeUrl} alt="Address QR Code" className="w-24 h-24" />
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-muted-foreground">QR Code</p>
+          {qrCodeUrl ? (
+            <div className="flex justify-center">
+              <div className="bg-background p-3 rounded-lg border border-border shadow-sm">
+                <img src={qrCodeUrl} alt="Address QR Code" className="w-32 h-32" />
+              </div>
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="flex justify-center">
+              <div className="bg-muted/50 p-3 rounded-lg border border-dashed">
+                <div className="w-32 h-32 flex items-center justify-center text-muted-foreground">
+                  <QrCode className="h-8 w-8" />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Actions */}
         <div className="flex gap-2 pt-2">
