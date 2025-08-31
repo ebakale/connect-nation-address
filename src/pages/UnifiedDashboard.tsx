@@ -14,6 +14,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import Footer from '@/components/Footer';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
 import ConnectEGScenariosReport from '@/components/ConnectEGScenariosReport';
+import CustomerDemoPackReport from '@/components/CustomerDemoPackReport';
 
 import { useNavigate } from "react-router-dom";
 
