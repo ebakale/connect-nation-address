@@ -753,6 +753,11 @@ const UnifiedDashboard = () => {
           <ConnectEGScenariosReport />
         </div>
 
+        {/* Customer Demo Pack Report Generator */}
+        <div className="my-8">
+          <CustomerDemoPackReport />
+        </div>
+
         {/* Emergency Contacts */}
         <Card>
           <CardHeader>
