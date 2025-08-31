@@ -425,38 +425,40 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-2 pt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 pt-4">
                 <Button
                   onClick={() => handleApprove(address.id)}
                   disabled={processing === address.id}
-                  className="flex-1"
+                  className="w-full"
                 >
-                  {processing === address.id ? "Approving..." : "Approve Request"}
+                  {processing === address.id ? "Approving..." : "Approve"}
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => handleEdit(address)}
                   disabled={processing === address.id}
-                  className="flex items-center gap-2"
+                  className="flex items-center justify-center gap-1 w-full"
                 >
-                  <Edit className="h-4 w-4" />
-                  Edit & Approve
+                  <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Edit & Approve</span>
+                  <span className="sm:hidden">Edit</span>
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => handleReject(address)}
                   disabled={processing === address.id}
-                  className="flex-1"
+                  className="w-full"
                 >
-                  Reject Request
+                  Reject
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => handleViewOnMap(address)}
-                  className="flex items-center gap-2"
+                  className="flex items-center justify-center gap-1 w-full"
                 >
-                  <Eye className="h-4 w-4" />
-                  View on Map
+                  <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">View on Map</span>
+                  <span className="sm:hidden">Map</span>
                 </Button>
               </div>
             </CardContent>

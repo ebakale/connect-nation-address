@@ -248,11 +248,11 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                 </div>
               )}
 
-              <div className="flex gap-2 pt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 pt-4">
                 <Button
                   onClick={() => handleApprove(request.id)}
                   disabled={processing === request.id || autoVerifying === request.id}
-                  className="flex-1"
+                  className="w-full"
                 >
                   {processing === request.id ? "Approving..." : "Approve"}
                 </Button>
@@ -260,42 +260,46 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                   variant="outline"
                   onClick={() => handleEdit(request)}
                   disabled={processing === request.id || autoVerifying === request.id}
-                  className="flex items-center gap-2"
+                  className="flex items-center justify-center gap-1 w-full"
                 >
-                  <Edit className="h-4 w-4" />
-                  Edit & Approve
+                  <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Edit & Approve</span>
+                  <span className="sm:hidden">Edit</span>
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => handleReject(request)}
                   disabled={processing === request.id || autoVerifying === request.id}
-                  className="flex-1"
+                  className="w-full"
                 >
                   Reject
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => handleViewOnMap(request)}
-                  className="flex items-center gap-2"
+                  className="flex items-center justify-center gap-1 w-full"
                 >
-                  <Eye className="h-4 w-4" />
-                  View on Map
+                  <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">View on Map</span>
+                  <span className="sm:hidden">Map</span>
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => handleAutoVerify(request.id)}
                   disabled={processing === request.id || autoVerifying === request.id}
-                  className="flex items-center gap-2"
+                  className="flex items-center justify-center gap-1 w-full"
                 >
                   {autoVerifying === request.id ? (
                     <>
-                      <Zap className="h-4 w-4 animate-pulse" />
-                      Auto-Verifying...
+                      <Zap className="h-3 w-3 sm:h-4 sm:w-4 animate-pulse" />
+                      <span className="hidden sm:inline">Auto-Verifying...</span>
+                      <span className="sm:hidden">Verifying...</span>
                     </>
                   ) : (
                     <>
-                      <Zap className="h-4 w-4" />
-                      Auto-Verify
+                      <Zap className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="hidden sm:inline">Auto-Verify</span>
+                      <span className="sm:hidden">Verify</span>
                     </>
                   )}
                 </Button>
