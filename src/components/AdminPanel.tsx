@@ -48,21 +48,6 @@ const AdminPanel: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5" />
-            {hasNDAAAccess ? 'NDAA Administration' : 'System Administration'}
-          </CardTitle>
-          <CardDescription>
-            {hasNDAAAccess 
-              ? 'National Digital Address Authority - Manage national policy, security, and configuration'
-              : 'System Administration - Manage technical system operations and regional oversight'
-            }
-          </CardDescription>
-        </CardHeader>
-      </Card>
-      
       <Tabs defaultValue="roles" className="space-y-6">
         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-1">
           <TabsTrigger value="roles" className="text-xs sm:text-sm px-2 sm:px-3">{t('roleManagement')}</TabsTrigger>
