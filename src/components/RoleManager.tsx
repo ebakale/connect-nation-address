@@ -12,12 +12,13 @@ import { useToast } from '@/components/ui/use-toast';
 import { Plus, Trash2 } from 'lucide-react';
 
 const ROLE_DESCRIPTIONS: Record<string, string> = {
+  'admin': 'System Administrator - Technical system management and regional oversight',
   'citizen': 'Public User - Search, discover, and share official addresses',
   'property_claimant': 'Property Owner/Manager - Manage metadata for owned places',
   'field_agent': 'Field Enumerator - Capture new addresses and ground truth',
   'verifier': 'District/Municipal Verifier - Validate submissions and resolve duplicates',
   'registrar': 'Provincial Registrar - Final authority for publication',
-  'ndaa_admin': 'National Admin - Policy, security, configuration, and keys',
+  'ndaa_admin': 'NDAA Administrator - Highest authority for national policy, security, API management, and system configuration',
   'partner': 'API Partner - Machine-to-machine access for services',
   'auditor': 'Auditor - Compliance and forensics access',
   'data_steward': 'Data Steward - Data quality and analytics',

@@ -52,7 +52,7 @@ export const UACManager: React.FC = () => {
   const [testRegion, setTestRegion] = useState('Bioko Norte');
   const [testCity, setTestCity] = useState('Malabo');
   const [generatedUAC, setGeneratedUAC] = useState('');
-  const { hasAdminAccess } = useUserRole();
+  const { hasAdminAccess, hasNDAAAccess, hasSystemAdminAccess } = useUserRole();
   const { toast } = useToast();
 
   useEffect(() => {

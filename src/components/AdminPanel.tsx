@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAuth } from '@/hooks/useAuth';
+import { useUnifiedAuth } from '@/hooks/useUnifiedAuth';
 import { useUserRole } from '@/hooks/useUserRole';
 import { RoleManager } from './RoleManager';
 import { PermissionMatrix } from './PermissionMatrix';
@@ -14,11 +14,11 @@ import { Shield, Hash } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const AdminPanel: React.FC = () => {
-  const { user } = useAuth();
-  const { loading } = useUserRole();
+  const { user } = useUnifiedAuth();
+  const { loading, hasAdminAccess, hasNDAAAccess, hasSystemAdminAccess } = useUserRole();
   const { t } = useLanguage();
 
-  if (!user) {
+  if (!user || !hasAdminAccess) {
     return (
       <Card>
         <CardHeader>
@@ -27,7 +27,7 @@ const AdminPanel: React.FC = () => {
             {t('rolePermissionManagement')}
           </CardTitle>
           <CardDescription>
-            {t('pleaseLogInToAccess')}
+            {!user ? t('pleaseLogInToAccess') : 'Administrator access required'}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -50,23 +50,27 @@ const AdminPanel: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            {t('rolePermissionManagement')}
+            {hasNDAAAccess ? 'NDAA Administration' : 'System Administration'}
           </CardTitle>
           <CardDescription>
-            {t('manageUserRoles')}
+            {hasNDAAAccess 
+              ? 'National Digital Address Authority - Manage national policy, security, and configuration'
+              : 'System Administration - Manage technical system operations and regional oversight'
+            }
           </CardDescription>
         </CardHeader>
       </Card>
       
       <Tabs defaultValue="roles" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-1">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1">
           <TabsTrigger value="roles" className="text-xs sm:text-sm px-2 sm:px-3">{t('roleManagement')}</TabsTrigger>
           <TabsTrigger value="permissions" className="text-xs sm:text-sm px-2 sm:px-3">{t('permissions')}</TabsTrigger>
           <TabsTrigger value="workflows" className="text-xs sm:text-sm px-2 sm:px-3">{t('workflows')}</TabsTrigger>
           <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">{t('userManagement')}</TabsTrigger>
           <TabsTrigger value="uac" className="text-xs sm:text-sm px-2 sm:px-3">{t('uacSystem')}</TabsTrigger>
-          <TabsTrigger value="api-webhooks" className="text-xs sm:text-sm px-2 sm:px-3">{t('apiWebhooks')}</TabsTrigger>
-          <TabsTrigger value="notifications" className="text-xs sm:text-sm px-2 sm:px-3">Notifications</TabsTrigger>
+          {hasNDAAAccess && (
+            <TabsTrigger value="api-webhooks" className="text-xs sm:text-sm px-2 sm:px-3">{t('apiWebhooks')}</TabsTrigger>
+          )}
         </TabsList>
         
         <TabsContent value="roles">
@@ -89,13 +93,11 @@ const AdminPanel: React.FC = () => {
           <UACManager />
         </TabsContent>
         
-        <TabsContent value="api-webhooks">
-          <ApiWebhookManager />
-        </TabsContent>
-        
-        <TabsContent value="notifications">
-          <NotificationTester />
-        </TabsContent>
+        {hasNDAAAccess && (
+          <TabsContent value="api-webhooks">
+            <ApiWebhookManager />
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   );
