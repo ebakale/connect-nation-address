@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Download, FileText, Users, MapPin, Shield } from 'lucide-react';
 import jsPDF from 'jspdf';
 
-const ConnectEDScenariosReport = () => {
+const ConnectEGScenariosReport = () => {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const generatePDF = async () => {
@@ -114,7 +114,7 @@ const ConnectEDScenariosReport = () => {
         doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(9);
-        y = addText('Solución ConnectED:', 15, y, { color: secondaryColor, font: 'helvetica', style: 'bold', size: 9, lineHeight: 7 });
+        y = addText('Solución ConnectEG:', 15, y, { color: secondaryColor, font: 'helvetica', style: 'bold', size: 9, lineHeight: 7 });
         doc.setTextColor(textColor[0], textColor[1], textColor[2]);
         doc.setFont('helvetica', 'normal');
         const solutionLines = doc.splitTextToSize(scenario.solution, 175);
@@ -145,7 +145,7 @@ const ConnectEDScenariosReport = () => {
       doc.setTextColor(255, 255, 255);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(20);
-      doc.text('ConnectED Platform', 105, 15, { align: 'center' });
+      doc.text('ConnectEG Platform', 105, 15, { align: 'center' });
       doc.setFontSize(14);
       doc.text('Escenarios de Impacto y Casos de Uso', 105, 23, { align: 'center' });
       
@@ -156,7 +156,7 @@ const ConnectEDScenariosReport = () => {
       doc.setTextColor(textColor[0], textColor[1], textColor[2]);
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(10);
-      const introText = 'ConnectED Platform es una solución integral que revoluciona la gestión de direcciones y operaciones policiales en Guinea Ecuatorial. A través de dos módulos integrados - Registro de Direcciones y Gestión de Emergencias - la plataforma transforma la prestación de servicios públicos, facilita el comercio electrónico y mejora significativamente la respuesta a emergencias.';
+      const introText = 'ConnectEG Platform es una solución integral que revoluciona la gestión de direcciones y operaciones policiales en Guinea Ecuatorial. A través de dos módulos integrados - Registro de Direcciones y Gestión de Emergencias - la plataforma transforma la prestación de servicios públicos, facilita el comercio electrónico y mejora significativamente la respuesta a emergencias.';
       const introLines = doc.splitTextToSize(introText, 180);
       introLines.forEach((line: string) => {
         yPosition = addText(line, 15, yPosition, { lineHeight: 5 });
@@ -208,13 +208,13 @@ const ConnectEDScenariosReport = () => {
         {
           title: 'E-commerce en Crecimiento - Historia de María',
           challenge: 'María tiene un negocio online de productos artesanales pero pierde el 30% de sus entregas debido a direcciones incorrectas o inexistentes. Sus clientes se frustran cuando los repartidores no pueden encontrar sus ubicaciones, especialmente en barrios nuevos de Malabo.',
-          solution: 'Con ConnectED, María puede verificar las direcciones de sus clientes antes del envío usando el sistema de búsqueda inteligente. Los nuevos clientes pueden registrar sus direcciones con coordenadas GPS precisas. Su tasa de entrega exitosa aumenta al 95%, y puede ofrecer seguimiento en tiempo real.',
+          solution: 'Con ConnectEG, María puede verificar las direcciones de sus clientes antes del envío usando el sistema de búsqueda inteligente. Los nuevos clientes pueden registrar sus direcciones con coordenadas GPS precisas. Su tasa de entrega exitosa aumenta al 95%, y puede ofrecer seguimiento en tiempo real.',
           impact: 'Incremento del 40% en ventas, reducción del 70% en costos de reenvío, mejora significativa en satisfacción del cliente y expansión a zonas rurales previamente inaccesibles.'
         },
         {
           title: 'Servicios Públicos Eficientes - Caso de Distribución Eléctrica',
           challenge: 'La empresa eléctrica nacional tiene dificultades para localizar medidores y responder a averías. Muchas zonas residenciales carecen de direcciones claras, causando retrasos de hasta 3 días en reparaciones urgentes.',
-          solution: 'Utilizando la API de ConnectED, la empresa integra el sistema de direcciones con su plataforma de gestión. Cada medidor se vincula a una dirección verificada con código UAC único. Los técnicos reciben rutas optimizadas y coordenadas exactas.',
+          solution: 'Utilizando la API de ConnectEG, la empresa integra el sistema de direcciones con su plataforma de gestión. Cada medidor se vincula a una dirección verificada con código UAC único. Los técnicos reciben rutas optimizadas y coordenadas exactas.',
           impact: 'Reducción del 60% en tiempo de respuesta a averías, mejora del 80% en precisión de facturación, y capacidad de planificar expansiones de red basadas en datos geográficos precisos.'
         }
       ];
@@ -230,13 +230,13 @@ const ConnectEDScenariosReport = () => {
         {
           title: 'Respuesta Médica de Emergencia - Dr. Ana Bolekia',
           challenge: 'Una emergencia médica se reporta en un barrio sin direcciones claras de Malabo. La ambulancia da vueltas durante 15 minutos buscando la ubicación mientras el tiempo crítico se agota. La comunicación entre dispatch y unidades médicas es fragmentada.',
-          solution: 'ConnectED procesa automáticamente la llamada de emergencia y proporciona coordenadas exactas del incidente. El sistema dispatcha la ambulancia más cercana con navegación GPS precisa y establece comunicación directa entre médicos de campo y hospital.',
+          solution: 'ConnectEG procesa automáticamente la llamada de emergencia y proporciona coordenadas exactas del incidente. El sistema dispatcha la ambulancia más cercana con navegación GPS precisa y establece comunicación directa entre médicos de campo y hospital.',
           impact: 'Reducción del 65% en tiempo de respuesta promedio (de 18 a 6 minutos), aumento del 30% en tasa de supervivencia en emergencias críticas, y coordinación perfecta entre servicios médicos y policiales.'
         },
         {
           title: 'Operativo Policial Coordinado - Oficial Carlos Mbomio',
           challenge: 'Se reporta un incidente de seguridad que requiere múltiples unidades policiales. La coordinación manual entre patrullas causa confusión sobre ubicaciones exactas y disponibilidad de unidades, retrasando la respuesta efectiva.',
-          solution: 'El módulo policial de ConnectED muestra en tiempo real la ubicación de todas las unidades, analiza automáticamente la proximidad al incidente, y coordina el deployment óptimo. El oficial Carlos recibe instrucciones precisas y puede solicitar backup con un click.',
+          solution: 'El módulo policial de ConnectEG muestra en tiempo real la ubicación de todas las unidades, analiza automáticamente la proximidad al incidente, y coordina el deployment óptimo. El oficial Carlos recibe instrucciones precisas y puede solicitar backup con un click.',
           impact: 'Mejora del 75% en tiempo de coordinación entre unidades, reducción del 50% en costos operativos, y aumento significativo en efectividad de operativos multi-unidad.'
         }
       ];
@@ -252,13 +252,13 @@ const ConnectEDScenariosReport = () => {
         {
           title: 'Planificación Urbana Inteligente - Ministerio de Infraestructura',
           challenge: 'El gobierno necesita planificar nuevas escuelas y centros de salud pero carece de datos precisos sobre densidad poblacional y ubicaciones exactas en zonas en desarrollo. Las decisiones se basan en estimaciones inexactas.',
-          solution: 'ConnectED proporciona análisis detallado de distribución poblacional basado en direcciones verificadas. Los planificadores acceden a mapas de calor que muestran densidad real, distancias a servicios existentes, y zonas de crecimiento.',
+          solution: 'ConnectEG proporciona análisis detallado de distribución poblacional basado en direcciones verificadas. Los planificadores acceden a mapas de calor que muestran densidad real, distancias a servicios existentes, y zonas de crecimiento.',
           impact: 'Optimización del 40% en ubicación de nuevos servicios públicos, reducción del 30% en costos de infraestructura innecesaria, y mejora significativa en acceso equitativo a servicios para todos los ciudadanos.'
         },
         {
           title: 'Censo Nacional Digital - Instituto Nacional de Estadística',
           challenge: 'La realización del censo nacional requiere enormes recursos para localizar cada hogar. Muchas zonas rurales y periurbanas son difíciles de mapear, causando sub-registro poblacional del 15-20%.',
-          solution: 'El sistema de direcciones de ConnectED sirve como base para el censo digital. Cada dirección verificada incluye coordenadas exactas y fotografías de referencia. Los censistas reciben rutas optimizadas y pueden actualizar información en tiempo real.',
+          solution: 'El sistema de direcciones de ConnectEG sirve como base para el censo digital. Cada dirección verificada incluye coordenadas exactas y fotografías de referencia. Los censistas reciben rutas optimizadas y pueden actualizar información en tiempo real.',
           impact: 'Aumento del 95% en cobertura censal, reducción del 60% en costos operativos del censo, y datos poblacionales precisos que mejoran la asignación de recursos y planificación de políticas públicas.'
         }
       ];
@@ -285,7 +285,7 @@ const ConnectEDScenariosReport = () => {
       // Conclusion
       yPosition += 10;
       yPosition = addSectionHeader('Conclusión', yPosition, secondaryColor);
-      const conclusionText = 'ConnectED Platform representa una transformación fundamental en la prestación de servicios públicos y privados en Guinea Ecuatorial. A través de casos de uso reales y personas representativas, hemos demostrado cómo la plataforma genera valor tangible para todos los sectores de la sociedad. La implementación de ConnectED no solo moderniza la infraestructura digital del país, sino que establece las bases para un crecimiento económico sostenible y una mejor calidad de vida para todos los ciudadanos.';
+      const conclusionText = 'ConnectEG Platform representa una transformación fundamental en la prestación de servicios públicos y privados en Guinea Ecuatorial. A través de casos de uso reales y personas representativas, hemos demostrado cómo la plataforma genera valor tangible para todos los sectores de la sociedad. La implementación de ConnectEG no solo moderniza la infraestructura digital del país, sino que establece las bases para un crecimiento económico sostenible y una mejor calidad de vida para todos los ciudadanos.';
       const conclusionLines = doc.splitTextToSize(conclusionText, 180);
       conclusionLines.forEach((line: string) => {
         yPosition = addText(line, 15, yPosition, { lineHeight: 5 });
@@ -297,12 +297,12 @@ const ConnectEDScenariosReport = () => {
         doc.setPage(i);
         doc.setTextColor(150, 150, 150);
         doc.setFontSize(8);
-        doc.text(`ConnectED Platform - Escenarios de Impacto | Página ${i} de ${pageCount}`, 105, 290, { align: 'center' });
+        doc.text(`ConnectEG Platform - Escenarios de Impacto | Página ${i} de ${pageCount}`, 105, 290, { align: 'center' });
         doc.text(`Generado el ${new Date().toLocaleDateString('es-ES')}`, 105, 295, { align: 'center' });
       }
 
       // Save the PDF
-      doc.save('ConnectED-Platform-Escenarios-de-Impacto.pdf');
+      doc.save('ConnectEG-Platform-Escenarios-de-Impacto.pdf');
       
     } catch (error) {
       console.error('Error generando PDF:', error);
@@ -316,11 +316,11 @@ const ConnectEDScenariosReport = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-3 text-2xl">
           <FileText className="h-8 w-8 text-primary" />
-          Generador de Escenarios ConnectED
+          Generador de Escenarios ConnectEG
         </CardTitle>
         <p className="text-muted-foreground text-lg">
           Crea un documento PDF completo con escenarios realistas y personas que demuestran 
-          el impacto de ConnectED Platform en diferentes sectores de la sociedad.
+          el impacto de ConnectEG Platform en diferentes sectores de la sociedad.
         </p>
       </CardHeader>
       
@@ -403,4 +403,4 @@ const ConnectEDScenariosReport = () => {
   );
 };
 
-export default ConnectEDScenariosReport;
+export default ConnectEGScenariosReport;

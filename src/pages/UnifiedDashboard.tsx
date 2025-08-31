@@ -13,7 +13,7 @@ import {
 import { useLanguage } from '@/contexts/LanguageContext';
 import Footer from '@/components/Footer';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
-import ConnectEDScenariosReport from '@/components/ConnectEDScenariosReport';
+import ConnectEGScenariosReport from '@/components/ConnectEGScenariosReport';
 
 import { useNavigate } from "react-router-dom";
 
@@ -749,7 +749,7 @@ const UnifiedDashboard = () => {
 
         {/* Scenarios Report Generator */}
         <div className="my-8">
-          <ConnectEDScenariosReport />
+          <ConnectEGScenariosReport />
         </div>
 
         {/* Emergency Contacts */}
