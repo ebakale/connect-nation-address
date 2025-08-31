@@ -35,12 +35,8 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
   useEffect(() => {
     const generateQR = async () => {
       try {
-        const addressData = {
-          uac: address.uac,
-          coordinates: address.coordinates,
-          readable: `${address.street}, ${address.city}, ${address.region}, ${address.country}`
-        };
-        const qrUrl = await QRCode.toDataURL(JSON.stringify(addressData), {
+        // Generate QR code for just the UAC
+        const qrUrl = await QRCode.toDataURL(address.uac, {
           width: 128,
           margin: 2,
           color: {
@@ -55,7 +51,7 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
     };
 
     generateQR();
-  }, [address]);
+  }, [address.uac]);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -195,7 +191,8 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
           <Button 
             variant="outline" 
             size="sm"
-            onClick={() => copyToClipboard(qrCodeUrl)}
+            onClick={() => copyToClipboard(address.uac)}
+            title="Generate QR for UAC"
           >
             <QrCode className="h-4 w-4" />
           </Button>
