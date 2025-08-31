@@ -208,10 +208,11 @@ const DispatcherCommunications: React.FC = () => {
     acknowledged_type: typeof m.acknowledged 
   })));
 
-  // Quick Comm messages (unacknowledged only)
+  // Quick Comm messages (unacknowledged only, excluding messages sent by current user)
   const quickCommMessages = messages.filter(message => {
     const priorityMatch = filterPriority === 'all' || message.priority_level.toString() === filterPriority;
-    return message.acknowledged === false && priorityMatch;
+    const isNotOwnMessage = message.from_user_id !== session?.user?.id;
+    return message.acknowledged === false && priorityMatch && isNotOwnMessage;
   }).sort((a, b) => {
     // Sort by priority (high priority first) then by date (newest first)
     if (a.priority_level !== b.priority_level) {
@@ -422,22 +423,27 @@ const DispatcherCommunications: React.FC = () => {
                               </Badge>
                             )}
                           </div>
-                          <div className="flex items-center gap-1">
-                            {message.acknowledged ? (
-                              <div className="flex items-center gap-1 text-green-600">
-                                <CheckCheck className="h-4 w-4" />
-                                <span className="text-xs">Acknowledged</span>
-                              </div>
-                            ) : (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => acknowledgeMessage(message.id)}
-                              >
-                                Acknowledge
-                              </Button>
-                            )}
-                          </div>
+                           <div className="flex items-center gap-1">
+                             {message.acknowledged ? (
+                               <div className="flex items-center gap-1 text-green-600">
+                                 <CheckCheck className="h-4 w-4" />
+                                 <span className="text-xs">Acknowledged</span>
+                               </div>
+                             ) : message.from_user_id === session?.user?.id ? (
+                               <div className="flex items-center gap-1 text-blue-600">
+                                 <Send className="h-4 w-4" />
+                                 <span className="text-xs">Sent by you</span>
+                               </div>
+                             ) : (
+                               <Button
+                                 size="sm"
+                                 variant="outline"
+                                 onClick={() => acknowledgeMessage(message.id)}
+                               >
+                                 Acknowledge
+                               </Button>
+                             )}
+                           </div>
                         </div>
                         
                         <div className="text-sm">
