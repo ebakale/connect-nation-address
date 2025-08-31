@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input';
 import { 
   Users, MapPin, Radio, Car, Crown, User, Shield, 
-  Activity, Clock, Target, ArrowLeft, RefreshCw 
+  Activity, Clock, Target, ArrowLeft, RefreshCw, Search, Filter 
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -49,7 +51,10 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
   const { user } = useAuth();
   const [units, setUnits] = useState<UnitInfo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [userCity, setUserCity] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
   const [stats, setStats] = useState({
     totalUnits: 0,
     totalOfficers: 0,
@@ -57,16 +62,6 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
     onDutyUnits: 0,
     unassignedUnits: 0
   });
-
-  useEffect(() => {
-    fetchUserCity();
-  }, [user]);
-
-  useEffect(() => {
-    if (userCity) {
-      fetchUnitsData();
-    }
-  }, [userCity]);
 
   const fetchUserCity = async () => {
     if (!user?.id) return;
@@ -94,9 +89,13 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
     }
   };
 
-  const fetchUnitsData = async () => {
+  const fetchUnitsData = useCallback(async (isRefresh = false) => {
     try {
-      setLoading(true);
+      if (isRefresh) {
+        setRefreshing(true);
+      } else {
+        setLoading(true);
+      }
       
       // Fetch units with their members - filtered by user's city
       let query = supabase
@@ -127,8 +126,6 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
 
       if (unitsError) throw unitsError;
 
-      // Note: Total officers are computed from unit members in this view to match the current scope
-
       setUnits(unitsData || []);
       
       // Calculate statistics
@@ -158,8 +155,53 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
       });
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
-  };
+  }, [userCity, toast]);
+
+  useEffect(() => {
+    fetchUserCity();
+  }, [user]);
+
+  useEffect(() => {
+    if (userCity) {
+      fetchUnitsData();
+    }
+  }, [userCity, fetchUnitsData]);
+
+  // Filtered and sorted units
+  const filteredUnits = useMemo(() => {
+    let filtered = units;
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(unit =>
+        unit.unit_code.toLowerCase().includes(query) ||
+        unit.unit_name.toLowerCase().includes(query) ||
+        unit.unit_type.toLowerCase().includes(query) ||
+        unit.emergency_unit_members.some(member =>
+          member.profiles.full_name.toLowerCase().includes(query)
+        )
+      );
+    }
+
+    // Apply status filter
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(unit => unit.status === statusFilter);
+    }
+
+    // Sort by priority: available first, then by unit code
+    return filtered.sort((a, b) => {
+      if (a.status === 'available' && b.status !== 'available') return -1;
+      if (a.status !== 'available' && b.status === 'available') return 1;
+      return a.unit_code.localeCompare(b.unit_code);
+    });
+  }, [units, searchQuery, statusFilter]);
+
+  const handleRefresh = useCallback(() => {
+    fetchUnitsData(true);
+  }, [fetchUnitsData]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -192,8 +234,62 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="space-y-6">
+        {/* Header Skeleton */}
+        <div className="flex items-center gap-4">
+          <Skeleton className="h-10 w-20" />
+          <div className="flex-1">
+            <Skeleton className="h-8 w-64 mb-2" />
+            <Skeleton className="h-4 w-48" />
+          </div>
+          <Skeleton className="h-10 w-24" />
+        </div>
+        
+        {/* Stats Skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          {[...Array(5)].map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="pb-3">
+                <Skeleton className="h-4 w-20" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-12" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        
+        {/* Units Grid Skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <Card key={i} className="h-fit">
+              <CardHeader>
+                <Skeleton className="h-6 w-24 mb-2" />
+                <Skeleton className="h-4 w-32" />
+                <div className="flex gap-2 mt-2">
+                  <Skeleton className="h-6 w-16" />
+                  <Skeleton className="h-6 w-20" />
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-3/4" />
+                </div>
+                <Separator />
+                <div className="space-y-3">
+                  <Skeleton className="h-4 w-32" />
+                  {[...Array(2)].map((_, j) => (
+                    <div key={j} className="border rounded-lg p-3 space-y-2">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-2/3" />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     );
   }
@@ -214,10 +310,36 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
             {userCity ? `Units in ${userCity}` : 'Complete view of all units and their composition'}
           </p>
         </div>
-        <Button onClick={fetchUnitsData} variant="outline" size="sm">
-          <RefreshCw className="h-4 w-4 mr-2" />
+        <Button onClick={handleRefresh} variant="outline" size="sm" disabled={refreshing}>
+          <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
           Refresh
         </Button>
+      </div>
+
+      {/* Search and Filter */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search units, officers..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <div className="flex gap-2">
+          {['all', 'available', 'dispatched', 'busy', 'unavailable'].map((status) => (
+            <Button
+              key={status}
+              variant={statusFilter === status ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setStatusFilter(status)}
+              className="capitalize"
+            >
+              {status === 'all' ? 'All Status' : status}
+            </Button>
+          ))}
+        </div>
       </div>
 
       {/* Statistics Cards */}
@@ -283,9 +405,18 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
         </Card>
       </div>
 
+      {/* Results Summary */}
+      {searchQuery || statusFilter !== 'all' ? (
+        <div className="text-sm text-muted-foreground">
+          Showing {filteredUnits.length} of {units.length} units
+          {searchQuery && ` matching "${searchQuery}"`}
+          {statusFilter !== 'all' && ` with status "${statusFilter}"`}
+        </div>
+      ) : null}
+
       {/* Units Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {units.map((unit) => (
+        {filteredUnits.map((unit) => (
           <Card key={unit.id} className="h-fit">
             <CardHeader className="pb-4">
               <div className="flex justify-between items-start">
@@ -397,14 +528,36 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
         ))}
       </div>
 
-      {units.length === 0 && (
+      {filteredUnits.length === 0 && (
         <Card>
           <CardContent className="p-8 text-center">
-            <Shield className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-lg font-medium mb-2">No Units Found</h3>
-            <p className="text-muted-foreground">
-              No emergency units have been created yet. Contact an administrator to set up units.
-            </p>
+            {units.length === 0 ? (
+              <>
+                <Shield className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-medium mb-2">No Units Found</h3>
+                <p className="text-muted-foreground">
+                  No emergency units have been created yet. Contact an administrator to set up units.
+                </p>
+              </>
+            ) : (
+              <>
+                <Filter className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-medium mb-2">No Matching Units</h3>
+                <p className="text-muted-foreground">
+                  No units match your current search criteria. Try adjusting your filters.
+                </p>
+                <Button 
+                  variant="outline" 
+                  className="mt-4"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setStatusFilter('all');
+                  }}
+                >
+                  Clear Filters
+                </Button>
+              </>
+            )}
           </CardContent>
         </Card>
       )}
