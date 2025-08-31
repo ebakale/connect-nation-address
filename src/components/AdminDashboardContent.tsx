@@ -254,21 +254,21 @@ export function AdminDashboardContent({ activeSection }: AdminDashboardContentPr
       case 'overview':
         return renderOverview();
       case 'users':
-      case 'roles':
+        return (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-2">Users & Roles Management</h2>
+              <p className="text-muted-foreground">Manage user accounts, permissions, and system roles</p>
+            </div>
+            <AdminPanel />
+          </div>
+        );
       case 'system':
         return (
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-2">
-                {activeSection === 'users' && 'User Management'}
-                {activeSection === 'roles' && 'Role Management'}
-                {activeSection === 'system' && 'System Settings'}
-              </h2>
-              <p className="text-muted-foreground">
-                {activeSection === 'users' && 'Manage user accounts and permissions'}
-                {activeSection === 'roles' && 'Configure roles and access levels'}
-                {activeSection === 'system' && 'System configuration and settings'}
-              </p>
+              <h2 className="text-2xl font-bold text-foreground mb-2">System Settings</h2>
+              <p className="text-muted-foreground">Configure system parameters and preferences</p>
             </div>
             <AdminPanel />
           </div>

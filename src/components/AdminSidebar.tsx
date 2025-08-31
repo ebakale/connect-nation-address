@@ -40,62 +40,27 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
     { 
       id: "overview", 
       title: "Overview", 
-      icon: Home, 
-      description: "Dashboard overview"
+      icon: Home
     },
     { 
       id: "users", 
-      title: "User Management", 
-      icon: Users, 
-      description: "Manage users and accounts"
-    },
-    { 
-      id: "roles", 
-      title: "Role Management", 
-      icon: Shield, 
-      description: "Assign and manage roles"
-    },
-    { 
-      id: "addresses", 
-      title: "Address System", 
-      icon: Map, 
-      description: "Address management"
+      title: "Users & Roles", 
+      icon: Users
     },
     { 
       id: "verification", 
-      title: "Verification Queue", 
-      icon: CheckCircle, 
-      description: "Pending verifications"
-    },
-    { 
-      id: "approvals", 
-      title: "Approval Queue", 
-      icon: AlertTriangle, 
-      description: "Pending approvals"
+      title: "Verification", 
+      icon: CheckCircle
     },
     { 
       id: "analytics", 
       title: "Analytics", 
-      icon: BarChart3, 
-      description: "System analytics"
-    },
-    { 
-      id: "provinces", 
-      title: "Province Management", 
-      icon: Globe, 
-      description: "Manage provinces"
+      icon: BarChart3
     },
     { 
       id: "system", 
-      title: "System Settings", 
-      icon: Settings, 
-      description: "System configuration"
-    },
-    { 
-      id: "documentation", 
-      title: "Documentation", 
-      icon: FileText, 
-      description: "Generate documentation"
+      title: "Settings", 
+      icon: Settings
     }
   ];
 
@@ -144,10 +109,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                   >
                     <item.icon className="h-4 w-4 flex-shrink-0" />
                     {!isCollapsed && (
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium">{item.title}</span>
-                        <span className="text-xs text-muted-foreground">{item.description}</span>
-                      </div>
+                      <span className="text-sm font-medium">{item.title}</span>
                     )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
