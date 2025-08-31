@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
-import { AlertTriangle, Clock, MapPin, CheckCircle, User, Calendar, ChevronRight } from "lucide-react";
+import { AlertTriangle, Clock, MapPin, CheckCircle, User, Calendar, ChevronRight, Shield, ShieldCheck, ShieldX } from "lucide-react";
 import { format } from "date-fns";
 
 interface BackupRequest {
@@ -20,6 +20,9 @@ interface BackupRequest {
   priority_level: number;
   created_at: string;
   read: boolean;
+  backup_status?: 'pending' | 'fulfilled' | 'partially_fulfilled';
+  assigned_units?: string[];
+  units_added_after_request?: string[];
   metadata: {
     requesting_unit?: string;
     requesting_unit_name?: string;
@@ -131,13 +134,23 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
       if (sentIncidentIds.length > 0) {
         const { data: sentIncidents, error: sentError } = await supabase
           .from('emergency_incidents')
-          .select('id, incident_number, incident_uac, backup_requested_at, backup_requesting_unit')
+          .select('id, incident_number, incident_uac, backup_requested_at, backup_requesting_unit, assigned_units')
           .in('id', sentIncidentIds);
 
         if (sentError) throw sentError;
 
         sentRequestsData = (sentIncidents || []).map((incident: any) => {
           const logEntry = incidentLogs?.find((log: any) => log.incident_id === incident.id);
+          const currentUnits = incident.assigned_units || [];
+          const originalUnits = (logEntry?.details as any)?.original_units || [];
+          const unitsAddedAfterRequest = currentUnits.filter((unit: string) => !originalUnits.includes(unit));
+          
+          // Determine backup status
+          let backupStatus: 'pending' | 'fulfilled' | 'partially_fulfilled' = 'pending';
+          if (unitsAddedAfterRequest.length > 0) {
+            backupStatus = unitsAddedAfterRequest.length >= 2 ? 'fulfilled' : 'partially_fulfilled';
+          }
+
           return {
             id: `sent-${incident.id}`,
             incident_id: incident.id,
@@ -147,6 +160,9 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
             priority_level: (logEntry?.details as any)?.priority_level || 2,
             created_at: incident.backup_requested_at || logEntry?.timestamp,
             read: true,
+            backup_status: backupStatus,
+            assigned_units: currentUnits,
+            units_added_after_request: unitsAddedAfterRequest,
             metadata: {
               requesting_unit: incident.backup_requesting_unit,
               requesting_unit_name: incident.backup_requesting_unit,
@@ -281,6 +297,19 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
     }
   };
 
+  const getBackupStatusBadge = (status?: string) => {
+    switch (status) {
+      case 'fulfilled':
+        return <Badge variant="secondary" className="text-green-600 bg-green-50"><ShieldCheck className="h-3 w-3 mr-1" />Fulfilled</Badge>;
+      case 'partially_fulfilled':
+        return <Badge variant="secondary" className="text-yellow-600 bg-yellow-50"><Shield className="h-3 w-3 mr-1" />Partial</Badge>;
+      case 'pending':
+        return <Badge variant="outline" className="text-orange-600 bg-orange-50"><ShieldX className="h-3 w-3 mr-1" />Pending</Badge>;
+      default:
+        return null;
+    }
+  };
+
   const RequestListItem = ({ request, onClick }: { request: BackupRequest; onClick: () => void }) => (
     <div
       className={`p-4 border rounded-lg cursor-pointer transition-all hover:bg-muted/50 ${
@@ -304,10 +333,16 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
                   NEW
                 </Badge>
               )}
+              {request.backup_status && getBackupStatusBadge(request.backup_status)}
             </div>
             <p className="text-xs text-muted-foreground truncate">
               {request.metadata?.location || 'Location unavailable'}
             </p>
+            {request.units_added_after_request && request.units_added_after_request.length > 0 && (
+              <p className="text-xs text-green-600 mt-1">
+                +{request.units_added_after_request.length} units added
+              </p>
+            )}
           </div>
         </div>
         
@@ -521,6 +556,37 @@ export function BackupRequestsPanel({ className }: BackupRequestsPanelProps) {
                   {selectedRequest.metadata?.reason || 'No reason provided'}
                 </p>
               </div>
+
+              {selectedRequest.backup_status && (
+                <div>
+                  <label className="text-sm font-medium">Backup Status</label>
+                  <div className="mt-2 space-y-2">
+                    <div className="flex items-center gap-2">
+                      {getBackupStatusBadge(selectedRequest.backup_status)}
+                    </div>
+                    
+                    {selectedRequest.assigned_units && selectedRequest.assigned_units.length > 0 && (
+                      <div className="text-sm text-muted-foreground">
+                        <span className="font-medium">Currently Assigned Units: </span>
+                        {selectedRequest.assigned_units.join(', ')}
+                      </div>
+                    )}
+                    
+                    {selectedRequest.units_added_after_request && selectedRequest.units_added_after_request.length > 0 && (
+                      <div className="text-sm text-green-600">
+                        <span className="font-medium">Additional Units Added: </span>
+                        {selectedRequest.units_added_after_request.join(', ')}
+                      </div>
+                    )}
+                    
+                    {selectedRequest.backup_status === 'pending' && (
+                      <p className="text-sm text-orange-600">
+                        No additional units have been assigned yet.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
 
               <div className="flex justify-end pt-4">
                 <Button onClick={() => setSelectedRequest(null)} variant="outline">
