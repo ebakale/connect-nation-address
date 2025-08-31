@@ -49,10 +49,11 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
   const { toast } = useToast();
   const { t } = useLanguage();
 
-  // Get current location on component mount
+  // Get current location on component mount (but don't block if it fails)
   useEffect(() => {
     if (originType === 'current') {
-      getCurrentLocation();
+      // Don't immediately request location - wait for user to explicitly request directions
+      // This prevents the error from showing immediately on component load
     }
   }, [originType]);
 
@@ -217,25 +218,34 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
         url = `https://www.google.com/maps/dir/${originLat},${originLng}/${destLat},${destLng}`;
       }
     } else if (originType === 'current') {
-      // Directions from current location
-      const userAgent = navigator.userAgent || navigator.vendor;
-      
-      if (/iPad|iPhone|iPod/.test(userAgent)) {
-        // iOS - Apple Maps with current location
-        if (currentLocation && currentLocation.lat && currentLocation.lng) {
-          url = `maps://maps.apple.com/?saddr=${currentLocation.lat},${currentLocation.lng}&daddr=${destLat},${destLng}&dirflg=d`;
-        } else {
+      // If we don't have current location, try to get it first, otherwise use device location
+      if (!currentLocation) {
+        // Try to get location but don't block if it fails
+        getCurrentLocation();
+        
+        // Provide fallback options that work without precise location
+        const userAgent = navigator.userAgent || navigator.vendor;
+        
+        if (/iPad|iPhone|iPod/.test(userAgent)) {
+          // iOS - Apple Maps will use device location automatically
           url = `maps://maps.apple.com/?daddr=${destLat},${destLng}&dirflg=d`;
-        }
-      } else if (/android/i.test(userAgent)) {
-        // Android - Google Maps navigation
-        url = `google.navigation:q=${destLat},${destLng}&mode=d`;
-      } else {
-        // Desktop - Google Maps web
-        if (currentLocation && currentLocation.lat && currentLocation.lng) {
-          url = `https://www.google.com/maps/dir/${currentLocation.lat},${currentLocation.lng}/${destLat},${destLng}`;
+        } else if (/android/i.test(userAgent)) {
+          // Android - Google Maps navigation will use device location
+          url = `google.navigation:q=${destLat},${destLng}&mode=d`;
         } else {
+          // Desktop - Use "My Location" which lets Google Maps handle location
           url = `https://www.google.com/maps/dir/My+Location/${destLat},${destLng}`;
+        }
+      } else {
+        // We have current location, use it
+        const userAgent = navigator.userAgent || navigator.vendor;
+        
+        if (/iPad|iPhone|iPod/.test(userAgent)) {
+          url = `maps://maps.apple.com/?saddr=${currentLocation.lat},${currentLocation.lng}&daddr=${destLat},${destLng}&dirflg=d`;
+        } else if (/android/i.test(userAgent)) {
+          url = `google.navigation:q=${destLat},${destLng}&mode=d`;
+        } else {
+          url = `https://www.google.com/maps/dir/${currentLocation.lat},${currentLocation.lng}/${destLat},${destLng}`;
         }
       }
     }
@@ -356,6 +366,25 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
 
           {originType === 'current' && (
             <div className="space-y-2">
+              {!currentLocation && !isGettingLocation && !locationError && (
+                <div className="p-3 bg-muted rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Location not detected</span>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={getCurrentLocation}
+                    >
+                      <Target className="h-4 w-4 mr-1" />
+                      Get Location
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Your device's map app will use your current location automatically
+                  </p>
+                </div>
+              )}
+              
               {isGettingLocation && (
                 <div className="p-3 bg-muted rounded-lg flex items-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin text-primary" />
@@ -377,16 +406,20 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
               )}
               
               {locationError && (
-                <div className="p-3 bg-destructive/10 rounded-lg">
-                  <p className="text-sm text-destructive">{locationError}</p>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={getCurrentLocation}
-                    className="mt-2"
-                  >
-                    Try Again
-                  </Button>
+                <div className="p-3 bg-muted rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-2">{locationError}</p>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={getCurrentLocation}
+                    >
+                      Try Again
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Don't worry - navigation will still work using your device's location
+                  </p>
                 </div>
               )}
             </div>
