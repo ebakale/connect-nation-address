@@ -328,7 +328,6 @@ const UnifiedDashboard = () => {
               </Button>
         </div>
       </div>
-      <Footer />
     </div>
 
         {/* Admin Metrics */}
@@ -336,53 +335,27 @@ const UnifiedDashboard = () => {
           <div className="mb-8">
             <h2 className="text-xl font-semibold mb-4">{t('systemOverview')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{t('totalUsers')}</CardTitle>
-                      <Users className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{stats.totalUsers}</div>
-                      <p className="text-xs text-muted-foreground">{t('clickToManageUsers')}</p>
-                    </CardContent>
-                  </Card>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>{t('userManagement')}</DialogTitle>
-                    <DialogDescription>
-                      {t('viewManageUsers')}
-                    </DialogDescription>
-                  </DialogHeader>
-                  <AdminPanel />
-                </DialogContent>
-              </Dialog>
+              <Card className="hover:shadow-md transition-shadow">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{t('totalUsers')}</CardTitle>
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats.totalUsers}</div>
+                  <p className="text-xs text-muted-foreground">Users in system</p>
+                </CardContent>
+              </Card>
 
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{t('activeRoles')}</CardTitle>
-                      <Shield className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{stats.activeRoles}</div>
-                      <p className="text-xs text-muted-foreground">{t('clickToManageRoles')}</p>
-                    </CardContent>
-                  </Card>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>{t('roleManagement')}</DialogTitle>
-                    <DialogDescription>
-                      {t('viewManageRoles')}
-                    </DialogDescription>
-                  </DialogHeader>
-                  <AdminPanel />
-                </DialogContent>
-              </Dialog>
+              <Card className="hover:shadow-md transition-shadow">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{t('activeRoles')}</CardTitle>
+                  <Shield className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats.activeRoles}</div>
+                  <p className="text-xs text-muted-foreground">Assigned roles</p>
+                </CardContent>
+              </Card>
 
               <Dialog>
                 <DialogTrigger asChild>
@@ -952,6 +925,7 @@ const UnifiedDashboard = () => {
            </DialogContent>
          </Dialog>
         </div>
+        <Footer />
       </div>
     );
   };
