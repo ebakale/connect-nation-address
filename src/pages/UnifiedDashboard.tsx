@@ -311,23 +311,31 @@ const UnifiedDashboard = () => {
                 </div>
               )}
             </div>
-
-            <div className="flex gap-2">
+            
+            <div className="flex flex-wrap items-center gap-2">
               <OfflineIndicator />
               <Button 
                 variant="outline" 
+                size="sm"
                 onClick={() => setProfileOpen(true)}
+                aria-label={t('editProfile')}
                 className="flex items-center gap-2"
               >
                 <User className="h-4 w-4" />
                 <span className="hidden sm:inline">{t('editProfile')}</span>
                 <span className="sm:hidden">Profile</span>
               </Button>
-              <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={signOut} 
+                aria-label={t('logout')}
+                className="flex items-center gap-2"
+              >
                 <LogOut className="h-4 w-4" />
-                {t('logout')}
+                <span className="hidden sm:inline">{t('logout')}</span>
               </Button>
-        </div>
+            </div>
       </div>
     </div>
 
