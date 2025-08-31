@@ -837,14 +837,16 @@ const UnifiedDashboard = () => {
 
           {/* Analytics Dialog */}
           <Dialog open={showAnalytics} onOpenChange={setShowAnalytics}>
-            <DialogContent className="max-w-6xl max-h-[80vh] overflow-y-auto">
+            <DialogContent className="w-[95vw] max-w-6xl h-[85vh] max-h-[85vh] overflow-y-auto p-4 sm:p-6">
               <DialogHeader>
-                <DialogTitle>Reports & Analytics</DialogTitle>
-                <DialogDescription>
+                <DialogTitle className="text-lg sm:text-xl">Reports & Analytics</DialogTitle>
+                <DialogDescription className="text-sm break-words">
                   View comprehensive reports and analytics
                 </DialogDescription>
               </DialogHeader>
-              <AnalyticsReports />
+              <div className="overflow-y-auto flex-1 min-h-0">
+                <AnalyticsReports />
+              </div>
             </DialogContent>
           </Dialog>
 

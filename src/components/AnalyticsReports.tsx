@@ -331,14 +331,14 @@ export const AnalyticsReports = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold">{t('reportsAnalytics')}</h2>
-          <p className="text-muted-foreground">{t('addressRegistrationInsights')}</p>
+    <div className="space-y-4 sm:space-y-6 p-4 max-w-full overflow-hidden">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="min-w-0 flex-1">
+          <h2 className="text-xl sm:text-2xl font-bold break-words">{t('reportsAnalytics')}</h2>
+          <p className="text-sm text-muted-foreground break-words">{t('addressRegistrationInsights')}</p>
         </div>
         
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Select 
             value={selectedPeriod} 
             onValueChange={(value) => {
@@ -349,7 +349,7 @@ export const AnalyticsReports = () => {
               });
             }}
           >
-            <SelectTrigger className="w-[140px] bg-background">
+            <SelectTrigger className="w-full sm:w-[140px] bg-background">
               <SelectValue placeholder={t('selectPeriod')} />
             </SelectTrigger>
             <SelectContent className="bg-background border shadow-lg z-50">
@@ -364,22 +364,24 @@ export const AnalyticsReports = () => {
             variant="outline" 
             onClick={() => exportReport("Analytics Summary")}
             disabled={loading}
+            className="w-full sm:w-auto text-xs sm:text-sm"
           >
-            <Download className="h-4 w-4 mr-2" />
-            {loading ? t('loading') : t('exportCSV')}
+            <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+            <span className="hidden sm:inline">{loading ? t('loading') : t('exportCSV')}</span>
+            <span className="sm:hidden">Export</span>
           </Button>
         </div>
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('totalAddresses')}</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">{t('totalAddresses')}</CardTitle>
             <MapPin className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{addressStats.total.toLocaleString()}</div>
+            <div className="text-xl sm:text-2xl font-bold">{addressStats.total.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
               <TrendingUp className="h-3 w-3 inline mr-1" />
               +12% from last month
@@ -389,11 +391,11 @@ export const AnalyticsReports = () => {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('verified')}</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">{t('verified')}</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{addressStats.verified.toLocaleString()}</div>
+            <div className="text-xl sm:text-2xl font-bold text-green-600">{addressStats.verified.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
               {Math.round((addressStats.verified / addressStats.total) * 100)}% {t('verificationRate')}
             </p>
@@ -402,37 +404,37 @@ export const AnalyticsReports = () => {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('pending')}</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">{t('pending')}</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{addressStats.pending.toLocaleString()}</div>
+            <div className="text-xl sm:text-2xl font-bold text-orange-600">{addressStats.pending.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
               {t('awaitingVerification')}
             </p>
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="sm:col-span-2 lg:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('publicAddresses')}</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">{t('publicAddresses')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{addressStats.public.toLocaleString()}</div>
+            <div className="text-xl sm:text-2xl font-bold text-blue-600">{addressStats.public.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
               {t('publiclyAccessible')}
             </p>
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="sm:col-span-2 lg:col-span-1 xl:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('private')}</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">{t('private')}</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-600">{addressStats.private.toLocaleString()}</div>
+            <div className="text-xl sm:text-2xl font-bold text-gray-600">{addressStats.private.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
               {t('restrictedAccess')}
             </p>
@@ -441,31 +443,33 @@ export const AnalyticsReports = () => {
       </div>
 
       <Tabs defaultValue="regional" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="regional">{t('regionalAnalysis')}</TabsTrigger>
-          <TabsTrigger value="types">{t('addressTypes')}</TabsTrigger>
-          <TabsTrigger value="trends">{t('trends')}</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto">
+          <TabsTrigger value="regional" className="text-xs sm:text-sm p-2 sm:p-3">{t('regionalAnalysis')}</TabsTrigger>
+          <TabsTrigger value="types" className="text-xs sm:text-sm p-2 sm:p-3">{t('addressTypes')}</TabsTrigger>
+          <TabsTrigger value="trends" className="text-xs sm:text-sm p-2 sm:p-3">{t('trends')}</TabsTrigger>
         </TabsList>
         
         <TabsContent value="regional" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>{t('addressesByRegion')}</CardTitle>
-                <CardDescription>{t('totalAndVerifiedPerRegion')}</CardDescription>
+                <CardTitle className="text-base sm:text-lg">{t('addressesByRegion')}</CardTitle>
+                <CardDescription className="text-sm">{t('totalAndVerifiedPerRegion')}</CardDescription>
               </CardHeader>
               <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={regionData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="region" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="addresses" fill="hsl(var(--primary))" name="Total" />
-                  <Bar dataKey="verified" fill="hsl(var(--success))" name="Verified" />
-                </BarChart>
-              </ResponsiveContainer>
+              <div className="w-full overflow-x-auto">
+                <ResponsiveContainer width="100%" height={300} minWidth={300}>
+                  <BarChart data={regionData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="region" fontSize={12} />
+                    <YAxis fontSize={12} />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="addresses" fill="hsl(var(--primary))" name="Total" />
+                    <Bar dataKey="verified" fill="hsl(var(--success))" name="Verified" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
               </CardContent>
             </Card>
             
