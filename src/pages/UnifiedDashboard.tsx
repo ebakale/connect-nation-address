@@ -381,53 +381,51 @@ const UnifiedDashboard = () => {
                 </DialogContent>
               </Dialog>
 
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{t('publicAddresses')}</CardTitle>
-                      <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{stats.publicAddresses}</div>
-                      <p className="text-xs text-muted-foreground">{t('clickToViewAddresses')} ({stats.totalAddresses} {t('total')})</p>
-                    </CardContent>
-                  </Card>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>{t('addressAnalytics')}</DialogTitle>
-                    <DialogDescription>
-                      {t('viewDetailedStats')}
-                    </DialogDescription>
-                  </DialogHeader>
-                  <AnalyticsReports />
-                </DialogContent>
-              </Dialog>
+              <Card className="hover:shadow-md transition-shadow">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{t('publicAddresses')}</CardTitle>
+                  <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats.publicAddresses}</div>
+                  <p className="text-xs text-muted-foreground">{stats.totalAddresses} total</p>
+                </CardContent>
+              </Card>
             </div>
 
-            {/* System Documentation Card */}
-            <Card className="shadow-card">
+            {/* System Documentation Panel */}
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5" />
-                  System Documentation
+                  System Documentation & Manual
                 </CardTitle>
                 <CardDescription>
-                  Generate comprehensive documentation for system roles and permissions
+                  Generate comprehensive documentation and user manuals for the platform
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    This document provides detailed explanations of all user roles in the National Digital Addressing Authority system, 
+                    This section provides detailed explanations of all user roles in the National Digital Addressing Authority system, 
                     including their permissions, geographic scope, workflow stages, and specific responsibilities.
                   </p>
-                  <RolesDocumentGenerator />
-                  <SystemManualPDF />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <h4 className="font-medium mb-2">System Roles Documentation</h4>
+                      <RolesDocumentGenerator />
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">User Manual</h4>
+                      <SystemManualPDF />
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
+
+            {/* Admin Panel */}
+            <AdminPanel />
           </div>
         )}
 
