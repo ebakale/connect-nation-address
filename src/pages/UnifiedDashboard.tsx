@@ -461,472 +461,148 @@ const UnifiedDashboard = () => {
                       Search Database
                     </Button>
                   </DialogTrigger>
-                <DialogContent className="max-w-2xl">
-                  <DialogHeader>
-                    <DialogTitle>Search Verified Addresses</DialogTitle>
-                    <DialogDescription>
-                      Search for verified addresses in the national database
-                    </DialogDescription>
-                  </DialogHeader>
-                  <AddressSearch 
-                    onSelectAddress={(address) => {
-                      setSelectedAddress(address);
-                      setSearchOpen(false);
-                      setShowMapView(true);
-                    }}
-                  />
-                </DialogContent>
-              </Dialog>
-            </CardContent>
-          </Card>
-        </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-primary" />
-                Submit Request
-              </CardTitle>
-              <CardDescription>
-                Submit a new address registration request
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full" onClick={() => setSubmitRequestOpen(true)}>
-                <FileText className="mr-2 h-4 w-4" />
-                New Request
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="h-5 w-5 text-primary" />
-                Address Status
-              </CardTitle>
-              <CardDescription>
-                Track the status of your submitted requests
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full" onClick={() => setStatusOpen(true)}>
-                <Clock className="mr-2 h-4 w-4" />
-                Check Status
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Field Agent Functions */}
-          {canCreateDraftAddress && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Camera className="h-5 w-5 text-primary" />
-                  Capture New Address
-                </CardTitle>
-                <CardDescription>
-                  Create a new draft address with photo evidence
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Dialog open={captureOpen} onOpenChange={setCaptureOpen}>
-                  <DialogTrigger asChild>
-                    <Button className="w-full">
-                      Start Capture
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                  <DialogContent className="max-w-2xl">
                     <DialogHeader>
-                      <DialogTitle>Capture New Address</DialogTitle>
+                      <DialogTitle>Search Verified Addresses</DialogTitle>
                       <DialogDescription>
-                        Fill in the address details and capture GPS coordinates for verification
+                        Search for verified addresses in the national database
                       </DialogDescription>
                     </DialogHeader>
-                    <AddressCaptureForm 
-                      onSave={() => setCaptureOpen(false)}
-                      onCancel={() => setCaptureOpen(false)}
+                    <AddressSearch 
+                      onSelectAddress={(address) => {
+                        setSelectedAddress(address);
+                        setSearchOpen(false);
+                        setShowMapView(true);
+                      }}
                     />
                   </DialogContent>
                 </Dialog>
               </CardContent>
             </Card>
-          )}
+          </div>
 
-          {isFieldAgent && (
-            <>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <FileText className="h-5 w-5 text-primary" />
-                    My Drafts
-                  </CardTitle>
-                  <CardDescription>
-                    Review and submit pending address drafts
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Dialog open={draftsOpen} onOpenChange={setDraftsOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="w-full" variant="outline">
-                        View Drafts
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Draft Management</DialogTitle>
-                        <DialogDescription>
-                          Review, edit, and submit your draft addresses
-                        </DialogDescription>
-                      </DialogHeader>
-                      <DraftManager onClose={() => setDraftsOpen(false)} />
-                    </DialogContent>
-                  </Dialog>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Map className="h-5 w-5 text-primary" />
-                    Field Map
-                  </CardTitle>
-                  <CardDescription>
-                    View assigned areas and capture progress
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Dialog open={mapOpen} onOpenChange={setMapOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="w-full" variant="outline">
-                        Open Map
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Field Map</DialogTitle>
-                        <DialogDescription>
-                          View addresses and capture progress in your assigned area
-                        </DialogDescription>
-                      </DialogHeader>
-                      <FieldMap onClose={() => setMapOpen(false)} />
-                    </DialogContent>
-                  </Dialog>
-                </CardContent>
-              </Card>
-            </>
-          )}
-
-          {/* Verifier Functions */}
-          {canVerifyAddresses && (
-            <>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-amber-500" />
-                    Review Queue
-                  </CardTitle>
-                  <CardDescription>
-                    Process pending address submissions
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Dialog open={verificationQueueOpen} onOpenChange={setVerificationQueueOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="w-full">
-                        Start Review
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Address Verification Queue</DialogTitle>
-                        <DialogDescription>
-                          Review and verify pending address submissions
-                        </DialogDescription>
-                      </DialogHeader>
-                      <AddressVerificationQueue />
-                    </DialogContent>
-                  </Dialog>
-                </CardContent>
-               </Card>
-
-               <Card>
-                 <CardHeader>
-                   <CardTitle className="flex items-center gap-2">
-                     <FileText className="h-5 w-5 text-blue-500" />
-                     Address Requests
-                   </CardTitle>
-                   <CardDescription>
-                     Approve or reject citizen address requests
-                   </CardDescription>
-                 </CardHeader>
-                 <CardContent>
-                   <Button className="w-full" onClick={() => setShowPendingRequests(true)}>
-                     Review Requests
-                   </Button>
-                 </CardContent>
-               </Card>
-
-               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    Verification Tools
-                  </CardTitle>
-                  <CardDescription>
-                    Access verification and quality control tools
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button className="w-full" variant="outline" onClick={() => setShowVerificationTools(true)}>
-                    Open Tools
-                  </Button>
-                </CardContent>
-              </Card>
-            </>
-          )}
-
-          {/* Registrar Functions */}
-          {canPublishAddresses && (
-            <>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Globe className="h-5 w-5 text-blue-500" />
-                    Publishing Queue
-                  </CardTitle>
-                  <CardDescription>
-                    Review and publish verified addresses
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Dialog open={publishingQueueOpen} onOpenChange={setPublishingQueueOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="w-full">
-                        Publish Addresses
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Address Publishing Queue</DialogTitle>
-                        <DialogDescription>
-                          Publish verified addresses to the national registry
-                        </DialogDescription>
-                      </DialogHeader>
-                      <AddressPublishingQueue />
-                    </DialogContent>
-                  </Dialog>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Globe className="h-5 w-5 text-orange-500" />
-                    Published Addresses
-                  </CardTitle>
-                  <CardDescription>
-                    Manage addresses in public registry
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Dialog open={unpublishingQueueOpen} onOpenChange={setUnpublishingQueueOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="w-full" variant="outline">
-                        Manage Published
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Published Addresses</DialogTitle>
-                        <DialogDescription>
-                          Remove addresses from the public registry
-                        </DialogDescription>
-                      </DialogHeader>
-                      <AddressUnpublishingQueue />
-                    </DialogContent>
-                  </Dialog>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Settings className="h-5 w-5 text-primary" />
-                    Province Management
-                  </CardTitle>
-                  <CardDescription>
-                    Manage provincial boundaries and hierarchy
-                  </CardDescription>
-                </CardHeader>
-                 <CardContent>
-                   <Button className="w-full" variant="outline" onClick={() => setShowProvinceManagement(true)}>
-                     Manage Province
-                   </Button>
-                 </CardContent>
-              </Card>
-            </>
-          )}
-
-          {/* Reports - Available to most roles */}
-          {(isVerifier || isRegistrar || hasAdminAccess) && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5 text-primary" />
-                  Reports & Analytics
+          {/* Submit Request Card */}
+          <div className="group animate-scale-in delay-1200">
+            <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900 dark:to-teal-900 border-emerald-200/50 dark:border-emerald-700/50 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-500 hover:scale-105 hover:-translate-y-2 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/5 to-teal-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <CardHeader className="relative z-10">
+                <CardTitle className="flex items-center gap-3 text-lg">
+                  <div className="p-2 bg-emerald-500/10 dark:bg-emerald-400/20 rounded-xl group-hover:bg-emerald-500/20 transition-colors duration-300">
+                    <FileText className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <span className="bg-gradient-to-r from-slate-800 to-slate-600 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent font-semibold">
+                    Submit Request
+                  </span>
                 </CardTitle>
-                <CardDescription>
-                  View statistics and performance reports
+                <CardDescription className="text-slate-600 dark:text-slate-400">
+                  Submit a new address registration request with photo documentation
                 </CardDescription>
               </CardHeader>
-               <CardContent>
-                 <Button className="w-full" variant="outline" onClick={() => setShowAnalytics(true)}>
-                   View Reports
-                 </Button>
-               </CardContent>
+              <CardContent className="relative z-10">
+                <Button 
+                  className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" 
+                  onClick={() => setSubmitRequestOpen(true)}
+                >
+                  <FileText className="mr-2 h-4 w-4" />
+                  New Request
+                </Button>
+              </CardContent>
             </Card>
-          )}
+          </div>
+
+          {/* Address Status Card */}
+          <div className="group animate-scale-in delay-1300">
+            <Card className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900 dark:to-orange-900 border-amber-200/50 dark:border-amber-700/50 hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-500 hover:scale-105 hover:-translate-y-2 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-400/5 to-orange-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <CardHeader className="relative z-10">
+                <CardTitle className="flex items-center gap-3 text-lg">
+                  <div className="p-2 bg-amber-500/10 dark:bg-amber-400/20 rounded-xl group-hover:bg-amber-500/20 transition-colors duration-300">
+                    <Clock className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <span className="bg-gradient-to-r from-slate-800 to-slate-600 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent font-semibold">
+                    Address Status
+                  </span>
+                </CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400">
+                  Track the status of your submitted requests and view progress
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="relative z-10">
+                <Button 
+                  className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" 
+                  onClick={() => setStatusOpen(true)}
+                >
+                  <Clock className="mr-2 h-4 w-4" />
+                  Check Status
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Emergency Contacts */}
+          <div className="group animate-scale-in delay-1400">
+            <Card className="bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900 dark:to-rose-900 border-red-200/50 dark:border-red-700/50 hover:shadow-2xl hover:shadow-red-500/10 transition-all duration-500 hover:scale-105 hover:-translate-y-2 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-red-400/5 to-rose-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <CardHeader className="relative z-10">
+                <CardTitle className="flex items-center gap-3 text-lg">
+                  <div className="p-2 bg-red-500/10 dark:bg-red-400/20 rounded-xl group-hover:bg-red-500/20 transition-colors duration-300">
+                    <Phone className="h-5 w-5 text-red-600 dark:text-red-400" />
+                  </div>
+                  <span className="bg-gradient-to-r from-slate-800 to-slate-600 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent font-semibold">
+                    Emergency Contacts
+                  </span>
+                </CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400">
+                  Get immediate help when you need it most - Police and Emergency Services
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="relative z-10">
+                <EmergencyContacts />
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
-
-        {/* Emergency Contacts */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Phone className="h-5 w-5 text-destructive" />
-              {t('emergencyContacts')}
-            </CardTitle>
-            <CardDescription>
-              {t('contactEmergencyServices')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <EmergencyContacts />
-          </CardContent>
-        </Card>
-
-        {/* Important Information */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-amber-500" />
-                Important Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• All address searches show verified addresses only</li>
-                <li>• Personal information is protected and redacted</li>
-                <li>• Coordinates are approximated for privacy</li>
-                <li>• Submit requests for new address verification</li>
-                {hasAdminAccess && <li>• Admin functions require elevated permissions</li>}
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Submit Request Dialog */}
-        <Dialog open={submitRequestOpen} onOpenChange={setSubmitRequestOpen}>
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Submit Address Request</DialogTitle>
-            </DialogHeader>
-            <AddressRequestForm 
-              onCancel={() => setSubmitRequestOpen(false)}
-              onSuccess={() => setSubmitRequestOpen(false)}
-            />
-          </DialogContent>
-        </Dialog>
-
-        {/* Status Dialog */}
-        <Dialog open={statusOpen} onOpenChange={setStatusOpen}>
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Address Request Status</DialogTitle>
-            </DialogHeader>
-            <AddressRequestStatus />
-           </DialogContent>
-         </Dialog>
-
-         {/* Publishing Queue Dialog */}
-         <Dialog open={publishingQueueOpen} onOpenChange={setPublishingQueueOpen}>
-           <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-             <DialogHeader>
-               <DialogTitle>Address Publishing Queue</DialogTitle>
-               <DialogDescription>
-                 Review and publish verified addresses to make them publicly accessible
-               </DialogDescription>
-             </DialogHeader>
-             <AddressPublishingQueue />
-           </DialogContent>
-         </Dialog>
-
-         {/* Province Management Dialog */}
-         <Dialog open={showProvinceManagement} onOpenChange={setShowProvinceManagement}>
-           <DialogContent className="max-w-6xl max-h-[80vh] overflow-y-auto">
-             <DialogHeader>
-               <DialogTitle>Province Management</DialogTitle>
-               <DialogDescription>
-                 Manage administrative provinces and regions
-               </DialogDescription>
-             </DialogHeader>
-             <ProvinceManagement />
-           </DialogContent>
-         </Dialog>
-
-          {/* Analytics Dialog */}
-          <Dialog open={showAnalytics} onOpenChange={setShowAnalytics}>
-            <DialogContent className="max-w-6xl max-h-[80vh] overflow-y-auto">
+        {/* Dialogs */}
+        <div>
+          {/* Submit Request Dialog */}
+          <Dialog open={submitRequestOpen} onOpenChange={setSubmitRequestOpen}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Reports & Analytics</DialogTitle>
+                <DialogTitle>Submit Address Request</DialogTitle>
                 <DialogDescription>
-                  View comprehensive reports and analytics
+                  Submit a new address for verification and registration
                 </DialogDescription>
               </DialogHeader>
-              <AnalyticsReports />
+              <AddressRequestForm />
             </DialogContent>
           </Dialog>
 
-          {/* Verification Tools Dialog */}
-          <Dialog open={showVerificationTools} onOpenChange={setShowVerificationTools}>
-            <DialogContent className="max-w-6xl max-h-[80vh] overflow-y-auto">
+          {/* Status Dialog */}
+          <Dialog open={statusOpen} onOpenChange={setStatusOpen}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Verification Tools</DialogTitle>
+                <DialogTitle>Address Request Status</DialogTitle>
                 <DialogDescription>
-                  Advanced tools for address verification and quality control
+                  Check the status of your submitted address requests
                 </DialogDescription>
               </DialogHeader>
-              <VerificationTools />
+              <AddressRequestStatus />
             </DialogContent>
-           </Dialog>
+          </Dialog>
 
-           {/* Pending Requests Dialog */}
-           <Dialog open={showPendingRequests} onOpenChange={setShowPendingRequests}>
-             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-               <DialogHeader>
-                 <DialogTitle>Address Request Approval</DialogTitle>
-                 <DialogDescription>
-                   Review and approve pending address requests from citizens
-                 </DialogDescription>
-               </DialogHeader>
-               <AddressRequestApproval requests={[]} onUpdate={() => {}} />
-             </DialogContent>
-           </Dialog>
-
-         {/* Profile Editor Dialog */}
-         <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
-           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-             <DialogHeader>
-               <DialogTitle>Edit Profile</DialogTitle>
-               <DialogDescription>
-                 Update your personal information and account settings
-               </DialogDescription>
-             </DialogHeader>
-             <ProfileEditor />
-           </DialogContent>
-         </Dialog>
+          {/* Profile Editor Dialog */}
+          <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Edit Profile</DialogTitle>
+                <DialogDescription>
+                  Update your personal information and account settings
+                </DialogDescription>
+              </DialogHeader>
+              <ProfileEditor />
+            </DialogContent>
+          </Dialog>
         </div>
         
         {/* Enhanced Footer */}
