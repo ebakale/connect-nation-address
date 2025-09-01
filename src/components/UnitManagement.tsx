@@ -517,7 +517,7 @@ const UnitManagement: React.FC = () => {
             {paginatedUnits.map((unit) => (
           <Card key={unit.id}>
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <div className={`w-3 h-3 rounded-full ${getStatusColor(unit.status)}`} />
                   <div>
@@ -531,9 +531,9 @@ const UnitManagement: React.FC = () => {
                     </CardDescription>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                   <Select value={unit.status} onValueChange={(value) => updateUnitStatus(unit.id, value)}>
-                    <SelectTrigger className="w-32">
+                    <SelectTrigger className="w-full sm:w-32">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -544,23 +544,28 @@ const UnitManagement: React.FC = () => {
                       ))}
                     </SelectContent>
                   </Select>
-                  <Button variant="outline" size="sm" onClick={() => openAssignDialog(unit)}>
-                    <UserPlus className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => openEditDialog(unit)}>
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => {
-                      setSelectedUnit(unit);
-                      setShowDeleteDialog(true);
-                    }}
-                    className="text-destructive hover:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => openAssignDialog(unit)}>
+                      <UserPlus className="h-4 w-4" />
+                      <span className="ml-1 hidden sm:inline">Assign</span>
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => openEditDialog(unit)}>
+                      <Edit className="h-4 w-4" />
+                      <span className="ml-1 hidden sm:inline">Edit</span>
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => {
+                        setSelectedUnit(unit);
+                        setShowDeleteDialog(true);
+                      }}
+                      className="text-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span className="ml-1 hidden sm:inline">Delete</span>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </CardHeader>
