@@ -112,7 +112,18 @@ const UserManager: React.FC = () => {
       if (profilesError) throw profilesError;
 
       // Fetch user roles based on user's access level
-      const rolesToShow = hasPoliceAdminAccess ? policeRoles : addressingRoles;
+      let rolesToShow;
+      if (hasSystemAdminAccess || hasAdminAccess) {
+        // System admins can see all users
+        rolesToShow = [...policeRoles, ...addressingRoles];
+      } else if (hasPoliceAdminAccess) {
+        // Police admins only see police users
+        rolesToShow = policeRoles;
+      } else {
+        // Other roles only see addressing system users
+        rolesToShow = addressingRoles;
+      }
+
       const { data: userRoles, error: rolesError } = await supabase
         .from('user_roles')
         .select(`
