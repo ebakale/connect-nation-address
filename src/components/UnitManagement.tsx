@@ -515,17 +515,17 @@ const UnitManagement: React.FC = () => {
         ) : (
           <>
             {paginatedUnits.map((unit) => (
-          <Card key={unit.id}>
+          <Card key={unit.id} className="overflow-hidden">
             <CardHeader>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <div className={`w-3 h-3 rounded-full ${getStatusColor(unit.status)}`} />
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
+                  <div className="min-w-0">
+                    <CardTitle className="flex items-center gap-2 min-w-0">
                       <Radio className="h-5 w-5" />
-                      {unit.unit_name} ({unit.unit_code})
+                      <span className="truncate">{unit.unit_name} ({unit.unit_code})</span>
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="truncate">
                       {unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1)} Unit • 
                       {unit.coverage_city}, {unit.coverage_region}
                     </CardDescription>
@@ -571,21 +571,21 @@ const UnitManagement: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{unit.current_location || 'No location'}</span>
+                  <span className="text-sm truncate">{unit.current_location || 'No location'}</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <Radio className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{unit.radio_frequency || 'No frequency'}</span>
+                  <span className="text-sm truncate">{unit.radio_frequency || 'No frequency'}</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <Activity className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{unit.vehicle_id || 'No vehicle'}</span>
+                  <span className="text-sm truncate">{unit.vehicle_id || 'No vehicle'}</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <Users className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{unit.members?.length || 0} members</span>
+                  <span className="text-sm truncate">{unit.members?.length || 0} members</span>
                 </div>
               </div>
 
@@ -594,16 +594,16 @@ const UnitManagement: React.FC = () => {
                   <h4 className="font-medium mb-2">Unit Members</h4>
                   <div className="space-y-2">
                     {unit.members.map((member) => (
-                      <div key={member.id} className="flex items-center justify-between p-2 bg-muted rounded-lg">
-                        <div className="flex items-center gap-3">
+                      <div key={member.id} className="flex items-center justify-between p-2 bg-muted rounded-lg flex-wrap">
+                        <div className="flex items-center gap-3 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="font-medium">{member.profile?.full_name}</span>
+                            <span className="font-medium truncate">{member.profile?.full_name}</span>
                             <Badge variant={member.is_lead ? "default" : "secondary"}>
                               {member.role}
                               {member.is_lead && " (Lead)"}
                             </Badge>
                           </div>
-                          <span className="text-sm text-muted-foreground">{member.profile?.email}</span>
+                          <span className="text-sm text-muted-foreground truncate">{member.profile?.email}</span>
                         </div>
                         <Button
                           variant="ghost"
