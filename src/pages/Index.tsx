@@ -762,16 +762,18 @@ const navigationItems = [
 
       {/* Header */}
       <header className="border-b border-primary/20 sticky top-0 glass backdrop-blur-xl z-50 shadow-glow">
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <div className="p-2 rounded-xl bg-white shadow-lg">
-                <img src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" alt="BIAKAM Logo" className="h-8 w-auto" />
+                <img src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" alt="BIAKAM Logo" className="h-10 w-auto" />
               </div>
-              <span className="text-2xl font-bold text-gradient">{t('connectEGPlatform')}</span>
+              <div className="flex flex-col">
+                <span className="text-xl sm:text-2xl font-bold text-gradient">{t('connectEGPlatform')}</span>
+                <span className="text-xs sm:text-sm text-muted-foreground">BIAKAM Solutions</span>
+              </div>
             </div>
             <div className="flex items-center gap-3">
-              
               {user ? (
                 <Button 
                   onClick={() => navigate(isPoliceRole ? '/police' : '/portal')} 
@@ -798,7 +800,7 @@ const navigationItems = [
       {/* Navigation */}
       <nav className="border-b border-primary/20 glass relative z-50">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap gap-3 sm:flex-nowrap sm:gap-8 overflow-x-visible" >
+          <div className="flex flex-wrap justify-center gap-1 sm:gap-3 overflow-x-visible" >
             {navigationItems.map((item, index) => {
               const Icon = item.icon;
               return (
@@ -818,8 +820,9 @@ const navigationItems = [
                   }`}
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <Icon className={`h-4 w-4 ${activeSection === item.id ? 'glow-pulse' : ''}`} />
-                  {item.label}
+                  <Icon className={`h-3 w-3 sm:h-4 sm:w-4 ${activeSection === item.id ? 'glow-pulse' : ''}`} />
+                  <span className="hidden sm:inline">{item.label}</span>
+                  <span className="sm:hidden text-xs">{item.label.slice(0, 4)}</span>
                 </button>
               );
             })}
