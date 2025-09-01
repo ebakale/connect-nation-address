@@ -521,11 +521,11 @@ const UnitManagement: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <div className={`w-3 h-3 rounded-full ${getStatusColor(unit.status)}`} />
                   <div className="min-w-0">
-                    <CardTitle className="flex items-center gap-2 min-w-0">
+                    <CardTitle className="flex items-center gap-2 min-w-0 text-base sm:text-lg">
                       <Radio className="h-5 w-5" />
                       <span className="truncate">{unit.unit_name} ({unit.unit_code})</span>
                     </CardTitle>
-                    <CardDescription className="truncate">
+                    <CardDescription className="truncate text-xs sm:text-sm">
                       {unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1)} Unit • 
                       {unit.coverage_city}, {unit.coverage_region}
                     </CardDescription>
@@ -573,37 +573,37 @@ const UnitManagement: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 <div className="flex items-center gap-2 min-w-0">
                   <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm truncate">{unit.current_location || 'No location'}</span>
+                  <span className="text-xs sm:text-sm truncate">{unit.current_location || 'No location'}</span>
                 </div>
                 <div className="flex items-center gap-2 min-w-0">
                   <Radio className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm truncate">{unit.radio_frequency || 'No frequency'}</span>
+                  <span className="text-xs sm:text-sm truncate">{unit.radio_frequency || 'No frequency'}</span>
                 </div>
                 <div className="flex items-center gap-2 min-w-0">
                   <Activity className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm truncate">{unit.vehicle_id || 'No vehicle'}</span>
+                  <span className="text-xs sm:text-sm truncate">{unit.vehicle_id || 'No vehicle'}</span>
                 </div>
                 <div className="flex items-center gap-2 min-w-0">
                   <Users className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm truncate">{unit.members?.length || 0} members</span>
+                  <span className="text-xs sm:text-sm truncate">{unit.members?.length || 0} members</span>
                 </div>
               </div>
 
               {unit.members && unit.members.length > 0 && (
                 <div>
-                  <h4 className="font-medium mb-2">Unit Members</h4>
+                  <h4 className="font-medium mb-2 text-sm sm:text-base">Unit Members</h4>
                   <div className="space-y-2">
                     {unit.members.map((member) => (
                       <div key={member.id} className="flex items-center justify-between p-2 bg-muted rounded-lg flex-wrap">
                         <div className="flex items-center gap-3 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="font-medium truncate">{member.profile?.full_name}</span>
+                            <span className="font-medium truncate text-sm sm:text-base">{member.profile?.full_name}</span>
                             <Badge variant={member.is_lead ? "default" : "secondary"}>
                               {member.role}
                               {member.is_lead && " (Lead)"}
                             </Badge>
                           </div>
-                          <span className="text-sm text-muted-foreground truncate">{member.profile?.email}</span>
+                          <span className="text-xs sm:text-sm text-muted-foreground truncate">{member.profile?.email}</span>
                         </div>
                         <Button
                           variant="ghost"
