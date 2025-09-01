@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   Users, Shield, Settings, Database, Activity, 
-  UserCheck, UserPlus, Key, ChartBar, Clock,
+  UserCheck, Key, ChartBar, Clock,
   AlertTriangle, CheckCircle, FileText, Radio
 } from "lucide-react";
 import { toast } from "sonner";
@@ -116,23 +116,6 @@ export const PoliceAdminDashboard = () => {
     }
   };
 
-  const createPoliceUsers = async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke('seed-police-users');
-      
-      if (error) throw error;
-      
-      if (data?.success) {
-        toast.success(`Successfully created ${data.users?.length || 0} police users`);
-        fetchPoliceStats(); // Refresh stats
-      } else {
-        throw new Error(data?.error || 'Failed to create users');
-      }
-    } catch (error) {
-      console.error('Error creating police users:', error);
-      toast.error('Failed to create police users');
-    }
-  };
 
   if (!hasPoliceAdminAccess) {
     return (
@@ -162,18 +145,11 @@ export const PoliceAdminDashboard = () => {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold">Police Administration</h1>
-          <p className="text-muted-foreground text-sm sm:text-base">
-            Manage police system users, units, and configurations
-          </p>
-        </div>
-        <Button onClick={createPoliceUsers} className="flex items-center gap-2 text-sm sm:text-base px-3 py-2 w-fit self-start sm:self-auto">
-          <UserPlus className="h-4 w-4" />
-          <span className="hidden sm:inline">Create Police Users</span>
-          <span className="sm:hidden">Create Users</span>
-        </Button>
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold">Police Administration</h1>
+        <p className="text-muted-foreground text-sm sm:text-base">
+          Manage police system users, units, and configurations
+        </p>
       </div>
 
       {/* Statistics Overview */}
