@@ -113,9 +113,12 @@ const UserManager: React.FC = () => {
 
       // Fetch user roles based on user's access level
       let rolesToShow;
-      if (hasSystemAdminAccess || hasAdminAccess) {
-        // System admins can see all users
+      if (hasSystemAdminAccess) {
+        // System admins (admin role) can see all users
         rolesToShow = [...policeRoles, ...addressingRoles];
+      } else if (hasNDAAAccess) {
+        // NDAA admins only see addressing system users
+        rolesToShow = addressingRoles;
       } else if (hasPoliceAdminAccess) {
         // Police admins only see police users
         rolesToShow = policeRoles;
