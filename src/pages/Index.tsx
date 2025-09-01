@@ -42,7 +42,6 @@ const navigationItems = [
     { id: 'emergency', label: t('emergency'), icon: Shield },
     { id: 'help', label: t('help'), icon: HelpCircle },
     { id: 'manual', label: t('manual'), icon: Book },
-    { id: 'login', label: t('login'), icon: LogIn },
   ];
 
   const renderContent = () => {
@@ -766,12 +765,9 @@ const navigationItems = [
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="p-2 rounded-xl bg-white shadow-lg">
-                <img src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" alt="BIAKAM Logo" className="h-10 w-auto" />
+                <img src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" alt="BIAKAM Logo" className="h-10 object-contain" />
               </div>
-              <div className="flex flex-col">
-                <span className="text-xl sm:text-2xl font-bold text-gradient">{t('connectEGPlatform')}</span>
-                <span className="text-xs sm:text-sm text-muted-foreground">BIAKAM Solutions</span>
-              </div>
+              <span className="text-xl sm:text-2xl font-bold text-gradient">{t('connectEGPlatform')}</span>
             </div>
             <div className="flex items-center gap-3">
               {user ? (
@@ -779,16 +775,18 @@ const navigationItems = [
                   onClick={() => navigate(isPoliceRole ? '/police' : '/portal')} 
                   className="glass hover:shadow-neon transition-all duration-300"
                   variant="outline"
+                  size="sm"
                 >
-                  <LogIn className="h-4 w-4 mr-2" />
+                  <LogIn className="h-3 w-3 mr-1" />
                    {t('dashboard')}
                 </Button>
               ) : (
                 <Button 
                   onClick={() => navigate('/auth')} 
                   className="glass hover:shadow-neon glow-pulse transition-all duration-300"
+                  size="sm"
                 >
-                  <LogIn className="h-4 w-4 mr-2" />
+                  <LogIn className="h-3 w-3 mr-1" />
                   {t('enterSystem')}
                 </Button>
               )}
@@ -807,11 +805,7 @@ const navigationItems = [
                 <button
                   key={item.id}
                   onClick={() => {
-                    if (item.id === 'login') {
-                      user ? navigate(isPoliceRole ? '/police' : '/portal') : navigate('/auth');
-                    } else {
-                      setActiveSection(item.id);
-                    }
+                    setActiveSection(item.id);
                   }}
                   className={`flex items-center gap-1 sm:gap-2 py-3 px-2 sm:px-3 border-b-2 text-xs sm:text-sm transition-all duration-300 animate-fade-in cursor-pointer hover:bg-primary/5 ${
                     activeSection === item.id
