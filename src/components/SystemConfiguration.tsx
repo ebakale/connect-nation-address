@@ -233,7 +233,7 @@ const SystemConfiguration: React.FC = () => {
                     id="system_name"
                     value={systemName}
                     onChange={(e) => setSystemName(e.target.value)}
-                    className="text-sm sm:text-base"
+                    className="text-xs sm:text-sm leading-snug"
                   />
                 </div>
                 <div className="space-y-2">
