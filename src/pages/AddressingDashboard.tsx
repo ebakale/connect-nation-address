@@ -128,7 +128,7 @@ const AddressingDashboard = () => {
       
       try {
         // Filter users to only addressing system roles
-        const addressingRoles = ['admin', 'verifier', 'registrar', 'citizen', 'field_agent'] as const;
+        const addressingRoles = ['admin', 'verifier', 'registrar', 'citizen', 'field_agent', 'ndaa_admin'] as const;
         
         // Get addressing system users
         const { data: addressingUsers } = await supabase
