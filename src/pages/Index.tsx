@@ -800,7 +800,7 @@ const navigationItems = [
       {/* Navigation */}
       <nav className="border-b border-primary/20 glass relative z-50">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-1 sm:gap-3 overflow-x-visible" >
+          <div className="w-full flex flex-wrap items-center justify-center gap-2 sm:gap-4 overflow-x-hidden">
             {navigationItems.map((item, index) => {
               const Icon = item.icon;
               return (
@@ -813,7 +813,7 @@ const navigationItems = [
                       setActiveSection(item.id);
                     }
                   }}
-                  className={`flex items-center gap-2 py-6 px-4 border-b-2 transition-all duration-300 animate-fade-in cursor-pointer hover:bg-primary/5 ${
+                  className={`flex items-center gap-1 sm:gap-2 py-3 px-2 sm:px-3 border-b-2 text-xs sm:text-sm transition-all duration-300 animate-fade-in cursor-pointer hover:bg-primary/5 ${
                     activeSection === item.id
                       ? 'border-primary text-primary shadow-glow text-neon'
                       : 'border-transparent text-muted-foreground hover:text-cyan hover:border-cyan/50'
