@@ -207,13 +207,13 @@ const SystemConfiguration: React.FC = () => {
       </div>
 
       <Tabs defaultValue="general" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="general">General</TabsTrigger>
-          <TabsTrigger value="emergency">Emergency</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
-          <TabsTrigger value="location">Location</TabsTrigger>
-          <TabsTrigger value="api">API</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 h-auto p-1">
+          <TabsTrigger value="general" className="text-xs sm:text-sm px-2 py-1.5">General</TabsTrigger>
+          <TabsTrigger value="emergency" className="text-xs sm:text-sm px-2 py-1.5">Emergency</TabsTrigger>
+          <TabsTrigger value="notifications" className="text-xs sm:text-sm px-2 py-1.5">Notifications</TabsTrigger>
+          <TabsTrigger value="security" className="text-xs sm:text-sm px-2 py-1.5">Security</TabsTrigger>
+          <TabsTrigger value="location" className="text-xs sm:text-sm px-2 py-1.5">Location</TabsTrigger>
+          <TabsTrigger value="api" className="text-xs sm:text-sm px-2 py-1.5">API</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-4">
@@ -226,7 +226,7 @@ const SystemConfiguration: React.FC = () => {
               <CardDescription>Basic system configuration</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="system_name">System Name</Label>
                   <Input
@@ -303,7 +303,7 @@ const SystemConfiguration: React.FC = () => {
               <CardDescription>Configure emergency response parameters</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="response_time">Target Response Time (minutes)</Label>
                   <Input
@@ -360,7 +360,7 @@ const SystemConfiguration: React.FC = () => {
               <CardDescription>Configure notification channels and behavior</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-4">
                   <div className="flex items-center space-x-2">
                     <Switch
@@ -421,7 +421,7 @@ const SystemConfiguration: React.FC = () => {
               <CardDescription>Configure security policies and authentication</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="session_timeout">Session Timeout (minutes)</Label>
                   <Input
@@ -481,7 +481,7 @@ const SystemConfiguration: React.FC = () => {
               <CardDescription>Configure location services and mapping</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="location_accuracy">Required Location Accuracy (meters)</Label>
                   <Input
@@ -533,7 +533,7 @@ const SystemConfiguration: React.FC = () => {
               <CardDescription>Configure API settings and external integrations</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="rate_limit">API Rate Limit (requests/hour)</Label>
                   <Input

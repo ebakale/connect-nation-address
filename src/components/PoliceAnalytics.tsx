@@ -427,16 +427,16 @@ const PoliceAnalytics: React.FC = () => {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="incidents">Incidents</TabsTrigger>
-          <TabsTrigger value="units">Units</TabsTrigger>
-          <TabsTrigger value="geography">Geography</TabsTrigger>
-          <TabsTrigger value="performance">Performance</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1 h-auto p-1">
+          <TabsTrigger value="overview" className="text-xs sm:text-sm px-2 py-1.5">Overview</TabsTrigger>
+          <TabsTrigger value="incidents" className="text-xs sm:text-sm px-2 py-1.5">Incidents</TabsTrigger>
+          <TabsTrigger value="units" className="text-xs sm:text-sm px-2 py-1.5">Units</TabsTrigger>
+          <TabsTrigger value="geography" className="text-xs sm:text-sm px-2 py-1.5">Geography</TabsTrigger>
+          <TabsTrigger value="performance" className="text-xs sm:text-sm px-2 py-1.5">Performance</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle>Incident Timeline</CardTitle>
@@ -508,7 +508,7 @@ const PoliceAnalytics: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="incidents" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle>Incidents by Priority</CardTitle>
@@ -582,7 +582,7 @@ const PoliceAnalytics: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="geography" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle>Incidents by Region</CardTitle>
@@ -634,7 +634,7 @@ const PoliceAnalytics: React.FC = () => {
                 <CardDescription>Critical metrics for operational excellence</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="text-center p-4 border rounded-lg">
                     <div className="text-2xl font-bold text-green-600">
                       {analytics.incidents.total > 0 

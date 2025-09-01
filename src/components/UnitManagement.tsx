@@ -384,7 +384,7 @@ const UnitManagement: React.FC = () => {
               <DialogTitle>Create Police Unit</DialogTitle>
               <DialogDescription>Create a new police unit (patrol, rapid response, traffic, investigation)</DialogDescription>
             </DialogHeader>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="unit_name">Unit Name</Label>
                 <Input
@@ -565,7 +565,7 @@ const UnitManagement: React.FC = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm">{unit.current_location || 'No location'}</span>
@@ -664,7 +664,7 @@ const UnitManagement: React.FC = () => {
             <DialogTitle>Edit Police Unit</DialogTitle>
             <DialogDescription>Update police unit information and settings</DialogDescription>
           </DialogHeader>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="edit_unit_name">Unit Name</Label>
               <Input
