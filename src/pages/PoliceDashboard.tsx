@@ -982,39 +982,39 @@ const PoliceDashboard = () => {
               </div>
 
               {/* Simplified Stats for Supervisors */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                 <Card>
-                  <CardContent className="p-4">
+                  <CardContent className="p-3 sm:p-4">
                     <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-muted-foreground">My Area Incidents</p>
-                        <p className="text-2xl font-bold text-red-600">{areaIncidents.filter(i => !['resolved','closed'].includes(i.status)).length}</p>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm text-muted-foreground truncate">My Area Incidents</p>
+                        <p className="text-xl sm:text-2xl font-bold text-red-600 mt-1">{areaIncidents.filter(i => !['resolved','closed'].includes(i.status)).length}</p>
                       </div>
-                      <AlertTriangle className="h-5 w-5 text-red-600" />
+                      <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-red-600 flex-shrink-0 ml-2" />
                     </div>
                   </CardContent>
                 </Card>
 
                 <Card>
-                  <CardContent className="p-4">
+                  <CardContent className="p-3 sm:p-4">
                     <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-muted-foreground">{t('availableUnits')}</p>
-                        <p className="text-2xl font-bold text-green-600">{dashboardStats.availableUnits}</p>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm text-muted-foreground truncate">{t('availableUnits')}</p>
+                        <p className="text-xl sm:text-2xl font-bold text-green-600 mt-1">{dashboardStats.availableUnits}</p>
                       </div>
-                      <CheckCircle className="h-5 w-5 text-green-600" />
+                      <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 flex-shrink-0 ml-2" />
                     </div>
                   </CardContent>
                 </Card>
 
                 <Card>
-                  <CardContent className="p-4">
+                  <CardContent className="p-3 sm:p-4">
                     <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-muted-foreground">{t('avgResponseTime')}</p>
-                        <p className="text-2xl font-bold text-blue-600">{dashboardStats.avgResponseTime}m</p>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm text-muted-foreground truncate">{t('avgResponseTime')}</p>
+                        <p className="text-xl sm:text-2xl font-bold text-blue-600 mt-1">{dashboardStats.avgResponseTime}m</p>
                       </div>
-                      <Clock className="h-5 w-5 text-blue-600" />
+                      <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 flex-shrink-0 ml-2" />
                     </div>
                   </CardContent>
                 </Card>
