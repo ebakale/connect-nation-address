@@ -109,7 +109,7 @@ export const EnhancedSyncStatus = () => {
   const hasErrors = addressSyncErrors.length > 0 || incidentSyncErrors.length > 0;
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md min-w-0">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-2">
@@ -164,35 +164,36 @@ export const EnhancedSyncStatus = () => {
         )}
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="flex items-center gap-1">
-            <Database className="h-3 w-3" />
-            <span>{unsyncedCounts.addresses} addresses</span>
+        <div className="flex flex-wrap gap-2 text-xs">
+          <div className="flex items-center gap-1 flex-1 min-w-0">
+            <Database className="h-3 w-3 flex-shrink-0" />
+            <span className="truncate">{unsyncedCounts.addresses} addresses</span>
           </div>
-          <div className="flex items-center gap-1">
-            <Zap className="h-3 w-3" />
-            <span>{unsyncedCounts.incidents} incidents</span>
+          <div className="flex items-center gap-1 flex-1 min-w-0">
+            <Zap className="h-3 w-3 flex-shrink-0" />
+            <span className="truncate">{unsyncedCounts.incidents} incidents</span>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Button 
             onClick={handleFullSync}
             disabled={isOffline || addressSyncProgress.syncing || incidentSyncProgress.syncing}
             size="sm"
-            className="flex-1"
+            className="flex-1 min-w-0"
           >
-            <RefreshCw className="h-3 w-3 mr-1" />
-            Sync All
+            <RefreshCw className="h-3 w-3 mr-1 flex-shrink-0" />
+            <span className="truncate">Sync All</span>
           </Button>
           <Button 
             onClick={checkSpeed}
             disabled={isOffline}
             variant="outline"
             size="sm"
+            className="sm:w-auto w-full"
           >
-            Test Speed
+            <span className="truncate">Test Speed</span>
           </Button>
         </div>
 
