@@ -232,11 +232,23 @@ export const PoliceAdminDashboard = () => {
 
       {/* Admin Tabs */}
       <Tabs defaultValue="users" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="users">User Management</TabsTrigger>
-          <TabsTrigger value="units">Unit Management</TabsTrigger>
-          <TabsTrigger value="system">System Config</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-2 h-auto p-1">
+          <TabsTrigger value="users" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
+            <span className="hidden sm:inline">User Management</span>
+            <span className="sm:hidden">Users</span>
+          </TabsTrigger>
+          <TabsTrigger value="units" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
+            <span className="hidden sm:inline">Unit Management</span>
+            <span className="sm:hidden">Units</span>
+          </TabsTrigger>
+          <TabsTrigger value="system" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
+            <span className="hidden sm:inline">System Config</span>
+            <span className="sm:hidden">Config</span>
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
+            <span className="hidden sm:inline">Analytics</span>
+            <span className="sm:hidden">Stats</span>
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="users" className="space-y-4">
