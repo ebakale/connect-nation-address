@@ -54,7 +54,7 @@ export const PoliceAdminDashboard = () => {
       const { data: officers, error: officersError } = await supabase
         .from('user_roles')
         .select('user_id')
-        .in('role', ['police_operator', 'police_supervisor', 'police_dispatcher']);
+        .in('role', ['police_operator', 'police_supervisor', 'police_dispatcher', 'police_admin']);
       
       if (officersError) throw officersError;
 
