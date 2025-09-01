@@ -144,11 +144,14 @@ const UserManager: React.FC = () => {
       // Transform the data to group roles by user
       const usersMap = new Map<string, UserProfile>();
       
-      // Create user entries from profiles for users with relevant roles
+      // Determine if we should include all profiles (system admins should see everyone)
+      const includeAllProfiles = hasSystemAdminAccess;
+      
+      // Create user entries from profiles
       const relevantUserIds = new Set(userRoles?.map((ur: any) => ur.user_id) || []);
       
       profiles?.forEach((profile: any) => {
-        if (relevantUserIds.has(profile.user_id)) {
+        if (includeAllProfiles || relevantUserIds.has(profile.user_id)) {
           usersMap.set(profile.user_id, {
             id: profile.id,
             user_id: profile.user_id,
