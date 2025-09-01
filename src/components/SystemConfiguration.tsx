@@ -276,14 +276,14 @@ const SystemConfiguration: React.FC = () => {
                   />
                 </div>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 min-w-0">
                 <Label htmlFor="system_description">System Description</Label>
                 <Textarea
                   id="system_description"
                   value={systemDescription}
                   onChange={(e) => setSystemDescription(e.target.value)}
                   rows={3}
-                  className="text-sm sm:text-base"
+                  className="w-full text-sm sm:text-base break-all sm:break-words whitespace-pre-wrap"
                 />
               </div>
               <div className="flex justify-end">
