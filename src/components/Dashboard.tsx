@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useUserRole } from '@/hooks/useUserRole';
 
 interface DashboardStats {
   totalAddresses: number;
@@ -33,6 +34,7 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
   const { t } = useLanguage();
+  const { hasSystemAdminAccess, hasNDAAAccess } = useUserRole();
   const [stats, setStats] = useState<DashboardStats>({
     totalAddresses: 0,
     verifiedAddresses: 0,
@@ -58,9 +60,24 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       if (addressError) throw addressError;
 
       // Fetch user statistics (profiles count as active users)
-      const { count: usersCount, error: usersError } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true });
+      // Filter users based on access level
+      let usersQuery = supabase.from('profiles').select('user_id', { count: 'exact', head: true });
+      
+      if (hasNDAAAccess && !hasSystemAdminAccess) {
+        // NDAA admins only see addressing system users
+        const addressingRoles = ['admin', 'verifier', 'registrar', 'citizen', 'field_agent'] as const;
+        const { data: addressingUsers } = await supabase
+          .from('user_roles')
+          .select('user_id')
+          .in('role', addressingRoles);
+        
+        if (addressingUsers?.length) {
+          const userIds = addressingUsers.map(ur => ur.user_id);
+          usersQuery = usersQuery.in('user_id', userIds);
+        }
+      }
+      
+      const { count: usersCount, error: usersError } = await usersQuery;
 
       if (usersError) throw usersError;
 
