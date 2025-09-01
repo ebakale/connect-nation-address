@@ -283,7 +283,8 @@ const SystemConfiguration: React.FC = () => {
                   value={systemDescription}
                   onChange={(e) => setSystemDescription(e.target.value)}
                   rows={3}
-                  className="w-full text-sm sm:text-base break-all sm:break-words whitespace-pre-wrap"
+                  autoResize
+                  className="w-full text-xs sm:text-sm break-words whitespace-pre-wrap leading-snug"
                 />
               </div>
               <div className="flex justify-end">
