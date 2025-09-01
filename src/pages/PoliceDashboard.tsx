@@ -971,12 +971,12 @@ const PoliceDashboard = () => {
           {/* Unit Coordination Tab - Supervisors Only */}
           {isPoliceSupervisor && (
             <TabsContent value="coordination" className="space-y-6">
-              <div className="flex items-center gap-4 mb-4">
-                <Badge variant="outline" className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-4">
+                <Badge variant="outline" className="flex items-center gap-2 w-fit">
                   <Users className="h-3 w-3" />
                    {t('coordinationCenter')}
                 </Badge>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   Coordinate with other units and monitor area-specific incidents
                 </p>
               </div>
