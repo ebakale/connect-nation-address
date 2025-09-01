@@ -594,26 +594,27 @@ const UnitManagement: React.FC = () => {
                   <h4 className="font-medium mb-2 text-sm sm:text-base">Unit Members</h4>
                   <div className="space-y-2">
                     {unit.members.map((member) => (
-                      <div key={member.id} className="flex items-center justify-between p-2 bg-muted rounded-lg flex-wrap">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium truncate text-sm sm:text-base">{member.profile?.full_name}</span>
-                            <Badge variant={member.is_lead ? "default" : "secondary"}>
-                              {member.role}
-                              {member.is_lead && " (Lead)"}
-                            </Badge>
-                          </div>
-                          <span className="text-xs sm:text-sm text-muted-foreground truncate">{member.profile?.email}</span>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeOfficer(member.id)}
-                          className="text-destructive hover:text-destructive"
-                        >
-                          <UserMinus className="h-4 w-4" />
-                        </Button>
-                      </div>
+                       <div key={member.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-muted rounded-lg gap-2">
+                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                           <div className="flex flex-col sm:flex-row sm:items-center gap-2 min-w-0">
+                             <span className="font-medium text-sm sm:text-base break-words">{member.profile?.full_name}</span>
+                             <Badge variant={member.is_lead ? "default" : "secondary"} className="text-xs w-fit">
+                               {member.role}
+                               {member.is_lead && " (Lead)"}
+                             </Badge>
+                           </div>
+                           <span className="text-xs sm:text-sm text-muted-foreground break-all">{member.profile?.email}</span>
+                         </div>
+                         <Button
+                           variant="ghost"
+                           size="sm"
+                           onClick={() => removeOfficer(member.id)}
+                           className="text-destructive hover:text-destructive self-start sm:self-center"
+                         >
+                           <UserMinus className="h-4 w-4" />
+                           <span className="ml-1 text-xs sm:hidden">Remove</span>
+                         </Button>
+                       </div>
                     ))}
                   </div>
                 </div>
