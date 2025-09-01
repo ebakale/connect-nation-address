@@ -405,14 +405,16 @@ const SystemConfiguration: React.FC = () => {
                   />
                 </div>
               </div>
-              <div className="flex justify-between">
-                <Button variant="outline" onClick={testNotifications}>
+              <div className="flex flex-col sm:flex-row gap-2 sm:justify-between">
+                <Button variant="outline" onClick={testNotifications} className="text-sm px-3 py-2">
                   <RefreshCw className="h-4 w-4 mr-2" />
-                  Test Notifications
+                  <span className="hidden sm:inline">Test Notifications</span>
+                  <span className="sm:hidden">Test</span>
                 </Button>
-                <Button onClick={() => saveConfiguration('Notifications')} disabled={saving}>
+                <Button onClick={() => saveConfiguration('Notifications')} disabled={saving} className="text-sm px-3 py-2">
                   <Save className="h-4 w-4 mr-2" />
-                  Save Notification Settings
+                  <span className="hidden sm:inline">Save Notification Settings</span>
+                  <span className="sm:hidden">Save</span>
                 </Button>
               </div>
             </CardContent>
