@@ -162,16 +162,17 @@ export const PoliceAdminDashboard = () => {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Police Administration</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold">Police Administration</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">
             Manage police system users, units, and configurations
           </p>
         </div>
-        <Button onClick={createPoliceUsers} className="flex items-center gap-2">
+        <Button onClick={createPoliceUsers} className="flex items-center gap-2 text-sm sm:text-base px-3 py-2 w-fit self-start sm:self-auto">
           <UserPlus className="h-4 w-4" />
-          Create Police Users
+          <span className="hidden sm:inline">Create Police Users</span>
+          <span className="sm:hidden">Create Users</span>
         </Button>
       </div>
 
