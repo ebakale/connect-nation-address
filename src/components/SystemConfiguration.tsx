@@ -233,7 +233,7 @@ const SystemConfiguration: React.FC = () => {
                     id="system_name"
                     value={systemName}
                     onChange={(e) => setSystemName(e.target.value)}
-                    className="text-xs sm:text-sm leading-snug"
+                    className="text-sm leading-snug"
                   />
                 </div>
                 <div className="space-y-2">
@@ -272,7 +272,7 @@ const SystemConfiguration: React.FC = () => {
                     id="default_region"
                     value={defaultRegion}
                     onChange={(e) => setDefaultRegion(e.target.value)}
-                    className="text-sm sm:text-base"
+                    className="text-sm leading-snug"
                   />
                 </div>
               </div>
@@ -284,7 +284,7 @@ const SystemConfiguration: React.FC = () => {
                   onChange={(e) => setSystemDescription(e.target.value)}
                   rows={3}
                   autoResize
-                  className="w-full text-xs sm:text-sm break-words whitespace-pre-wrap leading-snug"
+                  className="w-full text-sm break-words whitespace-pre-wrap leading-snug"
                 />
               </div>
               <div className="flex justify-end">
@@ -315,7 +315,7 @@ const SystemConfiguration: React.FC = () => {
                     type="number"
                     value={emergencyResponseTime}
                     onChange={(e) => setEmergencyResponseTime(e.target.value)}
-                    className="text-sm sm:text-base"
+                    className="text-sm leading-snug"
                   />
                 </div>
                 <div className="space-y-2">
@@ -325,7 +325,7 @@ const SystemConfiguration: React.FC = () => {
                     type="number"
                     value={priorityLevels}
                     onChange={(e) => setPriorityLevels(e.target.value)}
-                    className="text-sm sm:text-base"
+                    className="text-sm leading-snug"
                   />
                 </div>
                 <div className="space-y-2">
@@ -335,7 +335,7 @@ const SystemConfiguration: React.FC = () => {
                     type="number"
                     value={backupRequestThreshold}
                     onChange={(e) => setBackupRequestThreshold(e.target.value)}
-                    className="text-sm sm:text-base"
+                    className="text-sm leading-snug"
                   />
                 </div>
                 <div className="flex items-center space-x-2">
@@ -401,7 +401,7 @@ const SystemConfiguration: React.FC = () => {
                     type="number"
                     value={notificationRetryCount}
                     onChange={(e) => setNotificationRetryCount(e.target.value)}
-                    className="text-sm sm:text-base"
+                    className="text-sm leading-snug"
                   />
                 </div>
               </div>
@@ -437,7 +437,7 @@ const SystemConfiguration: React.FC = () => {
                     type="number"
                     value={sessionTimeout}
                     onChange={(e) => setSessionTimeout(e.target.value)}
-                    className="text-sm sm:text-base"
+                    className="text-sm leading-snug"
                   />
                 </div>
                 <div className="space-y-2">
@@ -498,7 +498,7 @@ const SystemConfiguration: React.FC = () => {
                     type="number"
                     value={locationAccuracy}
                     onChange={(e) => setLocationAccuracy(e.target.value)}
-                    className="text-sm sm:text-base"
+                    className="text-sm leading-snug"
                   />
                 </div>
                 <div className="space-y-2">
@@ -551,7 +551,7 @@ const SystemConfiguration: React.FC = () => {
                     type="number"
                     value={apiRateLimit}
                     onChange={(e) => setApiRateLimit(e.target.value)}
-                    className="text-sm sm:text-base"
+                    className="text-sm leading-snug"
                   />
                 </div>
                 <div className="space-y-2">
@@ -561,7 +561,7 @@ const SystemConfiguration: React.FC = () => {
                     type="number"
                     value={webhookTimeout}
                     onChange={(e) => setWebhookTimeout(e.target.value)}
-                    className="text-sm sm:text-base"
+                    className="text-sm leading-snug"
                   />
                 </div>
                 <div className="flex items-center space-x-2">
