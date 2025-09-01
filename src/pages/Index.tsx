@@ -770,26 +770,6 @@ const navigationItems = [
               <span className="text-xl sm:text-2xl font-bold text-gradient">{t('connectEGPlatform')}</span>
             </div>
             <div className="flex items-center gap-3">
-              {user ? (
-                <Button 
-                  onClick={() => navigate(isPoliceRole ? '/police' : '/portal')} 
-                  className="glass hover:shadow-neon transition-all duration-300"
-                  variant="outline"
-                  size="sm"
-                >
-                  <LogIn className="h-3 w-3 mr-1" />
-                   {t('dashboard')}
-                </Button>
-              ) : (
-                <Button 
-                  onClick={() => navigate('/auth')} 
-                  className="glass hover:shadow-neon glow-pulse transition-all duration-300"
-                  size="sm"
-                >
-                  <LogIn className="h-3 w-3 mr-1" />
-                  {t('enterSystem')}
-                </Button>
-              )}
             </div>
           </div>
         </div>
