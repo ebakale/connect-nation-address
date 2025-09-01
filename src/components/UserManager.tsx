@@ -441,7 +441,7 @@ const UserManager: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
@@ -451,18 +451,21 @@ const UserManager: React.FC = () => {
                 className="pl-10"
               />
             </div>
-            <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-              <DialogTrigger asChild>
-                <Button className="flex items-center gap-2">
-                  <UserPlus className="h-4 w-4" />
-                  Create User
-                </Button>
-              </DialogTrigger>
-            </Dialog>
-            <Button onClick={fetchUsers} variant="outline" className="flex items-center gap-2">
-              <RefreshCw className="h-4 w-4" />
-              Refresh
-            </Button>
+            <div className="flex gap-2 sm:gap-4">
+              <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+                <DialogTrigger asChild>
+                  <Button className="flex items-center gap-2 flex-1 sm:flex-none">
+                    <UserPlus className="h-4 w-4" />
+                    <span className="hidden sm:inline">Create User</span>
+                    <span className="sm:hidden">Create</span>
+                  </Button>
+                </DialogTrigger>
+              </Dialog>
+              <Button onClick={fetchUsers} variant="outline" className="flex items-center gap-2 flex-1 sm:flex-none">
+                <RefreshCw className="h-4 w-4" />
+                <span className="hidden sm:inline">Refresh</span>
+              </Button>
+            </div>
           </div>
 
           {loading ? (
