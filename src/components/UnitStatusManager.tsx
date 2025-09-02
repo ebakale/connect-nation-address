@@ -315,7 +315,7 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unit, onUp
     <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-lg">
             <Radio className="h-5 w-5" />
             Unit Status - {unitStatus.unit_code}
           </CardTitle>
