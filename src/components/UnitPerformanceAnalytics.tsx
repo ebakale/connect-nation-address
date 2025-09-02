@@ -351,21 +351,19 @@ export const UnitPerformanceAnalytics: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Unit Performance Analytics</h1>
-          <p className="text-muted-foreground">Analyze unit performance and operational metrics</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <Button onClick={exportReport} variant="outline">
-            <Download className="h-4 w-4 mr-2" />
-            Export Report
-          </Button>
-          <Button onClick={() => window.location.reload()} variant="outline">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
-          </Button>
-        </div>
+      <div>
+        <h1 className="text-2xl font-bold">Unit Performance Analytics</h1>
+        <p className="text-muted-foreground">Analyze unit performance and operational metrics</p>
+      </div>
+      <div className="flex items-center gap-4">
+        <Button onClick={exportReport} variant="outline">
+          <Download className="h-4 w-4 mr-2" />
+          Export Report
+        </Button>
+        <Button onClick={() => window.location.reload()} variant="outline">
+          <RefreshCw className="h-4 w-4 mr-2" />
+          Refresh
+        </Button>
       </div>
 
       {/* Filters */}
