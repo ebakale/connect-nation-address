@@ -138,7 +138,7 @@ export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUp
                 .map((member) => (
               <Card key={member.id} className="border-l-4 border-l-primary/20">
                 <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div className="flex items-center gap-3">
                       {getRoleIcon(member.role, member.is_lead)}
                       <div>
