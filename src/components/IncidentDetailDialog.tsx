@@ -703,7 +703,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
             <CardTitle className="text-sm font-medium">Add Field Note</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Textarea
                 placeholder="Add field notes, observations, or updates..."
                 value={newNote}
@@ -719,7 +719,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
               <Button 
                 onClick={handleAddNote}
                 disabled={addingNote || !newNote.trim()}
-                className="self-end"
+                className="sm:self-end w-full sm:w-auto"
               >
                 <FileText className="h-4 w-4 mr-2" />
                 Add Note
