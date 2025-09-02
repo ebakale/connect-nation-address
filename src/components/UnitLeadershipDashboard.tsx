@@ -788,7 +788,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
             <TabsContent value="communications" className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Team Communications</CardTitle>
+                  <CardTitle className="text-lg">Team Communications</CardTitle>
                   <div className="flex items-center justify-between">
                     <Dialog open={showMessageDialog} onOpenChange={setShowMessageDialog}>
                       <DialogTrigger asChild>
