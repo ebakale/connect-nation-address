@@ -553,8 +553,8 @@ export const UnitLeadershipDashboard: React.FC = () => {
             <TabsContent value="members" className="space-y-4">
               <Card>
                 <CardHeader>
+                  <CardTitle>Unit Members</CardTitle>
                   <div className="flex items-center justify-between">
-                    <CardTitle>Unit Members</CardTitle>
                     <Dialog open={showAddMemberDialog} onOpenChange={setShowAddMemberDialog}>
                       <DialogTrigger asChild>
                         <Button>
