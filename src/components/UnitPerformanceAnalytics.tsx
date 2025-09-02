@@ -369,7 +369,7 @@ export const UnitPerformanceAnalytics: React.FC = () => {
       {/* Filters */}
       <Card>
         <CardContent className="p-6">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             <div>
               <label className="text-sm font-medium">Unit</label>
               <Select value={selectedUnit} onValueChange={setSelectedUnit}>
