@@ -643,7 +643,7 @@ const PoliceDashboard = () => {
           <div className="max-w-7xl mx-auto">
             {/* Return to Field Operations Button - Top of page */}
             {showUnitLeadDashboard && (
-              <div className="flex justify-center mb-4">
+              <div className="flex justify-start mb-4">
                 <Button 
                   variant="outline" 
                   onClick={() => setShowUnitLeadDashboard(false)}
