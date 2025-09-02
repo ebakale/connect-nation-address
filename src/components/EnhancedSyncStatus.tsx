@@ -132,56 +132,56 @@ export const EnhancedSyncStatus = () => {
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 p-3">
         {/* Sync Progress */}
         {(addressSyncProgress.syncing || incidentSyncProgress.syncing) && (
           <div className="space-y-2">
             {addressSyncProgress.syncing && (
-              <div>
-                <div className="flex justify-between text-xs mb-1">
-                  <span>Syncing Addresses</span>
-                  <span>{addressSyncProgress.current}/{addressSyncProgress.total}</span>
+              <div className="space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span className="truncate">Addresses</span>
+                  <span className="text-xs">{addressSyncProgress.current}/{addressSyncProgress.total}</span>
                 </div>
                 <Progress 
                   value={(addressSyncProgress.current / addressSyncProgress.total) * 100} 
-                  className="h-2"
+                  className="h-1.5"
                 />
               </div>
             )}
             {incidentSyncProgress.syncing && (
-              <div>
-                <div className="flex justify-between text-xs mb-1">
-                  <span>Syncing Incidents</span>
-                  <span>{incidentSyncProgress.current}/{incidentSyncProgress.total}</span>
+              <div className="space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span className="truncate">Incidents</span>
+                  <span className="text-xs">{incidentSyncProgress.current}/{incidentSyncProgress.total}</span>
                 </div>
                 <Progress 
                   value={(incidentSyncProgress.current / incidentSyncProgress.total) * 100} 
-                  className="h-2"
+                  className="h-1.5"
                 />
               </div>
             )}
           </div>
         )}
 
-        {/* Quick Stats */}
-        <div className="flex flex-wrap gap-2 text-xs">
-          <div className="flex items-center gap-1 flex-1 min-w-0">
+        {/* Quick Stats - Compact Layout */}
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          <div className="flex items-center gap-1 min-w-0">
             <Database className="h-3 w-3 flex-shrink-0" />
-            <span className="truncate">{unsyncedCounts.addresses} addresses</span>
+            <span className="truncate">{unsyncedCounts.addresses}</span>
           </div>
-          <div className="flex items-center gap-1 flex-1 min-w-0">
+          <div className="flex items-center gap-1 min-w-0">
             <Zap className="h-3 w-3 flex-shrink-0" />
-            <span className="truncate">{unsyncedCounts.incidents} incidents</span>
+            <span className="truncate">{unsyncedCounts.incidents}</span>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-2">
+        {/* Action Buttons - Stacked on small screens */}
+        <div className="grid grid-cols-1 gap-1.5">
           <Button 
             onClick={handleFullSync}
             disabled={isOffline || addressSyncProgress.syncing || incidentSyncProgress.syncing}
             size="sm"
-            className="flex-1 min-w-0"
+            className="text-xs h-7"
           >
             <RefreshCw className="h-3 w-3 mr-1 flex-shrink-0" />
             <span className="truncate">Sync All</span>
@@ -191,7 +191,7 @@ export const EnhancedSyncStatus = () => {
             disabled={isOffline}
             variant="outline"
             size="sm"
-            className="sm:w-auto w-full"
+            className="text-xs h-7"
           >
             <span className="truncate">Test Speed</span>
           </Button>
