@@ -56,6 +56,9 @@ interface IncidentListProps {
   onSelectIncident: (incident: EmergencyIncident | null) => void;
   selectedIncident: EmergencyIncident | null;
   onUpdate?: () => void;
+  showStatusFilter?: boolean;
+  showPriorityFilter?: boolean;
+  isResolvedIncidents?: boolean;
 }
 
 // Enhanced decryption function matching the edge function logic
@@ -89,7 +92,7 @@ const simpleDecrypt = (encrypted: string): string => {
   }
 };
 
-const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate }: IncidentListProps) => {
+const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate, showStatusFilter = true, showPriorityFilter = true, isResolvedIncidents = false }: IncidentListProps) => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -402,32 +405,39 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
         })()}
         
         <div className="flex flex-wrap gap-2 w-full sm:w-auto">
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full sm:w-40">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('allStatus')}</SelectItem>
-              <SelectItem value="reported">{t('reported')}</SelectItem>
-              <SelectItem value="dispatched">{t('dispatched')}</SelectItem>
-              <SelectItem value="responding">{t('responding')}</SelectItem>
-              <SelectItem value="on_scene">{t('onScene')}</SelectItem>
-              <SelectItem value="resolved">{t('resolved')}</SelectItem>
-            </SelectContent>
-          </Select>
+          {showStatusFilter && (
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-full sm:w-40">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('allStatus')}</SelectItem>
+                <SelectItem value="reported">{t('reported')}</SelectItem>
+                <SelectItem value="dispatched">{t('dispatched')}</SelectItem>
+                <SelectItem value="responding">{t('responding')}</SelectItem>
+                <SelectItem value="on_scene">{t('onScene')}</SelectItem>
+                {/* Only show resolved option if not dealing with resolved incidents list */}
+                {!isResolvedIncidents && (
+                  <SelectItem value="resolved">{t('resolved')}</SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+          )}
 
-          <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-            <SelectTrigger className="w-full sm:w-40">
-              <SelectValue placeholder="Priority" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('allPriority')}</SelectItem>
-              <SelectItem value="1">{t('critical')}</SelectItem>
-              <SelectItem value="2">{t('high')}</SelectItem>
-              <SelectItem value="3">{t('medium')}</SelectItem>
-              <SelectItem value="4">{t('low')}</SelectItem>
-            </SelectContent>
-          </Select>
+          {showPriorityFilter && (
+            <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+              <SelectTrigger className="w-full sm:w-40">
+                <SelectValue placeholder="Priority" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('allPriority')}</SelectItem>
+                <SelectItem value="1">{t('critical')}</SelectItem>
+                <SelectItem value="2">{t('high')}</SelectItem>
+                <SelectItem value="3">{t('medium')}</SelectItem>
+                <SelectItem value="4">{t('low')}</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
         </div>
       </div>
 

@@ -912,6 +912,9 @@ const PoliceDashboard = () => {
                             }}
                             selectedIncident={selectedIncident}
                             onSelectIncident={(incident) => setSelectedIncident(incident)}
+                            showStatusFilter={true}
+                            showPriorityFilter={true}
+                            isResolvedIncidents={false}
                           />
                         </TabsContent>
                         
@@ -924,6 +927,9 @@ const PoliceDashboard = () => {
                             }}
                             selectedIncident={selectedIncident}
                             onSelectIncident={(incident) => setSelectedIncident(incident)}
+                            showStatusFilter={false}
+                            showPriorityFilter={true}
+                            isResolvedIncidents={true}
                           />
                         </TabsContent>
                       </Tabs>
