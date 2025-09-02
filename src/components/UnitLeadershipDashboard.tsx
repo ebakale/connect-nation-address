@@ -554,7 +554,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle>Unit Members</CardTitle>
+                    <CardTitle className="text-lg">Unit Members</CardTitle>
                     <Dialog open={showAddMemberDialog} onOpenChange={setShowAddMemberDialog}>
                       <DialogTrigger asChild>
                         <Button>
