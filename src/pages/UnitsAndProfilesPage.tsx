@@ -58,14 +58,14 @@ export const UnitsAndProfilesPage: React.FC = () => {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="units" className="flex items-center gap-2">
+        <TabsList className="flex w-full">
+          <TabsTrigger value="units" className="flex items-center gap-2 flex-1">
             <Shield className="h-4 w-4" />
             Unit Management
           </TabsTrigger>
-          <TabsTrigger value="officers" className="flex items-center gap-2 text-sm">
+          <TabsTrigger value="officers" className="flex items-center gap-2 flex-1">
             <Users className="h-4 w-4 flex-shrink-0" />
-            <span className="truncate">Officer Profiles & Performance</span>
+            <span className="whitespace-nowrap">Officer Profiles & Performance</span>
           </TabsTrigger>
         </TabsList>
 
