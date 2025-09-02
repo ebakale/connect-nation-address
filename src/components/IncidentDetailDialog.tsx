@@ -573,16 +573,21 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
       toast.error('Failed to assign incident');
     }
   };
-
-  const canEdit = isPoliceSupervisor || isPoliceDispatcher;
-  const canComplete = isPoliceOperator || isPoliceSupervisor;
-  const canAssignUnits = isPoliceDispatcher; // Only dispatchers can assign/reassign units
-  const canAddNotes = isPoliceSupervisor || isPoliceDispatcher || isPoliceOperator;
-  const canRequestBackup = isPoliceOperator;
-  const canUpdateStatus = isPoliceSupervisor || isPoliceDispatcher || isPoliceOperator; // Unit members can update status of their assigned incidents
+  // Permission checks - restrict modifications for resolved incidents
+  const isResolved = incident.status === 'resolved' || incident.status === 'closed';
+  const canEdit = (isPoliceSupervisor || isPoliceDispatcher) && !isResolved;
+  const canComplete = (isPoliceOperator || isPoliceSupervisor) && !isResolved;
+  const canAssignUnits = isPoliceDispatcher && !isResolved; // Only dispatchers can assign/reassign units to active incidents
+  const canAddNotes = isPoliceSupervisor || isPoliceDispatcher || isPoliceOperator; // Notes allowed on all incidents
+  const canRequestBackup = isPoliceOperator && !isResolved;
+  const canUpdateStatus = (isPoliceSupervisor || isPoliceDispatcher || isPoliceOperator) && !isResolved; // Unit members can update status of their assigned incidents
+  const canReopenIncident = isPoliceSupervisor && isResolved; // Only supervisors can reopen resolved incidents
 
   // Debug logging
-  console.log('Permission Debug:', {
+  console.log('🔒 Incident permissions:', {
+    incidentId: incident.id,
+    status: incident.status,
+    isResolved,
     isPoliceSupervisor,
     isPoliceDispatcher,
     isPoliceOperator,
@@ -591,8 +596,32 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
     canAddNotes,
     canRequestBackup,
     canUpdateStatus,
+    canReopenIncident,
     userId: user?.id
   });
+
+  // Reopen incident function (supervisor only)
+  const handleReopenIncident = async () => {
+    try {
+      await supabase.functions.invoke('police-incident-actions', {
+        body: {
+          action: 'updateStatus',
+          incidentId: incident.id,
+          data: {
+            newStatus: 'reported',
+            message: 'Incident reopened by supervisor for further investigation',
+            updatedBy: user?.email || 'supervisor'
+          }
+        }
+      });
+
+      toast.success('Incident reopened successfully');
+      onUpdate?.();
+    } catch (error) {
+      console.error('Error reopening incident:', error);
+      toast.error('Failed to reopen incident');
+    }
+  };
 
   const handleAddNote = async () => {
     if (!newNote.trim()) {
@@ -686,7 +715,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
               </RequestBackupDialog>
             )}
             
-            {canUpdateStatus && !isResolvedView && incident.status !== 'resolved' && incident.status !== 'closed' && (
+            {canUpdateStatus && (
               <IncidentStatusUpdateDialog incident={incident} onUpdate={onUpdate} hideResolvedOption={hideResolvedOption}>
                 <Button variant="outline" size="sm" className="text-xs">
                   <Edit className="h-3 w-3 mr-1" />
@@ -694,15 +723,25 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                 </Button>
               </IncidentStatusUpdateDialog>
             )}
+
+            {canReopenIncident && (
+              <Button variant="outline" size="sm" className="text-xs" onClick={handleReopenIncident}>
+                <AlertTriangle className="h-3 w-3 mr-1" />
+                Reopen
+              </Button>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Add Note Section */}
+      {/* Add Note Section - Available for all incidents including resolved */}
       {canAddNotes && (
         <Card className="border-accent/20 bg-accent/5">
           <CardHeader className="pb-4">
-            <CardTitle className="text-sm font-medium">Add Field Note</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Add Field Note
+              {isResolved && <span className="text-xs text-muted-foreground ml-2">(Documentation only)</span>}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col sm:flex-row gap-3">

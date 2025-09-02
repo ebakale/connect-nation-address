@@ -48,6 +48,16 @@ export const IncidentStatusUpdateDialog: React.FC<IncidentStatusUpdateDialogProp
   const { user } = useAuth();
 
   const handleStatusUpdate = async () => {
+    // Prevent status changes on resolved incidents
+    if (incident.status === 'resolved' || incident.status === 'closed') {
+      toast({
+        title: 'Cannot Update Status',
+        description: 'This incident is resolved and cannot be modified. Contact a supervisor to reopen if needed.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     if (!selectedStatus || selectedStatus === incident.status) {
       toast({
         title: 'No Change',
@@ -157,7 +167,7 @@ export const IncidentStatusUpdateDialog: React.FC<IncidentStatusUpdateDialogProp
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Flag className="h-5 w-5" />
-            Update Incident Status
+            {incident.status === 'resolved' || incident.status === 'closed' ? 'Incident Status (Resolved)' : 'Update Incident Status'}
           </DialogTitle>
         </DialogHeader>
 
@@ -192,69 +202,67 @@ export const IncidentStatusUpdateDialog: React.FC<IncidentStatusUpdateDialogProp
           </div>
 
           {/* Status Selection */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">New Status</label>
-            <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select new status" />
-              </SelectTrigger>
-              <SelectContent className="bg-background z-50">
-                {(hideResolvedOption ? statusOptions.filter((s) => s.value !== 'resolved') : statusOptions).map((status) => (
-                  <SelectItem 
-                    key={status.value} 
-                    value={status.value}
-                    disabled={status.value === incident.status}
-                  >
-                    <div className="flex flex-col items-start">
-                      <span className="font-medium">{status.label}</span>
-                      <span className="text-xs text-muted-foreground">{status.description}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {!(incident.status === 'resolved' || incident.status === 'closed') ? (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">New Status</label>
+              <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select new status" />
+                </SelectTrigger>
+                <SelectContent className="bg-background z-50">
+                  {(hideResolvedOption ? statusOptions.filter((s) => s.value !== 'resolved') : statusOptions).map((status) => (
+                    <SelectItem 
+                      key={status.value} 
+                      value={status.value}
+                      disabled={status.value === incident.status}
+                    >
+                      <div className="flex flex-col items-start">
+                        <span className="font-medium">{status.label}</span>
+                        <span className="text-xs text-muted-foreground">{status.description}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          ) : (
+            <div className="bg-muted/50 rounded-lg p-3 text-center">
+              <p className="text-sm text-muted-foreground mb-2">This incident is resolved and cannot be modified.</p>
+              <p className="text-xs text-muted-foreground">Contact a supervisor if this incident needs to be reopened.</p>
+            </div>
+          )}
 
-          {/* Message */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Status Update Message</label>
-            <Textarea
-              placeholder="Describe the status change, any relevant details, or actions taken..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              rows={3}
-              className="resize-none"
-            />
-            <p className="text-xs text-muted-foreground">
-              This message will be logged and visible to dispatch and supervisors.
-            </p>
-          </div>
+          {/* Message - Only show for non-resolved incidents */}
+          {!(incident.status === 'resolved' || incident.status === 'closed') && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Status Update Message</label>
+              <Textarea
+                placeholder="Describe the status change, any relevant details, or actions taken..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                rows={3}
+                className="resize-none"
+              />
+              <p className="text-xs text-muted-foreground">
+                This message will be logged and visible to dispatch and supervisors.
+              </p>
+            </div>
+          )}
 
-          {/* Actions */}
-          <div className="flex justify-end gap-2 pt-2">
-            <Button
-              variant="outline"
-              onClick={() => setOpen(false)}
-              disabled={isUpdating}
-            >
-              Cancel
+          {/* Action Buttons */}
+          <div className="flex gap-2 pt-4">
+            <Button variant="outline" onClick={() => setOpen(false)} className="flex-1">
+              {incident.status === 'resolved' || incident.status === 'closed' ? 'Close' : 'Cancel'}
             </Button>
-            <Button
-              onClick={handleStatusUpdate}
-              disabled={isUpdating || !selectedStatus || selectedStatus === incident.status}
-            >
-              {isUpdating ? (
-                <>
-                  <Clock className="h-4 w-4 mr-2 animate-spin" />
-                  Updating...
-                </>
-              ) : (
-                <>
-                  <Flag className="h-4 w-4 mr-2" />
-                  Update Status
-                </>
-              )}
-            </Button>
+            {!(incident.status === 'resolved' || incident.status === 'closed') && (
+              <Button 
+                onClick={handleStatusUpdate} 
+                disabled={isUpdating || selectedStatus === incident.status}
+                className="flex-1"
+              >
+                {isUpdating ? 'Updating...' : 'Update Status'}
+              </Button>
+            )}
           </div>
         </div>
       </DialogContent>

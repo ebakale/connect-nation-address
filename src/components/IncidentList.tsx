@@ -451,6 +451,8 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
       <div className="space-y-2">
         {paginatedIncidents.map((incident) => {
           const isUnassigned = !incident.assigned_operator_id;
+          const isResolved = incident.status === 'resolved' || incident.status === 'closed';
+          
           
           return (
             <div 
@@ -458,7 +460,9 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
               className={`border rounded-lg p-3 hover:bg-muted/50 cursor-pointer transition-colors ${
                 selectedIncident?.id === incident.id ? 'bg-primary/5 border-primary' : ''
               } ${
-                isUnassigned ? 'border-l-4 border-l-red-500 bg-red-50/50' : ''
+                isUnassigned && !isResolved ? 'border-l-4 border-l-red-500 bg-red-50/50' : ''
+              } ${
+                isResolved ? 'border-l-4 border-l-green-500 bg-green-50/50' : ''
               }`}
               onClick={() => {
                 onSelectIncident(incident);
@@ -499,11 +503,19 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
             {/* Bottom row - Assigned units and action hint */}
             <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
               <div className="flex items-center gap-2">
-                <span className={incident.assigned_operator_id ? 'text-emerald-600 font-medium' : 'text-red-600 font-medium'}>
-                  {incident.assigned_operator_id ? '✓ Dispatcher assigned' : '⚠ Unassigned'}
-                </span>
+                {isResolved ? (
+                  <span className="text-green-600 font-medium">
+                    ✓ Incident Resolved
+                  </span>
+                ) : (
+                  <span className={incident.assigned_operator_id ? 'text-emerald-600 font-medium' : 'text-red-600 font-medium'}>
+                    {incident.assigned_operator_id ? '✓ Dispatcher assigned' : '⚠ Unassigned'}
+                  </span>
+                )}
               </div>
-              <span className="text-xs text-primary">Click for details →</span>
+              <span className="text-xs text-primary">
+                {isResolved ? 'View details →' : 'Click for details →'}
+              </span>
             </div>
             </div>
           );
