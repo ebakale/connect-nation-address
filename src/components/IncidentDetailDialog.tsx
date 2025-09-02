@@ -650,8 +650,8 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   return (
     <div className="space-y-6">
       {/* Header with Key Information */}
-      <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-6 rounded-lg border border-primary/20">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-3 sm:p-4 md:p-6 rounded-lg border border-primary/20">
+        <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 md:gap-4">
           <div className="space-y-2">
             <div className="flex items-center gap-1 sm:gap-3 overflow-x-auto pb-1">
               <Badge variant="outline" className="font-mono text-xs sm:text-base px-2 sm:px-3 py-1 whitespace-nowrap shrink-0">
@@ -674,21 +674,21 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
           </div>
           
           {/* Quick Actions */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1 sm:gap-2">
             {canRequestBackup && (
               <RequestBackupDialog unitId={user?.id || ''} unitCode="OFFICER">
-                <Button variant="outline" size="sm">
-                  <Radio className="h-4 w-4 mr-2" />
-                  Request Backup
+                <Button variant="outline" size="sm" className="text-xs">
+                  <Radio className="h-3 w-3 mr-1" />
+                  Backup
                 </Button>
               </RequestBackupDialog>
             )}
             
             {canUpdateStatus && (
               <IncidentStatusUpdateDialog incident={incident} onUpdate={onUpdate}>
-                <Button variant="outline" size="sm">
-                  <Edit className="h-4 w-4 mr-2" />
-                  Change Status
+                <Button variant="outline" size="sm" className="text-xs">
+                  <Edit className="h-3 w-3 mr-1" />
+                  Status
                 </Button>
               </IncidentStatusUpdateDialog>
             )}
@@ -732,9 +732,9 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
         </Card>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 md:gap-4">
         {/* Column 1: Emergency Information */}
-        <div className="lg:col-span-2 space-y-4 md:space-y-6">
+        <div className="xl:col-span-2 space-y-3 md:space-y-4">
           {/* Emergency Information - Now Primary */}
           <Card className="border-destructive/20 bg-destructive/5">
             <CardHeader>
@@ -917,12 +917,12 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                           window.open(url, '_blank');
                         }
                       }
-                    }}
-                    className="w-full"
-                  >
-                    <Navigation className="h-4 w-4 mr-2" />
-                    Navigate to Incident
-                  </Button>
+                     }}
+                     className="w-full text-xs sm:text-sm"
+                   >
+                     <Navigation className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                     Navigate
+                   </Button>
                 </div>
               </div>
             )}
@@ -1095,13 +1095,13 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
             {isPoliceSupervisor && (
               <div className="flex flex-col gap-2 w-full">
                 <Select onValueChange={(value) => { setEditData({...editData, assigned_operator_id: value}); assignDispatcher(value); }} value={editData.assigned_operator_id}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full min-w-0">
                     <SelectValue placeholder="Assign dispatcher..." />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border border-input z-50">
+                  <SelectContent className="bg-background border border-input z-50 max-w-[90vw]">
                     {availableOperators.map((operator) => (
-                      <SelectItem key={operator.id} value={operator.id}>
-                        {operator.name}
+                      <SelectItem key={operator.id} value={operator.id} className="max-w-full">
+                        <div className="truncate">{operator.name}</div>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -1126,7 +1126,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                     }
                   }}
                   disabled={!editData.assigned_operator_id}
-                  className="w-full sm:w-auto"
+                  className="w-full text-xs sm:text-sm whitespace-nowrap"
                 >
                   Assign Dispatcher
                 </Button>
@@ -1160,7 +1160,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
       </div>
 
       {/* Right Column - Timeline and Detailed Logs */}
-      <div className="space-y-4">
+      <div className="space-y-3 md:space-y-4">
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Timeline</CardTitle>
