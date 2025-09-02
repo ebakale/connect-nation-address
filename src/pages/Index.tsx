@@ -41,7 +41,6 @@ const navigationItems = [
     { id: 'about', label: t('about'), icon: Users },
     { id: 'emergency', label: t('emergency'), icon: Shield },
     { id: 'help', label: t('help'), icon: HelpCircle },
-    { id: 'manual', label: t('manual'), icon: Book },
   ];
 
   const renderContent = () => {
@@ -457,29 +456,34 @@ const navigationItems = [
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="space-y-6">
               <Card className="shadow-card">
                 <CardHeader>
                   <CardTitle>{t('frequentlyAskedQuestions')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold">{t('howRegisterNewAddress')}</h4>
-                    <p className="text-sm text-muted-foreground">
-                      {t('howRegisterAnswer')}
-                    </p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold">{t('howLongVerification')}</h4>
-                    <p className="text-sm text-muted-foreground">
-                      {t('verificationTimeAnswer')}
-                    </p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold">{t('canUpdateExistingAddress')}</h4>
-                    <p className="text-sm text-muted-foreground">
-                      {t('updateAddressAnswer')}
-                    </p>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-semibold">How long does address verification take?</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Address verification typically takes 3-5 business days. Field agents need to visit the location 
+                        for verification before registrars can approve the address.
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">Can I track my address submission?</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Yes, you can track the status of your submission in your dashboard. 
+                        You'll receive notifications for status updates.
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">What if my address is rejected?</h4>
+                      <p className="text-sm text-muted-foreground">
+                        If your address is rejected, you'll receive feedback explaining the reason. 
+                        You can resubmit with corrected information.
+                      </p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -489,13 +493,17 @@ const navigationItems = [
                   <CardTitle>Contact Support</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold">Email Support</h4>
-                    <p className="text-sm text-muted-foreground">support@addressregistry.gq</p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold">Phone Support</h4>
-                    <p className="text-sm text-muted-foreground">+240 XXX XXX XXX</p>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <h4 className="font-semibold">Email Support</h4>
+                      <p className="text-sm text-muted-foreground">support@connecteg.gov.gq</p>
+                      <p className="text-xs text-muted-foreground">Response within 24 hours</p>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">Phone Support</h4>
+                      <p className="text-sm text-muted-foreground">+240 XXX XXX XXX</p>
+                      <p className="text-xs text-muted-foreground">Monday - Friday: 8:00 AM - 5:00 PM</p>
+                    </div>
                   </div>
                   <div>
                     <h4 className="font-semibold">Office Hours</h4>
@@ -506,169 +514,166 @@ const navigationItems = [
                   </div>
                 </CardContent>
               </Card>
-            </div>
-          </div>
-        );
 
-      case 'manual':
-        return (
-          <div className="space-y-8">
-            <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold">{t('platformUserManual')}</h2>
-              <p className="text-lg text-muted-foreground">
-                Comprehensive guide for using both Address Registry and Emergency Management systems.
-              </p>
-            </div>
-
-            <div className="space-y-6">
+              {/* Platform User Manual Section */}
               <Card className="shadow-card">
                 <CardHeader>
-                  <CardTitle>Getting Started</CardTitle>
+                  <CardTitle>{t('platformUserManual')}</CardTitle>
+                  <p className="text-muted-foreground">
+                    Comprehensive guide for using both Address Registry and Emergency Management systems.
+                  </p>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <h4 className="font-semibold">1. Account Registration</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Create an account using your email address and a secure password. 
-                      Verify your email to activate your account.
-                    </p>
-                  </div>
-                  <div className="space-y-2">
-                    <h4 className="font-semibold">2. Profile Setup</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Complete your profile with accurate personal information. 
-                      This helps us verify your identity for address submissions.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+                <CardContent className="space-y-6">
+                  <Card className="border">
+                    <CardHeader>
+                      <CardTitle className="text-lg">Getting Started</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold">1. Account Registration</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Create an account using your email address and a secure password. 
+                          Verify your email to activate your account.
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="font-semibold">2. Profile Setup</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Complete your profile with accurate personal information. 
+                          This helps us verify your identity for address submissions.
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
 
-              <Card className="shadow-card">
-                <CardHeader>
-                  <CardTitle>Address Registration Process</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <h4 className="font-semibold">Step 1: Location Information</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Select the correct province and city, then provide street and building details.
-                    </p>
-                  </div>
-                  <div className="space-y-2">
-                    <h4 className="font-semibold">Step 2: Coordinates</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Use the "Get Current Location" button or manually enter GPS coordinates. 
-                      Accurate coordinates are essential for verification.
-                    </p>
-                  </div>
-                  <div className="space-y-2">
-                    <h4 className="font-semibold">Step 3: Documentation</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Upload a clear photo of the location and provide any additional description 
-                      that helps identify the address.
-                    </p>
-                  </div>
-                  <div className="space-y-2">
-                    <h4 className="font-semibold">Step 4: Verification</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Submit your request for review. Field agents will verify the location 
-                      and registrars will approve the final address code.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+                  <Card className="border">
+                    <CardHeader>
+                      <CardTitle className="text-lg">Address Registration Process</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold">Step 1: Location Information</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Select the correct province and city, then provide street and building details.
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="font-semibold">Step 2: Coordinates</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Use the "Get Current Location" button or manually enter GPS coordinates. 
+                          Accurate coordinates are essential for verification.
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="font-semibold">Step 3: Documentation</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Upload a clear photo of the location and provide any additional description 
+                          that helps identify the address.
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="font-semibold">Step 4: Verification</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Submit your request for review. Field agents will verify the location 
+                          and registrars will approve the final address code.
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
 
-              <Card className="shadow-card">
-                <CardHeader>
-                  <CardTitle>Address Registry User Roles</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <h4 className="font-semibold">Citizens</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Can search for addresses, submit new address requests, and view their submissions.
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold">Field Agents</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Verify address locations on-site and approve or reject submissions based on field visits.
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold">Verifiers</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Review field agent reports and conduct additional verification if needed.
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold">Registrars</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Generate official UAC codes and publish verified addresses to the national registry.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  <Card className="border">
+                    <CardHeader>
+                      <CardTitle className="text-lg">Address Registry User Roles</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                          <h4 className="font-semibold">Citizens</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Can search for addresses, submit new address requests, and view their submissions.
+                          </p>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold">Field Agents</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Verify address locations on-site and approve or reject submissions based on field visits.
+                          </p>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold">Verifiers</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Review field agent reports and conduct additional verification if needed.
+                          </p>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold">Registrars</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Generate official UAC codes and publish verified addresses to the national registry.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
 
-              <Card className="shadow-card">
-                <CardHeader>
-                  <CardTitle>Emergency Management System</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <h4 className="font-semibold">Emergency Alert System</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Citizens can send emergency alerts directly to police and emergency services. The system includes GPS location sharing and real-time communication.
-                    </p>
-                  </div>
-                  <div className="space-y-2">
-                    <h4 className="font-semibold">Incident Management</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Police and emergency operators manage incidents through real-time dashboards, unit dispatch, and status tracking.
-                    </p>
-                  </div>
-                  <div className="space-y-2">
-                    <h4 className="font-semibold">Unit Coordination</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Emergency units can communicate, request backup, and coordinate response efforts through integrated communication tools.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+                  <Card className="border">
+                    <CardHeader>
+                      <CardTitle className="text-lg">Emergency Management System</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold">Emergency Alert System</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Citizens can send emergency alerts directly to police and emergency services. The system includes GPS location sharing and real-time communication.
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="font-semibold">Incident Management</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Police and emergency operators manage incidents through real-time dashboards, unit dispatch, and status tracking.
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="font-semibold">Unit Coordination</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Emergency units can communicate, request backup, and coordinate response efforts through integrated communication tools.
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
 
-              <Card className="shadow-card">
-                <CardHeader>
-                  <CardTitle>Emergency System User Roles</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <h4 className="font-semibold">Emergency Operators</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Receive and process emergency alerts, dispatch units, and monitor incident status.
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold">Police Units</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Respond to incidents, update status, communicate with operations, and request backup when needed.
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold">Unit Leaders</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Coordinate field operations, manage unit assignments, and oversee response activities.
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold">Police Administration</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Monitor system performance, generate reports, and manage overall emergency response strategy.
-                      </p>
-                    </div>
-                  </div>
+                  <Card className="border">
+                    <CardHeader>
+                      <CardTitle className="text-lg">Emergency System User Roles</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                          <h4 className="font-semibold">Emergency Operators</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Receive and process emergency alerts, dispatch units, and monitor incident status.
+                          </p>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold">Dispatchers</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Coordinate unit assignments and manage real-time communication between operators and field units.
+                          </p>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold">Supervisors</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Oversee operations, assign operators to incidents, and ensure proper response protocols.
+                          </p>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold">Field Units</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Respond to incidents, update status in real-time, and communicate with dispatch for coordination.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </CardContent>
               </Card>
             </div>
