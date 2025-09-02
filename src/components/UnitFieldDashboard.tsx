@@ -1439,7 +1439,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                     Request Backup
                   </Button>
                   
-                  <Button variant="outline" onClick={() => setShowResourceDialog(true)}>
+                  <Button variant="outline" className="text-xs" onClick={() => setShowResourceDialog(true)}>
                     <Car className="h-4 w-4 mr-2" />
                     Request Resources
                   </Button>
