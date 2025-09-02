@@ -823,7 +823,7 @@ const PoliceDashboard = () => {
                           <AlertTriangle className="h-5 w-5" />
                           Emergency Incidents
                         </CardTitle>
-                        <Badge variant="secondary">{incidents.length} total</Badge>
+                        <Badge variant="secondary" className="whitespace-nowrap">{incidents.length} total</Badge>
                       </div>
                     </CardHeader>
                     <CardContent>
