@@ -763,7 +763,7 @@ const navigationItems = [
       <header className="border-b border-primary/20 sticky top-0 glass backdrop-blur-xl z-50 shadow-glow">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col items-center gap-2">
               <div className="p-2 rounded-xl bg-white shadow-lg">
                 <img src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" alt="BIAKAM Logo" className="h-8 object-contain" />
               </div>
