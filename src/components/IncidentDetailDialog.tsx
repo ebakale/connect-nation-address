@@ -79,9 +79,11 @@ interface DecryptedIncident {
 interface IncidentDetailDialogProps {
   incident: EmergencyIncident;
   onUpdate?: () => void;
+  isResolvedView?: boolean;
+  hideResolvedOption?: boolean;
 }
 
-const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps) => {
+const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hideResolvedOption = false }: IncidentDetailDialogProps) => {
   const { user } = useAuth();
   const { isPoliceSupervisor, isPoliceDispatcher, isPoliceOperator } = useUserRole();
   
@@ -684,8 +686,8 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
               </RequestBackupDialog>
             )}
             
-            {canUpdateStatus && (
-              <IncidentStatusUpdateDialog incident={incident} onUpdate={onUpdate}>
+            {canUpdateStatus && !isResolvedView && incident.status !== 'resolved' && incident.status !== 'closed' && (
+              <IncidentStatusUpdateDialog incident={incident} onUpdate={onUpdate} hideResolvedOption={hideResolvedOption}>
                 <Button variant="outline" size="sm" className="text-xs">
                   <Edit className="h-3 w-3 mr-1" />
                   Status

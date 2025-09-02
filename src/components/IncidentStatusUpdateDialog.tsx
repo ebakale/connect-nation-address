@@ -21,6 +21,7 @@ interface IncidentStatusUpdateDialogProps {
   };
   onUpdate?: () => void;
   children: React.ReactNode;
+  hideResolvedOption?: boolean;
 }
 
 const statusOptions = [
@@ -36,7 +37,8 @@ const statusOptions = [
 export const IncidentStatusUpdateDialog: React.FC<IncidentStatusUpdateDialogProps> = ({
   incident,
   onUpdate,
-  children
+  children,
+  hideResolvedOption = false,
 }) => {
   const [open, setOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string>(incident.status);
@@ -196,8 +198,8 @@ export const IncidentStatusUpdateDialog: React.FC<IncidentStatusUpdateDialogProp
               <SelectTrigger>
                 <SelectValue placeholder="Select new status" />
               </SelectTrigger>
-              <SelectContent>
-                {statusOptions.map((status) => (
+              <SelectContent className="bg-background z-50">
+                {(hideResolvedOption ? statusOptions.filter((s) => s.value !== 'resolved') : statusOptions).map((status) => (
                   <SelectItem 
                     key={status.value} 
                     value={status.value}

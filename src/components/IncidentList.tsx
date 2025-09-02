@@ -410,7 +410,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
               <SelectTrigger className="w-full sm:w-40">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background z-50">
                 <SelectItem value="all">{t('allStatus')}</SelectItem>
                 <SelectItem value="reported">{t('reported')}</SelectItem>
                 <SelectItem value="dispatched">{t('dispatched')}</SelectItem>
@@ -614,6 +614,8 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
                   onUpdate?.();
                   setShowDetailDialog(false);
                 }}
+                isResolvedView={isResolvedIncidents}
+                hideResolvedOption={!isResolvedIncidents}
               />
             </div>
           </DialogContent>
