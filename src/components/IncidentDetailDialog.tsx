@@ -1077,6 +1077,36 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                 </p>
               )}
             </div>
+
+            {/* Field Notes Section */}
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">Field Notes</label>
+              <div className="mt-1 space-y-2 max-h-48 overflow-y-auto">
+                {logs.filter(log => log.action === 'field_note_added').length > 0 ? (
+                  logs
+                    .filter(log => log.action === 'field_note_added')
+                    .map((log, index) => (
+                      <div key={log.id || index} className="p-3 bg-blue-50 border border-blue-200 rounded">
+                        <div className="flex justify-between items-start mb-1">
+                          <span className="text-xs text-blue-600 font-medium">
+                            {userNames[log.user_id] || 'Unknown Officer'}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(log.timestamp).toLocaleString()}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-800">
+                          {log.details?.notes || log.details?.message || 'No note content'}
+                        </p>
+                      </div>
+                    ))
+                ) : (
+                  <p className="mt-1 p-3 bg-muted rounded text-sm text-muted-foreground">
+                    No field notes available
+                  </p>
+                )}
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -1223,8 +1253,10 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                         <p className="text-sm font-medium mb-1">
                           {userNames[log.user_id] || 'Unknown User'}
                         </p>
-                        {log.details?.message && (
-                          <p className="text-sm text-gray-700 mb-1">{log.details.message}</p>
+                        {(log.details?.message || log.details?.notes) && (
+                          <p className="text-sm text-gray-700 mb-1">
+                            {log.details?.notes || log.details?.message}
+                          </p>
                         )}
                         {log.details?.unit_name && (
                           <p className="text-xs text-muted-foreground">
