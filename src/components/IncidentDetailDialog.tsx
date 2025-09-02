@@ -648,9 +648,9 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
       {/* Header with Key Information */}
-      <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-3 sm:p-4 md:p-6 rounded-lg border border-primary/20">
+      <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-3 sm:p-4 md:p-6 rounded-lg border border-primary/20 relative z-0">
         <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 md:gap-4">
           <div className="space-y-2">
             <div className="flex items-center gap-1 sm:gap-3 overflow-x-auto pb-1">
@@ -674,7 +674,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
           </div>
           
           {/* Quick Actions */}
-          <div className="flex flex-wrap gap-1 sm:gap-2">
+          <div className="flex flex-wrap gap-1 sm:gap-2 relative z-0">
             {canRequestBackup && (
               <RequestBackupDialog unitId={user?.id || ''} unitCode="OFFICER">
                 <Button variant="outline" size="sm" className="text-xs">
