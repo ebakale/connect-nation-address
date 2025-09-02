@@ -838,31 +838,31 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                                 return getRolePriority(b.role) - getRolePriority(a.role);
                               })
                               .map((member) => (
-                                <div key={member.id} className="flex items-center justify-between text-sm bg-background rounded p-3">
-                                  <div className="flex items-center gap-3">
-                                    <Avatar className="h-8 w-8">
+                                <div key={member.id} className="flex flex-col sm:flex-row sm:items-center justify-between text-sm bg-background rounded p-3 gap-3">
+                                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                                    <Avatar className="h-8 w-8 flex-shrink-0">
                                       <AvatarFallback>
                                         {member.profiles.full_name.split(' ').map(n => n[0]).join('')}
                                       </AvatarFallback>
                                     </Avatar>
-                                    <div>
-                                      <div className="flex items-center gap-2">
+                                    <div className="min-w-0 flex-1">
+                                      <div className="flex items-center gap-2 flex-wrap">
                                         {getRoleIcon(member.role, member.is_lead)}
-                                        <span className="font-medium">{member.profiles.full_name}</span>
+                                        <span className="font-medium truncate">{member.profiles.full_name}</span>
                                         {member.is_lead && (
                                           <Badge variant="outline" className="text-xs">Lead</Badge>
                                         )}
                                       </div>
-                                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                                        <span>{formatRoleTitle(member.role)}</span>
+                                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-muted-foreground mt-1">
+                                        <span className="whitespace-nowrap">{formatRoleTitle(member.role)}</span>
                                         <div className="flex items-center gap-1">
                                           <Mail className="h-3 w-3" />
-                                          <span>{member.profiles.email}</span>
+                                          <span className="truncate">{member.profiles.email}</span>
                                         </div>
                                         {member.profiles.phone && (
                                           <div className="flex items-center gap-1">
                                             <Phone className="h-3 w-3" />
-                                            <span>{member.profiles.phone}</span>
+                                            <span className="truncate">{member.profiles.phone}</span>
                                           </div>
                                         )}
                                       </div>
@@ -872,6 +872,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                                     size="sm"
                                     variant="destructive"
                                     onClick={() => removeOfficerFromUnit(member.id)}
+                                    className="flex-shrink-0 self-start sm:self-center"
                                   >
                                     <Trash2 className="h-3 w-3" />
                                   </Button>
