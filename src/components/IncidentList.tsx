@@ -416,10 +416,6 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
                 <SelectItem value="dispatched">{t('dispatched')}</SelectItem>
                 <SelectItem value="responding">{t('responding')}</SelectItem>
                 <SelectItem value="on_scene">{t('onScene')}</SelectItem>
-                {/* Only show resolved option if not dealing with resolved incidents list */}
-                {!isResolvedIncidents && (
-                  <SelectItem value="resolved">{t('resolved')}</SelectItem>
-                )}
               </SelectContent>
             </Select>
           )}
