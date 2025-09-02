@@ -641,6 +641,17 @@ const PoliceDashboard = () => {
           </div>
         ) : (
           <div className="max-w-7xl mx-auto">
+            {/* Return to Field Operations Button - Top of page */}
+            {showUnitLeadDashboard && (
+              <div className="flex justify-center mb-4">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowUnitLeadDashboard(false)}
+                >
+                  {t('returnToFieldOperations')}
+                </Button>
+              </div>
+            )}
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
               {/* Compact Tab Navigation */}
@@ -735,17 +746,6 @@ const PoliceDashboard = () => {
               />
             )}
             
-            {/* Return to Field View Button */}
-            {showUnitLeadDashboard && (
-              <div className="flex justify-center">
-                <Button 
-                  variant="outline" 
-                  onClick={() => setShowUnitLeadDashboard(false)}
-                >
-                  {t('returnToFieldOperations')}
-                </Button>
-              </div>
-            )}
           </TabsContent>
 
           {/* Dispatch Center Tab - Compact Tabbed Layout */}
