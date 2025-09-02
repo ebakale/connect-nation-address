@@ -753,6 +753,9 @@ const PoliceDashboard = () => {
             <TabsContent value="dispatch" className="space-y-4">
               {/* Header Section */}
               <div className="flex items-center justify-between">
+                <p className="text-sm text-muted-foreground">
+                  {userCity ? `Coverage: ${userCity}` : 'All Areas'}
+                </p>
               </div>
 
               {/* Compact Key Metrics */}
