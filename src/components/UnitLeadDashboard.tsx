@@ -371,7 +371,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
               {/* Command Actions */}
               <div className="grid grid-cols-2 gap-3">
                 <SendUnitMessageDialog unitId={userUnit.id} unitCode={userUnit.unit_code}>
-                  <Button className="w-full text-sm" variant="outline">
+                  <Button className="w-full text-xs" variant="outline">
                     <MessageSquare className="h-4 w-4 mr-2" />
                     Send Unit Message
                   </Button>
