@@ -27,50 +27,157 @@ serve(async (req) => {
 
     console.log('Notifying emergency operators for incident:', incidentNumber);
 
-    // Get active police operators
-    const { data: activeSessions, error: sessionError } = await supabase
-      .from('emergency_operator_sessions')
+    // Get incident details to determine region/location
+    const { data: incident, error: incidentError } = await supabase
+      .from('emergency_incidents')
+      .select('region, city, location_latitude, location_longitude')
+      .eq('id', incidentId)
+      .single();
+
+    if (incidentError || !incident) {
+      console.error('Error fetching incident details:', incidentError);
+      throw new Error('Incident not found');
+    }
+
+    console.log(`Incident location: ${incident.region}, ${incident.city}`);
+
+    // First, try to find regional police supervisor for the incident location
+    const { data: regionalSupervisors, error: supervisorError } = await supabase
+      .from('user_roles')
       .select(`
-        operator_id,
-        status,
-        profiles!emergency_operator_sessions_operator_id_fkey (
-          user_id,
+        user_id,
+        user_role_metadata!fk_user_role_metadata_user_role (
+          scope_type,
+          scope_value
+        ),
+        profiles!user_roles_user_id_fkey (
           full_name,
           email
         )
       `)
-      .eq('status', 'active')
-      .not('session_end', 'is', null);
+      .eq('role', 'police_supervisor')
+      .eq('user_role_metadata.scope_type', 'region')
+      .eq('user_role_metadata.scope_value', incident.region || 'Litoral');
 
-    if (sessionError) {
-      console.error('Error fetching active operators:', sessionError);
+    let primarySupervisor = null;
+    if (!supervisorError && regionalSupervisors && regionalSupervisors.length > 0) {
+      // Check if any regional supervisor is currently active
+      const { data: activeSupervisor } = await supabase
+        .from('emergency_operator_sessions')
+        .select('operator_id')
+        .eq('status', 'active')
+        .is('session_end', null)
+        .in('operator_id', regionalSupervisors.map(s => s.user_id))
+        .limit(1)
+        .single();
+
+      if (activeSupervisor) {
+        primarySupervisor = regionalSupervisors.find(s => s.user_id === activeSupervisor.operator_id);
+        console.log(`Found active regional supervisor: ${primarySupervisor.profiles.full_name}`);
+      }
     }
 
-    const activeOperators = activeSessions || [];
-    console.log(`Found ${activeOperators.length} active operators`);
+    // If no regional supervisor available, find any active supervisor or dispatcher
+    if (!primarySupervisor) {
+      console.log('No regional supervisor available, finding backup supervisor/dispatcher');
+      
+      const { data: backupSupervisors } = await supabase
+        .from('emergency_operator_sessions')
+        .select(`
+          operator_id,
+          profiles!emergency_operator_sessions_operator_id_fkey (
+            user_id,
+            full_name,
+            email
+          )
+        `)
+        .eq('status', 'active')
+        .is('session_end', null);
 
-    // Create notifications for operators (in a real system, this would trigger push notifications, emails, etc.)
+      if (backupSupervisors) {
+        for (const session of backupSupervisors) {
+          const { data: userRoles } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', session.operator_id);
+
+          const isSupervisorOrDispatcher = userRoles?.some(role => 
+            ['police_supervisor', 'police_dispatcher', 'police_admin'].includes(role.role)
+          );
+
+          if (isSupervisorOrDispatcher) {
+            primarySupervisor = {
+              user_id: session.operator_id,
+              profiles: session.profiles
+            };
+            console.log(`Using backup supervisor/dispatcher: ${primarySupervisor.profiles.full_name}`);
+            break;
+          }
+        }
+      }
+    }
+
     const notifications = [];
-    
-    for (const session of activeOperators) {
-      // Check if operator has relevant role
-      const { data: userRoles } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', session.operator_id);
+    let primaryNotified = false;
 
-      const hasPoliceRole = userRoles?.some(role => 
-        ['police_operator', 'police_dispatcher', 'police_supervisor', 'police_admin'].includes(role.role)
-      );
+    // Notify primary supervisor first
+    if (primarySupervisor) {
+      notifications.push({
+        operator_id: primarySupervisor.user_id,
+        incident_id: incidentId,
+        notification_type: 'new_emergency_primary',
+        priority: priority,
+        role: 'primary_supervisor',
+        sent_at: new Date().toISOString()
+      });
+      primaryNotified = true;
+      console.log(`Primary notification sent to: ${primarySupervisor.profiles.full_name}`);
+    }
 
-      if (hasPoliceRole) {
-        notifications.push({
-          operator_id: session.operator_id,
-          incident_id: incidentId,
-          notification_type: 'new_emergency',
-          priority: priority,
-          sent_at: new Date().toISOString()
-        });
+    // For high priority incidents (1-2) or if no supervisor available, also notify all active operators
+    if (priority <= 2 || !primaryNotified) {
+      console.log(`High priority incident (${priority}) or no supervisor - notifying all active operators`);
+      
+      const { data: allActiveSessions } = await supabase
+        .from('emergency_operator_sessions')
+        .select(`
+          operator_id,
+          profiles!emergency_operator_sessions_operator_id_fkey (
+            user_id,
+            full_name,
+            email
+          )
+        `)
+        .eq('status', 'active')
+        .is('session_end', null);
+
+      if (allActiveSessions) {
+        for (const session of allActiveSessions) {
+          // Skip if already notified as primary supervisor
+          if (primaryNotified && session.operator_id === primarySupervisor.user_id) {
+            continue;
+          }
+
+          const { data: userRoles } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', session.operator_id);
+
+          const hasPoliceRole = userRoles?.some(role => 
+            ['police_operator', 'police_dispatcher', 'police_supervisor', 'police_admin'].includes(role.role)
+          );
+
+          if (hasPoliceRole) {
+            notifications.push({
+              operator_id: session.operator_id,
+              incident_id: incidentId,
+              notification_type: priority <= 2 ? 'high_priority_emergency' : 'backup_notification',
+              priority: priority,
+              role: 'backup_operator',
+              sent_at: new Date().toISOString()
+            });
+          }
+        }
       }
     }
 
