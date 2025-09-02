@@ -51,7 +51,7 @@ export const UnitsAndProfilesPage: React.FC = () => {
           {t('back')}
         </Button>
         <div>
-          <h1 className="text-3xl font-bold">Supervisor Management</h1>
+          <h1 className="text-2xl font-bold">Supervisor Management</h1>
           <p className="text-muted-foreground">Manage emergency units and officer profiles</p>
         </div>
       </div>
