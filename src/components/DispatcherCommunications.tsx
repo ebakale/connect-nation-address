@@ -258,7 +258,7 @@ const DispatcherCommunications: React.FC = () => {
     <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center flex-wrap gap-2">
+          <CardTitle className="flex items-center flex-wrap gap-2 text-lg">
             <div className="flex items-center gap-2">
               <MessageSquare className="h-5 w-5" />
               Unit Communications
