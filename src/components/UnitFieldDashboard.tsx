@@ -1478,7 +1478,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                 <MessageSquare className="h-4 w-4" />
                 Unit Communications
                 {unreadCount > 0 && (
-                  <Badge variant="destructive" className="ml-2">
+                  <Badge variant="destructive" className="ml-2 whitespace-nowrap">
                     {unreadCount} unread
                   </Badge>
                 )}
