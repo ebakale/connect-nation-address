@@ -792,9 +792,9 @@ export const UnitLeadershipDashboard: React.FC = () => {
                     <CardTitle className="text-lg">Team Communications</CardTitle>
                     <Dialog open={showMessageDialog} onOpenChange={setShowMessageDialog}>
                       <DialogTrigger asChild>
-                        <Button>
-                          <MessageSquare className="h-4 w-4 mr-2" />
-                          Send Team Message
+                        <Button size="sm" className="text-xs whitespace-nowrap">
+                          <MessageSquare className="h-3 w-3 mr-1" />
+                          Send Message
                         </Button>
                       </DialogTrigger>
                       <DialogContent>
