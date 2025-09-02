@@ -258,7 +258,7 @@ const DispatcherCommunications: React.FC = () => {
     <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center justify-between">
+          <CardTitle className="flex items-center flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <MessageSquare className="h-5 w-5" />
               Unit Communications
@@ -270,21 +270,21 @@ const DispatcherCommunications: React.FC = () => {
                 </Badge>
               )}
             </div>
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4" />
-              <Select value={filterPriority} onValueChange={setFilterPriority}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Priority</SelectItem>
-                  <SelectItem value="1">High Priority</SelectItem>
-                  <SelectItem value="2">Medium Priority</SelectItem>
-                  <SelectItem value="3">Low Priority</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
           </CardTitle>
+          <div className="flex items-center gap-2 mt-2">
+            <Filter className="h-4 w-4" />
+            <Select value={filterPriority} onValueChange={setFilterPriority}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Priority</SelectItem>
+                <SelectItem value="1">High Priority</SelectItem>
+                <SelectItem value="2">Medium Priority</SelectItem>
+                <SelectItem value="3">Low Priority</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="messages" className="w-full">
