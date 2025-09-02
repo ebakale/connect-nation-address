@@ -305,7 +305,7 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
           </Button>
         )}
         <div className="flex-1">
-          <h1 className="text-3xl font-bold">Emergency Units Overview</h1>
+          <h1 className="text-2xl font-bold">Emergency Units Overview</h1>
           <p className="text-muted-foreground">
             {userCity ? `Units in ${userCity}` : 'Complete view of all units and their composition'}
           </p>
