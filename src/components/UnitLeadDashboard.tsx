@@ -378,7 +378,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
                 </SendUnitMessageDialog>
                 
                 <RequestBackupDialog unitId={userUnit.id} unitCode={userUnit.unit_code}>
-                  <Button className="w-full" variant="outline">
+                  <Button className="w-full text-xs" variant="outline">
                     <Navigation className="h-4 w-4 mr-2" />
                     Request Backup
                   </Button>
