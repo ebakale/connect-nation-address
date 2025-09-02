@@ -79,6 +79,7 @@ const PoliceDashboard = () => {
   const [showMap, setShowMap] = useState(false);
   const [showUnitsOverview, setShowUnitsOverview] = useState(false);
   const [incidents, setIncidents] = useState<EmergencyIncident[]>([]);
+  const [resolvedIncidents, setResolvedIncidents] = useState<EmergencyIncident[]>([]);
   const [areaIncidents, setAreaIncidents] = useState<EmergencyIncident[]>([]);
   const [unitIncidents, setUnitIncidents] = useState<EmergencyIncident[]>([]);
   const [selectedIncident, setSelectedIncident] = useState<EmergencyIncident | null>(null);
@@ -280,7 +281,7 @@ const PoliceDashboard = () => {
     }
   };
 
-  // Fetch incidents and calculate stats - filtered by user's city
+  // Fetch active incidents - filtered by user's city
   const fetchIncidents = async () => {
     if (!hasPoliceAccess) return;
 
@@ -289,13 +290,9 @@ const PoliceDashboard = () => {
         .from('emergency_incidents')
         .select('*');
 
-      // Supervisors see all incidents assigned to their units regardless of status
-      // Other roles see only active incidents
-      if (!isPoliceSupervisor) {
-        query = query.in('status', ['reported', 'dispatched', 'responding', 'on_scene']);
-      }
-
-      query = query.order('priority_level', { ascending: false })
+      // Active incidents only
+      query = query.in('status', ['reported', 'dispatched', 'responding', 'on_scene'])
+        .order('priority_level', { ascending: false })
         .order('reported_at', { ascending: false });
 
       // Filter by user's assigned city
@@ -338,18 +335,81 @@ const PoliceDashboard = () => {
       });
 
       setIncidents(validIncidents);
-      console.log('📊 Incidents loaded:', {
+      console.log('📊 Active incidents loaded:', {
         total: enrichedIncidents.length,
         afterFiltering: validIncidents.length,
         userCity,
         userRole: { isPoliceDispatcher, isPoliceSupervisor, isPoliceOperator, isAdmin }
       });
-      
-      // Calculate stats
-      const stats = calculateDashboardStats(enrichedIncidents);
+    } catch (error) {
+      console.error('Error fetching active incidents:', error);
+    }
+  };
+
+  // Fetch resolved incidents - filtered by user's city
+  const fetchResolvedIncidents = async () => {
+    if (!hasPoliceAccess) return;
+
+    try {
+      let query = supabase
+        .from('emergency_incidents')
+        .select('*');
+
+      // Resolved/closed incidents only
+      query = query.in('status', ['resolved', 'closed'])
+        .order('resolved_at', { ascending: false })
+        .limit(50); // Limit to last 50 resolved incidents
+
+      // Filter by user's assigned city
+      if (userCity) {
+        query = query.eq('city', userCity);
+      }
+
+      const { data: incidentsData, error } = await query;
+
+      if (error) throw error;
+
+      const enrichedIncidents = incidentsData?.map(incident => ({
+        ...incident,
+        reporter_name: 'Unknown',
+        reporter_email: ''
+      })) || [];
+
+      // Filter incidents for UI panels
+      const validResolvedIncidents = enrichedIncidents.filter(incident => {
+        // Supervisors/Admin: see all resolved incidents in their city
+        if (isPoliceSupervisor || isAdmin) {
+          return true;
+        }
+        
+        // Dispatchers: only see incidents assigned to them
+        if (isPoliceDispatcher) {
+          return incident.assigned_operator_id === user?.id;
+        }
+        
+        // Operators: only incidents assigned to their units
+        if (isPoliceOperator) {
+          const userUnitCodes = userUnits.map(u => u.unit_code);
+          return (incident.assigned_units || []).some((unit: string) => userUnitCodes.includes(unit));
+        }
+        
+        return false;
+      });
+
+      setResolvedIncidents(validResolvedIncidents);
+      console.log('📊 Resolved incidents loaded:', {
+        total: enrichedIncidents.length,
+        afterFiltering: validResolvedIncidents.length,
+        userCity,
+        userRole: { isPoliceDispatcher, isPoliceSupervisor, isPoliceOperator, isAdmin }
+      });
+
+      // Calculate stats using both active and resolved incidents
+      const allIncidents = [...incidents, ...validResolvedIncidents];
+      const stats = calculateDashboardStats(allIncidents);
       setDashboardStats(stats);
     } catch (error) {
-      console.error('Error fetching incidents:', error);
+      console.error('Error fetching resolved incidents:', error);
     }
   };
 
@@ -457,6 +517,7 @@ const PoliceDashboard = () => {
   useEffect(() => {
     if (userCity || userUnit?.coverage_city || (userUnits && userUnits.length > 0)) {
       fetchIncidents();
+      fetchResolvedIncidents();
       fetchAreaIncidents();
       fetchUnitIncidents();
     }
@@ -477,6 +538,7 @@ const PoliceDashboard = () => {
         },
         () => {
           fetchIncidents();
+          fetchResolvedIncidents();
           fetchAreaIncidents();
         }
       )
@@ -823,16 +885,48 @@ const PoliceDashboard = () => {
                           <AlertTriangle className="h-5 w-5" />
                           Emergency Incidents
                         </CardTitle>
-                        <Badge variant="secondary" className="whitespace-nowrap">{incidents.length} total</Badge>
+                        <Badge variant="secondary" className="whitespace-nowrap">
+                          {incidents.length} active • {resolvedIncidents.length} resolved
+                        </Badge>
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <IncidentList 
-                        incidents={incidents}
-                        onUpdate={fetchIncidents}
-                        selectedIncident={selectedIncident}
-                        onSelectIncident={(incident) => setSelectedIncident(incident)}
-                      />
+                      <Tabs defaultValue="active" className="w-full">
+                        <TabsList className="grid w-full grid-cols-2">
+                          <TabsTrigger value="active" className="flex items-center gap-2">
+                            <AlertTriangle className="h-4 w-4" />
+                            Active ({incidents.length})
+                          </TabsTrigger>
+                          <TabsTrigger value="resolved" className="flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4" />
+                            Resolved ({resolvedIncidents.length})
+                          </TabsTrigger>
+                        </TabsList>
+                        
+                        <TabsContent value="active" className="mt-4">
+                          <IncidentList 
+                            incidents={incidents}
+                            onUpdate={() => {
+                              fetchIncidents();
+                              fetchResolvedIncidents();
+                            }}
+                            selectedIncident={selectedIncident}
+                            onSelectIncident={(incident) => setSelectedIncident(incident)}
+                          />
+                        </TabsContent>
+                        
+                        <TabsContent value="resolved" className="mt-4">
+                          <IncidentList 
+                            incidents={resolvedIncidents}
+                            onUpdate={() => {
+                              fetchIncidents();
+                              fetchResolvedIncidents();
+                            }}
+                            selectedIncident={selectedIncident}
+                            onSelectIncident={(incident) => setSelectedIncident(incident)}
+                          />
+                        </TabsContent>
+                      </Tabs>
                     </CardContent>
                   </Card>
                 </TabsContent>
