@@ -329,16 +329,16 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
             className="pl-10"
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-1 flex-wrap">
           {['all', 'available', 'dispatched', 'busy', 'unavailable'].map((status) => (
             <Button
               key={status}
               variant={statusFilter === status ? 'default' : 'outline'}
               size="sm"
               onClick={() => setStatusFilter(status)}
-              className="capitalize"
+              className="capitalize text-xs px-2 py-1 min-w-0 flex-shrink-0"
             >
-              {status === 'all' ? 'All Status' : status}
+              {status === 'all' ? 'All' : status}
             </Button>
           ))}
         </div>
