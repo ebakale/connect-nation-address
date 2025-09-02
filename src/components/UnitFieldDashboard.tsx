@@ -17,6 +17,7 @@ import {
   History, Settings, Zap, LogIn, LogOut, RefreshCw,
   Navigation2, Locate, Camera, FileText
 } from 'lucide-react';
+import { generateUAC } from '@/lib/uacGenerator';
 import { IncidentStatusUpdateDialog } from './IncidentStatusUpdateDialog';
 import IncidentDetailDialog from './IncidentDetailDialog';
 import IncidentMap from './IncidentMap';
@@ -127,6 +128,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
   const [actionDialog, setActionDialog] = useState<{ action: FieldAction; incident: IncidentAssignment } | null>(null);
   const [actionNotes, setActionNotes] = useState('');
   const [currentLocation, setCurrentLocation] = useState('');
+  const [currentUAC, setCurrentUAC] = useState<string>('');
   const [isUpdatingLocation, setIsUpdatingLocation] = useState(false);
   const [unitMembers, setUnitMembers] = useState<any[]>([]);
   const [unitStatus, setUnitStatus] = useState<string>('available');
@@ -666,9 +668,9 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
     }
 
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         const { latitude, longitude } = position.coords;
-        updateUnitLocationCoordinates(latitude, longitude);
+        await updateUnitLocationCoordinates(latitude, longitude);
         toast({ title: 'Location updated', description: 'GPS coordinates updated successfully' });
       },
       (error) => {
@@ -831,6 +833,21 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
         description: "Failed to execute action",
         variant: "destructive"
       });
+    }
+  };
+
+  const generateCurrentUAC = async (latitude: number, longitude: number) => {
+    try {
+      // For demo purposes, use default location data
+      // In a real implementation, you would use reverse geocoding to get actual location details
+      const country = 'Equatorial Guinea';
+      const region = 'Bioko Norte';
+      const city = 'Malabo';
+      
+      const uac = await generateUAC(country, region, city);
+      setCurrentUAC(uac);
+    } catch (error) {
+      console.error('Error generating UAC:', error);
     }
   };
 
@@ -1423,10 +1440,19 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                   </Button>
                 </div>
                 
-                {unitInfo?.current_location && (
-                  <p className="text-sm text-muted-foreground">
-                    Current: {unitInfo.current_location}
-                  </p>
+                {(unitInfo?.current_location || currentUAC) && (
+                  <div className="space-y-1">
+                    {unitInfo?.current_location && (
+                      <p className="text-sm text-muted-foreground">
+                        Current: {unitInfo.current_location}
+                      </p>
+                    )}
+                    {currentUAC && (
+                      <p className="text-sm text-muted-foreground">
+                        Current UAC: <span className="font-mono">{currentUAC}</span>
+                      </p>
+                    )}
+                  </div>
                 )}
               </div>
 
