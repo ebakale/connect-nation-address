@@ -1228,7 +1228,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="incidents" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-1">
           <TabsTrigger value="incidents" className="flex items-center gap-2">
             <AlertTriangle className="h-4 w-4" />
             Active Incidents
