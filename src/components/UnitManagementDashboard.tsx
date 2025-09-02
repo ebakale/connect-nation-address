@@ -445,12 +445,12 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Unit Management</h1>
-          <p className="text-muted-foreground">Manage emergency units and officer assignments</p>
-        </div>
-        
+      <div>
+        <h1 className="text-2xl font-bold">Unit Management</h1>
+        <p className="text-muted-foreground">Manage emergency units and officer assignments</p>
+      </div>
+      
+      <div className="flex justify-start">
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
