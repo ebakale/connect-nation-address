@@ -295,7 +295,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
         <TabsContent value="incidents" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 <AlertTriangle className="h-5 w-5" />
                 Active Incidents Assigned to Your Unit
               </CardTitle>
