@@ -1186,7 +1186,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Badge variant={shiftStatus === 'on_duty' ? 'default' : 'secondary'}>
+              <Badge variant={shiftStatus === 'on_duty' ? 'default' : 'secondary'} className="whitespace-nowrap">
                 {shiftStatus.replace('_', ' ').toUpperCase()}
               </Badge>
               <div className={`w-3 h-3 rounded-full ${
