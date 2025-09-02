@@ -593,7 +593,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
       {/* Single incident detail dialog */}
       {selectedIncident && showDetailDialog && (
         <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
-          <DialogContent className="max-w-5xl max-h-[80vh] overflow-y-auto [&>[data-radix-dialog-close]]:sm:right-4 [&>[data-radix-dialog-close]]:sm:top-4 [&>[data-radix-dialog-close]]:right-6 [&>[data-radix-dialog-close]]:top-1">
+          <DialogContent className="max-w-5xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Incident Details: {selectedIncident.incident_number}</DialogTitle>
             </DialogHeader>
