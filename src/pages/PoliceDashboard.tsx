@@ -762,9 +762,6 @@ const PoliceDashboard = () => {
                     {userCity ? `Coverage: ${userCity}` : 'All Areas'}
                   </p>
                 </div>
-                <div className="flex-shrink-0">
-                  <EnhancedSyncStatus />
-                </div>
               </div>
 
               {/* Compact Key Metrics */}
