@@ -332,7 +332,7 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
       <Dialog open={!!selectedNotification} onOpenChange={() => setSelectedNotification(null)}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+            <DialogTitle className="flex items-center gap-2 text-lg">
               <Shield className="h-5 w-5 text-orange-600" />
               Backup Request from {selectedNotification?.metadata?.requesting_unit_name || 'Unit'}
             </DialogTitle>
