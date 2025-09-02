@@ -1444,7 +1444,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                     Request Resources
                   </Button>
                   
-                  <Button variant="outline" onClick={() => setShowHistory(!showHistory)}>
+                  <Button variant="outline" className="text-xs" onClick={() => setShowHistory(!showHistory)}>
                     <History className="h-4 w-4 mr-2" />
                     View History
                   </Button>
