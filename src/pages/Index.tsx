@@ -765,7 +765,7 @@ const navigationItems = [
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="p-2 rounded-xl bg-white shadow-lg">
-                <img src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" alt="BIAKAM Logo" className="h-10 object-contain" />
+                <img src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" alt="BIAKAM Logo" className="h-8 object-contain" />
               </div>
               <span className="text-xl sm:text-2xl font-bold text-gradient">{t('connectEGPlatform')}</span>
             </div>
