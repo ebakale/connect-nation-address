@@ -788,8 +788,8 @@ export const UnitLeadershipDashboard: React.FC = () => {
             <TabsContent value="communications" className="space-y-4">
               <Card>
                 <CardHeader>
+                  <CardTitle>Team Communications</CardTitle>
                   <div className="flex items-center justify-between">
-                    <CardTitle>Team Communications</CardTitle>
                     <Dialog open={showMessageDialog} onOpenChange={setShowMessageDialog}>
                       <DialogTrigger asChild>
                         <Button>
