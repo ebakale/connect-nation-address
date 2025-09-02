@@ -475,16 +475,16 @@ export const UnitPerformanceAnalytics: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-max">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left p-2">Unit</th>
-                  <th className="text-left p-2">Members</th>
-                  <th className="text-left p-2">Incidents</th>
-                  <th className="text-left p-2">Resolved</th>
-                  <th className="text-left p-2">Completion Rate</th>
-                  <th className="text-left p-2">Avg Response</th>
-                  <th className="text-left p-2">Performance</th>
+                  <th className="text-left p-2 min-w-[80px]">Unit</th>
+                  <th className="text-left p-2 min-w-[70px]">Members</th>
+                  <th className="text-left p-2 min-w-[80px]">Incidents</th>
+                  <th className="text-left p-2 min-w-[70px]">Resolved</th>
+                  <th className="text-left p-2 min-w-[100px]">Rate %</th>
+                  <th className="text-left p-2 min-w-[80px]">Response</th>
+                  <th className="text-left p-2 min-w-[90px]">Score</th>
                 </tr>
               </thead>
               <tbody>
