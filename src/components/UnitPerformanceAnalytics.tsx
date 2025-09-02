@@ -655,11 +655,11 @@ export const UnitPerformanceAnalytics: React.FC = () => {
         <CardContent>
           <div className="space-y-4">
             {incidentTrends.slice(-14).map(trend => (
-              <div key={trend.date} className="flex items-center justify-between p-3 border rounded">
+              <div key={trend.date} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border rounded gap-2">
                 <div>
                   <p className="font-medium">{new Date(trend.date).toLocaleDateString()}</p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4">
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-orange-500" />
                     <span className="text-sm">{trend.incidents} incidents</span>
@@ -668,7 +668,7 @@ export const UnitPerformanceAnalytics: React.FC = () => {
                     <CheckCircle className="h-4 w-4 text-green-500" />
                     <span className="text-sm">{trend.resolved} resolved</span>
                   </div>
-                  <Badge variant="outline">
+                  <Badge variant="outline" className="text-xs">
                     {trend.incidents > 0 ? Math.round((trend.resolved / trend.incidents) * 100) : 0}% resolved
                   </Badge>
                 </div>
