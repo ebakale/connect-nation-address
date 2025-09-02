@@ -774,13 +774,13 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                    {(incident.reporter_email || reporterInfo.email) && (
                      <p className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                        <span className="text-sm font-medium shrink-0">Email:</span>
-                       <span className="font-mono text-sm break-all">{incident.reporter_email || reporterInfo.email}</span>
+                       <span className="font-mono text-xs sm:text-sm break-all overflow-hidden">{incident.reporter_email || reporterInfo.email}</span>
                      </p>
                    )}
                    {(incident.reporter_contact_info || reporterInfo.contact) && (
                      <p className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                        <span className="text-sm font-medium shrink-0">Contact:</span>
-                       <span className="font-mono text-sm break-all">{incident.reporter_contact_info || reporterInfo.contact}</span>
+                       <span className="font-mono text-xs sm:text-sm break-all overflow-hidden">{incident.reporter_contact_info || reporterInfo.contact}</span>
                      </p>
                    )}
                 </div>
@@ -798,7 +798,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                    {incident.incident_uac && (
                      <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg">
                        <p className="text-xs font-medium text-blue-600 mb-1">Unified Address Code (UAC)</p>
-                       <p className="font-mono text-sm sm:text-lg font-semibold text-blue-800 break-all">{incident.incident_uac}</p>
+                       <p className="font-mono text-xs sm:text-sm lg:text-base font-semibold text-blue-800 break-all overflow-hidden">{incident.incident_uac}</p>
                      </div>
                    )}
                   
@@ -844,16 +844,16 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                    {/* Coordinates */}
                    <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
                      <p className="text-xs font-medium text-gray-600 mb-1">GPS Coordinates</p>
-                     <p className="font-mono text-xs sm:text-sm break-all">
-                       {incident.location_latitude.toFixed(6)}, {incident.location_longitude.toFixed(6)}
-                     </p>
+                      <p className="font-mono text-xs break-all overflow-hidden">
+                        {incident.location_latitude.toFixed(6)}, {incident.location_longitude.toFixed(6)}
+                      </p>
                    </div>
                   
                   {/* Generated Address (fallback) */}
                   {incident.location_address && !incident.street && (
                     <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
                       <p className="text-xs font-medium text-gray-600 mb-1">Generated Address</p>
-                      <p className="text-sm text-muted-foreground">{incident.location_address}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground break-words overflow-hidden">{incident.location_address}</p>
                     </div>
                   )}
                   
@@ -1007,29 +1007,29 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
               </label>
                {isEditing && canAssignUnits ? (
                  <div className="mt-2 space-y-3">
-                   <div className="flex gap-2">
-                     <Select value={newUnit} onValueChange={setNewUnit}>
-                       <SelectTrigger className="flex-1 bg-background border border-input">
-                         <SelectValue placeholder="Select a unit to assign" />
-                       </SelectTrigger>
-                        <SelectContent className="bg-background border border-input z-50">
-                          {availableUnits
-                            .filter(unit => !editData.assigned_units.includes(unit.unit_code))
-                            .map((unit) => (
-                              <SelectItem key={unit.unit_code} value={unit.unit_code}>
-                                <div className="flex items-center gap-2">
-                                  <span className="font-medium">{unit.unit_code}</span>
-                                  <span className="text-muted-foreground">- {unit.unit_name}</span>
-                                  <Badge variant={unit.status === 'available' ? 'default' : 'secondary'} className="text-xs">
-                                    {unit.status}
-                                  </Badge>
-                                </div>
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                     </Select>
-                     <Button onClick={addUnit} size="sm" disabled={!newUnit}>Add</Button>
-                   </div>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <Select value={newUnit} onValueChange={setNewUnit}>
+                        <SelectTrigger className="flex-1 bg-background border border-input min-w-0">
+                          <SelectValue placeholder="Select a unit to assign" />
+                        </SelectTrigger>
+                         <SelectContent className="bg-background border border-input z-50">
+                           {availableUnits
+                             .filter(unit => !editData.assigned_units.includes(unit.unit_code))
+                             .map((unit) => (
+                               <SelectItem key={unit.unit_code} value={unit.unit_code}>
+                                 <div className="flex items-center gap-2">
+                                   <span className="font-medium">{unit.unit_code}</span>
+                                   <span className="text-muted-foreground">- {unit.unit_name}</span>
+                                   <Badge variant={unit.status === 'available' ? 'default' : 'secondary'} className="text-xs">
+                                     {unit.status}
+                                   </Badge>
+                                 </div>
+                               </SelectItem>
+                             ))}
+                         </SelectContent>
+                      </Select>
+                      <Button onClick={addUnit} size="sm" disabled={!newUnit} className="whitespace-nowrap w-full sm:w-auto">Add</Button>
+                    </div>
                    <div className="flex flex-wrap gap-2">
                      {editData.assigned_units.map((unit, index) => (
                        <Badge key={index} variant="outline" className="cursor-pointer"
@@ -1133,15 +1133,15 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
               </div>
             )}
             {isPoliceDispatcher && (
-              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <div className="flex flex-col gap-2 w-full">
                 <Select onValueChange={setDispatchingUnit} value={dispatchingUnit}>
-                  <SelectTrigger className="w-full sm:w-48">
+                  <SelectTrigger className="w-full min-w-0">
                     <SelectValue placeholder="Dispatch unit..." />
                   </SelectTrigger>
-                  <SelectContent className="bg-background z-50">
+                  <SelectContent className="bg-background z-50 max-w-[90vw]">
                     {availableOfficers.map((unit) => (
-                      <SelectItem key={unit.id} value={unit.id}>
-                        {unit.label}
+                      <SelectItem key={unit.id} value={unit.id} className="max-w-full">
+                        <div className="truncate">{unit.label}</div>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -1149,7 +1149,7 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                 <Button 
                   onClick={handleDispatchIncident}
                   disabled={!dispatchingUnit}
-                  className="w-full sm:w-auto"
+                  className="w-full whitespace-nowrap"
                 >
                   Dispatch Unit
                 </Button>
