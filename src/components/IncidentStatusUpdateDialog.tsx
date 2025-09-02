@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
@@ -163,12 +163,15 @@ export const IncidentStatusUpdateDialog: React.FC<IncidentStatusUpdateDialogProp
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" aria-describedby="incident-status-desc">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Flag className="h-5 w-5" />
             {incident.status === 'resolved' || incident.status === 'closed' ? 'Incident Status (Resolved)' : 'Update Incident Status'}
           </DialogTitle>
+          <DialogDescription id="incident-status-desc">
+            Change and log the incident status. Add a brief message for the audit trail.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">

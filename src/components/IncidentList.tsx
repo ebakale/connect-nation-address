@@ -301,6 +301,11 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
       if (unitError) throw unitError;
 
       const incident = incidents.find(i => i.id === incidentId);
+      if (incident?.status === 'resolved' || incident?.status === 'closed') {
+        toast.error('Cannot dispatch units to a resolved/closed incident');
+        setAssignDialog(null);
+        return;
+      }
       const currentUnits = incident?.assigned_units || [];
       
       // Add the unit code to assigned units (avoid duplicates)

@@ -381,6 +381,11 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
 
   const handleSave = async () => {
     try {
+      if (isResolved) {
+        toast.error('Resolved/closed incidents cannot be modified');
+        setIsEditing(false);
+        return;
+      }
       // Update status if changed
       if (editData.status !== incident.status) {
         const { error } = await supabase.functions.invoke('police-incident-actions', {
@@ -461,6 +466,10 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
 
   const handleMarkComplete = async () => {
     try {
+      if (isResolved) {
+        toast.error('Incident is already resolved/closed');
+        return;
+      }
       const { error } = await supabase.functions.invoke('police-incident-actions', {
         body: {
           action: 'markComplete',
