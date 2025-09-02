@@ -1434,7 +1434,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
               <div className="space-y-3">
                 <h4 className="font-medium">Quick Actions</h4>
                 <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" onClick={() => setShowBackupDialog(true)}>
+                  <Button variant="outline" className="text-xs" onClick={() => setShowBackupDialog(true)}>
                     <Users className="h-4 w-4 mr-2" />
                     Request Backup
                   </Button>
