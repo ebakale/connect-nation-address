@@ -296,14 +296,16 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
 
   return (
     <div className="space-y-6">
+      {/* Back Button at Top */}
+      {onClose && (
+        <Button variant="outline" size="sm" onClick={onClose}>
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back
+        </Button>
+      )}
+      
       {/* Header */}
-      <div className="flex items-center gap-4">
-        {onClose && (
-          <Button variant="outline" size="sm" onClick={onClose}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
-        )}
+      <div className="flex items-center justify-between">
         <div className="flex-1">
           <h1 className="text-xl font-bold">Emergency Units Overview</h1>
           <p className="text-muted-foreground">
