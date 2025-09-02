@@ -754,10 +754,9 @@ const PoliceDashboard = () => {
               {/* Header Section */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <Badge variant="outline" className="flex items-center gap-2">
-                    <Activity className="h-3 w-3" />
-                    {t('dispatchCenter')}
-                  </Badge>
+                  <p className="text-sm text-muted-foreground">
+                    {userCity ? `Coverage: ${userCity}` : 'All Areas'}
+                  </p>
                   <p className="text-sm text-muted-foreground">
                     {userCity ? `Coverage: ${userCity}` : 'All Areas'}
                   </p>
