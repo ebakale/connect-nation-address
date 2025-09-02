@@ -1450,7 +1450,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                   </Button>
                   
                   <label className="cursor-pointer">
-                    <Button variant="outline" asChild className="w-full">
+                    <Button variant="outline" asChild className="w-full text-xs">
                       <span>
                         <Camera className="h-4 w-4 mr-2" />
                         Evidence
