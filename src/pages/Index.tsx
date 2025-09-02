@@ -795,7 +795,7 @@ const navigationItems = [
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <Icon className={`h-3 w-3 sm:h-4 sm:w-4 ${activeSection === item.id ? 'glow-pulse' : ''}`} />
-                  <span className="text-xs sm:text-sm">{item.label}</span>
+                  <span className="text-xs sm:text-sm whitespace-nowrap">{item.label}</span>
                 </button>
               );
             })}
