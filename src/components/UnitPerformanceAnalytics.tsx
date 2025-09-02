@@ -352,7 +352,7 @@ export const UnitPerformanceAnalytics: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Unit Performance Analytics</h1>
+        <h1 className="text-xl font-bold">Unit Performance Analytics</h1>
         <p className="text-muted-foreground">Analyze unit performance and operational metrics</p>
       </div>
       <div className="flex items-center gap-4">
