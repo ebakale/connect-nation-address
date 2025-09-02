@@ -17,7 +17,7 @@ import {
   History, Settings, Zap, LogIn, LogOut, RefreshCw,
   Navigation2, Locate, Camera, FileText
 } from 'lucide-react';
-import { generateUAC } from '@/lib/uacGenerator';
+
 import { IncidentStatusUpdateDialog } from './IncidentStatusUpdateDialog';
 import IncidentDetailDialog from './IncidentDetailDialog';
 import IncidentMap from './IncidentMap';
@@ -836,18 +836,38 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
     }
   };
 
-  const generateCurrentUAC = async (latitude: number, longitude: number) => {
+  async function findNearestUAC(latitude: number, longitude: number): Promise<string | null> {
     try {
-      // For demo purposes, use default location data
-      // In a real implementation, you would use reverse geocoding to get actual location details
-      const country = 'Equatorial Guinea';
-      const region = 'Bioko Norte';
-      const city = 'Malabo';
-      
-      const uac = await generateUAC(country, region, city);
-      setCurrentUAC(uac);
-    } catch (error) {
-      console.error('Error generating UAC:', error);
+      const deltaLat = 20 / 111320; // ~degrees for 20m latitude
+      const deltaLon = 20 / (111320 * Math.cos(latitude * Math.PI / 180) || 1);
+
+      const { data: nearbyAddresses } = await supabase
+        .from('addresses')
+        .select('uac, latitude, longitude')
+        .gte('latitude', latitude - deltaLat)
+        .lte('latitude', latitude + deltaLat)
+        .gte('longitude', longitude - deltaLon)
+        .lte('longitude', longitude + deltaLon);
+
+      let nearest: string | null = null;
+      let minDistance = Infinity;
+      if (nearbyAddresses && Array.isArray(nearbyAddresses)) {
+        for (const addr of nearbyAddresses) {
+          const aLat = Number(addr.latitude);
+          const aLon = Number(addr.longitude);
+          if (!isNaN(aLat) && !isNaN(aLon)) {
+            const d = calculateDistance(latitude, longitude, aLat, aLon);
+            if (d <= 20 && d < minDistance) {
+              minDistance = d;
+              nearest = addr.uac as string;
+            }
+          }
+        }
+      }
+      return nearest;
+    } catch (e) {
+      console.error('Error finding nearest UAC:', e);
+      return null;
     }
   };
 
@@ -1027,6 +1047,8 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
       if (nearestUAC) {
         locationDescription = `${nearestUAC.street || 'Near'} ${nearestUAC.building || ''} (${nearestUAC.uac})`.trim();
       }
+      // Set current UAC state for display
+      setCurrentUAC(nearestUAC?.uac ?? '');
 
       const { error } = await supabase
         .from('emergency_units')
@@ -1441,18 +1463,9 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                 </div>
                 
                 {(unitInfo?.current_location || currentUAC) && (
-                  <div className="space-y-1">
-                    {unitInfo?.current_location && (
-                      <p className="text-sm text-muted-foreground">
-                        Current: {unitInfo.current_location}
-                      </p>
-                    )}
-                    {currentUAC && (
-                      <p className="text-sm text-muted-foreground">
-                        Current UAC: <span className="font-mono">{currentUAC}</span>
-                      </p>
-                    )}
-                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Current: <span className="font-mono">{currentUAC || unitInfo?.current_location}</span>
+                  </p>
                 )}
               </div>
 
@@ -1641,6 +1654,9 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
             return;
           }
           setUnitInfo(prev => prev ? { ...prev, current_location: desc, location_latitude: lat, location_longitude: lng } : prev);
+          // Try to find and set the nearest UAC for display
+          const nearest = await findNearestUAC(lat, lng);
+          setCurrentUAC(nearest || '');
           toast({ title: 'Location Updated', description: 'Manual location set successfully' });
         }}
       />
