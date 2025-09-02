@@ -693,7 +693,7 @@ const PoliceDashboard = () => {
 
           {/* Field Operations Tab */}
           <TabsContent value="field" className="space-y-6">
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center flex-wrap gap-4 mb-4">
               <Badge variant="outline" className="flex items-center gap-2">
                 <Radio className="h-3 w-3" />
                  {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher 
