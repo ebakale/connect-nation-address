@@ -854,8 +854,16 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                                         )}
                                       </div>
                                       <div className="space-y-1 text-xs text-muted-foreground mt-1">
-                                        <div>
+                                        <div className="flex items-center justify-between">
                                           <span className="whitespace-nowrap">{formatRoleTitle(member.role)}</span>
+                                          <Button
+                                            size="sm"
+                                            variant="destructive"
+                                            onClick={() => removeOfficerFromUnit(member.id)}
+                                            className="h-6 w-6 p-0"
+                                          >
+                                            <Trash2 className="h-3 w-3" />
+                                          </Button>
                                         </div>
                                         <div className="flex flex-wrap items-center gap-2 sm:gap-4">
                                           <div className="flex items-center gap-1">
@@ -870,20 +878,12 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                                           )}
                                         </div>
                                       </div>
-                                    </div>
-                                  </div>
-                                  <Button
-                                    size="sm"
-                                    variant="destructive"
-                                    onClick={() => removeOfficerFromUnit(member.id)}
-                                    className="flex-shrink-0 self-start sm:self-center"
-                                  >
-                                    <Trash2 className="h-3 w-3" />
-                                  </Button>
-                                </div>
-                              ))}
-                          </div>
-                        </div>
+                                     </div>
+                                   </div>
+                                 </div>
+                               ))}
+                           </div>
+                         </div>
                       )}
                     </div>
                   </CollapsibleContent>
