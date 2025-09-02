@@ -1080,19 +1080,19 @@ const PoliceDashboard = () => {
                     </CardContent>
                   </Card>
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Unit Status</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {userUnit && (
+                  {userUnit && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Unit Status</CardTitle>
+                      </CardHeader>
+                      <CardContent>
                         <UnitStatusManager 
                           unit={userUnit} 
                           onUpdate={() => fetchUserUnit()} 
                         />
-                      )}
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
+                  )}
                 </div>
               </div>
             </TabsContent>
