@@ -513,6 +513,10 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
       toast.error('Please select a unit to dispatch');
       return;
     }
+    if (incident.status === 'resolved' || incident.status === 'closed') {
+      toast.error('Cannot dispatch units to a resolved/closed incident');
+      return;
+    }
 
     try {
       // Get unit information
@@ -1172,7 +1176,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
             </div>
 
             {/* Quick Action Section */}
-            {isPoliceSupervisor && (
+            {isPoliceSupervisor && !isResolved && (
               <div className="flex flex-col gap-2 w-full">
                 <Select onValueChange={(value) => { setEditData({...editData, assigned_operator_id: value}); assignDispatcher(value); }} value={editData.assigned_operator_id}>
                   <SelectTrigger className="w-full min-w-0">
@@ -1212,7 +1216,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                 </Button>
               </div>
             )}
-            {isPoliceDispatcher && (
+            {canAssignUnits && (
               <div className="flex flex-col gap-2 w-full">
                 <Select onValueChange={setDispatchingUnit} value={dispatchingUnit}>
                   <SelectTrigger className="w-full min-w-0">
