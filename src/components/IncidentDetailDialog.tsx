@@ -653,14 +653,14 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-6 rounded-lg border border-primary/20">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="space-y-2">
-            <div className="flex items-center gap-3">
-              <Badge variant="outline" className="font-mono text-base px-3 py-1">
+            <div className="flex items-center gap-1 sm:gap-3 overflow-x-auto pb-1">
+              <Badge variant="outline" className="font-mono text-xs sm:text-base px-2 sm:px-3 py-1 whitespace-nowrap shrink-0">
                 {incident.incident_number}
               </Badge>
-              <Badge className={getStatusColor(incident.status)} variant="secondary">
+              <Badge variant="secondary" className={`${getStatusColor(incident.status)} text-xs sm:text-sm whitespace-nowrap shrink-0`}>
                 {incident.status.replace('_', ' ').toUpperCase()}
               </Badge>
-              <Badge className={getPriorityColor(incident.priority_level)} variant="outline">
+              <Badge variant="outline" className={`${getPriorityColor(incident.priority_level)} text-xs sm:text-sm whitespace-nowrap shrink-0`}>
                 Priority {incident.priority_level}
               </Badge>
             </div>
