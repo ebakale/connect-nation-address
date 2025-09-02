@@ -447,32 +447,30 @@ export const UnitLeadershipDashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Unit Leadership Dashboard</h1>
-          <p className="text-muted-foreground">Manage your units and coordinate operations</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <Select value={selectedUnit?.id || ''} onValueChange={(value) => {
-            const unit = managedUnits.find(u => u.id === value);
-            setSelectedUnit(unit || null);
-          }}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Select Unit" />
-            </SelectTrigger>
-            <SelectContent>
-              {managedUnits.map(unit => (
-                <SelectItem key={unit.id} value={unit.id}>
-                  {unit.unit_code} - {unit.unit_name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button onClick={() => window.location.reload()} variant="outline" size="sm">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
-          </Button>
-        </div>
+      <div>
+        <h1 className="text-2xl font-bold">Unit Leadership Dashboard</h1>
+        <p className="text-muted-foreground">Manage your units and coordinate operations</p>
+      </div>
+      <div className="flex items-center gap-4">
+        <Select value={selectedUnit?.id || ''} onValueChange={(value) => {
+          const unit = managedUnits.find(u => u.id === value);
+          setSelectedUnit(unit || null);
+        }}>
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="Select Unit" />
+          </SelectTrigger>
+          <SelectContent>
+            {managedUnits.map(unit => (
+              <SelectItem key={unit.id} value={unit.id}>
+                {unit.unit_code} - {unit.unit_name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Button onClick={() => window.location.reload()} variant="outline" size="sm">
+          <RefreshCw className="h-4 w-4 mr-2" />
+          Refresh
+        </Button>
       </div>
 
       {selectedUnit && (
