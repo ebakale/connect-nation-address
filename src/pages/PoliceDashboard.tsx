@@ -788,7 +788,7 @@ const PoliceDashboard = () => {
 
               {/* Main Content Tabs */}
               <Tabs defaultValue="incidents" className="w-full">
-                <TabsList className="grid w-full grid-cols-6">
+                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-1">
                   <TabsTrigger value="incidents" className="flex items-center gap-1">
                     <AlertTriangle className="h-3 w-3" />
                     Incidents
