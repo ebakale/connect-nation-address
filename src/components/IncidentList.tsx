@@ -472,7 +472,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate 
                   </div>
                   {/* Show location if available */}
                   {incident.incident_uac && (
-                    <div className="text-xs text-blue-600 font-mono">
+                    <div className="text-xs text-blue-600 font-mono whitespace-nowrap overflow-hidden text-ellipsis">
                       📍 {incident.incident_uac}
                     </div>
                   )}
