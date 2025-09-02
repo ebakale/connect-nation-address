@@ -63,9 +63,9 @@ export const UnitsAndProfilesPage: React.FC = () => {
             <Shield className="h-4 w-4" />
             Unit Management
           </TabsTrigger>
-          <TabsTrigger value="officers" className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
-            Officer Profiles & Performance
+          <TabsTrigger value="officers" className="flex items-center gap-2 text-sm">
+            <Users className="h-4 w-4 flex-shrink-0" />
+            <span className="truncate">Officer Profiles & Performance</span>
           </TabsTrigger>
         </TabsList>
 
