@@ -853,18 +853,22 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                                           <Badge variant="outline" className="text-xs">Lead</Badge>
                                         )}
                                       </div>
-                                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-muted-foreground mt-1">
-                                        <span className="whitespace-nowrap">{formatRoleTitle(member.role)}</span>
-                                        <div className="flex items-center gap-1">
-                                          <Mail className="h-3 w-3" />
-                                          <span className="truncate">{member.profiles.email}</span>
+                                      <div className="space-y-1 text-xs text-muted-foreground mt-1">
+                                        <div>
+                                          <span className="whitespace-nowrap">{formatRoleTitle(member.role)}</span>
                                         </div>
-                                        {member.profiles.phone && (
+                                        <div className="flex flex-wrap items-center gap-2 sm:gap-4">
                                           <div className="flex items-center gap-1">
-                                            <Phone className="h-3 w-3" />
-                                            <span className="truncate">{member.profiles.phone}</span>
+                                            <Mail className="h-3 w-3" />
+                                            <span className="truncate">{member.profiles.email}</span>
                                           </div>
-                                        )}
+                                          {member.profiles.phone && (
+                                            <div className="flex items-center gap-1">
+                                              <Phone className="h-3 w-3" />
+                                              <span className="truncate">{member.profiles.phone}</span>
+                                            </div>
+                                          )}
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
