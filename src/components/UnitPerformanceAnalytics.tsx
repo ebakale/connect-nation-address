@@ -474,7 +474,59 @@ export const UnitPerformanceAnalytics: React.FC = () => {
           <CardTitle>Unit Performance Breakdown</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
+          <div className="grid gap-4 md:hidden">
+            {/* Mobile Card Layout */}
+            {performanceData.map(unit => (
+              <div key={unit.unit_code} className="border rounded-lg p-4 space-y-3">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-medium">{unit.unit_code}</p>
+                    <p className="text-sm text-muted-foreground">{unit.unit_name}</p>
+                  </div>
+                  <Badge variant={
+                    unit.completion_rate >= 90 ? 'default' :
+                    unit.completion_rate >= 70 ? 'secondary' : 'destructive'
+                  }>
+                    {unit.completion_rate >= 90 ? 'Excellent' :
+                     unit.completion_rate >= 70 ? 'Good' : 'Needs Improvement'}
+                  </Badge>
+                </div>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-muted-foreground">Members:</span>
+                    <span className="ml-1 font-medium">{unit.member_count}</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Response:</span>
+                    <span className="ml-1 font-medium">{Math.round(unit.average_response_time)}m</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Incidents:</span>
+                    <span className="ml-1 font-medium">{unit.total_incidents}</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Resolved:</span>
+                    <span className="ml-1 font-medium">{unit.resolved_incidents}</span>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-center justify-between text-sm mb-1">
+                    <span className="text-muted-foreground">Completion Rate</span>
+                    <span className="font-medium">{Math.round(unit.completion_rate)}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-green-500 h-2 rounded-full" 
+                      style={{ width: `${unit.completion_rate}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Desktop Table Layout */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full min-w-max">
               <thead>
                 <tr className="border-b">
