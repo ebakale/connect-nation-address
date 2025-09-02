@@ -732,9 +732,9 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
         </Card>
       )}
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Column 1: Emergency Information */}
-        <div className="xl:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4 md:space-y-6">
           {/* Emergency Information - Now Primary */}
           <Card className="border-destructive/20 bg-destructive/5">
             <CardHeader>
@@ -765,24 +765,24 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                   Reporter Information
                 </label>
                 <div className="mt-1 space-y-1">
-                  {(incident.reporter_name || reporterInfo.name) && (
-                    <p className="flex items-center gap-2">
-                      <span className="text-sm font-medium">Name:</span>
-                      <span>{incident.reporter_name || reporterInfo.name}</span>
-                    </p>
-                  )}
-                  {(incident.reporter_email || reporterInfo.email) && (
-                    <p className="flex items-center gap-2">
-                      <span className="text-sm font-medium">Email:</span>
-                      <span className="font-mono">{incident.reporter_email || reporterInfo.email}</span>
-                    </p>
-                  )}
-                  {(incident.reporter_contact_info || reporterInfo.contact) && (
-                    <p className="flex items-center gap-2">
-                      <span className="text-sm font-medium">Contact:</span>
-                      <span className="font-mono">{incident.reporter_contact_info || reporterInfo.contact}</span>
-                    </p>
-                  )}
+                   {(incident.reporter_name || reporterInfo.name) && (
+                     <p className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                       <span className="text-sm font-medium shrink-0">Name:</span>
+                       <span className="break-words">{incident.reporter_name || reporterInfo.name}</span>
+                     </p>
+                   )}
+                   {(incident.reporter_email || reporterInfo.email) && (
+                     <p className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                       <span className="text-sm font-medium shrink-0">Email:</span>
+                       <span className="font-mono text-sm break-all">{incident.reporter_email || reporterInfo.email}</span>
+                     </p>
+                   )}
+                   {(incident.reporter_contact_info || reporterInfo.contact) && (
+                     <p className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                       <span className="text-sm font-medium shrink-0">Contact:</span>
+                       <span className="font-mono text-sm break-all">{incident.reporter_contact_info || reporterInfo.contact}</span>
+                     </p>
+                   )}
                 </div>
               </div>
             )}
@@ -794,45 +794,60 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
                   Emergency Location
                 </label>
                 <div className="mt-1 space-y-3">
-                  {/* Primary: UAC */}
-                  {incident.incident_uac && (
-                    <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg">
-                      <p className="text-xs font-medium text-blue-600 mb-1">Unified Address Code (UAC)</p>
-                      <p className="font-mono text-lg font-semibold text-blue-800">{incident.incident_uac}</p>
-                    </div>
-                  )}
+                   {/* Primary: UAC */}
+                   {incident.incident_uac && (
+                     <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                       <p className="text-xs font-medium text-blue-600 mb-1">Unified Address Code (UAC)</p>
+                       <p className="font-mono text-sm sm:text-lg font-semibold text-blue-800 break-all">{incident.incident_uac}</p>
+                     </div>
+                   )}
                   
                   {/* Secondary: Structured Address (if available) */}
                   {(incident.street || incident.city || incident.region || incident.country) && (
                     <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
                       <p className="text-xs font-medium text-gray-600 mb-2">Address Information</p>
-                      <div className="space-y-1 text-sm">
-                        {incident.building && (
-                          <p><span className="font-medium">Building:</span> {incident.building}</p>
-                        )}
-                        {incident.street && (
-                          <p><span className="font-medium">Street:</span> {incident.street}</p>
-                        )}
-                        {incident.city && (
-                          <p><span className="font-medium">City:</span> {incident.city}</p>
-                        )}
-                        {incident.region && (
-                          <p><span className="font-medium">Region:</span> {incident.region}</p>
-                        )}
-                        {incident.country && (
-                          <p><span className="font-medium">Country:</span> {incident.country}</p>
-                        )}
-                      </div>
+                       <div className="space-y-1 text-sm">
+                         {incident.building && (
+                           <p className="flex flex-col sm:flex-row gap-1 sm:gap-2">
+                             <span className="font-medium shrink-0">Building:</span> 
+                             <span className="break-words">{incident.building}</span>
+                           </p>
+                         )}
+                         {incident.street && (
+                           <p className="flex flex-col sm:flex-row gap-1 sm:gap-2">
+                             <span className="font-medium shrink-0">Street:</span> 
+                             <span className="break-words">{incident.street}</span>
+                           </p>
+                         )}
+                         {incident.city && (
+                           <p className="flex flex-col sm:flex-row gap-1 sm:gap-2">
+                             <span className="font-medium shrink-0">City:</span> 
+                             <span className="break-words">{incident.city}</span>
+                           </p>
+                         )}
+                         {incident.region && (
+                           <p className="flex flex-col sm:flex-row gap-1 sm:gap-2">
+                             <span className="font-medium shrink-0">Region:</span> 
+                             <span className="break-words">{incident.region}</span>
+                           </p>
+                         )}
+                         {incident.country && (
+                           <p className="flex flex-col sm:flex-row gap-1 sm:gap-2">
+                             <span className="font-medium shrink-0">Country:</span> 
+                             <span className="break-words">{incident.country}</span>
+                           </p>
+                         )}
+                       </div>
                     </div>
                   )}
                   
-                  {/* Coordinates */}
-                  <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
-                    <p className="text-xs font-medium text-gray-600 mb-1">GPS Coordinates</p>
-                    <p className="font-mono text-sm">
-                      {incident.location_latitude.toFixed(6)}, {incident.location_longitude.toFixed(6)}
-                    </p>
-                  </div>
+                   {/* Coordinates */}
+                   <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
+                     <p className="text-xs font-medium text-gray-600 mb-1">GPS Coordinates</p>
+                     <p className="font-mono text-xs sm:text-sm break-all">
+                       {incident.location_latitude.toFixed(6)}, {incident.location_longitude.toFixed(6)}
+                     </p>
+                   </div>
                   
                   {/* Generated Address (fallback) */}
                   {incident.location_address && !incident.street && (
@@ -1066,8 +1081,8 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
 
         {/* Action Buttons */}
         {!isEditing && (
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-4 border-t">
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-col gap-3 pt-4 border-t">
+             <div className="flex flex-wrap gap-2">
               {canComplete && incident.status !== 'resolved' && incident.status !== 'closed' && (
                 <Button onClick={handleMarkComplete}>
                   <CheckCircle className="h-4 w-4 mr-2" />
@@ -1078,9 +1093,9 @@ const IncidentDetailDialog = ({ incident, onUpdate }: IncidentDetailDialogProps)
 
             {/* Quick Action Section */}
             {isPoliceSupervisor && (
-              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <div className="flex flex-col gap-2 w-full">
                 <Select onValueChange={(value) => { setEditData({...editData, assigned_operator_id: value}); assignDispatcher(value); }} value={editData.assigned_operator_id}>
-                  <SelectTrigger className="w-full sm:w-48">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Assign dispatcher..." />
                   </SelectTrigger>
                   <SelectContent className="bg-background border border-input z-50">
