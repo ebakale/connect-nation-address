@@ -61,18 +61,53 @@ serve(async (req) => {
 
     const { action, incidentId, data } = await req.json();
 
+    // Load current incident to enforce state-based restrictions
+    const { data: incidentRow, error: incidentError } = await supabase
+      .from('emergency_incidents')
+      .select('status')
+      .eq('id', incidentId)
+      .single();
+    if (incidentError || !incidentRow) {
+      return new Response(
+        JSON.stringify({ error: 'Incident not found' }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    const isResolved = ['resolved', 'closed'].includes(incidentRow.status);
+
+    // Block modifications on resolved/closed incidents (server-side hard stop)
+    const blockedOnResolved = ['assignUnits', 'assignOperator', 'updatePriority', 'markComplete'];
+    if (isResolved && blockedOnResolved.includes(action)) {
+      return new Response(
+        JSON.stringify({ error: 'Cannot modify a resolved/closed incident' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     let result;
     
     switch (action) {
       case 'updateStatus':
+        // Determine target status (support both "status" and "newStatus" from clients)
+        const targetStatus = (data?.status ?? data?.newStatus) as string;
+        if (!targetStatus) {
+          throw new Error('Missing target status');
+        }
+        // Only supervisors can change status when incident is resolved/closed (reopen)
+        if (isResolved && userRole !== 'police_supervisor') {
+          return new Response(
+            JSON.stringify({ error: 'Only supervisors can reopen resolved/closed incidents' }),
+            { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
         // Update incident status
         const { error: statusError } = await supabase
           .from('emergency_incidents')
           .update({ 
-            status: data.status,
+            status: targetStatus,
             updated_at: new Date().toISOString(),
-            ...(data.status === 'resolved' && { resolved_at: new Date().toISOString() }),
-            ...(data.status === 'closed' && { closed_at: new Date().toISOString() })
+            ...(targetStatus === 'resolved' && { resolved_at: new Date().toISOString() }),
+            ...(targetStatus === 'closed' && { closed_at: new Date().toISOString() })
           })
           .eq('id', incidentId);
 
@@ -86,8 +121,9 @@ serve(async (req) => {
             user_id: user.id,
             action: 'status_updated',
             details: { 
-              old_status: data.oldStatus,
-              new_status: data.status,
+              old_status: data.oldStatus ?? incidentRow.status,
+              new_status: targetStatus,
+              updated_by_role: userRole,
               timestamp: new Date().toISOString()
             }
           });
