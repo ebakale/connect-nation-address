@@ -7,7 +7,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
 import { 
   Users, MapPin, Radio, Car, Crown, User, Shield, 
-  Activity, Clock, Target, ArrowLeft, RefreshCw, Search, Filter 
+  Activity, Clock, Target, ArrowLeft, RefreshCw, Search, Filter,
+  ChevronDown, ChevronUp
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -52,6 +53,7 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
   const [units, setUnits] = useState<UnitInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const [userCity, setUserCity] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -62,6 +64,16 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
     onDutyUnits: 0,
     unassignedUnits: 0
   });
+
+  const toggleCard = (unitId: string) => {
+    const newExpanded = new Set(expandedCards);
+    if (newExpanded.has(unitId)) {
+      newExpanded.delete(unitId);
+    } else {
+      newExpanded.add(unitId);
+    }
+    setExpandedCards(newExpanded);
+  };
 
   const fetchUserCity = async () => {
     if (!user?.id) return;
@@ -418,29 +430,45 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
 
       {/* Units Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {filteredUnits.map((unit) => (
-          <Card key={unit.id} className="h-fit">
-            <CardHeader className="pb-4">
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-xl flex items-center gap-2">
-                    <div className={`w-3 h-3 rounded-full ${getStatusColor(unit.status)}`} />
-                    {unit.unit_code}
-                  </CardTitle>
-                  <p className="text-sm text-muted-foreground font-medium">{unit.unit_name}</p>
-                  <div className="flex gap-2 mt-2">
-                    <Badge variant="outline">
-                      {unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1)}
+        {filteredUnits.map((unit) => {
+          const isExpanded = expandedCards.has(unit.id);
+          return (
+            <Card key={unit.id} className="h-fit">
+              <CardHeader 
+                className="pb-4 cursor-pointer" 
+                onClick={() => toggleCard(unit.id)}
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-xl flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded-full ${getStatusColor(unit.status)}`} />
+                      {unit.unit_code}
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground font-medium">{unit.unit_name}</p>
+                    <div className="flex gap-2 mt-2">
+                      <Badge variant="outline">
+                        {unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1)}
+                      </Badge>
+                      <Badge variant={getStatusBadgeVariant(unit.status)}>
+                        {unit.status.charAt(0).toUpperCase() + unit.status.slice(1)}
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {unit.emergency_unit_members.length} members
                     </Badge>
-                    <Badge variant={getStatusBadgeVariant(unit.status)}>
-                      {unit.status.charAt(0).toUpperCase() + unit.status.slice(1)}
-                    </Badge>
+                    {isExpanded ? (
+                      <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                    )}
                   </div>
                 </div>
-              </div>
-            </CardHeader>
-            
-            <CardContent className="space-y-4">
+              </CardHeader>
+              
+              {isExpanded && (
+                <CardContent className="space-y-4">
               {/* Unit Details */}
               <div className="space-y-2">
                 {unit.radio_frequency && (
@@ -526,8 +554,10 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
                 )}
               </div>
             </CardContent>
-          </Card>
-        ))}
+              )}
+            </Card>
+          );
+        })}
       </div>
 
       {filteredUnits.length === 0 && (
