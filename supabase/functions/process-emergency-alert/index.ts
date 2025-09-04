@@ -206,19 +206,17 @@ serve(async (req) => {
       console.log('Notification response:', notificationResponse);
     }
 
-    // Send acknowledgment notification to reporter
-    if (reporterId) {
-      console.log('Sending acknowledgment notification to reporter');
-      
-      const acknowledgmentResponse = await supabase.functions.invoke('notify-incident-reporter', {
-        body: {
-          incidentId: incident.id,
-          type: 'acknowledgment'
-        }
-      });
+    // Send acknowledgment notification to all reporters (registered and unregistered)
+    console.log('Sending acknowledgment notification to reporter');
+    
+    const acknowledgmentResponse = await supabase.functions.invoke('notify-incident-reporter', {
+      body: {
+        incidentId: incident.id,
+        type: 'acknowledgment'
+      }
+    });
 
-      console.log('Acknowledgment notification response:', acknowledgmentResponse);
-    }
+    console.log('Acknowledgment notification response:', acknowledgmentResponse);
 
     // SMS Fallback for offline scenarios (fallback in case notification system fails)
     if (contactInfo && contactInfo.includes('+')) {
