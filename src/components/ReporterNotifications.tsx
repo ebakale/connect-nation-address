@@ -23,6 +23,8 @@ export const ReporterNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
 
+  console.log('ReporterNotifications: User:', user?.id);
+
   useEffect(() => {
     if (user) {
       fetchNotifications();
@@ -51,8 +53,13 @@ export const ReporterNotifications = () => {
   }, [user]);
 
   const fetchNotifications = async () => {
-    if (!user) return;
+    if (!user) {
+      console.log('ReporterNotifications: No user found');
+      setLoading(false);
+      return;
+    }
 
+    console.log('ReporterNotifications: Fetching notifications for user:', user.id);
     const { data, error } = await supabase
       .from('emergency_notifications')
       .select('*')
@@ -60,6 +67,8 @@ export const ReporterNotifications = () => {
       .order('created_at', { ascending: false })
       .limit(20);
 
+    console.log('ReporterNotifications: Query result:', { data, error });
+    
     if (error) {
       console.error('Error fetching notifications:', error);
       toast.error('Failed to load notifications');
@@ -128,12 +137,39 @@ export const ReporterNotifications = () => {
     }
   };
 
+  console.log('ReporterNotifications: Rendering with:', { loading, user: user?.id, notificationsCount: notifications.length });
+
   if (loading) {
     return (
       <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Bell className="h-5 w-5" />
+            Incident Notifications
+          </CardTitle>
+        </CardHeader>
         <CardContent className="p-6">
           <div className="flex items-center justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span className="ml-2">Loading notifications...</span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Bell className="h-5 w-5" />
+            Incident Notifications
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="text-center text-muted-foreground">
+            Please log in to view your notifications
           </div>
         </CardContent>
       </Card>
