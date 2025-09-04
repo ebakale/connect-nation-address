@@ -4,7 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Bell, CheckCircle, Clock, MapPin, AlertTriangle } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Bell, CheckCircle, Clock, MapPin, AlertTriangle, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Notification {
@@ -22,6 +23,7 @@ export const ReporterNotifications = () => {
   const { user } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedNotifications, setExpandedNotifications] = useState<Set<string>>(new Set());
 
   console.log('ReporterNotifications: User:', user?.id);
 
@@ -110,6 +112,18 @@ export const ReporterNotifications = () => {
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
       toast.success('All notifications marked as read');
     }
+  };
+
+  const toggleExpanded = (notificationId: string) => {
+    setExpandedNotifications(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(notificationId)) {
+        newSet.delete(notificationId);
+      } else {
+        newSet.add(notificationId);
+      }
+      return newSet;
+    });
   };
 
   const getPriorityColor = (priority: number) => {
@@ -206,63 +220,101 @@ export const ReporterNotifications = () => {
             <p className="text-sm">You'll receive updates about your incident reports here</p>
           </div>
         ) : (
-          notifications.map((notification) => (
-            <div
-              key={notification.id}
-              className={`border rounded-lg p-4 ${
-                !notification.read ? 'bg-blue-50 border-blue-200' : 'bg-white'
-              }`}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-3 flex-1">
-                  {getNotificationIcon(notification.metadata)}
-                  <div className="flex-1 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-medium">{notification.title}</h4>
-                      <Badge variant={getPriorityColor(notification.priority_level)}>
-                        Priority {notification.priority_level}
-                      </Badge>
-                      {!notification.read && (
-                        <Badge variant="secondary">New</Badge>
-                      )}
-                    </div>
-                    
-                    {notification.metadata?.incident_number && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin className="h-3 w-3" />
-                        Incident #{notification.metadata.incident_number}
-                        {notification.metadata.emergency_type && (
-                          <>
-                            <span>•</span>
-                            <span className="capitalize">{notification.metadata.emergency_type}</span>
-                          </>
-                        )}
+          notifications.map((notification) => {
+            const isExpanded = expandedNotifications.has(notification.id);
+            
+            return (
+              <Collapsible key={notification.id} open={isExpanded} onOpenChange={() => toggleExpanded(notification.id)}>
+                <div className={`border rounded-lg ${!notification.read ? 'bg-blue-50 border-blue-200' : 'bg-white'}`}>
+                  <CollapsibleTrigger asChild>
+                    <div className="p-4 cursor-pointer hover:bg-muted/50 transition-colors">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start gap-3 flex-1">
+                          {getNotificationIcon(notification.metadata)}
+                          <div className="flex-1 space-y-2">
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-medium">{notification.title}</h4>
+                              <Badge variant={getPriorityColor(notification.priority_level)}>
+                                Priority {notification.priority_level}
+                              </Badge>
+                              {!notification.read && (
+                                <Badge variant="secondary">New</Badge>
+                              )}
+                            </div>
+                            
+                            {notification.metadata?.incident_number && (
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <MapPin className="h-3 w-3" />
+                                Incident #{notification.metadata.incident_number}
+                                {notification.metadata.emergency_type && (
+                                  <>
+                                    <span>•</span>
+                                    <span className="capitalize">{notification.metadata.emergency_type}</span>
+                                  </>
+                                )}
+                              </div>
+                            )}
+                            
+                            <div className="flex items-center justify-between">
+                              <time className="text-xs text-muted-foreground">
+                                {new Date(notification.created_at).toLocaleString()}
+                              </time>
+                              <ChevronDown className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    )}
-                    
-                    <p className="text-sm text-muted-foreground whitespace-pre-line">
-                      {notification.message}
-                    </p>
-                    
-                    <div className="flex items-center justify-between">
-                      <time className="text-xs text-muted-foreground">
-                        {new Date(notification.created_at).toLocaleString()}
-                      </time>
-                      {!notification.read && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => markAsRead(notification.id)}
-                        >
-                          Mark as read
-                        </Button>
-                      )}
                     </div>
-                  </div>
+                  </CollapsibleTrigger>
+                  
+                  <CollapsibleContent>
+                    <div className="px-4 pb-4 pt-0 border-t bg-muted/20">
+                      <div className="space-y-3">
+                        <div>
+                          <h5 className="text-sm font-medium mb-2">Message Details</h5>
+                          <p className="text-sm text-muted-foreground whitespace-pre-line">
+                            {notification.message}
+                          </p>
+                        </div>
+                        
+                        {notification.metadata && Object.keys(notification.metadata).length > 0 && (
+                          <div>
+                            <h5 className="text-sm font-medium mb-2">Additional Information</h5>
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                              {Object.entries(notification.metadata).map(([key, value]) => (
+                                <div key={key} className="flex flex-col">
+                                  <span className="text-muted-foreground capitalize">{key.replace(/_/g, ' ')}</span>
+                                  <span className="font-medium">{String(value)}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        
+                        <div className="flex items-center justify-between pt-2">
+                          <Badge variant="outline" className="text-xs">
+                            {notification.type}
+                          </Badge>
+                          {!notification.read && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                markAsRead(notification.id);
+                              }}
+                            >
+                              Mark as read
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </CollapsibleContent>
                 </div>
-              </div>
-            </div>
-          ))
+              </Collapsible>
+            );
+          })
         )}
       </CardContent>
     </Card>
