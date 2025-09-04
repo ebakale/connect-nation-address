@@ -128,6 +128,25 @@ serve(async (req) => {
             }
           });
 
+        // Send notification to reporter about status change
+        if (incidentRow.reporter_id) {
+          console.log('Sending status update notification to reporter');
+          
+          const notificationType = targetStatus === 'resolved' || targetStatus === 'closed' ? 'resolution' : 'status_update';
+          
+          const reporterNotificationResponse = await supabase.functions.invoke('notify-incident-reporter', {
+            body: {
+              incidentId: incidentId,
+              type: notificationType,
+              oldStatus: data.oldStatus ?? incidentRow.status,
+              newStatus: targetStatus,
+              message: data.message || undefined
+            }
+          });
+
+          console.log('Reporter notification response:', reporterNotificationResponse);
+        }
+
         result = { success: true, message: 'Incident status updated' };
         break;
 

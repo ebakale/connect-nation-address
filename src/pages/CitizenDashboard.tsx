@@ -11,6 +11,7 @@ import AddressSearch from "@/components/AddressSearch";
 import AddressMapViewer from "@/components/AddressMapViewer";
 import { AddressRequestForm } from "@/components/AddressRequestForm";
 import { AddressRequestStatus } from "@/components/AddressRequestStatus";
+import { ReporterNotifications } from "@/components/ReporterNotifications";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -152,6 +153,11 @@ const CitizenDashboard = () => {
               </Button>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Incident Notifications Section */}
+        <div className="mt-8">
+          <ReporterNotifications />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
