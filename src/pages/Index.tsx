@@ -689,7 +689,7 @@ const navigationItems = [
                 Send emergency alerts directly to police and emergency services
               </p>
             </div>
-            <EmergencyAlertProcessor />
+            <EmergencyAlertProcessor onSuccess={() => setActiveSection('overview')} />
           </div>
         );
         

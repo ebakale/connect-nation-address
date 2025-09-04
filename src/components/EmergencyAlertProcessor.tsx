@@ -20,7 +20,11 @@ interface EmergencyAlertData {
   contactInfo?: string;
 }
 
-const EmergencyAlertProcessor = () => {
+interface EmergencyAlertProcessorProps {
+  onSuccess?: () => void;
+}
+
+const EmergencyAlertProcessor = ({ onSuccess }: EmergencyAlertProcessorProps) => {
   const { user } = useAuth();
   const { latitude, longitude, getCurrentPosition } = useGeolocation();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -76,6 +80,13 @@ const EmergencyAlertProcessor = () => {
       
       toast.success('Emergency alert sent successfully!');
       setFormData({ emergencyType: '', message: '', contactInfo: '' });
+      
+      // Call onSuccess callback to close the emergency section
+      if (onSuccess) {
+        setTimeout(() => {
+          onSuccess();
+        }, 1500); // Give user time to see the success message
+      }
     } catch (error) {
       toast.error('Failed to send emergency alert');
     } finally {
