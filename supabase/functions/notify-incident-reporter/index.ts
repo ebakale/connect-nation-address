@@ -53,9 +53,9 @@ serve(async (req) => {
 
     console.log(`Found incident ${incident.incident_number} with reporter_id: ${incident.reporter_id}`);
 
-    // Only notify if there's a reporter
-    if (!incident.reporter_id) {
-      console.log('No reporter ID found, skipping notification');
+    // Handle both registered users and unregistered reporters
+    if (!incident.reporter_id && !incident.reporter_contact_info) {
+      console.log('No reporter ID or contact info found, skipping notification');
       return new Response(
         JSON.stringify({ success: true, message: 'No reporter to notify' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -113,35 +113,39 @@ If you have any follow-up questions or concerns about this incident, please cont
         throw new Error(`Unknown notification type: ${type}`);
     }
 
-    // Create in-app notification
-    const { error: notificationError } = await supabase
-      .from('emergency_notifications')
-      .insert({
-        user_id: incident.reporter_id,
-        incident_id: incident.id,
-        title: title,
-        message: notificationMessage,
-        type: 'incident_update',
-        priority_level: priority,
-        read: false,
-        metadata: {
-          incident_number: incident.incident_number,
-          emergency_type: incident.emergency_type,
-          notification_type: type,
-          old_status: oldStatus,
-          new_status: newStatus,
-          timestamp: new Date().toISOString()
-        }
-      });
+    // Create in-app notification only for registered users
+    if (incident.reporter_id) {
+      const { error: notificationError } = await supabase
+        .from('emergency_notifications')
+        .insert({
+          user_id: incident.reporter_id,
+          incident_id: incident.id,
+          title: title,
+          message: notificationMessage,
+          type: 'incident_update',
+          priority_level: priority,
+          read: false,
+          metadata: {
+            incident_number: incident.incident_number,
+            emergency_type: incident.emergency_type,
+            notification_type: type,
+            old_status: oldStatus,
+            new_status: newStatus,
+            timestamp: new Date().toISOString()
+          }
+        });
 
-    if (notificationError) {
-      console.error('Error creating notification:', notificationError);
-      throw notificationError;
+      if (notificationError) {
+        console.error('Error creating notification:', notificationError);
+        throw notificationError;
+      }
+
+      console.log(`In-app notification created for registered reporter`);
+    } else {
+      console.log(`Skipping in-app notification for unregistered reporter`);
     }
 
-    console.log(`In-app notification created for reporter`);
-
-    // Send SMS if contact info is available and contains a phone number
+    // Send SMS to both registered and unregistered reporters if contact info is available
     if (incident.reporter_contact_info && incident.reporter_contact_info.includes('+')) {
       console.log(`Sending SMS to ${incident.reporter_contact_info}`);
       
@@ -178,25 +182,31 @@ Time: ${new Date().toLocaleString()}`;
       .from('emergency_incident_logs')
       .insert({
         incident_id: incident.id,
-        user_id: 'system',
+        user_id: incident.reporter_id || 'unregistered_reporter',
         action: `reporter_notification_${type}`,
         details: {
           notification_type: type,
           reporter_id: incident.reporter_id,
+          reporter_contact_info: incident.reporter_contact_info ? '***' + incident.reporter_contact_info.slice(-4) : null,
           old_status: oldStatus,
           new_status: newStatus,
-          notification_methods: ['in_app', ...(incident.reporter_contact_info?.includes('+') ? ['sms'] : [])],
+          notification_methods: [
+            ...(incident.reporter_id ? ['in_app'] : []),
+            ...(incident.reporter_contact_info?.includes('+') ? ['sms'] : [])
+          ],
           timestamp: new Date().toISOString()
         }
       });
 
-    console.log(`${type} notification sent successfully to reporter`);
+    console.log(`${type} notification sent successfully to ${incident.reporter_id ? 'registered' : 'unregistered'} reporter`);
 
+    const reporterType = incident.reporter_id ? 'registered_user' : 'unregistered_reporter';
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: `${type} notification sent successfully`,
+        message: `${type} notification sent successfully to ${reporterType}`,
         incident_number: incident.incident_number,
+        reporter_type: reporterType,
         reporter_notified: true
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
