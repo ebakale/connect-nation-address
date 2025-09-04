@@ -36,6 +36,7 @@ import FieldMap from "@/components/FieldMap";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
 import { SystemManualPDF } from "@/components/SystemManualPDF";
 import EmergencyContacts from "@/components/EmergencyContacts";
+import { ReporterNotifications } from "@/components/ReporterNotifications";
 
 interface SearchResult {
   uac: string;
@@ -763,6 +764,10 @@ const UnifiedDashboard = () => {
           )}
         </div>
 
+        {/* Incident Notifications */}
+        <div className="mt-6">
+          <ReporterNotifications />
+        </div>
 
         {/* Emergency Contacts */}
         <Card>
