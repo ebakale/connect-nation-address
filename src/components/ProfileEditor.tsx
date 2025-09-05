@@ -206,11 +206,13 @@ export const ProfileEditor = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Lock className="h-5 w-5" />
+          <CardTitle className="flex items-center gap-3 text-base">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Lock className="h-4 w-4 text-primary" />
+            </div>
             {t('changePassword')}
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="mt-2">
             {t('updateAccountPassword')}
           </CardDescription>
         </CardHeader>
