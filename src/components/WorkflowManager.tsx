@@ -91,7 +91,7 @@ export const WorkflowManager: React.FC = () => {
               Current Role: {role ? role.replace('_', ' ').toUpperCase() : 'Not Assigned'}
             </Badge>
             <ArrowRight className="h-4 w-4 text-muted-foreground" />
-            <Badge variant="outline" className="text-sm">
+            <Badge variant="outline" className="text-sm whitespace-nowrap">
               Workflow Stage: {currentStage.replace('_', ' ').toUpperCase()}
             </Badge>
           </div>
