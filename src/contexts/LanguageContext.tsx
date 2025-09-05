@@ -221,6 +221,12 @@ const translations: Record<string, string> = {
   signUp: 'Sign Up',
   emailAddress: 'Email Address',
   password: 'Password',
+  changePassword: 'Change Password',
+  newPassword: 'New Password',
+  confirmNewPassword: 'Confirm New Password',
+  enterNewPassword: 'Enter your new password',
+  confirmNewPasswordPlaceholder: 'Confirm your new password',
+  updateAccountPassword: 'Update your account password for security',
   fullName: 'Full Name',
   confirmPassword: 'Confirm Password',
   enterEmail: 'Enter your email',
@@ -480,9 +486,7 @@ const translations: Record<string, string> = {
   updatePersonalInformation: 'Update your personal information and contact details',
   enterPhoneNumber: 'Enter your phone number',
   updateProfile: 'Update Profile',
-  updateAccountPassword: 'Update your account password for security',
-  enterNewPassword: 'Enter new password',
-  confirmNewPasswordPlaceholder: 'Confirm new password',
+  updating: 'Updating...',
   pleaseLogInToEditProfile: 'Please log in to edit your profile.',
   
   // Officer Profile translations
