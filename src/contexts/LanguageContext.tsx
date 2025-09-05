@@ -5,10 +5,10 @@ interface LanguageContextType {
 }
 
 const LanguageContext = createContext<LanguageContextType>({
-  t: (key: string) => key, // Fallback function
+  t: (key: string) => key, // Default fallback that returns the key
 });
 
-// English-only translations
+// Force refresh - English-only translations
 const translations: Record<string, string> = {
   // Emergency Management System
   emergencyManagement: 'Emergency Management',

@@ -28,7 +28,7 @@ const UnifiedAuth = () => {
   
   const { signIn, signUp, user, isOnlineMode } = useUnifiedAuth();
   const { isPoliceRole, loading: roleLoading } = useUserRole();
-  const { t } = useLanguage();
+  const { t } = useLanguage(); // Using updated language context
 
   if (user) {
     if (roleLoading) return null;
