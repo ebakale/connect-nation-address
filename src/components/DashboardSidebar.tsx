@@ -28,6 +28,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { useUserRole } from '@/hooks/useUserRole';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
 interface NavigationItem {
@@ -45,8 +46,9 @@ interface DashboardSidebarProps {
 }
 
 export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: DashboardSidebarProps) {
-  const { state } = useSidebar();
+  const { state, setOpen } = useSidebar();
   const collapsed = state === 'collapsed';
+  const isMobile = useIsMobile();
   const location = useLocation();
   
   const { 
@@ -60,96 +62,104 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     canPublishAddresses
   } = useUserRole();
 
+  const handleItemClick = (id: string) => {
+    onNavigationClick(id);
+    // Close sidebar on mobile after navigation
+    if (isMobile) {
+      setOpen(false);
+    }
+  };
+
   const navigationItems: NavigationItem[] = [
     {
       id: 'overview',
       title: 'Dashboard Overview',
       icon: Home,
-      onClick: () => onNavigationClick('overview'),
+      onClick: () => handleItemClick('overview'),
       visible: true
     },
     {
       id: 'search',
       title: 'Search Addresses',
       icon: Search,
-      onClick: () => onNavigationClick('search'),
+      onClick: () => handleItemClick('search'),
       visible: true
     },
     {
       id: 'submit-request',
       title: 'Submit Request',
       icon: FileText,
-      onClick: () => onNavigationClick('submit-request'),
+      onClick: () => handleItemClick('submit-request'),
       visible: isCitizen || isFieldAgent
     },
     {
       id: 'request-status',
       title: 'Request Status',
       icon: Clock,
-      onClick: () => onNavigationClick('request-status'),
+      onClick: () => handleItemClick('request-status'),
       visible: isCitizen || isFieldAgent
     },
     {
       id: 'capture-address',
       title: 'Capture Address',
       icon: Camera,
-      onClick: () => onNavigationClick('capture-address'),
+      onClick: () => handleItemClick('capture-address'),
       visible: canCreateDraftAddress
     },
     {
       id: 'verification-queue',
       title: 'Verification Queue',
       icon: CheckCircle,
-      onClick: () => onNavigationClick('verification-queue'),
+      onClick: () => handleItemClick('verification-queue'),
       visible: canVerifyAddresses
     },
     {
       id: 'publishing-queue',
       title: 'Publishing Queue',
       icon: MapPin,
-      onClick: () => onNavigationClick('publishing-queue'),
+      onClick: () => handleItemClick('publishing-queue'),
       visible: canPublishAddresses
     },
     {
       id: 'unpublishing-queue',
       title: 'Unpublishing Queue',
       icon: AlertCircle,
-      onClick: () => onNavigationClick('unpublishing-queue'),
+      onClick: () => handleItemClick('unpublishing-queue'),
       visible: canPublishAddresses
     },
     {
       id: 'analytics',
       title: 'Analytics',
       icon: BarChart3,
-      onClick: () => onNavigationClick('analytics'),
+      onClick: () => handleItemClick('analytics'),
       visible: hasAdminAccess
     },
     {
       id: 'province-management',
       title: 'Province Management',
       icon: Settings,
-      onClick: () => onNavigationClick('province-management'),
+      onClick: () => handleItemClick('province-management'),
       visible: hasAdminAccess
     },
     {
       id: 'verification-tools',
       title: 'Verification Tools',
       icon: Shield,
-      onClick: () => onNavigationClick('verification-tools'),
+      onClick: () => handleItemClick('verification-tools'),
       visible: isVerifier || hasAdminAccess
     },
     {
       id: 'profile',
       title: 'Profile Settings',
       icon: User,
-      onClick: () => onNavigationClick('profile'),
+      onClick: () => handleItemClick('profile'),
       visible: true
     },
     {
       id: 'emergency-contacts',
       title: 'Emergency Contacts',
       icon: Phone,
-      onClick: () => onNavigationClick('emergency-contacts'),
+      onClick: () => handleItemClick('emergency-contacts'),
       visible: true
     }
   ];
