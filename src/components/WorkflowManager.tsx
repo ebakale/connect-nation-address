@@ -86,12 +86,12 @@ export const WorkflowManager: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center gap-3">
-            <Badge variant="secondary" className="text-sm whitespace-nowrap">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <Badge variant="secondary" className="text-sm whitespace-nowrap truncate max-w-[200px]">
               Current Role: {role ? role.replace('_', ' ').toUpperCase() : 'Not Assigned'}
             </Badge>
-            <ArrowRight className="h-4 w-4 text-muted-foreground" />
-            <Badge variant="outline" className="text-sm whitespace-nowrap">
+            <ArrowRight className="h-4 w-4 text-muted-foreground hidden sm:block" />
+            <Badge variant="outline" className="text-sm whitespace-nowrap truncate max-w-[200px]">
               Workflow Stage: {currentStage.replace('_', ' ').toUpperCase()}
             </Badge>
           </div>
