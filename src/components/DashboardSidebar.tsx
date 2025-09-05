@@ -210,7 +210,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   };
 
   return (
-    <Sidebar className={cn("border-r bg-background", collapsed ? "w-16" : "w-72")}>
+    <Sidebar className={cn("border-r bg-background", collapsed ? "w-16" : "w-60")}>
       <SidebarContent className="gap-0">
         {/* Header */}
         {!collapsed && (
