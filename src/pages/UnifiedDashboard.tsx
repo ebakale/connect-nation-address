@@ -13,6 +13,8 @@ import {
 import { useLanguage } from '@/contexts/LanguageContext';
 import Footer from '@/components/Footer';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { DashboardSidebar } from "@/components/DashboardSidebar";
 
 import { useNavigate } from "react-router-dom";
 
@@ -141,6 +143,8 @@ const UnifiedDashboard = () => {
   const [showVerificationTools, setShowVerificationTools] = useState(false);
   const [draftsOpen, setDraftsOpen] = useState(false);
   const [mapOpen, setMapOpen] = useState(false);
+  const [activeView, setActiveView] = useState('overview');
+  const [showEmergencyContacts, setShowEmergencyContacts] = useState(false);
 
   // Fetch dashboard statistics
   useEffect(() => {
@@ -283,9 +287,98 @@ const UnifiedDashboard = () => {
   if (isFieldAgent) userRoles.push('Field Agent');
   if (isCitizen) userRoles.push('Citizen');
 
+  const handleSidebarNavigation = (viewId: string) => {
+    setActiveView(viewId);
+    // Reset all dialog states when switching views
+    setSearchOpen(false);
+    setSubmitRequestOpen(false);
+    setStatusOpen(false);
+    setCaptureOpen(false);
+    setVerificationQueueOpen(false);
+    setPublishingQueueOpen(false);
+    setUnpublishingQueueOpen(false);
+    setShowAnalytics(false);
+    setShowProvinceManagement(false);
+    setShowVerificationTools(false);
+    setProfileOpen(false);
+    setShowEmergencyContacts(false);
+    
+    // Open the appropriate dialog based on the view
+    switch (viewId) {
+      case 'search':
+        setSearchOpen(true);
+        break;
+      case 'submit-request':
+        setSubmitRequestOpen(true);
+        break;
+      case 'request-status':
+        setStatusOpen(true);
+        break;
+      case 'capture-address':
+        setCaptureOpen(true);
+        break;
+      case 'verification-queue':
+        setVerificationQueueOpen(true);
+        break;
+      case 'publishing-queue':
+        setPublishingQueueOpen(true);
+        break;
+      case 'unpublishing-queue':
+        setUnpublishingQueueOpen(true);
+        break;
+      case 'analytics':
+        setShowAnalytics(true);
+        break;
+      case 'province-management':
+        setShowProvinceManagement(true);
+        break;
+      case 'verification-tools':
+        setShowVerificationTools(true);
+        break;
+      case 'profile':
+        setProfileOpen(true);
+        break;
+      case 'emergency-contacts':
+        setShowEmergencyContacts(true);
+        break;
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-      <div className="container mx-auto px-4 py-8">
+    <SidebarProvider defaultOpen={true}>
+      <div className="min-h-screen w-full flex bg-background">
+        <DashboardSidebar 
+          onNavigationClick={handleSidebarNavigation}
+          pendingCount={stats.pendingApprovals}
+        />
+        
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Header */}
+          <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="flex h-14 items-center px-4">
+              <SidebarTrigger className="-ml-1" />
+              <div className="flex-1 ml-4">
+                <h1 className="text-lg font-semibold">{t('dashboard')}</h1>
+                <p className="text-sm text-muted-foreground">{t('unifiedPortal')}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <OfflineIndicator />
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={signOut} 
+                  className="flex items-center gap-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="hidden sm:inline">{t('logout')}</span>
+                </Button>
+              </div>
+            </div>
+          </header>
+
+          {/* Main Content */}
+          <main className="flex-1 overflow-auto">
+            <div className="p-6 space-y-6">
         {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-start">
@@ -898,22 +991,37 @@ const UnifiedDashboard = () => {
              </DialogContent>
            </Dialog>
 
-         {/* Profile Editor Dialog */}
-          <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
-            <DialogContent className="w-[95vw] max-w-4xl h-[85vh] max-h-[85vh] overflow-y-auto p-4 sm:p-6">
-             <DialogHeader>
-               <DialogTitle>Edit Profile</DialogTitle>
-               <DialogDescription>
-                 Update your personal information and account settings
-               </DialogDescription>
-             </DialogHeader>
-             <ProfileEditor />
-           </DialogContent>
-         </Dialog>
+          {/* Profile Editor Dialog */}
+           <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
+             <DialogContent className="w-[95vw] max-w-4xl h-[85vh] max-h-[85vh] overflow-y-auto p-4 sm:p-6">
+              <DialogHeader>
+                <DialogTitle>Edit Profile</DialogTitle>
+                <DialogDescription>
+                  Update your personal information and account settings
+                </DialogDescription>
+              </DialogHeader>
+              <ProfileEditor />
+            </DialogContent>
+          </Dialog>
+
+          {/* Emergency Contacts Dialog */}
+          <Dialog open={showEmergencyContacts} onOpenChange={setShowEmergencyContacts}>
+            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Emergency Contacts</DialogTitle>
+              </DialogHeader>
+              <EmergencyContacts />
+            </DialogContent>
+          </Dialog>
+
+          {/* Include incident notifications */}
+          <ReporterNotifications />
+            </div>
+          </main>
         </div>
-        <Footer />
       </div>
-    );
-  };
+    </SidebarProvider>
+  );
+};
 
 export default UnifiedDashboard;
