@@ -234,7 +234,7 @@ export const ReporterNotifications = () => {
                           <div className="flex-1 space-y-2">
                             <div className="flex items-center gap-2">
                               <h4 className="font-medium">{notification.title}</h4>
-                              <Badge variant={getPriorityColor(notification.priority_level)}>
+                              <Badge variant={getPriorityColor(notification.priority_level)} className="whitespace-nowrap">
                                 Priority {notification.priority_level}
                               </Badge>
                               {!notification.read && (
