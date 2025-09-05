@@ -46,7 +46,7 @@ interface DashboardSidebarProps {
 }
 
 export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: DashboardSidebarProps) {
-  const { state, setOpen } = useSidebar();
+  const { state, setOpen, setOpenMobile } = useSidebar();
   const collapsed = state === 'collapsed';
   const isMobile = useIsMobile();
   const location = useLocation();
@@ -66,7 +66,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     onNavigationClick(id);
     // Close sidebar on mobile after navigation
     if (isMobile) {
-      setOpen(false);
+      setOpenMobile(false);
     }
   };
 
