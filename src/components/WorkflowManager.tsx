@@ -87,7 +87,7 @@ export const WorkflowManager: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-3">
-            <Badge variant="secondary" className="text-sm">
+            <Badge variant="secondary" className="text-sm whitespace-nowrap">
               Current Role: {role ? role.replace('_', ' ').toUpperCase() : 'Not Assigned'}
             </Badge>
             <ArrowRight className="h-4 w-4 text-muted-foreground" />
