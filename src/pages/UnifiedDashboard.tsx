@@ -530,12 +530,12 @@ const UnifiedDashboard = () => {
         
         <div className="flex-1 flex flex-col min-w-0">
           {/* Header */}
-          <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="flex h-16 items-center px-4">
+          <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="flex h-20 items-center px-4 pb-2">
               <SidebarTrigger className="-ml-1" />
               <div className="flex-1 ml-4 min-w-0">
                 <h1 className="text-lg font-semibold leading-tight">{getViewTitle()}</h1>
-                <p className="text-sm text-muted-foreground leading-none">{getViewDescription()}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mt-1">{getViewDescription()}</p>
               </div>
               <div className="flex items-center gap-2">
                 <OfflineIndicator />
@@ -562,6 +562,7 @@ const UnifiedDashboard = () => {
                 </Button>
               </div>
             </div>
+            <div className="border-b"></div>
           </header>
 
           {/* Main Content */}
