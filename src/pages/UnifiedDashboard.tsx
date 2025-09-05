@@ -127,24 +127,10 @@ const UnifiedDashboard = () => {
   const [showPendingRequests, setShowPendingRequests] = useState(false);
   const [userProfile, setUserProfile] = useState<{full_name: string; email: string} | null>(null);
 
-  // Dialog states
-  const [searchOpen, setSearchOpen] = useState(false);
+  // Active view state
+  const [activeView, setActiveView] = useState('overview');
   const [selectedAddress, setSelectedAddress] = useState<SearchResult | null>(null);
   const [showMapView, setShowMapView] = useState(false);
-  const [submitRequestOpen, setSubmitRequestOpen] = useState(false);
-  const [statusOpen, setStatusOpen] = useState(false);
-  const [captureOpen, setCaptureOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
-  const [verificationQueueOpen, setVerificationQueueOpen] = useState(false);
-  const [publishingQueueOpen, setPublishingQueueOpen] = useState(false);
-  const [unpublishingQueueOpen, setUnpublishingQueueOpen] = useState(false);
-  const [showProvinceManagement, setShowProvinceManagement] = useState(false);
-  const [showAnalytics, setShowAnalytics] = useState(false);
-  const [showVerificationTools, setShowVerificationTools] = useState(false);
-  const [draftsOpen, setDraftsOpen] = useState(false);
-  const [mapOpen, setMapOpen] = useState(false);
-  const [activeView, setActiveView] = useState('overview');
-  const [showEmergencyContacts, setShowEmergencyContacts] = useState(false);
 
   // Fetch dashboard statistics
   useEffect(() => {
@@ -289,58 +275,248 @@ const UnifiedDashboard = () => {
 
   const handleSidebarNavigation = (viewId: string) => {
     setActiveView(viewId);
-    // Reset all dialog states when switching views
-    setSearchOpen(false);
-    setSubmitRequestOpen(false);
-    setStatusOpen(false);
-    setCaptureOpen(false);
-    setVerificationQueueOpen(false);
-    setPublishingQueueOpen(false);
-    setUnpublishingQueueOpen(false);
-    setShowAnalytics(false);
-    setShowProvinceManagement(false);
-    setShowVerificationTools(false);
-    setProfileOpen(false);
-    setShowEmergencyContacts(false);
-    
-    // Open the appropriate dialog based on the view
-    switch (viewId) {
+  };
+
+  const getViewTitle = () => {
+    switch (activeView) {
+      case 'overview': return t('dashboard');
+      case 'search': return 'Search Addresses';
+      case 'submit-request': return 'Submit Address Request';
+      case 'request-status': return 'Request Status';
+      case 'capture-address': return 'Capture Address';
+      case 'verification-queue': return 'Verification Queue';
+      case 'publishing-queue': return 'Publishing Queue';
+      case 'unpublishing-queue': return 'Unpublishing Queue';
+      case 'analytics': return 'Analytics';
+      case 'province-management': return 'Province Management';
+      case 'verification-tools': return 'Verification Tools';
+      case 'profile': return 'Profile Settings';
+      case 'emergency-contacts': return 'Emergency Contacts';
+      default: return t('dashboard');
+    }
+  };
+
+  const getViewDescription = () => {
+    switch (activeView) {
+      case 'overview': return t('unifiedPortal');
+      case 'search': return 'Find verified addresses in the national database';
+      case 'submit-request': return 'Request a new address to be added to the system';
+      case 'request-status': return 'Check the status of your address requests';
+      case 'capture-address': return 'Capture and create new address drafts';
+      case 'verification-queue': return 'Review and verify pending addresses';
+      case 'publishing-queue': return 'Publish verified addresses to the public database';
+      case 'unpublishing-queue': return 'Manage address unpublishing requests';
+      case 'analytics': return 'View system analytics and reports';
+      case 'province-management': return 'Manage provincial settings and configurations';
+      case 'verification-tools': return 'Tools for address verification';
+      case 'profile': return 'Update your personal information and settings';
+      case 'emergency-contacts': return 'Manage emergency contact information';
+      default: return t('unifiedPortal');
+    }
+  };
+
+  const renderActiveView = () => {
+    switch (activeView) {
+      case 'overview':
+        return (
+          <div className="space-y-6">
+            {/* User greeting */}
+            {userProfile && (
+              <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-6">
+                <h2 className="text-2xl font-bold text-foreground mb-2">
+                  {t('welcomeBack')}, {userProfile.full_name}!
+                </h2>
+                <p className="text-muted-foreground mb-4">Here's what's happening with your account today.</p>
+                
+                {/* User roles display */}
+                <div className="flex gap-2 mb-4">
+                  {userRoles.map((roleLabel) => (
+                    <Badge key={roleLabel} variant="default">
+                      {roleLabel}
+                    </Badge>
+                  ))}
+                </div>
+
+                {/* Geographic scope */}
+                {geographicScope.length > 0 && (
+                  <div className="flex gap-2">
+                    {geographicScope.map((scope) => (
+                      <Badge key={scope} variant="secondary">
+                        {scope}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Admin Metrics */}
+            {hasAdminAccess && (
+              <div>
+                <h3 className="text-xl font-semibold mb-4">{t('systemOverview')}</h3>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                  <Card className="hover:shadow-md transition-shadow">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">{t('totalUsers')}</CardTitle>
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{stats.totalUsers}</div>
+                      <p className="text-xs text-muted-foreground">Users in system</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="hover:shadow-md transition-shadow">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">{t('activeRoles')}</CardTitle>
+                      <Shield className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{stats.activeRoles}</div>
+                      <p className="text-xs text-muted-foreground">Assigned roles</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setActiveView('admin-panel')}>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">{t('pendingApprovals')}</CardTitle>
+                      <Settings className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{stats.pendingApprovals}</div>
+                      <p className="text-xs text-muted-foreground">{t('clickToApproveRequests')}</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="hover:shadow-md transition-shadow">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">{t('publicAddresses')}</CardTitle>
+                      <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{stats.publicAddresses}</div>
+                      <p className="text-xs text-muted-foreground">{stats.totalAddresses} total</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Admin Panel */}
+                <AdminPanel />
+              </div>
+            )}
+
+            {/* Incident Notifications */}
+            <ReporterNotifications />
+          </div>
+        );
+
       case 'search':
-        setSearchOpen(true);
-        break;
+        return (
+          <div className="max-w-4xl">
+            <AddressSearch 
+              onSelectAddress={(address) => {
+                setSelectedAddress(address);
+                setShowMapView(true);
+              }}
+            />
+          </div>
+        );
+
       case 'submit-request':
-        setSubmitRequestOpen(true);
-        break;
+        return (
+          <div className="max-w-4xl">
+            <AddressRequestForm 
+              onCancel={() => setActiveView('overview')}
+              onSuccess={() => setActiveView('overview')}
+            />
+          </div>
+        );
+
       case 'request-status':
-        setStatusOpen(true);
-        break;
+        return (
+          <div className="max-w-4xl">
+            <AddressRequestStatus />
+          </div>
+        );
+
       case 'capture-address':
-        setCaptureOpen(true);
-        break;
+        return (
+          <div className="max-w-4xl">
+            <AddressCaptureForm 
+              onCancel={() => setActiveView('overview')}
+            />
+          </div>
+        );
+
       case 'verification-queue':
-        setVerificationQueueOpen(true);
-        break;
+        return (
+          <div className="max-w-6xl">
+            <AddressVerificationQueue />
+          </div>
+        );
+
       case 'publishing-queue':
-        setPublishingQueueOpen(true);
-        break;
+        return (
+          <div className="max-w-6xl">
+            <AddressPublishingQueue />
+          </div>
+        );
+
       case 'unpublishing-queue':
-        setUnpublishingQueueOpen(true);
-        break;
+        return (
+          <div className="max-w-6xl">
+            <AddressUnpublishingQueue />
+          </div>
+        );
+
       case 'analytics':
-        setShowAnalytics(true);
-        break;
+        return (
+          <div className="max-w-6xl">
+            <AnalyticsReports />
+          </div>
+        );
+
       case 'province-management':
-        setShowProvinceManagement(true);
-        break;
+        return (
+          <div className="max-w-4xl">
+            <ProvinceManagement />
+          </div>
+        );
+
       case 'verification-tools':
-        setShowVerificationTools(true);
-        break;
+        return (
+          <div className="max-w-4xl">
+            <VerificationTools />
+          </div>
+        );
+
       case 'profile':
-        setProfileOpen(true);
-        break;
+        return (
+          <div className="max-w-4xl">
+            <ProfileEditor />
+          </div>
+        );
+
       case 'emergency-contacts':
-        setShowEmergencyContacts(true);
-        break;
+        return (
+          <div className="max-w-4xl">
+            <EmergencyContacts />
+          </div>
+        );
+
+      case 'admin-panel':
+        return (
+          <div className="max-w-6xl">
+            <AdminPanel />
+          </div>
+        );
+
+      default:
+        return (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Select an option from the sidebar to get started.</p>
+          </div>
+        );
     }
   };
 
@@ -358,11 +534,23 @@ const UnifiedDashboard = () => {
             <div className="flex h-14 items-center px-4">
               <SidebarTrigger className="-ml-1" />
               <div className="flex-1 ml-4">
-                <h1 className="text-lg font-semibold">{t('dashboard')}</h1>
-                <p className="text-sm text-muted-foreground">{t('unifiedPortal')}</p>
+                <h1 className="text-lg font-semibold">{getViewTitle()}</h1>
+                <p className="text-sm text-muted-foreground">{getViewDescription()}</p>
               </div>
               <div className="flex items-center gap-2">
                 <OfflineIndicator />
+                {userProfile && (
+                  <div className="text-right hidden sm:block">
+                    <p className="text-sm font-medium">{userProfile.full_name}</p>
+                    <div className="flex gap-1">
+                      {userRoles.map((roleLabel) => (
+                        <Badge key={roleLabel} variant="secondary" className="text-xs">
+                          {roleLabel}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 <Button 
                   variant="ghost" 
                   size="sm"
@@ -378,644 +566,8 @@ const UnifiedDashboard = () => {
 
           {/* Main Content */}
           <main className="flex-1 overflow-auto">
-            <div className="p-6 space-y-6">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">{t('dashboard')}</h1>
-              <p className="text-muted-foreground">{t('unifiedPortal')}</p>
-              
-              {/* User greeting */}
-              {userProfile && (
-                <p className="text-lg font-medium text-foreground mt-2">
-                  {t('welcomeBack')}, {userProfile.full_name}!
-                </p>
-              )}
-              
-              {/* User roles display */}
-              <div className="flex gap-2 mt-3">
-                {userRoles.map((roleLabel) => (
-                  <Badge key={roleLabel} variant="default">
-                    {roleLabel}
-                  </Badge>
-                ))}
-              </div>
-
-              {/* Geographic scope */}
-              {geographicScope.length > 0 && (
-                <div className="flex gap-2 mt-2">
-                  {geographicScope.map((scope) => (
-                    <Badge key={scope} variant="secondary">
-                      {scope}
-                    </Badge>
-                  ))}
-                </div>
-              )}
-            </div>
-            
-            <div className="flex flex-wrap items-center gap-2">
-              <OfflineIndicator />
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setProfileOpen(true)}
-                aria-label={t('editProfile')}
-                className="flex items-center gap-2"
-              >
-                <User className="h-4 w-4" />
-                <span className="hidden sm:inline">{t('editProfile')}</span>
-                <span className="sm:hidden">Profile</span>
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={signOut} 
-                aria-label={t('logout')}
-                className="flex items-center gap-2"
-              >
-                <LogOut className="h-4 w-4" />
-                <span className="hidden sm:inline">{t('logout')}</span>
-              </Button>
-            </div>
-      </div>
-    </div>
-
-        {/* Admin Metrics */}
-        {hasAdminAccess && (
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">{t('systemOverview')}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-              <Card className="hover:shadow-md transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">{t('totalUsers')}</CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.totalUsers}</div>
-                  <p className="text-xs text-muted-foreground">Users in system</p>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-md transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">{t('activeRoles')}</CardTitle>
-                  <Shield className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.activeRoles}</div>
-                  <p className="text-xs text-muted-foreground">Assigned roles</p>
-                </CardContent>
-              </Card>
-
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{t('pendingApprovals')}</CardTitle>
-                      <Settings className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{stats.pendingApprovals}</div>
-                      <p className="text-xs text-muted-foreground">{t('clickToApproveRequests')}</p>
-                    </CardContent>
-                  </Card>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>{t('addressRequestApprovals')}</DialogTitle>
-                    <DialogDescription>
-                      {t('reviewApproveCitizen')}
-                    </DialogDescription>
-                  </DialogHeader>
-                <AddressRequestApproval requests={[]} onUpdate={() => {}} />
-                </DialogContent>
-              </Dialog>
-
-              <Card className="hover:shadow-md transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">{t('publicAddresses')}</CardTitle>
-                  <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.publicAddresses}</div>
-                  <p className="text-xs text-muted-foreground">{stats.totalAddresses} total</p>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Admin Panel */}
-            <AdminPanel />
-          </div>
-        )}
-
-        {/* Role-based Action Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          
-          {/* Citizen Functions */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Search className="h-5 w-5 text-primary" />
-                Search Addresses
-              </CardTitle>
-              <CardDescription>
-                Find verified addresses in the national database
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
-                <DialogTrigger asChild>
-                  <Button className="w-full">
-                    Search Database
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl">
-                  <DialogHeader>
-                    <DialogTitle>Search Verified Addresses</DialogTitle>
-                    <DialogDescription>
-                      Search for verified addresses in the national database
-                    </DialogDescription>
-                  </DialogHeader>
-                  <AddressSearch 
-                    onSelectAddress={(address) => {
-                      setSelectedAddress(address);
-                      setSearchOpen(false);
-                      setShowMapView(true);
-                    }}
-                  />
-                </DialogContent>
-              </Dialog>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-primary" />
-                Submit Request
-              </CardTitle>
-              <CardDescription>
-                Submit a new address registration request
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full" onClick={() => setSubmitRequestOpen(true)}>
-                <FileText className="mr-2 h-4 w-4" />
-                New Request
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="h-5 w-5 text-primary" />
-                Address Status
-              </CardTitle>
-              <CardDescription>
-                Track the status of your submitted requests
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full" onClick={() => setStatusOpen(true)}>
-                <Clock className="mr-2 h-4 w-4" />
-                Check Status
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Field Agent Functions */}
-          {canCreateDraftAddress && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Camera className="h-5 w-5 text-primary" />
-                  Capture New Address
-                </CardTitle>
-                <CardDescription>
-                  Create a new draft address with photo evidence
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Dialog open={captureOpen} onOpenChange={setCaptureOpen}>
-                  <DialogTrigger asChild>
-                    <Button className="w-full">
-                      Start Capture
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-                    <DialogHeader>
-                      <DialogTitle>Capture New Address</DialogTitle>
-                      <DialogDescription>
-                        Fill in the address details and capture GPS coordinates for verification
-                      </DialogDescription>
-                    </DialogHeader>
-                    <AddressCaptureForm 
-                      onSave={() => setCaptureOpen(false)}
-                      onCancel={() => setCaptureOpen(false)}
-                    />
-                  </DialogContent>
-                </Dialog>
-              </CardContent>
-            </Card>
-          )}
-
-          {isFieldAgent && (
-            <>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <FileText className="h-5 w-5 text-primary" />
-                    My Drafts
-                  </CardTitle>
-                  <CardDescription>
-                    Review and submit pending address drafts
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Dialog open={draftsOpen} onOpenChange={setDraftsOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="w-full" variant="outline">
-                        View Drafts
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Draft Management</DialogTitle>
-                        <DialogDescription>
-                          Review, edit, and submit your draft addresses
-                        </DialogDescription>
-                      </DialogHeader>
-                      <DraftManager onClose={() => setDraftsOpen(false)} />
-                    </DialogContent>
-                  </Dialog>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Map className="h-5 w-5 text-primary" />
-                    Field Map
-                  </CardTitle>
-                  <CardDescription>
-                    View assigned areas and capture progress
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Dialog open={mapOpen} onOpenChange={setMapOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="w-full" variant="outline">
-                        Open Map
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Field Map</DialogTitle>
-                        <DialogDescription>
-                          View addresses and capture progress in your assigned area
-                        </DialogDescription>
-                      </DialogHeader>
-                      <FieldMap onClose={() => setMapOpen(false)} />
-                    </DialogContent>
-                  </Dialog>
-                </CardContent>
-              </Card>
-            </>
-          )}
-
-          {/* Verifier Functions */}
-          {canVerifyAddresses && (
-            <>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-amber-500" />
-                    Review Queue
-                  </CardTitle>
-                  <CardDescription>
-                    Process pending address submissions
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Dialog open={verificationQueueOpen} onOpenChange={setVerificationQueueOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="w-full">
-                        Start Review
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Address Verification Queue</DialogTitle>
-                        <DialogDescription>
-                          Review and verify pending address submissions
-                        </DialogDescription>
-                      </DialogHeader>
-                      <AddressVerificationQueue />
-                    </DialogContent>
-                  </Dialog>
-                </CardContent>
-               </Card>
-
-               <Card>
-                 <CardHeader>
-                   <CardTitle className="flex items-center gap-2">
-                     <FileText className="h-5 w-5 text-blue-500" />
-                     Address Requests
-                   </CardTitle>
-                   <CardDescription>
-                     Approve or reject citizen address requests
-                   </CardDescription>
-                 </CardHeader>
-                 <CardContent>
-                   <Button className="w-full" onClick={() => setShowPendingRequests(true)}>
-                     Review Requests
-                   </Button>
-                 </CardContent>
-               </Card>
-
-               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    Verification Tools
-                  </CardTitle>
-                  <CardDescription>
-                    Access verification and quality control tools
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button className="w-full" variant="outline" onClick={() => setShowVerificationTools(true)}>
-                    Open Tools
-                  </Button>
-                </CardContent>
-              </Card>
-            </>
-          )}
-
-          {/* Registrar Functions */}
-          {canPublishAddresses && (
-            <>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Globe className="h-5 w-5 text-blue-500" />
-                    Publishing Queue
-                  </CardTitle>
-                  <CardDescription>
-                    Review and publish verified addresses
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Dialog open={publishingQueueOpen} onOpenChange={setPublishingQueueOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="w-full">
-                        Publish Addresses
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Address Publishing Queue</DialogTitle>
-                        <DialogDescription>
-                          Publish verified addresses to the national registry
-                        </DialogDescription>
-                      </DialogHeader>
-                      <AddressPublishingQueue />
-                    </DialogContent>
-                  </Dialog>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Globe className="h-5 w-5 text-orange-500" />
-                    Published Addresses
-                  </CardTitle>
-                  <CardDescription>
-                    Manage addresses in public registry
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Dialog open={unpublishingQueueOpen} onOpenChange={setUnpublishingQueueOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="w-full" variant="outline">
-                        Manage Published
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Published Addresses</DialogTitle>
-                        <DialogDescription>
-                          Remove addresses from the public registry
-                        </DialogDescription>
-                      </DialogHeader>
-                      <AddressUnpublishingQueue />
-                    </DialogContent>
-                  </Dialog>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Settings className="h-5 w-5 text-primary" />
-                    Province Management
-                  </CardTitle>
-                  <CardDescription>
-                    Manage provincial boundaries and hierarchy
-                  </CardDescription>
-                </CardHeader>
-                 <CardContent>
-                   <Button className="w-full" variant="outline" onClick={() => setShowProvinceManagement(true)}>
-                     Manage Province
-                   </Button>
-                 </CardContent>
-              </Card>
-            </>
-          )}
-
-          {/* Reports - Available to most roles */}
-          {(isVerifier || isRegistrar || hasAdminAccess) && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5 text-primary" />
-                  Reports & Analytics
-                </CardTitle>
-                <CardDescription>
-                  View statistics and performance reports
-                </CardDescription>
-              </CardHeader>
-               <CardContent>
-                 <Button className="w-full" variant="outline" onClick={() => setShowAnalytics(true)}>
-                   View Reports
-                 </Button>
-               </CardContent>
-            </Card>
-          )}
-        </div>
-
-        {/* Incident Notifications */}
-        <div className="mt-6">
-          <ReporterNotifications />
-        </div>
-
-        {/* Emergency Contacts */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Phone className="h-5 w-5 text-destructive" />
-              {t('emergencyContacts')}
-            </CardTitle>
-            <CardDescription>
-              {t('contactEmergencyServices')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <EmergencyContacts />
-          </CardContent>
-        </Card>
-
-        {/* Important Information */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-amber-500" />
-                Important Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• All address searches show verified addresses only</li>
-                <li>• Personal information is protected and redacted</li>
-                <li>• Coordinates are approximated for privacy</li>
-                <li>• Submit requests for new address verification</li>
-                {hasAdminAccess && <li>• Admin functions require elevated permissions</li>}
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Submit Request Dialog */}
-        <Dialog open={submitRequestOpen} onOpenChange={setSubmitRequestOpen}>
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Submit Address Request</DialogTitle>
-            </DialogHeader>
-            <AddressRequestForm 
-              onCancel={() => setSubmitRequestOpen(false)}
-              onSuccess={() => setSubmitRequestOpen(false)}
-            />
-          </DialogContent>
-        </Dialog>
-
-        {/* Status Dialog */}
-        <Dialog open={statusOpen} onOpenChange={setStatusOpen}>
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Address Request Status</DialogTitle>
-            </DialogHeader>
-            <AddressRequestStatus />
-           </DialogContent>
-         </Dialog>
-
-         {/* Publishing Queue Dialog */}
-         <Dialog open={publishingQueueOpen} onOpenChange={setPublishingQueueOpen}>
-           <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-             <DialogHeader>
-               <DialogTitle>Address Publishing Queue</DialogTitle>
-               <DialogDescription>
-                 Review and publish verified addresses to make them publicly accessible
-               </DialogDescription>
-             </DialogHeader>
-             <AddressPublishingQueue />
-           </DialogContent>
-         </Dialog>
-
-          {/* Province Management Dialog */}
-          <Dialog open={showProvinceManagement} onOpenChange={setShowProvinceManagement}>
-            <DialogContent className="w-[95vw] max-w-6xl h-[85vh] max-h-[85vh] overflow-y-auto p-4 sm:p-6">
-              <DialogHeader>
-                <DialogTitle className="text-lg sm:text-xl">Province Management</DialogTitle>
-                <DialogDescription className="text-sm break-words">
-                  Manage administrative provinces and regions
-                </DialogDescription>
-              </DialogHeader>
-              <div className="overflow-y-auto flex-1 min-h-0">
-                <ProvinceManagement />
-              </div>
-            </DialogContent>
-          </Dialog>
-
-          {/* Analytics Dialog */}
-          <Dialog open={showAnalytics} onOpenChange={setShowAnalytics}>
-            <DialogContent className="w-[95vw] max-w-6xl h-[85vh] max-h-[85vh] overflow-y-auto p-4 sm:p-6">
-              <DialogHeader>
-                <DialogTitle className="text-lg sm:text-xl">Reports & Analytics</DialogTitle>
-                <DialogDescription className="text-sm break-words">
-                  View comprehensive reports and analytics
-                </DialogDescription>
-              </DialogHeader>
-              <div className="overflow-y-auto flex-1 min-h-0">
-                <AnalyticsReports />
-              </div>
-            </DialogContent>
-          </Dialog>
-
-          {/* Verification Tools Dialog */}
-          <Dialog open={showVerificationTools} onOpenChange={setShowVerificationTools}>
-            <DialogContent className="max-w-6xl max-h-[80vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Verification Tools</DialogTitle>
-                <DialogDescription>
-                  Advanced tools for address verification and quality control
-                </DialogDescription>
-              </DialogHeader>
-              <VerificationTools />
-            </DialogContent>
-           </Dialog>
-
-           {/* Pending Requests Dialog */}
-           <Dialog open={showPendingRequests} onOpenChange={setShowPendingRequests}>
-             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-               <DialogHeader>
-                 <DialogTitle>Address Request Approval</DialogTitle>
-                 <DialogDescription>
-                   Review and approve pending address requests from citizens
-                 </DialogDescription>
-               </DialogHeader>
-               <AddressRequestApproval requests={[]} onUpdate={() => {}} />
-             </DialogContent>
-           </Dialog>
-
-          {/* Profile Editor Dialog */}
-           <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
-             <DialogContent className="w-[95vw] max-w-4xl h-[85vh] max-h-[85vh] overflow-y-auto p-4 sm:p-6">
-              <DialogHeader>
-                <DialogTitle>Edit Profile</DialogTitle>
-                <DialogDescription>
-                  Update your personal information and account settings
-                </DialogDescription>
-              </DialogHeader>
-              <ProfileEditor />
-            </DialogContent>
-          </Dialog>
-
-          {/* Emergency Contacts Dialog */}
-          <Dialog open={showEmergencyContacts} onOpenChange={setShowEmergencyContacts}>
-            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Emergency Contacts</DialogTitle>
-              </DialogHeader>
-              <EmergencyContacts />
-            </DialogContent>
-          </Dialog>
-
-          {/* Include incident notifications */}
-          <ReporterNotifications />
+            <div className="p-6">
+              {renderActiveView()}
             </div>
           </main>
         </div>
