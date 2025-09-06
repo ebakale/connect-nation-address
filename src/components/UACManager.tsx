@@ -318,10 +318,10 @@ export const UACManager: React.FC = () => {
                   {filteredRecords.map((record, index) => (
                     <AccordionItem key={record.uac} value={`item-${index}`}>
                       <AccordionTrigger className="text-left">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full pr-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full pr-4 overflow-hidden">
                           <div className="space-y-1">
-                            <div className="font-mono text-sm font-medium">{record.uac}</div>
-                            <div className="text-sm text-muted-foreground">
+                            <div className="font-mono text-sm font-medium break-all">{record.uac}</div>
+                            <div className="text-sm text-muted-foreground break-words">
                               {record.building && `${record.building}, `}
                               {record.street}
                             </div>
@@ -345,7 +345,7 @@ export const UACManager: React.FC = () => {
                               <div className="text-sm font-medium text-muted-foreground">Address</div>
                               <div className="flex items-center gap-2">
                                 <Building className="h-4 w-4" />
-                                <div>
+                                <div className="break-words">
                                   {record.building && `${record.building}, `}
                                   {record.street}
                                 </div>
@@ -356,7 +356,7 @@ export const UACManager: React.FC = () => {
                               <div className="text-sm font-medium text-muted-foreground">Location</div>
                               <div className="flex items-center gap-2">
                                 <MapPin className="h-4 w-4" />
-                                <div>
+                                <div className="break-words">
                                   {record.city}, {record.region}
                                   <div className="text-xs text-muted-foreground">{record.country}</div>
                                 </div>
