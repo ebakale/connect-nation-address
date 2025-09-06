@@ -90,25 +90,36 @@ const MapView: React.FC<MapViewProps> = ({
 
       console.log(`Fetched ${addresses?.length || 0} addresses from database:`, addresses);
 
-      const mappedLocations = addresses.map(addr => ({
-        uac: addr.uac,
-        coordinates: [parseFloat(addr.longitude.toString()), parseFloat(addr.latitude.toString())] as [number, number],
-        name: `${addr.street}${addr.building ? `, ${addr.building}` : ''}`,
-        type: addr.address_type as 'residential' | 'commercial' | 'landmark' | 'government',
-        verified: addr.verified,
-        street: addr.street,
-        building: addr.building,
-        city: addr.city,
-        region: addr.region,
-        country: addr.country,
-        latitude: parseFloat(addr.latitude.toString()),
-        longitude: parseFloat(addr.longitude.toString()),
-        address_type: addr.address_type,
-        public: addr.public,
-        description: addr.description,
-        created_at: addr.created_at,
-        updated_at: addr.updated_at
-      })) as MapLocation[];
+      const mappedLocations = addresses.map(addr => {
+        // Extract readable name from description for imported Google Maps locations
+        let displayName = `${addr.street}${addr.building ? `, ${addr.building}` : ''}`;
+        
+        // If this is a Google Maps import with Plus Code as street, use description instead
+        if (addr.description && addr.description.startsWith('Imported from Google Maps:')) {
+          const businessName = addr.description.replace('Imported from Google Maps: ', '');
+          displayName = businessName;
+        }
+        
+        return {
+          uac: addr.uac,
+          coordinates: [parseFloat(addr.longitude.toString()), parseFloat(addr.latitude.toString())] as [number, number],
+          name: displayName,
+          type: addr.address_type as 'residential' | 'commercial' | 'landmark' | 'government',
+          verified: addr.verified,
+          street: addr.street,
+          building: addr.building,
+          city: addr.city,
+          region: addr.region,
+          country: addr.country,
+          latitude: parseFloat(addr.latitude.toString()),
+          longitude: parseFloat(addr.longitude.toString()),
+          address_type: addr.address_type,
+          public: addr.public,
+          description: addr.description,
+          created_at: addr.created_at,
+          updated_at: addr.updated_at
+        };
+      }) as MapLocation[];
 
       console.log('Mapped locations for map:', mappedLocations);
       return mappedLocations;
