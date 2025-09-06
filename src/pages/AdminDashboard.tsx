@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import AdminPanel from "@/components/AdminPanel";
 import { FileText } from "lucide-react";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
+import { GoogleMapsImporter } from "@/components/GoogleMapsImporter";
 import { useLanguage } from '@/contexts/LanguageContext';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/AdminSidebar";
@@ -51,6 +52,9 @@ const AdminDashboard = () => {
 
           {/* Main content */}
           <main className="flex-1 p-6 space-y-6 overflow-auto">
+            {/* Google Maps Importer Card */}
+            <GoogleMapsImporter />
+
             {/* System Documentation Card */}
             <Card>
               <CardHeader>

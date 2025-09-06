@@ -981,6 +981,15 @@ export type Database = {
         }
         Returns: boolean
       }
+      import_google_maps_addresses: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          details: Json
+          error_count: number
+          success_count: number
+          total_imported: number
+        }[]
+      }
       reject_address_request_with_feedback: {
         Args: {
           p_rejected_by?: string
