@@ -241,7 +241,7 @@ export const UACManager: React.FC = () => {
               <RefreshCw className="h-5 w-5 text-blue-600" />
               <h3 className="text-lg font-semibold">Test UAC Generation</h3>
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="test-country">Country</Label>
                 <Input
