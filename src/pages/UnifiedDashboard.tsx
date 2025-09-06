@@ -350,6 +350,27 @@ const UnifiedDashboard = () => {
               </div>
             )}
 
+            {/* Address Search */}
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Search className="h-5 w-5" />
+                  Search Addresses
+                </CardTitle>
+                <CardDescription>
+                  Find verified addresses in the national database
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <AddressSearch 
+                  onSelectAddress={(address) => {
+                    setSelectedAddress(address);
+                    setShowMapView(true);
+                  }}
+                />
+              </CardContent>
+            </Card>
+
             {/* Current Location Map */}
             <Card className="shadow-card">
               <CardHeader>
