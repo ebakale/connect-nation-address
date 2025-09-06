@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Download, ExternalLink, MapPin } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Download, ExternalLink, MapPin, Search } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -29,10 +30,16 @@ export const AddressExporter: React.FC = () => {
   const [includePrivate, setIncludePrivate] = useState(false);
   const [verifiedOnly, setVerifiedOnly] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [uacFilter, setUacFilter] = useState('');
   const { toast } = useToast();
 
   const fetchAddresses = async (): Promise<Address[]> => {
     let query = supabase.from('addresses').select('*');
+    
+    // Filter by UAC if specified
+    if (uacFilter.trim()) {
+      query = query.ilike('uac', `%${uacFilter.trim()}%`);
+    }
     
     if (!includePrivate) {
       query = query.eq('public', true);
@@ -258,6 +265,21 @@ export const AddressExporter: React.FC = () => {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-4">
+          <div>
+            <Label htmlFor="uac-filter">Filter by UAC (optional)</Label>
+            <div className="relative">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="uac-filter"
+                type="text"
+                placeholder="Enter UAC (e.g., GQ-BN-MAL-8A103R-UK)"
+                value={uacFilter}
+                onChange={(e) => setUacFilter(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </div>
+          
           <div>
             <Label htmlFor="export-format">Export Format</Label>
             <Select value={exportFormat} onValueChange={setExportFormat}>
