@@ -14,7 +14,8 @@ import {
   Users,
   AlertCircle,
   User,
-  Phone
+  Phone,
+  FileDown
 } from 'lucide-react';
 import {
   Sidebar,
@@ -121,6 +122,13 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: canPublishAddresses
     },
     {
+      id: 'address-data',
+      title: 'Address Data',
+      icon: FileDown,
+      onClick: () => handleItemClick('address-data'),
+      visible: hasAdminAccess
+    },
+    {
       id: 'analytics',
       title: 'Analytics',
       icon: BarChart3,
@@ -169,7 +177,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   );
   
   const managementItems = visibleItems.filter(item => 
-    ['analytics', 'province-management', 'verification-tools'].includes(item.id)
+    ['address-data', 'analytics', 'province-management', 'verification-tools'].includes(item.id)
   );
   
   const settingsItems = visibleItems.filter(item => 

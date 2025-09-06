@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 // Component imports
 import AdminPanel from "@/components/AdminPanel";
 import { GoogleMapsImporter } from "@/components/GoogleMapsImporter";
-import { AddressExporter } from "@/components/AddressExporter";
+import { AddressDataManager } from "@/components/AddressDataManager";
 import AddressSearch from "@/components/AddressSearch";
 import AddressMapViewer from "@/components/AddressMapViewer";
 import { AddressRequestForm } from "@/components/AddressRequestForm";
@@ -281,7 +281,7 @@ const UnifiedDashboard = () => {
 
   const getViewTitle = () => {
     switch (activeView) {
-      case 'overview': return t('dashboard');
+      case 'address-data': return 'Address Data Management';
       case 'submit-request': return 'Submit Address Request';
       case 'request-status': return 'Request Status';
       case 'capture-address': return 'Capture Address';
@@ -299,7 +299,7 @@ const UnifiedDashboard = () => {
 
   const getViewDescription = () => {
     switch (activeView) {
-      case 'overview': return t('unifiedPortal');
+      case 'address-data': return 'Import addresses from Google Maps and export existing address data';
       case 'submit-request': return 'Request a new address to be added to the system';
       case 'request-status': return 'Check the status of your address requests';
       case 'capture-address': return 'Capture and create new address drafts';
@@ -444,10 +444,6 @@ const UnifiedDashboard = () => {
                   </div>
                 )}
 
-                {/* Address Exporter - Available to all users with admin access */}
-                <div className="mb-6">
-                  <AddressExporter />
-                </div>
 
                 {/* Admin Panel */}
                 <AdminPanel />
@@ -459,6 +455,19 @@ const UnifiedDashboard = () => {
           </div>
         );
 
+      case 'address-data':
+        return (
+          <div className="max-w-6xl">
+            <AddressDataManager />
+          </div>
+        );
+
+      case 'address-data':
+        return (
+          <div className="max-w-6xl">
+            <AddressDataManager />
+          </div>
+        );
 
       case 'submit-request':
         return (
