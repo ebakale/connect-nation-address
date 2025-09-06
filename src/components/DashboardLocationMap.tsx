@@ -69,35 +69,84 @@ const DashboardLocationMap: React.FC = () => {
     fetchMapboxToken();
   }, []);
 
-  // Fetch non-residential locations (POI)
+  // Fetch non-residential locations (POI) within 200m of current location
   useEffect(() => {
     const fetchPOILocations = async () => {
+      if (!latitude || !longitude) {
+        // If no location, fetch a smaller sample of nearby POIs
+        try {
+          const { data, error } = await supabase
+            .from('addresses')
+            .select('uac, latitude, longitude, street, city, address_type, verified')
+            .eq('verified', true)
+            .neq('address_type', 'residential')
+            .eq('public', true)
+            .limit(20);
+
+          if (error) throw error;
+
+          const mappedLocations: MapLocation[] = (data || []).map(addr => ({
+            uac: addr.uac,
+            coordinates: [addr.longitude, addr.latitude] as [number, number],
+            name: `${addr.street}, ${addr.city}`,
+            type: addr.address_type,
+            verified: addr.verified
+          }));
+
+          setLocations(mappedLocations);
+        } catch (error) {
+          console.error('Error fetching POI locations:', error);
+        }
+        return;
+      }
+
       try {
+        // Calculate approximate degree tolerance for 200 meters
+        // 1 degree latitude ≈ 111km, so 200m ≈ 0.0018 degrees
+        const tolerance = 0.0018;
+        
         const { data, error } = await supabase
           .from('addresses')
           .select('uac, latitude, longitude, street, city, address_type, verified')
           .eq('verified', true)
           .neq('address_type', 'residential')
-          .eq('public', true);
+          .eq('public', true)
+          .gte('latitude', latitude - tolerance)
+          .lte('latitude', latitude + tolerance)
+          .gte('longitude', longitude - tolerance)
+          .lte('longitude', longitude + tolerance);
 
         if (error) throw error;
 
-        const mappedLocations: MapLocation[] = (data || []).map(addr => ({
-          uac: addr.uac,
-          coordinates: [addr.longitude, addr.latitude] as [number, number],
-          name: `${addr.street}, ${addr.city}`,
-          type: addr.address_type,
-          verified: addr.verified
-        }));
+        // Filter by exact distance (200m) and map to required format
+        const filteredLocations: MapLocation[] = [];
+        
+        data?.forEach(addr => {
+          const distance = calculateDistance(
+            latitude, longitude,
+            Number(addr.latitude), Number(addr.longitude)
+          );
+          
+          if (distance <= 200) {
+            filteredLocations.push({
+              uac: addr.uac,
+              coordinates: [addr.longitude, addr.latitude] as [number, number],
+              name: `${addr.street}, ${addr.city}`,
+              type: addr.address_type,
+              verified: addr.verified
+            });
+          }
+        });
 
-        setLocations(mappedLocations);
+        setLocations(filteredLocations);
+        console.log(`Found ${filteredLocations.length} POIs within 200m`);
       } catch (error) {
         console.error('Error fetching POI locations:', error);
       }
     };
 
     fetchPOILocations();
-  }, []);
+  }, [latitude, longitude]);
 
   // Check for nearby UAC when location changes
   useEffect(() => {
@@ -413,11 +462,11 @@ const DashboardLocationMap: React.FC = () => {
         {isMapReady && (
           <Card className="absolute bottom-4 left-4 z-10 bg-background/95 backdrop-blur">
             <CardContent className="p-3">
-              <div className="flex items-center gap-2 text-sm">
-                <Building2 className="h-4 w-4 text-primary" />
-                <span className="font-semibold">{locations.length}</span>
-                <span className="text-muted-foreground">POI mapped</span>
-              </div>
+            <div className="flex items-center gap-2 text-sm">
+              <Building2 className="h-4 w-4 text-primary" />
+              <span className="font-semibold">{locations.length}</span>
+              <span className="text-muted-foreground">POI within 200m</span>
+            </div>
             </CardContent>
           </Card>
         )}
