@@ -247,20 +247,32 @@ const DashboardLocationMap: React.FC = () => {
           el.style.borderRadius = '50%';
           el.style.border = '2px solid white';
           el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+          el.style.cursor = 'pointer';
+          el.title = location.name; // Show name on hover
+
+          const popup = new mapboxgl.Popup({ offset: 25 })
+            .setHTML(`
+              <div class="p-2">
+                <div class="font-semibold">${location.name}</div>
+                <div class="text-sm text-gray-600 capitalize">${location.type}</div>
+                <div class="text-xs text-blue-600">${location.uac}</div>
+              </div>
+            `);
 
           const marker = new mapboxgl.Marker(el)
             .setLngLat(location.coordinates)
-            .setPopup(
-              new mapboxgl.Popup({ offset: 25 })
-                .setHTML(`
-                  <div class="p-2">
-                    <div class="font-semibold">${location.name}</div>
-                    <div class="text-sm text-gray-600 capitalize">${location.type}</div>
-                    <div class="text-xs text-blue-600">${location.uac}</div>
-                  </div>
-                `)
-            )
+            .setPopup(popup)
             .addTo(map.current!);
+
+          // Add hover events
+          el.addEventListener('mouseenter', () => {
+            el.style.transform = 'scale(1.2)';
+            el.style.transition = 'transform 0.2s ease';
+          });
+
+          el.addEventListener('mouseleave', () => {
+            el.style.transform = 'scale(1)';
+          });
         });
       });
 
@@ -359,149 +371,150 @@ const DashboardLocationMap: React.FC = () => {
   };
 
   return (
-    <Card className="shadow-card h-96">
-      <CardContent className="p-0 relative h-full">
-        {/* Loading State */}
-        {!isMapReady && !mapError && (
-          <div className="w-full h-full flex items-center justify-center bg-muted/50 rounded-lg">
-            <div className="text-center space-y-2">
-              <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto"></div>
-              <p className="text-sm text-muted-foreground">Loading map...</p>
+    <div className="space-y-4">
+      {/* Legend - Horizontal layout above map */}
+      <Card className="bg-background/95 backdrop-blur">
+        <CardContent className="p-3">
+          <h4 className="font-semibold text-sm mb-3">Points of Interest</h4>
+          <div className="flex flex-wrap gap-4">
+            <div className="flex items-center gap-2 text-xs">
+              <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+              <span>Commercial</span>
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+              <div className="w-3 h-3 rounded-full bg-red-500"></div>
+              <span>Landmark</span>
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+              <div className="w-3 h-3 rounded-full bg-green-600"></div>
+              <span>Government</span>
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+              <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+              <span>Industrial</span>
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+              <div className="w-3 h-3 rounded-full bg-blue-500 border-2 border-white shadow-lg"></div>
+              <span>Your Location</span>
             </div>
           </div>
-        )}
+        </CardContent>
+      </Card>
 
-        {/* Error State */}
-        {mapError && (
-          <div className="w-full h-full flex items-center justify-center bg-muted/50 rounded-lg">
-            <div className="text-center space-y-2 p-4">
-              <AlertCircle className="h-8 w-8 text-destructive mx-auto" />
-              <p className="text-sm text-destructive font-medium">Map Error</p>
-              <p className="text-xs text-muted-foreground">{mapError}</p>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                onClick={() => {
-                  setMapError(null);
-                  setIsMapReady(false);
-                  if (mapboxToken) {
-                    initializeMap();
-                  }
-                }}
-              >
-                Retry
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Map Container */}
-        <div 
-          ref={mapContainer} 
-          className={`w-full h-full rounded-lg ${!isMapReady ? 'hidden' : ''}`} 
-        />
-        
-        {/* Location Controls */}
-        {isMapReady && (
-          <div className="absolute top-4 left-4 z-10 space-y-2">
-            <Button
-              size="sm"
-              variant="outline"
-              className="bg-background/95 backdrop-blur"
-              onClick={handleGetLocation}
-              disabled={locationLoading}
-            >
-              <Crosshair className="h-4 w-4 mr-2" />
-              {locationLoading ? 'Getting Location...' : 'My Location'}
-            </Button>
-
-            <Button
-              size="sm"
-              variant="outline"
-              className="bg-background/95 backdrop-blur"
-              onClick={toggleMapStyle}
-            >
-              {mapStyle === 'mapbox://styles/mapbox/light-v11' ? (
-                <>
-                  <Satellite className="h-4 w-4 mr-2" />
-                  Satellite
-                </>
-              ) : (
-                <>
-                  <Map className="h-4 w-4 mr-2" />
-                  Street
-                </>
-              )}
-            </Button>
-            
-            {(!latitude || !longitude) && !locationLoading && (
-              <Badge variant="outline" className="border-warning text-warning bg-warning/10 backdrop-blur">
-                <AlertCircle className="h-3 w-3 mr-1" />
-                Enable location to see nearby POIs (2km)
-              </Badge>
-            )}
-            
-            {nearbyUAC && (
-              <Badge className="bg-success/90 text-success-foreground backdrop-blur">
-                <MapPin className="h-3 w-3 mr-1" />
-                UAC: {nearbyUAC}
-              </Badge>
-            )}
-            
-            {locationError && (
-              <Badge variant="destructive" className="bg-destructive/90 backdrop-blur">
-                <AlertCircle className="h-3 w-3 mr-1" />
-                Location Error
-              </Badge>
-            )}
-          </div>
-        )}
-
-        {/* Legend - Moved to bottom right to avoid overlap */}
-        {isMapReady && (
-          <Card className="absolute bottom-4 right-4 z-10 bg-background/95 backdrop-blur">
-            <CardContent className="p-3">
-              <h4 className="font-semibold text-sm mb-2">Points of Interest</h4>
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-xs">
-                  <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                  <span>Commercial</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs">
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                  <span>Landmark</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs">
-                  <div className="w-3 h-3 rounded-full bg-green-600"></div>
-                  <span>Government</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs">
-                  <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                  <span>Industrial</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs">
-                  <div className="w-3 h-3 rounded-full bg-blue-500 border-2 border-white shadow-lg"></div>
-                  <span>Your Location</span>
-                </div>
+      {/* Map Container */}
+      <Card className="shadow-card h-96">
+        <CardContent className="p-0 relative h-full">
+          {/* Loading State */}
+          {!isMapReady && !mapError && (
+            <div className="w-full h-full flex items-center justify-center bg-muted/50 rounded-lg">
+              <div className="text-center space-y-2">
+                <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto"></div>
+                <p className="text-sm text-muted-foreground">Loading map...</p>
               </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Stats - Moved to bottom left to avoid overlap with legend */}
-        {isMapReady && (
-          <Card className="absolute bottom-4 left-4 z-10 bg-background/95 backdrop-blur">
-            <CardContent className="p-3">
-            <div className="flex items-center gap-2 text-sm">
-              <Building2 className="h-4 w-4 text-primary" />
-              <span className="font-semibold">{locations.length}</span>
-              <span className="text-muted-foreground">POI within 2km</span>
             </div>
-            </CardContent>
-          </Card>
-        )}
-      </CardContent>
-    </Card>
+          )}
+
+          {/* Error State */}
+          {mapError && (
+            <div className="w-full h-full flex items-center justify-center bg-muted/50 rounded-lg">
+              <div className="text-center space-y-2 p-4">
+                <AlertCircle className="h-8 w-8 text-destructive mx-auto" />
+                <p className="text-sm text-destructive font-medium">Map Error</p>
+                <p className="text-xs text-muted-foreground">{mapError}</p>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={() => {
+                    setMapError(null);
+                    setIsMapReady(false);
+                    if (mapboxToken) {
+                      initializeMap();
+                    }
+                  }}
+                >
+                  Retry
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Map Container */}
+          <div 
+            ref={mapContainer} 
+            className={`w-full h-full rounded-lg ${!isMapReady ? 'hidden' : ''}`} 
+          />
+          
+          {/* Location Controls */}
+          {isMapReady && (
+            <div className="absolute top-4 left-4 z-10 space-y-2">
+              <Button
+                size="sm"
+                variant="outline"
+                className="bg-background/95 backdrop-blur"
+                onClick={handleGetLocation}
+                disabled={locationLoading}
+              >
+                <Crosshair className="h-4 w-4 mr-2" />
+                {locationLoading ? 'Getting Location...' : 'My Location'}
+              </Button>
+
+              <Button
+                size="sm"
+                variant="outline"
+                className="bg-background/95 backdrop-blur"
+                onClick={toggleMapStyle}
+              >
+                {mapStyle === 'mapbox://styles/mapbox/light-v11' ? (
+                  <>
+                    <Satellite className="h-4 w-4 mr-2" />
+                    Satellite
+                  </>
+                ) : (
+                  <>
+                    <Map className="h-4 w-4 mr-2" />
+                    Street
+                  </>
+                )}
+              </Button>
+              
+              {(!latitude || !longitude) && !locationLoading && (
+                <Badge variant="outline" className="border-warning text-warning bg-warning/10 backdrop-blur">
+                  <AlertCircle className="h-3 w-3 mr-1" />
+                  Enable location to see nearby POIs (2km)
+                </Badge>
+              )}
+              
+              {nearbyUAC && (
+                <Badge className="bg-success/90 text-success-foreground backdrop-blur">
+                  <MapPin className="h-3 w-3 mr-1" />
+                  UAC: {nearbyUAC}
+                </Badge>
+              )}
+              
+              {locationError && (
+                <Badge variant="destructive" className="bg-destructive/90 backdrop-blur">
+                  <AlertCircle className="h-3 w-3 mr-1" />
+                  Location Error
+                </Badge>
+              )}
+            </div>
+          )}
+
+          {/* Stats - Bottom left */}
+          {isMapReady && (
+            <Card className="absolute bottom-4 left-4 z-10 bg-background/95 backdrop-blur">
+              <CardContent className="p-3">
+              <div className="flex items-center gap-2 text-sm">
+                <Building2 className="h-4 w-4 text-primary" />
+                <span className="font-semibold">{locations.length}</span>
+                <span className="text-muted-foreground">POI within 2km</span>
+              </div>
+              </CardContent>
+            </Card>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
