@@ -76,6 +76,7 @@ const MapView: React.FC<MapViewProps> = ({
 
   const fetchMapLocations = async () => {
     try {
+      console.log('Fetching map locations...');
       const { data: addresses, error } = await supabase
         .from('addresses')
         .select('uac, latitude, longitude, street, building, address_type, verified, public, city, region, country, description, created_at, updated_at')
@@ -87,7 +88,9 @@ const MapView: React.FC<MapViewProps> = ({
         return [];
       }
 
-      return addresses.map(addr => ({
+      console.log(`Fetched ${addresses?.length || 0} addresses from database:`, addresses);
+
+      const mappedLocations = addresses.map(addr => ({
         uac: addr.uac,
         coordinates: [parseFloat(addr.longitude.toString()), parseFloat(addr.latitude.toString())] as [number, number],
         name: `${addr.street}${addr.building ? `, ${addr.building}` : ''}`,
@@ -106,6 +109,9 @@ const MapView: React.FC<MapViewProps> = ({
         created_at: addr.created_at,
         updated_at: addr.updated_at
       })) as MapLocation[];
+
+      console.log('Mapped locations for map:', mappedLocations);
+      return mappedLocations;
     } catch (error) {
       console.error("Error processing addresses:", error);
       return [];
@@ -166,6 +172,15 @@ const MapView: React.FC<MapViewProps> = ({
 
     // Add markers for each location
     allLocations.forEach((location) => {
+      // Debug log to check data
+      console.log('Creating marker for location:', location);
+      
+      // Ensure we have required data
+      if (!location.uac || !location.coordinates || location.coordinates.length !== 2) {
+        console.warn('Skipping location with missing data:', location);
+        return;
+      }
+
       const marker = new google.maps.Marker({
         position: { lat: location.coordinates[1], lng: location.coordinates[0] },
         map: map.current,
@@ -178,11 +193,36 @@ const MapView: React.FC<MapViewProps> = ({
           `)}`,
           scaledSize: new google.maps.Size(24, 24),
           anchor: new google.maps.Point(12, 12)
-        }
+        },
+        // Ensure the marker is clickable
+        clickable: true,
+        // Remove any default behavior that might interfere
+        optimized: false
+      });
+
+      // Add hover info window for better UX
+      const infoWindow = new google.maps.InfoWindow({
+        content: `
+          <div style="padding: 8px; font-family: Arial, sans-serif;">
+            <div style="font-weight: bold; color: #333; margin-bottom: 4px;">UAC: ${location.uac}</div>
+            <div style="color: #666; font-size: 12px; margin-bottom: 4px;">${location.name}</div>
+            <div style="color: #888; font-size: 11px;">Click for full details</div>
+          </div>
+        `
+      });
+
+      // Add hover listeners for info window
+      marker.addListener('mouseover', () => {
+        infoWindow.open(map.current, marker);
+      });
+
+      marker.addListener('mouseout', () => {
+        infoWindow.close();
       });
 
       // Click handler to open address details modal
       marker.addListener('click', () => {
+        console.log('Marker clicked:', location);
         setSelectedAddress(location);
         setIsModalOpen(true);
         onLocationSelect?.(location);
