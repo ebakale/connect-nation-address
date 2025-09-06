@@ -18,6 +18,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useUserRole } from '@/hooks/useUserRole';
+import DashboardLocationMap from './DashboardLocationMap';
 
 interface DashboardStats {
   totalAddresses: number;
@@ -270,74 +271,90 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         </CardContent>
       </Card>
 
-      {/* Recent Activity & System Status */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        <Card className="shadow-card">
-          <CardHeader>
-            <CardTitle>{t('recentActivity')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-success/10 rounded-full">
-                  <CheckCircle className="h-4 w-4 text-success" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">156 addresses verified today</p>
-                  <p className="text-xs text-muted-foreground">Malabo district processing</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-full">
-                  <Plus className="h-4 w-4 text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">42 new addresses registered</p>
-                  <p className="text-xs text-muted-foreground">Bata expansion project</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-warning/10 rounded-full">
-                  <Building className="h-4 w-4 text-warning" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">Commercial zone mapping</p>
-                  <p className="text-xs text-muted-foreground">85% complete</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Location Map */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="lg:col-span-2">
+          <Card className="shadow-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MapPin className="h-5 w-5" />
+                Current Location & Nearby Points of Interest
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <DashboardLocationMap />
+            </CardContent>
+          </Card>
+        </div>
 
-        <Card className="shadow-card">
-          <CardHeader>
-            <CardTitle>{t('systemStatus')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">{t('apiServices')}</span>
-                <Badge variant="outline" className="border-success text-success">{t('online')}</Badge>
+        <div className="space-y-4">
+          <Card className="shadow-card">
+            <CardHeader>
+              <CardTitle>{t('recentActivity')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-success/10 rounded-full">
+                    <CheckCircle className="h-4 w-4 text-success" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">156 addresses verified today</p>
+                    <p className="text-xs text-muted-foreground">Malabo district processing</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-full">
+                    <Plus className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">42 new addresses registered</p>
+                    <p className="text-xs text-muted-foreground">Bata expansion project</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-warning/10 rounded-full">
+                    <Building className="h-4 w-4 text-warning" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Commercial zone mapping</p>
+                    <p className="text-xs text-muted-foreground">85% complete</p>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">{t('databaseSync')}</span>
-                <Badge variant="outline" className="border-success text-success">{t('active')}</Badge>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-card">
+            <CardHeader>
+              <CardTitle>{t('systemStatus')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">{t('apiServices')}</span>
+                  <Badge variant="outline" className="border-success text-success">{t('online')}</Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">{t('databaseSync')}</span>
+                  <Badge variant="outline" className="border-success text-success">{t('active')}</Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">{t('mappingServices')}</span>
+                  <Badge variant="outline" className="border-success text-success">{t('operational')}</Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">{t('verificationQueue')}</span>
+                  <Badge variant="outline" className="border-warning text-warning">{t('processing')}</Badge>
+                </div>
+                <div className="mt-4 p-3 bg-muted/50 rounded-lg">
+                  <p className="text-sm font-medium">{t('activeUsers')}: {stats.activeUsers.toLocaleString()}</p>
+                  <p className="text-xs text-muted-foreground">{t('governmentAgenciesAndAuthorized')}</p>
+                </div>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">{t('mappingServices')}</span>
-                <Badge variant="outline" className="border-success text-success">{t('operational')}</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">{t('verificationQueue')}</span>
-                <Badge variant="outline" className="border-warning text-warning">{t('processing')}</Badge>
-              </div>
-              <div className="mt-4 p-3 bg-muted/50 rounded-lg">
-                <p className="text-sm font-medium">{t('activeUsers')}: {stats.activeUsers.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">{t('governmentAgenciesAndAuthorized')}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
