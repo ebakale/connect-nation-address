@@ -437,13 +437,6 @@ const UnifiedDashboard = () => {
                   </Card>
                 </div>
 
-                {/* Google Maps Importer - Only for System Admins */}
-                {hasSystemAdminAccess && (
-                  <div className="mb-6">
-                    <GoogleMapsImporter />
-                  </div>
-                )}
-
 
                 {/* Admin Panel */}
                 <AdminPanel />
