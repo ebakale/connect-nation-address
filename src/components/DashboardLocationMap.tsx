@@ -90,9 +90,9 @@ const DashboardLocationMap: React.FC = () => {
       }
 
       try {
-        // Calculate precise degree tolerances for ~200 meters at current latitude
-        const latTol = 200 / 111320; // ~0.001796 degrees
-        const lonTol = 200 / (111320 * Math.cos((latitude * Math.PI) / 180));
+        // Calculate precise degree tolerances for ~2000 meters (2km) at current latitude
+        const latTol = 2000 / 111320; // ~0.018 degrees
+        const lonTol = 2000 / (111320 * Math.cos((latitude * Math.PI) / 180));
         
         const { data, error } = await supabase
           .from('addresses')
@@ -116,7 +116,7 @@ const DashboardLocationMap: React.FC = () => {
             Number(addr.latitude), Number(addr.longitude)
           );
           
-          if (distance <= 200) {
+          if (distance <= 2000) {
             filteredLocations.push({
               uac: addr.uac,
               coordinates: [addr.longitude, addr.latitude] as [number, number],
@@ -128,7 +128,7 @@ const DashboardLocationMap: React.FC = () => {
         });
 
         setLocations(filteredLocations);
-        console.log(`Found ${filteredLocations.length} POIs within 200m`);
+        console.log(`Found ${filteredLocations.length} POIs within 2km`);
       } catch (error) {
         console.error('Error fetching POI locations:', error);
       }
@@ -437,7 +437,7 @@ const DashboardLocationMap: React.FC = () => {
             {(!latitude || !longitude) && !locationLoading && (
               <Badge variant="outline" className="border-warning text-warning bg-warning/10 backdrop-blur">
                 <AlertCircle className="h-3 w-3 mr-1" />
-                Enable location to see nearby POIs (200m)
+                Enable location to see nearby POIs (2km)
               </Badge>
             )}
             
@@ -457,9 +457,9 @@ const DashboardLocationMap: React.FC = () => {
           </div>
         )}
 
-        {/* Legend */}
+        {/* Legend - Moved to bottom right to avoid overlap */}
         {isMapReady && (
-          <Card className="absolute top-4 right-4 z-10 bg-background/95 backdrop-blur">
+          <Card className="absolute bottom-4 right-4 z-10 bg-background/95 backdrop-blur">
             <CardContent className="p-3">
               <h4 className="font-semibold text-sm mb-2">Points of Interest</h4>
               <div className="space-y-1">
@@ -488,14 +488,14 @@ const DashboardLocationMap: React.FC = () => {
           </Card>
         )}
 
-        {/* Stats */}
+        {/* Stats - Moved to bottom left to avoid overlap with legend */}
         {isMapReady && (
           <Card className="absolute bottom-4 left-4 z-10 bg-background/95 backdrop-blur">
             <CardContent className="p-3">
             <div className="flex items-center gap-2 text-sm">
               <Building2 className="h-4 w-4 text-primary" />
               <span className="font-semibold">{locations.length}</span>
-              <span className="text-muted-foreground">POI within 200m</span>
+              <span className="text-muted-foreground">POI within 2km</span>
             </div>
             </CardContent>
           </Card>
