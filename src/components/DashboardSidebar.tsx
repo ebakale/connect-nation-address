@@ -79,13 +79,6 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: true
     },
     {
-      id: 'search',
-      title: 'Search Addresses',
-      icon: Search,
-      onClick: () => handleItemClick('search'),
-      visible: true
-    },
-    {
       id: 'submit-request',
       title: 'Submit Request',
       icon: FileText,
@@ -168,7 +161,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
 
   // Group items by category
   const mainItems = visibleItems.filter(item => 
-    ['overview', 'search', 'submit-request', 'request-status'].includes(item.id)
+    ['overview', 'submit-request', 'request-status'].includes(item.id)
   );
   
   const workflowItems = visibleItems.filter(item => 

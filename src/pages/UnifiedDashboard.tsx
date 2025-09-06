@@ -282,7 +282,6 @@ const UnifiedDashboard = () => {
   const getViewTitle = () => {
     switch (activeView) {
       case 'overview': return t('dashboard');
-      case 'search': return 'Search Addresses';
       case 'submit-request': return 'Submit Address Request';
       case 'request-status': return 'Request Status';
       case 'capture-address': return 'Capture Address';
@@ -301,7 +300,6 @@ const UnifiedDashboard = () => {
   const getViewDescription = () => {
     switch (activeView) {
       case 'overview': return t('unifiedPortal');
-      case 'search': return 'Find verified addresses in the national database';
       case 'submit-request': return 'Request a new address to be added to the system';
       case 'request-status': return 'Check the status of your address requests';
       case 'capture-address': return 'Capture and create new address drafts';
@@ -461,17 +459,6 @@ const UnifiedDashboard = () => {
           </div>
         );
 
-      case 'search':
-        return (
-          <div className="max-w-4xl">
-            <AddressSearch 
-              onSelectAddress={(address) => {
-                setSelectedAddress(address);
-                setShowMapView(true);
-              }}
-            />
-          </div>
-        );
 
       case 'submit-request':
         return (
