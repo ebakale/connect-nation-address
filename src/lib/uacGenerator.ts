@@ -78,7 +78,7 @@ const CITY_CODES: Record<string, string> = {
   'Mongomo': 'MON',
   'Añisoc': 'ANI',
   'Aconibe': 'ACO',
-  'Nsok': 'NSO',
+  'Nsok': 'NSK',
   
   // Annobón
   'San Antonio de Palé': 'SAP'
@@ -88,19 +88,27 @@ const CITY_CODES: Record<string, string> = {
  * Generate a check digit for UAC validation
  */
 function generateCheckDigit(baseCode: string): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  // Align with the database algorithm (letters-only A–Z check digits)
   let sum = 0;
-  
   for (let i = 0; i < baseCode.length; i++) {
-    const char = baseCode[i];
-    const value = chars.indexOf(char.toUpperCase());
-    sum += value >= 0 ? value : 0;
+    const ch = baseCode[i];
+    if (ch === '-') continue; // ignore separators
+    const upper = ch.toUpperCase();
+    let val: number;
+    if (/^[0-9]$/.test(upper)) {
+      val = parseInt(upper, 10);
+    } else if (/^[A-Z]$/.test(upper)) {
+      // A -> 10, B -> 11, ... Z -> 35
+      val = upper.charCodeAt(0) - 55;
+    } else {
+      val = 0;
+    }
+    sum += val;
   }
-  
-  const checkIndex1 = sum % chars.length;
-  const checkIndex2 = (sum * 7) % chars.length;
-  
-  return chars[checkIndex1] + chars[checkIndex2];
+
+  const first = String.fromCharCode(65 + (sum % 26));
+  const second = String.fromCharCode(65 + ((sum * 7) % 26));
+  return first + second;
 }
 
 /**
