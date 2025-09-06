@@ -69,41 +69,27 @@ const DashboardLocationMap: React.FC = () => {
     fetchMapboxToken();
   }, []);
 
+  // Auto request current location once map token is ready
+  useEffect(() => {
+    if (mapboxToken && !latitude && !longitude && !locationLoading) {
+      getCurrentPosition();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapboxToken]);
+
   // Fetch non-residential locations (POI) within 200m of current location
   useEffect(() => {
     const fetchPOILocations = async () => {
       if (!latitude || !longitude) {
-        // If no location, fetch a smaller sample of nearby POIs
-        try {
-          const { data, error } = await supabase
-            .from('addresses')
-            .select('uac, latitude, longitude, street, city, address_type, verified')
-            .eq('verified', true)
-            .neq('address_type', 'residential')
-            .eq('public', true)
-            .limit(20);
-
-          if (error) throw error;
-
-          const mappedLocations: MapLocation[] = (data || []).map(addr => ({
-            uac: addr.uac,
-            coordinates: [addr.longitude, addr.latitude] as [number, number],
-            name: `${addr.street}, ${addr.city}`,
-            type: addr.address_type,
-            verified: addr.verified
-          }));
-
-          setLocations(mappedLocations);
-        } catch (error) {
-          console.error('Error fetching POI locations:', error);
-        }
+        // No location yet: don't show unrelated POIs
+        setLocations([]);
         return;
       }
 
       try {
-        // Calculate approximate degree tolerance for 200 meters
-        // 1 degree latitude ≈ 111km, so 200m ≈ 0.0018 degrees
-        const tolerance = 0.0018;
+        // Calculate precise degree tolerances for ~200 meters at current latitude
+        const latTol = 200 / 111320; // ~0.001796 degrees
+        const lonTol = 200 / (111320 * Math.cos((latitude * Math.PI) / 180));
         
         const { data, error } = await supabase
           .from('addresses')
@@ -111,10 +97,10 @@ const DashboardLocationMap: React.FC = () => {
           .eq('verified', true)
           .neq('address_type', 'residential')
           .eq('public', true)
-          .gte('latitude', latitude - tolerance)
-          .lte('latitude', latitude + tolerance)
-          .gte('longitude', longitude - tolerance)
-          .lte('longitude', longitude + tolerance);
+          .gte('latitude', latitude - latTol)
+          .lte('latitude', latitude + latTol)
+          .gte('longitude', longitude - lonTol)
+          .lte('longitude', longitude + lonTol);
 
         if (error) throw error;
 
@@ -410,6 +396,13 @@ const DashboardLocationMap: React.FC = () => {
               <Crosshair className="h-4 w-4 mr-2" />
               {locationLoading ? 'Getting Location...' : 'My Location'}
             </Button>
+            
+            {(!latitude || !longitude) && !locationLoading && (
+              <Badge variant="outline" className="border-warning text-warning bg-warning/10 backdrop-blur">
+                <AlertCircle className="h-3 w-3 mr-1" />
+                Enable location to see nearby POIs (200m)
+              </Badge>
+            )}
             
             {nearbyUAC && (
               <Badge className="bg-success/90 text-success-foreground backdrop-blur">
