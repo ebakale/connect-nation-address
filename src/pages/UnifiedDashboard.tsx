@@ -39,7 +39,7 @@ import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
 import { SystemManualPDF } from "@/components/SystemManualPDF";
 import EmergencyContacts from "@/components/EmergencyContacts";
 import { ReporterNotifications } from "@/components/ReporterNotifications";
-
+import DashboardLocationMap from "@/components/DashboardLocationMap";
 interface SearchResult {
   uac: string;
   readable: string;
@@ -349,6 +349,22 @@ const UnifiedDashboard = () => {
                 )}
               </div>
             )}
+
+            {/* Current Location Map */}
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5" />
+                  Nearby Map and Points of Interest
+                </CardTitle>
+                <CardDescription>
+                  Shows your current location, UAC within 20m, and nearby non-residential places.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                <DashboardLocationMap />
+              </CardContent>
+            </Card>
 
             {/* Admin Metrics */}
             {hasAdminAccess && (
