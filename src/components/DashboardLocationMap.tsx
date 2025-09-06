@@ -18,6 +18,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { useToast } from '@/hooks/use-toast';
+import AddressDetailModal from './AddressDetailModal';
 
 interface MapLocation {
   uac: string;
@@ -38,6 +39,23 @@ const DashboardLocationMap: React.FC = () => {
   const [mapError, setMapError] = useState<string | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
   const [poiMarkers, setPOIMarkers] = useState<google.maps.Marker[]>([]);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState<{
+    uac: string;
+    street: string;
+    building?: string | null;
+    city: string;
+    region: string;
+    country: string;
+    latitude: number;
+    longitude: number;
+    address_type: string;
+    verified: boolean;
+    public: boolean;
+    description?: string | null;
+    created_at: string;
+    updated_at: string;
+  } | null>(null);
   const { toast } = useToast();
   
   const {
@@ -250,6 +268,45 @@ const DashboardLocationMap: React.FC = () => {
     }
   };
 
+  // Helper to fetch full address details and open modal
+  const openAddressDetails = async (uac: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('addresses')
+        .select('uac, street, building, city, region, country, latitude, longitude, address_type, verified, public, description, created_at, updated_at')
+        .eq('uac', uac)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (!data) {
+        toast({ title: 'Address not found', description: 'No address details found for this UAC.' });
+        return;
+      }
+
+      setSelectedAddress({
+        uac: data.uac,
+        street: data.street,
+        building: data.building,
+        city: data.city,
+        region: data.region,
+        country: data.country,
+        latitude: Number(data.latitude),
+        longitude: Number(data.longitude),
+        address_type: data.address_type,
+        verified: data.verified,
+        public: data.public,
+        description: data.description,
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+      });
+      setIsDetailOpen(true);
+    } catch (err) {
+      console.error('Failed to load address details:', err);
+      toast({ title: 'Error', description: 'Failed to load address details. Please try again.' });
+    }
+  };
+
   const addPOIMarkers = () => {
     if (!map.current) return;
 
@@ -263,7 +320,7 @@ const DashboardLocationMap: React.FC = () => {
       const marker = new google.maps.Marker({
         position: { lat: location.coordinates[1], lng: location.coordinates[0] },
         map: map.current,
-        title: location.name,
+        title: `UAC: ${location.uac}`,
         icon: {
           url: `data:image/svg+xml,${encodeURIComponent(`
             <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -272,41 +329,46 @@ const DashboardLocationMap: React.FC = () => {
           `)}`,
           scaledSize: new google.maps.Size(20, 20),
           anchor: new google.maps.Point(10, 10)
-        }
+        },
+        clickable: true,
+        optimized: false,
       });
 
       const infoWindow = new google.maps.InfoWindow({
         content: `
-          <div style="padding: 8px;">
-            <div style="font-weight: 600; margin-bottom: 4px;">${location.name}</div>
-            <div style="font-size: 14px; color: #666; text-transform: capitalize; margin-bottom: 4px;">${location.type}</div>
-            <div style="font-size: 12px; color: #3b82f6;">${location.uac}</div>
+          <div style="padding: 8px; font-family: Arial, sans-serif;">
+            <div style="font-weight: 600; margin-bottom: 4px; color: #111;">${location.name}</div>
+            <div style="font-size: 12px; color: #6b7280; text-transform: capitalize; margin-bottom: 4px;">${location.type}</div>
+            <div style="font-size: 12px; color: #1d4ed8; font-weight: 600;">UAC: ${location.uac}</div>
+            <div style="font-size: 11px; color: #6b7280; margin-top: 4px;">Click marker for full details</div>
           </div>
         `
       });
 
-      marker.addListener('click', () => {
-        infoWindow.open(map.current, marker);
-      });
+      // Hover shows UAC and brief info
+      marker.addListener('mouseover', () => infoWindow.open(map.current, marker));
+      marker.addListener('mouseout', () => infoWindow.close());
 
-      // Add hover effects
+      // Click opens address detail card
+      marker.addListener('click', () => openAddressDetails(location.uac));
+
+      // Hover size effect
       marker.addListener('mouseover', () => {
         marker.setIcon({
           url: `data:image/svg+xml,${encodeURIComponent(`
-            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="10" fill="${getMarkerColor(location.type)}" stroke="white" stroke-width="2"/>
+            <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">
+              <circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"${getMarkerColor(location.type)}\" stroke=\"white\" stroke-width=\"2\"/>
             </svg>
           `)}`,
           scaledSize: new google.maps.Size(24, 24),
           anchor: new google.maps.Point(12, 12)
         });
       });
-
       marker.addListener('mouseout', () => {
         marker.setIcon({
           url: `data:image/svg+xml,${encodeURIComponent(`
-            <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="10" cy="10" r="8" fill="${getMarkerColor(location.type)}" stroke="white" stroke-width="2"/>
+            <svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" xmlns=\"http://www.w3.org/2000/svg\">
+              <circle cx=\"10\" cy=\"10\" r=\"8\" fill=\"${getMarkerColor(location.type)}\" stroke=\"white\" stroke-width=\"2\"/>
             </svg>
           `)}`,
           scaledSize: new google.maps.Size(20, 20),
@@ -551,6 +613,13 @@ const DashboardLocationMap: React.FC = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Address Detail Modal */}
+      <AddressDetailModal
+        isOpen={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
+        address={selectedAddress}
+      />
     </div>
   );
 };
