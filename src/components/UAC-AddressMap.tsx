@@ -165,27 +165,110 @@ export const UACAddressMap: React.FC<UACAddressMapProps> = ({
 
     const markerColor = getMarkerColor(address.address_type, address.verified, address.public);
 
+    // Create a custom marker with visible UAC and description
     const marker = new google.maps.Marker({
       position: { lat: address.latitude, lng: address.longitude },
       map: map.current,
       title: `UAC: ${address.uac}`,
       icon: {
         url: `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16 2C10.48 2 6 6.48 6 12c0 7.5 10 18 10 18s10-10.5 10-18c0-5.52-4.48-10-10-10z" 
-                  fill="${markerColor}" stroke="white" stroke-width="2"/>
-            <circle cx="16" cy="12" r="4" fill="white"/>
-            <text x="16" y="15" text-anchor="middle" font-family="Arial" font-size="8" fill="${markerColor}" font-weight="bold">
-              ${address.address_type.charAt(0).toUpperCase()}
-            </text>
+          <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="10" cy="10" r="8" fill="${markerColor}" stroke="white" stroke-width="2"/>
+            <circle cx="10" cy="10" r="4" fill="white"/>
           </svg>
         `)}`,
-        scaledSize: new google.maps.Size(32, 32),
-        anchor: new google.maps.Point(16, 32)
+        scaledSize: new google.maps.Size(20, 20),
+        anchor: new google.maps.Point(10, 10)
       }
     });
 
-    const infoWindow = new google.maps.InfoWindow({
+    // Create a persistent info window that's always visible
+    const persistentLabel = new google.maps.InfoWindow({
+      content: `
+        <div style="
+          background: rgba(255, 255, 255, 0.95);
+          border: 2px solid ${markerColor};
+          border-radius: 8px;
+          padding: 8px;
+          font-family: system-ui, -apple-system, sans-serif;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          backdrop-filter: blur(4px);
+          min-width: 200px;
+          max-width: 250px;
+        ">
+          <div style="font-weight: bold; color: ${markerColor}; font-size: 12px; margin-bottom: 4px;">
+            UAC: ${address.uac}
+          </div>
+          <div style="font-size: 11px; color: #374151; line-height: 1.3; margin-bottom: 4px;">
+            ${address.building ? `<strong>${address.building}</strong><br/>` : ''}
+            ${address.street}<br/>
+            ${address.city}, ${address.region}
+          </div>
+          ${address.description ? `
+            <div style="
+              font-size: 10px; 
+              color: #6b7280; 
+              margin-top: 4px; 
+              padding-top: 4px; 
+              border-top: 1px solid #e5e7eb;
+              font-style: italic;
+              max-height: 40px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            ">
+              ${address.description.length > 80 ? address.description.substring(0, 80) + '...' : address.description}
+            </div>
+          ` : ''}
+          <div style="
+            margin-top: 4px; 
+            padding-top: 4px; 
+            border-top: 1px solid #e5e7eb;
+            display: flex; 
+            gap: 4px; 
+            flex-wrap: wrap;
+          ">
+            <span style="
+              background: ${address.verified ? '#16a34a' : '#f59e0b'}; 
+              color: white; 
+              padding: 1px 4px; 
+              border-radius: 3px; 
+              font-size: 8px; 
+              font-weight: bold;
+            ">
+              ${address.verified ? '✓ VERIFIED' : '⚠ UNVERIFIED'}
+            </span>
+            <span style="
+              background: ${address.public ? '#3b82f6' : '#6b7280'}; 
+              color: white; 
+              padding: 1px 4px; 
+              border-radius: 3px; 
+              font-size: 8px; 
+              font-weight: bold;
+            ">
+              ${address.public ? 'PUBLIC' : 'PRIVATE'}
+            </span>
+            <span style="
+              background: ${markerColor}; 
+              color: white; 
+              padding: 1px 4px; 
+              border-radius: 3px; 
+              font-size: 8px; 
+              font-weight: bold;
+            ">
+              ${address.address_type.toUpperCase()}
+            </span>
+          </div>
+        </div>
+      `,
+      disableAutoPan: true,
+      pixelOffset: new google.maps.Size(0, -30)
+    });
+
+    // Open the persistent label immediately and keep it open
+    persistentLabel.open(map.current, marker);
+
+    // Create a detailed info window that opens on click
+    const detailedInfoWindow = new google.maps.InfoWindow({
       content: `
         <div style="padding: 12px; max-width: 300px; font-family: system-ui, -apple-system, sans-serif;">
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
@@ -234,8 +317,16 @@ export const UACAddressMap: React.FC<UACAddressMapProps> = ({
       `
     });
 
+    // Add click listener for detailed info window
     marker.addListener('click', () => {
-      infoWindow.open(map.current, marker);
+      // Close the persistent label temporarily and open detailed info
+      persistentLabel.close();
+      detailedInfoWindow.open(map.current, marker);
+    });
+
+    // When detailed info window closes, reopen the persistent label
+    detailedInfoWindow.addListener('closeclick', () => {
+      persistentLabel.open(map.current, marker);
     });
 
     markersRef.current.push(marker);
