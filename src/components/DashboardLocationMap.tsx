@@ -11,7 +11,9 @@ import {
   Landmark, 
   ShoppingBag,
   Navigation,
-  AlertCircle
+  AlertCircle,
+  Map,
+  Satellite
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useGeolocation } from '@/hooks/useGeolocation';
@@ -30,6 +32,7 @@ const DashboardLocationMap: React.FC = () => {
   const map = useRef<mapboxgl.Map | null>(null);
   const currentLocationMarker = useRef<mapboxgl.Marker | null>(null);
   const [mapboxToken, setMapboxToken] = useState<string>('');
+  const [mapStyle, setMapStyle] = useState<string>('mapbox://styles/mapbox/light-v11');
   const [locations, setLocations] = useState<MapLocation[]>([]);
   const [nearbyUAC, setNearbyUAC] = useState<string | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
@@ -216,7 +219,7 @@ const DashboardLocationMap: React.FC = () => {
     try {
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/light-v11',
+        style: mapStyle,
         center: longitude && latitude ? [longitude, latitude] : [9.7506, 1.7500], // Default to Malabo
         zoom: longitude && latitude ? 15 : 10,
       });
@@ -327,7 +330,7 @@ const DashboardLocationMap: React.FC = () => {
         map.current.remove();
       }
     };
-  }, [mapboxToken, locations]);
+  }, [mapboxToken, locations, mapStyle]);
 
   // Update current location marker when coordinates change
   useEffect(() => {
@@ -336,8 +339,23 @@ const DashboardLocationMap: React.FC = () => {
     }
   }, [latitude, longitude, accuracy, isMapReady]);
 
+  // Update map style when style changes
+  useEffect(() => {
+    if (map.current && isMapReady) {
+      map.current.setStyle(mapStyle);
+    }
+  }, [mapStyle, isMapReady]);
+
   const handleGetLocation = () => {
     getCurrentPosition();
+  };
+
+  const toggleMapStyle = () => {
+    setMapStyle(prevStyle => 
+      prevStyle === 'mapbox://styles/mapbox/light-v11' 
+        ? 'mapbox://styles/mapbox/satellite-streets-v12'
+        : 'mapbox://styles/mapbox/light-v11'
+    );
   };
 
   return (
@@ -395,6 +413,25 @@ const DashboardLocationMap: React.FC = () => {
             >
               <Crosshair className="h-4 w-4 mr-2" />
               {locationLoading ? 'Getting Location...' : 'My Location'}
+            </Button>
+
+            <Button
+              size="sm"
+              variant="outline"
+              className="bg-background/95 backdrop-blur"
+              onClick={toggleMapStyle}
+            >
+              {mapStyle === 'mapbox://styles/mapbox/light-v11' ? (
+                <>
+                  <Satellite className="h-4 w-4 mr-2" />
+                  Satellite
+                </>
+              ) : (
+                <>
+                  <Map className="h-4 w-4 mr-2" />
+                  Street
+                </>
+              )}
             </Button>
             
             {(!latitude || !longitude) && !locationLoading && (
