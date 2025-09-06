@@ -82,6 +82,14 @@ Deno.serve(async (req) => {
       'school Malabo Equatorial Guinea',
       'school Bata Equatorial Guinea',
       
+      // Specific hotel searches (to catch hotels that might be missed)
+      'Hotel Castillo Malabo Equatorial Guinea',
+      'Castillo Hotel Malabo Equatorial Guinea', 
+      'Castillo Malabo Equatorial Guinea',
+      'Hotel Presidente Malabo Equatorial Guinea',
+      'Hotel Villa Malabo Equatorial Guinea',
+      'Hotel Plaza Malabo Equatorial Guinea',
+      
       // Landmarks
       'cathedral Malabo Equatorial Guinea',
       'airport Malabo Equatorial Guinea',
