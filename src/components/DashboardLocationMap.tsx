@@ -1,6 +1,6 @@
+/// <reference types="google.maps" />
 import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { Loader } from '@googlemaps/js-api-loader';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -29,14 +29,15 @@ interface MapLocation {
 
 const DashboardLocationMap: React.FC = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const currentLocationMarker = useRef<mapboxgl.Marker | null>(null);
-  const [mapboxToken, setMapboxToken] = useState<string>('');
-  const [mapStyle, setMapStyle] = useState<string>('mapbox://styles/mapbox/light-v11');
+  const map = useRef<google.maps.Map | null>(null);
+  const currentLocationMarker = useRef<google.maps.Marker | null>(null);
+  const [googleMapsApiKey, setGoogleMapsApiKey] = useState<string>('');
+  const [mapType, setMapType] = useState<string>('roadmap');
   const [locations, setLocations] = useState<MapLocation[]>([]);
   const [nearbyUAC, setNearbyUAC] = useState<string | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
+  const [poiMarkers, setPOIMarkers] = useState<google.maps.Marker[]>([]);
   const { toast } = useToast();
   
   const {
@@ -48,39 +49,32 @@ const DashboardLocationMap: React.FC = () => {
     getCurrentPosition
   } = useGeolocation();
 
-  // Fetch Mapbox token
+  // Fetch Google Maps API key
   useEffect(() => {
-    const fetchMapboxToken = async () => {
+    const fetchGoogleMapsApiKey = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('get-mapbox-token');
+        const { data, error } = await supabase.functions.invoke('get-google-maps-token');
         if (error) throw error;
-        setMapboxToken(data.token);
-        console.log('Mapbox token fetched successfully');
+        setGoogleMapsApiKey(data.apiKey);
+        console.log('Google Maps API key fetched successfully');
       } catch (error) {
-        console.error('Error fetching Mapbox token:', error);
-        setMapError('Failed to load map token. Please check your connection.');
-        // Try localStorage fallback
-        const localToken = localStorage.getItem('mapboxToken');
-        if (localToken) {
-          setMapboxToken(localToken);
-          setMapError(null);
-          console.log('Using stored Mapbox token');
-        }
+        console.error('Error fetching Google Maps API key:', error);
+        setMapError('Failed to load map API key. Please check your connection.');
       }
     };
 
-    fetchMapboxToken();
+    fetchGoogleMapsApiKey();
   }, []);
 
-  // Auto request current location once map token is ready
+  // Auto request current location once API key is ready
   useEffect(() => {
-    if (mapboxToken && !latitude && !longitude && !locationLoading) {
+    if (googleMapsApiKey && !latitude && !longitude && !locationLoading) {
       getCurrentPosition();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapboxToken]);
+  }, [googleMapsApiKey]);
 
-  // Fetch non-residential locations (POI) within 200m of current location
+  // Fetch non-residential locations (POI) within 2km of current location
   useEffect(() => {
     const fetchPOILocations = async () => {
       if (!latitude || !longitude) {
@@ -107,7 +101,7 @@ const DashboardLocationMap: React.FC = () => {
 
         if (error) throw error;
 
-        // Filter by exact distance (200m) and map to required format
+        // Filter by exact distance (2km) and map to required format
         const filteredLocations: MapLocation[] = [];
         
         data?.forEach(addr => {
@@ -207,84 +201,123 @@ const DashboardLocationMap: React.FC = () => {
     }
   };
 
-  const initializeMap = () => {
-    if (!mapContainer.current || !mapboxToken) {
-      console.log('Map initialization skipped - missing container or token');
+  const initializeMap = async () => {
+    if (!mapContainer.current || !googleMapsApiKey) {
+      console.log('Map initialization skipped - missing container or API key');
       return;
     }
 
-    console.log('Initializing map with token');
-    mapboxgl.accessToken = mapboxToken;
+    console.log('Initializing Google Maps...');
 
     try {
-      map.current = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: mapStyle,
-        center: longitude && latitude ? [longitude, latitude] : [9.7506, 1.7500], // Default to Malabo
-        zoom: longitude && latitude ? 15 : 10,
+      const loader = new Loader({
+        apiKey: googleMapsApiKey,
+        version: 'weekly',
+        libraries: ['places']
       });
 
-      // Add navigation controls
-      map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      await loader.load();
 
-      map.current.on('load', () => {
-        console.log('Map loaded successfully');
-        setIsMapReady(true);
-        setMapError(null);
-        
-        // Add current location marker if available
-        if (latitude && longitude) {
-          updateCurrentLocationMarker(latitude, longitude);
+      const defaultCenter = latitude && longitude 
+        ? { lat: latitude, lng: longitude }
+        : { lat: 1.7500, lng: 9.7506 }; // Default to Malabo
+
+      map.current = new google.maps.Map(mapContainer.current, {
+        center: defaultCenter,
+        zoom: latitude && longitude ? 15 : 10,
+        mapTypeId: mapType as google.maps.MapTypeId,
+        mapTypeControl: false,
+        streetViewControl: true,
+        fullscreenControl: true,
+        zoomControl: true,
+      });
+
+      console.log('Google Maps loaded successfully');
+      setIsMapReady(true);
+      setMapError(null);
+      
+      // Add current location marker if available
+      if (latitude && longitude) {
+        updateCurrentLocationMarker(latitude, longitude);
+      }
+
+      // Add POI markers
+      addPOIMarkers();
+
+    } catch (error) {
+      console.error('Error initializing Google Maps:', error);
+      setMapError('Failed to initialize map. Please check your connection.');
+    }
+  };
+
+  const addPOIMarkers = () => {
+    if (!map.current) return;
+
+    // Clear existing POI markers
+    poiMarkers.forEach(marker => marker.setMap(null));
+    setPOIMarkers([]);
+
+    const newMarkers: google.maps.Marker[] = [];
+
+    locations.forEach(location => {
+      const marker = new google.maps.Marker({
+        position: { lat: location.coordinates[1], lng: location.coordinates[0] },
+        map: map.current,
+        title: location.name,
+        icon: {
+          url: `data:image/svg+xml,${encodeURIComponent(`
+            <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10" r="8" fill="${getMarkerColor(location.type)}" stroke="white" stroke-width="2"/>
+            </svg>
+          `)}`,
+          scaledSize: new google.maps.Size(20, 20),
+          anchor: new google.maps.Point(10, 10)
         }
+      });
 
-        // Add POI markers
-        locations.forEach(location => {
-          const el = document.createElement('div');
-          el.className = 'marker-poi';
-          el.style.backgroundColor = getMarkerColor(location.type);
-          el.style.width = '20px';
-          el.style.height = '20px';
-          el.style.borderRadius = '50%';
-          el.style.border = '2px solid white';
-          el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
-          el.style.cursor = 'pointer';
-          el.title = location.name; // Show name on hover
+      const infoWindow = new google.maps.InfoWindow({
+        content: `
+          <div style="padding: 8px;">
+            <div style="font-weight: 600; margin-bottom: 4px;">${location.name}</div>
+            <div style="font-size: 14px; color: #666; text-transform: capitalize; margin-bottom: 4px;">${location.type}</div>
+            <div style="font-size: 12px; color: #3b82f6;">${location.uac}</div>
+          </div>
+        `
+      });
 
-          const popup = new mapboxgl.Popup({ offset: 25 })
-            .setHTML(`
-              <div class="p-2">
-                <div class="font-semibold">${location.name}</div>
-                <div class="text-sm text-gray-600 capitalize">${location.type}</div>
-                <div class="text-xs text-blue-600">${location.uac}</div>
-              </div>
-            `);
+      marker.addListener('click', () => {
+        infoWindow.open(map.current, marker);
+      });
 
-          const marker = new mapboxgl.Marker(el)
-            .setLngLat(location.coordinates)
-            .setPopup(popup)
-            .addTo(map.current!);
-
-          // Add hover events
-          el.addEventListener('mouseenter', () => {
-            el.style.transform = 'scale(1.2)';
-            el.style.transition = 'transform 0.2s ease';
-          });
-
-          el.addEventListener('mouseleave', () => {
-            el.style.transform = 'scale(1)';
-          });
+      // Add hover effects
+      marker.addListener('mouseover', () => {
+        marker.setIcon({
+          url: `data:image/svg+xml,${encodeURIComponent(`
+            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" fill="${getMarkerColor(location.type)}" stroke="white" stroke-width="2"/>
+            </svg>
+          `)}`,
+          scaledSize: new google.maps.Size(24, 24),
+          anchor: new google.maps.Point(12, 12)
         });
       });
 
-      map.current.on('error', (e) => {
-        console.error('Map error:', e);
-        setMapError('Failed to load map. Please refresh the page.');
+      marker.addListener('mouseout', () => {
+        marker.setIcon({
+          url: `data:image/svg+xml,${encodeURIComponent(`
+            <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10" r="8" fill="${getMarkerColor(location.type)}" stroke="white" stroke-width="2"/>
+            </svg>
+          `)}`,
+          scaledSize: new google.maps.Size(20, 20),
+          anchor: new google.maps.Point(10, 10)
+        });
       });
 
-    } catch (error) {
-      console.error('Error initializing map:', error);
-      setMapError('Failed to initialize map. Please check your connection.');
-    }
+      newMarkers.push(marker);
+    });
+
+    setPOIMarkers(newMarkers);
   };
 
   const updateCurrentLocationMarker = (lat: number, lng: number) => {
@@ -292,57 +325,56 @@ const DashboardLocationMap: React.FC = () => {
 
     // Remove existing marker
     if (currentLocationMarker.current) {
-      currentLocationMarker.current.remove();
+      currentLocationMarker.current.setMap(null);
     }
 
     // Create current location marker
-    const el = document.createElement('div');
-    el.style.width = '20px';
-    el.style.height = '20px';
-    el.style.backgroundColor = '#3b82f6';
-    el.style.border = '3px solid white';
-    el.style.borderRadius = '50%';
-    el.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.3)';
+    currentLocationMarker.current = new google.maps.Marker({
+      position: { lat, lng },
+      map: map.current,
+      title: 'Your Location',
+      icon: {
+        url: `data:image/svg+xml,${encodeURIComponent(`
+          <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="10" cy="10" r="6" fill="#3b82f6" stroke="white" stroke-width="3"/>
+            <circle cx="10" cy="10" r="10" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.3"/>
+          </svg>
+        `)}`,
+        scaledSize: new google.maps.Size(20, 20),
+        anchor: new google.maps.Point(10, 10)
+      }
+    });
 
-    currentLocationMarker.current = new mapboxgl.Marker(el)
-      .setLngLat([lng, lat])
-      .setPopup(
-        new mapboxgl.Popup({ offset: 25 })
-          .setHTML(`
-            <div class="p-2">
-              <div class="font-semibold flex items-center gap-2">
-                <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
-                Your Location
-              </div>
-              <div class="text-sm text-gray-600">
-                Accuracy: ${accuracy ? `±${Math.round(accuracy)}m` : 'Unknown'}
-              </div>
-              ${nearbyUAC ? `<div class="text-sm font-medium text-green-600 mt-1">UAC: ${nearbyUAC}</div>` : ''}
-            </div>
-          `)
-      )
-      .addTo(map.current);
+    const infoWindow = new google.maps.InfoWindow({
+      content: `
+        <div style="padding: 8px;">
+          <div style="font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <span style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; display: inline-block;"></span>
+            Your Location
+          </div>
+          <div style="font-size: 14px; color: #666;">
+            Accuracy: ${accuracy ? `±${Math.round(accuracy)}m` : 'Unknown'}
+          </div>
+          ${nearbyUAC ? `<div style="font-size: 14px; font-weight: 500; color: #16a34a; margin-top: 4px;">UAC: ${nearbyUAC}</div>` : ''}
+        </div>
+      `
+    });
+
+    currentLocationMarker.current.addListener('click', () => {
+      infoWindow.open(map.current, currentLocationMarker.current);
+    });
 
     // Center map on current location
-    map.current.flyTo({
-      center: [lng, lat],
-      zoom: 16,
-      duration: 1000
-    });
+    map.current.panTo({ lat, lng });
+    map.current.setZoom(16);
   };
 
-  // Initialize map when token and locations are ready
+  // Initialize map when API key and locations are ready
   useEffect(() => {
-    if (mapboxToken && locations.length >= 0) {
+    if (googleMapsApiKey && locations.length >= 0) {
       initializeMap();
     }
-
-    return () => {
-      if (map.current) {
-        map.current.remove();
-      }
-    };
-  }, [mapboxToken, locations, mapStyle]);
+  }, [googleMapsApiKey, locations, mapType]);
 
   // Update current location marker when coordinates change
   useEffect(() => {
@@ -351,22 +383,27 @@ const DashboardLocationMap: React.FC = () => {
     }
   }, [latitude, longitude, accuracy, isMapReady]);
 
-  // Update map style when style changes
+  // Update POI markers when locations change
   useEffect(() => {
     if (map.current && isMapReady) {
-      map.current.setStyle(mapStyle);
+      addPOIMarkers();
     }
-  }, [mapStyle, isMapReady]);
+  }, [locations, isMapReady]);
+
+  // Update map style when mapType changes
+  useEffect(() => {
+    if (map.current && isMapReady) {
+      map.current.setMapTypeId(mapType as google.maps.MapTypeId);
+    }
+  }, [mapType, isMapReady]);
 
   const handleGetLocation = () => {
     getCurrentPosition();
   };
 
-  const toggleMapStyle = () => {
-    setMapStyle(prevStyle => 
-      prevStyle === 'mapbox://styles/mapbox/light-v11' 
-        ? 'mapbox://styles/mapbox/satellite-streets-v12'
-        : 'mapbox://styles/mapbox/light-v11'
+  const toggleMapType = () => {
+    setMapType(prevType => 
+      prevType === 'roadmap' ? 'satellite' : 'roadmap'
     );
   };
 
@@ -409,7 +446,7 @@ const DashboardLocationMap: React.FC = () => {
             <div className="w-full h-full flex items-center justify-center bg-muted/50 rounded-lg">
               <div className="text-center space-y-2">
                 <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto"></div>
-                <p className="text-sm text-muted-foreground">Loading map...</p>
+                <p className="text-sm text-muted-foreground">Loading Google Maps...</p>
               </div>
             </div>
           )}
@@ -427,7 +464,7 @@ const DashboardLocationMap: React.FC = () => {
                   onClick={() => {
                     setMapError(null);
                     setIsMapReady(false);
-                    if (mapboxToken) {
+                    if (googleMapsApiKey) {
                       initializeMap();
                     }
                   }}
@@ -462,9 +499,9 @@ const DashboardLocationMap: React.FC = () => {
                 size="sm"
                 variant="outline"
                 className="bg-background/95 backdrop-blur"
-                onClick={toggleMapStyle}
+                onClick={toggleMapType}
               >
-                {mapStyle === 'mapbox://styles/mapbox/light-v11' ? (
+                {mapType === 'roadmap' ? (
                   <>
                     <Satellite className="h-4 w-4 mr-2" />
                     Satellite
