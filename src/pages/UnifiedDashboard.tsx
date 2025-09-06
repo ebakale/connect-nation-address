@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 // Component imports
 import AdminPanel from "@/components/AdminPanel";
 import { GoogleMapsImporter } from "@/components/GoogleMapsImporter";
+import { AddressExporter } from "@/components/AddressExporter";
 import AddressSearch from "@/components/AddressSearch";
 import AddressMapViewer from "@/components/AddressMapViewer";
 import { AddressRequestForm } from "@/components/AddressRequestForm";
@@ -444,6 +445,11 @@ const UnifiedDashboard = () => {
                     <GoogleMapsImporter />
                   </div>
                 )}
+
+                {/* Address Exporter - Available to all users with admin access */}
+                <div className="mb-6">
+                  <AddressExporter />
+                </div>
 
                 {/* Admin Panel */}
                 <AdminPanel />
