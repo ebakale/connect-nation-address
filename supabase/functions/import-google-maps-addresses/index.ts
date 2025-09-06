@@ -159,8 +159,9 @@ Deno.serve(async (req) => {
       let region = '';
       let country = 'Equatorial Guinea';
 
-      // Extract from address components
-      for (const component of components) {
+      // Extract from address components (with safety check)
+      if (components && Array.isArray(components)) {
+        for (const component of components) {
         if (component.types.includes('route') || component.types.includes('street_number')) {
           street = component.long_name;
         } else if (component.types.includes('locality') || component.types.includes('administrative_area_level_2')) {
