@@ -1,6 +1,6 @@
+/// <reference types="google.maps" />
 import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { Loader } from '@googlemaps/js-api-loader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -33,35 +33,30 @@ const MapView: React.FC<MapViewProps> = ({
   onLocationSelect 
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
+  const map = useRef<google.maps.Map | null>(null);
   const [realLocations, setRealLocations] = useState<MapLocation[]>([]);
-  const [mapboxToken, setMapboxToken] = useState<string>('');
-  const [isTokenSet, setIsTokenSet] = useState(false);
-  const [tokenError, setTokenError] = useState<string>('');
+  const [googleMapsApiKey, setGoogleMapsApiKey] = useState<string>('');
+  const [isApiReady, setIsApiReady] = useState(false);
+  const [apiError, setApiError] = useState<string>('');
+  const markers = useRef<google.maps.Marker[]>([]);
 
-  // Fetch Mapbox token from Supabase edge function
+  // Fetch Google Maps API key from Supabase edge function
   useEffect(() => {
-    const fetchMapboxToken = async () => {
+    const fetchGoogleMapsApiKey = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('get-mapbox-token');
+        const { data, error } = await supabase.functions.invoke('get-google-maps-token');
         if (error) throw error;
-        if (data?.token) {
-          setMapboxToken(data.token);
-          setIsTokenSet(true);
+        if (data?.apiKey) {
+          setGoogleMapsApiKey(data.apiKey);
+          setIsApiReady(true);
         }
       } catch (error) {
-        console.error('Error fetching Mapbox token:', error);
-        setTokenError('Failed to fetch Mapbox token');
-        // Fallback: try localStorage
-        const storedToken = localStorage.getItem('mapbox_token');
-        if (storedToken && storedToken.startsWith('pk.')) {
-          setMapboxToken(storedToken);
-          setIsTokenSet(true);
-        }
+        console.error('Error fetching Google Maps API key:', error);
+        setApiError('Failed to fetch Google Maps API key');
       }
     };
     
-    fetchMapboxToken();
+    fetchGoogleMapsApiKey();
   }, []);
 
   const fetchMapLocations = async () => {
@@ -104,62 +99,101 @@ const MapView: React.FC<MapViewProps> = ({
   // Use real locations from database or passed locations
   const allLocations = locations.length > 0 ? locations : realLocations;
 
-  const initializeMap = () => {
-    if (!mapContainer.current || !mapboxToken) return;
+  const initializeMap = async () => {
+    if (!mapContainer.current || !googleMapsApiKey) return;
 
-    mapboxgl.accessToken = mapboxToken;
-    
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/streets-v12',
-      center: center,
-      zoom: zoom,
-      pitch: 0,
-      bearing: 0
-    });
+    try {
+      const loader = new Loader({
+        apiKey: googleMapsApiKey,
+        version: 'weekly',
+        libraries: ['places']
+      });
 
-    // Add navigation controls
-    map.current.addControl(
-      new mapboxgl.NavigationControl({
-        visualizePitch: true,
-      }),
-      'top-right'
-    );
+      await loader.load();
 
-    // Add scale control
-    map.current.addControl(new mapboxgl.ScaleControl(), 'bottom-left');
+      map.current = new google.maps.Map(mapContainer.current, {
+        center: { lat: center[1], lng: center[0] },
+        zoom: zoom,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeControl: true,
+        streetViewControl: true,
+        fullscreenControl: true,
+        zoomControl: true
+      });
+
+      console.log('Google Maps loaded for MapView');
+      addMarkersToMap();
+
+    } catch (error) {
+      console.error('Error initializing Google Maps:', error);
+      setApiError('Failed to initialize map');
+    }
+  };
+
+  const addMarkersToMap = () => {
+    if (!map.current) return;
+
+    // Clear existing markers
+    markers.current.forEach(marker => marker.setMap(null));
+    markers.current = [];
 
     // Add markers for each location
     allLocations.forEach((location) => {
-      const marker = new mapboxgl.Marker({
-        color: getMarkerColor(location.type, location.verified)
-      })
-        .setLngLat(location.coordinates)
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25 })
-            .setHTML(`
-              <div class="p-2">
-                <p class="font-semibold text-sm">${location.uac}</p>
-                <p class="text-xs text-gray-600">${location.name}</p>
-                <div class="flex items-center gap-2 mt-1">
-                  <span class="text-xs px-2 py-0.5 bg-blue-100 text-blue-800 rounded">${location.type}</span>
-                  ${location.verified ? '<span class="text-xs px-2 py-0.5 bg-green-100 text-green-800 rounded">Verified</span>' : ''}
-                </div>
-              </div>
-            `)
-        )
-        .addTo(map.current!);
+      const marker = new google.maps.Marker({
+        position: { lat: location.coordinates[1], lng: location.coordinates[0] },
+        map: map.current,
+        title: location.name,
+        icon: {
+          url: `data:image/svg+xml,${encodeURIComponent(`
+            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" fill="${getMarkerColor(location.type, location.verified)}" stroke="white" stroke-width="2"/>
+            </svg>
+          `)}`,
+          scaledSize: new google.maps.Size(24, 24),
+          anchor: new google.maps.Point(12, 12)
+        }
+      });
 
-      marker.getElement().addEventListener('click', () => {
+      const infoWindow = new google.maps.InfoWindow({
+        content: `
+          <div style="padding: 8px;">
+            <p style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">${location.uac}</p>
+            <p style="font-size: 12px; color: #666; margin-bottom: 4px;">${location.name}</p>
+            <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+              <span style="
+                font-size: 10px; 
+                padding: 2px 6px; 
+                background: #dbeafe; 
+                color: #1e40af; 
+                border-radius: 4px;
+              ">${location.type}</span>
+              ${location.verified ? `<span style="
+                font-size: 10px; 
+                padding: 2px 6px; 
+                background: #d1fae5; 
+                color: #065f46; 
+                border-radius: 4px;
+              ">Verified</span>` : ''}
+            </div>
+          </div>
+        `
+      });
+
+      marker.addListener('click', () => {
+        infoWindow.open(map.current, marker);
         onLocationSelect?.(location);
       });
+
+      markers.current.push(marker);
     });
 
     // Fit map to show all markers
     if (allLocations.length > 1) {
-      const bounds = new mapboxgl.LngLatBounds();
-      allLocations.forEach(location => bounds.extend(location.coordinates));
-      map.current.fitBounds(bounds, { padding: 50 });
+      const bounds = new google.maps.LatLngBounds();
+      allLocations.forEach(location => {
+        bounds.extend(new google.maps.LatLng(location.coordinates[1], location.coordinates[0]));
+      });
+      map.current!.fitBounds(bounds);
     }
   };
 
@@ -176,67 +210,37 @@ const MapView: React.FC<MapViewProps> = ({
   };
 
   useEffect(() => {
-    if (isTokenSet) {
+    if (isApiReady) {
       initializeMap();
     }
+  }, [isApiReady, googleMapsApiKey]);
 
-    return () => {
-      map.current?.remove();
-    };
-  }, [isTokenSet, mapboxToken]);
-
-  const handleTokenSubmit = () => {
-    if (mapboxToken.trim()) {
-      // Validate token format (basic check)
-      if (mapboxToken.startsWith('pk.')) {
-        localStorage.setItem('mapbox_token', mapboxToken);
-        setIsTokenSet(true);
-      } else {
-        alert('Please enter a valid Mapbox public token (starts with "pk.")');
-      }
-    } else {
-      alert('Please enter a Mapbox token');
+  useEffect(() => {
+    if (map.current && isApiReady) {
+      addMarkersToMap();
     }
-  };
+  }, [allLocations, isApiReady]);
 
-  if (!isTokenSet) {
+  if (!isApiReady) {
     return (
       <Card className="w-full">
         <CardContent className="pt-6">
-          {tokenError ? (
+          {apiError ? (
             <div className="text-center space-y-4">
-              <div className="text-sm text-destructive">{tokenError}</div>
+              <div className="text-sm text-destructive">{apiError}</div>
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">
-                  Please enter your Mapbox public token to display the map:
+                  Failed to load Google Maps. Please refresh the page.
                 </p>
-                <Input
-                  type="password"
-                  placeholder="Enter Mapbox public token (pk.xxx)"
-                  value={mapboxToken}
-                  onChange={(e) => setMapboxToken(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleTokenSubmit()}
-                />
-                <Button onClick={handleTokenSubmit} className="w-full" variant="hero">
-                  Load Map
+                <Button onClick={() => window.location.reload()} className="w-full">
+                  Refresh Page
                 </Button>
-                <p className="text-xs text-muted-foreground">
-                  Get your token at{' '}
-                  <a 
-                    href="https://account.mapbox.com/access-tokens/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    mapbox.com
-                  </a>
-                </p>
               </div>
             </div>
           ) : (
             <div className="text-center space-y-2">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-              <p className="text-sm text-muted-foreground">Loading map...</p>
+              <p className="text-sm text-muted-foreground">Loading Google Maps...</p>
             </div>
           )}
         </CardContent>

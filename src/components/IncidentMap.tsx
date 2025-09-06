@@ -1,6 +1,6 @@
+/// <reference types="google.maps" />
 import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { Loader } from '@googlemaps/js-api-loader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,39 +28,33 @@ interface IncidentMapProps {
 }
 
 // Default center: Malabo, Equatorial Guinea
-const DEFAULT_CENTER: [number, number] = [8.7833, 3.7500];
+const DEFAULT_CENTER = { lat: 3.7500, lng: 8.7833 };
 
 const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: IncidentMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const [mapboxToken, setMapboxToken] = useState<string>('');
-  const [isTokenSet, setIsTokenSet] = useState(false);
-  const [tokenError, setTokenError] = useState<string>('');
-  const markers = useRef<mapboxgl.Marker[]>([]);
+  const map = useRef<google.maps.Map | null>(null);
+  const [googleMapsApiKey, setGoogleMapsApiKey] = useState<string>('');
+  const [isApiReady, setIsApiReady] = useState(false);
+  const [apiError, setApiError] = useState<string>('');
+  const markers = useRef<google.maps.Marker[]>([]);
 
-  // Fetch Mapbox token from Supabase edge function
+  // Fetch Google Maps API key from Supabase edge function
   useEffect(() => {
-    const fetchMapboxToken = async () => {
+    const fetchGoogleMapsApiKey = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('get-mapbox-token');
+        const { data, error } = await supabase.functions.invoke('get-google-maps-token');
         if (error) throw error;
-        if (data?.token) {
-          setMapboxToken(data.token);
-          setIsTokenSet(true);
+        if (data?.apiKey) {
+          setGoogleMapsApiKey(data.apiKey);
+          setIsApiReady(true);
         }
       } catch (error) {
-        console.error('Error fetching Mapbox token:', error);
-        setTokenError('Failed to fetch Mapbox token from server');
-        // Fallback: try localStorage
-        const storedToken = localStorage.getItem('mapbox_token');
-        if (storedToken && storedToken.startsWith('pk.')) {
-          setMapboxToken(storedToken);
-          setIsTokenSet(true);
-        }
+        console.error('Error fetching Google Maps API key:', error);
+        setApiError('Failed to fetch Google Maps API key from server');
       }
     };
     
-    fetchMapboxToken();
+    fetchGoogleMapsApiKey();
   }, []);
 
   const getPriorityColor = (priority: number): string => {
@@ -87,7 +81,7 @@ const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: Incident
   };
 
   const clearMarkers = () => {
-    markers.current.forEach(marker => marker.remove());
+    markers.current.forEach(marker => marker.setMap(null));
     markers.current = [];
   };
 
@@ -99,67 +93,96 @@ const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: Incident
     incidents.forEach((incident) => {
       if (!incident.location_latitude || !incident.location_longitude) return;
 
-      // Create custom marker element (fixed-size, bottom-anchored)
-      const markerElement = document.createElement('div');
-      markerElement.className = 'incident-marker';
-      markerElement.style.cssText = `
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background-color: ${getPriorityColor(incident.priority_level)};
-        border: 3px solid white;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        cursor: pointer;
-        box-sizing: border-box;
-        position: relative;
-      `;
-
-      // Tooltip (pure HTML, no map autopan)
-      const tooltip = document.createElement('div');
-      tooltip.style.cssText = `
-        position: absolute;
-        left: 50%;
-        bottom: 26px;
-        transform: translateX(-50%);
-        background: rgba(0,0,0,0.85);
-        color: #fff;
-        padding: 6px 8px;
-        border-radius: 6px;
-        font-size: 12px;
-        line-height: 1.2;
-        white-space: nowrap;
-        pointer-events: none;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        display: none;
-      `;
-      tooltip.innerHTML = `
-        <div style="font-weight:600; margin-bottom:2px;">${incident.incident_number}</div>
-        <div style="opacity:.9;">
-          ${incident.emergency_type} • P${incident.priority_level} • ${incident.status.replace('_', ' ')}
-        </div>
-      `;
-      markerElement.appendChild(tooltip);
-
-      // Add pulse animation for high priority incidents (visual only)
-      if (incident.priority_level <= 2) {
-        markerElement.style.animation = 'pulse 2s infinite';
-      }
-
-      // Hover: show tooltip only (no size/transform changes)
-      markerElement.addEventListener('mouseenter', () => {
-        tooltip.style.display = 'block';
-      });
-      markerElement.addEventListener('mouseleave', () => {
-        tooltip.style.display = 'none';
+      const marker = new google.maps.Marker({
+        position: {
+          lat: incident.location_latitude,
+          lng: incident.location_longitude
+        },
+        map: map.current,
+        title: `${incident.incident_number} - ${incident.emergency_type}`,
+        icon: {
+          url: `data:image/svg+xml,${encodeURIComponent(`
+            <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10" r="8" fill="${getPriorityColor(incident.priority_level)}" stroke="white" stroke-width="3"/>
+              ${incident.priority_level <= 2 ? `
+                <circle cx="10" cy="10" r="12" fill="none" stroke="${getPriorityColor(incident.priority_level)}" stroke-width="1" opacity="0.3">
+                  <animate attributeName="r" values="8;16;8" dur="2s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values="0.3;0;0.3" dur="2s" repeatCount="indefinite"/>
+                </circle>
+              ` : ''}
+            </svg>
+          `)}`,
+          scaledSize: new google.maps.Size(20, 20),
+          anchor: new google.maps.Point(10, 10)
+        }
       });
 
-      const marker = new mapboxgl.Marker({ element: markerElement, anchor: 'bottom' })
-        .setLngLat([incident.location_longitude, incident.location_latitude])
-        .addTo(map.current);
+      const infoWindow = new google.maps.InfoWindow({
+        content: `
+          <div style="padding: 8px; min-width: 200px;">
+            <div style="font-weight: 600; margin-bottom: 4px; color: ${getPriorityColor(incident.priority_level)};">
+              ${incident.incident_number}
+            </div>
+            <div style="margin-bottom: 4px;">
+              <strong>Type:</strong> ${incident.emergency_type}
+            </div>
+            <div style="margin-bottom: 4px;">
+              <strong>Priority:</strong> P${incident.priority_level}
+            </div>
+            <div style="margin-bottom: 4px;">
+              <strong>Status:</strong> <span style="color: ${getStatusColor(incident.status)};">${incident.status.replace('_', ' ')}</span>
+            </div>
+            <div style="margin-bottom: 8px;">
+              <strong>Reported:</strong> ${new Date(incident.reported_at).toLocaleString()}
+            </div>
+            ${incident.location_address ? `<div style="margin-bottom: 8px;"><strong>Address:</strong> ${incident.location_address}</div>` : ''}
+            <button 
+              onclick="selectIncident('${incident.id}')"
+              style="
+                background: ${getPriorityColor(incident.priority_level)};
+                color: white;
+                border: none;
+                padding: 6px 12px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 12px;
+                font-weight: 500;
+              "
+            >
+              View Details
+            </button>
+          </div>
+        `
+      });
 
-      // Handle marker click
-      markerElement.addEventListener('click', () => {
+      marker.addListener('click', () => {
+        infoWindow.open(map.current, marker);
         onSelectIncident(incident);
+      });
+
+      // Add hover effects
+      marker.addListener('mouseover', () => {
+        marker.setIcon({
+          url: `data:image/svg+xml,${encodeURIComponent(`
+            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" fill="${getPriorityColor(incident.priority_level)}" stroke="white" stroke-width="3"/>
+            </svg>
+          `)}`,
+          scaledSize: new google.maps.Size(24, 24),
+          anchor: new google.maps.Point(12, 12)
+        });
+      });
+
+      marker.addListener('mouseout', () => {
+        marker.setIcon({
+          url: `data:image/svg+xml,${encodeURIComponent(`
+            <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10" r="8" fill="${getPriorityColor(incident.priority_level)}" stroke="white" stroke-width="3"/>
+            </svg>
+          `)}`,
+          scaledSize: new google.maps.Size(20, 20),
+          anchor: new google.maps.Point(10, 10)
+        });
       });
 
       markers.current.push(marker);
@@ -167,58 +190,59 @@ const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: Incident
 
     // Fit map to show all incidents if there are any
     if (incidents.length > 0) {
-      const bounds = new mapboxgl.LngLatBounds();
+      const bounds = new google.maps.LatLngBounds();
       incidents.forEach(incident => {
         if (incident.location_latitude && incident.location_longitude) {
-          bounds.extend([incident.location_longitude, incident.location_latitude]);
+          bounds.extend(new google.maps.LatLng(incident.location_latitude, incident.location_longitude));
         }
       });
       
       // Only fit bounds if we have valid coordinates
       if (!bounds.isEmpty()) {
-        map.current.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+        map.current!.fitBounds(bounds);
+        // Set max zoom to prevent too much zoom on single incident
+        if (incidents.length === 1) {
+          google.maps.event.addListenerOnce(map.current!, 'bounds_changed', () => {
+            if (map.current!.getZoom()! > 15) {
+              map.current!.setZoom(15);
+            }
+          });
+        }
       }
     }
   };
 
-  const initializeMap = () => {
-    if (!mapContainer.current || !mapboxToken) return;
+  const initializeMap = async () => {
+    if (!mapContainer.current || !googleMapsApiKey) return;
 
-    mapboxgl.accessToken = mapboxToken;
-    
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/streets-v12',
-      center: DEFAULT_CENTER,
-      zoom: 12,
-      pitch: 0,
-      bearing: 0
-    });
+    try {
+      const loader = new Loader({
+        apiKey: googleMapsApiKey,
+        version: 'weekly',
+        libraries: ['places']
+      });
 
-    // Add navigation controls
-    map.current.addControl(
-      new mapboxgl.NavigationControl({
-        visualizePitch: true,
-      }),
-      'top-right'
-    );
+      await loader.load();
 
-    // Add scale control
-    map.current.addControl(new mapboxgl.ScaleControl(), 'bottom-left');
+      map.current = new google.maps.Map(mapContainer.current, {
+        center: DEFAULT_CENTER,
+        zoom: 12,
+        mapTypeControl: true,
+        streetViewControl: true,
+        fullscreenControl: true,
+        zoomControl: true,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      });
 
-    // Add CSS for pulse animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes pulse {
-        0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-        70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-      }
-    `;
-    document.head.appendChild(style);
+      console.log('Google Maps loaded successfully for incident map');
+      
+      // Add incident markers when map loads
+      addIncidentMarkers();
 
-    // Add incident markers when map loads
-    map.current.on('load', addIncidentMarkers);
+    } catch (error) {
+      console.error('Error initializing Google Maps for incidents:', error);
+      setApiError('Failed to initialize incident map. Please refresh the page.');
+    }
   };
 
   // Global function for popup buttons
@@ -236,87 +260,48 @@ const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: Incident
   }, [incidents, onSelectIncident]);
 
   useEffect(() => {
-    if (isTokenSet) {
+    if (isApiReady) {
       initializeMap();
     }
 
     return () => {
       clearMarkers();
-      map.current?.remove();
     };
-  }, [isTokenSet, mapboxToken]);
+  }, [isApiReady, googleMapsApiKey]);
 
   // Update markers when incidents change
   useEffect(() => {
-    if (map.current && isTokenSet) {
+    if (map.current && isApiReady) {
       addIncidentMarkers();
     }
-  }, [incidents, isTokenSet]);
-
-  const handleTokenSubmit = () => {
-    if (mapboxToken.trim()) {
-      // Validate token format (basic check)
-      if (mapboxToken.startsWith('pk.')) {
-        localStorage.setItem('mapbox_token', mapboxToken);
-        setIsTokenSet(true);
-        setTokenError('');
-      } else {
-        setTokenError('Please enter a valid Mapbox public token (starts with "pk.")');
-      }
-    } else {
-      setTokenError('Please enter a Mapbox token');
-    }
-  };
+  }, [incidents, isApiReady]);
 
   const centerOnIncident = () => {
     if (!map.current || !selectedIncident?.location_latitude || !selectedIncident?.location_longitude) return;
     
-    map.current.flyTo({
-      center: [selectedIncident.location_longitude, selectedIncident.location_latitude],
-      zoom: 16,
-      duration: 1000
+    map.current.panTo({
+      lat: selectedIncident.location_latitude,
+      lng: selectedIncident.location_longitude
     });
+    map.current.setZoom(16);
   };
 
-  if (!isTokenSet) {
+  if (!isApiReady) {
     return (
       <Card className="w-full h-[400px] flex items-center justify-center">
         <CardContent className="text-center space-y-4 w-full max-w-md">
-          {tokenError ? (
+          {apiError ? (
             <>
               <AlertTriangle className="h-8 w-8 text-yellow-500 mx-auto" />
-              <div className="text-sm text-destructive">{tokenError}</div>
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  Please enter your Mapbox public token to display the live incident map:
-                </p>
-                <Input
-                  type="password"
-                  placeholder="Enter Mapbox public token (pk.xxx)"
-                  value={mapboxToken}
-                  onChange={(e) => setMapboxToken(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleTokenSubmit()}
-                />
-                <Button onClick={handleTokenSubmit} className="w-full">
-                  Load Live Map
-                </Button>
-                <p className="text-xs text-muted-foreground">
-                  Get your token at{' '}
-                  <a 
-                    href="https://account.mapbox.com/access-tokens/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    mapbox.com
-                  </a>
-                </p>
-              </div>
+              <div className="text-sm text-destructive">{apiError}</div>
+              <Button onClick={() => window.location.reload()} className="w-full">
+                Refresh Page
+              </Button>
             </>
           ) : (
             <>
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-              <p className="text-sm text-muted-foreground">Loading incident map...</p>
+              <p className="text-sm text-muted-foreground">Loading Google Maps incident viewer...</p>
             </>
           )}
         </CardContent>
@@ -333,10 +318,6 @@ const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: Incident
       
       {/* Map Controls */}
       <div className="flex gap-2">
-        <Button size="sm" variant="outline">
-          <Layers className="h-4 w-4 mr-1" />
-          Layers
-        </Button>
         <Button 
           size="sm" 
           variant="outline" 
@@ -345,6 +326,23 @@ const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: Incident
         >
           <Navigation className="h-4 w-4 mr-1" />
           Center on Selected
+        </Button>
+        <Button 
+          size="sm" 
+          variant="outline" 
+          onClick={() => {
+            if (map.current) {
+              const mapType = map.current.getMapTypeId();
+              map.current.setMapTypeId(
+                mapType === google.maps.MapTypeId.ROADMAP 
+                  ? google.maps.MapTypeId.SATELLITE 
+                  : google.maps.MapTypeId.ROADMAP
+              );
+            }
+          }}
+        >
+          <Layers className="h-4 w-4 mr-1" />
+          Toggle Satellite
         </Button>
       </div>
 
@@ -373,8 +371,9 @@ const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: Incident
             </div>
           </div>
           <div className="mt-2 text-xs text-muted-foreground">
-            • Pulsing markers indicate high priority incidents
-            • Click markers for details or use "View Details" button
+            • Animated markers indicate high priority incidents
+            • Click markers for details • Hover for larger view
+            • Use satellite toggle for better visibility
           </div>
         </CardContent>
       </Card>

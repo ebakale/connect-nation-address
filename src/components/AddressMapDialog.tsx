@@ -1,3 +1,4 @@
+/// <reference types="google.maps" />
 import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -5,8 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MapPin, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { Loader } from '@googlemaps/js-api-loader';
 
 interface AddressMapDialogProps {
   isOpen: boolean;
@@ -25,90 +25,123 @@ interface AddressMapDialogProps {
 
 export function AddressMapDialog({ isOpen, onClose, address }: AddressMapDialogProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const [mapboxToken, setMapboxToken] = useState<string>("");
-  const [tokenInput, setTokenInput] = useState<string>("");
-  const [showTokenInput, setShowTokenInput] = useState(false);
-  const [loadingToken, setLoadingToken] = useState(true);
+  const map = useRef<google.maps.Map | null>(null);
+  const [googleMapsApiKey, setGoogleMapsApiKey] = useState<string>("");
+  const [apiKeyInput, setApiKeyInput] = useState<string>("");
+  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
+  const [loadingApiKey, setLoadingApiKey] = useState(true);
 
-  // Fetch Mapbox token from Supabase secrets
+  // Fetch Google Maps API key from Supabase secrets
   useEffect(() => {
-    const fetchMapboxToken = async () => {
+    const fetchGoogleMapsApiKey = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('get-mapbox-token');
+        const { data, error } = await supabase.functions.invoke('get-google-maps-token');
         if (error) throw error;
-        if (data?.token) {
-          setMapboxToken(data.token);
+        if (data?.apiKey) {
+          setGoogleMapsApiKey(data.apiKey);
         } else {
-          setShowTokenInput(true);
+          setShowApiKeyInput(true);
         }
       } catch (error) {
-        console.error('Error fetching Mapbox token:', error);
-        setShowTokenInput(true);
+        console.error('Error fetching Google Maps API key:', error);
+        setShowApiKeyInput(true);
       } finally {
-        setLoadingToken(false);
+        setLoadingApiKey(false);
       }
     };
 
     if (isOpen) {
-      fetchMapboxToken();
+      fetchGoogleMapsApiKey();
     }
   }, [isOpen]);
 
-  // Initialize map when token is available
+  // Initialize map when API key is available
   useEffect(() => {
-    if (!isOpen || !mapboxToken || !mapContainer.current) return;
+    if (!isOpen || !googleMapsApiKey || !mapContainer.current) return;
 
-    // Initialize map
-    mapboxgl.accessToken = mapboxToken;
-    
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/satellite-streets-v12',
-      center: [address.longitude, address.latitude],
-      zoom: 16,
-    });
+    const initializeMap = async () => {
+      try {
+        const loader = new Loader({
+          apiKey: googleMapsApiKey,
+          version: 'weekly',
+          libraries: ['places']
+        });
 
-    // Add navigation controls
-    map.current.addControl(
-      new mapboxgl.NavigationControl(),
-      'top-right'
-    );
+        await loader.load();
 
-    // Add marker for the address
-    new mapboxgl.Marker({ color: '#ef4444' })
-      .setLngLat([address.longitude, address.latitude])
-      .setPopup(
-        new mapboxgl.Popup({ offset: 25 })
-          .setHTML(`
-            <div class="p-2">
-              <h3 class="font-semibold">${address.building ? `${address.building}, ` : ''}${address.street}</h3>
-              <p class="text-sm text-gray-600">${address.city}, ${address.region}, ${address.country}</p>
-              <p class="text-xs text-gray-500">Lat: ${address.latitude}, Lng: ${address.longitude}</p>
+        // Initialize map
+        map.current = new google.maps.Map(mapContainer.current!, {
+          center: { lat: address.latitude, lng: address.longitude },
+          zoom: 16,
+          mapTypeId: google.maps.MapTypeId.SATELLITE,
+          mapTypeControl: true,
+          streetViewControl: true,
+          fullscreenControl: true,
+          zoomControl: true
+        });
+
+        // Add marker for the address
+        const marker = new google.maps.Marker({
+          position: { lat: address.latitude, lng: address.longitude },
+          map: map.current,
+          title: 'Address Location',
+          icon: {
+            url: `data:image/svg+xml,${encodeURIComponent(`
+              <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="15" cy="15" r="12" fill="#ef4444" stroke="white" stroke-width="3"/>
+                <circle cx="15" cy="15" r="6" fill="white"/>
+              </svg>
+            `)}`,
+            scaledSize: new google.maps.Size(30, 30),
+            anchor: new google.maps.Point(15, 15)
+          }
+        });
+
+        const infoWindow = new google.maps.InfoWindow({
+          content: `
+            <div style="padding: 8px;">
+              <h3 style="font-weight: 600; margin-bottom: 4px;">
+                ${address.building ? `${address.building}, ` : ''}${address.street}
+              </h3>
+              <p style="font-size: 14px; color: #666; margin-bottom: 4px;">
+                ${address.city}, ${address.region}, ${address.country}
+              </p>
+              <p style="font-size: 12px; color: #999;">
+                Coordinates: ${address.latitude}, ${address.longitude}
+              </p>
             </div>
-          `)
-      )
-      .addTo(map.current);
+          `
+        });
+
+        marker.addListener('click', () => {
+          infoWindow.open(map.current, marker);
+        });
+
+        // Show info window immediately
+        infoWindow.open(map.current, marker);
+
+      } catch (error) {
+        console.error('Error initializing Google Maps:', error);
+      }
+    };
+
+    initializeMap();
 
     // Cleanup
     return () => {
-      map.current?.remove();
       map.current = null;
     };
-  }, [isOpen, mapboxToken, address]);
+  }, [isOpen, googleMapsApiKey, address]);
 
-  const handleTokenSubmit = () => {
-    if (tokenInput.trim()) {
-      setMapboxToken(tokenInput.trim());
-      setShowTokenInput(false);
+  const handleApiKeySubmit = () => {
+    if (apiKeyInput.trim()) {
+      setGoogleMapsApiKey(apiKeyInput.trim());
+      setShowApiKeyInput(false);
     }
   };
 
   const handleClose = () => {
-    if (map.current) {
-      map.current.remove();
-      map.current = null;
-    }
+    map.current = null;
     onClose();
   };
 
@@ -118,7 +151,7 @@ export function AddressMapDialog({ isOpen, onClose, address }: AddressMapDialogP
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-sm sm:text-base">
             <MapPin className="h-4 w-4 sm:h-5 sm:w-5" />
-            Address Location Map
+            Address Location on Google Maps
           </DialogTitle>
         </DialogHeader>
 
@@ -137,38 +170,38 @@ export function AddressMapDialog({ isOpen, onClose, address }: AddressMapDialogP
             </p>
           </div>
 
-          {/* Map or Token Input */}
+          {/* Map or API Key Input */}
           <div className="flex-1 relative min-h-0">
-            {loadingToken ? (
+            {loadingApiKey ? (
               <div className="absolute inset-0 flex items-center justify-center bg-muted rounded-lg">
                 <div className="text-center">
                   <div className="animate-spin h-6 w-6 sm:h-8 sm:w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Loading map...</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Loading Google Maps...</p>
                 </div>
               </div>
-            ) : showTokenInput ? (
+            ) : showApiKeyInput ? (
               <div className="absolute inset-0 flex items-center justify-center bg-muted rounded-lg overflow-y-auto">
                 <div className="text-center space-y-3 sm:space-y-4 p-4 sm:p-6 max-w-sm w-full mx-2">
                   <AlertCircle className="h-8 w-8 sm:h-12 sm:w-12 text-yellow-600 mx-auto" />
                   <div>
-                    <h3 className="font-medium mb-2 text-sm sm:text-base">Mapbox Token Required</h3>
+                    <h3 className="font-medium mb-2 text-sm sm:text-base">Google Maps API Key Required</h3>
                     <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
-                      To view the map, please enter your Mapbox public token. 
-                      You can get one from <a href="https://mapbox.com/" target="_blank" rel="noopener noreferrer" className="text-primary underline">mapbox.com</a>
+                      To view the map, please enter your Google Maps API key. 
+                      You can get one from <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" className="text-primary underline">Google Cloud Console</a>
                     </p>
                   </div>
                   <div className="space-y-2 sm:space-y-3">
                     <div>
-                      <Label htmlFor="mapbox-token" className="text-xs sm:text-sm">Mapbox Public Token</Label>
+                      <Label htmlFor="google-maps-key" className="text-xs sm:text-sm">Google Maps API Key</Label>
                       <Input
-                        id="mapbox-token"
-                        value={tokenInput}
-                        onChange={(e) => setTokenInput(e.target.value)}
-                        placeholder="pk.eyJ1IjoieW91ci11c2VybmFtZSI..."
+                        id="google-maps-key"
+                        value={apiKeyInput}
+                        onChange={(e) => setApiKeyInput(e.target.value)}
+                        placeholder="AIzaSy..."
                         className="mt-1 text-xs sm:text-sm"
                       />
                     </div>
-                    <Button onClick={handleTokenSubmit} disabled={!tokenInput.trim()} className="w-full text-xs sm:text-sm">
+                    <Button onClick={handleApiKeySubmit} disabled={!apiKeyInput.trim()} className="w-full text-xs sm:text-sm">
                       Load Map
                     </Button>
                   </div>
