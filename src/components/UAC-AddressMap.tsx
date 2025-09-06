@@ -165,7 +165,7 @@ export const UACAddressMap: React.FC<UACAddressMapProps> = ({
 
     const markerColor = getMarkerColor(address.address_type, address.verified, address.public);
 
-    // Create a custom marker with visible UAC and description
+    // Create marker
     const marker = new google.maps.Marker({
       position: { lat: address.latitude, lng: address.longitude },
       map: map.current,
@@ -182,92 +182,109 @@ export const UACAddressMap: React.FC<UACAddressMapProps> = ({
       }
     });
 
-    // Create a persistent info window that's always visible
-    const persistentLabel = new google.maps.InfoWindow({
-      content: `
-        <div style="
+    // Create custom HTML overlay for persistent label
+    class CustomLabel extends google.maps.OverlayView {
+      private position: google.maps.LatLng;
+      private content: string;
+      private div?: HTMLDivElement;
+
+      constructor(position: google.maps.LatLng, content: string) {
+        super();
+        this.position = position;
+        this.content = content;
+      }
+
+      onAdd() {
+        this.div = document.createElement('div');
+        this.div.style.cssText = `
+          position: absolute;
           background: rgba(255, 255, 255, 0.95);
           border: 2px solid ${markerColor};
           border-radius: 8px;
-          padding: 8px;
+          padding: 6px 8px;
           font-family: system-ui, -apple-system, sans-serif;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          font-size: 11px;
+          line-height: 1.2;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.2);
           backdrop-filter: blur(4px);
-          min-width: 200px;
-          max-width: 250px;
-        ">
-          <div style="font-weight: bold; color: ${markerColor}; font-size: 12px; margin-bottom: 4px;">
-            UAC: ${address.uac}
-          </div>
-          <div style="font-size: 11px; color: #374151; line-height: 1.3; margin-bottom: 4px;">
-            ${address.building ? `<strong>${address.building}</strong><br/>` : ''}
-            ${address.street}<br/>
-            ${address.city}, ${address.region}
-          </div>
-          ${address.description ? `
-            <div style="
-              font-size: 10px; 
-              color: #6b7280; 
-              margin-top: 4px; 
-              padding-top: 4px; 
-              border-top: 1px solid #e5e7eb;
-              font-style: italic;
-              max-height: 40px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-            ">
-              ${address.description.length > 80 ? address.description.substring(0, 80) + '...' : address.description}
-            </div>
-          ` : ''}
-          <div style="
-            margin-top: 4px; 
-            padding-top: 4px; 
-            border-top: 1px solid #e5e7eb;
-            display: flex; 
-            gap: 4px; 
-            flex-wrap: wrap;
-          ">
-            <span style="
-              background: ${address.verified ? '#16a34a' : '#f59e0b'}; 
-              color: white; 
-              padding: 1px 4px; 
-              border-radius: 3px; 
-              font-size: 8px; 
-              font-weight: bold;
-            ">
-              ${address.verified ? '✓ VERIFIED' : '⚠ UNVERIFIED'}
-            </span>
-            <span style="
-              background: ${address.public ? '#3b82f6' : '#6b7280'}; 
-              color: white; 
-              padding: 1px 4px; 
-              border-radius: 3px; 
-              font-size: 8px; 
-              font-weight: bold;
-            ">
-              ${address.public ? 'PUBLIC' : 'PRIVATE'}
-            </span>
-            <span style="
-              background: ${markerColor}; 
-              color: white; 
-              padding: 1px 4px; 
-              border-radius: 3px; 
-              font-size: 8px; 
-              font-weight: bold;
-            ">
-              ${address.address_type.toUpperCase()}
-            </span>
-          </div>
+          min-width: 120px;
+          max-width: 200px;
+          pointer-events: none;
+          z-index: 1000;
+        `;
+        
+        this.div.innerHTML = this.content;
+        
+        const panes = this.getPanes();
+        if (panes) {
+          panes.overlayLayer.appendChild(this.div);
+        }
+      }
+
+      draw() {
+        if (this.div) {
+          const overlayProjection = this.getProjection();
+          const point = overlayProjection.fromLatLngToDivPixel(this.position);
+          
+          if (point) {
+            this.div.style.left = (point.x - 60) + 'px'; // Center horizontally
+            this.div.style.top = (point.y - 40) + 'px';  // Position above marker
+          }
+        }
+      }
+
+      onRemove() {
+        if (this.div && this.div.parentNode) {
+          this.div.parentNode.removeChild(this.div);
+          this.div = undefined;
+        }
+      }
+    }
+
+    // Create the persistent label content
+    const labelContent = `
+      <div style="font-weight: bold; color: ${markerColor}; margin-bottom: 2px;">
+        ${address.uac}
+      </div>
+      <div style="color: #374151; margin-bottom: 2px;">
+        ${address.building ? `${address.building}<br/>` : ''}${address.street}
+      </div>
+      ${address.description ? `
+        <div style="color: #6b7280; font-size: 10px; font-style: italic;">
+          ${address.description.length > 50 ? address.description.substring(0, 50) + '...' : address.description}
         </div>
-      `,
-      disableAutoPan: true,
-      pixelOffset: new google.maps.Size(0, -30)
-    });
+      ` : ''}
+      <div style="margin-top: 2px;">
+        <span style="
+          background: ${address.verified ? '#16a34a' : '#f59e0b'}; 
+          color: white; 
+          padding: 1px 3px; 
+          border-radius: 2px; 
+          font-size: 8px; 
+          margin-right: 2px;
+        ">
+          ${address.verified ? '✓' : '⚠'}
+        </span>
+        <span style="
+          background: ${markerColor}; 
+          color: white; 
+          padding: 1px 3px; 
+          border-radius: 2px; 
+          font-size: 8px;
+        ">
+          ${address.address_type.charAt(0).toUpperCase()}
+        </span>
+      </div>
+    `;
 
-    // Open the persistent label immediately and keep it open
-    persistentLabel.open(map.current, marker);
+    // Create and add the custom label
+    const customLabel = new CustomLabel(
+      new google.maps.LatLng(address.latitude, address.longitude),
+      labelContent
+    );
+    customLabel.setMap(map.current);
 
-    // Create a detailed info window that opens on click
+    // Create detailed info window that opens on click
     const detailedInfoWindow = new google.maps.InfoWindow({
       content: `
         <div style="padding: 12px; max-width: 300px; font-family: system-ui, -apple-system, sans-serif;">
@@ -317,16 +334,9 @@ export const UACAddressMap: React.FC<UACAddressMapProps> = ({
       `
     });
 
-    // Add click listener for detailed info window
+    // Add click listener for detailed info
     marker.addListener('click', () => {
-      // Close the persistent label temporarily and open detailed info
-      persistentLabel.close();
       detailedInfoWindow.open(map.current, marker);
-    });
-
-    // When detailed info window closes, reopen the persistent label
-    detailedInfoWindow.addListener('closeclick', () => {
-      persistentLabel.open(map.current, marker);
     });
 
     markersRef.current.push(marker);
