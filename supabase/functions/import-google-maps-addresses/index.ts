@@ -86,6 +86,7 @@ Deno.serve(async (req) => {
       'Hotel Castillo Malabo Equatorial Guinea',
       'Castillo Hotel Malabo Equatorial Guinea', 
       'Castillo Malabo Equatorial Guinea',
+      'PQW9+WW Malabo Equatorial Guinea',  // Hotel Castillo Plus Code
       'Hotel Presidente Malabo Equatorial Guinea',
       'Hotel Villa Malabo Equatorial Guinea',
       'Hotel Plaza Malabo Equatorial Guinea',
