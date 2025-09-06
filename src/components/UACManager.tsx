@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -313,76 +313,110 @@ export const UACManager: React.FC = () => {
                 <p className="text-muted-foreground">Loading UAC records...</p>
               </div>
             ) : (
-              <div className="border rounded-lg overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="min-w-[120px]">UAC</TableHead>
-                      <TableHead className="min-w-[150px]">Address</TableHead>
-                      <TableHead className="min-w-[120px]">Location</TableHead>
-                      <TableHead className="min-w-[80px]">Type</TableHead>
-                      <TableHead className="min-w-[100px]">Status</TableHead>
-                      <TableHead className="min-w-[80px]">Created</TableHead>
-                      <TableHead className="min-w-[60px]">Valid</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredRecords.map((record) => (
-                      <TableRow key={record.uac}>
-                        <TableCell className="font-mono text-sm min-w-[120px]">
-                          {record.uac}
-                        </TableCell>
-                        <TableCell className="min-w-[150px]">
-                          <div className="flex items-center gap-1">
-                            <Building className="h-3 w-3 flex-shrink-0" />
-                            <div className="truncate">
+              <div className="space-y-3">
+                <Accordion type="single" collapsible className="w-full">
+                  {filteredRecords.map((record, index) => (
+                    <AccordionItem key={record.uac} value={`item-${index}`}>
+                      <AccordionTrigger className="text-left">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full pr-4">
+                          <div className="space-y-1">
+                            <div className="font-mono text-sm font-medium">{record.uac}</div>
+                            <div className="text-sm text-muted-foreground">
                               {record.building && `${record.building}, `}
                               {record.street}
                             </div>
                           </div>
-                        </TableCell>
-                        <TableCell className="min-w-[120px]">
-                          <div className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3 flex-shrink-0" />
-                            <div className="truncate">
-                              {record.city}, {record.region}
-                              <div className="text-xs text-muted-foreground truncate">{record.country}</div>
+                          <div className="flex items-center gap-2 mt-2 sm:mt-0">
+                            {validateUAC(record.uac) ? (
+                              <CheckCircle className="h-4 w-4 text-green-600" />
+                            ) : (
+                              <XCircle className="h-4 w-4 text-red-600" />
+                            )}
+                            <Badge variant="outline" className="text-xs">
+                              {record.address_type}
+                            </Badge>
+                          </div>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                          <div className="space-y-3">
+                            <div>
+                              <div className="text-sm font-medium text-muted-foreground">Address</div>
+                              <div className="flex items-center gap-2">
+                                <Building className="h-4 w-4" />
+                                <div>
+                                  {record.building && `${record.building}, `}
+                                  {record.street}
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div>
+                              <div className="text-sm font-medium text-muted-foreground">Location</div>
+                              <div className="flex items-center gap-2">
+                                <MapPin className="h-4 w-4" />
+                                <div>
+                                  {record.city}, {record.region}
+                                  <div className="text-xs text-muted-foreground">{record.country}</div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div>
+                              <div className="text-sm font-medium text-muted-foreground">Created</div>
+                              <div className="text-sm">
+                                {new Date(record.created_at).toLocaleDateString()}
+                              </div>
                             </div>
                           </div>
-                        </TableCell>
-                        <TableCell className="min-w-[80px]">
-                          <Badge variant="outline" className="text-xs">
-                            {record.address_type}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="min-w-[100px]">
-                          <div className="flex gap-1 flex-wrap">
-                            {record.verified && (
-                              <Badge variant="default" className="bg-green-100 text-green-800 text-xs">
-                                Verified
+                          
+                          <div className="space-y-3">
+                            <div>
+                              <div className="text-sm font-medium text-muted-foreground">Status</div>
+                              <div className="flex gap-2 flex-wrap">
+                                {record.verified && (
+                                  <Badge variant="default" className="bg-green-100 text-green-800 text-xs">
+                                    Verified
+                                  </Badge>
+                                )}
+                                {record.public && (
+                                  <Badge variant="default" className="bg-blue-100 text-blue-800 text-xs">
+                                    Public
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                            
+                            <div>
+                              <div className="text-sm font-medium text-muted-foreground">UAC Validation</div>
+                              <div className="flex items-center gap-2">
+                                {validateUAC(record.uac) ? (
+                                  <>
+                                    <CheckCircle className="h-4 w-4 text-green-600" />
+                                    <span className="text-sm text-green-600">Valid</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <XCircle className="h-4 w-4 text-red-600" />
+                                    <span className="text-sm text-red-600">Invalid</span>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                            
+                            <div>
+                              <div className="text-sm font-medium text-muted-foreground">Address Type</div>
+                              <Badge variant="outline" className="text-xs">
+                                {record.address_type}
                               </Badge>
-                            )}
-                            {record.public && (
-                              <Badge variant="default" className="bg-blue-100 text-blue-800 text-xs">
-                                Public
-                              </Badge>
-                            )}
+                            </div>
                           </div>
-                        </TableCell>
-                        <TableCell className="text-sm min-w-[80px]">
-                          {new Date(record.created_at).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell className="min-w-[60px]">
-                          {validateUAC(record.uac) ? (
-                            <CheckCircle className="h-4 w-4 text-green-600" />
-                          ) : (
-                            <XCircle className="h-4 w-4 text-red-600" />
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
               </div>
             )}
 
