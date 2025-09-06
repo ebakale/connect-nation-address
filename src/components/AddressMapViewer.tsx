@@ -72,7 +72,19 @@ const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack, au
     coordinates: [address.coordinates.lng, address.coordinates.lat] as [number, number],
     name: address.readable,
     type: address.type as 'residential' | 'commercial' | 'landmark' | 'government',
-    verified: address.verified
+    verified: address.verified,
+    street: address.readable.split(', ')[0] || 'Unknown',
+    building: '',
+    city: address.readable.split(', ')[1] || 'Unknown',
+    region: address.readable.split(', ')[2] || 'Unknown',
+    country: address.readable.split(', ')[3] || 'Equatorial Guinea',
+    latitude: address.coordinates.lat,
+    longitude: address.coordinates.lng,
+    address_type: address.type,
+    public: true,
+    description: '',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   };
 
   if (showDirections) {

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Settings, Layers, Maximize2 } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
+import AddressDetailModal from './AddressDetailModal';
 
 interface MapLocation {
   uac: string;
@@ -14,6 +15,18 @@ interface MapLocation {
   name: string;
   type: 'residential' | 'commercial' | 'landmark' | 'government';
   verified: boolean;
+  street: string;
+  building?: string;
+  city: string;
+  region: string;
+  country: string;
+  latitude: number;
+  longitude: number;
+  address_type: string;
+  public: boolean;
+  description?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 interface MapViewProps {
@@ -38,6 +51,8 @@ const MapView: React.FC<MapViewProps> = ({
   const [googleMapsApiKey, setGoogleMapsApiKey] = useState<string>('');
   const [isApiReady, setIsApiReady] = useState(false);
   const [apiError, setApiError] = useState<string>('');
+  const [selectedAddress, setSelectedAddress] = useState<MapLocation | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const markers = useRef<google.maps.Marker[]>([]);
 
   // Fetch Google Maps API key from Supabase edge function
@@ -63,7 +78,7 @@ const MapView: React.FC<MapViewProps> = ({
     try {
       const { data: addresses, error } = await supabase
         .from('addresses')
-        .select('uac, latitude, longitude, street, building, address_type, verified, public')
+        .select('uac, latitude, longitude, street, building, address_type, verified, public, city, region, country, description, created_at, updated_at')
         .eq('verified', true)
         .eq('public', true);
 
@@ -77,7 +92,19 @@ const MapView: React.FC<MapViewProps> = ({
         coordinates: [parseFloat(addr.longitude.toString()), parseFloat(addr.latitude.toString())] as [number, number],
         name: `${addr.street}${addr.building ? `, ${addr.building}` : ''}`,
         type: addr.address_type as 'residential' | 'commercial' | 'landmark' | 'government',
-        verified: addr.verified
+        verified: addr.verified,
+        street: addr.street,
+        building: addr.building,
+        city: addr.city,
+        region: addr.region,
+        country: addr.country,
+        latitude: parseFloat(addr.latitude.toString()),
+        longitude: parseFloat(addr.longitude.toString()),
+        address_type: addr.address_type,
+        public: addr.public,
+        description: addr.description,
+        created_at: addr.created_at,
+        updated_at: addr.updated_at
       })) as MapLocation[];
     } catch (error) {
       console.error("Error processing addresses:", error);
@@ -142,7 +169,7 @@ const MapView: React.FC<MapViewProps> = ({
       const marker = new google.maps.Marker({
         position: { lat: location.coordinates[1], lng: location.coordinates[0] },
         map: map.current,
-        title: location.name,
+        title: `UAC: ${location.uac}`, // Show UAC on hover
         icon: {
           url: `data:image/svg+xml,${encodeURIComponent(`
             <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -154,33 +181,10 @@ const MapView: React.FC<MapViewProps> = ({
         }
       });
 
-      const infoWindow = new google.maps.InfoWindow({
-        content: `
-          <div style="padding: 8px;">
-            <p style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">${location.uac}</p>
-            <p style="font-size: 12px; color: #666; margin-bottom: 4px;">${location.name}</p>
-            <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
-              <span style="
-                font-size: 10px; 
-                padding: 2px 6px; 
-                background: #dbeafe; 
-                color: #1e40af; 
-                border-radius: 4px;
-              ">${location.type}</span>
-              ${location.verified ? `<span style="
-                font-size: 10px; 
-                padding: 2px 6px; 
-                background: #d1fae5; 
-                color: #065f46; 
-                border-radius: 4px;
-              ">Verified</span>` : ''}
-            </div>
-          </div>
-        `
-      });
-
+      // Click handler to open address details modal
       marker.addListener('click', () => {
-        infoWindow.open(map.current, marker);
+        setSelectedAddress(location);
+        setIsModalOpen(true);
         onLocationSelect?.(location);
       });
 
@@ -249,48 +253,60 @@ const MapView: React.FC<MapViewProps> = ({
   }
 
   return (
-    <div className="relative w-full h-[500px] rounded-lg overflow-hidden shadow-card">
-      <div ref={mapContainer} className="absolute inset-0" />
-      
-      {/* Map Legend */}
-      <Card className="absolute top-4 left-4 z-10 bg-background/95 backdrop-blur">
-        <CardContent className="p-3">
-          <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-            <Layers className="h-4 w-4" />
-            Legend
-          </h4>
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs">
-              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-              <span>Residential</span>
+    <>
+      <div className="relative w-full h-[500px] rounded-lg overflow-hidden shadow-card">
+        <div ref={mapContainer} className="absolute inset-0" />
+        
+        {/* Map Legend */}
+        <Card className="absolute top-4 left-4 z-10 bg-background/95 backdrop-blur">
+          <CardContent className="p-3">
+            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+              <Layers className="h-4 w-4" />
+              Legend
+            </h4>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-xs">
+                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                <span>Residential</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs">
+                <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                <span>Commercial</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs">
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                <span>Landmark</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs">
+                <div className="w-3 h-3 rounded-full bg-green-600"></div>
+                <span>Government</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2 text-xs">
-              <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-              <span>Commercial</span>
+            <div className="mt-2 pt-2 border-t text-xs text-muted-foreground">
+              Hover for UAC • Click for details
             </div>
-            <div className="flex items-center gap-2 text-xs">
-              <div className="w-3 h-3 rounded-full bg-red-500"></div>
-              <span>Landmark</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs">
-              <div className="w-3 h-3 rounded-full bg-green-600"></div>
-              <span>Government</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      {/* Address Count */}
-      <Card className="absolute bottom-4 left-4 z-10 bg-background/95 backdrop-blur">
-        <CardContent className="p-3">
-          <div className="flex items-center gap-2 text-sm">
-            <MapPin className="h-4 w-4 text-primary" />
-            <span className="font-semibold">{allLocations.length}</span>
-            <span className="text-muted-foreground">addresses mapped</span>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        {/* Address Count */}
+        <Card className="absolute bottom-4 left-4 z-10 bg-background/95 backdrop-blur">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2 text-sm">
+              <MapPin className="h-4 w-4 text-primary" />
+              <span className="font-semibold">{allLocations.length}</span>
+              <span className="text-muted-foreground">addresses mapped</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Address Detail Modal */}
+      <AddressDetailModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        address={selectedAddress}
+      />
+    </>
   );
 };
 
