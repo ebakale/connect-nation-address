@@ -462,12 +462,6 @@ const UnifiedDashboard = () => {
           </div>
         );
 
-      case 'address-data':
-        return (
-          <div className="max-w-6xl">
-            <AddressDataManager />
-          </div>
-        );
 
       case 'submit-request':
         return (
