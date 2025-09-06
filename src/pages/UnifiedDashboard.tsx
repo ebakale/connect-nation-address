@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 
 // Component imports
 import AdminPanel from "@/components/AdminPanel";
+import { GoogleMapsImporter } from "@/components/GoogleMapsImporter";
 import AddressSearch from "@/components/AddressSearch";
 import AddressMapViewer from "@/components/AddressMapViewer";
 import { AddressRequestForm } from "@/components/AddressRequestForm";
@@ -437,6 +438,13 @@ const UnifiedDashboard = () => {
                   </Card>
                 </div>
 
+                {/* Google Maps Importer - Only for System Admins */}
+                {hasSystemAdminAccess && (
+                  <div className="mb-6">
+                    <GoogleMapsImporter />
+                  </div>
+                )}
+
                 {/* Admin Panel */}
                 <AdminPanel />
               </div>
@@ -543,7 +551,8 @@ const UnifiedDashboard = () => {
 
       case 'admin-panel':
         return (
-          <div className="max-w-6xl">
+          <div className="max-w-6xl space-y-6">
+            {hasSystemAdminAccess && <GoogleMapsImporter />}
             <AdminPanel />
           </div>
         );
