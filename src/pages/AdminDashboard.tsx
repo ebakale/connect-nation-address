@@ -1,11 +1,11 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
 import AdminPanel from "@/components/AdminPanel";
 import { FileText } from "lucide-react";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
-import { GoogleMapsImporter } from "@/components/GoogleMapsImporter";
-import { AddressExporter } from "@/components/AddressExporter";
+import { AddressDataManager } from "@/components/AddressDataManager";
 import { useLanguage } from '@/contexts/LanguageContext';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/AdminSidebar";
@@ -13,6 +13,7 @@ import { AdminSidebar } from "@/components/AdminSidebar";
 const AdminDashboard = () => {
   const { loading, hasNDAAAccess, hasSystemAdminAccess } = useUserRole();
   const { t } = useLanguage();
+  const [activeTab, setActiveTab] = useState("address-data");
 
   if (loading) {
     return (
@@ -34,10 +35,26 @@ const AdminDashboard = () => {
     return t('manageUsersRoles');
   };
 
+  const renderContent = () => {
+    switch (activeTab) {
+      case "address-data":
+        return <AddressDataManager />;
+      case "users":
+      case "roles":
+      case "permissions":
+      case "workflows":
+      case "uac":
+      case "analytics":
+        return <AdminPanel />;
+      default:
+        return <AddressDataManager />;
+    }
+  };
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-        <AdminSidebar />
+        <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} />
         
         <div className="flex-1 flex flex-col">
           {/* Header with sidebar trigger */}
@@ -52,37 +69,8 @@ const AdminDashboard = () => {
           </header>
 
           {/* Main content */}
-          <main className="flex-1 p-6 space-y-6 overflow-auto">
-            {/* Google Maps Importer Card */}
-            <GoogleMapsImporter />
-
-            {/* Address Exporter Card */}
-            <AddressExporter />
-
-            {/* System Documentation Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  System Documentation
-                </CardTitle>
-                <CardDescription>
-                  Generate comprehensive documentation for system roles and permissions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    This document provides detailed explanations of all user roles in the National Digital Addressing Authority system, 
-                    including their permissions, geographic scope, workflow stages, and specific responsibilities.
-                  </p>
-                  <RolesDocumentGenerator />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Admin Panel */}
-            <AdminPanel />
+          <main className="flex-1 p-6 overflow-auto">
+            {renderContent()}
           </main>
 
           {/* Footer */}

@@ -31,6 +31,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 const adminItems = [
+  { title: "Address Data", id: "address-data", icon: FileText },
   { title: "Users", id: "users", icon: Users },
   { title: "Roles", id: "roles", icon: Shield },
   { title: "Permissions", id: "permissions", icon: Key },
@@ -43,11 +44,15 @@ const ndaaItems = [
   { title: "API & Webhooks", id: "api-webhooks", icon: Settings },
 ];
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+}
+
+export function AdminSidebar({ activeTab, onTabChange }: AdminSidebarProps) {
   const { state } = useSidebar();
   const { signOut } = useAuth();
   const { hasNDAAAccess } = useUserRole();
-  const [activeTab, setActiveTab] = useState("users");
 
   const allItems = hasNDAAAccess ? [...adminItems, ...ndaaItems] : adminItems;
 
@@ -83,7 +88,7 @@ export function AdminSidebar() {
               {allItems.map((item) => (
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton 
-                    onClick={() => setActiveTab(item.id)}
+                    onClick={() => onTabChange(item.id)}
                     className={activeTab === item.id ? "bg-primary text-primary-foreground" : ""}
                   >
                     <item.icon className="h-4 w-4" />
