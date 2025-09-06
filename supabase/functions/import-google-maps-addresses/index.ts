@@ -52,10 +52,36 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
-    console.log('Starting Google Maps address import for Equatorial Guinea...');
+    console.log('Starting comprehensive Google Maps address import for Equatorial Guinea...');
 
-    // Define search queries for different types of places in Equatorial Guinea
-    const searchQueries = [
+    // Define key coordinates for systematic area searches
+    const keyLocations = [
+      // Malabo city center and surrounding areas
+      { lat: 3.7558, lng: 8.7813, name: 'Malabo Center', radius: 5000 },
+      { lat: 3.7500, lng: 8.7800, name: 'Malabo South', radius: 3000 },
+      { lat: 3.7600, lng: 8.7800, name: 'Malabo North', radius: 3000 },
+      { lat: 3.7550, lng: 8.7700, name: 'Malabo West', radius: 3000 },
+      { lat: 3.7550, lng: 8.7900, name: 'Malabo East', radius: 3000 },
+      
+      // Bata city center and surrounding areas  
+      { lat: 1.8639, lng: 9.7658, name: 'Bata Center', radius: 5000 },
+      { lat: 1.8600, lng: 9.7600, name: 'Bata South', radius: 3000 },
+      { lat: 1.8700, lng: 9.7700, name: 'Bata North', radius: 3000 },
+      
+      // Other major cities
+      { lat: 2.1533, lng: 10.7369, name: 'Ebebiyín', radius: 3000 },
+      { lat: 1.4347, lng: 10.9431, name: 'Mongomo', radius: 3000 },
+      { lat: 0.9333, lng: 10.5500, name: 'Evinayong', radius: 3000 },
+    ];
+
+    // Known Plus Codes for specific locations
+    const knownPlusCodes = [
+      'PQW9+WW Malabo, Equatorial Guinea', // Hotel Castillo
+      // Add more known Plus Codes here as discovered
+    ];
+
+    // Traditional text-based search queries (keep existing functionality)
+    const textSearchQueries = [
       // Major cities and landmarks
       'Malabo, Equatorial Guinea',
       'Bata, Equatorial Guinea', 
@@ -82,14 +108,11 @@ Deno.serve(async (req) => {
       'school Malabo Equatorial Guinea',
       'school Bata Equatorial Guinea',
       
-      // Specific hotel searches (to catch hotels that might be missed)
+      // Specific searches
       'Hotel Castillo Malabo Equatorial Guinea',
       'Castillo Hotel Malabo Equatorial Guinea', 
       'Castillo Malabo Equatorial Guinea',
       'PQW9+WW Malabo Equatorial Guinea',  // Hotel Castillo Plus Code
-      'Hotel Presidente Malabo Equatorial Guinea',
-      'Hotel Villa Malabo Equatorial Guinea',
-      'Hotel Plaza Malabo Equatorial Guinea',
       
       // Landmarks
       'cathedral Malabo Equatorial Guinea',
@@ -130,239 +153,288 @@ Deno.serve(async (req) => {
       city: string;
       region: string;
       country: string;
-      building?: string;
     } {
       let street = '';
       let city = '';
       let region = '';
       let country = 'Equatorial Guinea';
-      let building = '';
 
-      // Map region names to standardized format
-      const regionMap: Record<string, string> = {
-        'Bioko Norte': 'Bioko Norte',
-        'Bioko Sur': 'Bioko Sur', 
-        'Centro Sur': 'Centro Sur',
-        'Kié-Ntem': 'Kié-Ntem',
-        'Litoral': 'Litoral',
-        'Wele-Nzas': 'Wele-Nzas',
-        'Annobón': 'Annobón',
-        'Djibloho': 'Djibloho'
-      };
-
+      // Extract from address components
       for (const component of components) {
-        const types = component.types;
-        
-        if (types.includes('country')) {
-          country = component.long_name;
-        } else if (types.includes('administrative_area_level_1')) {
-          // Map to standardized region names
-          const regionName = component.long_name;
-          region = regionMap[regionName] || regionName;
-        } else if (types.includes('locality') || types.includes('administrative_area_level_2')) {
-          city = component.long_name;
-        } else if (types.includes('route') || types.includes('street_address')) {
+        if (component.types.includes('route') || component.types.includes('street_number')) {
           street = component.long_name;
-        } else if (types.includes('establishment') || types.includes('premise')) {
-          building = component.long_name;
+        } else if (component.types.includes('locality') || component.types.includes('administrative_area_level_2')) {
+          city = component.long_name;
+        } else if (component.types.includes('administrative_area_level_1')) {
+          region = component.long_name;
+        } else if (component.types.includes('country')) {
+          country = component.long_name;
         }
       }
 
-      // Fallback logic for missing components
-      if (!street && formatted_address) {
-        const addressParts = formatted_address.split(',');
-        if (addressParts.length > 0) {
-          street = addressParts[0].trim();
+      // Fallback parsing from formatted_address if components are incomplete
+      if (!street || !city || !region) {
+        const addressParts = formatted_address.split(',').map(part => part.trim());
+        
+        if (!street && addressParts.length > 0) {
+          street = addressParts[0];
         }
-      }
-
-      // Default city based on common locations if not found
-      if (!city) {
-        if (formatted_address.toLowerCase().includes('malabo')) {
-          city = 'Malabo';
-          region = region || 'Bioko Norte';
-        } else if (formatted_address.toLowerCase().includes('bata')) {
-          city = 'Bata';
-          region = region || 'Litoral';
+        
+        if (!city) {
+          // Look for known cities in the address
+          const knownCities = ['Malabo', 'Bata', 'Ebebiyín', 'Mongomo', 'Evinayong', 'Aconibe'];
+          for (const knownCity of knownCities) {
+            if (formatted_address.includes(knownCity)) {
+              city = knownCity;
+              break;
+            }
+          }
         }
-      }
-
-      // Default region based on city if not found
-      if (!region && city) {
-        const cityRegionMap: Record<string, string> = {
-          'Malabo': 'Bioko Norte',
-          'Rebola': 'Bioko Norte',
-          'Baney': 'Bioko Norte',
-          'Bata': 'Litoral',
-          'Mbini': 'Litoral',
-          'Kogo': 'Litoral',
-          'Ebebiyín': 'Kié-Ntem',
-          'Mikomeseng': 'Kié-Ntem',
-          'Mongomo': 'Wele-Nzas',
-          'Aconibe': 'Wele-Nzas',
-          'Evinayong': 'Centro Sur'
-        };
-        region = cityRegionMap[city] || 'Bioko Norte';
+        
+        if (!region) {
+          // Map cities to regions
+          const cityToRegion: { [key: string]: string } = {
+            'Malabo': 'Bioko Norte',
+            'Bata': 'Litoral',
+            'Ebebiyín': 'Kié-Ntem',
+            'Mongomo': 'Wele-Nzas',
+            'Evinayong': 'Centro Sur'
+          };
+          region = cityToRegion[city] || 'Unknown Region';
+        }
       }
 
       return {
         street: street || 'Unknown Street',
         city: city || 'Unknown City',
-        region: region || 'Bioko Norte',
-        country,
-        building: building || undefined
+        region: region || 'Unknown Region',
+        country: country
       };
     }
 
-    // Function to generate UAC for imported address
-    function generateUACForAddress(country: string, region: string, city: string, addressId: string): string {
+    // Generate UAC using the existing function pattern
+    function generateUAC(country: string, region: string, city: string, uniqueId: string): string {
       const countryCode = 'GQ'; // Equatorial Guinea
       
-      const regionMap: Record<string, string> = {
+      const regionCodes: { [key: string]: string } = {
         'Bioko Norte': 'BN',
         'Bioko Sur': 'BS',
-        'Centro Sur': 'CS',
-        'Kié-Ntem': 'KN',
         'Litoral': 'LI',
+        'Kié-Ntem': 'KN',
+        'Centro Sur': 'CS',
         'Wele-Nzas': 'WN',
         'Annobón': 'AN',
         'Djibloho': 'DJ'
       };
-
-      const cityMap: Record<string, string> = {
+      
+      const cityCodes: { [key: string]: string } = {
         'Malabo': 'MAL',
         'Bata': 'BAT',
         'Ebebiyín': 'EBE',
         'Mongomo': 'MON',
-        'Aconibe': 'ACO',
         'Evinayong': 'EVI'
       };
-
-      const regionCode = regionMap[region] || region.substring(0, 2).toUpperCase();
-      const cityCode = cityMap[city] || city.substring(0, 3).toUpperCase();
-      const uniquePart = addressId.substring(0, 6).toUpperCase();
-
-      const baseCode = `${countryCode}-${regionCode}-${cityCode}-${uniquePart}`;
       
-      // Simple check digit calculation
-      let charSum = 0;
-      for (let i = 0; i < baseCode.length; i++) {
-        if (baseCode[i] !== '-') {
-          const charCode = baseCode.charCodeAt(i);
-          charSum += charCode > 57 ? charCode - 55 : parseInt(baseCode[i]);
-        }
-      }
+      const regionCode = regionCodes[region] || region.substring(0, 2).toUpperCase();
+      const cityCode = cityCodes[city] || city.substring(0, 3).toUpperCase();
       
-      const checkDigit = String.fromCharCode(65 + (charSum % 26)) + String.fromCharCode(65 + ((charSum * 7) % 26));
+      // Generate base code
+      const baseCode = `${countryCode}-${regionCode}-${cityCode}-${uniqueId.substring(0, 6).toUpperCase()}`;
       
-      return `${baseCode}-${checkDigit}`;
+      // Simple checksum
+      const checksum = baseCode.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+      const checksumChars = String.fromCharCode(65 + (checksum % 26)) + String.fromCharCode(65 + ((checksum * 7) % 26));
+      
+      return `${baseCode}-${checksumChars}`;
     }
 
-    // Process each search query
-    for (const query of searchQueries) {
-      try {
-        console.log(`Searching for: ${query}`);
+    // Enhanced function to search for places using multiple strategies
+    async function searchPlacesComprehensive() {
+      const allResults: GooglePlaceResult[] = [];
+      const processedPlaceIds = new Set<string>();
+
+      console.log('=== STRATEGY 1: Text-based searches ===');
+      // Strategy 1: Traditional text-based searches (keep existing functionality)
+      for (const query of textSearchQueries) {
+        try {
+          console.log(`Searching for: ${query}`);
+          
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&key=${googleMapsApiKey}`
+          );
+          
+          if (!response.ok) continue;
+          
+          const data = await response.json();
+          
+          if (data.results && data.results.length > 0) {
+            for (const result of data.results) {
+              if (!processedPlaceIds.has(result.place_id)) {
+                allResults.push(result);
+                processedPlaceIds.add(result.place_id);
+              }
+            }
+          }
+          
+          // Respect API rate limits
+          await new Promise(resolve => setTimeout(resolve, 100));
+        } catch (error) {
+          console.error(`Error searching for \"${query}\":`, error);
+        }
+      }
+
+      console.log(`Text search completed. Found ${allResults.length} unique places.`);
+
+      console.log('=== STRATEGY 2: Plus Code resolution ===');
+      // Strategy 2: Resolve known Plus Codes directly
+      for (const plusCode of knownPlusCodes) {
+        try {
+          console.log(`Resolving Plus Code: ${plusCode}`);
+          
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(plusCode)}&key=${googleMapsApiKey}`
+          );
+          
+          if (!response.ok) continue;
+          
+          const data = await response.json();
+          
+          if (data.results && data.results.length > 0) {
+            for (const result of data.results) {
+              if (!processedPlaceIds.has(result.place_id)) {
+                allResults.push(result);
+                processedPlaceIds.add(result.place_id);
+                console.log(`Plus Code resolved: ${result.name}`);
+              }
+            }
+          }
+          
+          await new Promise(resolve => setTimeout(resolve, 100));
+        } catch (error) {
+          console.error(`Error resolving Plus Code \"${plusCode}\":`, error);
+        }
+      }
+
+      console.log('=== STRATEGY 3: Nearby searches around key locations ===');
+      // Strategy 3: Nearby searches around key coordinates
+      const placeTypes = ['lodging', 'restaurant', 'hospital', 'school', 'bank', 'tourist_attraction', 'local_government_office'];
+      
+      for (const location of keyLocations) {
+        console.log(`Searching around ${location.name} (${location.lat}, ${location.lng})`);
         
-        // Call Google Places Text Search API
-        const searchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&key=${googleMapsApiKey}`;
-        const response = await fetch(searchUrl);
-        const data = await response.json();
-
-        if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
-          console.error(`Google API error for query "${query}":`, data.error_message);
-          errorCount++;
-          continue;
-        }
-
-        if (!data.results || data.results.length === 0) {
-          console.log(`No results found for query: ${query}`);
-          continue;
-        }
-
-        // Process each result
-        for (const place of data.results) {
+        for (const type of placeTypes) {
           try {
-            const addressComponents = parseAddressComponents(place.address_components || [], place.formatted_address);
-            const addressType = mapGoogleTypeToAddressType(place.types || []);
-            
-            // Generate a unique ID for UAC generation
-            const uniqueId = place.place_id.replace(/[^a-zA-Z0-9]/g, '').substring(0, 8);
-            const uac = generateUACForAddress(
-              addressComponents.country,
-              addressComponents.region,
-              addressComponents.city,
-              uniqueId
+            const response = await fetch(
+              `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.lat},${location.lng}&radius=${location.radius}&type=${type}&key=${googleMapsApiKey}`
             );
-
-            // Check if address with this UAC already exists
-            const { data: existingAddress } = await supabase
-              .from('addresses')
-              .select('id')
-              .eq('uac', uac)
-              .single();
-
-            if (existingAddress) {
-              console.log(`Address with UAC ${uac} already exists, skipping...`);
-              continue;
+            
+            if (!response.ok) continue;
+            
+            const data = await response.json();
+            
+            if (data.results && data.results.length > 0) {
+              let newPlaces = 0;
+              for (const result of data.results) {
+                if (!processedPlaceIds.has(result.place_id)) {
+                  allResults.push(result);
+                  processedPlaceIds.add(result.place_id);
+                  newPlaces++;
+                }
+              }
+              if (newPlaces > 0) {
+                console.log(`Found ${newPlaces} new ${type} places near ${location.name}`);
+              }
             }
-
-            // Insert the address
-            const { error: insertError } = await supabase
-              .from('addresses')
-              .insert({
-                user_id: '00000000-0000-0000-0000-000000000000', // System user for imported addresses
-                uac: uac,
-                country: addressComponents.country,
-                region: addressComponents.region,
-                city: addressComponents.city,
-                street: addressComponents.street,
-                building: addressComponents.building,
-                latitude: place.geometry.location.lat,
-                longitude: place.geometry.location.lng,
-                address_type: addressType,
-                description: `Imported from Google Maps: ${place.name}`,
-                verified: true,
-                public: true
-              });
-
-            if (insertError) {
-              console.error(`Error inserting address for ${place.name}:`, insertError);
-              errorCount++;
-              importDetails.push({
-                name: place.name,
-                status: 'error',
-                error: insertError.message
-              });
-            } else {
-              successCount++;
-              totalImported++;
-              importDetails.push({
-                name: place.name,
-                uac: uac,
-                status: 'success',
-                city: addressComponents.city,
-                region: addressComponents.region
-              });
-              console.log(`Successfully imported: ${place.name} with UAC: ${uac}`);
-            }
-
-          } catch (placeError) {
-            console.error(`Error processing place ${place.name}:`, placeError);
-            errorCount++;
-            importDetails.push({
-              name: place.name,
-              status: 'error',
-              error: placeError.message
-            });
+            
+            await new Promise(resolve => setTimeout(resolve, 200)); // Rate limiting
+          } catch (error) {
+            console.error(`Error searching for ${type} near ${location.name}:`, error);
           }
         }
+      }
 
-        // Add delay between requests to respect rate limits
-        await new Promise(resolve => setTimeout(resolve, 100));
+      console.log(`Comprehensive search completed. Total unique places found: ${allResults.length}`);
+      return allResults;
+    }
 
-      } catch (queryError) {
-        console.error(`Error processing query "${query}":`, queryError);
+    // Get comprehensive search results using all strategies
+    const searchResults = await searchPlacesComprehensive();
+    
+    console.log(`Processing ${searchResults.length} places for import...`);
+
+    // Process each search result
+    for (const place of searchResults) {
+      try {
+        totalImported++;
+        
+        const addressInfo = parseAddressComponents(place.address_components, place.formatted_address);
+        const addressType = mapGoogleTypeToAddressType(place.types);
+        
+        // Generate UAC
+        const uac = generateUAC(
+          addressInfo.country,
+          addressInfo.region,
+          addressInfo.city,
+          place.place_id.replace(/[^a-zA-Z0-9]/g, '')
+        );
+
+        // Check if address already exists
+        const { data: existingAddress } = await supabase
+          .from('addresses')
+          .select('id')
+          .eq('uac', uac)
+          .maybeSingle();
+
+        if (existingAddress) {
+          console.log(`Address with UAC ${uac} already exists, skipping...`);
+          continue;
+        }
+
+        // Insert the address
+        const { error: insertError } = await supabase
+          .from('addresses')
+          .insert({
+            user_id: '00000000-0000-0000-0000-000000000000', // System import user
+            uac: uac,
+            latitude: place.geometry.location.lat,
+            longitude: place.geometry.location.lng,
+            street: addressInfo.street,
+            city: addressInfo.city,
+            region: addressInfo.region,
+            country: addressInfo.country,
+            address_type: addressType,
+            verified: true,
+            public: true,
+            description: `Imported from Google Maps: ${place.name}`
+          });
+
+        if (insertError) {
+          console.error(`Error inserting ${place.name}:`, insertError);
+          errorCount++;
+          importDetails.push({
+            name: place.name,
+            uac: uac,
+            status: 'error',
+            error: insertError.message
+          });
+        } else {
+          console.log(`Successfully imported: ${place.name} with UAC: ${uac}`);
+          successCount++;
+          importDetails.push({
+            name: place.name,
+            uac: uac,
+            status: 'success'
+          });
+        }
+
+      } catch (error) {
+        console.error(`Error processing place ${place.name}:`, error);
         errorCount++;
+        importDetails.push({
+          name: place.name,
+          status: 'error',
+          error: error instanceof Error ? error.message : 'Unknown error'
+        });
       }
     }
 
@@ -371,29 +443,30 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        totalImported,
-        successCount,
-        errorCount,
-        details: importDetails,
-        message: `Successfully imported ${successCount} addresses from Google Maps for Equatorial Guinea`
+        message: `Import completed successfully`,
+        data: {
+          totalProcessed: totalImported,
+          successCount: successCount,
+          errorCount: errorCount,
+          importDetails: importDetails
+        }
       }),
-      { 
-        status: 200, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
       }
     );
 
   } catch (error) {
-    console.error('Error in import-google-maps-addresses function:', error);
+    console.error('Import function error:', error);
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         success: false,
-        error: 'Internal server error',
-        details: error.message 
-      }), 
-      { 
-        status: 500, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500,
       }
     );
   }
