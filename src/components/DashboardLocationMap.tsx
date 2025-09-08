@@ -209,103 +209,12 @@ const DashboardLocationMap: React.FC = () => {
     return R * c;
   };
 
-  const getMarkerIcon = (type: string): string => {
-    const bgColor = getMarkerColor(type);
-    
-    const pinSvg = (iconPath: string) => `
-      <svg width="24" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 0C5.4 0 0 5.4 0 12s12 20 12 20 12-13.6 12-20S18.6 0 12 0z" fill="${bgColor}" stroke="#fff" stroke-width="2"/>
-        <g transform="translate(6, 6)" fill="#fff">
-          ${iconPath}
-        </g>
-      </svg>
-    `;
-    
-    switch (type) {
-      case 'commercial':
-        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
-          <rect x="1" y="1" width="10" height="8" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
-          <path d="M3 5h6M3 7h4" stroke="currentColor" stroke-width="1"/>
-        `))}`;
-      case 'landmark':
-        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
-          <polygon points="6,1 10,9 2,9" fill="currentColor"/>
-          <circle cx="6" cy="7" r="1" fill="${bgColor}"/>
-        `))}`;
-      case 'government':
-        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
-          <rect x="1" y="3" width="10" height="6" fill="currentColor"/>
-          <polygon points="1,3 6,1 11,3" fill="currentColor"/>
-          <rect x="3" y="5" width="1" height="3" fill="${bgColor}"/>
-          <rect x="5" y="5" width="1" height="3" fill="${bgColor}"/>
-          <rect x="7" y="5" width="1" height="3" fill="${bgColor}"/>
-          <rect x="9" y="5" width="1" height="3" fill="${bgColor}"/>
-        `))}`;
-      case 'industrial':
-        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
-          <rect x="1" y="4" width="4" height="5" fill="currentColor"/>
-          <rect x="6" y="2" width="4" height="7" fill="currentColor"/>
-          <polygon points="2,4 3,3 4,4" fill="currentColor"/>
-          <polygon points="7,2 8,1 9,2" fill="currentColor"/>
-        `))}`;
-      case 'residential':
-        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
-          <polygon points="6,1 11,6 11,9 1,9 1,6" fill="currentColor"/>
-          <rect x="4" y="6" width="4" height="3" fill="${bgColor}"/>
-          <rect x="5" y="7" width="2" height="1" fill="currentColor"/>
-        `))}`;
-      case 'hotel':
-        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
-          <rect x="2" y="2" width="8" height="7" rx="1" fill="currentColor"/>
-          <rect x="3" y="4" width="1" height="1" fill="${bgColor}"/>
-          <rect x="5" y="4" width="1" height="1" fill="${bgColor}"/>
-          <rect x="7" y="4" width="1" height="1" fill="${bgColor}"/>
-          <rect x="9" y="4" width="1" height="1" fill="${bgColor}"/>
-          <rect x="3" y="6" width="1" height="1" fill="${bgColor}"/>
-          <rect x="5" y="6" width="1" height="1" fill="${bgColor}"/>
-          <rect x="7" y="6" width="1" height="1" fill="${bgColor}"/>
-          <rect x="9" y="6" width="1" height="1" fill="${bgColor}"/>
-        `))}`;
-      case 'bank':
-        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
-          <polygon points="6,1 11,3 11,4 1,4 1,3" fill="currentColor"/>
-          <rect x="2" y="4" width="1" height="4" fill="currentColor"/>
-          <rect x="4" y="4" width="1" height="4" fill="currentColor"/>
-          <rect x="6" y="4" width="1" height="4" fill="currentColor"/>
-          <rect x="8" y="4" width="1" height="4" fill="currentColor"/>
-          <rect x="10" y="4" width="1" height="4" fill="currentColor"/>
-          <rect x="1" y="8" width="10" height="1" fill="currentColor"/>
-        `))}`;
-      case 'gas_station':
-        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
-          <rect x="2" y="3" width="5" height="6" fill="currentColor"/>
-          <circle cx="4.5" cy="6" r="1.5" fill="${bgColor}"/>
-          <rect x="8" y="2" width="2" height="7" fill="currentColor"/>
-          <polygon points="8,2 9,1 10,2" fill="currentColor"/>
-        `))}`;
-      case 'restaurant':
-        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
-          <circle cx="4" cy="3" r="1" fill="currentColor"/>
-          <rect x="3.5" y="4" width="1" height="4" fill="currentColor"/>
-          <path d="M7 2v2h1v4h-1" stroke="currentColor" stroke-width="1" fill="none"/>
-          <path d="M9 2v6" stroke="currentColor" stroke-width="1"/>
-        `))}`;
-      default:
-        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
-          <circle cx="6" cy="6" r="3" fill="currentColor"/>
-        `))}`;
-    }
-  };
-
   const getMarkerColor = (type: string): string => {
     switch (type) {
       case 'commercial': return '#9333ea'; // purple
       case 'landmark': return '#dc2626'; // red
       case 'government': return '#16a34a'; // green
       case 'industrial': return '#ea580c'; // orange
-      case 'hotel': return '#0891b2'; // cyan
-      case 'bank': return '#ca8a04'; // yellow
-      case 'gas_station': return '#dc2626'; // red
       default: return '#3b82f6'; // blue
     }
   };
@@ -413,15 +322,61 @@ const DashboardLocationMap: React.FC = () => {
         map: map.current,
         title: `UAC: ${location.uac}`,
         icon: {
-          url: getMarkerIcon(location.type),
-          scaledSize: new google.maps.Size(24, 32),
-          anchor: new google.maps.Point(12, 32)
+          url: `data:image/svg+xml,${encodeURIComponent(`
+            <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10" r="8" fill="${getMarkerColor(location.type)}" stroke="white" stroke-width="2"/>
+            </svg>
+          `)}`,
+          scaledSize: new google.maps.Size(20, 20),
+          anchor: new google.maps.Point(10, 10)
         },
         clickable: true,
         optimized: false,
       });
 
-      let uacLabel: google.maps.OverlayView | null = null;
+      // Create UAC label overlay
+      const uacLabel = new google.maps.OverlayView();
+      uacLabel.onAdd = function() {
+        const div = document.createElement('div');
+        div.innerHTML = `<div style="
+          background: rgba(34, 197, 94, 0.9);
+          color: white;
+          padding: 2px 6px;
+          border-radius: 4px;
+          font-size: 10px;
+          font-weight: 600;
+          backdrop-filter: blur(8px);
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          pointer-events: none;
+          white-space: nowrap;
+        ">UAC: ${location.uac}</div>`;
+        
+        this.div = div;
+        const panes = this.getPanes();
+        if (panes && panes.overlayMouseTarget) {
+          panes.overlayMouseTarget.appendChild(div);
+        }
+      };
+      
+      uacLabel.draw = function() {
+        const projection = this.getProjection();
+        if (projection) {
+          const position = projection.fromLatLngToDivPixel(new google.maps.LatLng(location.coordinates[1], location.coordinates[0]));
+          if (position && this.div) {
+            this.div.style.left = (position.x - 25) + 'px';
+            this.div.style.top = (position.y - 35) + 'px';
+            this.div.style.position = 'absolute';
+          }
+        }
+      };
+      
+      uacLabel.onRemove = function() {
+        if (this.div && this.div.parentNode) {
+          this.div.parentNode.removeChild(this.div);
+        }
+      };
+      
+      uacLabel.setMap(map.current);
 
       const infoWindow = new google.maps.InfoWindow({
         content: `
@@ -434,80 +389,36 @@ const DashboardLocationMap: React.FC = () => {
         `
       });
 
-      // Hover shows UAC label and brief info
-      marker.addListener('mouseover', () => {
-        // Create UAC label overlay
-        uacLabel = new google.maps.OverlayView();
-        uacLabel.onAdd = function() {
-          const div = document.createElement('div');
-          div.innerHTML = `<div style="
-            background: rgba(34, 197, 94, 0.9);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-            pointer-events: none;
-            white-space: nowrap;
-            border: 1px solid rgba(255,255,255,0.2);
-          ">UAC: ${location.uac}</div>`;
-          
-          this.div = div;
-          const panes = this.getPanes();
-          if (panes && panes.floatPane) {
-            panes.floatPane.appendChild(div);
-          }
-        };
-        
-        uacLabel.draw = function() {
-          const projection = this.getProjection();
-          if (projection) {
-            const position = projection.fromLatLngToDivPixel(new google.maps.LatLng(location.coordinates[1], location.coordinates[0]));
-            if (position && this.div) {
-              this.div.style.left = (position.x - 30) + 'px';
-              this.div.style.top = (position.y - 40) + 'px';
-              this.div.style.position = 'absolute';
-            }
-          }
-        };
-        
-        uacLabel.onRemove = function() {
-          if (this.div && this.div.parentNode) {
-            this.div.parentNode.removeChild(this.div);
-          }
-        };
-        
-        uacLabel.setMap(map.current);
-        infoWindow.open(map.current, marker);
-        
-        // Increase marker size
-        marker.setIcon({
-          url: getMarkerIcon(location.type).replace('width="24" height="32"', 'width="28" height="36"'),
-          scaledSize: new google.maps.Size(28, 36),
-          anchor: new google.maps.Point(14, 36)
-        });
-      });
-      
-      marker.addListener('mouseout', () => {
-        // Remove UAC label
-        if (uacLabel) {
-          uacLabel.setMap(null);
-          uacLabel = null;
-        }
-        infoWindow.close();
-        
-        // Reset marker size
-        marker.setIcon({
-          url: getMarkerIcon(location.type),
-          scaledSize: new google.maps.Size(24, 32),
-          anchor: new google.maps.Point(12, 32)
-        });
-      });
+      // Hover shows UAC and brief info
+      marker.addListener('mouseover', () => infoWindow.open(map.current, marker));
+      marker.addListener('mouseout', () => infoWindow.close());
 
       // Click opens address detail card
       marker.addListener('click', () => openAddressDetails(location.uac));
+
+      // Hover size effect
+      marker.addListener('mouseover', () => {
+        marker.setIcon({
+          url: `data:image/svg+xml,${encodeURIComponent(`
+            <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">
+              <circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"${getMarkerColor(location.type)}\" stroke=\"white\" stroke-width=\"2\"/>
+            </svg>
+          `)}`,
+          scaledSize: new google.maps.Size(24, 24),
+          anchor: new google.maps.Point(12, 12)
+        });
+      });
+      marker.addListener('mouseout', () => {
+        marker.setIcon({
+          url: `data:image/svg+xml,${encodeURIComponent(`
+            <svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" xmlns=\"http://www.w3.org/2000/svg\">
+              <circle cx=\"10\" cy=\"10\" r=\"8\" fill=\"${getMarkerColor(location.type)}\" stroke=\"white\" stroke-width=\"2\"/>
+            </svg>
+          `)}`,
+          scaledSize: new google.maps.Size(20, 20),
+          anchor: new google.maps.Point(10, 10)
+        });
+      });
 
       newMarkers.push(marker);
     });
@@ -610,25 +521,19 @@ const DashboardLocationMap: React.FC = () => {
           <h4 className="font-semibold text-sm mb-3">Points of Interest</h4>
           <div className="flex flex-wrap gap-4">
             <div className="flex items-center gap-2 text-xs">
-              <div className="w-4 h-4 bg-purple-500 rounded-full flex items-center justify-center">
-                <ShoppingBag className="w-2 h-2 text-white" />
-              </div>
+              <div className="w-3 h-3 rounded-full bg-purple-500"></div>
               <span>Commercial</span>
             </div>
             <div className="flex items-center gap-2 text-xs">
-              <div className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                <Landmark className="w-2 h-2 text-white" />
-              </div>
+              <div className="w-3 h-3 rounded-full bg-red-500"></div>
               <span>Landmark</span>
             </div>
             <div className="flex items-center gap-2 text-xs">
-              <div className="w-4 h-4 bg-green-600 rounded-full flex items-center justify-center">
-                <Building2 className="w-2 h-2 text-white" />
-              </div>
+              <div className="w-3 h-3 rounded-full bg-green-600"></div>
               <span>Government</span>
             </div>
             <div className="flex items-center gap-2 text-xs">
-              <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
+              <div className="w-3 h-3 rounded-full bg-orange-500"></div>
               <span>Industrial</span>
             </div>
             <div className="flex items-center gap-2 text-xs">
