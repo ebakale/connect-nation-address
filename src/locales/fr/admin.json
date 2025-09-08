@@ -1,1 +1,12 @@
-{"title": "Administration", "admin": "Administrateur", "users": "Utilisateurs", "settings": "Paramètres", "management": "Gestion"}
+{
+  "title": "Administration",
+  "admin": "Administrateur",
+  "users": "Utilisateurs",
+  "settings": "Paramètres",
+  "management": "Gestion",
+  "ndaaAdministration": "Administration NDAA",
+  "systemAdministration": "Administration Système",
+  "ndaaDescription": "Autorité Nationale des Adresses Numériques - Gestion des Politiques et Stratégiques",
+  "systemDescription": "Administration Système - Opérations Techniques et Gestion Régionale",
+  "manageUsersRoles": "Gérer les utilisateurs et les rôles"
+}

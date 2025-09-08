@@ -6,33 +6,33 @@ import AdminPanel from "@/components/AdminPanel";
 import { FileText } from "lucide-react";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
 import { AddressDataManager } from "@/components/AddressDataManager";
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/AdminSidebar";
 
 const AdminDashboard = () => {
   const { loading, hasNDAAAccess, hasSystemAdminAccess } = useUserRole();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("address-data");
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/10 via-secondary/5 to-destructive/5 flex items-center justify-center">
-        <div className="text-lg animate-fade-in">{t('loading')}</div>
+        <div className="text-lg animate-fade-in">{t('common:buttons.loading')}</div>
       </div>
     );
   }
 
   const getDashboardTitle = () => {
-    if (hasNDAAAccess) return 'NDAA Administration';
-    if (hasSystemAdminAccess) return 'System Administration';
-    return t('adminDashboard');
+    if (hasNDAAAccess) return t('admin:ndaaAdministration');
+    if (hasSystemAdminAccess) return t('admin:systemAdministration');
+    return t('admin:title');
   };
 
   const getDashboardDescription = () => {
-    if (hasNDAAAccess) return 'National Digital Address Authority - Policy and Strategic Management';
-    if (hasSystemAdminAccess) return 'System Administration - Technical Operations and Regional Management';
-    return t('manageUsersRoles');
+    if (hasNDAAAccess) return t('admin:ndaaDescription');
+    if (hasSystemAdminAccess) return t('admin:systemDescription');
+    return t('admin:manageUsersRoles');
   };
 
   const renderContent = () => {
@@ -86,10 +86,10 @@ const AdminDashboard = () => {
                 </div>
               </div>
               <p className="text-sm font-medium text-foreground">
-                {t('copyrightBiakam')}
+                {t('common:footer.copyright')}
               </p>
               <p className="text-xs text-muted-foreground">
-                {t('footerDescription')}
+                {t('common:footer.description')}
               </p>
             </div>
           </footer>

@@ -8,21 +8,21 @@ import { AddressPublishingQueue } from "@/components/AddressPublishingQueue";
 import { AddressUnpublishingQueue } from "@/components/AddressUnpublishingQueue";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
 
 
 const RegistrarDashboard = () => {
   const { role, loading, getGeographicScope } = useUserRole();
   const { user, signOut } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [publishOpen, setPublishOpen] = useState(false);
   const [unpublishOpen, setUnpublishOpen] = useState(false);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
+        <div className="text-lg">{t('common:buttons.loading')}</div>
       </div>
     );
   }

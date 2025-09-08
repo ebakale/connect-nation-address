@@ -453,5 +453,10 @@
   "reduction": "Reduction",
   "minimization": "Minimization",
   "maximization": "Maximization",
-  "optimization": "Optimization"
+  "optimization": "Optimization",
+  "ndaaAdministration": "NDAA Administration",
+  "systemAdministration": "System Administration", 
+  "ndaaDescription": "National Digital Address Authority - Policy and Strategic Management",
+  "systemDescription": "System Administration - Technical Operations and Regional Management",
+  "manageUsersRoles": "Manage users and roles"
 }

@@ -156,5 +156,10 @@
   "accessibility": "Accesibilidad",
   "responsiveness": "Capacidad de respuesta",
   "compatibility": "Compatibilidad",
-  "interoperability": "Interoperabilidad"
+  "interoperability": "Interoperabilidad",
+  "ndaaAdministration": "Administración NDAA",
+  "systemAdministration": "Administración del Sistema",
+  "ndaaDescription": "Autoridad Nacional de Direcciones Digitales - Gestión de Políticas y Estratégicas",
+  "systemDescription": "Administración del Sistema - Operaciones Técnicas y Gestión Regional",
+  "manageUsersRoles": "Gestionar usuarios y roles"
 }

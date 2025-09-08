@@ -10,7 +10,7 @@ import {
   Shield, Users, Settings, BarChart3, LogOut, Search, FileText, Clock, AlertCircle,
   Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map, User, Phone
 } from "lucide-react";
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -98,7 +98,7 @@ const UnifiedDashboard = () => {
     hasSystemAdminAccess
   } = useUserRole();
   const { user, signOut } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   // Route users to appropriate dashboard based on their primary role

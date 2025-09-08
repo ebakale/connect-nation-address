@@ -9,14 +9,14 @@ import { VerificationTools } from "@/components/VerificationTools";
 import { AddressRequestApproval } from "@/components/AddressRequestApproval";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
 
 
 const VerifierDashboard = () => {
   const { role, loading, getGeographicScope } = useUserRole();
   const { user, signOut } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [queueOpen, setQueueOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
   const [requestsOpen, setRequestsOpen] = useState(false);
