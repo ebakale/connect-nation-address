@@ -390,20 +390,40 @@ const DashboardLocationMap: React.FC = () => {
       currentLocationMarker.current.setMap(null);
     }
 
-    // Create current location marker
+    // Create current location marker with flashing animation
     currentLocationMarker.current = new google.maps.Marker({
       position: { lat, lng },
       map: map.current,
       title: 'Your Location',
       icon: {
         url: `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="10" cy="10" r="6" fill="#3b82f6" stroke="white" stroke-width="3"/>
-            <circle cx="10" cy="10" r="10" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.3"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <style>
+                .pulse-ring {
+                  animation: pulse 2s ease-out infinite;
+                  transform-origin: center;
+                }
+                @keyframes pulse {
+                  0% { opacity: 1; transform: scale(0.8); }
+                  50% { opacity: 0.3; transform: scale(1.2); }
+                  100% { opacity: 0; transform: scale(1.5); }
+                }
+                .flash-dot {
+                  animation: flash 1.5s ease-in-out infinite;
+                }
+                @keyframes flash {
+                  0%, 100% { opacity: 1; }
+                  50% { opacity: 0.4; }
+                }
+              </style>
+            </defs>
+            <circle cx="12" cy="12" r="10" class="pulse-ring" fill="none" stroke="#3b82f6" stroke-width="2"/>
+            <circle cx="12" cy="12" r="7" class="flash-dot" fill="#3b82f6" stroke="white" stroke-width="3"/>
           </svg>
         `)}`,
-        scaledSize: new google.maps.Size(20, 20),
-        anchor: new google.maps.Point(10, 10)
+        scaledSize: new google.maps.Size(24, 24),
+        anchor: new google.maps.Point(12, 12)
       }
     });
 
