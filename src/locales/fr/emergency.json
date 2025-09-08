@@ -14,6 +14,33 @@
   "gpsBasedUnitDispatch": "Répartition d'unités basée sur GPS",
   "multiChannelCommunications": "Communications multicanaux",
   "analyticsResponseTracking": "Analyses et suivi de réponse",
-  "policeEmergencyServices": "Police et Services d'Urgence",
-  "integratedEmergencyResponse": "Plateforme intégrée de réponse d'urgence connectant police, services d'urgence et citoyens pour une gestion rapide des incidents."
+
+  "emergencyAlert": "Alerte d'urgence",
+  "emergencyServicesOnly": "Services d'urgence uniquement",
+  "emergencyType": "Type d'urgence",
+  "selectEmergencyType": "Sélectionner le type d'urgence",
+  "types": {
+    "fire": "Incendie",
+    "medical": "Urgence médicale",
+    "police": "Urgence policière",
+    "accident": "Accident de la route",
+    "naturalDisaster": "Catastrophe naturelle",
+    "other": "Autre urgence"
+  },
+  "emergencyDescription": "Description de l'urgence",
+  "describeEmergencyPlaceholder": "Décrivez la situation d'urgence...",
+  "contactInformation": "Informations de contact",
+  "phoneOptionalPlaceholder": "Numéro de téléphone (optionnel)",
+  "locationDetected": "Localisation détectée",
+  "getCurrentLocation": "Obtenir la localisation actuelle",
+  "sendingAlert": "Envoi de l'alerte...",
+  "sendEmergencyAlert": "Envoyer l'alerte d'urgence",
+  "errors": {
+    "locationRequired": "La localisation est requise pour les alertes d'urgence",
+    "requiredFields": "Veuillez remplir tous les champs requis",
+    "failedToSend": "Échec de l'envoi de l'alerte d'urgence"
+  },
+  "success": {
+    "alertSent": "Alerte d'urgence envoyée avec succès !"
+  }
 }

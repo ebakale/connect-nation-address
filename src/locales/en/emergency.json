@@ -198,5 +198,33 @@
   "realtimeIncidentReporting": "Real-time incident reporting",
   "gpsBasedUnitDispatch": "GPS-based unit dispatch",
   "multiChannelCommunications": "Multi-channel communications",
-  "analyticsResponseTracking": "Analytics and response tracking"
+  "analyticsResponseTracking": "Analytics and response tracking",
+  "emergencyAlert": "Emergency Alert",
+  "emergencyServicesOnly": "Emergency Services Only",
+  "emergencyType": "Emergency Type",
+  "selectEmergencyType": "Select emergency type",
+  "types": {
+    "fire": "Fire Emergency",
+    "medical": "Medical Emergency",
+    "police": "Police Emergency",
+    "accident": "Traffic Accident",
+    "naturalDisaster": "Natural Disaster",
+    "other": "Other Emergency"
+  },
+  "emergencyDescription": "Emergency Description",
+  "describeEmergencyPlaceholder": "Describe the emergency situation...",
+  "contactInformation": "Contact Information",
+  "phoneOptionalPlaceholder": "Phone number (optional)",
+  "locationDetected": "Location detected",
+  "getCurrentLocation": "Get Current Location",
+  "sendingAlert": "Sending Alert...",
+  "sendEmergencyAlert": "Send Emergency Alert",
+  "errors": {
+    "locationRequired": "Location is required for emergency alerts",
+    "requiredFields": "Please fill in all required fields",
+    "failedToSend": "Failed to send emergency alert"
+  },
+  "success": {
+    "alertSent": "Emergency alert sent successfully!"
+  }
 }

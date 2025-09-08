@@ -686,9 +686,9 @@ const navigationItems = [
         return (
           <div className="space-y-8">
             <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold text-red-600">Emergency Alert System</h2>
+              <h2 className="text-3xl font-bold text-red-600">{t('common:platform.emergencyAlertSystem')}</h2>
               <p className="text-lg text-muted-foreground">
-                Send emergency alerts directly to police and emergency services
+                {t('common:platform.emergencyAlertDescription')}
               </p>
             </div>
             <EmergencyAlertProcessor onSuccess={() => setActiveSection('overview')} />

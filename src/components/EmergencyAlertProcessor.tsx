@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -25,6 +26,7 @@ interface EmergencyAlertProcessorProps {
 }
 
 const EmergencyAlertProcessor = ({ onSuccess }: EmergencyAlertProcessorProps) => {
+  const { t } = useTranslation(['emergency', 'common']);
   const { user } = useAuth();
   const { latitude, longitude, getCurrentPosition } = useGeolocation();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,12 +58,12 @@ const EmergencyAlertProcessor = ({ onSuccess }: EmergencyAlertProcessorProps) =>
     e.preventDefault();
     
     if (!latitude || !longitude) {
-      toast.error('Location is required for emergency alerts');
+      toast.error(t('emergency:errors.locationRequired'));
       return;
     }
 
     if (!formData.emergencyType || !formData.message) {
-      toast.error('Please fill in all required fields');
+      toast.error(t('emergency:errors.requiredFields'));
       return;
     }
 
@@ -78,7 +80,7 @@ const EmergencyAlertProcessor = ({ onSuccess }: EmergencyAlertProcessorProps) =>
 
       await processEmergencyAlert(alertData);
       
-      toast.success('Emergency alert sent successfully!');
+      toast.success(t('emergency:success.alertSent'));
       setFormData({ emergencyType: '', message: '', contactInfo: '' });
       
       // Call onSuccess callback to close the emergency section
@@ -88,7 +90,7 @@ const EmergencyAlertProcessor = ({ onSuccess }: EmergencyAlertProcessorProps) =>
         }, 1500); // Give user time to see the success message
       }
     } catch (error) {
-      toast.error('Failed to send emergency alert');
+      toast.error(t('emergency:errors.failedToSend'));
     } finally {
       setIsSubmitting(false);
     }
@@ -101,55 +103,55 @@ const EmergencyAlertProcessor = ({ onSuccess }: EmergencyAlertProcessorProps) =>
           <div className="p-2 bg-red-100 rounded-full">
             <AlertTriangle className="h-6 w-6 text-red-600" />
           </div>
-          <CardTitle className="text-xl text-red-600">Emergency Alert</CardTitle>
+          <CardTitle className="text-xl text-red-600">{t('emergency:emergencyAlert')}</CardTitle>
         </div>
         <Badge variant="destructive" className="animate-pulse">
-          Emergency Services Only
+          {t('emergency:emergencyServicesOnly')}
         </Badge>
       </CardHeader>
       
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="emergencyType">Emergency Type *</Label>
+            <Label htmlFor="emergencyType">{t('emergency:emergencyType')} *</Label>
             <Select 
               value={formData.emergencyType} 
               onValueChange={(value) => setFormData(prev => ({ ...prev, emergencyType: value }))}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select emergency type" />
+                <SelectValue placeholder={t('emergency:selectEmergencyType')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="fire">Fire Emergency</SelectItem>
-                <SelectItem value="medical">Medical Emergency</SelectItem>
-                <SelectItem value="police">Police Emergency</SelectItem>
-                <SelectItem value="accident">Traffic Accident</SelectItem>
-                <SelectItem value="natural_disaster">Natural Disaster</SelectItem>
-                <SelectItem value="other">Other Emergency</SelectItem>
+                <SelectItem value="fire">{t('emergency:types.fire')}</SelectItem>
+                <SelectItem value="medical">{t('emergency:types.medical')}</SelectItem>
+                <SelectItem value="police">{t('emergency:types.police')}</SelectItem>
+                <SelectItem value="accident">{t('emergency:types.accident')}</SelectItem>
+                <SelectItem value="natural_disaster">{t('emergency:types.naturalDisaster')}</SelectItem>
+                <SelectItem value="other">{t('emergency:types.other')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div>
-            <Label htmlFor="message">Emergency Description *</Label>
+            <Label htmlFor="message">{t('emergency:emergencyDescription')} *</Label>
             <Textarea
               id="message"
               value={formData.message}
               onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
-              placeholder="Describe the emergency situation..."
+              placeholder={t('emergency:describeEmergencyPlaceholder')}
               rows={3}
               required
             />
           </div>
 
           <div>
-            <Label htmlFor="contactInfo">Contact Information</Label>
+            <Label htmlFor="contactInfo">{t('emergency:contactInformation')}</Label>
             <Input
               id="contactInfo"
               type="tel"
               value={formData.contactInfo}
               onChange={(e) => setFormData(prev => ({ ...prev, contactInfo: e.target.value }))}
-              placeholder="Phone number (optional)"
+              placeholder={t('emergency:phoneOptionalPlaceholder')}
             />
           </div>
 
@@ -157,7 +159,7 @@ const EmergencyAlertProcessor = ({ onSuccess }: EmergencyAlertProcessorProps) =>
             <div className="bg-green-50 p-3 rounded-lg">
               <div className="flex items-center gap-2 text-green-700">
                 <MapPin className="h-4 w-4" />
-                <span className="text-sm font-medium">Location detected</span>
+                <span className="text-sm font-medium">{t('emergency:locationDetected')}</span>
               </div>
               <p className="text-xs text-green-600 mt-1">
                 Lat: {latitude.toFixed(6)}, Lon: {longitude.toFixed(6)}
@@ -171,7 +173,7 @@ const EmergencyAlertProcessor = ({ onSuccess }: EmergencyAlertProcessorProps) =>
               className="w-full"
             >
               <MapPin className="mr-2 h-4 w-4" />
-              Get Current Location
+              {t('emergency:getCurrentLocation')}
             </Button>
           )}
 
@@ -183,12 +185,12 @@ const EmergencyAlertProcessor = ({ onSuccess }: EmergencyAlertProcessorProps) =>
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Sending Alert...
+                {t('emergency:sendingAlert')}
               </>
             ) : (
               <>
                 <Send className="mr-2 h-4 w-4" />
-                Send Emergency Alert
+                {t('emergency:sendEmergencyAlert')}
               </>
             )}
           </Button>
