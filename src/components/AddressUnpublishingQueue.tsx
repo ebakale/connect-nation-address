@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAddresses } from "@/hooks/useAddresses";
 import { EyeOff, Globe, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from 'react-i18next';
 
 interface AddressUnpublishingQueueProps {
   onClose?: () => void;
@@ -13,6 +14,7 @@ interface AddressUnpublishingQueueProps {
 export const AddressUnpublishingQueue = ({ onClose }: AddressUnpublishingQueueProps) => {
   const { addresses, loading, updateAddressStatus, fetchAddresses } = useAddresses();
   const { toast } = useToast();
+  const { t } = useTranslation(['common','address']);
 
   useEffect(() => {
     fetchAddresses();
@@ -23,8 +25,8 @@ export const AddressUnpublishingQueue = ({ onClose }: AddressUnpublishingQueuePr
   const handleUnpublish = async (addressId: string) => {
     await updateAddressStatus(addressId, { public: false });
     toast({
-      title: "Success",
-      description: "Address removed from public registry successfully"
+      title: t('common:status.success'),
+      description: t('addressRemovedFromRegistry')
     });
   };
 
@@ -37,28 +39,28 @@ export const AddressUnpublishingQueue = ({ onClose }: AddressUnpublishingQueuePr
       await Promise.all(unpublishPromises);
       
       toast({
-        title: "Success",
-        description: `${publishedAddresses.length} addresses removed from public registry`
+        title: t('common:status.success'),
+        description: t('addressesRemovedFromRegistryCount', { count: publishedAddresses.length })
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to remove some addresses from public registry",
+        title: t('common:status.error'),
+        description: t('failedToRemoveSomeAddresses'),
         variant: "destructive"
       });
     }
   };
 
   if (loading) {
-    return <div className="p-4">Loading published addresses...</div>;
+    return <div className="p-4">{t('loadingPublishedAddresses')}</div>;
   }
 
   return (
     <div className="space-y-4 p-4 max-w-full overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="min-w-0 flex-1">
-          <h3 className="text-lg font-semibold break-words">Published Addresses ({publishedAddresses.length})</h3>
-          <p className="text-sm text-muted-foreground break-words">Manage addresses in the national registry</p>
+          <h3 className="text-lg font-semibold break-words">{t('publishedAddressesCount', { count: publishedAddresses.length })}</h3>
+          <p className="text-sm text-muted-foreground break-words">{t('manageAddressesInRegistry')}</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
           {publishedAddresses.length > 0 && (
@@ -68,14 +70,14 @@ export const AddressUnpublishingQueue = ({ onClose }: AddressUnpublishingQueuePr
               className="flex items-center justify-center gap-1 text-xs sm:text-sm"
             >
               <EyeOff className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden lg:inline">Remove All from Public Registry ({publishedAddresses.length})</span>
-              <span className="lg:hidden">Remove All</span>
+              <span className="hidden lg:inline">{t('removeAllFromPublicRegistryCount', { count: publishedAddresses.length })}</span>
+              <span className="lg:hidden">{t('removeAll')}</span>
             </Button>
           )}
           {onClose && (
             <Button variant="outline" size="sm" onClick={onClose} className="text-xs sm:text-sm">
               <X className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-              Close
+              {t('common:buttons.close')}
             </Button>
           )}
         </div>
@@ -84,7 +86,7 @@ export const AddressUnpublishingQueue = ({ onClose }: AddressUnpublishingQueuePr
       {publishedAddresses.length === 0 ? (
         <Card>
           <CardContent className="p-6 text-center">
-            <p className="text-muted-foreground">No published addresses found</p>
+            <p className="text-muted-foreground">{t('noPublishedAddressesFound')}</p>
           </CardContent>
         </Card>
       ) : (
@@ -100,10 +102,10 @@ export const AddressUnpublishingQueue = ({ onClose }: AddressUnpublishingQueuePr
                   </CardDescription>
                 </div>
                 <div className="flex gap-2 flex-wrap">
-                  <Badge variant="default" className="text-xs">Verified</Badge>
+                  <Badge variant="default" className="text-xs">{t('common:status.verified')}</Badge>
                   <Badge variant="default" className="text-xs">
                     <Globe className="h-3 w-3 mr-1" />
-                    Published
+                    {t('common:status.published')}
                   </Badge>
                 </div>
               </div>

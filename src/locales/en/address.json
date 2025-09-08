@@ -251,5 +251,14 @@
   "created": "Created",
   "publishToNationalRegistry": "Publish to National Registry",
   "publish": "Publish",
-  "private": "Private"
+  "private": "Private",
+  "addressRemovedFromRegistry": "Address removed from public registry successfully",
+  "addressesRemovedFromRegistryCount": "{{count}} addresses removed from public registry",
+  "failedToRemoveSomeAddresses": "Failed to remove some addresses from public registry",
+  "loadingPublishedAddresses": "Loading published addresses...",
+  "publishedAddressesCount": "Published Addresses ({{count}})",
+  "manageAddressesInRegistry": "Manage addresses in the national registry",
+  "removeAllFromPublicRegistryCount": "Remove All from Public Registry ({{count}})",
+  "removeAll": "Remove All",
+  "noPublishedAddressesFound": "No published addresses found"
 }

@@ -25,7 +25,7 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
   const handlePublish = async (addressId: string, isPublic: boolean) => {
     await updateAddressStatus(addressId, { public: isPublic });
     toast({
-      title: t('common:success'),
+      title: t('common:status.success'),
       description: t(isPublic ? 'addressPublishedSuccessfully' : 'addressUnpublishedSuccessfully')
     });
   };
@@ -39,12 +39,12 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
       await Promise.all(publishPromises);
       
       toast({
-        title: t('common:success'),
+        title: t('common:status.success'),
         description: t('addressesPublishedSuccessfully', { count: unpublishedAddresses.length })
       });
     } catch (error) {
       toast({
-        title: t('common:error'),
+        title: t('common:status.error'),
         description: t('failedToPublishAddresses'),
         variant: "destructive"
       });
