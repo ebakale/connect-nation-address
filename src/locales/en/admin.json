@@ -657,5 +657,88 @@
   "userDeletedSuccessfully": "User deleted successfully",
   "failedToDeleteUser": "Failed to delete user",
   "userCreatedSuccessfully": "User created successfully",
-  "failedToCreateUser": "Failed to create user"
+  "failedToCreateUser": "Failed to create user",
+
+  "roleLabels": {
+    "citizen": "Citizen",
+    "property_claimant": "Property Claimant",
+    "field_agent": "Field Agent",
+    "verifier": "Verifier",
+    "registrar": "Registrar",
+    "ndaa_admin": "NDAA Admin",
+    "partner": "Partner",
+    "partnerEMS": "Partner (EMS)",
+    "partnerUtility": "Partner (Utility)",
+    "auditor": "Auditor",
+    "data_steward": "Data Steward",
+    "support": "Support"
+  },
+
+  "permissionOperations": {
+    "searchVerifiedAddresses": "Search verified addresses",
+    "createDraftAddress": "Create draft address",
+    "uploadViewEvidence": "Upload/view evidence",
+    "verifyPublish": "Verify / publish",
+    "mergeSplitRecords": "Merge / split records",
+    "editHierarchyBoundaries": "Edit hierarchy/boundaries",
+    "manageApiKeysWebhooks": "Manage API keys/webhooks",
+    "accessAuditLogs": "Access audit logs"
+  },
+
+  "permissionStrings": {
+    "api": "API",
+    "corrections": "corrections",
+    "testSandboxes": "test sandboxes",
+    "viewRedacted": "view redacted",
+    "ownOnly": "own only",
+    "own": "own",
+    "verify": "verify",
+    "publishRetire": "publish/retire",
+    "override": "override",
+    "districtMetadata": "district metadata",
+    "province": "province",
+    "national": "national",
+    "request": "request",
+    "deliveryLogsOnly": "delivery logs only",
+    "readOnly": "read-only",
+    "readQaOnly": "read QA only",
+    "statusOnly": "status only"
+  },
+
+  "standardAddressCreationFlow": "Citizen → Field Agent → Verifier → Registrar",
+  "partnerBulkUpdateFlow": "Utility → Data Steward → Verifier → Registrar",
+  "emergencyFastTrackFlow": "EMS → Verifier → Registrar → Partner Webhook",
+
+  "stepDescriptions": {
+    "submit_request": "Submits new place request",
+    "capture_draft": "Captures draft + photos",
+    "verify": "Resolves duplicates and verifies",
+    "publish": "Publishes to provincial registry",
+    "bulk_upload": "Uploads hashed customer refs with coordinates",
+    "qa_review": "Runs quality assurance checks",
+    "batch_verify": "Batch-approves subset",
+    "bulk_publish": "Publishes approved addresses",
+    "emergency_flag": "Flags critical location",
+    "priority_verify": "Prioritizes review within SLA",
+    "fast_publish": "Publishes within emergency SLA",
+    "webhook_confirm": "Webhook confirms activation"
+  },
+
+  "workflowStages": {
+    "submit_request": "Submit Request",
+    "capture_draft": "Capture Draft",
+    "verify": "Verify",
+    "publish": "Publish",
+    "bulk_upload": "Bulk Upload",
+    "qa_review": "QA Review",
+    "batch_verify": "Batch Verify",
+    "bulk_publish": "Bulk Publish",
+    "emergency_flag": "Emergency Flag",
+    "priority_verify": "Priority Verify",
+    "fast_publish": "Fast Publish",
+    "webhook_confirm": "Webhook Confirm"
+  },
+
+  "verifierGeographicScopeDesc": "Verifier {district: MAL} can verify only addresses where hierarchy.district == MAL",
+  "partnerApiScopeDesc": "Partner {org: EMS, scope: read_verified} gets priority reads and event webhooks but no writes"
 }

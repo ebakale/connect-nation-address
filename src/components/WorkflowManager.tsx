@@ -20,32 +20,32 @@ export const WorkflowManager: React.FC = () => {
   const typicalWorkflows = [
     {
       name: t('admin:standardAddressCreation'),
-      description: 'Citizen → Field Agent → Verifier → Registrar',
+      description: t('admin:standardAddressCreationFlow'),
       steps: [
-        { stage: 'submit_request', role: 'Citizen', description: 'Submits new place request', status: 'completed' as const },
-        { stage: 'capture_draft', role: 'Field Agent', description: 'Captures draft + photos', status: 'current' as const },
-        { stage: 'verify', role: 'Verifier', description: 'Resolves duplicates and verifies', status: 'pending' as const },
-        { stage: 'publish', role: 'Registrar', description: 'Publishes to provincial registry', status: 'pending' as const }
+        { stage: 'submit_request', role: t('admin:roleLabels.citizen'), description: t('admin:stepDescriptions.submit_request'), status: 'completed' as const },
+        { stage: 'capture_draft', role: t('admin:roleLabels.field_agent'), description: t('admin:stepDescriptions.capture_draft'), status: 'current' as const },
+        { stage: 'verify', role: t('admin:roleLabels.verifier'), description: t('admin:stepDescriptions.verify'), status: 'pending' as const },
+        { stage: 'publish', role: t('admin:roleLabels.registrar'), description: t('admin:stepDescriptions.publish'), status: 'pending' as const }
       ]
     },
     {
       name: t('admin:partnerBulkUpdate'),
-      description: 'Utility → Data Steward → Verifier → Registrar',
+      description: t('admin:partnerBulkUpdateFlow'),
       steps: [
-        { stage: 'bulk_upload', role: 'Partner (Utility)', description: 'Uploads hashed customer refs with coordinates', status: 'completed' as const },
-        { stage: 'qa_review', role: 'Data Steward', description: 'Runs quality assurance checks', status: 'current' as const },
-        { stage: 'batch_verify', role: 'Verifier', description: 'Batch-approves subset', status: 'pending' as const },
-        { stage: 'bulk_publish', role: 'Registrar', description: 'Publishes approved addresses', status: 'pending' as const }
+        { stage: 'bulk_upload', role: t('admin:roleLabels.partnerUtility'), description: t('admin:stepDescriptions.bulk_upload'), status: 'completed' as const },
+        { stage: 'qa_review', role: t('admin:roleLabels.data_steward'), description: t('admin:stepDescriptions.qa_review'), status: 'current' as const },
+        { stage: 'batch_verify', role: t('admin:roleLabels.verifier'), description: t('admin:stepDescriptions.batch_verify'), status: 'pending' as const },
+        { stage: 'bulk_publish', role: t('admin:roleLabels.registrar'), description: t('admin:stepDescriptions.bulk_publish'), status: 'pending' as const }
       ]
     },
     {
       name: t('admin:emergencyFastTrack'),
-      description: 'EMS → Verifier → Registrar → Partner Webhook',
+      description: t('admin:emergencyFastTrackFlow'),
       steps: [
-        { stage: 'emergency_flag', role: 'Partner (EMS)', description: 'Flags critical location', status: 'completed' as const },
-        { stage: 'priority_verify', role: 'Verifier', description: 'Prioritizes review within SLA', status: 'current' as const },
-        { stage: 'fast_publish', role: 'Registrar', description: 'Publishes within emergency SLA', status: 'pending' as const },
-        { stage: 'webhook_confirm', role: 'Partner', description: 'Webhook confirms activation', status: 'pending' as const }
+        { stage: 'emergency_flag', role: t('admin:roleLabels.partnerEMS'), description: t('admin:stepDescriptions.emergency_flag'), status: 'completed' as const },
+        { stage: 'priority_verify', role: t('admin:roleLabels.verifier'), description: t('admin:stepDescriptions.priority_verify'), status: 'current' as const },
+        { stage: 'fast_publish', role: t('admin:roleLabels.registrar'), description: t('admin:stepDescriptions.fast_publish'), status: 'pending' as const },
+        { stage: 'webhook_confirm', role: t('admin:roleLabels.partner'), description: t('admin:stepDescriptions.webhook_confirm'), status: 'pending' as const }
       ]
     }
   ];
@@ -90,11 +90,11 @@ export const WorkflowManager: React.FC = () => {
         <CardContent>
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <Badge variant="secondary" className="text-sm whitespace-nowrap truncate max-w-[200px]">
-              {t('admin:currentRole')}: {role ? role.replace('_', ' ').toUpperCase() : 'Not Assigned'}
+              {t('admin:currentRole')}: {role ? t(`admin:roleLabels.${role}`, { defaultValue: role.replace('_', ' ') }) : t('admin:notAssigned')}
             </Badge>
             <ArrowRight className="h-4 w-4 text-muted-foreground hidden sm:block" />
             <Badge variant="outline" className="text-sm whitespace-nowrap max-w-[300px]">
-              {t('admin:workflowStage')}: {currentStage.replace('_', ' ').toUpperCase()}
+              {t('admin:workflowStage')}: {t(`admin:workflowStages.${currentStage}`, { defaultValue: currentStage.replace('_', ' ') })}
             </Badge>
           </div>
         </CardContent>
@@ -142,14 +142,14 @@ export const WorkflowManager: React.FC = () => {
           <div className="p-4 bg-blue-50 rounded-lg">
             <h4 className="font-medium text-blue-900 mb-2">{t('admin:verifierGeographicScope')}</h4>
             <p className="text-sm text-blue-700">
-              Verifier {'{district: MAL}'} can verify only addresses where hierarchy.district == MAL
+              {t('admin:verifierGeographicScopeDesc')}
             </p>
           </div>
           
           <div className="p-4 bg-green-50 rounded-lg">
             <h4 className="font-medium text-green-900 mb-2">{t('admin:partnerApiScope')}</h4>
             <p className="text-sm text-green-700">
-              Partner {'{org: EMS, scope: read_verified}'} gets priority reads and event webhooks but no writes
+              {t('admin:partnerApiScopeDesc')}
             </p>
           </div>
           

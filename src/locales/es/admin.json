@@ -360,5 +360,89 @@
   "valid": "Válido",
   "invalid": "Inválido",
   "noUacRecordsFound": "No se encontraron registros UAC",
-  "generateRolesPdfGuide": "Generar Guía PDF de Roles"
+  "generateRolesPdfGuide": "Generar Guía PDF de Roles",
+
+  "roleLabels": {
+    "citizen": "Ciudadano",
+    "property_claimant": "Reclamante de Propiedad",
+    "field_agent": "Agente de Campo",
+    "verifier": "Verificador",
+    "registrar": "Registrador",
+    "ndaa_admin": "Admin NDAA",
+    "partner": "Socio",
+    "partnerEMS": "Socio (EMS)",
+    "partnerUtility": "Socio (Utilidad)",
+    "auditor": "Auditor",
+    "data_steward": "Administrador de Datos",
+    "support": "Soporte"
+  },
+
+  "permissionOperations": {
+    "searchVerifiedAddresses": "Buscar direcciones verificadas",
+    "createDraftAddress": "Crear dirección borrador",
+    "uploadViewEvidence": "Subir/ver evidencia",
+    "verifyPublish": "Verificar / publicar",
+    "mergeSplitRecords": "Fusionar / dividir registros",
+    "editHierarchyBoundaries": "Editar jerarquía/límites",
+    "manageApiKeysWebhooks": "Gestionar claves API/webhooks",
+    "accessAuditLogs": "Acceder a registros de auditoría"
+  },
+
+  "permissionStrings": {
+    "api": "API",
+    "corrections": "correcciones",
+    "testSandboxes": "entornos de prueba",
+    "viewRedacted": "ver redactado",
+    "ownOnly": "solo propias",
+    "own": "propias",
+    "verify": "verificar",
+    "publishRetire": "publicar/retirar",
+    "override": "anular",
+    "districtMetadata": "metadatos del distrito",
+    "province": "provincia",
+    "national": "nacional",
+    "request": "solicitud",
+    "deliveryLogsOnly": "solo registros de entrega",
+    "readOnly": "solo lectura",
+    "readQaOnly": "solo lectura QA",
+    "statusOnly": "solo estado"
+  },
+
+  "standardAddressCreationFlow": "Ciudadano → Agente de Campo → Verificador → Registrador",
+  "partnerBulkUpdateFlow": "Utilidad → Administrador de Datos → Verificador → Registrador",
+  "emergencyFastTrackFlow": "EMS → Verificador → Registrador → Webhook de Socio",
+
+  "stepDescriptions": {
+    "submit_request": "Envía solicitud de nuevo lugar",
+    "capture_draft": "Captura borrador + fotos",
+    "verify": "Resuelve duplicados y verifica",
+    "publish": "Publica en registro provincial",
+    "bulk_upload": "Carga referencias de clientes con coordenadas (hash)",
+    "qa_review": "Ejecuta controles de calidad",
+    "batch_verify": "Aprueba por lotes un subconjunto",
+    "bulk_publish": "Publica direcciones aprobadas",
+    "emergency_flag": "Marca ubicación crítica",
+    "priority_verify": "Prioriza revisión dentro del SLA",
+    "fast_publish": "Publica dentro del SLA de emergencia",
+    "webhook_confirm": "El Webhook confirma activación"
+  },
+
+  "workflowStages": {
+    "submit_request": "Enviar Solicitud",
+    "capture_draft": "Capturar Borrador",
+    "verify": "Verificar",
+    "publish": "Publicar",
+    "bulk_upload": "Carga Masiva",
+    "qa_review": "Revisión QA",
+    "batch_verify": "Verificación por Lotes",
+    "bulk_publish": "Publicación Masiva",
+    "emergency_flag": "Bandera de Emergencia",
+    "priority_verify": "Verificación Prioritaria",
+    "fast_publish": "Publicación Rápida",
+    "webhook_confirm": "Confirmación Webhook"
+  },
+
+  // ABAC descriptions
+  "verifierGeographicScopeDesc": "Verificador {district: MAL} solo puede verificar direcciones donde hierarchy.district == MAL",
+  "partnerApiScopeDesc": "Socio {org: EMS, scope: read_verified} obtiene lecturas prioritarias y webhooks de eventos pero sin escrituras"
 }

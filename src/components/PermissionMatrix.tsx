@@ -124,10 +124,51 @@ export const PermissionMatrix: React.FC = () => {
     return null;
   };
 
+  const translatePermissionString = (text: string) => {
+    const map: Record<string, string> = {
+      'API': 'api',
+      'corrections': 'corrections',
+      'test sandboxes': 'testSandboxes',
+      'view redacted': 'viewRedacted',
+      'own only': 'ownOnly',
+      'own': 'own',
+      'verify': 'verify',
+      'publish/retire': 'publishRetire',
+      'override': 'override',
+      'district metadata': 'districtMetadata',
+      'province': 'province',
+      'national': 'national',
+      'request': 'request',
+      'delivery logs only': 'deliveryLogsOnly',
+      'read-only': 'readOnly',
+      'read QA only': 'readQaOnly',
+      'status only': 'statusOnly'
+    };
+    const key = map[text];
+    return key ? t(`permissionStrings.${key}`) : text;
+  };
+
+  const translateOperation = (op: string) => {
+    const map: Record<string, string> = {
+      'Search verified addresses': 'searchVerifiedAddresses',
+      'Create draft address': 'createDraftAddress',
+      'Upload/view evidence': 'uploadViewEvidence',
+      'Verify / publish': 'verifyPublish',
+      'Merge / split records': 'mergeSplitRecords',
+      'Edit hierarchy/boundaries': 'editHierarchyBoundaries',
+      'Manage API keys/webhooks': 'manageApiKeysWebhooks',
+      'Access audit logs': 'accessAuditLogs'
+    };
+    const key = map[op];
+    return key ? t(`permissionOperations.${key}`) : op;
+  };
+
+  const getRoleLabel = (roleKey: string) => t(`roleLabels.${roleKey}`, { defaultValue: roleKey.replace('_', ' ') });
+
   const getPermissionText = (permission: boolean | string) => {
     if (permission === true) return t('fullAccess');
     if (permission === false) return t('noAccess');
-    return permission;
+    return translatePermissionString(permission);
   };
 
   const getPermissionColor = (permission: boolean | string) => {
@@ -141,7 +182,6 @@ export const PermissionMatrix: React.FC = () => {
     }
     return 'text-gray-700 bg-gray-50';
   };
-
   const roleKeys = [
     'citizen', 'property_claimant', 'field_agent', 'verifier', 
     'registrar', 'ndaa_admin', 'partner', 'auditor', 'data_steward'
@@ -166,7 +206,7 @@ export const PermissionMatrix: React.FC = () => {
                   {roleKeys.map(roleKey => (
                     <th key={roleKey} className="text-center p-3 font-medium min-w-[120px]">
                       <div className="flex flex-col items-center gap-1">
-                        <span className="text-xs">{roleKey.replace('_', ' ')}</span>
+                        <span className="text-xs">{getRoleLabel(roleKey)}</span>
                         {role === roleKey && (
                           <Badge variant="secondary" className="text-xs">{t('you')}</Badge>
                         )}
@@ -178,7 +218,7 @@ export const PermissionMatrix: React.FC = () => {
               <tbody>
                 {PERMISSION_MATRIX.map((row, index) => (
                   <tr key={index} className="border-b hover:bg-gray-50">
-                    <td className="p-3 font-medium text-sm">{row.operation}</td>
+                    <td className="p-3 font-medium text-sm">{translateOperation(row.operation as string)}</td>
                     {roleKeys.map(roleKey => {
                       const permission = row[roleKey as keyof typeof row];
                       return (
@@ -203,14 +243,14 @@ export const PermissionMatrix: React.FC = () => {
             {PERMISSION_MATRIX.map((row, index) => (
               <Card key={index} className="p-3">
                 <div className="space-y-3">
-                  <h4 className="font-medium text-sm break-words">{row.operation}</h4>
+                  <h4 className="font-medium text-sm break-words">{translateOperation(row.operation as string)}</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {roleKeys.map(roleKey => {
                       const permission = row[roleKey as keyof typeof row];
                       return (
                         <div key={roleKey} className="flex items-center justify-between p-2 border rounded text-xs">
                           <div className="flex items-center gap-1 min-w-0 flex-1">
-                            <span className="font-medium truncate">{roleKey.replace('_', ' ')}</span>
+                            <span className="font-medium truncate">{getRoleLabel(roleKey)}</span>
                             {role === roleKey && (
                               <Badge variant="secondary" className="text-xs flex-shrink-0">{t('you')}</Badge>
                             )}
@@ -246,7 +286,7 @@ export const PermissionMatrix: React.FC = () => {
                 const permission = row[role as keyof typeof row];
                 return (
                   <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                    <span className="font-medium">{row.operation}</span>
+                    <span className="font-medium">{translateOperation(row.operation as string)}</span>
                     <div className="flex items-center gap-2">
                       {getPermissionIcon(permission)}
                       <span className={`text-sm px-3 py-1 rounded-full ${getPermissionColor(permission)}`}>
