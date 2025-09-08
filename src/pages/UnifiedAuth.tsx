@@ -114,8 +114,8 @@ const UnifiedAuth = () => {
               <p className="text-white/80 max-w-md mx-auto leading-relaxed">{t('auth:title')}</p>
               <p className="text-white/60 text-sm">
                 {isOnlineMode 
-                  ? 'Connected to national database' 
-                  : 'Working offline - data will sync when connected'
+                  ? t('auth:connectedToDatabase') 
+                  : t('auth:workingOffline')
                 }
               </p>
             </div>
