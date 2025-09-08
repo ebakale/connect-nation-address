@@ -147,6 +147,45 @@
     "coreFunctionalities": "Funcionalidades Principales",
     "twoIntegratedSystems": "Dos sistemas integrados trabajando juntos para brindar soluciones integrales",
     "strategicGoals": "Objetivos Estratégicos",
-    "platformObjectives": "Objetivos de la Plataforma"
+    "platformObjectives": "Objetivos de la Plataforma",
+
+    "roleBasedAccess": "Control de Acceso Basado en Roles",
+    "advancedRoleManagement": "Gestión avanzada de roles para permisos seguros y granulares.",
+    "digitalDocumentationFeature": "Documentación Digital",
+    "automatedDocumentGeneration": "Generación automatizada de documentos con códigos QR.",
+    "realtimeAnalyticsFeature": "Analíticas en Tiempo Real",
+    "comprehensiveReporting": "Reportes comprensivos e insights.",
+    "multiLanguageFeature": "Soporte Multiidioma",
+    "fullPlatformLocalization": "Localización completa de la plataforma.",
+
+    "transformingEquatorialGuinea": "Transformando Guinea Ecuatorial a través del direccionamiento digital y respuesta rápida de emergencias.",
+    "digitalInfrastructure": "Infraestructura Digital",
+    "establishComprehensiveAddressing": "Establecer un sistema nacional integral de direccionamiento digital integrado con servicios de emergencia.",
+    "publicSafetyEnhancement": "Mejora de la Seguridad Pública",
+    "modernizeEmergencyResponse": "Modernizar la respuesta de emergencias con policía y servicios coordinados.",
+    "citizenEmpowerment": "Empoderamiento Ciudadano",
+    "provideDirectAccess": "Proporcionar a los ciudadanos acceso directo a servicios de direcciones y alertas de emergencia.",
+    "smartUrbanPlanning": "Planificación Urbana Inteligente",
+    "smartUrbanPlanningDesc": "Permitir planificación basada en datos usando datos precisos de direcciones e incidentes.",
+    "dataExcellence": "Excelencia de Datos",
+    "dataExcellenceDesc": "Promover calidad de datos, interoperabilidad y acceso seguro entre agencias.",
+
+    "aboutConnectEG": "ConnectEG es la plataforma nacional para direccionamiento digital unificado y gestión de emergencias.",
+    "ourMission": "Nuestra Misión",
+    "missionDescription": "Conectar ciudadanos, direcciones y servicios de emergencia a través de tecnología confiable.",
+    "ourVision": "Nuestra Visión",
+    "visionDescription": "Una nación más segura e inteligente empoderada por datos de direcciones confiables y respuesta rápida.",
+    "keyPartners": "Socios Clave",
+    "ministryOfInterior": "Ministerio del Interior",
+    "governmentOversightPolicy": "Supervisión gubernamental y liderazgo de políticas.",
+    "localGovernments": "Gobiernos Locales",
+    "provincialImplementation": "Implementación provincial y servicios ciudadanos.",
+    "technologyPartners": "Socios Tecnológicos",
+    "platformDevelopmentMaintenance": "Desarrollo y mantenimiento de la plataforma.",
+
+    "helpAndSupport": "Ayuda y Soporte",
+    "findAnswersQuestions": "Encuentra respuestas a preguntas comunes y aprende cómo usar la plataforma.",
+    "frequentlyAskedQuestions": "Preguntas Frecuentes",
+    "platformUserManual": "Manual de Usuario de la Plataforma"
   }
 }
