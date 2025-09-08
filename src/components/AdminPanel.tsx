@@ -26,10 +26,10 @@ const AdminPanel: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            {t('rolePermissionManagement')}
+            {t('admin:rolePermissionManagement')}
           </CardTitle>
           <CardDescription>
-            {!user ? t('pleaseLogInToAccess') : 'Administrator access required'}
+            {!user ? t('admin:pleaseLogInToAccess') : t('admin:adminAccessRequired')}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -40,7 +40,7 @@ const AdminPanel: React.FC = () => {
     return (
       <Card>
         <CardContent className="p-6">
-          <p className="text-center text-muted-foreground">{t('loadingRoleInformation')}</p>
+          <p className="text-center text-muted-foreground">{t('admin:loadingRoleInformation')}</p>
         </CardContent>
       </Card>
     );
@@ -50,14 +50,14 @@ const AdminPanel: React.FC = () => {
     <div className="space-y-6">
       <Tabs defaultValue="roles" className="space-y-6">
         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-1">
-          <TabsTrigger value="roles" className="text-xs sm:text-sm px-2 sm:px-3">{t('roleManagement')}</TabsTrigger>
-          <TabsTrigger value="permissions" className="text-xs sm:text-sm px-2 sm:px-3">{t('permissions')}</TabsTrigger>
-          <TabsTrigger value="workflows" className="text-xs sm:text-sm px-2 sm:px-3">{t('workflows')}</TabsTrigger>
-          <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">{t('userManagement')}</TabsTrigger>
-          <TabsTrigger value="uac" className="text-xs sm:text-sm px-2 sm:px-3">{t('uacSystem')}</TabsTrigger>
+          <TabsTrigger value="roles" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:roleManagement')}</TabsTrigger>
+          <TabsTrigger value="permissions" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:permissions')}</TabsTrigger>
+          <TabsTrigger value="workflows" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:workflows')}</TabsTrigger>
+          <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:userManagement')}</TabsTrigger>
+          <TabsTrigger value="uac" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:uacSystem')}</TabsTrigger>
           <TabsTrigger value="documentation" className="text-xs sm:text-sm px-2 sm:px-3">Documentation</TabsTrigger>
           {hasNDAAAccess && (
-            <TabsTrigger value="api-webhooks" className="text-xs sm:text-sm px-2 sm:px-3">{t('apiWebhooks')}</TabsTrigger>
+            <TabsTrigger value="api-webhooks" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:apiWebhooks')}</TabsTrigger>
           )}
         </TabsList>
         

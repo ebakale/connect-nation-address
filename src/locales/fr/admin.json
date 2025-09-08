@@ -8,5 +8,13 @@
   "systemAdministration": "Administration Système",
   "ndaaDescription": "Autorité Nationale des Adresses Numériques - Gestion des Politiques et Stratégiques",
   "systemDescription": "Administration Système - Opérations Techniques et Gestion Régionale",
-  "manageUsersRoles": "Gérer les utilisateurs et les rôles"
+  "manageUsersRoles": "Gérer les utilisateurs et les rôles",
+  "rolePermissionManagement": "Gestion des rôles et des permissions",
+  "pleaseLogInToAccess": "Veuillez vous connecter pour accéder aux fonctionnalités de gestion des rôles",
+  "adminAccessRequired": "Accès administrateur requis",
+  "loadingRoleInformation": "Chargement des informations sur les rôles...",
+  "roleManagement": "Gestion des rôles",
+  "userManagement": "Gestion des utilisateurs",
+  "uacSystem": "Système UAC",
+  "apiWebhooks": "API et Webhooks"
 }

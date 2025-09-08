@@ -245,7 +245,7 @@ const UnifiedDashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center">
-        <div className="text-lg">{t('loading')}</div>
+        <div className="text-lg">{t('common:buttons.loading')}</div>
       </div>
     );
   }

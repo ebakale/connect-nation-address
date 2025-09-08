@@ -161,5 +161,13 @@
   "systemAdministration": "Administración del Sistema",
   "ndaaDescription": "Autoridad Nacional de Direcciones Digitales - Gestión de Políticas y Estratégicas",
   "systemDescription": "Administración del Sistema - Operaciones Técnicas y Gestión Regional",
-  "manageUsersRoles": "Gestionar usuarios y roles"
+  "manageUsersRoles": "Gestionar usuarios y roles",
+  "rolePermissionManagement": "Gestión de Roles y Permisos",
+  "pleaseLogInToAccess": "Por favor, inicia sesión para acceder a las funciones de gestión de roles",
+  "adminAccessRequired": "Se requiere acceso de administrador",
+  "loadingRoleInformation": "Cargando información de roles...",
+  "roleManagement": "Gestión de Roles",
+  "userManagement": "Gestión de Usuarios",
+  "uacSystem": "Sistema UAC",
+  "apiWebhooks": "API y Webhooks"
 }
