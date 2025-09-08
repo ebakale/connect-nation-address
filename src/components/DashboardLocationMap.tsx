@@ -26,6 +26,7 @@ import {
   createPOIMarker, 
   createStandardInfoWindow,
   createMapTypeToggle,
+  createFlashingSearchMarker,
   MAP_CONFIG,
   STANDARD_LEGEND
 } from '@/lib/mapConfig';
@@ -38,7 +39,26 @@ interface MapLocation {
   verified: boolean;
 }
 
-const DashboardLocationMap: React.FC = () => {
+interface SearchResult {
+  uac: string;
+  readable: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+  type: string;
+  verified: boolean;
+}
+
+interface DashboardLocationMapProps {
+  searchedAddress?: SearchResult | null;
+  onAddressSearched?: (address: SearchResult) => void;
+}
+
+const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({ 
+  searchedAddress, 
+  onAddressSearched 
+}) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<google.maps.Map | null>(null);
   const currentLocationMarker = useRef<google.maps.Marker | null>(null);
@@ -49,6 +69,7 @@ const DashboardLocationMap: React.FC = () => {
   const [mapError, setMapError] = useState<string | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
   const [poiMarkers, setPOIMarkers] = useState<google.maps.Marker[]>([]);
+  const [searchMarker, setSearchMarker] = useState<google.maps.Marker | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<{
     uac: string;
@@ -407,6 +428,69 @@ const DashboardLocationMap: React.FC = () => {
 
   const handleGetLocation = () => {
     getCurrentPosition();
+  };
+
+  // Handle searched address highlighting
+  useEffect(() => {
+    if (searchedAddress && map.current && isMapReady) {
+      highlightSearchedAddress(searchedAddress);
+    }
+  }, [searchedAddress, isMapReady]);
+
+  const highlightSearchedAddress = (address: SearchResult) => {
+    if (!map.current) return;
+
+    // Remove existing search marker
+    if (searchMarker) {
+      searchMarker.setMap(null);
+    }
+
+    // Center map on searched address
+    const position = { lat: address.coordinates.lat, lng: address.coordinates.lng };
+    map.current.panTo(position);
+    map.current.setZoom(MAP_CONFIG.defaultCurrentLocationZoom);
+
+    // Create flashing marker for searched address
+    const flashingMarker = createFlashingSearchMarker(
+      map.current,
+      position,
+      address.type,
+      {
+        title: `Searched: ${address.uac}`,
+        uac: address.uac,
+        duration: 8000, // Flash for 8 seconds
+        onComplete: () => {
+          // Keep as normal marker after flashing
+          console.log('Search highlight completed for:', address.uac);
+        }
+      }
+    );
+
+    // Create detailed info window for searched address
+    const searchInfoWindow = createStandardInfoWindow(
+      `🔍 ${address.readable}`,
+      address.type,
+      {
+        uac: address.uac,
+        type: address.type,
+        verified: address.verified,
+        coordinates: address.coordinates
+      }
+    );
+
+    // Auto-open info window for searched address
+    searchInfoWindow.open(map.current, flashingMarker);
+
+    // Close info window after 5 seconds
+    setTimeout(() => {
+      searchInfoWindow.close();
+    }, 5000);
+
+    flashingMarker.addListener('click', () => {
+      searchInfoWindow.open(map.current, flashingMarker);
+    });
+
+    setSearchMarker(flashingMarker);
   };
 
   const toggleMapType = createMapTypeToggle(map.current!);

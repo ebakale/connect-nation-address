@@ -383,7 +383,10 @@ const UnifiedDashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-0">
-                <DashboardLocationMap />
+                <DashboardLocationMap 
+                  searchedAddress={selectedAddress}
+                  onAddressSearched={setSelectedAddress}
+                />
               </CardContent>
             </Card>
 

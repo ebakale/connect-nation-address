@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -19,6 +19,18 @@ import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useUserRole } from '@/hooks/useUserRole';
 import DashboardLocationMap from './DashboardLocationMap';
+import AddressSearch from './AddressSearch';
+
+interface SearchResult {
+  uac: string;
+  readable: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+  type: string;
+  verified: boolean;
+}
 
 interface DashboardStats {
   totalAddresses: number;
@@ -34,6 +46,7 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
+  const [selectedAddress, setSelectedAddress] = useState<SearchResult | null>(null);
   const { t } = useLanguage();
   const { hasSystemAdminAccess, hasNDAAAccess } = useUserRole();
   const [stats, setStats] = useState<DashboardStats>({
@@ -273,7 +286,26 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
 
       {/* Location Map */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-4">
+          {/* Address Search */}
+          <Card className="shadow-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Search className="h-5 w-5" />
+                Search Addresses
+              </CardTitle>
+              <CardDescription>
+                Find verified addresses and view them on the map below
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AddressSearch 
+                onSelectAddress={setSelectedAddress}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Location Map */}
           <Card className="shadow-card">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -282,7 +314,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <DashboardLocationMap />
+              <DashboardLocationMap 
+                searchedAddress={selectedAddress}
+                onAddressSearched={setSelectedAddress}
+              />
             </CardContent>
           </Card>
         </div>

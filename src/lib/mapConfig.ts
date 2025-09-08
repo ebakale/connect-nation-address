@@ -216,6 +216,81 @@ export const createPOIMarker = (
   return marker;
 };
 
+// Create flashing searched address marker
+export const createFlashingSearchMarker = (
+  map: google.maps.Map,
+  position: google.maps.LatLngLiteral,
+  type: string,
+  options: {
+    title?: string;
+    uac?: string;
+    duration?: number; // Duration in milliseconds
+    onComplete?: () => void;
+  } = {}
+): google.maps.Marker => {
+  const color = MAP_CONFIG.markers.colors[type as keyof typeof MAP_CONFIG.markers.colors] || MAP_CONFIG.markers.colors.residential;
+  const duration = options.duration || 5000; // Default 5 seconds
+  
+  const marker = new google.maps.Marker({
+    position,
+    map,
+    title: options.title,
+    icon: {
+      url: `data:image/svg+xml,${encodeURIComponent(`
+        <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <style>
+              .flash-marker {
+                animation: searchFlash 1s ease-in-out infinite;
+                transform-origin: center;
+              }
+              .pulse-ring-search {
+                animation: searchPulse 2s ease-out infinite;
+                transform-origin: center;
+              }
+              @keyframes searchFlash {
+                0%, 100% { opacity: 1; transform: scale(1); }
+                50% { opacity: 0.3; transform: scale(1.2); }
+              }
+              @keyframes searchPulse {
+                0% { opacity: 0.8; transform: scale(1); }
+                50% { opacity: 0.3; transform: scale(1.5); }
+                100% { opacity: 0; transform: scale(2); }
+              }
+            </style>
+          </defs>
+          <circle cx="16" cy="16" r="18" class="pulse-ring-search" fill="none" stroke="${color}" stroke-width="2"/>
+          <circle cx="16" cy="16" r="12" class="flash-marker" fill="${color}" stroke="white" stroke-width="3"/>
+          <circle cx="16" cy="16" r="6" fill="white"/>
+        </svg>
+      `)}`,
+      scaledSize: new google.maps.Size(32, 32),
+      anchor: new google.maps.Point(16, 16)
+    },
+    zIndex: 1000, // High z-index to appear above other markers
+  });
+
+  // Auto-remove after duration and replace with normal marker
+  setTimeout(() => {
+    if (marker.getMap()) {
+      // Replace with normal marker
+      marker.setIcon({
+        url: `data:image/svg+xml,${encodeURIComponent(`
+          <svg width="${MAP_CONFIG.markers.defaultSize}" height="${MAP_CONFIG.markers.defaultSize}" viewBox="0 0 ${MAP_CONFIG.markers.defaultSize} ${MAP_CONFIG.markers.defaultSize}" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="${MAP_CONFIG.markers.defaultSize/2}" cy="${MAP_CONFIG.markers.defaultSize/2}" r="${MAP_CONFIG.markers.defaultSize/2 - 2}" fill="${color}" stroke="white" stroke-width="2"/>
+          </svg>
+        `)}`,
+        scaledSize: new google.maps.Size(MAP_CONFIG.markers.defaultSize, MAP_CONFIG.markers.defaultSize),
+        anchor: new google.maps.Point(MAP_CONFIG.markers.defaultSize/2, MAP_CONFIG.markers.defaultSize/2)
+      });
+      marker.setZIndex(100); // Normal z-index
+      options.onComplete?.();
+    }
+  }, duration);
+
+  return marker;
+};
+
 // Create standardized info window content
 export const createStandardInfoWindow = (
   title: string,
