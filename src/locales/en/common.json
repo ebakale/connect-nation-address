@@ -129,5 +129,9 @@
     "enterName": "Enter name...",
     "enterAddress": "Enter address...",
     "enterPhone": "Enter phone number..."
+  },
+  "footer": {
+    "copyright": "© 2025 BIAKAM - ConnectEG Platform for the Republic of Equatorial Guinea",
+    "description": "Unified Digital Addressing and Emergency Management • Connecting Citizens, Services, and Safety"
   }
 }

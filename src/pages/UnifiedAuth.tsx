@@ -114,8 +114,8 @@ const UnifiedAuth = () => {
               <p className="text-white/80 max-w-md mx-auto leading-relaxed">{t('auth:title')}</p>
               <p className="text-white/60 text-sm">
                 {isOnlineMode 
-                  ? t('common:status.active') 
-                  : t('common:status.inactive')
+                  ? 'Connected to national database' 
+                  : 'Working offline - data will sync when connected'
                 }
               </p>
             </div>
@@ -128,29 +128,29 @@ const UnifiedAuth = () => {
                 <div className="p-2 bg-primary/10 rounded-lg">
                   <Shield className="h-6 w-6 text-primary" />
                 </div>
-                {t('secureAccess')}
+                {t('auth:secureAccess')}
               </CardTitle>
               <CardDescription className="text-base mt-2">
-                {isOnlineMode ? t('accessNationalSystem') : 'Offline access to local system'}
+                {isOnlineMode ? t('auth:accessNationalSystem') : 'Offline access to local system'}
               </CardDescription>
             </CardHeader>
             
             <CardContent className="p-8">
               <Tabs defaultValue="signin" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-muted/50 p-1 h-12">
-                  <TabsTrigger value="signin" className="text-sm font-medium">{t('signIn')}</TabsTrigger>
-                  <TabsTrigger value="signup" className="text-sm font-medium">{t('signUp')}</TabsTrigger>
+                  <TabsTrigger value="signin" className="text-sm font-medium">{t('auth:signIn')}</TabsTrigger>
+                  <TabsTrigger value="signup" className="text-sm font-medium">{t('auth:signUp')}</TabsTrigger>
                 </TabsList>
               
                 <TabsContent value="signin" className="space-y-6 mt-6">
                   <form onSubmit={handleSignIn} className="space-y-6">
                     <div className="space-y-3">
-                      <label className="text-sm font-semibold text-foreground">{t('emailAddress')}</label>
+                      <label className="text-sm font-semibold text-foreground">{t('auth:email')}</label>
                       <div className="relative">
                         <Mail className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
                         <Input
                           type="email"
-                          placeholder={t('enterEmail')}
+                          placeholder={t('common:placeholders.enterEmail')}
                           className="pl-12 h-12 text-base border-2 focus:border-primary transition-colors"
                           value={formData.email}
                           onChange={(e) => handleInputChange('email', e.target.value)}
@@ -160,12 +160,12 @@ const UnifiedAuth = () => {
                     </div>
                     
                     <div className="space-y-3">
-                      <label className="text-sm font-semibold text-foreground">{t('password')}</label>
+                      <label className="text-sm font-semibold text-foreground">{t('auth:password')}</label>
                       <div className="relative">
                         <Lock className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
                         <Input
                           type="password"
-                          placeholder={t('enterPassword')}
+                          placeholder={t('common:placeholders.enterPassword')}
                           className="pl-12 h-12 text-base border-2 focus:border-primary transition-colors"
                           value={formData.password}
                           onChange={(e) => handleInputChange('password', e.target.value)}

@@ -129,5 +129,9 @@
     "enterName": "Saisir le nom...",
     "enterAddress": "Saisir l'adresse...",
     "enterPhone": "Saisir le numéro de téléphone..."
+  },
+  "footer": {
+    "copyright": "© 2025 BIAKAM - Plateforme ConnectEG pour la République de Guinée Équatoriale",
+    "description": "Gestion Unifiée des Adresses Numériques et des Urgences • Connecter Citoyens, Services et Sécurité"
   }
 }
