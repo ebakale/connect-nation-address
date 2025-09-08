@@ -334,49 +334,7 @@ const DashboardLocationMap: React.FC = () => {
         optimized: false,
       });
 
-      // Create UAC label overlay
-      const uacLabel = new google.maps.OverlayView();
-      uacLabel.onAdd = function() {
-        const div = document.createElement('div');
-        div.innerHTML = `<div style="
-          background: rgba(34, 197, 94, 0.9);
-          color: white;
-          padding: 2px 6px;
-          border-radius: 4px;
-          font-size: 10px;
-          font-weight: 600;
-          backdrop-filter: blur(8px);
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-          pointer-events: none;
-          white-space: nowrap;
-        ">UAC: ${location.uac}</div>`;
-        
-        this.div = div;
-        const panes = this.getPanes();
-        if (panes && panes.overlayMouseTarget) {
-          panes.overlayMouseTarget.appendChild(div);
-        }
-      };
-      
-      uacLabel.draw = function() {
-        const projection = this.getProjection();
-        if (projection) {
-          const position = projection.fromLatLngToDivPixel(new google.maps.LatLng(location.coordinates[1], location.coordinates[0]));
-          if (position && this.div) {
-            this.div.style.left = (position.x - 25) + 'px';
-            this.div.style.top = (position.y - 35) + 'px';
-            this.div.style.position = 'absolute';
-          }
-        }
-      };
-      
-      uacLabel.onRemove = function() {
-        if (this.div && this.div.parentNode) {
-          this.div.parentNode.removeChild(this.div);
-        }
-      };
-      
-      uacLabel.setMap(map.current);
+      let uacLabel: google.maps.OverlayView | null = null;
 
       const infoWindow = new google.maps.InfoWindow({
         content: `
@@ -389,36 +347,88 @@ const DashboardLocationMap: React.FC = () => {
         `
       });
 
-      // Hover shows UAC and brief info
-      marker.addListener('mouseover', () => infoWindow.open(map.current, marker));
-      marker.addListener('mouseout', () => infoWindow.close());
-
-      // Click opens address detail card
-      marker.addListener('click', () => openAddressDetails(location.uac));
-
-      // Hover size effect
+      // Hover shows UAC label and brief info
       marker.addListener('mouseover', () => {
+        // Create UAC label overlay
+        uacLabel = new google.maps.OverlayView();
+        uacLabel.onAdd = function() {
+          const div = document.createElement('div');
+          div.innerHTML = `<div style="
+            background: rgba(34, 197, 94, 0.9);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+            pointer-events: none;
+            white-space: nowrap;
+            border: 1px solid rgba(255,255,255,0.2);
+          ">UAC: ${location.uac}</div>`;
+          
+          this.div = div;
+          const panes = this.getPanes();
+          if (panes && panes.overlayMouseTarget) {
+            panes.overlayMouseTarget.appendChild(div);
+          }
+        };
+        
+        uacLabel.draw = function() {
+          const projection = this.getProjection();
+          if (projection) {
+            const position = projection.fromLatLngToDivPixel(new google.maps.LatLng(location.coordinates[1], location.coordinates[0]));
+            if (position && this.div) {
+              this.div.style.left = (position.x - 30) + 'px';
+              this.div.style.top = (position.y - 40) + 'px';
+              this.div.style.position = 'absolute';
+            }
+          }
+        };
+        
+        uacLabel.onRemove = function() {
+          if (this.div && this.div.parentNode) {
+            this.div.parentNode.removeChild(this.div);
+          }
+        };
+        
+        uacLabel.setMap(map.current);
+        infoWindow.open(map.current, marker);
+        
+        // Increase marker size
         marker.setIcon({
           url: `data:image/svg+xml,${encodeURIComponent(`
-            <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">
-              <circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"${getMarkerColor(location.type)}\" stroke=\"white\" stroke-width=\"2\"/>
+            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" fill="${getMarkerColor(location.type)}" stroke="white" stroke-width="2"/>
             </svg>
           `)}`,
           scaledSize: new google.maps.Size(24, 24),
           anchor: new google.maps.Point(12, 12)
         });
       });
+      
       marker.addListener('mouseout', () => {
+        // Remove UAC label
+        if (uacLabel) {
+          uacLabel.setMap(null);
+          uacLabel = null;
+        }
+        infoWindow.close();
+        
+        // Reset marker size
         marker.setIcon({
           url: `data:image/svg+xml,${encodeURIComponent(`
-            <svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" xmlns=\"http://www.w3.org/2000/svg\">
-              <circle cx=\"10\" cy=\"10\" r=\"8\" fill=\"${getMarkerColor(location.type)}\" stroke=\"white\" stroke-width=\"2\"/>
+            <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10" r="8" fill="${getMarkerColor(location.type)}" stroke="white" stroke-width="2"/>
             </svg>
           `)}`,
           scaledSize: new google.maps.Size(20, 20),
           anchor: new google.maps.Point(10, 10)
         });
       });
+
+      // Click opens address detail card
+      marker.addListener('click', () => openAddressDetails(location.uac));
 
       newMarkers.push(marker);
     });
