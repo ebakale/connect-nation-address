@@ -1,12 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from "react";
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import Footer from '@/components/Footer';
 
 const NotFound = () => {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t } = useTranslation(['common']);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 relative">

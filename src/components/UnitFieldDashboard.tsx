@@ -21,7 +21,7 @@ import {
 import { IncidentStatusUpdateDialog } from './IncidentStatusUpdateDialog';
 import IncidentDetailDialog from './IncidentDetailDialog';
 import IncidentMap from './IncidentMap';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import MapLocationPicker from './MapLocationPicker';
 
 interface IncidentAssignment {
@@ -124,7 +124,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
   const [unitInfo, setUnitInfo] = useState<UnitInfo | null>(null);
   const [assignments, setAssignments] = useState<IncidentAssignment[]>([]);
   const [selectedIncident, setSelectedIncident] = useState<IncidentAssignment | null>(null);
-  const { t } = useLanguage();
+  const { t } = useTranslation(['common', 'emergency']);
   const [actionDialog, setActionDialog] = useState<{ action: FieldAction; incident: IncidentAssignment } | null>(null);
   const [actionNotes, setActionNotes] = useState('');
   const [currentLocation, setCurrentLocation] = useState('');

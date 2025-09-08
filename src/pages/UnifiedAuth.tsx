@@ -9,7 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { Globe, Shield, Lock, Mail, Wifi, WifiOff, User } from 'lucide-react';
 import { useUnifiedAuth } from '@/hooks/useUnifiedAuth';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 import { useUserRole } from '@/hooks/useUserRole';

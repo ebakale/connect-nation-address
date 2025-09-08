@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { UnifiedAuthProvider } from "@/hooks/useUnifiedAuth";
-import { LanguageProvider } from "@/contexts/LanguageContext";
+
 import { useUnifiedAuth } from "./hooks/useUnifiedAuth";
 import { OfflineIndicator } from "./components/OfflineIndicator";
 import Index from "./pages/Index";
@@ -37,8 +37,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <LanguageProvider>
-      <AuthProvider>
+    <AuthProvider>
         <UnifiedAuthProvider>
           <TooltipProvider>
           <Toaster />
@@ -60,7 +59,6 @@ const App = () => (
           </TooltipProvider>
         </UnifiedAuthProvider>
       </AuthProvider>
-    </LanguageProvider>
   </QueryClientProvider>
 );
 
