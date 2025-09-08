@@ -466,5 +466,6 @@
   "roleManagement": "Role Management",
   "userManagement": "User Management",
   "uacSystem": "UAC System",
-  "apiWebhooks": "API & Webhooks"
+  "apiWebhooks": "API & Webhooks",
+  "documentation": "Documentation"
 }

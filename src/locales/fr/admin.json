@@ -16,5 +16,6 @@
   "roleManagement": "Gestion des rôles",
   "userManagement": "Gestion des utilisateurs",
   "uacSystem": "Système UAC",
-  "apiWebhooks": "API et Webhooks"
+  "apiWebhooks": "API et Webhooks",
+  "documentation": "Documentation"
 }
