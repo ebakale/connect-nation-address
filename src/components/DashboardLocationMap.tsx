@@ -603,12 +603,6 @@ const DashboardLocationMap: React.FC = () => {
                 </Badge>
               )}
               
-              {nearbyUAC && (
-                <Badge className="bg-success/90 text-success-foreground backdrop-blur">
-                  <MapPin className="h-3 w-3 mr-1" />
-                  UAC: {nearbyUAC}
-                </Badge>
-              )}
               
               {locationError && (
                 <Badge variant="destructive" className="bg-destructive/90 backdrop-blur">
