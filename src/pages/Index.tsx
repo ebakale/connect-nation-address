@@ -466,24 +466,21 @@ const navigationItems = [
                 <CardContent className="space-y-4">
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold">How long does address verification take?</h4>
+                      <h4 className="font-semibold">{t('common:help.verificationTimeQuestion')}</h4>
                       <p className="text-sm text-muted-foreground">
-                        Address verification typically takes 3-5 business days. Field agents need to visit the location 
-                        for verification before registrars can approve the address.
+                        {t('common:help.verificationTimeAnswer')}
                       </p>
                     </div>
                     <div>
-                      <h4 className="font-semibold">Can I track my address submission?</h4>
+                      <h4 className="font-semibold">{t('common:help.trackSubmissionQuestion')}</h4>
                       <p className="text-sm text-muted-foreground">
-                        Yes, you can track the status of your submission in your dashboard. 
-                        You'll receive notifications for status updates.
+                        {t('common:help.trackSubmissionAnswer')}
                       </p>
                     </div>
                     <div>
-                      <h4 className="font-semibold">What if my address is rejected?</h4>
+                      <h4 className="font-semibold">{t('common:help.rejectedAddressQuestion')}</h4>
                       <p className="text-sm text-muted-foreground">
-                        If your address is rejected, you'll receive feedback explaining the reason. 
-                        You can resubmit with corrected information.
+                        {t('common:help.rejectedAddressAnswer')}
                       </p>
                     </div>
                   </div>
@@ -492,26 +489,25 @@ const navigationItems = [
 
               <Card className="shadow-card">
                 <CardHeader>
-                  <CardTitle>Contact Support</CardTitle>
+                  <CardTitle>{t('common:help.contactSupport')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <h4 className="font-semibold">Email Support</h4>
+                      <h4 className="font-semibold">{t('common:help.emailSupport')}</h4>
                       <p className="text-sm text-muted-foreground">support@connecteg.gov.gq</p>
-                      <p className="text-xs text-muted-foreground">Response within 24 hours</p>
+                      <p className="text-xs text-muted-foreground">{t('common:help.responseTime')}</p>
                     </div>
                     <div>
-                      <h4 className="font-semibold">Phone Support</h4>
+                      <h4 className="font-semibold">{t('common:help.phoneSupport')}</h4>
                       <p className="text-sm text-muted-foreground">+240 XXX XXX XXX</p>
-                      <p className="text-xs text-muted-foreground">Monday - Friday: 8:00 AM - 5:00 PM</p>
+                      <p className="text-xs text-muted-foreground">{t('common:help.weekdayHours')}</p>
                     </div>
                   </div>
                   <div>
-                    <h4 className="font-semibold">Office Hours</h4>
+                    <h4 className="font-semibold">{t('common:help.officeHours')}</h4>
                     <p className="text-sm text-muted-foreground">
-                      Monday - Friday: 8:00 AM - 5:00 PM<br />
-                      Saturday: 9:00 AM - 1:00 PM
+                      {t('common:help.officeSchedule')}
                     </p>
                   </div>
                 </CardContent>
@@ -522,27 +518,25 @@ const navigationItems = [
                 <CardHeader>
                   <CardTitle>{t('common:platform.platformUserManual')}</CardTitle>
                   <p className="text-muted-foreground">
-                    Comprehensive guide for using both Address Registry and Emergency Management systems.
+                    {t('common:help.userManualDescription')}
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <Card className="border">
                     <CardHeader>
-                      <CardTitle className="text-lg">Getting Started</CardTitle>
+                      <CardTitle className="text-lg">{t('common:help.gettingStarted')}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="space-y-2">
-                        <h4 className="font-semibold">1. Account Registration</h4>
+                        <h4 className="font-semibold">{t('common:help.accountRegistration')}</h4>
                         <p className="text-sm text-muted-foreground">
-                          Create an account using your email address and a secure password. 
-                          Verify your email to activate your account.
+                          {t('common:help.accountRegistrationDescription')}
                         </p>
                       </div>
                       <div className="space-y-2">
-                        <h4 className="font-semibold">2. Profile Setup</h4>
+                        <h4 className="font-semibold">{t('common:help.profileSetup')}</h4>
                         <p className="text-sm text-muted-foreground">
-                          Complete your profile with accurate personal information. 
-                          This helps us verify your identity for address submissions.
+                          {t('common:help.profileSetupDescription')}
                         </p>
                       </div>
                     </CardContent>
@@ -550,34 +544,31 @@ const navigationItems = [
 
                   <Card className="border">
                     <CardHeader>
-                      <CardTitle className="text-lg">Address Registration Process</CardTitle>
+                      <CardTitle className="text-lg">{t('common:help.addressRegistrationProcess')}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="space-y-2">
-                        <h4 className="font-semibold">Step 1: Location Information</h4>
+                        <h4 className="font-semibold">{t('common:help.step1LocationInfo')}</h4>
                         <p className="text-sm text-muted-foreground">
-                          Select the correct province and city, then provide street and building details.
+                          {t('common:help.step1Description')}
                         </p>
                       </div>
                       <div className="space-y-2">
-                        <h4 className="font-semibold">Step 2: Coordinates</h4>
+                        <h4 className="font-semibold">{t('common:help.step2Coordinates')}</h4>
                         <p className="text-sm text-muted-foreground">
-                          Use the "Get Current Location" button or manually enter GPS coordinates. 
-                          Accurate coordinates are essential for verification.
+                          {t('common:help.step2Description')}
                         </p>
                       </div>
                       <div className="space-y-2">
-                        <h4 className="font-semibold">Step 3: Documentation</h4>
+                        <h4 className="font-semibold">{t('common:help.step3Documentation')}</h4>
                         <p className="text-sm text-muted-foreground">
-                          Upload a clear photo of the location and provide any additional description 
-                          that helps identify the address.
+                          {t('common:help.step3Description')}
                         </p>
                       </div>
                       <div className="space-y-2">
-                        <h4 className="font-semibold">Step 4: Verification</h4>
+                        <h4 className="font-semibold">{t('common:help.step4Verification')}</h4>
                         <p className="text-sm text-muted-foreground">
-                          Submit your request for review. Field agents will verify the location 
-                          and registrars will approve the final address code.
+                          {t('common:help.step4Description')}
                         </p>
                       </div>
                     </CardContent>
@@ -585,32 +576,32 @@ const navigationItems = [
 
                   <Card className="border">
                     <CardHeader>
-                      <CardTitle className="text-lg">Address Registry User Roles</CardTitle>
+                      <CardTitle className="text-lg">{t('common:help.addressRegistryUserRoles')}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <h4 className="font-semibold">Citizens</h4>
+                          <h4 className="font-semibold">{t('common:help.citizens')}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Can search for addresses, submit new address requests, and view their submissions.
+                            {t('common:help.citizensDescription')}
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">Field Agents</h4>
+                          <h4 className="font-semibold">{t('common:help.fieldAgents')}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Verify address locations on-site and approve or reject submissions based on field visits.
+                            {t('common:help.fieldAgentsDescription')}
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">Verifiers</h4>
+                          <h4 className="font-semibold">{t('common:help.verifiers')}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Review field agent reports and conduct additional verification if needed.
+                            {t('common:help.verifiersDescription')}
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">Registrars</h4>
+                          <h4 className="font-semibold">{t('common:help.registrars')}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Generate official UAC codes and publish verified addresses to the national registry.
+                            {t('common:help.registrarsDescription')}
                           </p>
                         </div>
                       </div>
