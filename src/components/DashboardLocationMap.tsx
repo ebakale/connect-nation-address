@@ -216,73 +216,73 @@ const DashboardLocationMap: React.FC = () => {
     switch (type) {
       case 'commercial':
         return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="32" height="32" rx="16" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <path d="M2 7L10 3L18 7L18 17L10 21L2 17Z" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(4, 4)"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
+            <path d="M2 7L10 3L18 7L18 17L10 21L2 17Z" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(3, 3) scale(0.6)"/>
           </svg>
         `)}`;
       case 'landmark':
         return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="32" height="32" rx="16" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <path d="M3 21L12 2L21 21H3Z" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(4, 4)"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
+            <path d="M3 21L12 2L21 21H3Z" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(3, 3) scale(0.6)"/>
           </svg>
         `)}`;
       case 'government':
         return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="32" height="32" rx="16" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <rect x="2" y="6" width="20" height="14" rx="2" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(4, 4)"/>
-            <path d="M6 6V4A2 2 0 0 1 8 2H16A2 2 0 0 1 18 4V6" fill="none" stroke="${iconColor}" stroke-width="1.5" transform="translate(4, 4)"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
+            <rect x="2" y="6" width="20" height="14" rx="2" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(3, 3) scale(0.6)"/>
+            <path d="M6 6V4A2 2 0 0 1 8 2H16A2 2 0 0 1 18 4V6" fill="none" stroke="${iconColor}" stroke-width="1.5" transform="translate(3, 3) scale(0.6)"/>
           </svg>
         `)}`;
       case 'industrial':
         return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="32" height="32" rx="16" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <path d="M2 20H22V21H2V20ZM3 18V15L6 12V15L9 12V15L12 12V18H3ZM14 18V8H18V18H14Z" fill="${iconColor}" transform="translate(4, 2)"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
+            <path d="M2 20H22V21H2V20ZM3 18V15L6 12V15L9 12V15L12 12V18H3ZM14 18V8H18V18H14Z" fill="${iconColor}" transform="translate(3, 1) scale(0.6)"/>
           </svg>
         `)}`;
       case 'residential':
         return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="32" height="32" rx="16" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <path d="M3 9L12 2L21 9V20A2 2 0 0 1 19 22H5A2 2 0 0 1 3 20V9Z" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(4, 4)"/>
-            <path d="M9 22V12H15V22" fill="none" stroke="${bgColor}" stroke-width="1.5" transform="translate(4, 4)"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
+            <path d="M3 9L12 2L21 9V20A2 2 0 0 1 19 22H5A2 2 0 0 1 3 20V9Z" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(3, 3) scale(0.6)"/>
+            <path d="M9 22V12H15V22" fill="none" stroke="${bgColor}" stroke-width="1.5" transform="translate(3, 3) scale(0.6)"/>
           </svg>
         `)}`;
       case 'hotel':
         return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="32" height="32" rx="16" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <rect x="2" y="3" width="20" height="18" rx="2" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(4, 4)"/>
-            <path d="M7 10H9V12H7V10ZM11 10H13V12H11V10ZM15 10H17V12H15V10Z" fill="${bgColor}" transform="translate(4, 4)"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
+            <rect x="2" y="3" width="20" height="18" rx="2" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(3, 3) scale(0.6)"/>
+            <path d="M7 10H9V12H7V10ZM11 10H13V12H11V10ZM15 10H17V12H15V10Z" fill="${bgColor}" transform="translate(3, 3) scale(0.6)"/>
           </svg>
         `)}`;
       case 'bank':
         return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="32" height="32" rx="16" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <path d="M12 2L2 7V10H22V7L12 2Z" fill="${iconColor}" transform="translate(4, 4)"/>
-            <rect x="4" y="11" width="2" height="8" fill="${iconColor}" transform="translate(4, 4)"/>
-            <rect x="8" y="11" width="2" height="8" fill="${iconColor}" transform="translate(4, 4)"/>
-            <rect x="12" y="11" width="2" height="8" fill="${iconColor}" transform="translate(4, 4)"/>
-            <rect x="16" y="11" width="2" height="8" fill="${iconColor}" transform="translate(4, 4)"/>
-            <rect x="2" y="19" width="20" height="2" fill="${iconColor}" transform="translate(4, 4)"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
+            <path d="M12 2L2 7V10H22V7L12 2Z" fill="${iconColor}" transform="translate(3, 3) scale(0.6)"/>
+            <rect x="4" y="11" width="2" height="8" fill="${iconColor}" transform="translate(3, 3) scale(0.6)"/>
+            <rect x="8" y="11" width="2" height="8" fill="${iconColor}" transform="translate(3, 3) scale(0.6)"/>
+            <rect x="12" y="11" width="2" height="8" fill="${iconColor}" transform="translate(3, 3) scale(0.6)"/>
+            <rect x="16" y="11" width="2" height="8" fill="${iconColor}" transform="translate(3, 3) scale(0.6)"/>
+            <rect x="2" y="19" width="20" height="2" fill="${iconColor}" transform="translate(3, 3) scale(0.6)"/>
           </svg>
         `)}`;
       case 'gas_station':
         return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="32" height="32" rx="16" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <path d="M14 22V6A2 2 0 0 0 12 4H4A2 2 0 0 0 2 6V22H14ZM19 8V18A2 2 0 0 1 17 20V8L19 6L21 8L19 8Z" fill="${iconColor}" transform="translate(4, 2)"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
+            <path d="M14 22V6A2 2 0 0 0 12 4H4A2 2 0 0 0 2 6V22H14ZM19 8V18A2 2 0 0 1 17 20V8L19 6L21 8L19 8Z" fill="${iconColor}" transform="translate(3, 1) scale(0.6)"/>
           </svg>
         `)}`;
       default:
         return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="32" height="32" rx="16" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <rect x="3" y="3" width="18" height="18" rx="2" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(4, 4)"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
+            <rect x="3" y="3" width="18" height="18" rx="2" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(3, 3) scale(0.6)"/>
           </svg>
         `)}`;
     }
@@ -405,8 +405,8 @@ const DashboardLocationMap: React.FC = () => {
         title: `UAC: ${location.uac}`,
         icon: {
           url: getMarkerIcon(location.type),
-          scaledSize: new google.maps.Size(32, 32),
-          anchor: new google.maps.Point(16, 16)
+          scaledSize: new google.maps.Size(24, 24),
+          anchor: new google.maps.Point(12, 12)
         },
         clickable: true,
         optimized: false,
@@ -475,9 +475,9 @@ const DashboardLocationMap: React.FC = () => {
         
         // Increase marker size
         marker.setIcon({
-          url: getMarkerIcon(location.type).replace('width="32" height="32"', 'width="36" height="36"').replace('scaledSize: new google.maps.Size(32, 32)', 'scaledSize: new google.maps.Size(36, 36)'),
-          scaledSize: new google.maps.Size(36, 36),
-          anchor: new google.maps.Point(18, 18)
+          url: getMarkerIcon(location.type).replace('width="24" height="24"', 'width="28" height="28"'),
+          scaledSize: new google.maps.Size(28, 28),
+          anchor: new google.maps.Point(14, 14)
         });
       });
       
@@ -492,8 +492,8 @@ const DashboardLocationMap: React.FC = () => {
         // Reset marker size
         marker.setIcon({
           url: getMarkerIcon(location.type),
-          scaledSize: new google.maps.Size(32, 32),
-          anchor: new google.maps.Point(16, 16)
+          scaledSize: new google.maps.Size(24, 24),
+          anchor: new google.maps.Point(12, 12)
         });
       });
 
