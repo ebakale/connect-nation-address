@@ -1,1 +1,19 @@
-{"title": "Gestion des urgences", "emergency": "Urgence", "incident": "Incident", "reportIncident": "Signaler un incident", "police": "Police", "fire": "Pompiers", "medical": "Médical"}
+{
+  "title": "Gestion des Urgences",
+  "emergency": "Urgence",
+  "incident": "Incident",
+  "reportIncident": "Signaler un Incident",
+  "police": "Police",
+  "fire": "Pompiers",
+  "medical": "Services Médicaux",
+  "management": "Gestion des Urgences",
+  "services": "Services d'Urgence",
+  "policeEmergencyServices": "Police et Services d'Urgence",
+  "integratedEmergencyResponse": "Plateforme intégrée de réponse d'urgence connectant police, services d'urgence et citoyens pour une gestion rapide des incidents.",
+  "realtimeIncidentReporting": "Signalement d'incidents en temps réel",
+  "gpsBasedUnitDispatch": "Répartition d'unités basée sur GPS",
+  "multiChannelCommunications": "Communications multicanaux",
+  "analyticsResponseTracking": "Analyses et suivi de réponse",
+  "policeEmergencyServices": "Police et Services d'Urgence",
+  "integratedEmergencyResponse": "Plateforme intégrée de réponse d'urgence connectant police, services d'urgence et citoyens pour une gestion rapide des incidents."
+}

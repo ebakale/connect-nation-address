@@ -7,6 +7,7 @@ import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, Check
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 import { useUserRole } from '@/hooks/useUserRole';
 import Footer from '@/components/Footer';
 
@@ -20,7 +21,7 @@ import EmergencyAlertProcessor from '@/components/EmergencyAlertProcessor';
 const Index = () => {
   const [activeSection, setActiveSection] = useState('overview');
   const { user, loading } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { isPoliceRole } = useUserRole();
 
@@ -29,7 +30,7 @@ const Index = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">{t('loading')}</p>
+          <p className="text-muted-foreground">{t('common:buttons.loading')}</p>
         </div>
       </div>
     );
@@ -38,10 +39,10 @@ const Index = () => {
   // Main page is always accessible regardless of authentication status
 
 const navigationItems = [
-    { id: 'overview', label: t('overview'), icon: MapPin },
-    { id: 'about', label: t('about'), icon: Users },
-    { id: 'emergency', label: t('emergency'), icon: Shield },
-    { id: 'help', label: t('help'), icon: HelpCircle },
+    { id: 'overview', label: t('common:navigation.home'), icon: MapPin },
+    { id: 'about', label: t('common:navigation.about'), icon: Users },
+    { id: 'emergency', label: t('emergency:title'), icon: Shield },
+    { id: 'help', label: t('common:navigation.help'), icon: HelpCircle },
   ];
 
   const renderContent = () => {
@@ -67,7 +68,7 @@ const navigationItems = [
                   {/* Badge */}
                   <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white shadow-lg backdrop-blur-sm border border-white/20">
                     <MapPin className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                    <span className="text-sm sm:text-base font-semibold">{t('connectEGPlatform')}</span>
+                    <span className="text-sm sm:text-base font-semibold">{t('common:platform.connectEGPlatform')}</span>
                   </div>
                   
                   {/* Main Heading */}
@@ -82,9 +83,9 @@ const navigationItems = [
                   
                   {/* Subtitle */}
                    <p className="text-sm sm:text-base md:text-lg lg:text-xl text-foreground/70 max-w-4xl mx-auto leading-relaxed font-light mobile-text-responsive mobile-container">
-                     {t('connectEGDescription')}
-                     <span className="text-primary font-medium"> {t('connectingCitizensServices')} </span>
-                     {t('innovativeTechnology')}
+                     {t('common:platform.connectEGDescription')}
+                     <span className="text-primary font-medium"> {t('common:platform.connectingCitizensServices')} </span>
+                     {t('common:platform.innovativeTechnology')}
                    </p>
                   
                    {/* CTA Buttons */}
@@ -95,7 +96,7 @@ const navigationItems = [
                          size="lg"
                        >
                         <LogIn className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                        {t('accessPlatform')}
+                        {t('common:platform.accessPlatform')}
                       </Button>
                      <Button 
                        onClick={() => setActiveSection('about')}
@@ -104,7 +105,7 @@ const navigationItems = [
                        size="lg"
                      >
                        <Globe className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                       {t('learnMore')}
+                       {t('common:platform.learnMore')}
                      </Button>
                    </div>
 
@@ -186,8 +187,8 @@ const navigationItems = [
                           <Shield className="h-8 w-8 text-white" />
                         </div>
                         <div>
-                          <h3 className="text-3xl font-bold text-white">{t('emergencyManagement')}</h3>
-                          <p className="text-red-100 text-lg">{t('policeEmergencyServices')}</p>
+                          <h3 className="text-3xl font-bold text-white">{t('emergency:management')}</h3>
+                          <p className="text-red-100 text-lg">{t('emergency:policeEmergencyServices')}</p>
                         </div>
                       </div>
                     </div>

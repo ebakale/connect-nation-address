@@ -133,5 +133,15 @@
   "footer": {
     "copyright": "© 2025 BIAKAM - Plataforma ConnectEG para la República de Guinea Ecuatorial",
     "description": "Gestión Unificada de Direcciones Digitales y Emergencias • Conectando Ciudadanos, Servicios y Seguridad"
+  },
+  "platform": {
+    "connectEGPlatform": "Plataforma ConnectEG",
+    "connectEG": "ConnectEG",
+    "digitalPlatform": "Plataforma Digital",
+    "connectEGDescription": "Plataforma unificada para direcciones digitales y gestión de emergencias en Guinea Ecuatorial.",
+    "connectingCitizensServices": "Conectando ciudadanos, direcciones y servicios de emergencia",
+    "innovativeTechnology": "a través de tecnología innovadora e integración perfecta.",
+    "accessPlatform": "Acceder a la Plataforma",
+    "learnMore": "Saber Más"
   }
 }

@@ -1,1 +1,19 @@
-{"title": "Gestion des adresses", "addresses": "Adresses", "address": "Adresse", "street": "Rue", "city": "Ville", "search": "Rechercher des adresses", "searchByAddress": "Rechercher par adresse, code UAC ou point de repère...", "noResults": "Aucune adresse trouvée pour \"{{query}}\"", "verified": "Vérifié", "unverified": "Non vérifié"}
+{
+  "title": "Adresses",
+  "addresses": "Adresses",
+  "address": "Adresse",
+  "street": "Rue",
+  "city": "Ville",
+  "search": "Rechercher des adresses",
+  "searchByAddress": "Rechercher par adresse, code UAC ou point de repère...",
+  "noResults": "Aucune adresse trouvée pour \"{{query}}\"",
+  "verified": "Vérifié",
+  "unverified": "Non vérifié",
+  "addressRegistrySystem": "Système de Registre d'Adresses",
+  "digitalAddressingInfrastructure": "Infrastructure d'Adressage Numérique",
+  "comprehensiveDigitalAddressing": "Système complet d'adressage numérique pour enregistrer, vérifier et gérer les adresses en Guinée Équatoriale.",
+  "gpsBasedRegistration": "Enregistrement basé sur GPS",
+  "multiLevelVerification": "Flux de vérification multiniveau",
+  "smartSearchDiscovery": "Recherche intelligente et découverte",
+  "digitalDocumentationQR": "Documentation numérique et codes QR"
+}

@@ -173,5 +173,12 @@
     "permissionDenied": "Permiso denegado",
     "locationUnavailable": "Ubicación no disponible",
     "timeout": "Tiempo de espera agotado"
-  }
+  },
+  "addressRegistrySystem": "Sistema de Registro de Direcciones",
+  "digitalAddressingInfrastructure": "Infraestructura de Direcciones Digitales",
+  "comprehensiveDigitalAddressing": "Sistema integral de direcciones digitales para registrar, verificar y gestionar direcciones en Guinea Ecuatorial.",
+  "gpsBasedRegistration": "Registro basado en GPS",
+  "multiLevelVerification": "Flujo de verificación multinivel",
+  "smartSearchDiscovery": "Búsqueda inteligente y descubrimiento",
+  "digitalDocumentationQR": "Documentación digital y códigos QR"
 }

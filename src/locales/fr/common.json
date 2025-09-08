@@ -133,5 +133,15 @@
   "footer": {
     "copyright": "© 2025 BIAKAM - Plateforme ConnectEG pour la République de Guinée Équatoriale",
     "description": "Gestion Unifiée des Adresses Numériques et des Urgences • Connecter Citoyens, Services et Sécurité"
+  },
+  "platform": {
+    "connectEGPlatform": "Plateforme ConnectEG",
+    "connectEG": "ConnectEG",
+    "digitalPlatform": "Plateforme Numérique",
+    "connectEGDescription": "Plateforme unifiée pour l'adressage numérique et la gestion des urgences en Guinée Équatoriale.",
+    "connectingCitizensServices": "Connecter citoyens, adresses et services d'urgence",
+    "innovativeTechnology": "grâce à une technologie innovante et une intégration transparente.",
+    "accessPlatform": "Accéder à la Plateforme",
+    "learnMore": "En Savoir Plus"
   }
 }

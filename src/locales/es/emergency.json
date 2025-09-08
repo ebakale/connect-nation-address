@@ -192,5 +192,11 @@
   "integrity": "Integridad",
   "security": "Seguridad",
   "privacy": "Privacidad",
-  "confidentiality": "Confidencialidad"
+  "confidentiality": "Confidencialidad",
+  "policeEmergencyServices": "Policía y Servicios de Emergencia",
+  "integratedEmergencyResponse": "Plataforma integrada de respuesta a emergencias que conecta policía, servicios de emergencia y ciudadanos para gestión rápida de incidentes.",
+  "realtimeIncidentReporting": "Reporte de incidentes en tiempo real",
+  "gpsBasedUnitDispatch": "Despacho de unidades basado en GPS",
+  "multiChannelCommunications": "Comunicaciones multicanal",
+  "analyticsResponseTracking": "Analíticas y seguimiento de respuesta"
 }

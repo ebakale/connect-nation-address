@@ -173,5 +173,12 @@
     "permissionDenied": "Permission denied",
     "locationUnavailable": "Location unavailable",
     "timeout": "Request timeout"
-  }
+  },
+  "addressRegistrySystem": "Address Registry System",
+  "digitalAddressingInfrastructure": "Digital Addressing Infrastructure",
+  "comprehensiveDigitalAddressing": "Comprehensive digital addressing system for registering, verifying, and managing addresses across Equatorial Guinea.",
+  "gpsBasedRegistration": "GPS-based registration",
+  "multiLevelVerification": "Multi-level verification workflow",
+  "smartSearchDiscovery": "Smart search and discovery",
+  "digitalDocumentationQR": "Digital documentation and QR codes"
 }
