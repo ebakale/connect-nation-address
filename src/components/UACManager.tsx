@@ -78,8 +78,8 @@ export const UACManager: React.FC = () => {
     } catch (error) {
       console.error('Error fetching UAC records:', error);
       toast({
-        title: "Error",
-        description: "Failed to fetch UAC records",
+        title: t('error'),
+        description: t('failedToFetchUacRecords'),
         variant: "destructive"
       });
     } finally {
@@ -90,8 +90,8 @@ export const UACManager: React.FC = () => {
   const handleValidateUAC = () => {
     if (!validationUAC.trim()) {
       toast({
-        title: "Error",
-        description: "Please enter a UAC to validate",
+        title: t('error'),
+        description: t('pleaseEnterUacToValidate'),
         variant: "destructive"
       });
       return;
@@ -102,13 +102,17 @@ export const UACManager: React.FC = () => {
 
     if (isValid && parsed) {
       toast({
-        title: "Valid UAC",
-        description: `UAC is valid. Country: ${parsed.country}, Region: ${parsed.region}, City: ${parsed.city}`,
+        title: t('validUac'),
+        description: t('uacValidationSuccess', { 
+          country: parsed.country, 
+          region: parsed.region, 
+          city: parsed.city 
+        }),
       });
     } else {
       toast({
-        title: "Invalid UAC",
-        description: "The UAC format is invalid or the check digit doesn't match",
+        title: t('invalidUac'),
+        description: t('uacValidationError'),
         variant: "destructive"
       });
     }
@@ -119,14 +123,14 @@ export const UACManager: React.FC = () => {
       const uac = await generateUAC(testCountry, testRegion, testCity);
       setGeneratedUAC(uac);
       toast({
-        title: "UAC Generated",
-        description: `New UAC: ${uac}`,
+        title: t('uacGenerated'),
+        description: t('newUacGenerated', { uac }),
       });
     } catch (error) {
       console.error('Error generating UAC:', error);
       toast({
-        title: "Error", 
-        description: "Failed to generate UAC",
+        title: t('error'), 
+        description: t('failedToGenerateUac'),
         variant: "destructive"
       });
     }
@@ -189,7 +193,7 @@ export const UACManager: React.FC = () => {
             </div>
             <div className="flex gap-2">
               <div className="flex-1">
-                <Label htmlFor="validation-uac">Enter UAC to validate</Label>
+                <Label htmlFor="validation-uac">{t('enterUacToValidate')}</Label>
                 <Input
                   id="validation-uac"
                   value={validationUAC}
@@ -200,7 +204,7 @@ export const UACManager: React.FC = () => {
               </div>
               <div className="flex items-end">
                 <Button onClick={handleValidateUAC}>
-                  Validate
+                  {t('validate')}
                 </Button>
               </div>
             </div>
@@ -213,7 +217,7 @@ export const UACManager: React.FC = () => {
                     <XCircle className="h-4 w-4 text-red-600" />
                   )}
                   <span className="font-medium">
-                    {validateUAC(validationUAC) ? 'Valid UAC' : 'Invalid UAC'}
+                    {validateUAC(validationUAC) ? t('validUac') : t('invalidUac')}
                   </span>
                 </div>
                 {(() => {
@@ -241,7 +245,7 @@ export const UACManager: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <RefreshCw className="h-5 w-5 text-blue-600" />
-              <h3 className="text-lg font-semibold">Test UAC Generation</h3>
+              <h3 className="text-lg font-semibold">{t('generateTestUac')}</h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
@@ -271,11 +275,11 @@ export const UACManager: React.FC = () => {
             </div>
             <div className="flex gap-2 items-end">
               <Button onClick={handleGenerateTestUAC}>
-                Generate Test UAC
+                {t('generateTestUac')}
               </Button>
               {generatedUAC && (
                 <div className="flex-1">
-                  <Label>Generated UAC</Label>
+                  <Label>{t('generatedUac')}</Label>
                   <Input
                     value={generatedUAC}
                     readOnly
@@ -291,10 +295,10 @@ export const UACManager: React.FC = () => {
           {/* UAC Records Table */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">UAC Records ({filteredRecords.length})</h3>
+              <h3 className="text-lg font-semibold">{t('uacRecords')} ({filteredRecords.length})</h3>
               <Button variant="outline" onClick={fetchUACRecords}>
                 <RefreshCw className="h-4 w-4 mr-2" />
-                Refresh
+                {t('refresh')}
               </Button>
             </div>
             
@@ -302,7 +306,7 @@ export const UACManager: React.FC = () => {
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search UAC records..."
+                  placeholder={t('searchUacRecords')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -312,7 +316,7 @@ export const UACManager: React.FC = () => {
 
             {loading ? (
               <div className="text-center py-8">
-                <p className="text-muted-foreground">Loading UAC records...</p>
+                <p className="text-muted-foreground">{t('loadingUacRecords')}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -379,12 +383,12 @@ export const UACManager: React.FC = () => {
                               <div className="flex gap-2 flex-wrap">
                                 {record.verified && (
                                   <Badge variant="default" className="bg-green-100 text-green-800 text-xs">
-                                    Verified
+                                    {t('verified')}
                                   </Badge>
                                 )}
                                 {record.public && (
                                   <Badge variant="default" className="bg-blue-100 text-blue-800 text-xs">
-                                    Public
+                                    {t('public')}
                                   </Badge>
                                 )}
                               </div>
@@ -396,12 +400,12 @@ export const UACManager: React.FC = () => {
                                 {validateUAC(record.uac) ? (
                                   <>
                                     <CheckCircle className="h-4 w-4 text-green-600" />
-                                    <span className="text-sm text-green-600">Valid</span>
+                                    <span className="text-sm text-green-600">{t('valid')}</span>
                                   </>
                                 ) : (
                                   <>
                                     <XCircle className="h-4 w-4 text-red-600" />
-                                    <span className="text-sm text-red-600">Invalid</span>
+                                    <span className="text-sm text-red-600">{t('invalid')}</span>
                                   </>
                                 )}
                               </div>
@@ -425,7 +429,7 @@ export const UACManager: React.FC = () => {
             {filteredRecords.length === 0 && !loading && (
               <div className="text-center py-8">
                 <Hash className="mx-auto h-12 w-12 text-muted-foreground" />
-                <p className="mt-2 text-muted-foreground">No UAC records found</p>
+                <p className="mt-2 text-muted-foreground">{t('noUacRecordsFound')}</p>
               </div>
             )}
           </div>

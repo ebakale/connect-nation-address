@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useUserRole } from '@/hooks/useUserRole';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -104,6 +105,7 @@ const PERMISSION_MATRIX = [
 ];
 
 export const PermissionMatrix: React.FC = () => {
+  const { t } = useTranslation('admin');
   const { role } = useUserRole();
 
   const getPermissionIcon = (permission: boolean | string) => {
@@ -123,8 +125,8 @@ export const PermissionMatrix: React.FC = () => {
   };
 
   const getPermissionText = (permission: boolean | string) => {
-    if (permission === true) return 'Full Access';
-    if (permission === false) return 'No Access';
+    if (permission === true) return t('fullAccess');
+    if (permission === false) return t('noAccess');
     return permission;
   };
 
@@ -149,9 +151,9 @@ export const PermissionMatrix: React.FC = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Permission Matrix</CardTitle>
+          <CardTitle>{t('permissionMatrix')}</CardTitle>
           <CardDescription>
-            Complete permission mapping for all roles and operations
+            {t('permissionMatrixDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -159,14 +161,14 @@ export const PermissionMatrix: React.FC = () => {
           <div className="hidden xl:block overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="border-b">
-                  <th className="text-left p-3 font-medium">Operation</th>
+                  <tr className="border-b">
+                    <th className="text-left p-3 font-medium">{t('operation')}</th>
                   {roleKeys.map(roleKey => (
                     <th key={roleKey} className="text-center p-3 font-medium min-w-[120px]">
                       <div className="flex flex-col items-center gap-1">
                         <span className="text-xs">{roleKey.replace('_', ' ')}</span>
                         {role === roleKey && (
-                          <Badge variant="secondary" className="text-xs">You</Badge>
+                          <Badge variant="secondary" className="text-xs">{t('you')}</Badge>
                         )}
                       </div>
                     </th>
@@ -210,7 +212,7 @@ export const PermissionMatrix: React.FC = () => {
                           <div className="flex items-center gap-1 min-w-0 flex-1">
                             <span className="font-medium truncate">{roleKey.replace('_', ' ')}</span>
                             {role === roleKey && (
-                              <Badge variant="secondary" className="text-xs flex-shrink-0">You</Badge>
+                              <Badge variant="secondary" className="text-xs flex-shrink-0">{t('you')}</Badge>
                             )}
                           </div>
                           <div className="flex items-center gap-1 flex-shrink-0 ml-2">
@@ -232,9 +234,9 @@ export const PermissionMatrix: React.FC = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Your Current Permissions</CardTitle>
+          <CardTitle>{t('yourCurrentPermissions')}</CardTitle>
           <CardDescription>
-            Permissions available to your current role: {role || 'Not assigned'}
+            {t('permissionsAvailableDescription', { role: role || t('notAssigned') })}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -256,7 +258,7 @@ export const PermissionMatrix: React.FC = () => {
               })}
             </div>
           ) : (
-            <p className="text-center text-muted-foreground">No role assigned</p>
+            <p className="text-center text-muted-foreground">{t('noRoleAssigned')}</p>
           )}
         </CardContent>
       </Card>

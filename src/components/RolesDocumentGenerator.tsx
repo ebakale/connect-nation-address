@@ -1,9 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { FileText, Download } from 'lucide-react';
 import jsPDF from 'jspdf';
 
 export const RolesDocumentGenerator = () => {
+  const { t } = useTranslation('admin');
   const generateRolesPDF = () => {
     const doc = new jsPDF();
     let yPos = 20;
@@ -370,7 +372,7 @@ export const RolesDocumentGenerator = () => {
     <Button onClick={generateRolesPDF} className="flex items-center gap-2">
       <FileText className="h-4 w-4" />
       <Download className="h-4 w-4" />
-      Generate Roles PDF Guide
+      {t('generateRolesPdfGuide')}
     </Button>
   );
 };
