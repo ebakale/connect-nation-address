@@ -119,14 +119,14 @@ const navigationItems = [
                 <div className="inline-block p-3 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl">
                   <div className="flex items-center gap-2 px-4 py-2">
                     <div className="h-2 w-2 bg-primary rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium text-primary">{t('dualCorePlatform')}</span>
+                    <span className="text-sm font-medium text-primary">{t('common:platform.dualCorePlatform')}</span>
                   </div>
                 </div>
                 <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent">
-                  {t('coreFunctionalities')}
+                  {t('common:platform.coreFunctionalities')}
                 </h2>
                 <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                  {t('twoIntegratedSystems')}
+                  {t('common:platform.twoIntegratedSystems')}
                 </p>
               </div>
 
@@ -298,12 +298,12 @@ const navigationItems = [
                   <div className="inline-block p-3 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl">
                     <div className="flex items-center gap-2 px-4 py-2">
                       <CheckCircle className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-medium text-primary">{t('strategicGoals')}</span>
+                      <span className="text-sm font-medium text-primary">{t('common:platform.strategicGoals')}</span>
                     </div>
-                  </div>
-                   <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent">
-                     {t('platformObjectives')}
-                   </h2>
+                   </div>
+                    <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent">
+                      {t('common:platform.platformObjectives')}
+                    </h2>
                    <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
                      {t('transformingEquatorialGuinea')}
                    </p>
