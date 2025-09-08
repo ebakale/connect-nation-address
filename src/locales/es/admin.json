@@ -442,7 +442,6 @@
     "webhook_confirm": "Confirmación Webhook"
   },
 
-  // ABAC descriptions
   "verifierGeographicScopeDesc": "Verificador {district: MAL} solo puede verificar direcciones donde hierarchy.district == MAL",
   "partnerApiScopeDesc": "Socio {org: EMS, scope: read_verified} obtiene lecturas prioritarias y webhooks de eventos pero sin escrituras"
 }

@@ -207,5 +207,88 @@
   "valid": "Valide",
   "invalid": "Invalide",
   "noUacRecordsFound": "Aucun enregistrement UAC trouvé",
-  "generateRolesPdfGuide": "Générer Guide PDF des Rôles"
+  "generateRolesPdfGuide": "Générer Guide PDF des Rôles",
+
+  "roleLabels": {
+    "citizen": "Citoyen",
+    "property_claimant": "Demandeur de Propriété",
+    "field_agent": "Agent de Terrain",
+    "verifier": "Vérificateur",
+    "registrar": "Registraire",
+    "ndaa_admin": "Admin NDAA",
+    "partner": "Partenaire",
+    "partnerEMS": "Partenaire (EMS)",
+    "partnerUtility": "Partenaire (Utilité)",
+    "auditor": "Auditeur",
+    "data_steward": "Gestionnaire de Données",
+    "support": "Support"
+  },
+
+  "permissionOperations": {
+    "searchVerifiedAddresses": "Rechercher adresses vérifiées",
+    "createDraftAddress": "Créer adresse brouillon",
+    "uploadViewEvidence": "Télécharger/voir preuves",
+    "verifyPublish": "Vérifier / publier",
+    "mergeSplitRecords": "Fusionner / diviser enregistrements",
+    "editHierarchyBoundaries": "Modifier hiérarchie/limites",
+    "manageApiKeysWebhooks": "Gérer clés API/webhooks",
+    "accessAuditLogs": "Accéder journaux d'audit"
+  },
+
+  "permissionStrings": {
+    "api": "API",
+    "corrections": "corrections",
+    "testSandboxes": "bacs à sable de test",
+    "viewRedacted": "voir expurgé",
+    "ownOnly": "seulement propres",
+    "own": "propres",
+    "verify": "vérifier",
+    "publishRetire": "publier/retirer",
+    "override": "remplacer",
+    "districtMetadata": "métadonnées du district",
+    "province": "province",
+    "national": "national",
+    "request": "demande",
+    "deliveryLogsOnly": "journaux de livraison seulement",
+    "readOnly": "lecture seule",
+    "readQaOnly": "lecture QA seulement",
+    "statusOnly": "statut seulement"
+  },
+
+  "standardAddressCreationFlow": "Citoyen → Agent de Terrain → Vérificateur → Registraire",
+  "partnerBulkUpdateFlow": "Utilité → Gestionnaire de Données → Vérificateur → Registraire",
+  "emergencyFastTrackFlow": "EMS → Vérificateur → Registraire → Webhook Partenaire",
+
+  "stepDescriptions": {
+    "submit_request": "Soumet demande de nouveau lieu",
+    "capture_draft": "Capture brouillon + photos",
+    "verify": "Résout doublons et vérifie",
+    "publish": "Publie au registre provincial",
+    "bulk_upload": "Télécharge références clients avec coordonnées (hash)",
+    "qa_review": "Exécute contrôles d'assurance qualité",
+    "batch_verify": "Approuve par lots un sous-ensemble",
+    "bulk_publish": "Publie adresses approuvées",
+    "emergency_flag": "Marque emplacement critique",
+    "priority_verify": "Priorise révision dans le SLA",
+    "fast_publish": "Publie dans le SLA d'urgence",
+    "webhook_confirm": "Le Webhook confirme l'activation"
+  },
+
+  "workflowStages": {
+    "submit_request": "Soumettre Demande",
+    "capture_draft": "Capturer Brouillon",
+    "verify": "Vérifier",
+    "publish": "Publier",
+    "bulk_upload": "Téléchargement en Masse",
+    "qa_review": "Révision QA",
+    "batch_verify": "Vérification par Lots",
+    "bulk_publish": "Publication en Masse",
+    "emergency_flag": "Drapeau d'Urgence",
+    "priority_verify": "Vérification Prioritaire",
+    "fast_publish": "Publication Rapide",
+    "webhook_confirm": "Confirmation Webhook"
+  },
+
+  "verifierGeographicScopeDesc": "Vérificateur {district: MAL} peut seulement vérifier adresses où hierarchy.district == MAL",
+  "partnerApiScopeDesc": "Partenaire {org: EMS, scope: read_verified} obtient lectures prioritaires et webhooks d'événements mais pas d'écritures"
 }
