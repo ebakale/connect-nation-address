@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserRole, UserRole, RoleMetadata } from '@/hooks/useUserRole';
 import { supabase } from '@/integrations/supabase/client';
@@ -35,6 +36,7 @@ const AVAILABLE_ROLES: UserRole[] = [
 ];
 
 export const RoleManager: React.FC = () => {
+  const { t } = useTranslation('admin');
   const { user } = useAuth();
   const { role, roleMetadata, hasAdminAccess, loading } = useUserRole();
   const { toast } = useToast();
@@ -47,7 +49,7 @@ export const RoleManager: React.FC = () => {
     return (
       <Card>
         <CardContent className="p-6">
-          <p className="text-center text-muted-foreground">Please log in to manage roles.</p>
+          <p className="text-center text-muted-foreground">{t('pleaseLoginToManageRoles')}</p>
         </CardContent>
       </Card>
     );
@@ -57,7 +59,7 @@ export const RoleManager: React.FC = () => {
     return (
       <Card>
         <CardContent className="p-6">
-          <p className="text-center text-muted-foreground">Loading role information...</p>
+          <p className="text-center text-muted-foreground">{t('loadingRoleInformation')}</p>
         </CardContent>
       </Card>
     );
@@ -78,8 +80,8 @@ export const RoleManager: React.FC = () => {
 
       if (existingRole) {
         toast({
-          title: "Role Already Assigned",
-          description: `User already has the ${selectedRole} role.`,
+          title: t('roleAlreadyAssigned'),
+          description: t('userAlreadyHasRole', { role: selectedRole }),
           variant: "destructive"
         });
         return;
@@ -111,8 +113,8 @@ export const RoleManager: React.FC = () => {
       }
 
       toast({
-        title: "Success",
-        description: `Successfully assigned ${selectedRole} role.`
+        title: t('success'),
+        description: t('successfullyAssignedRole', { role: selectedRole })
       });
 
       // Refresh the page to update role display
@@ -121,8 +123,8 @@ export const RoleManager: React.FC = () => {
     } catch (error: any) {
       console.error('Error assigning role:', error);
       toast({
-        title: "Error",
-        description: error.message || "Failed to assign role.",
+        title: t('error'),
+        description: error.message || t('failedToAssignRole'),
         variant: "destructive"
       });
     } finally {
@@ -140,29 +142,29 @@ export const RoleManager: React.FC = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Current Role & Permissions</CardTitle>
+          <CardTitle>{t('currentRolePermissions')}</CardTitle>
           <CardDescription>
-            Your current role determines what actions you can perform in the system.
+            {t('currentRoleDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label className="text-sm font-medium">Current Role</Label>
+            <Label className="text-sm font-medium">{t('currentRole')}</Label>
             <div className="mt-1">
               <Badge variant="secondary" className="text-sm">
-                {role ? formatRoleName(role) : 'No Role Assigned'}
+                {role ? formatRoleName(role) : t('noRoleAssigned')}
               </Badge>
             </div>
             {role && (
               <p className="text-sm text-muted-foreground mt-2">
-                {ROLE_DESCRIPTIONS[role] || 'No description available'}
+                {t(`roleDescriptions.${role}`, { defaultValue: ROLE_DESCRIPTIONS[role] || t('noDescriptionAvailable') })}
               </p>
             )}
           </div>
 
           {roleMetadata.length > 0 && (
             <div>
-              <Label className="text-sm font-medium">Scopes & Permissions</Label>
+              <Label className="text-sm font-medium">{t('scopesPermissions')}</Label>
               <div className="mt-2 space-y-2">
                 {roleMetadata.map((metadata, index) => (
                   <div key={index} className="flex items-center gap-2">
@@ -181,18 +183,18 @@ export const RoleManager: React.FC = () => {
       {hasAdminAccess && (
         <Card>
           <CardHeader>
-            <CardTitle>Role Assignment (Admin)</CardTitle>
+            <CardTitle>{t('roleAssignmentAdmin')}</CardTitle>
             <CardDescription>
-              Assign roles and scopes to users. Use this for testing different permission levels.
+              {t('roleAssignmentDescription')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="role-select">Role</Label>
+                <Label htmlFor="role-select">{t('role')}</Label>
                 <Select value={selectedRole || ''} onValueChange={(value) => setSelectedRole(value as UserRole)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a role" />
+                    <SelectValue placeholder={t('selectRole')} />
                   </SelectTrigger>
                   <SelectContent>
                     {AVAILABLE_ROLES.map((roleOption) => (
@@ -205,25 +207,25 @@ export const RoleManager: React.FC = () => {
               </div>
 
               <div>
-                <Label htmlFor="scope-type">Scope Type (Optional)</Label>
+                <Label htmlFor="scope-type">{t('scopeTypeOptional')}</Label>
                 <Select value={scopeType} onValueChange={(value) => setScopeType(value as any)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="geographic">Geographic</SelectItem>
-                    <SelectItem value="organization">Organization</SelectItem>
-                    <SelectItem value="partner_type">Partner Type</SelectItem>
+                    <SelectItem value="geographic">{t('geographic')}</SelectItem>
+                    <SelectItem value="organization">{t('organization')}</SelectItem>
+                    <SelectItem value="partner_type">{t('partnerType')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
             <div>
-              <Label htmlFor="scope-value">Scope Value (Optional)</Label>
+              <Label htmlFor="scope-value">{t('scopeValueOptional')}</Label>
               <Input
                 id="scope-value"
-                placeholder="e.g., Malabo, Emergency Services, etc."
+                placeholder={t('scopeValuePlaceholder')}
                 value={scopeValue}
                 onChange={(e) => setScopeValue(e.target.value)}
               />
@@ -235,7 +237,7 @@ export const RoleManager: React.FC = () => {
               className="w-full"
             >
               <Plus className="h-4 w-4 mr-2" />
-              {updating ? 'Assigning...' : 'Assign Role'}
+              {updating ? t('assigning') : t('assignRole')}
             </Button>
           </CardContent>
         </Card>
@@ -243,9 +245,9 @@ export const RoleManager: React.FC = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Role Catalog</CardTitle>
+          <CardTitle>{t('roleCatalog')}</CardTitle>
           <CardDescription>
-            Overview of all available roles and their capabilities.
+            {t('roleCatalogDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -258,11 +260,13 @@ export const RoleManager: React.FC = () => {
                   </Badge>
                   {role === roleKey && (
                     <Badge variant="secondary" className="text-xs">
-                      Current
+                      {t('current')}
                     </Badge>
                   )}
                 </div>
-                <p className="text-sm text-muted-foreground">{description}</p>
+                <p className="text-sm text-muted-foreground">
+                  {t(`roleDescriptions.${roleKey}`, { defaultValue: description })}
+                </p>
               </div>
             ))}
           </div>
