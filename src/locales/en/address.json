@@ -229,5 +229,27 @@
     "draftUpdatedSuccessfully": "Your draft has been updated successfully",
     "error": "Error",
     "failedToUpdateAddress": "Failed to update address"
-  }
+  },
+  "verificationQueue": "Address Verification Queue",
+  "reviewAndVerifyPending": "Review and verify pending address submissions",
+  "close": "Close",
+  "addressRequestApproval": "Address Request Approval",
+  "requests": "Requests",
+  "reviewQueue": "Review Queue",
+  "review": "Review",
+  "addressPublishedSuccessfully": "Address published successfully",
+  "addressUnpublishedSuccessfully": "Address unpublished successfully",
+  "addressesPublishedSuccessfully": "{{count}} addresses published successfully",
+  "failedToPublishAddresses": "Failed to publish some addresses",
+  "loadingPublishingQueue": "Loading publishing queue...",
+  "publishingQueueCount": "Publishing Queue ({{count}})",
+  "publishVerifiedAddresses": "Publish verified addresses to the national registry",
+  "publishAllCount": "Publish All ({{count}})",
+  "publishAll": "Publish All",
+  "noAddressesPendingPublication": "No addresses pending publication",
+  "type": "Type",
+  "created": "Created",
+  "publishToNationalRegistry": "Publish to National Registry",
+  "publish": "Publish",
+  "private": "Private"
 }

@@ -73,5 +73,27 @@
     "draftUpdatedSuccessfully": "Votre brouillon a été mis à jour avec succès",
     "error": "Erreur",
     "failedToUpdateAddress": "Échec de la mise à jour de l'adresse"
-  }
+  },
+  "verificationQueue": "File de Vérification d'Adresses",
+  "reviewAndVerifyPending": "Réviser et vérifier les soumissions d'adresses en attente",
+  "close": "Fermer",
+  "addressRequestApproval": "Approbation de Demande d'Adresse",
+  "requests": "Demandes",
+  "reviewQueue": "File de Révision",
+  "review": "Réviser",
+  "addressPublishedSuccessfully": "Adresse publiée avec succès",
+  "addressUnpublishedSuccessfully": "Adresse dépubliée avec succès",
+  "addressesPublishedSuccessfully": "{{count}} adresses publiées avec succès",
+  "failedToPublishAddresses": "Échec de la publication de certaines adresses",
+  "loadingPublishingQueue": "Chargement de la file de publication...",
+  "publishingQueueCount": "File de Publication ({{count}})",
+  "publishVerifiedAddresses": "Publier les adresses vérifiées dans le registre national",
+  "publishAllCount": "Publier Toutes ({{count}})",
+  "publishAll": "Publier Toutes",
+  "noAddressesPendingPublication": "Aucune adresse en attente de publication",
+  "type": "Type",
+  "created": "Créé",
+  "publishToNationalRegistry": "Publier dans le Registre National",
+  "publish": "Publier",
+  "private": "Privé"
 }

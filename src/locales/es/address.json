@@ -229,5 +229,27 @@
     "draftUpdatedSuccessfully": "Su borrador ha sido actualizado exitosamente",
     "error": "Error",
     "failedToUpdateAddress": "Error al actualizar la dirección"
-  }
+  },
+  "verificationQueue": "Cola de Verificación de Direcciones",
+  "reviewAndVerifyPending": "Revisar y verificar envíos de direcciones pendientes",
+  "close": "Cerrar",
+  "addressRequestApproval": "Aprobación de Solicitud de Dirección",
+  "requests": "Solicitudes",
+  "reviewQueue": "Cola de Revisión",
+  "review": "Revisar",
+  "addressPublishedSuccessfully": "Dirección publicada exitosamente",
+  "addressUnpublishedSuccessfully": "Dirección despublicada exitosamente",
+  "addressesPublishedSuccessfully": "{{count}} direcciones publicadas exitosamente",
+  "failedToPublishAddresses": "Error al publicar algunas direcciones",
+  "loadingPublishingQueue": "Cargando cola de publicación...",
+  "publishingQueueCount": "Cola de Publicación ({{count}})",
+  "publishVerifiedAddresses": "Publicar direcciones verificadas al registro nacional",
+  "publishAllCount": "Publicar Todas ({{count}})",
+  "publishAll": "Publicar Todas",
+  "noAddressesPendingPublication": "No hay direcciones pendientes de publicación",
+  "type": "Tipo",
+  "created": "Creado",
+  "publishToNationalRegistry": "Publicar al Registro Nacional",
+  "publish": "Publicar",
+  "private": "Privado"
 }

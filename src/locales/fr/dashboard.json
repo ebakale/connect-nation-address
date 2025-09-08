@@ -56,5 +56,15 @@
   "street": "Rue",
   "enableLocationMessage": "Activez la localisation pour voir les PDI à proximité (2km)",
   "locationError": "Erreur de Localisation",
-  "poiWithin2km": "PDI dans 2km"
+  "poiWithin2km": "PDI dans 2km",
+  "addressDataDescription": "Importer des adresses depuis Google Maps et exporter les données d'adresses existantes",
+  "submitRequestDescription": "Demander l'ajout d'une nouvelle adresse au système",
+  "requestStatusDescription": "Vérifier le statut de vos demandes d'adresses",
+  "captureAddressDescription": "Capturer et créer de nouveaux brouillons d'adresses",
+  "verificationQueueDescription": "Réviser et vérifier les adresses en attente",
+  "publishingQueueDescription": "Publier les adresses vérifiées dans la base de données publique",
+  "unpublishingQueueDescription": "Gérer les demandes de dépublication d'adresses",
+  "analyticsDescription": "Voir les analyses du système et les rapports",
+  "provinceManagementDescription": "Gérer les paramètres provinciaux et les configurations",
+  "verificationToolsDescription": "Outils pour la vérification d'adresses"
 }

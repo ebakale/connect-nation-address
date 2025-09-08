@@ -25,8 +25,8 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
   const handlePublish = async (addressId: string, isPublic: boolean) => {
     await updateAddressStatus(addressId, { public: isPublic });
     toast({
-      title: "Success",
-      description: `Address ${isPublic ? 'published' : 'unpublished'} successfully`
+      title: t('common:success'),
+      description: t(isPublic ? 'addressPublishedSuccessfully' : 'addressUnpublishedSuccessfully')
     });
   };
 
@@ -39,41 +39,41 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
       await Promise.all(publishPromises);
       
       toast({
-        title: "Success",
-        description: `${unpublishedAddresses.length} addresses published successfully`
+        title: t('common:success'),
+        description: t('addressesPublishedSuccessfully', { count: unpublishedAddresses.length })
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to publish some addresses",
+        title: t('common:error'),
+        description: t('failedToPublishAddresses'),
         variant: "destructive"
       });
     }
   };
 
   if (loading) {
-    return <div className="p-4">Loading publishing queue...</div>;
+    return <div className="p-4">{t('loadingPublishingQueue')}</div>;
   }
 
   return (
     <div className="space-y-4 p-4 max-w-full overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="min-w-0 flex-1">
-          <h3 className="text-lg font-semibold break-words">Publishing Queue ({unpublishedAddresses.length})</h3>
-          <p className="text-sm text-muted-foreground break-words">Publish verified addresses to the national registry</p>
+          <h3 className="text-lg font-semibold break-words">{t('publishingQueueCount', { count: unpublishedAddresses.length })}</h3>
+          <p className="text-sm text-muted-foreground break-words">{t('publishVerifiedAddresses')}</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
           {unpublishedAddresses.length > 0 && (
             <Button onClick={handlePublishAll} className="flex items-center justify-center gap-1 text-xs sm:text-sm">
               <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Publish All ({unpublishedAddresses.length})</span>
-              <span className="sm:hidden">Publish All</span>
+              <span className="hidden sm:inline">{t('publishAllCount', { count: unpublishedAddresses.length })}</span>
+              <span className="sm:hidden">{t('publishAll')}</span>
             </Button>
           )}
           {onClose && (
             <Button variant="outline" size="sm" onClick={onClose} className="text-xs sm:text-sm">
               <X className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-              Close
+              {t('close')}
             </Button>
           )}
         </div>
@@ -82,7 +82,7 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
       {unpublishedAddresses.length === 0 ? (
         <Card>
           <CardContent className="p-6 text-center">
-            <p className="text-muted-foreground">No addresses pending publication</p>
+            <p className="text-muted-foreground">{t('noAddressesPendingPublication')}</p>
           </CardContent>
         </Card>
       ) : (
@@ -98,7 +98,7 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
                   </CardDescription>
                 </div>
                 <div className="flex gap-2 flex-wrap">
-                  <Badge variant="default" className="text-xs">Verified</Badge>
+                  <Badge variant="default" className="text-xs">{t('verified')}</Badge>
                   <Badge variant="outline" className="text-xs">{t('private')}</Badge>
                 </div>
               </div>
@@ -106,10 +106,10 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm mb-4">
                 <div className="break-words">
-                  <span className="font-medium">Type:</span> {address.address_type}
+                  <span className="font-medium">{t('type')}:</span> {t(address.address_type)}
                 </div>
                 <div className="break-words">
-                  <span className="font-medium">Created:</span> {new Date(address.created_at).toLocaleDateString()}
+                  <span className="font-medium">{t('created')}:</span> {new Date(address.created_at).toLocaleDateString()}
                 </div>
               </div>
 
@@ -120,8 +120,8 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
                   className="flex items-center justify-center gap-1 text-xs sm:text-sm w-full sm:w-auto"
                 >
                   <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Publish to National Registry</span>
-                  <span className="sm:hidden">Publish</span>
+                  <span className="hidden sm:inline">{t('publishToNationalRegistry')}</span>
+                  <span className="sm:hidden">{t('publish')}</span>
                 </Button>
               </div>
             </CardContent>

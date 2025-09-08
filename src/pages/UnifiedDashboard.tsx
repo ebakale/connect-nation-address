@@ -281,16 +281,16 @@ const UnifiedDashboard = () => {
 
   const getViewTitle = () => {
     switch (activeView) {
-      case 'address-data': return 'Address Data Management';
-      case 'submit-request': return 'Submit Address Request';
-      case 'request-status': return 'Request Status';
-      case 'capture-address': return 'Capture Address';
-      case 'verification-queue': return 'Verification Queue';
-      case 'publishing-queue': return 'Publishing Queue';
-      case 'unpublishing-queue': return 'Unpublishing Queue';
-      case 'analytics': return 'Analytics';
-      case 'province-management': return 'Province Management';
-      case 'verification-tools': return 'Verification Tools';
+      case 'address-data': return t('dashboard:addressData');
+      case 'submit-request': return t('dashboard:submitRequest');
+      case 'request-status': return t('dashboard:requestStatus');
+      case 'capture-address': return t('dashboard:captureAddress');
+      case 'verification-queue': return t('dashboard:verificationQueue');
+      case 'publishing-queue': return t('dashboard:publishingQueue');
+      case 'unpublishing-queue': return t('dashboard:unpublishingQueue');
+      case 'analytics': return t('dashboard:analytics');
+      case 'province-management': return t('dashboard:provinceManagement');
+      case 'verification-tools': return t('dashboard:verificationTools');
       case 'profile': return t('dashboard:title');
       case 'emergency-contacts': return t('dashboard:emergencyContacts');
       default: return t('dashboard:title');
@@ -299,16 +299,16 @@ const UnifiedDashboard = () => {
 
   const getViewDescription = () => {
     switch (activeView) {
-      case 'address-data': return 'Import addresses from Google Maps and export existing address data';
-      case 'submit-request': return 'Request a new address to be added to the system';
-      case 'request-status': return 'Check the status of your address requests';
-      case 'capture-address': return 'Capture and create new address drafts';
-      case 'verification-queue': return 'Review and verify pending addresses';
-      case 'publishing-queue': return 'Publish verified addresses to the public database';
-      case 'unpublishing-queue': return 'Manage address unpublishing requests';
-      case 'analytics': return 'View system analytics and reports';
-      case 'province-management': return 'Manage provincial settings and configurations';
-      case 'verification-tools': return 'Tools for address verification';
+      case 'address-data': return t('dashboard:addressDataDescription');
+      case 'submit-request': return t('dashboard:submitRequestDescription');
+      case 'request-status': return t('dashboard:requestStatusDescription');
+      case 'capture-address': return t('dashboard:captureAddressDescription');
+      case 'verification-queue': return t('dashboard:verificationQueueDescription');
+      case 'publishing-queue': return t('dashboard:publishingQueueDescription');
+      case 'unpublishing-queue': return t('dashboard:unpublishingQueueDescription');
+      case 'analytics': return t('dashboard:analyticsDescription');
+      case 'province-management': return t('dashboard:provinceManagementDescription');
+      case 'verification-tools': return t('dashboard:verificationToolsDescription');
       case 'profile': return t('dashboard:welcomeMessage');
       case 'emergency-contacts': return t('dashboard:welcomeMessage');
       default: return t('dashboard:welcomeMessage');

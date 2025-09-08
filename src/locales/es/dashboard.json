@@ -93,5 +93,15 @@
   "street": "Calles",
   "enableLocationMessage": "Habilita la ubicación para ver puntos de interés cercanos (2km)",
   "locationError": "Error de Ubicación",
-  "poiWithin2km": "PDI dentro de 2km"
+  "poiWithin2km": "PDI dentro de 2km",
+  "addressDataDescription": "Importar direcciones desde Google Maps y exportar datos de direcciones existentes",
+  "submitRequestDescription": "Solicitar que se agregue una nueva dirección al sistema",
+  "requestStatusDescription": "Verificar el estado de tus solicitudes de direcciones",
+  "captureAddressDescription": "Capturar y crear nuevos borradores de direcciones",
+  "verificationQueueDescription": "Revisar y verificar direcciones pendientes",
+  "publishingQueueDescription": "Publicar direcciones verificadas a la base de datos pública",
+  "unpublishingQueueDescription": "Gestionar solicitudes de despublicación de direcciones",
+  "analyticsDescription": "Ver análisis del sistema y reportes",
+  "provinceManagementDescription": "Gestionar configuraciones provinciales",
+  "verificationToolsDescription": "Herramientas para verificación de direcciones"
 }
