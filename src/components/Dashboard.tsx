@@ -16,7 +16,7 @@ import {
   Home
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { useUserRole } from '@/hooks/useUserRole';
 import DashboardLocationMap from './DashboardLocationMap';
 import AddressSearch from './AddressSearch';
@@ -47,7 +47,7 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
   const [selectedAddress, setSelectedAddress] = useState<SearchResult | null>(null);
-  const { t } = useLanguage();
+  const { t } = useTranslation(['common', 'dashboard']);
   const { hasSystemAdminAccess, hasNDAAAccess } = useUserRole();
   const [stats, setStats] = useState<DashboardStats>({
     totalAddresses: 0,
