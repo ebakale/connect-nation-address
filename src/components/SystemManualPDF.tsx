@@ -398,17 +398,17 @@ export const SystemManualPDF: React.FC = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FileText className="h-5 w-5" />
-          {t('common:platform.systemManualPDF')}
+          {t('admin:systemDocumentation')}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <p className="text-muted-foreground">
-            {t('common:platform.systemManualDescription')}
+            {t('admin:comprehensiveManual')}
           </p>
           <Button onClick={generatePDF} className="flex items-center gap-2">
             <Download className="h-4 w-4" />
-            {t('common:platform.downloadPDFManual')}
+            {t('admin:downloadSystemManual')}
           </Button>
         </div>
       </CardContent>

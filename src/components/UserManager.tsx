@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -32,6 +33,7 @@ interface UserProfile {
 }
 
 const UserManager: React.FC = () => {
+  const { t } = useTranslation(['admin']);
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -445,7 +447,7 @@ const UserManager: React.FC = () => {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search users..."
+                placeholder={t('admin:searchUsers')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -456,21 +458,21 @@ const UserManager: React.FC = () => {
                 <DialogTrigger asChild>
                   <Button className="flex items-center gap-2 flex-1 sm:flex-none">
                     <UserPlus className="h-4 w-4" />
-                    <span className="hidden sm:inline">Create User</span>
+                    <span className="hidden sm:inline">{t('admin:createUser')}</span>
                     <span className="sm:hidden">Create</span>
                   </Button>
                 </DialogTrigger>
               </Dialog>
               <Button onClick={fetchUsers} variant="outline" className="flex items-center gap-2 flex-1 sm:flex-none">
                 <RefreshCw className="h-4 w-4" />
-                <span className="hidden sm:inline">Refresh</span>
+                <span className="hidden sm:inline">{t('admin:refresh')}</span>
               </Button>
             </div>
           </div>
 
           {loading ? (
             <div className="text-center py-8">
-              <p className="text-muted-foreground">Loading users...</p>
+              <p className="text-muted-foreground">{t('admin:loadingUsers')}</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -479,11 +481,11 @@ const UserManager: React.FC = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>User</TableHead>
-                      <TableHead>Organization</TableHead>
-                      <TableHead>Contact</TableHead>
-                      <TableHead>Roles</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead>{t('admin:user')}</TableHead>
+                      <TableHead>{t('admin:organization')}</TableHead>
+                      <TableHead>{t('admin:contact')}</TableHead>
+                      <TableHead>{t('admin:roles')}</TableHead>
+                      <TableHead>{t('admin:actions')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -491,12 +493,12 @@ const UserManager: React.FC = () => {
                       <TableRow key={user.user_id}>
                         <TableCell>
                           <div>
-                            <p className="font-medium">{user.full_name || 'No name'}</p>
+                            <p className="font-medium">{user.full_name || t('admin:noName')}</p>
                             <p className="text-sm text-muted-foreground">{user.email}</p>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <p className="text-sm">{user.organization || 'Not specified'}</p>
+                          <p className="text-sm">{user.organization || t('admin:notSpecified')}</p>
                         </TableCell>
                         <TableCell>
                           <p className="text-sm">{user.phone || 'Not provided'}</p>

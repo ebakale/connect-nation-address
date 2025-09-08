@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
@@ -44,6 +45,7 @@ interface UACRecord {
 }
 
 export const UACManager: React.FC = () => {
+  const { t } = useTranslation(['admin']);
   const [uacRecords, setUacRecords] = useState<UACRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -143,10 +145,10 @@ export const UACManager: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Hash className="h-5 w-5" />
-            UAC Management
+            {t('admin:uacManagement')}
           </CardTitle>
           <CardDescription>
-            Access denied. Admin privileges required.
+            {t('admin:accessDenied')}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -163,10 +165,10 @@ export const UACManager: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Hash className="h-5 w-5" />
-            Unified Address Code (UAC) Management
+            {t('admin:unifiedAddressCodeManagement')}
           </CardTitle>
           <CardDescription>
-            Manage and validate the standardized address coding system
+            {t('admin:manageValidateAddressCoding')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -183,7 +185,7 @@ export const UACManager: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <CheckCircle className="h-5 w-5 text-green-600" />
-              <h3 className="text-lg font-semibold">UAC Validation</h3>
+              <h3 className="text-lg font-semibold">{t('admin:uacValidation')}</h3>
             </div>
             <div className="flex gap-2">
               <div className="flex-1">

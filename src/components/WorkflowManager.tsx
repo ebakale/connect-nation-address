@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useUserRole } from '@/hooks/useUserRole';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -13,11 +14,12 @@ interface WorkflowStep {
 }
 
 export const WorkflowManager: React.FC = () => {
+  const { t } = useTranslation(['admin']);
   const { role, getWorkflowStage, canAccessLocation } = useUserRole();
 
   const typicalWorkflows = [
     {
-      name: 'Standard Address Creation',
+      name: t('admin:standardAddressCreation'),
       description: 'Citizen → Field Agent → Verifier → Registrar',
       steps: [
         { stage: 'submit_request', role: 'Citizen', description: 'Submits new place request', status: 'completed' as const },
@@ -27,7 +29,7 @@ export const WorkflowManager: React.FC = () => {
       ]
     },
     {
-      name: 'Partner Bulk Update',
+      name: t('admin:partnerBulkUpdate'),
       description: 'Utility → Data Steward → Verifier → Registrar',
       steps: [
         { stage: 'bulk_upload', role: 'Partner (Utility)', description: 'Uploads hashed customer refs with coordinates', status: 'completed' as const },
@@ -37,7 +39,7 @@ export const WorkflowManager: React.FC = () => {
       ]
     },
     {
-      name: 'Emergency Fast-Track',
+      name: t('admin:emergencyFastTrack'),
       description: 'EMS → Verifier → Registrar → Partner Webhook',
       steps: [
         { stage: 'emergency_flag', role: 'Partner (EMS)', description: 'Flags critical location', status: 'completed' as const },
@@ -80,19 +82,19 @@ export const WorkflowManager: React.FC = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Workflow Status</CardTitle>
+          <CardTitle>{t('admin:workflowStatus')}</CardTitle>
           <CardDescription>
-            Your current role and position in the address management workflow
+            {t('admin:currentRolePosition')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <Badge variant="secondary" className="text-sm whitespace-nowrap truncate max-w-[200px]">
-              Current Role: {role ? role.replace('_', ' ').toUpperCase() : 'Not Assigned'}
+              {t('admin:currentRole')}: {role ? role.replace('_', ' ').toUpperCase() : 'Not Assigned'}
             </Badge>
             <ArrowRight className="h-4 w-4 text-muted-foreground hidden sm:block" />
             <Badge variant="outline" className="text-sm whitespace-nowrap max-w-[300px]">
-              Workflow Stage: {currentStage.replace('_', ' ').toUpperCase()}
+              {t('admin:workflowStage')}: {currentStage.replace('_', ' ').toUpperCase()}
             </Badge>
           </div>
         </CardContent>
@@ -131,32 +133,32 @@ export const WorkflowManager: React.FC = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>ABAC Examples</CardTitle>
+          <CardTitle>{t('admin:abacExamples')}</CardTitle>
           <CardDescription>
-            Attribute-Based Access Control with geographic scoping
+            {t('admin:attributeBasedAccessControl')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="p-4 bg-blue-50 rounded-lg">
-            <h4 className="font-medium text-blue-900 mb-2">Verifier Geographic Scope</h4>
+            <h4 className="font-medium text-blue-900 mb-2">{t('admin:verifierGeographicScope')}</h4>
             <p className="text-sm text-blue-700">
               Verifier {'{district: MAL}'} can verify only addresses where hierarchy.district == MAL
             </p>
           </div>
           
           <div className="p-4 bg-green-50 rounded-lg">
-            <h4 className="font-medium text-green-900 mb-2">Partner API Scope</h4>
+            <h4 className="font-medium text-green-900 mb-2">{t('admin:partnerApiScope')}</h4>
             <p className="text-sm text-green-700">
               Partner {'{org: EMS, scope: read_verified}'} gets priority reads and event webhooks but no writes
             </p>
           </div>
           
           <div className="p-4 bg-purple-50 rounded-lg">
-            <h4 className="font-medium text-purple-900 mb-2">Your Geographic Access</h4>
+            <h4 className="font-medium text-purple-900 mb-2">{t('admin:yourGeographicAccess')}</h4>
             <p className="text-sm text-purple-700">
               {canAccessLocation('TEST_DISTRICT', 'TEST_PROVINCE') 
-                ? 'You have access to test geographic locations' 
-                : 'Your access is limited by geographic scope'}
+                ? t('admin:hasGeographicAccess')
+                : t('admin:limitedGeographicAccess')}
             </p>
           </div>
         </CardContent>
