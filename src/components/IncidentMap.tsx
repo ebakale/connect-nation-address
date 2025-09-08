@@ -1,11 +1,17 @@
 /// <reference types="google.maps" />
 import React, { useEffect, useRef, useState } from 'react';
-import { Loader } from '@googlemaps/js-api-loader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MapPin, Navigation, Layers, AlertTriangle } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
+import { 
+  createMapLoader, 
+  initializeGoogleMaps, 
+  createStandardMap, 
+  createMapTypeToggle,
+  MAP_CONFIG
+} from '@/lib/mapConfig';
 
 interface EmergencyIncident {
   id: string;
@@ -27,8 +33,8 @@ interface IncidentMapProps {
   onSelectIncident: (incident: EmergencyIncident) => void;
 }
 
-// Default center: Malabo, Equatorial Guinea
-const DEFAULT_CENTER = { lat: 3.7500, lng: 8.7833 };
+// Default center using unified configuration
+const DEFAULT_CENTER = MAP_CONFIG.defaultCenter;
 
 const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: IncidentMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -38,16 +44,13 @@ const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: Incident
   const [apiError, setApiError] = useState<string>('');
   const markers = useRef<google.maps.Marker[]>([]);
 
-  // Fetch Google Maps API key from Supabase edge function
+  // Fetch Google Maps API key using unified configuration
   useEffect(() => {
     const fetchGoogleMapsApiKey = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('get-google-maps-token');
-        if (error) throw error;
-        if (data?.apiKey) {
-          setGoogleMapsApiKey(data.apiKey);
-          setIsApiReady(true);
-        }
+        const apiKey = await createMapLoader();
+        setGoogleMapsApiKey(apiKey);
+        setIsApiReady(true);
       } catch (error) {
         console.error('Error fetching Google Maps API key:', error);
         setApiError('Failed to fetch Google Maps API key from server');
@@ -58,14 +61,7 @@ const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: Incident
   }, []);
 
   const getPriorityColor = (priority: number): string => {
-    switch (priority) {
-      case 1: return '#ef4444'; // red
-      case 2: return '#f97316'; // orange
-      case 3: return '#eab308'; // yellow
-      case 4: return '#3b82f6'; // blue
-      case 5: return '#6b7280'; // gray
-      default: return '#6b7280';
-    }
+    return MAP_CONFIG.markers.priorityColors[priority as keyof typeof MAP_CONFIG.markers.priorityColors] || MAP_CONFIG.markers.priorityColors[5];
   };
 
   const getStatusColor = (status: string): string => {
@@ -216,22 +212,11 @@ const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: Incident
     if (!mapContainer.current || !googleMapsApiKey) return;
 
     try {
-      const loader = new Loader({
-        apiKey: googleMapsApiKey,
-        version: 'weekly',
-        libraries: ['places']
-      });
+      await initializeGoogleMaps(googleMapsApiKey);
 
-      await loader.load();
-
-      map.current = new google.maps.Map(mapContainer.current, {
+      map.current = createStandardMap(mapContainer.current, {
         center: DEFAULT_CENTER,
-        zoom: 12,
-        mapTypeControl: true,
-        streetViewControl: true,
-        fullscreenControl: true,
-        zoomControl: true,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        zoom: MAP_CONFIG.defaultZoom,
       });
 
       console.log('Google Maps loaded successfully for incident map');
@@ -332,12 +317,8 @@ const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: Incident
           variant="outline" 
           onClick={() => {
             if (map.current) {
-              const mapType = map.current.getMapTypeId();
-              map.current.setMapTypeId(
-                mapType === google.maps.MapTypeId.ROADMAP 
-                  ? google.maps.MapTypeId.SATELLITE 
-                  : google.maps.MapTypeId.ROADMAP
-              );
+              const toggle = createMapTypeToggle(map.current);
+              toggle();
             }
           }}
         >

@@ -1,6 +1,5 @@
 /// <reference types="google.maps" />
 import React, { useEffect, useRef, useState } from 'react';
-import { Loader } from '@googlemaps/js-api-loader';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -19,6 +18,17 @@ import { supabase } from '@/integrations/supabase/client';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { useToast } from '@/hooks/use-toast';
 import AddressDetailModal from './AddressDetailModal';
+import { 
+  createMapLoader, 
+  initializeGoogleMaps, 
+  createStandardMap, 
+  createCurrentLocationMarker, 
+  createPOIMarker, 
+  createStandardInfoWindow,
+  createMapTypeToggle,
+  MAP_CONFIG,
+  STANDARD_LEGEND
+} from '@/lib/mapConfig';
 
 interface MapLocation {
   uac: string;
@@ -67,13 +77,12 @@ const DashboardLocationMap: React.FC = () => {
     getCurrentPosition
   } = useGeolocation();
 
-  // Fetch Google Maps API key
+  // Fetch Google Maps API key using unified configuration
   useEffect(() => {
     const fetchGoogleMapsApiKey = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('get-google-maps-token');
-        if (error) throw error;
-        setGoogleMapsApiKey(data.apiKey);
+        const apiKey = await createMapLoader();
+        setGoogleMapsApiKey(apiKey);
         console.log('Google Maps API key fetched successfully');
       } catch (error) {
         console.error('Error fetching Google Maps API key:', error);
@@ -210,13 +219,7 @@ const DashboardLocationMap: React.FC = () => {
   };
 
   const getMarkerColor = (type: string): string => {
-    switch (type) {
-      case 'commercial': return '#9333ea'; // purple
-      case 'landmark': return '#dc2626'; // red
-      case 'government': return '#16a34a'; // green
-      case 'industrial': return '#ea580c'; // orange
-      default: return '#3b82f6'; // blue
-    }
+    return MAP_CONFIG.markers.colors[type as keyof typeof MAP_CONFIG.markers.colors] || MAP_CONFIG.markers.colors.residential;
   };
 
   const initializeMap = async () => {
@@ -228,26 +231,16 @@ const DashboardLocationMap: React.FC = () => {
     console.log('Initializing Google Maps...');
 
     try {
-      const loader = new Loader({
-        apiKey: googleMapsApiKey,
-        version: 'weekly',
-        libraries: ['places']
-      });
-
-      await loader.load();
+      await initializeGoogleMaps(googleMapsApiKey);
 
       const defaultCenter = latitude && longitude 
         ? { lat: latitude, lng: longitude }
-        : { lat: 1.7500, lng: 9.7506 }; // Default to Malabo
+        : MAP_CONFIG.defaultCenter;
 
-      map.current = new google.maps.Map(mapContainer.current, {
+      map.current = createStandardMap(mapContainer.current, {
         center: defaultCenter,
-        zoom: latitude && longitude ? 15 : 10,
-        mapTypeId: mapType as google.maps.MapTypeId,
-        mapTypeControl: false,
-        streetViewControl: true,
-        fullscreenControl: true,
-        zoomControl: true,
+        zoom: latitude && longitude ? MAP_CONFIG.defaultCurrentLocationZoom : MAP_CONFIG.defaultZoom,
+        mapType: mapType as google.maps.MapTypeId,
       });
 
       console.log('Google Maps loaded successfully');
@@ -317,64 +310,28 @@ const DashboardLocationMap: React.FC = () => {
     const newMarkers: google.maps.Marker[] = [];
 
     locations.forEach(location => {
-      const marker = new google.maps.Marker({
-        position: { lat: location.coordinates[1], lng: location.coordinates[0] },
-        map: map.current,
-        title: `UAC: ${location.uac}`,
-        icon: {
-          url: `data:image/svg+xml,${encodeURIComponent(`
-            <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="10" cy="10" r="8" fill="${getMarkerColor(location.type)}" stroke="white" stroke-width="2"/>
-            </svg>
-          `)}`,
-          scaledSize: new google.maps.Size(20, 20),
-          anchor: new google.maps.Point(10, 10)
-        },
-        clickable: true,
-        optimized: false,
-      });
+      const infoWindow = createStandardInfoWindow(
+        location.name,
+        location.type,
+        {
+          uac: location.uac,
+          type: location.type,
+          verified: location.verified,
+          coordinates: { lat: location.coordinates[1], lng: location.coordinates[0] }
+        }
+      );
 
-      const infoWindow = new google.maps.InfoWindow({
-        content: `
-          <div style="padding: 8px; font-family: Arial, sans-serif;">
-            <div style="font-weight: 600; margin-bottom: 4px; color: #111;">${location.name}</div>
-            <div style="font-size: 12px; color: #6b7280; text-transform: capitalize; margin-bottom: 4px;">${location.type}</div>
-            <div style="font-size: 12px; color: #1d4ed8; font-weight: 600;">UAC: ${location.uac}</div>
-            <div style="font-size: 11px; color: #6b7280; margin-top: 4px;">Click marker for full details</div>
-          </div>
-        `
-      });
-
-      // Hover shows UAC and brief info
-      marker.addListener('mouseover', () => infoWindow.open(map.current, marker));
-      marker.addListener('mouseout', () => infoWindow.close());
-
-      // Click opens address detail card
-      marker.addListener('click', () => openAddressDetails(location.uac));
-
-      // Hover size effect
-      marker.addListener('mouseover', () => {
-        marker.setIcon({
-          url: `data:image/svg+xml,${encodeURIComponent(`
-            <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">
-              <circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"${getMarkerColor(location.type)}\" stroke=\"white\" stroke-width=\"2\"/>
-            </svg>
-          `)}`,
-          scaledSize: new google.maps.Size(24, 24),
-          anchor: new google.maps.Point(12, 12)
-        });
-      });
-      marker.addListener('mouseout', () => {
-        marker.setIcon({
-          url: `data:image/svg+xml,${encodeURIComponent(`
-            <svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" xmlns=\"http://www.w3.org/2000/svg\">
-              <circle cx=\"10\" cy=\"10\" r=\"8\" fill=\"${getMarkerColor(location.type)}\" stroke=\"white\" stroke-width=\"2\"/>
-            </svg>
-          `)}`,
-          scaledSize: new google.maps.Size(20, 20),
-          anchor: new google.maps.Point(10, 10)
-        });
-      });
+      const marker = createPOIMarker(
+        map.current!,
+        { lat: location.coordinates[1], lng: location.coordinates[0] },
+        location.type,
+        {
+          title: `UAC: ${location.uac}`,
+          onClick: () => openAddressDetails(location.uac),
+          onHover: () => infoWindow.open(map.current, marker),
+          onHoverEnd: () => infoWindow.close()
+        }
+      );
 
       newMarkers.push(marker);
     });
@@ -390,54 +347,23 @@ const DashboardLocationMap: React.FC = () => {
       currentLocationMarker.current.setMap(null);
     }
 
-    // Create current location marker with flashing animation
-    currentLocationMarker.current = new google.maps.Marker({
-      position: { lat, lng },
-      map: map.current,
-      title: 'Your Location',
-      icon: {
-        url: `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>
-                .pulse-ring {
-                  animation: pulse 2s ease-out infinite;
-                  transform-origin: center;
-                }
-                @keyframes pulse {
-                  0% { opacity: 1; transform: scale(0.8); }
-                  50% { opacity: 0.3; transform: scale(1.2); }
-                  100% { opacity: 0; transform: scale(1.5); }
-                }
-                .flash-dot {
-                  animation: flash 1.5s ease-in-out infinite;
-                }
-                @keyframes flash {
-                  0%, 100% { opacity: 1; }
-                  50% { opacity: 0.4; }
-                }
-              </style>
-            </defs>
-            <circle cx="12" cy="12" r="10" class="pulse-ring" fill="none" stroke="#3b82f6" stroke-width="2"/>
-            <circle cx="12" cy="12" r="7" class="flash-dot" fill="#3b82f6" stroke="white" stroke-width="3"/>
-          </svg>
-        `)}`,
-        scaledSize: new google.maps.Size(24, 24),
-        anchor: new google.maps.Point(12, 12)
-      }
-    });
+    // Create current location marker with unified flashing animation
+    currentLocationMarker.current = createCurrentLocationMarker(
+      map.current,
+      { lat, lng },
+      accuracy
+    );
 
     const infoWindow = new google.maps.InfoWindow({
       content: `
         <div style="padding: 8px;">
           <div style="font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-            <span style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; display: inline-block;"></span>
+            <span style="width: 8px; height: 8px; background: ${MAP_CONFIG.markers.colors.currentLocation}; border-radius: 50%; display: inline-block;"></span>
             Your Location
           </div>
           <div style="font-size: 14px; color: #666;">
             Accuracy: ${accuracy ? `±${Math.round(accuracy)}m` : 'Unknown'}
           </div>
-          ${nearbyUAC ? `<div style="font-size: 14px; font-weight: 500; color: #16a34a; margin-top: 4px;">UAC: ${nearbyUAC}</div>` : ''}
         </div>
       `
     });
@@ -448,7 +374,7 @@ const DashboardLocationMap: React.FC = () => {
 
     // Center map on current location
     map.current.panTo({ lat, lng });
-    map.current.setZoom(16);
+    map.current.setZoom(MAP_CONFIG.defaultCurrentLocationZoom);
   };
 
   // Initialize map when API key and locations are ready
@@ -483,39 +409,24 @@ const DashboardLocationMap: React.FC = () => {
     getCurrentPosition();
   };
 
-  const toggleMapType = () => {
-    setMapType(prevType => 
-      prevType === 'roadmap' ? 'satellite' : 'roadmap'
-    );
-  };
+  const toggleMapType = createMapTypeToggle(map.current!);
 
   return (
     <div className="space-y-4">
       {/* Legend - Horizontal layout above map */}
       <Card className="bg-background/95 backdrop-blur">
         <CardContent className="p-3">
-          <h4 className="font-semibold text-sm mb-3">Points of Interest</h4>
+          <h4 className="font-semibold text-sm mb-3">{STANDARD_LEGEND.title}</h4>
           <div className="flex flex-wrap gap-4">
-            <div className="flex items-center gap-2 text-xs">
-              <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-              <span>Commercial</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs">
-              <div className="w-3 h-3 rounded-full bg-red-500"></div>
-              <span>Landmark</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs">
-              <div className="w-3 h-3 rounded-full bg-green-600"></div>
-              <span>Government</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs">
-              <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-              <span>Industrial</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs">
-              <div className="w-3 h-3 rounded-full bg-blue-500 border-2 border-white shadow-lg"></div>
-              <span>Your Location</span>
-            </div>
+            {STANDARD_LEGEND.items.map((item, index) => (
+              <div key={index} className="flex items-center gap-2 text-xs">
+                <div 
+                  className={`w-3 h-3 rounded-full ${item.special ? 'border-2 border-white shadow-lg' : ''}`}
+                  style={{ backgroundColor: item.color }}
+                ></div>
+                <span>{item.label}</span>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>

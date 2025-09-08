@@ -1,6 +1,5 @@
 /// <reference types="google.maps" />
 import React, { useEffect, useRef, useState } from 'react';
-import { Loader } from '@googlemaps/js-api-loader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -8,6 +7,15 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Settings, Layers, Maximize2 } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import AddressDetailModal from './AddressDetailModal';
+import { 
+  createMapLoader, 
+  initializeGoogleMaps, 
+  createStandardMap, 
+  createPOIMarker, 
+  createStandardInfoWindow,
+  MAP_CONFIG,
+  STANDARD_LEGEND
+} from '@/lib/mapConfig';
 
 interface MapLocation {
   uac: string;
@@ -37,7 +45,7 @@ interface MapViewProps {
 }
 
 // Default center: Malabo, Equatorial Guinea
-const DEFAULT_CENTER: [number, number] = [8.7833, 3.7500];
+const DEFAULT_CENTER: [number, number] = [MAP_CONFIG.defaultCenter.lng, MAP_CONFIG.defaultCenter.lat];
 
 const MapView: React.FC<MapViewProps> = ({ 
   center = DEFAULT_CENTER, 
@@ -55,16 +63,13 @@ const MapView: React.FC<MapViewProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const markers = useRef<google.maps.Marker[]>([]);
 
-  // Fetch Google Maps API key from Supabase edge function
+  // Fetch Google Maps API key using unified configuration
   useEffect(() => {
     const fetchGoogleMapsApiKey = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('get-google-maps-token');
-        if (error) throw error;
-        if (data?.apiKey) {
-          setGoogleMapsApiKey(data.apiKey);
-          setIsApiReady(true);
-        }
+        const apiKey = await createMapLoader();
+        setGoogleMapsApiKey(apiKey);
+        setIsApiReady(true);
       } catch (error) {
         console.error('Error fetching Google Maps API key:', error);
         setApiError('Failed to fetch Google Maps API key');
@@ -147,22 +152,11 @@ const MapView: React.FC<MapViewProps> = ({
     if (!mapContainer.current || !googleMapsApiKey) return;
 
     try {
-      const loader = new Loader({
-        apiKey: googleMapsApiKey,
-        version: 'weekly',
-        libraries: ['places']
-      });
+      await initializeGoogleMaps(googleMapsApiKey);
 
-      await loader.load();
-
-      map.current = new google.maps.Map(mapContainer.current, {
+      map.current = createStandardMap(mapContainer.current, {
         center: { lat: center[1], lng: center[0] },
         zoom: zoom,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        mapTypeControl: true,
-        streetViewControl: true,
-        fullscreenControl: true,
-        zoomControl: true
       });
 
       console.log('Google Maps loaded for MapView');
@@ -181,7 +175,7 @@ const MapView: React.FC<MapViewProps> = ({
     markers.current.forEach(marker => marker.setMap(null));
     markers.current = [];
 
-    // Add markers for each location
+    // Add markers for each location using unified configuration
     allLocations.forEach((location) => {
       // Debug log to check data
       console.log('Creating marker for location:', location);
@@ -192,52 +186,33 @@ const MapView: React.FC<MapViewProps> = ({
         return;
       }
 
-      const marker = new google.maps.Marker({
-        position: { lat: location.coordinates[1], lng: location.coordinates[0] },
-        map: map.current,
-        title: `UAC: ${location.uac}`, // Show UAC on hover
-        icon: {
-          url: `data:image/svg+xml,${encodeURIComponent(`
-            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="10" fill="${getMarkerColor(location.type, location.verified)}" stroke="white" stroke-width="2"/>
-            </svg>
-          `)}`,
-          scaledSize: new google.maps.Size(24, 24),
-          anchor: new google.maps.Point(12, 12)
-        },
-        // Ensure the marker is clickable
-        clickable: true,
-        // Remove any default behavior that might interfere
-        optimized: false
-      });
+      const infoWindow = createStandardInfoWindow(
+        location.name,
+        location.type,
+        {
+          uac: location.uac,
+          type: location.type,
+          verified: location.verified,
+          coordinates: { lat: location.coordinates[1], lng: location.coordinates[0] }
+        }
+      );
 
-      // Add hover info window for better UX
-      const infoWindow = new google.maps.InfoWindow({
-        content: `
-          <div style="padding: 8px; font-family: Arial, sans-serif;">
-            <div style="font-weight: bold; color: #333; margin-bottom: 4px;">UAC: ${location.uac}</div>
-            <div style="color: #666; font-size: 12px; margin-bottom: 4px;">${location.name}</div>
-            <div style="color: #888; font-size: 11px;">Click for full details</div>
-          </div>
-        `
-      });
-
-      // Add hover listeners for info window
-      marker.addListener('mouseover', () => {
-        infoWindow.open(map.current, marker);
-      });
-
-      marker.addListener('mouseout', () => {
-        infoWindow.close();
-      });
-
-      // Click handler to open address details modal
-      marker.addListener('click', () => {
-        console.log('Marker clicked:', location);
-        setSelectedAddress(location);
-        setIsModalOpen(true);
-        onLocationSelect?.(location);
-      });
+      const marker = createPOIMarker(
+        map.current!,
+        { lat: location.coordinates[1], lng: location.coordinates[0] },
+        location.type,
+        {
+          title: `UAC: ${location.uac}`,
+          onClick: () => {
+            console.log('Marker clicked:', location);
+            setSelectedAddress(location);
+            setIsModalOpen(true);
+            onLocationSelect?.(location);
+          },
+          onHover: () => infoWindow.open(map.current, marker),
+          onHoverEnd: () => infoWindow.close()
+        }
+      );
 
       markers.current.push(marker);
     });
@@ -253,15 +228,8 @@ const MapView: React.FC<MapViewProps> = ({
   };
 
   const getMarkerColor = (type: string, verified: boolean) => {
-    if (!verified) return '#6b7280'; // gray
-    
-    switch (type) {
-      case 'residential': return '#3b82f6'; // blue
-      case 'commercial': return '#8b5cf6'; // purple
-      case 'landmark': return '#ef4444'; // red
-      case 'government': return '#059669'; // green
-      default: return '#3b82f6';
-    }
+    if (!verified) return MAP_CONFIG.markers.colors.unverified;
+    return MAP_CONFIG.markers.colors[type as keyof typeof MAP_CONFIG.markers.colors] || MAP_CONFIG.markers.colors.residential;
   };
 
   useEffect(() => {
@@ -313,25 +281,18 @@ const MapView: React.FC<MapViewProps> = ({
           <CardContent className="p-3">
             <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
               <Layers className="h-4 w-4" />
-              Legend
+              {STANDARD_LEGEND.title}
             </h4>
             <div className="space-y-1">
-              <div className="flex items-center gap-2 text-xs">
-                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                <span>Residential</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs">
-                <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                <span>Commercial</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <span>Landmark</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs">
-                <div className="w-3 h-3 rounded-full bg-green-600"></div>
-                <span>Government</span>
-              </div>
+              {STANDARD_LEGEND.items.slice(0, -1).map((item, index) => (
+                <div key={index} className="flex items-center gap-2 text-xs">
+                  <div 
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: item.color }}
+                  ></div>
+                  <span>{item.label}</span>
+                </div>
+              ))}
             </div>
             <div className="mt-2 pt-2 border-t text-xs text-muted-foreground">
               Hover for UAC • Click for details
