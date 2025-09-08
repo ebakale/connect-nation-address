@@ -186,6 +186,25 @@
     "helpAndSupport": "Help & Support",
     "findAnswersQuestions": "Find answers to common questions and learn how to use the platform.",
     "frequentlyAskedQuestions": "Frequently Asked Questions",
-    "platformUserManual": "Platform User Manual"
+    "platformUserManual": "Platform User Manual",
+    "systemManualPDF": "System Manual PDF",
+    "systemManualDescription": "Download the complete system manual as a PDF document. This comprehensive guide covers both the Address Registry and Police Operations modules, including all user roles, workflows, features, and administrative guidelines.",
+    "downloadPDFManual": "Download PDF Manual",
+    "emergencyManagementSystem": "Emergency Management System",
+    "emergencyAlertSystem": "Emergency Alert System",
+    "emergencyAlertDescription": "Citizens can send emergency alerts directly to police and emergency services. The system includes GPS location sharing and real-time communication.",
+    "incidentManagement": "Incident Management",
+    "incidentManagementDescription": "Police and emergency operators manage incidents through real-time dashboards, unit dispatch, and status tracking.",
+    "unitCoordination": "Unit Coordination",
+    "unitCoordinationDescription": "Emergency units can communicate, request backup, and coordinate response efforts through integrated communication tools.",
+    "emergencySystemUserRoles": "Emergency System User Roles",
+    "emergencyOperators": "Emergency Operators",
+    "emergencyOperatorsDescription": "Receive and process emergency alerts, dispatch units, and monitor incident status.",
+    "dispatchers": "Dispatchers",
+    "dispatchersDescription": "Coordinate unit assignments and manage real-time communication between operators and field units.",
+    "supervisors": "Supervisors",
+    "supervisorsDescription": "Oversee operations, assign operators to incidents, and ensure proper response protocols.",
+    "fieldUnits": "Field Units",
+    "fieldUnitsDescription": "Respond to incidents, update status in real-time, and communicate with dispatch for coordination."
   }
 }

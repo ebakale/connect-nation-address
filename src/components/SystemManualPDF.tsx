@@ -1,10 +1,13 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Download, FileText } from 'lucide-react';
 import jsPDF from 'jspdf';
 
 export const SystemManualPDF: React.FC = () => {
+  const { t } = useTranslation(['common', 'admin']);
+  
   const generatePDF = () => {
     const pdf = new jsPDF();
     const pageWidth = pdf.internal.pageSize.getWidth();
@@ -395,19 +398,17 @@ export const SystemManualPDF: React.FC = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FileText className="h-5 w-5" />
-          System Manual PDF
+          {t('common:platform.systemManualPDF')}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <p className="text-muted-foreground">
-            Download the complete system manual as a PDF document. This comprehensive guide covers both 
-            the Address Registry and Police Operations modules, including all user roles, workflows, 
-            features, and administrative guidelines.
+            {t('common:platform.systemManualDescription')}
           </p>
           <Button onClick={generatePDF} className="flex items-center gap-2">
             <Download className="h-4 w-4" />
-            Download PDF Manual
+            {t('common:platform.downloadPDFManual')}
           </Button>
         </div>
       </CardContent>

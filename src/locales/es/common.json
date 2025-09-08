@@ -186,6 +186,25 @@
     "helpAndSupport": "Ayuda y Soporte",
     "findAnswersQuestions": "Encuentra respuestas a preguntas comunes y aprende cómo usar la plataforma.",
     "frequentlyAskedQuestions": "Preguntas Frecuentes",
-    "platformUserManual": "Manual de Usuario de la Plataforma"
+    "platformUserManual": "Manual de Usuario de la Plataforma",
+    "systemManualPDF": "Manual del Sistema PDF",
+    "systemManualDescription": "Descarga el manual completo del sistema como documento PDF. Esta guía integral cubre tanto los módulos de Registro de Direcciones como de Operaciones Policiales, incluyendo todos los roles de usuario, flujos de trabajo, características y pautas administrativas.",
+    "downloadPDFManual": "Descargar Manual PDF",
+    "emergencyManagementSystem": "Sistema de Gestión de Emergencias",
+    "emergencyAlertSystem": "Sistema de Alertas de Emergencia",
+    "emergencyAlertDescription": "Los ciudadanos pueden enviar alertas de emergencia directamente a la policía y servicios de emergencia. El sistema incluye compartir ubicación GPS y comunicación en tiempo real.",
+    "incidentManagement": "Gestión de Incidentes",
+    "incidentManagementDescription": "Los operadores policiales y de emergencia gestionan incidentes a través de tableros en tiempo real, despacho de unidades y seguimiento de estado.",
+    "unitCoordination": "Coordinación de Unidades",
+    "unitCoordinationDescription": "Las unidades de emergencia pueden comunicarse, solicitar refuerzos y coordinar esfuerzos de respuesta a través de herramientas de comunicación integradas.",
+    "emergencySystemUserRoles": "Roles de Usuario del Sistema de Emergencias",
+    "emergencyOperators": "Operadores de Emergencia",
+    "emergencyOperatorsDescription": "Reciben y procesan alertas de emergencia, despachan unidades y monitorean el estado de incidentes.",
+    "dispatchers": "Despachadores",
+    "dispatchersDescription": "Coordinan asignaciones de unidades y gestionan comunicación en tiempo real entre operadores y unidades de campo.",
+    "supervisors": "Supervisores",
+    "supervisorsDescription": "Supervisan operaciones, asignan operadores a incidentes y aseguran protocolos de respuesta adecuados.",
+    "fieldUnits": "Unidades de Campo",
+    "fieldUnitsDescription": "Responden a incidentes, actualizan estado en tiempo real y se comunican con despacho para coordinación."
   }
 }

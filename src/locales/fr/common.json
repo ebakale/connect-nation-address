@@ -186,6 +186,25 @@
     "helpAndSupport": "Aide et Support",
     "findAnswersQuestions": "Trouvez des réponses aux questions courantes et apprenez à utiliser la plateforme.",
     "frequentlyAskedQuestions": "Questions Fréquemment Posées",
-    "platformUserManual": "Manuel d'Utilisateur de la Plateforme"
+    "platformUserManual": "Manuel d'Utilisateur de la Plateforme",
+    "systemManualPDF": "Manuel du Système PDF",
+    "systemManualDescription": "Téléchargez le manuel complet du système en tant que document PDF. Ce guide complet couvre à la fois les modules de Registre d'Adresses et d'Opérations Policières, incluant tous les rôles d'utilisateurs, flux de travail, fonctionnalités et directives administratives.",
+    "downloadPDFManual": "Télécharger le Manuel PDF",
+    "emergencyManagementSystem": "Système de Gestion des Urgences",
+    "emergencyAlertSystem": "Système d'Alerte d'Urgence",
+    "emergencyAlertDescription": "Les citoyens peuvent envoyer des alertes d'urgence directement à la police et aux services d'urgence. Le système inclut le partage de localisation GPS et la communication en temps réel.",
+    "incidentManagement": "Gestion des Incidents",
+    "incidentManagementDescription": "Les opérateurs policiers et d'urgence gèrent les incidents à travers des tableaux de bord en temps réel, la répartition d'unités et le suivi de statut.",
+    "unitCoordination": "Coordination des Unités",
+    "unitCoordinationDescription": "Les unités d'urgence peuvent communiquer, demander des renforts et coordonner les efforts de réponse grâce à des outils de communication intégrés.",
+    "emergencySystemUserRoles": "Rôles d'Utilisateurs du Système d'Urgence",
+    "emergencyOperators": "Opérateurs d'Urgence",
+    "emergencyOperatorsDescription": "Reçoivent et traitent les alertes d'urgence, dispatche les unités et surveillent le statut des incidents.",
+    "dispatchers": "Répartiteurs",
+    "dispatchersDescription": "Coordonnent les affectations d'unités et gèrent la communication en temps réel entre opérateurs et unités de terrain.",
+    "supervisors": "Superviseurs",
+    "supervisorsDescription": "Supervisent les opérations, assignent les opérateurs aux incidents et assurent les protocoles de réponse appropriés.",
+    "fieldUnits": "Unités de Terrain",
+    "fieldUnitsDescription": "Répondent aux incidents, mettent à jour le statut en temps réel et communiquent avec la répartition pour la coordination."
   }
 }

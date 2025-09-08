@@ -619,25 +619,25 @@ const navigationItems = [
 
                   <Card className="border">
                     <CardHeader>
-                      <CardTitle className="text-lg">Emergency Management System</CardTitle>
+                      <CardTitle className="text-lg">{t('common:platform.emergencyManagementSystem')}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="space-y-2">
-                        <h4 className="font-semibold">Emergency Alert System</h4>
+                        <h4 className="font-semibold">{t('common:platform.emergencyAlertSystem')}</h4>
                         <p className="text-sm text-muted-foreground">
-                          Citizens can send emergency alerts directly to police and emergency services. The system includes GPS location sharing and real-time communication.
+                          {t('common:platform.emergencyAlertDescription')}
                         </p>
                       </div>
                       <div className="space-y-2">
-                        <h4 className="font-semibold">Incident Management</h4>
+                        <h4 className="font-semibold">{t('common:platform.incidentManagement')}</h4>
                         <p className="text-sm text-muted-foreground">
-                          Police and emergency operators manage incidents through real-time dashboards, unit dispatch, and status tracking.
+                          {t('common:platform.incidentManagementDescription')}
                         </p>
                       </div>
                       <div className="space-y-2">
-                        <h4 className="font-semibold">Unit Coordination</h4>
+                        <h4 className="font-semibold">{t('common:platform.unitCoordination')}</h4>
                         <p className="text-sm text-muted-foreground">
-                          Emergency units can communicate, request backup, and coordinate response efforts through integrated communication tools.
+                          {t('common:platform.unitCoordinationDescription')}
                         </p>
                       </div>
                     </CardContent>
@@ -645,32 +645,32 @@ const navigationItems = [
 
                   <Card className="border">
                     <CardHeader>
-                      <CardTitle className="text-lg">Emergency System User Roles</CardTitle>
+                      <CardTitle className="text-lg">{t('common:platform.emergencySystemUserRoles')}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <h4 className="font-semibold">Emergency Operators</h4>
+                          <h4 className="font-semibold">{t('common:platform.emergencyOperators')}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Receive and process emergency alerts, dispatch units, and monitor incident status.
+                            {t('common:platform.emergencyOperatorsDescription')}
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">Dispatchers</h4>
+                          <h4 className="font-semibold">{t('common:platform.dispatchers')}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Coordinate unit assignments and manage real-time communication between operators and field units.
+                            {t('common:platform.dispatchersDescription')}
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">Supervisors</h4>
+                          <h4 className="font-semibold">{t('common:platform.supervisors')}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Oversee operations, assign operators to incidents, and ensure proper response protocols.
+                            {t('common:platform.supervisorsDescription')}
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">Field Units</h4>
+                          <h4 className="font-semibold">{t('common:platform.fieldUnits')}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Respond to incidents, update status in real-time, and communicate with dispatch for coordination.
+                            {t('common:platform.fieldUnitsDescription')}
                           </p>
                         </div>
                       </div>
