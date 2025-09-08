@@ -456,8 +456,8 @@ const DashboardLocationMap: React.FC = () => {
           
           this.div = div;
           const panes = this.getPanes();
-          if (panes && panes.overlayMouseTarget) {
-            panes.overlayMouseTarget.appendChild(div);
+          if (panes && panes.floatPane) {
+            panes.floatPane.appendChild(div);
           }
         };
         
