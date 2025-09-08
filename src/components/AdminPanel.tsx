@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useUnifiedAuth } from '@/hooks/useUnifiedAuth';
 import { useUserRole } from '@/hooks/useUserRole';
@@ -13,12 +14,11 @@ import ApiWebhookManager from './ApiWebhookManager';
 import NotificationTester from './NotificationTester';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Shield, Hash } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 const AdminPanel: React.FC = () => {
+  const { t } = useTranslation(['admin']);
   const { user } = useUnifiedAuth();
   const { loading, hasAdminAccess, hasNDAAAccess, hasSystemAdminAccess } = useUserRole();
-  const { t } = useLanguage();
 
   if (!user || !hasAdminAccess) {
     return (
@@ -86,18 +86,18 @@ const AdminPanel: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">System Roles Documentation</h3>
+                  <h3 className="text-lg font-semibold mb-2">{t('admin:systemRolesDocumentation')}</h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Generate comprehensive documentation for all user roles, permissions, and system workflows.
+                    {t('admin:generateComprehensiveDocumentation')}
                   </p>
                   <RolesDocumentGenerator />
                 </div>
               </div>
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">User Manual</h3>
+                  <h3 className="text-lg font-semibold mb-2">{t('admin:userManual')}</h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Generate user manual with step-by-step guides and platform instructions.
+                    {t('admin:generateUserManualDescription')}
                   </p>
                   <SystemManualPDF />
                 </div>

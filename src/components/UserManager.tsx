@@ -182,8 +182,8 @@ const UserManager: React.FC = () => {
     } catch (error) {
       console.error('Error fetching users:', error);
       toast({
-        title: "Error",
-        description: "Failed to fetch users",
+        title: t('admin:error'),
+        description: t('admin:failedToFetchUsers'),
         variant: "destructive"
       });
     } finally {
@@ -229,8 +229,8 @@ const UserManager: React.FC = () => {
       }
 
       toast({
-        title: "Success",
-        description: `Role assigned successfully${cityScope ? ' with city scope' : ''}`
+        title: t('admin:success'),
+        description: t('admin:roleAssignedSuccessfully') + (cityScope ? ' with city scope' : '')
       });
 
       await fetchUsers();
@@ -241,8 +241,8 @@ const UserManager: React.FC = () => {
     } catch (error) {
       console.error('Error assigning role:', error);
       toast({
-        title: "Error",
-        description: "Failed to assign role",
+        title: t('admin:error'),
+        description: t('admin:failedToAssignRole'),
         variant: "destructive"
       });
     }
@@ -259,16 +259,16 @@ const UserManager: React.FC = () => {
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Role removed successfully"
+        title: t('admin:success'),
+        description: t('admin:roleRemovedSuccessfully')
       });
 
       await fetchUsers();
     } catch (error) {
       console.error('Error removing role:', error);
       toast({
-        title: "Error",
-        description: "Failed to remove role",
+        title: t('admin:error'),
+        description: t('admin:failedToRemoveRole'),
         variant: "destructive"
       });
     }
@@ -309,8 +309,8 @@ const UserManager: React.FC = () => {
       }
 
       toast({
-        title: "Success",
-        description: "User information updated successfully"
+        title: t('admin:success'),
+        description: t('admin:userInformationUpdatedSuccessfully')
       });
 
       await fetchUsers();
@@ -319,8 +319,8 @@ const UserManager: React.FC = () => {
     } catch (error) {
       console.error('Error updating user:', error);
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to update user information",
+        title: t('admin:error'),
+        description: error instanceof Error ? error.message : t('admin:failedToUpdateUser'),
         variant: "destructive"
       });
     }
@@ -347,8 +347,8 @@ const UserManager: React.FC = () => {
       }
 
       toast({
-        title: "Success",
-        description: "User deleted successfully"
+        title: t('admin:success'),
+        description: t('admin:userDeletedSuccessfully')
       });
 
       await fetchUsers();
@@ -357,8 +357,8 @@ const UserManager: React.FC = () => {
     } catch (error) {
       console.error('Error deleting user:', error);
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to delete user",
+        title: t('admin:error'),
+        description: error instanceof Error ? error.message : t('admin:failedToDeleteUser'),
         variant: "destructive"
       });
     }
@@ -501,7 +501,7 @@ const UserManager: React.FC = () => {
                           <p className="text-sm">{user.organization || t('admin:notSpecified')}</p>
                         </TableCell>
                         <TableCell>
-                          <p className="text-sm">{user.phone || 'Not provided'}</p>
+                          <p className="text-sm">{user.phone || t('admin:notProvided')}</p>
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-wrap gap-1">
@@ -522,7 +522,7 @@ const UserManager: React.FC = () => {
                               </Badge>
                             ))}
                             {user.roles.length === 0 && (
-                              <span className="text-sm text-muted-foreground">No roles assigned</span>
+                              <span className="text-sm text-muted-foreground">{t('admin:noRolesAssigned')}</span>
                             )}
                           </div>
                         </TableCell>
@@ -536,7 +536,7 @@ const UserManager: React.FC = () => {
                               }}
                             >
                               <SelectTrigger className="w-32">
-                                <SelectValue placeholder="Assign role" />
+                                <SelectValue placeholder={t('admin:assignRole')} />
                               </SelectTrigger>
                               <SelectContent>
                                 {(hasPoliceAdminAccess ? policeRoles : addressingRoles).filter(role => 
@@ -594,7 +594,7 @@ const UserManager: React.FC = () => {
                         </div>
                         <div>
                           <span className="font-medium">Phone:</span>
-                          <span className="ml-2">{user.phone || 'Not provided'}</span>
+                          <span className="ml-2">{user.phone || t('admin:notProvided')}</span>
                         </div>
                       </div>
 
@@ -618,7 +618,7 @@ const UserManager: React.FC = () => {
                             </Badge>
                           ))}
                           {user.roles.length === 0 && (
-                            <span className="text-sm text-muted-foreground">No roles assigned</span>
+                            <span className="text-sm text-muted-foreground">{t('admin:noRolesAssigned')}</span>
                           )}
                         </div>
                       </div>
@@ -632,7 +632,7 @@ const UserManager: React.FC = () => {
                           }}
                         >
                           <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Assign role" />
+                            <SelectValue placeholder={t('admin:assignRole')} />
                           </SelectTrigger>
                           <SelectContent>
                             {(hasPoliceAdminAccess ? policeRoles : addressingRoles).filter(role => 
@@ -799,7 +799,7 @@ const UserManager: React.FC = () => {
                 }}
                 disabled={!selectedCity}
               >
-                Assign Role
+                {t('admin:assignRole')}
               </Button>
             </div>
           </div>
@@ -812,10 +812,10 @@ const UserManager: React.FC = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Edit className="h-5 w-5" />
-              Edit User Information
+              {t('admin:editUserInformation')}
             </DialogTitle>
             <DialogDescription>
-              Update user profile information and password.
+              {t('admin:updateUserProfile')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -999,7 +999,7 @@ const UserManager: React.FC = () => {
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <Trash2 className="h-5 w-5 text-destructive" />
-              Delete User
+              {t('admin:deleteUser')}
             </AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete <strong>{selectedUser?.full_name || selectedUser?.email}</strong>? 
