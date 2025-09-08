@@ -13,6 +13,7 @@ import {
   createStandardMap, 
   createPOIMarker, 
   createStandardInfoWindow,
+  createFlashingSearchMarker,
   MAP_CONFIG,
   STANDARD_LEGEND
 } from '@/lib/mapConfig';
@@ -42,6 +43,7 @@ interface MapViewProps {
   zoom?: number;
   locations?: MapLocation[];
   onLocationSelect?: (location: MapLocation) => void;
+  highlightUac?: string; // UAC to flash/highlight
 }
 
 // Default center: Malabo, Equatorial Guinea
@@ -51,7 +53,8 @@ const MapView: React.FC<MapViewProps> = ({
   center = DEFAULT_CENTER, 
   zoom = 12, 
   locations = [],
-  onLocationSelect 
+  onLocationSelect,
+  highlightUac
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<google.maps.Map | null>(null);
@@ -186,6 +189,8 @@ const MapView: React.FC<MapViewProps> = ({
         return;
       }
 
+      const position = { lat: location.coordinates[1], lng: location.coordinates[0] };
+
       const infoWindow = createStandardInfoWindow(
         location.name,
         location.type,
@@ -193,26 +198,57 @@ const MapView: React.FC<MapViewProps> = ({
           uac: location.uac,
           type: location.type,
           verified: location.verified,
-          coordinates: { lat: location.coordinates[1], lng: location.coordinates[0] }
+          coordinates: position
         }
       );
 
-      const marker = createPOIMarker(
-        map.current!,
-        { lat: location.coordinates[1], lng: location.coordinates[0] },
-        location.type,
-        {
-          title: `UAC: ${location.uac}`,
-          onClick: () => {
-            console.log('Marker clicked:', location);
-            setSelectedAddress(location);
-            setIsModalOpen(true);
-            onLocationSelect?.(location);
-          },
-          onHover: () => infoWindow.open(map.current, marker),
-          onHoverEnd: () => infoWindow.close()
-        }
-      );
+      const isHighlighted = !!highlightUac && location.uac === highlightUac;
+
+      let marker: google.maps.Marker;
+      if (isHighlighted) {
+        marker = createFlashingSearchMarker(
+          map.current!,
+          position,
+          location.type,
+          {
+            title: `UAC: ${location.uac}`,
+            uac: location.uac,
+            duration: 8000,
+          }
+        );
+        // Ensure visibility and context
+        map.current!.panTo(position);
+        map.current!.setZoom(MAP_CONFIG.defaultCurrentLocationZoom);
+        infoWindow.open(map.current, marker);
+        setTimeout(() => infoWindow.close(), 5000);
+
+        // Hover handlers for highlighted marker
+        marker.addListener('mouseover', () => infoWindow.open(map.current, marker));
+        marker.addListener('mouseout', () => infoWindow.close());
+        marker.addListener('click', () => {
+          console.log('Marker clicked:', location);
+          setSelectedAddress(location);
+          setIsModalOpen(true);
+          onLocationSelect?.(location);
+        });
+      } else {
+        marker = createPOIMarker(
+          map.current!,
+          position,
+          location.type,
+          {
+            title: `UAC: ${location.uac}`,
+            onClick: () => {
+              console.log('Marker clicked:', location);
+              setSelectedAddress(location);
+              setIsModalOpen(true);
+              onLocationSelect?.(location);
+            },
+            onHover: () => infoWindow.open(map.current, marker),
+            onHoverEnd: () => infoWindow.close()
+          }
+        );
+      }
 
       markers.current.push(marker);
     });

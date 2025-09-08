@@ -191,6 +191,7 @@ const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack, au
               center={[address.coordinates.lng, address.coordinates.lat]}
               zoom={15}
               locations={[mapLocation]}
+              highlightUac={address.uac}
               onLocationSelect={(location) => {
                 toast({
                   title: "Address Selected",
