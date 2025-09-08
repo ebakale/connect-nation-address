@@ -76,5 +76,22 @@
   "verified": "Verificado",
   "viewOnMap": "Ver en mapa",
   "noAddressesFound": "No se encontraron direcciones para \"{{query}}\"",
-  "tryDifferentSearch": "Intenta buscar con un término diferente o código UAC"
+  "tryDifferentSearch": "Intenta buscar con un término diferente o código UAC",
+  "pointsOfInterest": "Puntos de Interés",
+  "legendLabels": {
+    "commercial": "Comercial",
+    "landmark": "Punto de Referencia",
+    "government": "Gobierno", 
+    "industrial": "Industrial",
+    "residential": "Residencial",
+    "yourlocation": "Tu Ubicación"
+  },
+  "addresses": "Direcciones",
+  "gettingLocation": "Obteniendo Ubicación...",
+  "myLocation": "Mi Ubicación",
+  "satellite": "Satélite",
+  "street": "Calles",
+  "enableLocationMessage": "Habilita la ubicación para ver puntos de interés cercanos (2km)",
+  "locationError": "Error de Ubicación",
+  "poiWithin2km": "PDI dentro de 2km"
 }

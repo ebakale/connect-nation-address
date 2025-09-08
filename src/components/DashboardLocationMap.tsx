@@ -1,5 +1,6 @@
 /// <reference types="google.maps" />
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -59,6 +60,7 @@ const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({
   searchedAddress, 
   onAddressSearched 
 }) => {
+  const { t } = useTranslation('dashboard');
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<google.maps.Map | null>(null);
   const currentLocationMarker = useRef<google.maps.Marker | null>(null);
@@ -508,7 +510,7 @@ const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({
       {/* Legend - Horizontal layout above map */}
       <Card className="bg-background/95 backdrop-blur">
         <CardContent className="p-3">
-          <h4 className="font-semibold text-sm mb-3">{STANDARD_LEGEND.title}</h4>
+          <h4 className="font-semibold text-sm mb-3">{t('pointsOfInterest')}</h4>
           <div className="flex flex-wrap gap-4">
             {STANDARD_LEGEND.items.map((item, index) => (
               <div key={index} className="flex items-center gap-2 text-xs">
@@ -516,7 +518,7 @@ const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({
                   className={`w-3 h-3 rounded-full ${item.special ? 'border-2 border-white shadow-lg' : ''}`}
                   style={{ backgroundColor: item.color }}
                 ></div>
-                <span>{item.label}</span>
+                <span>{t(`legendLabels.${item.label.toLowerCase().replace(' ', '')}`)}</span>
               </div>
             ))}
           </div>
@@ -577,7 +579,7 @@ const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({
                 disabled={locationLoading}
               >
                 <Crosshair className="h-4 w-4 mr-2" />
-                {locationLoading ? 'Getting Location...' : 'My Location'}
+                {locationLoading ? t('gettingLocation') : t('myLocation')}
               </Button>
 
               <Button
@@ -589,12 +591,12 @@ const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({
                 {mapType === 'roadmap' ? (
                   <>
                     <Satellite className="h-4 w-4 mr-2" />
-                    Satellite
+                    {t('satellite')}
                   </>
                 ) : (
                   <>
                     <Map className="h-4 w-4 mr-2" />
-                    Street
+                    {t('street')}
                   </>
                 )}
               </Button>
@@ -602,7 +604,7 @@ const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({
               {(!latitude || !longitude) && !locationLoading && (
                 <Badge variant="outline" className="border-warning text-warning bg-warning/10 backdrop-blur">
                   <AlertCircle className="h-3 w-3 mr-1" />
-                  Enable location to see nearby POIs (2km)
+                  {t('enableLocationMessage')}
                 </Badge>
               )}
               
@@ -610,7 +612,7 @@ const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({
               {locationError && (
                 <Badge variant="destructive" className="bg-destructive/90 backdrop-blur">
                   <AlertCircle className="h-3 w-3 mr-1" />
-                  Location Error
+                  {t('locationError')}
                 </Badge>
               )}
             </div>
@@ -623,7 +625,7 @@ const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({
               <div className="flex items-center gap-2 text-sm">
                 <Building2 className="h-4 w-4 text-primary" />
                 <span className="font-semibold">{locations.length}</span>
-                <span className="text-muted-foreground">POI within 2km</span>
+                <span className="text-muted-foreground">{t('poiWithin2km')}</span>
               </div>
               </CardContent>
             </Card>
