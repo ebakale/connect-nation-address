@@ -285,18 +285,22 @@ export const ReporterNotifications = () => {
                             <div className="grid grid-cols-2 gap-2 text-xs">
                               {Object.entries(notification.metadata).map(([key, value]) => (
                                 <div key={key} className="flex flex-col">
-                                  <span className="text-muted-foreground capitalize">{key.replace(/_/g, ' ')}</span>
-                                  <span className="font-medium">{String(value)}</span>
+                                  <span className="text-muted-foreground capitalize">
+                                    {t(`metadataFields.${key}`, { defaultValue: key.replace(/_/g, ' ') })}
+                                  </span>
+                                  <span className="font-medium">
+                                    {key === 'notification_type' ? t(`notificationTypes.${value}`, { defaultValue: String(value) }) : String(value)}
+                                  </span>
                                 </div>
                               ))}
                             </div>
                           </div>
                         )}
                         
-                        <div className="flex items-center justify-between pt-2">
-                          <Badge variant="outline" className="text-xs">
-                            {notification.type}
-                          </Badge>
+                         <div className="flex items-center justify-between pt-2">
+                           <Badge variant="outline" className="text-xs">
+                             {t(`notificationTypes.${notification.type}`, { defaultValue: notification.type })}
+                           </Badge>
                           {!notification.read && (
                             <Button
                               variant="ghost"

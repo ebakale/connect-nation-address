@@ -245,5 +245,19 @@
   },
   "notificationSuccess": {
     "allMarkedAsRead": "Todas las notificaciones marcadas como leídas"
+  },
+  "metadataFields": {
+    "incident_number": "Número de Incidente",
+    "emergency_type": "Tipo de Emergencia",
+    "notification_type": "Tipo de Notificación",
+    "old_status": "Estado Anterior",
+    "new_status": "Nuevo Estado",
+    "timestamp": "Marca de Tiempo"
+  },
+  "notificationTypes": {
+    "incident_update": "Actualización de Incidente",
+    "acknowledgment": "Reconocimiento",
+    "status_update": "Actualización de Estado",
+    "resolution": "Resolución"
   }
 }

@@ -61,5 +61,19 @@
   },
   "notificationSuccess": {
     "allMarkedAsRead": "Toutes les notifications marquées comme lues"
+  },
+  "metadataFields": {
+    "incident_number": "Numéro d'Incident",
+    "emergency_type": "Type d'Urgence",
+    "notification_type": "Type de Notification",
+    "old_status": "Statut Précédent",
+    "new_status": "Nouveau Statut",
+    "timestamp": "Horodatage"
+  },
+  "notificationTypes": {
+    "incident_update": "Mise à Jour d'Incident",
+    "acknowledgment": "Accusé de Réception",
+    "status_update": "Mise à Jour de Statut",
+    "resolution": "Résolution"
   }
 }
