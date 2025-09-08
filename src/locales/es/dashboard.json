@@ -48,5 +48,11 @@
   "expand": "Expandir",
   "collapse": "Contraer",
   "fullscreen": "Pantalla completa",
-  "exitFullscreen": "Salir de pantalla completa"
+  "exitFullscreen": "Salir de pantalla completa",
+  "totalUsers": "Usuarios Totales",
+  "activeRoles": "Roles Activos",
+  "pendingApprovals": "Aprobaciones Pendientes",
+  "publicAddresses": "Direcciones Públicas",
+  "clickToApproveRequests": "Haz clic para aprobar solicitudes",
+  "emergencyContacts": "Contactos de Emergencia"
 }

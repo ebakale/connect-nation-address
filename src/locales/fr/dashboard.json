@@ -1,1 +1,21 @@
-{"title": "Tableau de bord", "overview": "Aperçu", "systemOverview": "Aperçu du système", "welcomeBack": "Bon retour, {{name}} !", "welcomeMessage": "Voici ce qui se passe avec votre compte aujourd'hui.", "statistics": "Statistiques", "recentActivity": "Activité récente", "quickActions": "Actions rapides", "notifications": "Notifications", "searchAddresses": "Rechercher des adresses", "searchDescription": "Trouver des adresses vérifiées dans la base de données nationale"}
+{
+  "title": "Tableau de bord",
+  "overview": "Aperçu",
+  "systemOverview": "Aperçu du système",
+  "welcomeBack": "Bon retour, {{name}} !",
+  "welcomeMessage": "Voici ce qui se passe avec votre compte aujourd'hui.",
+  "statistics": "Statistiques",
+  "recentActivity": "Activité récente",
+  "quickActions": "Actions rapides",
+  "notifications": "Notifications",
+  "searchAddresses": "Rechercher des adresses",
+  "searchDescription": "Trouver des adresses vérifiées dans la base de données nationale",
+  "nearbyPOI": "Carte à proximité et points d'intérêt",
+  "locationDescription": "Affiche votre position actuelle, les UAC dans un rayon de 20 m et les lieux non résidentiels à proximité.",
+  "totalUsers": "Nombre total d'utilisateurs",
+  "activeRoles": "Rôles actifs",
+  "pendingApprovals": "Approbations en attente",
+  "publicAddresses": "Adresses publiques",
+  "clickToApproveRequests": "Cliquez pour approuver les demandes",
+  "emergencyContacts": "Contacts d'urgence"
+}

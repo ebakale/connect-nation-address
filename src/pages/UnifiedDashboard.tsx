@@ -291,9 +291,9 @@ const UnifiedDashboard = () => {
       case 'analytics': return 'Analytics';
       case 'province-management': return 'Province Management';
       case 'verification-tools': return 'Verification Tools';
-      case 'profile': return 'Profile Settings';
-      case 'emergency-contacts': return 'Emergency Contacts';
-      default: return t('dashboard');
+      case 'profile': return t('dashboard:title');
+      case 'emergency-contacts': return t('dashboard:emergencyContacts');
+      default: return t('dashboard:title');
     }
   };
 
@@ -309,9 +309,9 @@ const UnifiedDashboard = () => {
       case 'analytics': return 'View system analytics and reports';
       case 'province-management': return 'Manage provincial settings and configurations';
       case 'verification-tools': return 'Tools for address verification';
-      case 'profile': return 'Update your personal information and settings';
-      case 'emergency-contacts': return 'Manage emergency contact information';
-      default: return t('unifiedPortal');
+      case 'profile': return t('dashboard:welcomeMessage');
+      case 'emergency-contacts': return t('dashboard:welcomeMessage');
+      default: return t('dashboard:welcomeMessage');
     }
   };
 
@@ -324,9 +324,9 @@ const UnifiedDashboard = () => {
             {userProfile && (
               <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-6">
                 <h2 className="text-2xl font-bold text-foreground mb-2">
-                  {t('welcomeBack')}, {userProfile.full_name}!
+                  {t('dashboard:welcomeBack', { name: userProfile.full_name })}
                 </h2>
-                <p className="text-muted-foreground mb-4">Here's what's happening with your account today.</p>
+                <p className="text-muted-foreground mb-4">{t('dashboard:welcomeMessage')}</p>
                 
                 {/* User roles display */}
                 <div className="flex gap-2 mb-4">
@@ -355,10 +355,10 @@ const UnifiedDashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Search className="h-5 w-5" />
-                  Search Addresses
+                  {t('dashboard:searchAddresses')}
                 </CardTitle>
                 <CardDescription>
-                  Find verified addresses in the national database
+                  {t('dashboard:searchDescription')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -376,10 +376,10 @@ const UnifiedDashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MapPin className="h-5 w-5" />
-                  Nearby Map and Points of Interest
+                  {t('dashboard:nearbyPOI')}
                 </CardTitle>
                 <CardDescription>
-                  Shows your current location, UAC within 20m, and nearby non-residential places.
+                  {t('dashboard:locationDescription')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-0">
@@ -393,11 +393,11 @@ const UnifiedDashboard = () => {
             {/* Admin Metrics */}
             {hasAdminAccess && (
               <div>
-                <h3 className="text-xl font-semibold mb-4">{t('systemOverview')}</h3>
+                <h3 className="text-xl font-semibold mb-4">{t('dashboard:systemOverview')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                   <Card className="hover:shadow-md transition-shadow">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{t('totalUsers')}</CardTitle>
+                      <CardTitle className="text-sm font-medium">{t('dashboard:totalUsers')}</CardTitle>
                       <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -408,7 +408,7 @@ const UnifiedDashboard = () => {
 
                   <Card className="hover:shadow-md transition-shadow">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{t('activeRoles')}</CardTitle>
+                      <CardTitle className="text-sm font-medium">{t('dashboard:activeRoles')}</CardTitle>
                       <Shield className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -419,18 +419,18 @@ const UnifiedDashboard = () => {
 
                   <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setActiveView('admin-panel')}>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{t('pendingApprovals')}</CardTitle>
+                      <CardTitle className="text-sm font-medium">{t('dashboard:pendingApprovals')}</CardTitle>
                       <Settings className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{stats.pendingApprovals}</div>
-                      <p className="text-xs text-muted-foreground">{t('clickToApproveRequests')}</p>
+                      <p className="text-xs text-muted-foreground">{t('dashboard:clickToApproveRequests')}</p>
                     </CardContent>
                   </Card>
 
                   <Card className="hover:shadow-md transition-shadow">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{t('publicAddresses')}</CardTitle>
+                      <CardTitle className="text-sm font-medium">{t('dashboard:publicAddresses')}</CardTitle>
                       <BarChart3 className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -596,7 +596,7 @@ const UnifiedDashboard = () => {
                   className="flex items-center gap-2"
                 >
                   <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline">{t('logout')}</span>
+                  <span className="hidden sm:inline">{t('common:navigation.logout')}</span>
                 </Button>
               </div>
             </div>
