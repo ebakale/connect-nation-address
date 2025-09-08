@@ -69,5 +69,12 @@
   "main": "Principal",
   "workflow": "Flujo de Trabajo",
   "management": "Gestión",
-  "settings": "Configuración"
+  "settings": "Configuración",
+  "searchPlaceholder": "Buscar por dirección, código UAC o punto de referencia...",
+  "searching": "Buscando...",
+  "search": "Buscar",
+  "verified": "Verificado",
+  "viewOnMap": "Ver en mapa",
+  "noAddressesFound": "No se encontraron direcciones para \"{{query}}\"",
+  "tryDifferentSearch": "Intenta buscar con un término diferente o código UAC"
 }

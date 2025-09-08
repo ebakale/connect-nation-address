@@ -69,5 +69,12 @@
   "main": "Main",
   "workflow": "Workflow", 
   "management": "Management",
-  "settings": "Settings"
+  "settings": "Settings",
+  "searchPlaceholder": "Search by address, UAC code, or landmark...",
+  "searching": "Searching...",
+  "search": "Search",
+  "verified": "Verified",
+  "viewOnMap": "View on map",
+  "noAddressesFound": "No addresses found for \"{{query}}\"",
+  "tryDifferentSearch": "Try searching with a different term or UAC code"
 }

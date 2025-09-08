@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -23,6 +24,7 @@ interface AddressSearchProps {
 }
 
 const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, className }) => {
+  const { t } = useTranslation('dashboard');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -100,7 +102,7 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
       <div className="flex gap-2">
         <div className="relative flex-1">
           <Input
-            placeholder="Search by address, UAC code, or landmark..."
+            placeholder={t('searchPlaceholder')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyPress={handleKeyPress}
@@ -113,7 +115,7 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
           disabled={isSearching || !query.trim()}
           variant="hero"
         >
-          {isSearching ? "Searching..." : "Search"}
+          {isSearching ? t('searching') : t('search')}
         </Button>
       </div>
 
@@ -139,7 +141,7 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
                           </span>
                           {result.verified && (
                             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-success/10 text-success whitespace-nowrap">
-                              Verified
+                              {t('verified')}
                             </span>
                           )}
                         </div>
@@ -160,8 +162,8 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
                         variant="ghost"
                         size="icon"
                         onClick={(e) => { e.stopPropagation(); handleSelectResult(result); }}
-                        aria-label="View on map"
-                        title="View on map"
+                        aria-label={t('viewOnMap')}
+                        title={t('viewOnMap')}
                         className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10"
                       >
                         <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
@@ -173,8 +175,8 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
             ) : (
               <div className="p-4 sm:p-6 text-center text-muted-foreground">
                 <Search className="h-6 w-6 sm:h-8 sm:w-8 mx-auto mb-2 opacity-50" />
-                <p className="text-sm sm:text-base">No addresses found for "{query}"</p>
-                <p className="text-xs sm:text-sm mt-1">Try searching with a different term or UAC code</p>
+                <p className="text-sm sm:text-base">{t('noAddressesFound', { query })}</p>
+                <p className="text-xs sm:text-sm mt-1">{t('tryDifferentSearch')}</p>
               </div>
             )}
           </CardContent>

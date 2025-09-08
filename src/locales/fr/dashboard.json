@@ -32,5 +32,12 @@
   "main": "Principal",
   "workflow": "Flux de Travail",
   "management": "Gestion",
-  "settings": "Paramètres"
+  "settings": "Paramètres",
+  "searchPlaceholder": "Rechercher par adresse, code UAC ou point de repère...",
+  "searching": "Recherche...",
+  "search": "Rechercher",
+  "verified": "Vérifié",
+  "viewOnMap": "Voir sur la carte",
+  "noAddressesFound": "Aucune adresse trouvée pour \"{{query}}\"",
+  "tryDifferentSearch": "Essayez de rechercher avec un terme différent ou un code UAC"
 }
