@@ -290,5 +290,22 @@
   },
 
   "verifierGeographicScopeDesc": "Vérificateur {district: MAL} peut seulement vérifier adresses où hierarchy.district == MAL",
-  "partnerApiScopeDesc": "Partenaire {org: EMS, scope: read_verified} obtient lectures prioritaires et webhooks d'événements mais pas d'écritures"
+  "partnerApiScopeDesc": "Partenaire {org: EMS, scope: read_verified} obtient lectures prioritaires et webhooks d'événements mais pas d'écritures",
+
+  "uacFormatLabel": "Format UAC",
+  "exampleLabel": "Exemple",
+  "exampleDescription": "Guinée Équatoriale, Bioko Norte, Malabo",
+  "unknown": "Inconnu",
+  "invalidFormat": "Format invalide",
+  "country": "Pays",
+  "region": "Région",
+  "city": "Ville",
+  "sequence": "Séquence", 
+  "checkDigit": "Chiffre de Contrôle",
+  "address": "Adresse",
+  "location": "Localisation",
+  "created": "Créé",
+  "status": "Statut",
+  "uacValidation": "Validation UAC",
+  "addressType": "Type d'Adresse"
 }

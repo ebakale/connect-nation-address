@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
   Home,
@@ -47,6 +48,7 @@ interface DashboardSidebarProps {
 }
 
 export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: DashboardSidebarProps) {
+  const { t } = useTranslation('dashboard');
   const { state, setOpen, setOpenMobile } = useSidebar();
   const collapsed = state === 'collapsed';
   const isMobile = useIsMobile();
@@ -74,91 +76,91 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   const navigationItems: NavigationItem[] = [
     {
       id: 'overview',
-      title: 'Dashboard Overview',
+      title: t('dashboardOverview'),
       icon: Home,
       onClick: () => handleItemClick('overview'),
       visible: true
     },
     {
       id: 'submit-request',
-      title: 'Submit Request',
+      title: t('submitRequest'),
       icon: FileText,
       onClick: () => handleItemClick('submit-request'),
       visible: isCitizen || isFieldAgent
     },
     {
       id: 'request-status',
-      title: 'Request Status',
+      title: t('requestStatus'),
       icon: Clock,
       onClick: () => handleItemClick('request-status'),
       visible: isCitizen || isFieldAgent
     },
     {
       id: 'capture-address',
-      title: 'Capture Address',
+      title: t('captureAddress'),
       icon: Camera,
       onClick: () => handleItemClick('capture-address'),
       visible: canCreateDraftAddress
     },
     {
       id: 'verification-queue',
-      title: 'Verification Queue',
+      title: t('verificationQueue'),
       icon: CheckCircle,
       onClick: () => handleItemClick('verification-queue'),
       visible: canVerifyAddresses
     },
     {
       id: 'publishing-queue',
-      title: 'Publishing Queue',
+      title: t('publishingQueue'),
       icon: MapPin,
       onClick: () => handleItemClick('publishing-queue'),
       visible: canPublishAddresses
     },
     {
       id: 'unpublishing-queue',
-      title: 'Unpublishing Queue',
+      title: t('unpublishingQueue'),
       icon: AlertCircle,
       onClick: () => handleItemClick('unpublishing-queue'),
       visible: canPublishAddresses
     },
     {
       id: 'address-data',
-      title: 'Address Data',
+      title: t('addressData'),
       icon: FileDown,
       onClick: () => handleItemClick('address-data'),
       visible: hasAdminAccess
     },
     {
       id: 'analytics',
-      title: 'Analytics',
+      title: t('analytics'),
       icon: BarChart3,
       onClick: () => handleItemClick('analytics'),
       visible: hasAdminAccess
     },
     {
       id: 'province-management',
-      title: 'Province Management',
+      title: t('provinceManagement'),
       icon: Settings,
       onClick: () => handleItemClick('province-management'),
       visible: hasAdminAccess
     },
     {
       id: 'verification-tools',
-      title: 'Verification Tools',
+      title: t('verificationTools'),
       icon: Shield,
       onClick: () => handleItemClick('verification-tools'),
       visible: isVerifier || hasAdminAccess
     },
     {
       id: 'profile',
-      title: 'Profile Settings',
+      title: t('profileSettings'),
       icon: User,
       onClick: () => handleItemClick('profile'),
       visible: true
     },
     {
       id: 'emergency-contacts',
-      title: 'Emergency Contacts',
+      title: t('emergencyContacts'),
       icon: Phone,
       onClick: () => handleItemClick('emergency-contacts'),
       visible: true
@@ -243,10 +245,10 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
         )}
 
         {/* Navigation Groups */}
-        {renderMenuGroup(mainItems, "Main")}
-        {renderMenuGroup(workflowItems, "Workflow")}
-        {renderMenuGroup(managementItems, "Management")}
-        {renderMenuGroup(settingsItems, "Settings")}
+        {renderMenuGroup(mainItems, t('main'))}
+        {renderMenuGroup(workflowItems, t('workflow'))}
+        {renderMenuGroup(managementItems, t('management'))}
+        {renderMenuGroup(settingsItems, t('settings'))}
       </SidebarContent>
     </Sidebar>
   );

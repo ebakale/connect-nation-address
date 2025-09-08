@@ -54,5 +54,20 @@
   "pendingApprovals": "Pending Approvals",
   "publicAddresses": "Public Addresses",
   "clickToApproveRequests": "Click to approve requests",
-  "emergencyContacts": "Emergency Contacts"
+  "emergencyContacts": "Emergency Contacts",
+  "submitRequest": "Submit Request", 
+  "captureAddress": "Capture Address",
+  "verificationQueue": "Verification Queue",
+  "dashboardOverview": "Dashboard Overview",
+  "requestStatus": "Request Status",
+  "publishingQueue": "Publishing Queue",
+  "unpublishingQueue": "Unpublishing Queue", 
+  "profileSettings": "Profile Settings",
+  "addressData": "Address Data",
+  "provinceManagement": "Province Management",
+  "verificationTools": "Verification Tools",
+  "main": "Main",
+  "workflow": "Workflow", 
+  "management": "Management",
+  "settings": "Settings"
 }

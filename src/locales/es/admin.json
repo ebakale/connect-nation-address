@@ -443,5 +443,22 @@
   },
 
   "verifierGeographicScopeDesc": "Verificador {district: MAL} solo puede verificar direcciones donde hierarchy.district == MAL",
-  "partnerApiScopeDesc": "Socio {org: EMS, scope: read_verified} obtiene lecturas prioritarias y webhooks de eventos pero sin escrituras"
+  "partnerApiScopeDesc": "Socio {org: EMS, scope: read_verified} obtiene lecturas prioritarias y webhooks de eventos pero sin escrituras",
+
+  "uacFormatLabel": "Formato UAC",
+  "exampleLabel": "Ejemplo",
+  "exampleDescription": "Guinea Ecuatorial, Bioko Norte, Malabo", 
+  "unknown": "Desconocido",
+  "invalidFormat": "Formato inválido",
+  "country": "País",
+  "region": "Región",
+  "city": "Ciudad", 
+  "sequence": "Secuencia",
+  "checkDigit": "Dígito de Verificación",
+  "address": "Dirección",
+  "location": "Ubicación",
+  "created": "Creado",
+  "status": "Estado",
+  "uacValidation": "Validación UAC",
+  "addressType": "Tipo de Dirección"
 }

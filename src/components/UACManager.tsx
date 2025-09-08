@@ -180,8 +180,8 @@ export const UACManager: React.FC = () => {
           <Alert>
             <Info className="h-4 w-4" />
             <AlertDescription>
-              <strong>UAC Format:</strong> [COUNTRY]-[REGION]-[CITY]-[SEQUENCE]-[CHECK]<br />
-              <strong>Example:</strong> GQ-BN-MAL-001A23-7K (Equatorial Guinea, Bioko Norte, Malabo)
+              <strong>{t('uacFormatLabel')}:</strong> [COUNTRY]-[REGION]-[CITY]-[SEQUENCE]-[CHECK]<br />
+              <strong>{t('exampleLabel')}:</strong> GQ-BN-MAL-001A23-7K ({t('exampleDescription')})
             </AlertDescription>
           </Alert>
 
@@ -225,15 +225,15 @@ export const UACManager: React.FC = () => {
                   if (parsed) {
                     return (
                       <div className="text-sm space-y-1">
-                        <div>Country: {parsed.country} ({countryCodes[Object.keys(countryCodes).find(k => countryCodes[k] === parsed.country) || ''] || 'Unknown'})</div>
-                        <div>Region: {parsed.region} ({Object.keys(regionCodes).find(k => regionCodes[k] === parsed.region) || 'Unknown'})</div>
-                        <div>City: {parsed.city} ({Object.keys(cityCodes).find(k => cityCodes[k] === parsed.city) || 'Unknown'})</div>
-                        <div>Sequence: {parsed.sequence}</div>
-                        <div>Check Digit: {parsed.checkDigit}</div>
+                        <div>{t('country')}: {parsed.country} ({countryCodes[Object.keys(countryCodes).find(k => countryCodes[k] === parsed.country) || ''] || t('unknown')})</div>
+                        <div>{t('region')}: {parsed.region} ({Object.keys(regionCodes).find(k => regionCodes[k] === parsed.region) || t('unknown')})</div>
+                        <div>{t('city')}: {parsed.city} ({Object.keys(cityCodes).find(k => cityCodes[k] === parsed.city) || t('unknown')})</div>
+                        <div>{t('sequence')}: {parsed.sequence}</div>
+                        <div>{t('checkDigit')}: {parsed.checkDigit}</div>
                       </div>
                     );
                   }
-                  return <div className="text-sm text-muted-foreground">Invalid format</div>;
+                  return <div className="text-sm text-muted-foreground">{t('invalidFormat')}</div>;
                 })()}
               </div>
             )}
@@ -249,7 +249,7 @@ export const UACManager: React.FC = () => {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="test-country">Country</Label>
+                <Label htmlFor="test-country">{t('country')}</Label>
                 <Input
                   id="test-country"
                   value={testCountry}
@@ -257,7 +257,7 @@ export const UACManager: React.FC = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="test-region">Region</Label>
+                <Label htmlFor="test-region">{t('region')}</Label>
                 <Input
                   id="test-region"
                   value={testRegion}
@@ -265,7 +265,7 @@ export const UACManager: React.FC = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="test-city">City</Label>
+                <Label htmlFor="test-city">{t('city')}</Label>
                 <Input
                   id="test-city"
                   value={testCity}
@@ -348,7 +348,7 @@ export const UACManager: React.FC = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
                           <div className="space-y-3">
                             <div>
-                              <div className="text-sm font-medium text-muted-foreground">Address</div>
+                              <div className="text-sm font-medium text-muted-foreground">{t('address')}</div>
                               <div className="flex items-center gap-2">
                                 <Building className="h-4 w-4" />
                                 <div className="break-words">
@@ -359,7 +359,7 @@ export const UACManager: React.FC = () => {
                             </div>
                             
                             <div>
-                              <div className="text-sm font-medium text-muted-foreground">Location</div>
+                              <div className="text-sm font-medium text-muted-foreground">{t('location')}</div>
                               <div className="flex items-center gap-2">
                                 <MapPin className="h-4 w-4" />
                                 <div className="break-words">
@@ -370,7 +370,7 @@ export const UACManager: React.FC = () => {
                             </div>
                             
                             <div>
-                              <div className="text-sm font-medium text-muted-foreground">Created</div>
+                              <div className="text-sm font-medium text-muted-foreground">{t('created')}</div>
                               <div className="text-sm">
                                 {new Date(record.created_at).toLocaleDateString()}
                               </div>
@@ -379,7 +379,7 @@ export const UACManager: React.FC = () => {
                           
                           <div className="space-y-3">
                             <div>
-                              <div className="text-sm font-medium text-muted-foreground">Status</div>
+                              <div className="text-sm font-medium text-muted-foreground">{t('status')}</div>
                               <div className="flex gap-2 flex-wrap">
                                 {record.verified && (
                                   <Badge variant="default" className="bg-green-100 text-green-800 text-xs">
@@ -395,7 +395,7 @@ export const UACManager: React.FC = () => {
                             </div>
                             
                             <div>
-                              <div className="text-sm font-medium text-muted-foreground">UAC Validation</div>
+                              <div className="text-sm font-medium text-muted-foreground">{t('uacValidation')}</div>
                               <div className="flex items-center gap-2">
                                 {validateUAC(record.uac) ? (
                                   <>
@@ -412,7 +412,7 @@ export const UACManager: React.FC = () => {
                             </div>
                             
                             <div>
-                              <div className="text-sm font-medium text-muted-foreground">Address Type</div>
+                              <div className="text-sm font-medium text-muted-foreground">{t('addressType')}</div>
                               <Badge variant="outline" className="text-xs">
                                 {record.address_type}
                               </Badge>

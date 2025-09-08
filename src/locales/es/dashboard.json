@@ -54,5 +54,20 @@
   "pendingApprovals": "Aprobaciones Pendientes",
   "publicAddresses": "Direcciones Públicas",
   "clickToApproveRequests": "Haz clic para aprobar solicitudes",
-  "emergencyContacts": "Contactos de Emergencia"
+  "emergencyContacts": "Contactos de Emergencia",
+  "submitRequest": "Enviar Solicitud",
+  "captureAddress": "Capturar Dirección", 
+  "verificationQueue": "Cola de Verificación",
+  "dashboardOverview": "Resumen del Panel",
+  "requestStatus": "Estado de Solicitud",
+  "publishingQueue": "Cola de Publicación",
+  "unpublishingQueue": "Cola de Despublicación",
+  "profileSettings": "Configuración de Perfil",
+  "addressData": "Datos de Dirección",
+  "provinceManagement": "Gestión Provincial",
+  "verificationTools": "Herramientas de Verificación",
+  "main": "Principal",
+  "workflow": "Flujo de Trabajo",
+  "management": "Gestión",
+  "settings": "Configuración"
 }

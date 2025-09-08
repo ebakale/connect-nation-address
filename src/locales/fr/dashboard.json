@@ -17,5 +17,20 @@
   "pendingApprovals": "Approbations en attente",
   "publicAddresses": "Adresses publiques",
   "clickToApproveRequests": "Cliquez pour approuver les demandes",
-  "emergencyContacts": "Contacts d'urgence"
+  "emergencyContacts": "Contacts d'urgence",
+  "submitRequest": "Soumettre une Demande",
+  "captureAddress": "Capturer une Adresse",
+  "verificationQueue": "File de Vérification",
+  "dashboardOverview": "Aperçu du Tableau de Bord",
+  "requestStatus": "Statut de la Demande",
+  "publishingQueue": "File de Publication",
+  "unpublishingQueue": "File de Dépublication",
+  "profileSettings": "Paramètres de Profil",
+  "addressData": "Données d'Adresse",
+  "provinceManagement": "Gestion Provinciale", 
+  "verificationTools": "Outils de Vérification",
+  "main": "Principal",
+  "workflow": "Flux de Travail",
+  "management": "Gestion",
+  "settings": "Paramètres"
 }
