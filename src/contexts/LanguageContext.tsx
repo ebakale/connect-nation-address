@@ -1,14 +1,19 @@
 import React, { createContext, useContext, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface LanguageContextType {
-  t: (key: string) => string;
+  t: (key: string, options?: any) => string;
+  currentLanguage: string;
+  changeLanguage: (language: string) => void;
 }
 
 const LanguageContext = createContext<LanguageContextType>({
-  t: (key: string) => key, // Default fallback that returns the key
+  t: (key: string) => key,
+  currentLanguage: 'en',
+  changeLanguage: () => {},
 });
 
-// Force refresh - English-only translations
+// Legacy translations for backward compatibility - will be gradually removed
 const translations: Record<string, string> = {
   // Emergency Management System
   emergencyManagement: 'Emergency Management',
@@ -509,8 +514,12 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     return translations[key] || key;
   };
 
+  const { t: i18nT, i18n } = useTranslation();
+
   const value: LanguageContextType = {
-    t,
+    t: i18nT,
+    currentLanguage: i18n.language,
+    changeLanguage: (language: string) => i18n.changeLanguage(language),
   };
 
   return (

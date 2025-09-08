@@ -10,6 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Globe, Shield, Lock, Mail, Wifi, WifiOff, User } from 'lucide-react';
 import { useUnifiedAuth } from '@/hooks/useUnifiedAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 import { useUserRole } from '@/hooks/useUserRole';
 import Footer from '@/components/Footer';
 
@@ -28,7 +30,7 @@ const UnifiedAuth = () => {
   
   const { signIn, signUp, user, isOnlineMode } = useUnifiedAuth();
   const { isPoliceRole, loading: roleLoading } = useUserRole();
-  const { t } = useLanguage(); // Using updated language context
+  const { t } = useTranslation(); // Using i18next directly
 
   if (user) {
     if (roleLoading) return null;
@@ -78,19 +80,28 @@ const UnifiedAuth = () => {
       
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-lg space-y-8">
-          {/* Connection Status Badge */}
-          <div className="flex justify-center">
-            <Badge 
-              variant="outline" 
-              className={`${
-                isOnlineMode 
-                  ? "text-green-700 border-green-200 bg-green-50/80" 
-                  : "text-orange-700 border-orange-200 bg-orange-50/80"
-              } backdrop-blur-sm`}
-            >
-              {isOnlineMode ? <Wifi className="w-3 h-3 mr-2" /> : <WifiOff className="w-3 h-3 mr-2" />}
-              {isOnlineMode ? 'Online Mode' : 'Offline Mode'}
-            </Badge>
+          {/* Header with Language Switcher and Connection Status */}
+          <div className="flex justify-between items-start">
+            <div className="flex-1">
+              <div className="flex justify-center">
+                <Badge 
+                  variant="outline" 
+                  className={`px-4 py-2 text-sm font-medium shadow-lg ${
+                    isOnlineMode 
+                      ? "text-emerald-700 border-emerald-200 bg-emerald-50/80" 
+                      : "text-orange-700 border-orange-200 bg-orange-50/80"
+                  } backdrop-blur-sm`}
+                >
+                  {isOnlineMode ? <Wifi className="w-3 h-3 mr-2" /> : <WifiOff className="w-3 h-3 mr-2" />}
+                  {isOnlineMode ? t('common:status.active') : t('common:status.inactive')}
+                </Badge>
+              </div>
+            </div>
+            
+            {/* Language Switcher */}
+            <div className="ml-4">
+              <LanguageSwitcher />
+            </div>
           </div>
           
           {/* Header */}
@@ -100,11 +111,11 @@ const UnifiedAuth = () => {
             </div>
             <div className="space-y-2">
               <h1 className="text-4xl font-bold text-white tracking-tight">ConnectEG</h1>
-              <p className="text-white/80 max-w-md mx-auto leading-relaxed">{t('nationalAddressRegistry')}</p>
+              <p className="text-white/80 max-w-md mx-auto leading-relaxed">{t('auth:title')}</p>
               <p className="text-white/60 text-sm">
                 {isOnlineMode 
-                  ? 'Connected to national database' 
-                  : 'Working offline - data will sync when connected'
+                  ? t('common:status.active') 
+                  : t('common:status.inactive')
                 }
               </p>
             </div>

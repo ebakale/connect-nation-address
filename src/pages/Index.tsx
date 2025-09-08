@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useUserRole } from '@/hooks/useUserRole';
 import Footer from '@/components/Footer';
 
@@ -775,6 +776,7 @@ const navigationItems = [
               <span className="text-xl sm:text-2xl font-bold text-gradient text-center">{t('connectEGPlatform')}</span>
             </div>
             <div className="flex items-center gap-3 absolute right-0">
+              <LanguageSwitcher />
             </div>
           </div>
         </div>
