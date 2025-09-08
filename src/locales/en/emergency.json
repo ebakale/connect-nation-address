@@ -226,5 +226,24 @@
   },
   "success": {
     "alertSent": "Emergency alert sent successfully!"
+  },
+  "incidentNotifications": "Incident Notifications",
+  "loadingNotifications": "Loading notifications...",
+  "pleaseLogInToView": "Please log in to view your notifications",
+  "markAllAsRead": "Mark all as read",
+  "noNotificationsYet": "No notifications yet",
+  "willReceiveUpdates": "You'll receive updates about your incident reports here",
+  "priorityLevel": "Priority {{level}}",
+  "new": "New",
+  "incidentNumber": "Incident #{{number}}",
+  "messageDetails": "Message Details",
+  "additionalInformation": "Additional Information",
+  "markAsRead": "Mark as read",
+  "notificationErrors": {
+    "failedToLoad": "Failed to load notifications",
+    "failedToMarkAsRead": "Failed to mark notification as read"
+  },
+  "notificationSuccess": {
+    "allMarkedAsRead": "All notifications marked as read"
   }
 }

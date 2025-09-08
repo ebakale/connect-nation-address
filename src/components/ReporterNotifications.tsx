@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Bell, CheckCircle, Clock, MapPin, AlertTriangle, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 interface Notification {
   id: string;
@@ -21,6 +22,7 @@ interface Notification {
 
 export const ReporterNotifications = () => {
   const { user } = useAuth();
+  const { t } = useTranslation('emergency');
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedNotifications, setExpandedNotifications] = useState<Set<string>>(new Set());
@@ -73,7 +75,7 @@ export const ReporterNotifications = () => {
     
     if (error) {
       console.error('Error fetching notifications:', error);
-      toast.error('Failed to load notifications');
+      toast.error(t('notificationErrors.failedToLoad'));
     } else {
       setNotifications((data || []) as Notification[]);
     }
@@ -88,7 +90,7 @@ export const ReporterNotifications = () => {
 
     if (error) {
       console.error('Error marking notification as read:', error);
-      toast.error('Failed to mark notification as read');
+      toast.error(t('notificationErrors.failedToMarkAsRead'));
     } else {
       setNotifications(prev =>
         prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
@@ -107,10 +109,10 @@ export const ReporterNotifications = () => {
 
     if (error) {
       console.error('Error marking all notifications as read:', error);
-      toast.error('Failed to mark notifications as read');
+      toast.error(t('notificationErrors.failedToMarkAsRead'));
     } else {
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-      toast.success('All notifications marked as read');
+      toast.success(t('notificationSuccess.allMarkedAsRead'));
     }
   };
 
@@ -159,13 +161,13 @@ export const ReporterNotifications = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Bell className="h-5 w-5" />
-            Incident Notifications
+            {t('incidentNotifications')}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           <div className="flex items-center justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            <span className="ml-2">Loading notifications...</span>
+            <span className="ml-2">{t('loadingNotifications')}</span>
           </div>
         </CardContent>
       </Card>
@@ -178,12 +180,12 @@ export const ReporterNotifications = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Bell className="h-5 w-5" />
-            Incident Notifications
+            {t('incidentNotifications')}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           <div className="text-center text-muted-foreground">
-            Please log in to view your notifications
+            {t('pleaseLogInToView')}
           </div>
         </CardContent>
       </Card>
@@ -198,7 +200,7 @@ export const ReporterNotifications = () => {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Bell className="h-5 w-5" />
-            Incident Notifications
+            {t('incidentNotifications')}
             {unreadCount > 0 && (
               <Badge variant="destructive" className="ml-2">
                 {unreadCount}
@@ -207,7 +209,7 @@ export const ReporterNotifications = () => {
           </CardTitle>
           {unreadCount > 0 && (
             <Button variant="outline" size="sm" onClick={markAllAsRead}>
-              Mark all as read
+              {t('markAllAsRead')}
             </Button>
           )}
         </div>
@@ -216,8 +218,8 @@ export const ReporterNotifications = () => {
         {notifications.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Bell className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>No notifications yet</p>
-            <p className="text-sm">You'll receive updates about your incident reports here</p>
+            <p>{t('noNotificationsYet')}</p>
+            <p className="text-sm">{t('willReceiveUpdates')}</p>
           </div>
         ) : (
           notifications.map((notification) => {
@@ -235,17 +237,17 @@ export const ReporterNotifications = () => {
                             <div className="flex items-center gap-2">
                               <h4 className="font-medium">{notification.title}</h4>
                               <Badge variant={getPriorityColor(notification.priority_level)} className="whitespace-nowrap">
-                                Priority {notification.priority_level}
+                                {t('priorityLevel', { level: notification.priority_level })}
                               </Badge>
                               {!notification.read && (
-                                <Badge variant="secondary">New</Badge>
+                                <Badge variant="secondary">{t('new')}</Badge>
                               )}
                             </div>
                             
                             {notification.metadata?.incident_number && (
                               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                 <MapPin className="h-3 w-3" />
-                                Incident #{notification.metadata.incident_number}
+                                {t('incidentNumber', { number: notification.metadata.incident_number })}
                                 {notification.metadata.emergency_type && (
                                   <>
                                     <span>•</span>
@@ -271,7 +273,7 @@ export const ReporterNotifications = () => {
                     <div className="px-4 pb-4 pt-0 border-t bg-muted/20">
                       <div className="space-y-3">
                         <div>
-                          <h5 className="text-sm font-medium mb-2">Message Details</h5>
+                          <h5 className="text-sm font-medium mb-2">{t('messageDetails')}</h5>
                           <p className="text-sm text-muted-foreground whitespace-pre-line">
                             {notification.message}
                           </p>
@@ -279,7 +281,7 @@ export const ReporterNotifications = () => {
                         
                         {notification.metadata && Object.keys(notification.metadata).length > 0 && (
                           <div>
-                            <h5 className="text-sm font-medium mb-2">Additional Information</h5>
+                            <h5 className="text-sm font-medium mb-2">{t('additionalInformation')}</h5>
                             <div className="grid grid-cols-2 gap-2 text-xs">
                               {Object.entries(notification.metadata).map(([key, value]) => (
                                 <div key={key} className="flex flex-col">
@@ -304,7 +306,7 @@ export const ReporterNotifications = () => {
                                 markAsRead(notification.id);
                               }}
                             >
-                              Mark as read
+                              {t('markAsRead')}
                             </Button>
                           )}
                         </div>

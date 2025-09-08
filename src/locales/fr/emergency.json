@@ -42,5 +42,24 @@
   },
   "success": {
     "alertSent": "Alerte d'urgence envoyée avec succès !"
+  },
+  "incidentNotifications": "Notifications d'Incidents",
+  "loadingNotifications": "Chargement des notifications...",
+  "pleaseLogInToView": "Veuillez vous connecter pour voir vos notifications",
+  "markAllAsRead": "Marquer toutes comme lues",
+  "noNotificationsYet": "Aucune notification pour le moment",
+  "willReceiveUpdates": "Vous recevrez des mises à jour sur vos rapports d'incidents ici",
+  "priorityLevel": "Priorité {{level}}",
+  "new": "Nouveau",
+  "incidentNumber": "Incident #{{number}}",
+  "messageDetails": "Détails du Message",
+  "additionalInformation": "Informations Supplémentaires",
+  "markAsRead": "Marquer comme lu",
+  "notificationErrors": {
+    "failedToLoad": "Échec du chargement des notifications",
+    "failedToMarkAsRead": "Échec de la marque de notification comme lue"
+  },
+  "notificationSuccess": {
+    "allMarkedAsRead": "Toutes les notifications marquées comme lues"
   }
 }

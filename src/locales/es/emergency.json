@@ -226,5 +226,24 @@
   },
   "success": {
     "alertSent": "¡Alerta de emergencia enviada con éxito!"
+  },
+  "incidentNotifications": "Notificaciones de Incidentes",
+  "loadingNotifications": "Cargando notificaciones...",
+  "pleaseLogInToView": "Por favor, inicia sesión para ver tus notificaciones",
+  "markAllAsRead": "Marcar todas como leídas",
+  "noNotificationsYet": "Aún no hay notificaciones",
+  "willReceiveUpdates": "Recibirás actualizaciones sobre tus reportes de incidentes aquí",
+  "priorityLevel": "Prioridad {{level}}",
+  "new": "Nuevo",
+  "incidentNumber": "Incidente #{{number}}",
+  "messageDetails": "Detalles del Mensaje",
+  "additionalInformation": "Información Adicional",
+  "markAsRead": "Marcar como leído",
+  "notificationErrors": {
+    "failedToLoad": "Error al cargar notificaciones",
+    "failedToMarkAsRead": "Error al marcar notificación como leída"
+  },
+  "notificationSuccess": {
+    "allMarkedAsRead": "Todas las notificaciones marcadas como leídas"
   }
 }
