@@ -131,7 +131,7 @@ const UnifiedAuth = () => {
                 {t('auth:secureAccess')}
               </CardTitle>
               <CardDescription className="text-base mt-2">
-                {isOnlineMode ? t('auth:accessNationalSystem') : 'Offline access to local system'}
+                {isOnlineMode ? t('auth:accessNationalSystem') : t('auth:offlineAccess')}
               </CardDescription>
             </CardHeader>
             
@@ -179,7 +179,7 @@ const UnifiedAuth = () => {
                       className="w-full h-12 text-base font-semibold bg-gradient-primary hover:opacity-90 transition-opacity shadow-card" 
                       disabled={loading}
                     >
-                      {loading ? t('signingIn') : t('signIn')}
+                      {loading ? t('auth:signingIn') : t('auth:signIn')}
                     </Button>
                   </form>
                 </TabsContent>
@@ -187,9 +187,9 @@ const UnifiedAuth = () => {
                 <TabsContent value="signup" className="space-y-6 mt-6">
                   <form onSubmit={handleSignUp} className="space-y-6">
                      <div className="space-y-3">
-                       <label className="text-sm font-semibold text-foreground">{t('fullName')}</label>
+                       <label className="text-sm font-semibold text-foreground">{t('auth:fullName')}</label>
                        <Input
-                         placeholder={t('enterFullName')}
+                         placeholder={t('auth:enterFullName')}
                          className="h-12 text-base border-2 focus:border-primary transition-colors"
                          value={formData.fullName}
                          onChange={(e) => handleInputChange('fullName', e.target.value)}
@@ -199,42 +199,42 @@ const UnifiedAuth = () => {
                      
                      {!isOnlineMode && (
                        <div className="space-y-3">
-                         <label className="text-sm font-semibold text-foreground">Role</label>
+                         <label className="text-sm font-semibold text-foreground">{t('auth:role')}</label>
                          <Select
-                           value={formData.role}
-                           onValueChange={(value: typeof formData.role) => handleInputChange('role', value)}
-                         >
-                           <SelectTrigger className="h-12 text-base border-2 focus:border-primary transition-colors">
-                             <SelectValue />
-                           </SelectTrigger>
-                           <SelectContent>
-                             <SelectItem value="citizen">Citizen</SelectItem>
-                             <SelectItem value="police_officer">Police Officer</SelectItem>
-                             <SelectItem value="emergency_operator">Emergency Operator</SelectItem>
-                             <SelectItem value="field_agent">Field Agent</SelectItem>
-                             <SelectItem value="registrar">Registrar</SelectItem>
-                             <SelectItem value="verifier">Verifier</SelectItem>
-                             <SelectItem value="admin">Admin</SelectItem>
-                           </SelectContent>
-                         </Select>
+                            value={formData.role}
+                            onValueChange={(value: typeof formData.role) => handleInputChange('role', value)}
+                          >
+                            <SelectTrigger className="h-12 text-base border-2 focus:border-primary transition-colors">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="citizen">{t('auth:roles.citizen')}</SelectItem>
+                              <SelectItem value="police_officer">{t('auth:roles.police_officer')}</SelectItem>
+                              <SelectItem value="emergency_operator">{t('auth:roles.emergency_operator')}</SelectItem>
+                              <SelectItem value="field_agent">{t('auth:roles.field_agent')}</SelectItem>
+                              <SelectItem value="registrar">{t('auth:roles.registrar')}</SelectItem>
+                              <SelectItem value="verifier">{t('auth:roles.verifier')}</SelectItem>
+                              <SelectItem value="admin">{t('auth:roles.admin')}</SelectItem>
+                            </SelectContent>
+                          </Select>
                        </div>
                      )}
                      
                      {!isOnlineMode && ['police_officer', 'emergency_operator', 'field_agent'].includes(formData.role) && (
                        <div className="grid grid-cols-2 gap-4">
                          <div className="space-y-3">
-                           <label className="text-sm font-semibold text-foreground">Badge Number</label>
+                           <label className="text-sm font-semibold text-foreground">{t('auth:badgeNumber')}</label>
                            <Input
-                             placeholder="Badge #"
+                             placeholder={t('auth:badgePlaceholder')}
                              className="h-12 text-base border-2 focus:border-primary transition-colors"
                              value={formData.badgeNumber}
                              onChange={(e) => handleInputChange('badgeNumber', e.target.value)}
                            />
                          </div>
                          <div className="space-y-3">
-                           <label className="text-sm font-semibold text-foreground">Unit</label>
+                           <label className="text-sm font-semibold text-foreground">{t('auth:unit')}</label>
                            <Input
-                             placeholder="Unit assignment"
+                             placeholder={t('auth:unitPlaceholder')}
                              className="h-12 text-base border-2 focus:border-primary transition-colors"
                              value={formData.unit}
                              onChange={(e) => handleInputChange('unit', e.target.value)}
@@ -243,57 +243,57 @@ const UnifiedAuth = () => {
                        </div>
                      )}
                     
-                    <div className="space-y-3">
-                      <label className="text-sm font-semibold text-foreground">{t('emailAddress')}</label>
-                      <div className="relative">
-                        <Mail className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
-                        <Input
-                          type="email"
-                          placeholder={t('enterEmail')}
-                          className="pl-12 h-12 text-base border-2 focus:border-primary transition-colors"
-                          value={formData.email}
-                          onChange={(e) => handleInputChange('email', e.target.value)}
-                          required
-                        />
-                      </div>
-                    </div>
+                     <div className="space-y-3">
+                       <label className="text-sm font-semibold text-foreground">{t('auth:email')}</label>
+                       <div className="relative">
+                         <Mail className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
+                         <Input
+                           type="email"
+                           placeholder={t('common:placeholders.enterEmail')}
+                           className="pl-12 h-12 text-base border-2 focus:border-primary transition-colors"
+                           value={formData.email}
+                           onChange={(e) => handleInputChange('email', e.target.value)}
+                           required
+                         />
+                       </div>
+                     </div>
                     
-                    <div className="space-y-3">
-                      <label className="text-sm font-semibold text-foreground">{t('password')}</label>
-                      <div className="relative">
-                        <Lock className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
-                        <Input
-                          type="password"
-                          placeholder={t('createPassword')}
-                          className="pl-12 h-12 text-base border-2 focus:border-primary transition-colors"
-                          value={formData.password}
-                          onChange={(e) => handleInputChange('password', e.target.value)}
-                          required
-                        />
-                      </div>
-                    </div>
+                     <div className="space-y-3">
+                       <label className="text-sm font-semibold text-foreground">{t('auth:password')}</label>
+                       <div className="relative">
+                         <Lock className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
+                         <Input
+                           type="password"
+                           placeholder={t('auth:createPassword')}
+                           className="pl-12 h-12 text-base border-2 focus:border-primary transition-colors"
+                           value={formData.password}
+                           onChange={(e) => handleInputChange('password', e.target.value)}
+                           required
+                         />
+                       </div>
+                     </div>
                     
-                    <div className="space-y-3">
-                      <label className="text-sm font-semibold text-foreground">{t('confirmPassword')}</label>
-                      <div className="relative">
-                        <Lock className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
-                        <Input
-                          type="password"
-                          placeholder={t('confirmYourPassword')}
-                          className="pl-12 h-12 text-base border-2 focus:border-primary transition-colors"
-                          value={formData.confirmPassword}
-                          onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                          required
-                        />
-                      </div>
-                    </div>
+                     <div className="space-y-3">
+                       <label className="text-sm font-semibold text-foreground">{t('auth:confirmPassword')}</label>
+                       <div className="relative">
+                         <Lock className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
+                         <Input
+                           type="password"
+                           placeholder={t('auth:confirmYourPassword')}
+                           className="pl-12 h-12 text-base border-2 focus:border-primary transition-colors"
+                           value={formData.confirmPassword}
+                           onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                           required
+                         />
+                       </div>
+                     </div>
                     
                     <Button 
                       type="submit" 
                       className="w-full h-12 text-base font-semibold bg-gradient-primary hover:opacity-90 transition-opacity shadow-card" 
                       disabled={loading || formData.password !== formData.confirmPassword}
                     >
-                      {loading ? t('creatingAccount') : t('createAccount')}
+                      {loading ? t('auth:creatingAccount') : t('auth:createAccount')}
                     </Button>
                   </form>
                  </TabsContent>
@@ -304,38 +304,38 @@ const UnifiedAuth = () => {
            {/* Demo Credentials for Offline Mode */}
            {!isOnlineMode && (
              <Card className="shadow-card bg-white/95 backdrop-blur-sm border-0">
-               <CardHeader className="pb-4">
-                 <CardTitle className="text-sm flex items-center gap-2">
-                   <User className="h-4 w-4" />
-                   Demo Credentials
-                 </CardTitle>
-               </CardHeader>
-               <CardContent className="space-y-3">
-                 {[
-                   { role: 'Admin', email: 'admin@police.gq', password: 'admin123' },
-                   { role: 'Police Officer', email: 'officer@police.gq', password: 'officer123' },
-                   { role: 'Emergency Operator', email: 'operator@police.gq', password: 'operator123' },
-                   { role: 'Citizen', email: 'citizen@demo.gq', password: 'citizen123' }
-                 ].map((cred) => (
-                   <div key={cred.email} className="flex justify-between items-center p-3 bg-muted/30 rounded-lg">
-                     <div>
-                       <p className="font-medium text-sm">{cred.role}</p>
-                       <p className="text-xs text-muted-foreground">{cred.email}</p>
+                 <CardHeader className="pb-4">
+                   <CardTitle className="text-sm flex items-center gap-2">
+                     <User className="h-4 w-4" />
+                     {t('auth:demoCredentials')}
+                   </CardTitle>
+                 </CardHeader>
+                 <CardContent className="space-y-3">
+                   {[
+                     { role: t('auth:roles.admin'), email: 'admin@police.gq', password: 'admin123' },
+                     { role: t('auth:roles.police_officer'), email: 'officer@police.gq', password: 'officer123' },
+                     { role: t('auth:roles.emergency_operator'), email: 'operator@police.gq', password: 'operator123' },
+                     { role: t('auth:roles.citizen'), email: 'citizen@demo.gq', password: 'citizen123' }
+                   ].map((cred) => (
+                     <div key={cred.email} className="flex justify-between items-center p-3 bg-muted/30 rounded-lg">
+                       <div>
+                         <p className="font-medium text-sm">{cred.role}</p>
+                         <p className="text-xs text-muted-foreground">{cred.email}</p>
+                       </div>
+                       <Button
+                         size="sm"
+                         variant="outline"
+                         onClick={() => {
+                           setFormData(prev => ({ ...prev, email: cred.email, password: cred.password }));
+                           handleSignIn({ preventDefault: () => {} } as React.FormEvent);
+                         }}
+                         className="text-xs"
+                       >
+                         {t('auth:quickLogin')}
+                       </Button>
                      </div>
-                     <Button
-                       size="sm"
-                       variant="outline"
-                       onClick={() => {
-                         setFormData(prev => ({ ...prev, email: cred.email, password: cred.password }));
-                         handleSignIn({ preventDefault: () => {} } as React.FormEvent);
-                       }}
-                       className="text-xs"
-                     >
-                       Quick Login
-                     </Button>
-                   </div>
-                 ))}
-               </CardContent>
+                   ))}
+                 </CardContent>
              </Card>
            )}
 
