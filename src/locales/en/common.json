@@ -147,6 +147,45 @@
     "coreFunctionalities": "Core Functionalities",
     "twoIntegratedSystems": "Two integrated systems working together to provide comprehensive solutions",
     "strategicGoals": "Strategic Goals",
-    "platformObjectives": "Platform Objectives"
+    "platformObjectives": "Platform Objectives",
+
+    "roleBasedAccess": "Role-based Access Control",
+    "advancedRoleManagement": "Advanced role management for secure, granular permissions.",
+    "digitalDocumentationFeature": "Digital Documentation",
+    "automatedDocumentGeneration": "Automated document generation with QR codes.",
+    "realtimeAnalyticsFeature": "Real-time Analytics",
+    "comprehensiveReporting": "Comprehensive reporting and insights.",
+    "multiLanguageFeature": "Multi-language Support",
+    "fullPlatformLocalization": "Full platform localization.",
+
+    "transformingEquatorialGuinea": "Transforming Equatorial Guinea through digital addressing and rapid emergency response.",
+    "digitalInfrastructure": "Digital Infrastructure",
+    "establishComprehensiveAddressing": "Establish a comprehensive national digital addressing system integrated with emergency services.",
+    "publicSafetyEnhancement": "Public Safety Enhancement",
+    "modernizeEmergencyResponse": "Modernize emergency response with coordinated police and services.",
+    "citizenEmpowerment": "Citizen Empowerment",
+    "provideDirectAccess": "Provide citizens with direct access to address services and emergency alerts.",
+    "smartUrbanPlanning": "Smart Urban Planning",
+    "smartUrbanPlanningDesc": "Enable data-driven planning using accurate address and incident data.",
+    "dataExcellence": "Data Excellence",
+    "dataExcellenceDesc": "Promote data quality, interoperability, and secure access across agencies.",
+
+    "aboutConnectEG": "ConnectEG is the national platform for unified digital addressing and emergency management.",
+    "ourMission": "Our Mission",
+    "missionDescription": "To connect citizens, addresses, and emergency services through reliable technology.",
+    "ourVision": "Our Vision",
+    "visionDescription": "A safer, smarter nation empowered by trusted address data and rapid response.",
+    "keyPartners": "Key Partners",
+    "ministryOfInterior": "Ministry of Interior",
+    "governmentOversightPolicy": "Government oversight and policy leadership.",
+    "localGovernments": "Local Governments",
+    "provincialImplementation": "Provincial implementation and citizen services.",
+    "technologyPartners": "Technology Partners",
+    "platformDevelopmentMaintenance": "Platform development and maintenance.",
+
+    "helpAndSupport": "Help & Support",
+    "findAnswersQuestions": "Find answers to common questions and learn how to use the platform.",
+    "frequentlyAskedQuestions": "Frequently Asked Questions",
+    "platformUserManual": "Platform User Manual"
   }
 }

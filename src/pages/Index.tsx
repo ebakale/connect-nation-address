@@ -74,9 +74,9 @@ const navigationItems = [
                   {/* Main Heading */}
                   <div className="space-y-2 sm:space-y-3">
                     <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent leading-tight mobile-container">
-                       <span className="block">{t('connectEG')}</span>
+                       <span className="block">{t('common:platform.connectEG')}</span>
                         <span className="block text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-foreground/90 mt-1">
-                          {t('digitalPlatform')}
+                          {t('common:platform.digitalPlatform')}
                         </span>
                     </h1>
                   </div>
@@ -143,8 +143,8 @@ const navigationItems = [
                           <MapPin className="h-8 w-8 text-white" />
                         </div>
                         <div>
-                          <h3 className="text-3xl font-bold text-white">{t('addressRegistrySystem')}</h3>
-                          <p className="text-blue-100 text-lg">{t('digitalAddressingInfrastructure')}</p>
+                          <h3 className="text-3xl font-bold text-white">{t('address:addressRegistrySystem')}</h3>
+                          <p className="text-blue-100 text-lg">{t('address:digitalAddressingInfrastructure')}</p>
                         </div>
                       </div>
                     </div>
@@ -152,24 +152,24 @@ const navigationItems = [
                   <CardContent className="relative p-8">
                     <div className="space-y-4">
                       <p className="text-muted-foreground leading-relaxed text-lg">
-                        {t('comprehensiveDigitalAddressing')}
+                        {t('address:comprehensiveDigitalAddressing')}
                       </p>
                       <div className="space-y-3">
                         <div className="flex items-center gap-3">
                           <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">{t('gpsBasedRegistration')}</span>
+                          <span className="text-sm">{t('address:gpsBasedRegistration')}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">{t('multiLevelVerification')}</span>
+                          <span className="text-sm">{t('address:multiLevelVerification')}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">{t('smartSearchDiscovery')}</span>
+                          <span className="text-sm">{t('address:smartSearchDiscovery')}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">{t('digitalDocumentationQR')}</span>
+                          <span className="text-sm">{t('address:digitalDocumentationQR')}</span>
                         </div>
                       </div>
                     </div>
@@ -196,24 +196,24 @@ const navigationItems = [
                   <CardContent className="relative p-8">
                     <div className="space-y-4">
                        <p className="text-muted-foreground leading-relaxed text-lg">
-                         {t('integratedEmergencyResponse')}
+                         {t('emergency:integratedEmergencyResponse')}
                        </p>
                       <div className="space-y-3">
                          <div className="flex items-center gap-3">
                            <CheckCircle className="h-5 w-5 text-destructive" />
-                           <span className="text-sm">{t('realtimeIncidentReporting')}</span>
+                           <span className="text-sm">{t('emergency:realtimeIncidentReporting')}</span>
                          </div>
                          <div className="flex items-center gap-3">
                            <CheckCircle className="h-5 w-5 text-destructive" />
-                           <span className="text-sm">{t('gpsBasedUnitDispatch')}</span>
+                           <span className="text-sm">{t('emergency:gpsBasedUnitDispatch')}</span>
                          </div>
                          <div className="flex items-center gap-3">
                            <CheckCircle className="h-5 w-5 text-destructive" />
-                           <span className="text-sm">{t('multiChannelCommunications')}</span>
+                           <span className="text-sm">{t('emergency:multiChannelCommunications')}</span>
                          </div>
                          <div className="flex items-center gap-3">
                            <CheckCircle className="h-5 w-5 text-destructive" />
-                           <span className="text-sm">{t('analyticsResponseTracking')}</span>
+                           <span className="text-sm">{t('emergency:analyticsResponseTracking')}</span>
                          </div>
                       </div>
                     </div>
@@ -229,12 +229,12 @@ const navigationItems = [
                       <div className="p-3 bg-gradient-to-br from-secondary to-secondary/80 rounded-2xl">
                         <Users className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg font-bold">{t('roleBasedAccess')}</CardTitle>
+                      <CardTitle className="text-lg font-bold">{t('common:platform.roleBasedAccess')}</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
                      <p className="text-muted-foreground leading-relaxed text-sm">
-                       {t('advancedRoleManagement')}
+                       {t('common:platform.advancedRoleManagement')}
                      </p>
                   </CardContent>
                 </Card>
@@ -245,12 +245,12 @@ const navigationItems = [
                       <div className="p-3 bg-gradient-to-br from-primary to-primary/80 rounded-2xl">
                         <FileText className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg font-bold">{t('digitalDocumentationFeature')}</CardTitle>
+                      <CardTitle className="text-lg font-bold">{t('common:platform.digitalDocumentationFeature')}</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
                      <p className="text-muted-foreground leading-relaxed text-sm">
-                       {t('automatedDocumentGeneration')}
+                       {t('common:platform.automatedDocumentGeneration')}
                      </p>
                   </CardContent>
                 </Card>
@@ -261,12 +261,12 @@ const navigationItems = [
                       <div className="p-3 bg-gradient-to-br from-destructive to-destructive/80 rounded-2xl">
                         <BarChart3 className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg font-bold">{t('realtimeAnalyticsFeature')}</CardTitle>
+                      <CardTitle className="text-lg font-bold">{t('common:platform.realtimeAnalyticsFeature')}</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
                      <p className="text-muted-foreground leading-relaxed text-sm">
-                       {t('comprehensiveReporting')}
+                       {t('common:platform.comprehensiveReporting')}
                      </p>
                   </CardContent>
                 </Card>
@@ -277,12 +277,12 @@ const navigationItems = [
                       <div className="p-3 bg-gradient-to-br from-accent to-accent/80 rounded-2xl">
                         <Globe className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg font-bold">{t('multiLanguageFeature')}</CardTitle>
+                      <CardTitle className="text-lg font-bold">{t('common:platform.multiLanguageFeature')}</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
                      <p className="text-muted-foreground leading-relaxed text-sm">
-                       {t('fullPlatformLocalization')}
+                       {t('common:platform.fullPlatformLocalization')}
                      </p>
                   </CardContent>
                 </Card>
@@ -305,7 +305,7 @@ const navigationItems = [
                       {t('common:platform.platformObjectives')}
                     </h2>
                    <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                     {t('transformingEquatorialGuinea')}
+                     {t('common:platform.transformingEquatorialGuinea')}
                    </p>
                 </div>
 
@@ -316,12 +316,12 @@ const navigationItems = [
                         <MapPin className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('digitalInfrastructure')}</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('common:platform.digitalInfrastructure')}</h3>
                         <div className="h-1 w-16 bg-gradient-to-r from-primary to-primary/60 rounded-full mb-3"></div>
                       </div>
                     </div>
                      <p className="text-muted-foreground leading-relaxed">
-                       {t('establishComprehensiveAddressing')}
+                       {t('common:platform.establishComprehensiveAddressing')}
                      </p>
                   </div>
                   
@@ -331,12 +331,12 @@ const navigationItems = [
                         <Shield className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('publicSafetyEnhancement')}</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('common:platform.publicSafetyEnhancement')}</h3>
                         <div className="h-1 w-16 bg-gradient-to-r from-destructive to-destructive/60 rounded-full mb-3"></div>
                       </div>
                     </div>
                      <p className="text-muted-foreground leading-relaxed">
-                       {t('modernizeEmergencyResponse')}
+                       {t('common:platform.modernizeEmergencyResponse')}
                      </p>
                   </div>
 
@@ -346,12 +346,12 @@ const navigationItems = [
                         <Users className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('citizenEmpowerment')}</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('common:platform.citizenEmpowerment')}</h3>
                         <div className="h-1 w-16 bg-gradient-to-r from-secondary to-secondary/60 rounded-full mb-3"></div>
                       </div>
                     </div>
                      <p className="text-muted-foreground leading-relaxed">
-                       {t('provideDirectAccess')}
+                       {t('common:platform.provideDirectAccess')}
                      </p>
                   </div>
                   
@@ -361,12 +361,12 @@ const navigationItems = [
                         <BarChart3 className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('smartUrbanPlanning')}</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('common:platform.smartUrbanPlanning')}</h3>
                         <div className="h-1 w-16 bg-gradient-to-r from-destructive to-destructive/60 rounded-full mb-3"></div>
                       </div>
                     </div>
                     <p className="text-muted-foreground leading-relaxed">
-                      {t('smartUrbanPlanningDesc')}
+                      {t('common:platform.smartUrbanPlanningDesc')}
                     </p>
                   </div>
                   
@@ -376,12 +376,12 @@ const navigationItems = [
                         <Shield className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('dataExcellence')}</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('common:platform.dataExcellence')}</h3>
                         <div className="h-1 w-16 bg-gradient-to-r from-primary to-primary/60 rounded-full mb-3"></div>
                       </div>
                     </div>
                     <p className="text-muted-foreground leading-relaxed">
-                      {t('dataExcellenceDesc')}
+                      {t('common:platform.dataExcellenceDesc')}
                     </p>
                   </div>
                 </div>
@@ -394,31 +394,31 @@ const navigationItems = [
         return (
           <div className="space-y-8">
              <div className="text-center space-y-4">
-               <h2 className="text-3xl font-bold">{t('about')}</h2>
+               <h2 className="text-3xl font-bold">{t('common:navigation.about')}</h2>
                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                 {t('aboutConnectEG')}
+                 {t('common:platform.aboutConnectEG')}
                </p>
              </div>
 
             <div className="grid md:grid-cols-2 gap-8">
               <Card className="shadow-card">
                 <CardHeader>
-                  <CardTitle>{t('ourMission')}</CardTitle>
+                  <CardTitle>{t('common:platform.ourMission')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('missionDescription')}
+                    {t('common:platform.missionDescription')}
                   </p>
                 </CardContent>
               </Card>
 
               <Card className="shadow-card">
                 <CardHeader>
-                  <CardTitle>{t('ourVision')}</CardTitle>
+                  <CardTitle>{t('common:platform.ourVision')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('visionDescription')}
+                    {t('common:platform.visionDescription')}
                   </p>
                 </CardContent>
               </Card>
@@ -426,21 +426,21 @@ const navigationItems = [
 
             <Card className="shadow-card">
               <CardHeader>
-                <CardTitle>{t('keyPartners')}</CardTitle>
+                <CardTitle>{t('common:platform.keyPartners')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="text-center p-4 border rounded-lg">
-                    <h3 className="font-semibold">{t('ministryOfInterior')}</h3>
-                    <p className="text-sm text-muted-foreground">{t('governmentOversightPolicy')}</p>
+                    <h3 className="font-semibold">{t('common:platform.ministryOfInterior')}</h3>
+                    <p className="text-sm text-muted-foreground">{t('common:platform.governmentOversightPolicy')}</p>
                   </div>
                   <div className="text-center p-4 border rounded-lg">
-                    <h3 className="font-semibold">{t('localGovernments')}</h3>
-                    <p className="text-sm text-muted-foreground">{t('provincialImplementation')}</p>
+                    <h3 className="font-semibold">{t('common:platform.localGovernments')}</h3>
+                    <p className="text-sm text-muted-foreground">{t('common:platform.provincialImplementation')}</p>
                   </div>
                   <div className="text-center p-4 border rounded-lg">
-                    <h3 className="font-semibold">{t('technologyPartners')}</h3>
-                    <p className="text-sm text-muted-foreground">{t('platformDevelopmentMaintenance')}</p>
+                    <h3 className="font-semibold">{t('common:platform.technologyPartners')}</h3>
+                    <p className="text-sm text-muted-foreground">{t('common:platform.platformDevelopmentMaintenance')}</p>
                   </div>
                 </div>
               </CardContent>
@@ -452,16 +452,16 @@ const navigationItems = [
         return (
           <div className="space-y-8">
             <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold">{t('helpAndSupport')}</h2>
+              <h2 className="text-3xl font-bold">{t('common:platform.helpAndSupport')}</h2>
               <p className="text-lg text-muted-foreground">
-                {t('findAnswersQuestions')}
+                {t('common:platform.findAnswersQuestions')}
               </p>
             </div>
 
             <div className="space-y-6">
               <Card className="shadow-card">
                 <CardHeader>
-                  <CardTitle>{t('frequentlyAskedQuestions')}</CardTitle>
+                  <CardTitle>{t('common:platform.frequentlyAskedQuestions')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-4">
@@ -520,7 +520,7 @@ const navigationItems = [
               {/* Platform User Manual Section */}
               <Card className="shadow-card">
                 <CardHeader>
-                  <CardTitle>{t('platformUserManual')}</CardTitle>
+                  <CardTitle>{t('common:platform.platformUserManual')}</CardTitle>
                   <p className="text-muted-foreground">
                     Comprehensive guide for using both Address Registry and Emergency Management systems.
                   </p>
