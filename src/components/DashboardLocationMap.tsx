@@ -210,81 +210,90 @@ const DashboardLocationMap: React.FC = () => {
   };
 
   const getMarkerIcon = (type: string): string => {
-    const iconColor = '#ffffff';
     const bgColor = getMarkerColor(type);
+    
+    const pinSvg = (iconPath: string) => `
+      <svg width="24" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 0C5.4 0 0 5.4 0 12s12 20 12 20 12-13.6 12-20S18.6 0 12 0z" fill="${bgColor}" stroke="#fff" stroke-width="2"/>
+        <g transform="translate(6, 6)" fill="#fff">
+          ${iconPath}
+        </g>
+      </svg>
+    `;
     
     switch (type) {
       case 'commercial':
-        return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <path d="M2 7L10 3L18 7L18 17L10 21L2 17Z" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(3, 3) scale(0.6)"/>
-          </svg>
-        `)}`;
+        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
+          <rect x="1" y="1" width="10" height="8" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M3 5h6M3 7h4" stroke="currentColor" stroke-width="1"/>
+        `))}`;
       case 'landmark':
-        return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <path d="M3 21L12 2L21 21H3Z" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(3, 3) scale(0.6)"/>
-          </svg>
-        `)}`;
+        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
+          <polygon points="6,1 10,9 2,9" fill="currentColor"/>
+          <circle cx="6" cy="7" r="1" fill="${bgColor}"/>
+        `))}`;
       case 'government':
-        return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <rect x="2" y="6" width="20" height="14" rx="2" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(3, 3) scale(0.6)"/>
-            <path d="M6 6V4A2 2 0 0 1 8 2H16A2 2 0 0 1 18 4V6" fill="none" stroke="${iconColor}" stroke-width="1.5" transform="translate(3, 3) scale(0.6)"/>
-          </svg>
-        `)}`;
+        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
+          <rect x="1" y="3" width="10" height="6" fill="currentColor"/>
+          <polygon points="1,3 6,1 11,3" fill="currentColor"/>
+          <rect x="3" y="5" width="1" height="3" fill="${bgColor}"/>
+          <rect x="5" y="5" width="1" height="3" fill="${bgColor}"/>
+          <rect x="7" y="5" width="1" height="3" fill="${bgColor}"/>
+          <rect x="9" y="5" width="1" height="3" fill="${bgColor}"/>
+        `))}`;
       case 'industrial':
-        return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <path d="M2 20H22V21H2V20ZM3 18V15L6 12V15L9 12V15L12 12V18H3ZM14 18V8H18V18H14Z" fill="${iconColor}" transform="translate(3, 1) scale(0.6)"/>
-          </svg>
-        `)}`;
+        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
+          <rect x="1" y="4" width="4" height="5" fill="currentColor"/>
+          <rect x="6" y="2" width="4" height="7" fill="currentColor"/>
+          <polygon points="2,4 3,3 4,4" fill="currentColor"/>
+          <polygon points="7,2 8,1 9,2" fill="currentColor"/>
+        `))}`;
       case 'residential':
-        return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <path d="M3 9L12 2L21 9V20A2 2 0 0 1 19 22H5A2 2 0 0 1 3 20V9Z" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(3, 3) scale(0.6)"/>
-            <path d="M9 22V12H15V22" fill="none" stroke="${bgColor}" stroke-width="1.5" transform="translate(3, 3) scale(0.6)"/>
-          </svg>
-        `)}`;
+        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
+          <polygon points="6,1 11,6 11,9 1,9 1,6" fill="currentColor"/>
+          <rect x="4" y="6" width="4" height="3" fill="${bgColor}"/>
+          <rect x="5" y="7" width="2" height="1" fill="currentColor"/>
+        `))}`;
       case 'hotel':
-        return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <rect x="2" y="3" width="20" height="18" rx="2" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(3, 3) scale(0.6)"/>
-            <path d="M7 10H9V12H7V10ZM11 10H13V12H11V10ZM15 10H17V12H15V10Z" fill="${bgColor}" transform="translate(3, 3) scale(0.6)"/>
-          </svg>
-        `)}`;
+        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
+          <rect x="2" y="2" width="8" height="7" rx="1" fill="currentColor"/>
+          <rect x="3" y="4" width="1" height="1" fill="${bgColor}"/>
+          <rect x="5" y="4" width="1" height="1" fill="${bgColor}"/>
+          <rect x="7" y="4" width="1" height="1" fill="${bgColor}"/>
+          <rect x="9" y="4" width="1" height="1" fill="${bgColor}"/>
+          <rect x="3" y="6" width="1" height="1" fill="${bgColor}"/>
+          <rect x="5" y="6" width="1" height="1" fill="${bgColor}"/>
+          <rect x="7" y="6" width="1" height="1" fill="${bgColor}"/>
+          <rect x="9" y="6" width="1" height="1" fill="${bgColor}"/>
+        `))}`;
       case 'bank':
-        return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <path d="M12 2L2 7V10H22V7L12 2Z" fill="${iconColor}" transform="translate(3, 3) scale(0.6)"/>
-            <rect x="4" y="11" width="2" height="8" fill="${iconColor}" transform="translate(3, 3) scale(0.6)"/>
-            <rect x="8" y="11" width="2" height="8" fill="${iconColor}" transform="translate(3, 3) scale(0.6)"/>
-            <rect x="12" y="11" width="2" height="8" fill="${iconColor}" transform="translate(3, 3) scale(0.6)"/>
-            <rect x="16" y="11" width="2" height="8" fill="${iconColor}" transform="translate(3, 3) scale(0.6)"/>
-            <rect x="2" y="19" width="20" height="2" fill="${iconColor}" transform="translate(3, 3) scale(0.6)"/>
-          </svg>
-        `)}`;
+        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
+          <polygon points="6,1 11,3 11,4 1,4 1,3" fill="currentColor"/>
+          <rect x="2" y="4" width="1" height="4" fill="currentColor"/>
+          <rect x="4" y="4" width="1" height="4" fill="currentColor"/>
+          <rect x="6" y="4" width="1" height="4" fill="currentColor"/>
+          <rect x="8" y="4" width="1" height="4" fill="currentColor"/>
+          <rect x="10" y="4" width="1" height="4" fill="currentColor"/>
+          <rect x="1" y="8" width="10" height="1" fill="currentColor"/>
+        `))}`;
       case 'gas_station':
-        return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <path d="M14 22V6A2 2 0 0 0 12 4H4A2 2 0 0 0 2 6V22H14ZM19 8V18A2 2 0 0 1 17 20V8L19 6L21 8L19 8Z" fill="${iconColor}" transform="translate(3, 1) scale(0.6)"/>
-          </svg>
-        `)}`;
+        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
+          <rect x="2" y="3" width="5" height="6" fill="currentColor"/>
+          <circle cx="4.5" cy="6" r="1.5" fill="${bgColor}"/>
+          <rect x="8" y="2" width="2" height="7" fill="currentColor"/>
+          <polygon points="8,2 9,1 10,2" fill="currentColor"/>
+        `))}`;
+      case 'restaurant':
+        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
+          <circle cx="4" cy="3" r="1" fill="currentColor"/>
+          <rect x="3.5" y="4" width="1" height="4" fill="currentColor"/>
+          <path d="M7 2v2h1v4h-1" stroke="currentColor" stroke-width="1" fill="none"/>
+          <path d="M9 2v6" stroke="currentColor" stroke-width="1"/>
+        `))}`;
       default:
-        return `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <rect width="24" height="24" rx="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
-            <rect x="3" y="3" width="18" height="18" rx="2" fill="${iconColor}" stroke="${iconColor}" stroke-width="1.5" transform="translate(3, 3) scale(0.6)"/>
-          </svg>
-        `)}`;
+        return `data:image/svg+xml,${encodeURIComponent(pinSvg(`
+          <circle cx="6" cy="6" r="3" fill="currentColor"/>
+        `))}`;
     }
   };
 
@@ -405,8 +414,8 @@ const DashboardLocationMap: React.FC = () => {
         title: `UAC: ${location.uac}`,
         icon: {
           url: getMarkerIcon(location.type),
-          scaledSize: new google.maps.Size(24, 24),
-          anchor: new google.maps.Point(12, 12)
+          scaledSize: new google.maps.Size(24, 32),
+          anchor: new google.maps.Point(12, 32)
         },
         clickable: true,
         optimized: false,
@@ -475,9 +484,9 @@ const DashboardLocationMap: React.FC = () => {
         
         // Increase marker size
         marker.setIcon({
-          url: getMarkerIcon(location.type).replace('width="24" height="24"', 'width="28" height="28"'),
-          scaledSize: new google.maps.Size(28, 28),
-          anchor: new google.maps.Point(14, 14)
+          url: getMarkerIcon(location.type).replace('width="24" height="32"', 'width="28" height="36"'),
+          scaledSize: new google.maps.Size(28, 36),
+          anchor: new google.maps.Point(14, 36)
         });
       });
       
@@ -492,8 +501,8 @@ const DashboardLocationMap: React.FC = () => {
         // Reset marker size
         marker.setIcon({
           url: getMarkerIcon(location.type),
-          scaledSize: new google.maps.Size(24, 24),
-          anchor: new google.maps.Point(12, 12)
+          scaledSize: new google.maps.Size(24, 32),
+          anchor: new google.maps.Point(12, 32)
         });
       });
 
