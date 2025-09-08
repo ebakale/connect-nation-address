@@ -334,6 +334,50 @@ const DashboardLocationMap: React.FC = () => {
         optimized: false,
       });
 
+      // Create UAC label overlay
+      const uacLabel = new google.maps.OverlayView();
+      uacLabel.onAdd = function() {
+        const div = document.createElement('div');
+        div.innerHTML = `<div style="
+          background: rgba(34, 197, 94, 0.9);
+          color: white;
+          padding: 2px 6px;
+          border-radius: 4px;
+          font-size: 10px;
+          font-weight: 600;
+          backdrop-filter: blur(8px);
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          pointer-events: none;
+          white-space: nowrap;
+        ">UAC: ${location.uac}</div>`;
+        
+        this.div = div;
+        const panes = this.getPanes();
+        if (panes && panes.overlayMouseTarget) {
+          panes.overlayMouseTarget.appendChild(div);
+        }
+      };
+      
+      uacLabel.draw = function() {
+        const projection = this.getProjection();
+        if (projection) {
+          const position = projection.fromLatLngToDivPixel(new google.maps.LatLng(location.coordinates[1], location.coordinates[0]));
+          if (position && this.div) {
+            this.div.style.left = (position.x - 25) + 'px';
+            this.div.style.top = (position.y - 35) + 'px';
+            this.div.style.position = 'absolute';
+          }
+        }
+      };
+      
+      uacLabel.onRemove = function() {
+        if (this.div && this.div.parentNode) {
+          this.div.parentNode.removeChild(this.div);
+        }
+      };
+      
+      uacLabel.setMap(map.current);
+
       const infoWindow = new google.maps.InfoWindow({
         content: `
           <div style="padding: 8px; font-family: Arial, sans-serif;">
