@@ -89,8 +89,10 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
   };
 
   const handleSelectResult = (result: SearchResult) => {
+    console.log('AddressSearch: Address selected:', result);
     setShowResults(false);
     setQuery(result.readable);
+    console.log('AddressSearch: Calling onSelectAddress with:', result);
     onSelectAddress?.(result);
   };
   return (

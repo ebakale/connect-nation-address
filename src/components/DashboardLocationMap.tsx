@@ -432,13 +432,21 @@ const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({
 
   // Handle searched address highlighting
   useEffect(() => {
+    console.log('DashboardLocationMap: searchedAddress changed:', searchedAddress);
+    console.log('DashboardLocationMap: map ready:', isMapReady);
+    
     if (searchedAddress && map.current && isMapReady) {
+      console.log('DashboardLocationMap: Calling highlightSearchedAddress');
       highlightSearchedAddress(searchedAddress);
     }
   }, [searchedAddress, isMapReady]);
 
   const highlightSearchedAddress = (address: SearchResult) => {
-    if (!map.current) return;
+    console.log('DashboardLocationMap: highlightSearchedAddress called with:', address);
+    if (!map.current) {
+      console.log('DashboardLocationMap: No map instance found');
+      return;
+    }
 
     // Remove existing search marker
     if (searchMarker) {
