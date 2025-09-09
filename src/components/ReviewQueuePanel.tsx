@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { FlaggedAddressManager } from "./FlaggedAddressManager";
 import { Flag } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from 'react-i18next';
 
 interface FlaggedAddress {
   id: string;
@@ -32,6 +33,7 @@ interface FlaggedAddress {
 }
 
 export function ReviewQueuePanel() {
+  const { t } = useTranslation('address');
   const [flaggedAddresses, setFlaggedAddresses] = useState<FlaggedAddress[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -56,7 +58,7 @@ export function ReviewQueuePanel() {
       setFlaggedAddresses(data || []);
     } catch (error) {
       console.error('Error fetching flagged addresses:', error);
-      toast.error("Failed to load flagged addresses");
+      toast.error(t('failedToLoadFlagged'));
     }
   };
 
@@ -71,7 +73,7 @@ export function ReviewQueuePanel() {
   }, []);
 
   if (loading) {
-    return <div>Loading review queue...</div>;
+    return <div>{t('loadingReviewQueue')}</div>;
   }
 
   return (
@@ -80,7 +82,7 @@ export function ReviewQueuePanel() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 flex-wrap">
             <Flag className="h-5 w-5 text-red-600 flex-shrink-0" />
-            <span className="break-words">Review Queue - Flagged Addresses</span>
+            <span className="break-words">{t('reviewQueueFlagged')}</span>
             {flaggedAddresses.length > 0 && (
               <Badge 
                 variant="destructive" 

@@ -7,6 +7,7 @@ import { AutoVerificationTools } from "./AutoVerificationTools";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckSquare, Zap } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from 'react-i18next';
 
 interface AddressRequest {
   id: string;
@@ -26,6 +27,7 @@ interface AddressRequest {
 }
 
 export function AddressRequestApprovalPanel() {
+  const { t } = useTranslation('address');
   const [addressRequests, setAddressRequests] = useState<AddressRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,7 +38,7 @@ export function AddressRequestApprovalPanel() {
       setAddressRequests(data || []);
     } catch (error) {
       console.error('Error fetching address requests:', error);
-      toast.error("Failed to load address requests");
+      toast.error(t('failedToLoadRequests'));
     }
   };
 
@@ -51,21 +53,21 @@ export function AddressRequestApprovalPanel() {
   }, []);
 
   if (loading) {
-    return <div>Loading address requests...</div>;
+    return <div>{t('loadingAddressRequests')}</div>;
   }
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Address Request Approval</CardTitle>
+          <CardTitle>{t('addressRequestApprovalPanel')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="requests" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="requests" className="relative">
                 <CheckSquare className="h-4 w-4 mr-2" />
-                Pending Requests
+                {t('pendingRequests')}
                 {addressRequests.length > 0 && (
                   <Badge 
                     variant="secondary" 
@@ -77,7 +79,7 @@ export function AddressRequestApprovalPanel() {
               </TabsTrigger>
               <TabsTrigger value="auto-verify">
                 <Zap className="h-4 w-4 mr-2" />
-                Auto-Verification
+                {t('autoVerification')}
               </TabsTrigger>
             </TabsList>
             

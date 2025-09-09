@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useTranslation } from 'react-i18next';
 
 interface AddressRequest {
   id: string;
@@ -38,6 +39,7 @@ interface AddressRequestApprovalProps {
 }
 
 export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApprovalProps) {
+  const { t } = useTranslation('address');
   const [processing, setProcessing] = useState<string | null>(null);
   const [autoVerifying, setAutoVerifying] = useState<string | null>(null);
   const [rejectionDialogOpen, setRejectionDialogOpen] = useState(false);
@@ -84,11 +86,11 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
 
       if (error) throw error;
 
-      toast.success("Address request approved and address created successfully");
+      toast.success(t('approvedSuccessfully'));
       onUpdate();
     } catch (error) {
       console.error('Error approving request:', error);
-      toast.error("Failed to approve address request");
+      toast.error(t('failedToApprove'));
     } finally {
       setProcessing(null);
     }
@@ -128,11 +130,11 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
 
       if (error) throw error;
 
-      toast.success("Address request rejected with feedback");
+      toast.success(t('rejectedWithFeedback'));
       onUpdate();
     } catch (error) {
       console.error('Error rejecting request:', error);
-      toast.error("Failed to reject address request");
+      toast.error(t('failedToReject'));
     } finally {
       setRejectionDialogOpen(false);
       setSelectedRequestId(null);
@@ -148,11 +150,11 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
 
       if (error) throw error;
 
-      toast.success(`Auto-verification: ${data.decision.action} (Score: ${data.analysis.overallScore}%)`);
+      toast.success(t('autoVerificationResult', { action: data.decision.action, score: data.analysis.overallScore }));
       onUpdate();
     } catch (error) {
       console.error('Auto-verification failed:', error);
-      toast.error("Auto-verification failed");
+      toast.error(t('autoVerificationFailed'));
     } finally {
       setAutoVerifying(null);
     }
@@ -162,8 +164,8 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
     return (
       <div className="text-center py-8">
         <CheckCircle className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-        <h3 className="text-lg font-medium">No pending requests</h3>
-        <p className="text-muted-foreground">All address requests have been processed.</p>
+        <h3 className="text-lg font-medium">{t('noPendingRequests')}</h3>
+        <p className="text-muted-foreground">{t('allRequestsProcessed')}</p>
       </div>
     );
   }
@@ -173,11 +175,11 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
       {/* Results count and pagination info */}
       <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
         <span>
-          Showing {startIndex + 1}-{Math.min(startIndex + requestsPerPage, requests.length)} of {requests.length} requests
+          {t('showingResults', { start: startIndex + 1, end: Math.min(startIndex + requestsPerPage, requests.length), total: requests.length })}
         </span>
         {totalPages > 1 && (
           <span>
-            Page {currentPage} of {totalPages}
+            {t('pageInfo', { current: currentPage, total: totalPages })}
           </span>
         )}
       </div>
@@ -187,9 +189,9 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
           <Card key={request.id} className="border-l-4 border-l-yellow-500">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Address Request</CardTitle>
+                <CardTitle className="text-lg">{t('addressRequest')}</CardTitle>
                 <Badge variant="outline" className="bg-yellow-50 text-yellow-700">
-                  Pending Approval
+                  {t('pendingApproval')}
                 </Badge>
               </div>
             </CardHeader>
@@ -198,7 +200,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">Location</span>
+                    <span className="text-sm font-medium">{t('location')}</span>
                   </div>
                   <p className="text-sm pl-6">
                     {request.building && `${request.building}, `}
@@ -212,7 +214,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <Building className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">Type</span>
+                    <span className="text-sm font-medium">{t('type')}</span>
                   </div>
                   <p className="text-sm pl-6 capitalize">{request.address_type}</p>
                 </div>
@@ -220,29 +222,29 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
 
               {request.description && (
                 <div className="space-y-2">
-                  <span className="text-sm font-medium">Description</span>
+                  <span className="text-sm font-medium">{t('description')}</span>
                   <p className="text-sm text-muted-foreground">{request.description}</p>
                 </div>
               )}
 
               <div className="space-y-2">
-                <span className="text-sm font-medium">Justification</span>
+                <span className="text-sm font-medium">{t('justification')}</span>
                 <p className="text-sm text-muted-foreground">{request.justification}</p>
               </div>
 
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Calendar className="h-3 w-3" />
-                <span>Submitted {new Date(request.created_at).toLocaleDateString()}</span>
+                <span>{t('submittedOn', { date: new Date(request.created_at).toLocaleDateString() })}</span>
                 <User className="h-3 w-3 ml-4" />
-                <span>User ID: {request.user_id.slice(0, 8)}...</span>
+                <span>{t('userId', { id: request.user_id.slice(0, 8) })}</span>
               </div>
 
               {request.photo_url && (
                 <div className="space-y-2">
-                  <span className="text-sm font-medium">Photo</span>
+                  <span className="text-sm font-medium">{t('photo')}</span>
                   <img 
                     src={request.photo_url} 
-                    alt="Address verification photo"
+                    alt={t('addressVerificationPhoto')}
                     className="w-full h-48 object-cover rounded-lg border"
                   />
                 </div>
@@ -254,7 +256,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                   disabled={processing === request.id || autoVerifying === request.id}
                   className="w-full"
                 >
-                  {processing === request.id ? "Approving..." : "Approve"}
+                  {processing === request.id ? t('approving') : t('approve')}
                 </Button>
                 <Button
                   variant="outline"
@@ -263,8 +265,8 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                   className="flex items-center justify-center gap-1 w-full"
                 >
                   <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Edit & Approve</span>
-                  <span className="sm:hidden">Edit</span>
+                  <span className="hidden sm:inline">{t('editAndApprove')}</span>
+                  <span className="sm:hidden">{t('edit')}</span>
                 </Button>
                 <Button
                   variant="outline"
@@ -272,7 +274,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                   disabled={processing === request.id || autoVerifying === request.id}
                   className="w-full"
                 >
-                  Reject
+                  {t('reject')}
                 </Button>
                 <Button
                   variant="outline"
@@ -280,8 +282,8 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                   className="flex items-center justify-center gap-1 w-full"
                 >
                   <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">View on Map</span>
-                  <span className="sm:hidden">Map</span>
+                  <span className="hidden sm:inline">{t('viewOnMap')}</span>
+                  <span className="sm:hidden">{t('map')}</span>
                 </Button>
                 <Button
                   variant="outline"
@@ -292,14 +294,14 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                   {autoVerifying === request.id ? (
                     <>
                       <Zap className="h-3 w-3 sm:h-4 sm:w-4 animate-pulse" />
-                      <span className="hidden sm:inline">Auto-Verifying...</span>
-                      <span className="sm:hidden">Verifying...</span>
+                      <span className="hidden sm:inline">{t('autoVerifying')}</span>
+                      <span className="sm:hidden">{t('verifying')}</span>
                     </>
                   ) : (
                     <>
                       <Zap className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <span className="hidden sm:inline">Auto-Verify</span>
-                      <span className="sm:hidden">Verify</span>
+                      <span className="hidden sm:inline">{t('autoVerify')}</span>
+                      <span className="sm:hidden">{t('verifying')}</span>
                     </>
                   )}
                 </Button>
@@ -318,7 +320,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             disabled={currentPage === 1}
           >
-            Previous
+            {t('previous')}
           </Button>
           
           <div className="flex items-center gap-1">
@@ -341,7 +343,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
             disabled={currentPage === totalPages}
           >
-            Next
+            {t('next')}
           </Button>
         </div>
       )}
@@ -366,7 +368,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
         <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Edit Address Request</DialogTitle>
+              <DialogTitle>{t('editAddressRequest')}</DialogTitle>
             </DialogHeader>
             <EditRequestForm
               request={editingRequest}
@@ -387,6 +389,7 @@ interface EditRequestFormProps {
 }
 
 function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
+  const { t } = useTranslation('address');
   const [formData, setFormData] = useState<EditableRequest>(request);
 
   const handleSave = () => {
@@ -397,7 +400,7 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="country">Country</Label>
+          <Label htmlFor="country">{t('country')}</Label>
           <Input
             id="country"
             value={formData.country}
@@ -405,7 +408,7 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
           />
         </div>
         <div>
-          <Label htmlFor="region">Region</Label>
+          <Label htmlFor="region">{t('region')}</Label>
           <Input
             id="region"
             value={formData.region}
@@ -413,7 +416,7 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
           />
         </div>
         <div>
-          <Label htmlFor="city">City</Label>
+          <Label htmlFor="city">{t('city')}</Label>
           <Input
             id="city"
             value={formData.city}
@@ -421,7 +424,7 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
           />
         </div>
         <div>
-          <Label htmlFor="street">Street</Label>
+          <Label htmlFor="street">{t('street')}</Label>
           <Input
             id="street"
             value={formData.street}
@@ -429,7 +432,7 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
           />
         </div>
         <div>
-          <Label htmlFor="building">Building/House Number</Label>
+          <Label htmlFor="building">{t('buildingHouseNumber')}</Label>
           <Input
             id="building"
             value={formData.building || ''}
@@ -437,7 +440,7 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
           />
         </div>
         <div>
-          <Label htmlFor="address_type">Address Type</Label>
+          <Label htmlFor="address_type">{t('addressType')}</Label>
           <Select value={formData.address_type} onValueChange={(value) => setFormData(prev => ({ ...prev, address_type: value }))}>
             <SelectTrigger>
               <SelectValue />
