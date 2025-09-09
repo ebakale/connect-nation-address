@@ -103,5 +103,6 @@
   "unpublishingQueueDescription": "Manage address unpublishing requests",
   "analyticsDescription": "View system analytics and reports",
   "provinceManagementDescription": "Manage provincial settings and configurations",
-  "verificationToolsDescription": "Tools for address verification"
+  "verificationToolsDescription": "Tools for address verification",
+  "selectOptionHelp": "Select an option from the sidebar to get started."
 }

@@ -66,5 +66,6 @@
   "unpublishingQueueDescription": "Gérer les demandes de dépublication d'adresses",
   "analyticsDescription": "Voir les analyses du système et les rapports",
   "provinceManagementDescription": "Gérer les paramètres provinciaux et les configurations",
-  "verificationToolsDescription": "Outils pour la vérification d'adresses"
+  "verificationToolsDescription": "Outils pour la vérification d'adresses",
+  "selectOptionHelp": "Sélectionnez une option dans la barre latérale pour commencer."
 }

@@ -552,7 +552,7 @@ const UnifiedDashboard = () => {
       default:
         return (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">Select an option from the sidebar to get started.</p>
+            <p className="text-muted-foreground">{t('dashboard:selectOptionHelp')}</p>
           </div>
         );
     }

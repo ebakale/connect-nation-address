@@ -103,5 +103,6 @@
   "unpublishingQueueDescription": "Gestionar solicitudes de despublicación de direcciones",
   "analyticsDescription": "Ver análisis del sistema y reportes",
   "provinceManagementDescription": "Gestionar configuraciones provinciales",
-  "verificationToolsDescription": "Herramientas para verificación de direcciones"
+  "verificationToolsDescription": "Herramientas para verificación de direcciones",
+  "selectOptionHelp": "Selecciona una opción del menú lateral para empezar."
 }
