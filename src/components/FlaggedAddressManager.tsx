@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useTranslation } from 'react-i18next';
 
 interface FlaggedAddress {
   id: string;
@@ -48,6 +49,7 @@ interface FlaggedAddressManagerProps {
 }
 
 export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressManagerProps) {
+  const { t } = useTranslation('address');
   const [processing, setProcessing] = useState<string | null>(null);
   const [rejectionDialogOpen, setRejectionDialogOpen] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
@@ -98,11 +100,11 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
 
       if (error) throw error;
 
-      toast.success("Flagged request approved successfully");
+      toast.success(t('flaggedRequestApproved'));
       onUpdate();
     } catch (error) {
       console.error('Error approving flagged request:', error);
-      toast.error("Failed to approve flagged request");
+      toast.error(t('failedToApproveFlagged'));
     } finally {
       setProcessing(null);
     }
@@ -142,11 +144,11 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
 
       if (error) throw error;
 
-      toast.success("Flagged request rejected with feedback");
+      toast.success(t('flaggedRequestRejected'));
       onUpdate();
     } catch (error) {
       console.error('Error rejecting flagged request:', error);
-      toast.error("Failed to reject flagged request");
+      toast.error(t('failedToRejectFlagged'));
     } finally {
       setRejectionDialogOpen(false);
       setSelectedAddressId(null);
@@ -157,8 +159,8 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
     return (
       <div className="text-center py-8">
         <CheckCircle className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-        <h3 className="text-lg font-medium">No flagged requests</h3>
-        <p className="text-muted-foreground">All address requests are clear for review.</p>
+        <h3 className="text-lg font-medium">{t('noFlaggedRequests')}</h3>
+        <p className="text-muted-foreground">{t('allRequestsClear')}</p>
       </div>
     );
   }
@@ -168,11 +170,11 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
       {/* Results count and pagination info */}
       <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
         <span>
-          Showing {startIndex + 1}-{Math.min(startIndex + addressesPerPage, addresses.length)} of {addresses.length} flagged addresses
+          {t('showingFlaggedAddresses', { start: startIndex + 1, end: Math.min(startIndex + addressesPerPage, addresses.length), total: addresses.length })}
         </span>
         {totalPages > 1 && (
           <span>
-            Page {currentPage} of {totalPages}
+            {t('pageInfo', { current: currentPage, total: totalPages })}
           </span>
         )}
       </div>
@@ -182,11 +184,11 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
           <Card key={address.id} className="border-l-4 border-l-red-500 max-w-full overflow-hidden">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Flagged Address Request</CardTitle>
+                <CardTitle className="text-lg">{t('flaggedAddressRequest')}</CardTitle>
                 <div className="flex gap-2">
                   <Badge variant="outline" className="bg-red-50 text-red-700">
                     <Flag className="h-3 w-3 mr-1" />
-                    Flagged
+                    {t('flagged')}
                   </Badge>
                   <Badge variant="outline">{address.status}</Badge>
                 </div>
@@ -198,24 +200,24 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">Location</span>
+                    <span className="text-sm font-medium">{t('location')}</span>
                   </div>
                   <p className="text-sm pl-6">
                     {address.building && `${address.building}, `}
                     {address.street}, {address.city}, {address.region}, {address.country}
                   </p>
                   <p className="text-xs text-muted-foreground pl-6">
-                    Coordinates: {address.latitude}, {address.longitude}
+                    {t('coordinates')}: {address.latitude}, {address.longitude}
                   </p>
                   <p className="text-xs text-muted-foreground pl-6">
-                    Request ID: {address.id.slice(0, 8)}...
+                    {t('requestId')}: {address.id.slice(0, 8)}...
                   </p>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <Building className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">Type</span>
+                    <span className="text-sm font-medium">{t('type')}</span>
                   </div>
                   <p className="text-sm pl-6 capitalize">{address.address_type}</p>
                 </div>
@@ -224,14 +226,14 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
               {/* Justification and Description */}
               {address.justification && (
                 <div className="space-y-2">
-                  <span className="text-sm font-medium">Justification</span>
+                  <span className="text-sm font-medium">{t('justification')}</span>
                   <p className="text-sm text-muted-foreground bg-muted p-3 rounded">{address.justification}</p>
                 </div>
               )}
 
               {address.description && (
                 <div className="space-y-2">
-                  <span className="text-sm font-medium">Description</span>
+                  <span className="text-sm font-medium">{t('description')}</span>
                   <p className="text-sm text-muted-foreground">{address.description}</p>
                 </div>
               )}
@@ -239,7 +241,7 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
               {/* Flag Information */}
               {address.flag_reason && (
                 <div className="space-y-2">
-                  <span className="text-sm font-medium">Flag Reason</span>
+                  <span className="text-sm font-medium">{t('flagReason')}</span>
                   <p className="text-sm text-red-600 bg-red-50 p-3 rounded border border-red-200">{address.flag_reason}</p>
                 </div>
               )}
@@ -249,13 +251,13 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <BarChart3 className="h-4 w-4 text-blue-600" />
-                    <span className="text-sm font-medium">Manual Verification Analysis</span>
+                    <span className="text-sm font-medium">{t('manualVerificationAnalysis')}</span>
                   </div>
                   <div className="bg-blue-50 border border-blue-200 rounded p-4 space-y-3">
                     {address.verification_analysis.overallScore && (
                       <div>
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-medium">Overall Score</span>
+                          <span className="text-sm font-medium">{t('overallScore')}</span>
                           <span className="text-sm font-bold text-blue-700">
                             {address.verification_analysis.overallScore}%
                           </span>
@@ -267,14 +269,14 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                     {address.verification_analysis.accuracy && (
                       <div className="grid grid-cols-2 gap-4 text-xs">
                         <div>
-                          <span className="font-medium">Accuracy:</span>
-                          <p>{address.verification_analysis.accuracy.precision}</p>
-                          <p>Score: {address.verification_analysis.accuracy.score}%</p>
+                           <span className="font-medium">{t('accuracy')}:</span>
+                           <p>{address.verification_analysis.accuracy.precision}</p>
+                           <p>{t('score')}: {address.verification_analysis.accuracy.score}%</p>
                         </div>
                         {address.verification_analysis.consistency && (
                           <div>
-                            <span className="font-medium">Consistency:</span>
-                            <p>Score: {address.verification_analysis.consistency.score}%</p>
+                             <span className="font-medium">{t('consistency')}:</span>
+                             <p>{t('score')}: {address.verification_analysis.consistency.score}%</p>
                           </div>
                         )}
                       </div>
@@ -292,13 +294,13 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <FileText className="h-4 w-4 text-purple-600" />
-                    <span className="text-sm font-medium">Auto-Verification Analysis</span>
+                    <span className="text-sm font-medium">{t('autoVerificationAnalysis')}</span>
                   </div>
                   <div className="bg-purple-50 border border-purple-200 rounded p-4 space-y-3">
                     {address.auto_verification_analysis.overallScore && (
                       <div>
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-medium">Overall Score</span>
+                          <span className="text-sm font-medium">{t('overallScore')}</span>
                           <span className="text-sm font-bold text-purple-700">
                             {address.auto_verification_analysis.overallScore}%
                           </span>
@@ -310,27 +312,27 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                     <div className="grid grid-cols-2 gap-4 text-xs">
                       {address.auto_verification_analysis.coordinateValidity && (
                         <div>
-                          <span className="font-medium">Coordinate Validity:</span>
+                          <span className="font-medium">{t('coordinateValidity')}:</span>
                           <p>{address.auto_verification_analysis.coordinateValidity}%</p>
                         </div>
                       )}
                       {address.auto_verification_analysis.addressConsistency && (
                         <div>
-                          <span className="font-medium">Address Consistency:</span>
-                          <p>{address.auto_verification_analysis.addressConsistency}%</p>
-                        </div>
-                      )}
-                      {address.auto_verification_analysis.completeness && (
-                        <div>
-                          <span className="font-medium">Completeness:</span>
-                          <p>{address.auto_verification_analysis.completeness}%</p>
-                        </div>
-                      )}
-                      {address.auto_verification_analysis.fraudRisk && (
-                        <div>
-                          <span className="font-medium">Fraud Risk:</span>
-                          <p className="text-red-600">{address.auto_verification_analysis.fraudRisk}%</p>
-                        </div>
+                           <span className="font-medium">{t('addressConsistency')}:</span>
+                           <p>{address.auto_verification_analysis.addressConsistency}%</p>
+                         </div>
+                       )}
+                       {address.auto_verification_analysis.completeness && (
+                         <div>
+                           <span className="font-medium">{t('completeness')}:</span>
+                           <p>{address.auto_verification_analysis.completeness}%</p>
+                         </div>
+                       )}
+                       {address.auto_verification_analysis.fraudRisk && (
+                         <div>
+                           <span className="font-medium">{t('fraudRisk')}:</span>
+                           <p className="text-red-600">{address.auto_verification_analysis.fraudRisk}%</p>
+                         </div>
                       )}
                     </div>
                     
@@ -346,7 +348,7 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-yellow-600" />
-                    <span className="text-sm font-medium">Verification Recommendations</span>
+                    <span className="text-sm font-medium">{t('verificationRecommendations')}</span>
                   </div>
                   <div className="bg-yellow-50 border border-yellow-200 rounded p-3">
                     <ul className="text-sm space-y-1">
@@ -364,7 +366,7 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
               {/* Auto-Verification Recommendations */}
               {address.auto_verification_analysis?.recommendations && address.auto_verification_analysis.recommendations.length > 0 && (
                 <div className="space-y-2">
-                  <span className="text-sm font-medium">Auto-Verification Recommendations</span>
+                  <span className="text-sm font-medium">{t('autoVerificationRecommendations')}</span>
                   <div className="bg-gray-50 border border-gray-200 rounded p-3">
                     <ul className="text-sm space-y-1">
                       {address.auto_verification_analysis.recommendations.map((rec: string, index: number) => (
@@ -381,7 +383,7 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
               {/* Reviewer Notes */}
               {address.reviewer_notes && (
                 <div className="space-y-2">
-                  <span className="text-sm font-medium">Reviewer Notes</span>
+                  <span className="text-sm font-medium">{t('reviewerNotes')}</span>
                   <p className="text-sm text-muted-foreground bg-gray-50 p-3 rounded border">{address.reviewer_notes}</p>
                 </div>
               )}
@@ -389,11 +391,11 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
               {/* Previous Rejection Information */}
               {address.rejection_reason && (
                 <div className="space-y-2">
-                  <span className="text-sm font-medium">Previous Rejection</span>
+                  <span className="text-sm font-medium">{t('previousRejection')}</span>
                   <div className="bg-red-50 border border-red-200 rounded p-3 space-y-2">
-                    <p className="text-sm text-red-700"><strong>Reason:</strong> {address.rejection_reason}</p>
+                    <p className="text-sm text-red-700"><strong>{t('reason')}:</strong> {address.rejection_reason}</p>
                     {address.rejection_notes && (
-                      <p className="text-sm text-red-600"><strong>Notes:</strong> {address.rejection_notes}</p>
+                      <p className="text-sm text-red-600"><strong>{t('notes')}:</strong> {address.rejection_notes}</p>
                     )}
                   </div>
                 </div>
@@ -402,10 +404,10 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
               {/* Photo */}
               {address.photo_url && (
                 <div className="space-y-2">
-                  <span className="text-sm font-medium">Verification Photo</span>
+                  <span className="text-sm font-medium">{t('verificationPhoto')}</span>
                   <img 
                     src={address.photo_url} 
-                    alt="Address verification photo"
+                    alt={t('addressVerificationPhoto')}
                     className="w-full h-48 object-cover rounded-lg border"
                   />
                 </div>
@@ -416,11 +418,11 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
               <div className="flex items-center gap-4 text-xs text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
-                  <span>Flagged {address.flagged_at ? new Date(address.flagged_at).toLocaleDateString() : 'Unknown'}</span>
+                  <span>{t('flaggedOn', { date: address.flagged_at ? new Date(address.flagged_at).toLocaleDateString() : t('unknown') })}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <User className="h-3 w-3" />
-                  <span>User ID: {address.user_id.slice(0, 8)}...</span>
+                  <span>{t('userId', { id: address.user_id.slice(0, 8) })}</span>
                 </div>
               </div>
 
@@ -431,7 +433,7 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                   disabled={processing === address.id}
                   className="w-full"
                 >
-                  {processing === address.id ? "Approving..." : "Approve"}
+                  {processing === address.id ? t('approving') : t('approve')}
                 </Button>
                 <Button
                   variant="outline"
@@ -440,8 +442,8 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                   className="flex items-center justify-center gap-1 w-full"
                 >
                   <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Edit & Approve</span>
-                  <span className="sm:hidden">Edit</span>
+                  <span className="hidden sm:inline">{t('editAndApprove')}</span>
+                  <span className="sm:hidden">{t('edit')}</span>
                 </Button>
                 <Button
                   variant="outline"
@@ -449,7 +451,7 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                   disabled={processing === address.id}
                   className="w-full"
                 >
-                  Reject
+                  {t('reject')}
                 </Button>
                 <Button
                   variant="outline"
@@ -457,8 +459,8 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                   className="flex items-center justify-center gap-1 w-full"
                 >
                   <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">View on Map</span>
-                  <span className="sm:hidden">Map</span>
+                  <span className="hidden sm:inline">{t('viewOnMap')}</span>
+                  <span className="sm:hidden">{t('map')}</span>
                 </Button>
               </div>
             </CardContent>
@@ -475,7 +477,7 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             disabled={currentPage === 1}
           >
-            Previous
+            {t('previous')}
           </Button>
           
           <div className="flex items-center gap-1">
@@ -498,7 +500,7 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
             disabled={currentPage === totalPages}
           >
-            Next
+            {t('next')}
           </Button>
         </div>
       )}
@@ -523,7 +525,7 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
         <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Edit Flagged Address Request</DialogTitle>
+              <DialogTitle>{t('editFlaggedAddressRequest')}</DialogTitle>
             </DialogHeader>
             <EditFlaggedAddressForm
               address={editingAddress}
@@ -544,6 +546,7 @@ interface EditFlaggedAddressFormProps {
 }
 
 function EditFlaggedAddressForm({ address, onSave, onCancel }: EditFlaggedAddressFormProps) {
+  const { t } = useTranslation('address');
   const [formData, setFormData] = useState<EditableFlaggedAddress>(address);
 
   const handleSave = () => {
@@ -554,7 +557,7 @@ function EditFlaggedAddressForm({ address, onSave, onCancel }: EditFlaggedAddres
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="country">Country</Label>
+          <Label htmlFor="country">{t('country')}</Label>
           <Input
             id="country"
             value={formData.country}
@@ -562,7 +565,7 @@ function EditFlaggedAddressForm({ address, onSave, onCancel }: EditFlaggedAddres
           />
         </div>
         <div>
-          <Label htmlFor="region">Region</Label>
+          <Label htmlFor="region">{t('region')}</Label>
           <Input
             id="region"
             value={formData.region}
@@ -570,7 +573,7 @@ function EditFlaggedAddressForm({ address, onSave, onCancel }: EditFlaggedAddres
           />
         </div>
         <div>
-          <Label htmlFor="city">City</Label>
+          <Label htmlFor="city">{t('city')}</Label>
           <Input
             id="city"
             value={formData.city}
@@ -578,7 +581,7 @@ function EditFlaggedAddressForm({ address, onSave, onCancel }: EditFlaggedAddres
           />
         </div>
         <div>
-          <Label htmlFor="street">Street</Label>
+          <Label htmlFor="street">{t('street')}</Label>
           <Input
             id="street"
             value={formData.street}
@@ -586,7 +589,7 @@ function EditFlaggedAddressForm({ address, onSave, onCancel }: EditFlaggedAddres
           />
         </div>
         <div>
-          <Label htmlFor="building">Building/House Number</Label>
+          <Label htmlFor="building">{t('buildingHouseNumber')}</Label>
           <Input
             id="building"
             value={formData.building || ''}
@@ -594,21 +597,21 @@ function EditFlaggedAddressForm({ address, onSave, onCancel }: EditFlaggedAddres
           />
         </div>
         <div>
-          <Label htmlFor="address_type">Address Type</Label>
+          <Label htmlFor="address_type">{t('addressType')}</Label>
           <Select value={formData.address_type} onValueChange={(value) => setFormData(prev => ({ ...prev, address_type: value }))}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="residential">Residential</SelectItem>
-              <SelectItem value="commercial">Commercial</SelectItem>
-              <SelectItem value="government">Government</SelectItem>
-              <SelectItem value="landmark">Landmark</SelectItem>
+              <SelectItem value="residential">{t('residential')}</SelectItem>
+              <SelectItem value="commercial">{t('commercial')}</SelectItem>
+              <SelectItem value="government">{t('government')}</SelectItem>
+              <SelectItem value="landmark">{t('landmark')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div>
-          <Label htmlFor="latitude">Latitude</Label>
+          <Label htmlFor="latitude">{t('latitude')}</Label>
           <Input
             id="latitude"
             type="number"
@@ -618,7 +621,7 @@ function EditFlaggedAddressForm({ address, onSave, onCancel }: EditFlaggedAddres
           />
         </div>
         <div>
-          <Label htmlFor="longitude">Longitude</Label>
+          <Label htmlFor="longitude">{t('longitude')}</Label>
           <Input
             id="longitude"
             type="number"
@@ -629,7 +632,7 @@ function EditFlaggedAddressForm({ address, onSave, onCancel }: EditFlaggedAddres
         </div>
       </div>
       <div>
-        <Label htmlFor="description">Description</Label>
+        <Label htmlFor="description">{t('description')}</Label>
         <Textarea
           id="description"
           value={formData.description || ''}
@@ -638,10 +641,10 @@ function EditFlaggedAddressForm({ address, onSave, onCancel }: EditFlaggedAddres
       </div>
       <div className="flex gap-2 pt-4">
         <Button onClick={handleSave} className="flex-1">
-          Save & Approve
+          {t('saveAndApprove')}
         </Button>
         <Button variant="outline" onClick={onCancel}>
-          Cancel
+          {t('cancel')}
         </Button>
       </div>
     </div>
