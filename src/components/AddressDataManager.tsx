@@ -3,14 +3,17 @@ import { Separator } from "@/components/ui/separator";
 import { GoogleMapsImporter } from "@/components/GoogleMapsImporter";
 import { AddressExporter } from "@/components/AddressExporter";
 import { Import, Download } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 export function AddressDataManager() {
+  const { t } = useTranslation('address');
+  
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-foreground mb-2">Address Data Management</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-2">{t('addressDataManagement')}</h2>
         <p className="text-muted-foreground">
-          Import addresses from Google Maps and export existing address data in various formats.
+          {t('importExportAddresses')}
         </p>
       </div>
 
@@ -20,7 +23,7 @@ export function AddressDataManager() {
       <div className="space-y-4">
         <div className="flex items-center gap-2">
           <Import className="h-5 w-5 text-primary" />
-          <h3 className="text-lg font-semibold">Import Addresses</h3>
+          <h3 className="text-lg font-semibold">{t('importAddresses')}</h3>
         </div>
         <GoogleMapsImporter />
       </div>
@@ -31,7 +34,7 @@ export function AddressDataManager() {
       <div className="space-y-4">
         <div className="flex items-center gap-2">
           <Download className="h-5 w-5 text-primary" />
-          <h3 className="text-lg font-semibold">Export Addresses</h3>
+          <h3 className="text-lg font-semibold">{t('exportAddresses')}</h3>
         </div>
         <AddressExporter />
       </div>

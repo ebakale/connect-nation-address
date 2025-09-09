@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Download, ExternalLink, MapPin, Search } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 
 interface Address {
   id: string;
@@ -32,6 +33,7 @@ export const AddressExporter: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [uacFilter, setUacFilter] = useState('');
   const { toast } = useToast();
+  const { t } = useTranslation('address');
 
   const fetchAddresses = async (): Promise<Address[]> => {
     let query = supabase.from('addresses').select('*');
@@ -57,16 +59,16 @@ export const AddressExporter: React.FC = () => {
 
   const exportAsCSV = (addresses: Address[]) => {
     const headers = [
-      'UAC',
-      'Name',
-      'Address',
-      'Latitude',
-      'Longitude',
-      'Description',
-      'Type',
-      'City',
-      'Region',
-      'Country'
+      t('uacLabel'),
+      t('nameLabel'),
+      t('addressLabel'),
+      t('latitudeLabel'),
+      t('longitudeLabel'),
+      t('descriptionLabel'),
+      t('typeLabel'),
+      t('cityLabel'),
+      t('regionLabel'),
+      t('countryLabel')
     ];
     
     const rows = addresses.map(addr => [
@@ -97,8 +99,8 @@ export const AddressExporter: React.FC = () => {
     const kmlHeader = `<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
-    <name>Address Export</name>
-    <description>Exported addresses from UAC system</description>`;
+    <name>${t('addressExport')}</name>
+    <description>${t('exportedAddressesDescription')}</description>`;
     
     const placemarks = addresses.map(addr => `
     <Placemark>
@@ -108,7 +110,7 @@ export const AddressExporter: React.FC = () => {
         <strong>Address:</strong> ${addr.building ? addr.building + ', ' : ''}${addr.street}, ${addr.city}, ${addr.region}<br/>
         <strong>Type:</strong> ${addr.address_type}<br/>
         ${addr.description ? '<strong>Description:</strong> ' + addr.description + '<br/>' : ''}
-        <strong>Status:</strong> ${addr.verified ? 'Verified' : 'Unverified'} | ${addr.public ? 'Public' : 'Private'}
+        <strong>${t('status')}:</strong> ${addr.verified ? t('verified') : t('unverified')} | ${addr.public ? t('public') : t('private')}
       ]]></description>
       <Point>
         <coordinates>${addr.longitude},${addr.latitude},0</coordinates>
@@ -161,8 +163,8 @@ export const AddressExporter: React.FC = () => {
       
       if (addresses.length === 0) {
         toast({
-          title: "No addresses found",
-          description: "No addresses match your current filter criteria.",
+          title: t('noAddressesFound'),
+          description: t('noAddressesMatch'),
           variant: "destructive"
         });
         return;
@@ -193,15 +195,15 @@ export const AddressExporter: React.FC = () => {
       }, 1000);
       
       toast({
-        title: "Export created",
-        description: "CSV file downloaded. Upload it to Google My Maps to view your addresses.",
+        title: t('exportCreated'),
+        description: t('csvDownloadedGoogleMaps'),
       });
       
     } catch (error) {
       console.error('Export error:', error);
       toast({
-        title: "Export failed",
-        description: "Failed to export addresses. Please try again.",
+        title: t('exportFailed'),
+        description: t('failedToExport'),
         variant: "destructive"
       });
     } finally {
@@ -216,8 +218,8 @@ export const AddressExporter: React.FC = () => {
       
       if (addresses.length === 0) {
         toast({
-          title: "No addresses found",
-          description: "No addresses match your current filter criteria.",
+          title: t('noAddressesFound'),
+          description: t('noAddressesMatch'),
           variant: "destructive"
         });
         return;
@@ -236,15 +238,15 @@ export const AddressExporter: React.FC = () => {
       }
       
       toast({
-        title: "Export successful",
-        description: `Exported ${addresses.length} addresses as ${exportFormat.toUpperCase()}.`,
+        title: t('exportSuccessful'),
+        description: t('exportedCount', { count: addresses.length, format: exportFormat.toUpperCase() }),
       });
       
     } catch (error) {
       console.error('Export error:', error);
       toast({
-        title: "Export failed",
-        description: "Failed to export addresses. Please try again.",
+        title: t('exportFailed'),
+        description: t('failedToExport'),
         variant: "destructive"
       });
     } finally {
@@ -257,22 +259,22 @@ export const AddressExporter: React.FC = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Download className="h-5 w-5" />
-          Export Addresses
+          {t('exportAddresses')}
         </CardTitle>
         <CardDescription>
-          Export your addresses in various formats compatible with Google Maps and other mapping services.
+          {t('exportVariousFormats')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-4">
           <div>
-            <Label htmlFor="uac-filter">Filter by UAC (optional)</Label>
+            <Label htmlFor="uac-filter">{t('filterByUac')}</Label>
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 id="uac-filter"
                 type="text"
-                placeholder="Enter UAC (e.g., GQ-BN-MAL-8A103R-UK)"
+                placeholder={t('enterUacPlaceholder')}
                 value={uacFilter}
                 onChange={(e) => setUacFilter(e.target.value)}
                 className="pl-10"
@@ -281,15 +283,15 @@ export const AddressExporter: React.FC = () => {
           </div>
           
           <div>
-            <Label htmlFor="export-format">Export Format</Label>
+            <Label htmlFor="export-format">{t('exportFormat')}</Label>
             <Select value={exportFormat} onValueChange={setExportFormat}>
               <SelectTrigger>
-                <SelectValue placeholder="Select format" />
+                <SelectValue placeholder={t('selectFormat')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="csv">CSV (Spreadsheet)</SelectItem>
-                <SelectItem value="kml">KML (Google Earth)</SelectItem>
-                <SelectItem value="json">JSON (Developers)</SelectItem>
+                <SelectItem value="csv">{t('csvSpreadsheet')}</SelectItem>
+                <SelectItem value="kml">{t('kmlGoogleEarth')}</SelectItem>
+                <SelectItem value="json">{t('jsonDevelopers')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -301,7 +303,7 @@ export const AddressExporter: React.FC = () => {
                 checked={verifiedOnly}
                 onCheckedChange={setVerifiedOnly}
               />
-              <Label htmlFor="verified-only">Verified addresses only</Label>
+              <Label htmlFor="verified-only">{t('verifiedAddressesOnly')}</Label>
             </div>
             
             <div className="flex items-center space-x-2">
@@ -310,7 +312,7 @@ export const AddressExporter: React.FC = () => {
                 checked={includePrivate}
                 onCheckedChange={setIncludePrivate}
               />
-              <Label htmlFor="include-private">Include private addresses</Label>
+              <Label htmlFor="include-private">{t('includePrivateAddresses')}</Label>
             </div>
           </div>
         </div>
@@ -318,19 +320,19 @@ export const AddressExporter: React.FC = () => {
         <div className="flex flex-col gap-3">
           <Button onClick={handleExport} disabled={loading} className="w-full">
             <Download className="h-4 w-4 mr-2" />
-            {loading ? 'Exporting...' : `Export as ${exportFormat.toUpperCase()}`}
+            {loading ? t('exporting') : t('exportAs', { format: exportFormat.toUpperCase() })}
           </Button>
           
           <Button variant="outline" onClick={openInGoogleMyMaps} disabled={loading} className="w-full">
             <ExternalLink className="h-4 w-4 mr-2" />
-            Export to Google My Maps
+            {t('exportToGoogleMyMaps')}
           </Button>
         </div>
         
         <div className="text-sm text-muted-foreground">
-          <p><strong>CSV:</strong> Import into Google My Maps, Excel, or other spreadsheet applications</p>
-          <p><strong>KML:</strong> View in Google Earth or import into mapping applications</p>
-          <p><strong>JSON:</strong> Use for developers or API integrations</p>
+          <p><strong>CSV:</strong> {t('csvDescription')}</p>
+          <p><strong>KML:</strong> {t('kmlDescription')}</p>
+          <p><strong>JSON:</strong> {t('jsonDescription')}</p>
         </div>
       </CardContent>
     </Card>
