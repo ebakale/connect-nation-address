@@ -76,7 +76,7 @@ export const AnalyticsReports = () => {
   const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesData[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const { toast } = useToast();
-  const { t } = useTranslation(['common', 'dashboard']);
+  const { t } = useTranslation(['dashboard', 'common']);
 
   // Specific colors for each address type using semantic design tokens
   const typeColorMap: Record<string, string> = {
@@ -112,8 +112,8 @@ export const AnalyticsReports = () => {
     } catch (error) {
       console.error("Error fetching addresses:", error);
       toast({
-        title: "Error",
-        description: "Failed to fetch address data",
+        title: t('dashboard:errorFetchingData'),
+        description: t('dashboard:failedToFetchData'),
         variant: "destructive",
       });
     } finally {
@@ -238,9 +238,9 @@ export const AnalyticsReports = () => {
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
       
-      const periodLabel = selectedPeriod === '7d' ? '7-days' : 
-                         selectedPeriod === '30d' ? '30-days' : 
-                         selectedPeriod === '90d' ? '90-days' : 'yearly';
+      const periodLabel = selectedPeriod === '7d' ? t('dashboard:sevenDays') : 
+                         selectedPeriod === '30d' ? t('dashboard:thirtyDays') : 
+                         selectedPeriod === '90d' ? t('dashboard:ninetyDays') : t('dashboard:yearly');
       
       link.setAttribute('href', url);
       link.setAttribute('download', `address-analytics-report-${periodLabel}-${new Date().toISOString().split('T')[0]}.csv`);
@@ -252,44 +252,44 @@ export const AnalyticsReports = () => {
       URL.revokeObjectURL(url);
       
       toast({
-        title: "Export Successful",
-        description: `Analytics report exported for ${periodLabel} period`,
+        title: t('dashboard:exportSuccessful'),
+        description: t('dashboard:exportSuccessfulDescription', { period: periodLabel }),
       });
     } catch (error) {
       toast({
-        title: "Export Failed", 
-        description: "There was an error exporting the report",
+        title: t('dashboard:exportFailed'), 
+        description: t('dashboard:exportFailedDescription'),
         variant: "destructive",
       });
     }
   };
 
   const generateEnhancedCSVReport = () => {
-    const periodLabel = selectedPeriod === '7d' ? 'Last 7 Days' : 
-                       selectedPeriod === '30d' ? 'Last 30 Days' : 
-                       selectedPeriod === '90d' ? 'Last 90 Days' : 'Last Year';
+    const periodLabel = selectedPeriod === '7d' ? t('dashboard:lastSevenDaysText') : 
+                       selectedPeriod === '30d' ? t('dashboard:lastThirtyDaysText') : 
+                       selectedPeriod === '90d' ? t('dashboard:lastNinetyDaysText') : t('dashboard:lastYearText');
     
     const exportDate = new Date().toLocaleDateString();
     const csvRows = [
       // Header section
-      ['Address Analytics Report'],
-      [`Generated on: ${exportDate}`],
-      [`Period: ${periodLabel}`],
+      [t('dashboard:addressAnalyticsReport')],
+      [`${t('dashboard:generatedOn')}: ${exportDate}`],
+      [`${t('dashboard:period')}: ${periodLabel}`],
       [''],
       
       // Summary statistics
-      ['SUMMARY STATISTICS'],
-      ['Metric', 'Count', 'Percentage'],
-      ['Total Addresses', addressStats.total.toString(), '100%'],
-      ['Verified Addresses', addressStats.verified.toString(), `${Math.round((addressStats.verified/addressStats.total)*100)}%`],
-      ['Pending Verification', addressStats.pending.toString(), `${Math.round((addressStats.pending/addressStats.total)*100)}%`],
-      ['Public Addresses', addressStats.public.toString(), `${Math.round((addressStats.public/addressStats.total)*100)}%`],
-      ['Private Addresses', addressStats.private.toString(), `${Math.round((addressStats.private/addressStats.total)*100)}%`],
+      [t('dashboard:summaryStatistics')],
+      [t('dashboard:metric'), t('dashboard:count'), t('dashboard:percentage')],
+      [t('dashboard:totalAddressesLabel'), addressStats.total.toString(), '100%'],
+      [t('dashboard:verifiedAddressesLabel'), addressStats.verified.toString(), `${Math.round((addressStats.verified/addressStats.total)*100)}%`],
+      [t('dashboard:pendingVerification'), addressStats.pending.toString(), `${Math.round((addressStats.pending/addressStats.total)*100)}%`],
+      [t('dashboard:publicAddressesLabel'), addressStats.public.toString(), `${Math.round((addressStats.public/addressStats.total)*100)}%`],
+      [t('dashboard:privateAddressesLabel'), addressStats.private.toString(), `${Math.round((addressStats.private/addressStats.total)*100)}%`],
       [''],
       
       // Regional breakdown
-      ['REGIONAL BREAKDOWN'],
-      ['Region', 'Total Addresses', 'Verified', 'Pending', 'Verification Rate'],
+      [t('dashboard:regionalBreakdown')],
+      [t('dashboard:region'), t('dashboard:totalAddressesLabel'), t('dashboard:verified'), t('dashboard:pending'), t('dashboard:verificationRateHeader')],
       ...regionData.map(region => [
         region.region,
         region.addresses.toString(),
@@ -300,8 +300,8 @@ export const AnalyticsReports = () => {
       [''],
       
       // Address types
-      ['ADDRESS TYPES'],
-      ['Type', 'Count', 'Percentage of Total'],
+      [t('dashboard:addressTypesHeader')],
+      [t('dashboard:type'), t('dashboard:count'), t('dashboard:percentage')],
       ...typeData.map(type => [
         type.type,
         type.count.toString(),
@@ -310,8 +310,8 @@ export const AnalyticsReports = () => {
       [''],
       
       // Time series data
-      ['REGISTRATION TRENDS'],
-      ['Date/Period', 'New Addresses', 'Verified Addresses'],
+      [t('dashboard:registrationTrendsHeader')],
+      [t('dashboard:datePeriod'), t('dashboard:newAddressesHeader'), t('dashboard:verifiedAddressesLabel')],
       ...timeSeriesData.map(data => [
         data.date,
         data.addresses.toString(),
@@ -327,15 +327,15 @@ export const AnalyticsReports = () => {
   };
 
   if (loading) {
-    return <div className="p-4">{t('loading')}...</div>;
+    return <div className="p-4">{t('common:loading')}...</div>;
   }
 
   return (
     <div className="space-y-4 sm:space-y-6 p-4 max-w-full overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="min-w-0 flex-1">
-          <h2 className="text-xl sm:text-2xl font-bold break-words">{t('reportsAnalytics')}</h2>
-          <p className="text-sm text-muted-foreground break-words">{t('addressRegistrationInsights')}</p>
+          <h2 className="text-xl sm:text-2xl font-bold break-words">{t('dashboard:reportsAnalytics')}</h2>
+          <p className="text-sm text-muted-foreground break-words">{t('dashboard:addressRegistrationInsights')}</p>
         </div>
         
         <div className="flex flex-col sm:flex-row gap-2">
@@ -344,19 +344,19 @@ export const AnalyticsReports = () => {
             onValueChange={(value) => {
               setSelectedPeriod(value);
               toast({
-                title: t('periodUpdated'),
-                description: `${t('analyticsUpdatedFor')} ${value === '7d' ? t('lastSevenDays') : value === '30d' ? t('lastThirtyDays') : value === '90d' ? t('lastNinetyDays') : t('lastYear')}`,
+                title: t('dashboard:periodUpdated'),
+                description: `${t('dashboard:analyticsUpdatedFor')} ${value === '7d' ? t('dashboard:lastSevenDays') : value === '30d' ? t('dashboard:lastThirtyDays') : value === '90d' ? t('dashboard:lastNinetyDays') : t('dashboard:lastYear')}`,
               });
             }}
           >
             <SelectTrigger className="w-full sm:w-[140px] bg-background">
-              <SelectValue placeholder={t('selectPeriod')} />
+              <SelectValue placeholder={t('dashboard:selectPeriod')} />
             </SelectTrigger>
             <SelectContent className="bg-background border shadow-lg z-50">
-              <SelectItem value="7d">{t('lastSevenDays')}</SelectItem>
-              <SelectItem value="30d">{t('lastThirtyDays')}</SelectItem>
-              <SelectItem value="90d">{t('lastNinetyDays')}</SelectItem>
-              <SelectItem value="1y">{t('lastYear')}</SelectItem>
+              <SelectItem value="7d">{t('dashboard:lastSevenDays')}</SelectItem>
+              <SelectItem value="30d">{t('dashboard:lastThirtyDays')}</SelectItem>
+              <SelectItem value="90d">{t('dashboard:lastNinetyDays')}</SelectItem>
+              <SelectItem value="1y">{t('dashboard:lastYear')}</SelectItem>
             </SelectContent>
           </Select>
           
@@ -367,8 +367,8 @@ export const AnalyticsReports = () => {
             className="w-full sm:w-auto text-xs sm:text-sm"
           >
             <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-            <span className="hidden sm:inline">{loading ? t('loading') : t('exportCSV')}</span>
-            <span className="sm:hidden">Export</span>
+            <span className="hidden sm:inline">{loading ? t('common:loading') : t('dashboard:exportCSV')}</span>
+            <span className="sm:hidden">{t('dashboard:exportCSV')}</span>
           </Button>
         </div>
       </div>
@@ -377,66 +377,66 @@ export const AnalyticsReports = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">{t('totalAddresses')}</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">{t('dashboard:totalAddresses')}</CardTitle>
             <MapPin className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-xl sm:text-2xl font-bold">{addressStats.total.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
               <TrendingUp className="h-3 w-3 inline mr-1" />
-              +12% from last month
+              {t('dashboard:fromLastMonth')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">{t('verified')}</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">{t('dashboard:verified')}</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-xl sm:text-2xl font-bold text-green-600">{addressStats.verified.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              {Math.round((addressStats.verified / addressStats.total) * 100)}% {t('verificationRate')}
+              {Math.round((addressStats.verified / addressStats.total) * 100)}% {t('dashboard:verificationRate')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">{t('pending')}</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">{t('dashboard:pending')}</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-xl sm:text-2xl font-bold text-orange-600">{addressStats.pending.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              {t('awaitingVerification')}
+              {t('dashboard:awaitingVerification')}
             </p>
           </CardContent>
         </Card>
         
         <Card className="sm:col-span-2 lg:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">{t('publicAddresses')}</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">{t('dashboard:publicAddresses')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-xl sm:text-2xl font-bold text-blue-600">{addressStats.public.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              {t('publiclyAccessible')}
+              {t('dashboard:publiclyAccessible')}
             </p>
           </CardContent>
         </Card>
         
         <Card className="sm:col-span-2 lg:col-span-1 xl:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">{t('private')}</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">{t('dashboard:private')}</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-xl sm:text-2xl font-bold text-gray-600">{addressStats.private.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              {t('restrictedAccess')}
+              {t('dashboard:restrictedAccess')}
             </p>
           </CardContent>
         </Card>
@@ -444,17 +444,17 @@ export const AnalyticsReports = () => {
 
       <Tabs defaultValue="regional" className="space-y-4">
         <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto">
-          <TabsTrigger value="regional" className="text-xs sm:text-sm p-2 sm:p-3">{t('regionalAnalysis')}</TabsTrigger>
-          <TabsTrigger value="types" className="text-xs sm:text-sm p-2 sm:p-3">{t('addressTypes')}</TabsTrigger>
-          <TabsTrigger value="trends" className="text-xs sm:text-sm p-2 sm:p-3">{t('trends')}</TabsTrigger>
+          <TabsTrigger value="regional" className="text-xs sm:text-sm p-2 sm:p-3">{t('dashboard:regionalAnalysis')}</TabsTrigger>
+          <TabsTrigger value="types" className="text-xs sm:text-sm p-2 sm:p-3">{t('dashboard:addressTypes')}</TabsTrigger>
+          <TabsTrigger value="trends" className="text-xs sm:text-sm p-2 sm:p-3">{t('dashboard:trends')}</TabsTrigger>
         </TabsList>
         
         <TabsContent value="regional" className="space-y-4">
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-base sm:text-lg">{t('addressesByRegion')}</CardTitle>
-                <CardDescription className="text-sm">{t('totalAndVerifiedPerRegion')}</CardDescription>
+                <CardTitle className="text-base sm:text-lg">{t('dashboard:addressesByRegion')}</CardTitle>
+                <CardDescription className="text-sm">{t('dashboard:totalAndVerifiedPerRegion')}</CardDescription>
               </CardHeader>
               <CardContent>
               <div className="w-full overflow-x-auto">
@@ -465,8 +465,8 @@ export const AnalyticsReports = () => {
                     <YAxis fontSize={12} />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="addresses" fill="hsl(var(--primary))" name="Total" />
-                    <Bar dataKey="verified" fill="hsl(var(--success))" name="Verified" />
+                    <Bar dataKey="addresses" fill="hsl(var(--primary))" name={t('dashboard:totalAddresses')} />
+                    <Bar dataKey="verified" fill="hsl(var(--success))" name={t('dashboard:verified')} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -475,8 +475,8 @@ export const AnalyticsReports = () => {
             
             <Card>
               <CardHeader>
-                <CardTitle>{t('regionalSummary')}</CardTitle>
-                <CardDescription>{t('keyStatisticsByRegion')}</CardDescription>
+                <CardTitle>{t('dashboard:regionalSummary')}</CardTitle>
+                <CardDescription>{t('dashboard:keyStatisticsByRegion')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -485,22 +485,22 @@ export const AnalyticsReports = () => {
                       <div>
                         <h4 className="font-medium">{region.region}</h4>
                         <p className="text-sm text-muted-foreground">
-                          {region.addresses} {t('totalAddressesCount')}
+                          {region.addresses} {t('dashboard:totalAddressesCount')}
                         </p>
                       </div>
                       <div className="text-right">
                         <Badge variant="default">
-                          {region.addresses > 0 ? Math.round((region.verified / region.addresses) * 100) : 0}% verified
+                          {region.addresses > 0 ? Math.round((region.verified / region.addresses) * 100) : 0}% {t('dashboard:verifiedText')}
                         </Badge>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {region.pending} pending
+                          {region.pending} {t('dashboard:pendingText')}
                         </p>
                       </div>
                     </div>
                   ))}
                   {regionData.length === 0 && (
                     <p className="text-center text-muted-foreground py-4">
-                      {t('noDataAvailable')}
+                      {t('dashboard:noDataAvailable')}
                     </p>
                   )}
                 </div>
@@ -513,8 +513,8 @@ export const AnalyticsReports = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>{t('addressTypeDistribution')}</CardTitle>
-                <CardDescription>{t('totalByType')}</CardDescription>
+                <CardTitle>{t('dashboard:addressTypeDistribution')}</CardTitle>
+                <CardDescription>{t('dashboard:totalByType')}</CardDescription>
               </CardHeader>
               <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -540,8 +540,8 @@ export const AnalyticsReports = () => {
             
             <Card>
               <CardHeader>
-                <CardTitle>{t('totalByType')}</CardTitle>
-                <CardDescription>{t('addressTypeDistribution')}</CardDescription>
+                <CardTitle>{t('dashboard:totalByType')}</CardTitle>
+                <CardDescription>{t('dashboard:addressTypeDistribution')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -562,7 +562,7 @@ export const AnalyticsReports = () => {
                   ))}
                   {typeData.length === 0 && (
                     <p className="text-center text-muted-foreground py-4">
-                      {t('noDataAvailable')}
+                      {t('dashboard:noDataAvailable')}
                     </p>
                   )}
                 </div>
@@ -574,8 +574,8 @@ export const AnalyticsReports = () => {
         <TabsContent value="trends" className="space-y-4">
           <Card>
             <CardHeader>
-               <CardTitle>{t('registrationTrends')}</CardTitle>
-               <CardDescription>{t('addressRegistrationOverTime')}</CardDescription>
+               <CardTitle>{t('dashboard:registrationTrends')}</CardTitle>
+               <CardDescription>{t('dashboard:addressRegistrationOverTime')}</CardDescription>
             </CardHeader>
             <CardContent>
             <ResponsiveContainer width="100%" height={400}>
@@ -590,14 +590,14 @@ export const AnalyticsReports = () => {
                   dataKey="addresses" 
                   stroke="hsl(var(--primary))" 
                   strokeWidth={2}
-                  name={t('newAddresses')}
+                  name={t('dashboard:newAddresses')}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="verified" 
                   stroke="hsl(var(--success))" 
                   strokeWidth={2}
-                  name={t('verifiedAddresses')}
+                  name={t('dashboard:verifiedAddresses')}
                 />
               </LineChart>
             </ResponsiveContainer>
