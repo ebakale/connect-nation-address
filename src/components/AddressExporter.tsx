@@ -106,10 +106,10 @@ export const AddressExporter: React.FC = () => {
     <Placemark>
       <name>${addr.uac} - ${addr.building || addr.street}</name>
       <description><![CDATA[
-        <strong>UAC:</strong> ${addr.uac}<br/>
-        <strong>Address:</strong> ${addr.building ? addr.building + ', ' : ''}${addr.street}, ${addr.city}, ${addr.region}<br/>
-        <strong>Type:</strong> ${addr.address_type}<br/>
-        ${addr.description ? '<strong>Description:</strong> ' + addr.description + '<br/>' : ''}
+        <strong>${t('uacLabel')}:</strong> ${addr.uac}<br/>
+        <strong>${t('addressLabel')}:</strong> ${addr.building ? addr.building + ', ' : ''}${addr.street}, ${addr.city}, ${addr.region}<br/>
+        <strong>${t('typeLabel')}:</strong> ${addr.address_type}<br/>
+        ${addr.description ? '<strong>' + t('descriptionLabel') + ':</strong> ' + addr.description + '<br/>' : ''}
         <strong>${t('status')}:</strong> ${addr.verified ? t('verified') : t('unverified')} | ${addr.public ? t('public') : t('private')}
       ]]></description>
       <Point>
@@ -330,9 +330,9 @@ export const AddressExporter: React.FC = () => {
         </div>
         
         <div className="text-sm text-muted-foreground">
-          <p><strong>CSV:</strong> {t('csvDescription')}</p>
-          <p><strong>KML:</strong> {t('kmlDescription')}</p>
-          <p><strong>JSON:</strong> {t('jsonDescription')}</p>
+          <p><strong>{t('csvSpreadsheet')}:</strong> {t('csvDescription')}</p>
+          <p><strong>{t('kmlGoogleEarth')}:</strong> {t('kmlDescription')}</p>
+          <p><strong>{t('jsonDevelopers')}:</strong> {t('jsonDescription')}</p>
         </div>
       </CardContent>
     </Card>

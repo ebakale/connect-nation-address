@@ -166,7 +166,7 @@ export function GoogleMapsImporter() {
                                 ? 'bg-green-100 text-green-800' 
                                 : 'bg-red-100 text-red-800'
                             }`}>
-                              {detail.status}
+                              {detail.status === 'success' ? t('success') : t('error')}
                             </span>
                           </div>
                           {detail.uac && (
