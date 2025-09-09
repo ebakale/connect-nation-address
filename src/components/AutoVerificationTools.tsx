@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useTranslation } from 'react-i18next';
 
 interface AutoVerificationResult {
   requestId: string;
@@ -68,6 +69,7 @@ interface AutoVerificationToolsProps {
 }
 
 export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) {
+  const { t } = useTranslation('address');
   const [processing, setProcessing] = useState(false);
   const [batchProcessing, setBatchProcessing] = useState(false);
   const [lastResult, setLastResult] = useState<AutoVerificationResult | null>(null);
@@ -86,11 +88,11 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
       if (error) throw error;
 
       setLastResult(data);
-      toast.success(`Auto-verification completed: ${data.decision.action}`);
+      toast.success(t('autoVerificationCompleted', { action: data.decision.action }));
       onUpdate?.();
     } catch (error) {
       console.error('Auto-verification failed:', error);
-      toast.error("Auto-verification failed");
+      toast.error(t('autoVerificationFailed'));
     } finally {
       setProcessing(false);
     }
@@ -110,7 +112,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
       setPendingRequests(data || []);
     } catch (error) {
       console.error('Failed to load pending requests:', error);
-      toast.error("Failed to load pending requests");
+      toast.error(t('failedToLoadPendingRequests'));
     } finally {
       setLoadingRequests(false);
     }
@@ -131,13 +133,13 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
       if (error) throw error;
 
       setBatchResult(data);
-      toast.success(`Batch processed: ${data.approved} approved, ${data.flagged} flagged`);
+      toast.success(t('batchProcessed', { approved: data.approved, flagged: data.flagged }));
       setSelectedRequests([]);
       loadPendingRequests();
       onUpdate?.();
     } catch (error) {
       console.error('Batch verification failed:', error);
-      toast.error("Batch verification failed");
+      toast.error(t('batchVerificationFailed'));
     } finally {
       setBatchProcessing(false);
     }
@@ -168,11 +170,11 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
   const getActionBadge = (action: string) => {
     switch (action) {
       case 'approve':
-        return <Badge className="bg-green-100 text-green-700">Auto-Approved</Badge>;
+        return <Badge className="bg-green-100 text-green-700">{t('autoApproved')}</Badge>;
       case 'flag':
-        return <Badge variant="destructive">Flagged</Badge>;
+        return <Badge variant="destructive">{t('flagged')}</Badge>;
       default:
-        return <Badge variant="outline">Manual Review</Badge>;
+        return <Badge variant="outline">{t('manualReview')}</Badge>;
     }
   };
 
@@ -183,7 +185,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Zap className="h-5 w-5 text-primary" />
-            Auto-Verification Tools
+            {t('autoVerificationTools')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -196,12 +198,12 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
               {batchProcessing ? (
                 <>
                   <Clock className="h-4 w-4 animate-spin" />
-                  Processing Batch...
+                  {t('processingBatch')}
                 </>
               ) : (
                 <>
                   <Target className="h-4 w-4" />
-                  Run Auto-Verification {selectedRequests.length > 0 && `(${selectedRequests.length} selected)`}
+                  {t('runAutoVerification')} {selectedRequests.length > 0 && `(${selectedRequests.length} ${t('selected')})`}
                 </>
               )}
             </Button>
@@ -210,19 +212,19 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
               <Shield className="h-4 w-4" />
               <span>
                 {selectedRequests.length > 0 
-                  ? `Process ${selectedRequests.length} selected requests` 
-                  : `Process all ${pendingRequests.length} pending requests`
+                  ? t('processSelected', { count: selectedRequests.length })
+                  : t('processAll', { count: pendingRequests.length })
                 }
               </span>
             </div>
           </div>
 
           <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <h4 className="font-medium text-blue-900 mb-2">Auto-Verification Criteria</h4>
+            <h4 className="font-medium text-blue-900 mb-2">{t('autoVerificationCriteria')}</h4>
             <div className="text-sm text-blue-800 space-y-1">
-              <p>• <strong>Auto-Approve:</strong> Score ≥85% + Low fraud risk (&lt;30%)</p>
-              <p>• <strong>Flag for Rejection:</strong> Score &lt;50% or High fraud risk (&gt;70%)</p>
-              <p>• <strong>Manual Review:</strong> All other cases</p>
+              <p>• <strong>{t('autoApprove')}:</strong> {t('scoreGreaterEqual85')}</p>
+              <p>• <strong>{t('flagForRejection')}:</strong> {t('scoreLess50')}</p>
+              <p>• <strong>{t('manualReview')}:</strong> {t('allOtherCases')}</p>
             </div>
           </div>
         </CardContent>
@@ -235,7 +237,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <CheckSquare className="h-5 w-5 text-primary" />
-                Select Requests for Auto-Verification
+                {t('selectRequestsForAutoVerification')}
               </div>
               <Button
                 variant="outline"
@@ -243,7 +245,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
                 onClick={handleSelectAll}
                 disabled={loadingRequests}
               >
-                {selectedRequests.length === pendingRequests.length ? 'Deselect All' : 'Select All'}
+                {selectedRequests.length === pendingRequests.length ? t('deselectAll') : t('selectAll')}
               </Button>
             </CardTitle>
           </CardHeader>
@@ -251,7 +253,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
             {loadingRequests ? (
               <div className="flex items-center justify-center py-8">
                 <Clock className="h-6 w-6 animate-spin text-muted-foreground" />
-                <span className="ml-2 text-muted-foreground">Loading pending requests...</span>
+                <span className="ml-2 text-muted-foreground">{t('loadingPendingRequests')}</span>
               </div>
             ) : (
               <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -275,7 +277,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
                             {request.region}, {request.country}
                           </p>
                           <p className="text-xs text-muted-foreground mt-1">
-                            Coordinates: {request.latitude}, {request.longitude}
+                            {t('coordinates')}: {request.latitude}, {request.longitude}
                           </p>
                           {request.justification && (
                             <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
@@ -299,7 +301,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
             )}
             {pendingRequests.length === 0 && !loadingRequests && (
               <div className="text-center py-8 text-muted-foreground">
-                No pending requests available for auto-verification
+                {t('noPendingRequestsAvailable')}
               </div>
             )}
           </CardContent>
@@ -312,32 +314,32 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileText className="h-5 w-5" />
-              Batch Verification Results
+              {t('batchVerificationResults')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">{batchResult.approved}</div>
-                <div className="text-sm text-muted-foreground">Auto-Approved</div>
+                <div className="text-sm text-muted-foreground">{t('autoApproved')}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-red-600">{batchResult.flagged}</div>
-                <div className="text-sm text-muted-foreground">Flagged</div>
+                <div className="text-sm text-muted-foreground">{t('flagged')}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-yellow-600">{batchResult.manualReview}</div>
-                <div className="text-sm text-muted-foreground">Manual Review</div>
+                <div className="text-sm text-muted-foreground">{t('manualReview')}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-blue-600">{batchResult.processed}</div>
-                <div className="text-sm text-muted-foreground">Total Processed</div>
+                <div className="text-sm text-muted-foreground">{t('totalProcessed')}</div>
               </div>
             </div>
 
             {batchResult.results.length > 0 && (
               <div className="space-y-2">
-                <h4 className="font-medium">Individual Results:</h4>
+                <h4 className="font-medium">{t('individualResults')}:</h4>
                 <div className="max-h-40 overflow-y-auto space-y-1">
                   {batchResult.results.map((result, index) => (
                     <div key={index} className="flex items-center justify-between text-sm p-2 bg-muted rounded">
@@ -363,12 +365,12 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <MapPin className="h-5 w-5" />
-              Verification Analysis
+              {t('verificationAnalysis')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="font-medium">Overall Decision:</span>
+              <span className="font-medium">{t('overallDecision')}:</span>
               {getActionBadge(lastResult.decision.action)}
             </div>
 
@@ -377,7 +379,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
             <div className="space-y-3">
               <div>
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium">Overall Score</span>
+                  <span className="text-sm font-medium">{t('overallScore')}</span>
                   <span className={`text-sm font-bold ${getScoreColor(lastResult.analysis.overallScore)}`}>
                     {lastResult.analysis.overallScore}%
                   </span>
@@ -388,7 +390,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-xs text-muted-foreground">Coordinate Validity</span>
+                    <span className="text-xs text-muted-foreground">{t('coordinateValidity')}</span>
                     <span className="text-xs">{lastResult.analysis.coordinateValidity}%</span>
                   </div>
                   <Progress value={lastResult.analysis.coordinateValidity} className="h-1" />
@@ -396,7 +398,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
 
                 <div>
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-xs text-muted-foreground">Address Consistency</span>
+                    <span className="text-xs text-muted-foreground">{t('addressConsistency')}</span>
                     <span className="text-xs">{lastResult.analysis.addressConsistency}%</span>
                   </div>
                   <Progress value={lastResult.analysis.addressConsistency} className="h-1" />
@@ -404,7 +406,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
 
                 <div>
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-xs text-muted-foreground">Completeness</span>
+                    <span className="text-xs text-muted-foreground">{t('completeness')}</span>
                     <span className="text-xs">{lastResult.analysis.completeness}%</span>
                   </div>
                   <Progress value={lastResult.analysis.completeness} className="h-1" />
@@ -412,7 +414,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
 
                 <div>
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-xs text-muted-foreground">Fraud Risk</span>
+                    <span className="text-xs text-muted-foreground">{t('fraudRisk')}</span>
                     <span className="text-xs text-red-600">{lastResult.analysis.fraudRisk}%</span>
                   </div>
                   <Progress value={lastResult.analysis.fraudRisk} className="h-1" />
@@ -426,7 +428,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
                 <div>
                   <h4 className="font-medium mb-2 flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-yellow-600" />
-                    Recommendations
+                    {t('recommendations')}
                   </h4>
                   <ul className="text-sm space-y-1">
                     {lastResult.analysis.recommendations.map((rec, index) => (
@@ -441,9 +443,9 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
             )}
 
             <div className="text-xs text-muted-foreground">
-              <div>Method: {lastResult.analysis.method}</div>
-              <div>Confidence: {lastResult.decision.confidence}</div>
-              <div>Reasoning: {lastResult.decision.reasoning}</div>
+              <div>{t('method')}: {lastResult.analysis.method}</div>
+              <div>{t('confidence')}: {lastResult.decision.confidence}</div>
+              <div>{t('reasoning')}: {lastResult.decision.reasoning}</div>
             </div>
           </CardContent>
         </Card>
