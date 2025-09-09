@@ -14,7 +14,7 @@ interface AddressPublishingQueueProps {
 export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps) => {
   const { addresses, loading, updateAddressStatus, fetchAddresses } = useAddresses();
   const { toast } = useToast();
-  const { t } = useTranslation(['common', 'address']);
+  const { t } = useTranslation('address');
 
   useEffect(() => {
     fetchAddresses();
@@ -25,7 +25,7 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
   const handlePublish = async (addressId: string, isPublic: boolean) => {
     await updateAddressStatus(addressId, { public: isPublic });
     toast({
-      title: t('common:status.success'),
+      title: t('success'),
       description: t(isPublic ? 'addressPublishedSuccessfully' : 'addressUnpublishedSuccessfully')
     });
   };
@@ -39,12 +39,12 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
       await Promise.all(publishPromises);
       
       toast({
-        title: t('common:status.success'),
+        title: t('success'),
         description: t('addressesPublishedSuccessfully', { count: unpublishedAddresses.length })
       });
     } catch (error) {
       toast({
-        title: t('common:status.error'),
+        title: t('error'),
         description: t('failedToPublishAddresses'),
         variant: "destructive"
       });
@@ -106,7 +106,7 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm mb-4">
                 <div className="break-words">
-                  <span className="font-medium">{t('type')}:</span> {t(address.address_type)}
+                  <span className="font-medium">{t('type')}:</span> <span className="capitalize">{address.address_type}</span>
                 </div>
                 <div className="break-words">
                   <span className="font-medium">{t('created')}:</span> {new Date(address.created_at).toLocaleDateString()}
