@@ -14,7 +14,7 @@ interface AddressUnpublishingQueueProps {
 export const AddressUnpublishingQueue = ({ onClose }: AddressUnpublishingQueueProps) => {
   const { addresses, loading, updateAddressStatus, fetchAddresses } = useAddresses();
   const { toast } = useToast();
-  const { t } = useTranslation(['common','address']);
+  const { t } = useTranslation('address');
 
   useEffect(() => {
     fetchAddresses();
@@ -25,7 +25,7 @@ export const AddressUnpublishingQueue = ({ onClose }: AddressUnpublishingQueuePr
   const handleUnpublish = async (addressId: string) => {
     await updateAddressStatus(addressId, { public: false });
     toast({
-      title: t('common:status.success'),
+      title: t('success'),
       description: t('addressRemovedFromRegistry')
     });
   };
@@ -39,12 +39,12 @@ export const AddressUnpublishingQueue = ({ onClose }: AddressUnpublishingQueuePr
       await Promise.all(unpublishPromises);
       
       toast({
-        title: t('common:status.success'),
+        title: t('success'),
         description: t('addressesRemovedFromRegistryCount', { count: publishedAddresses.length })
       });
     } catch (error) {
       toast({
-        title: t('common:status.error'),
+        title: t('error'),
         description: t('failedToRemoveSomeAddresses'),
         variant: "destructive"
       });
@@ -77,7 +77,7 @@ export const AddressUnpublishingQueue = ({ onClose }: AddressUnpublishingQueuePr
           {onClose && (
             <Button variant="outline" size="sm" onClick={onClose} className="text-xs sm:text-sm">
               <X className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-              {t('common:buttons.close')}
+              {t('close')}
             </Button>
           )}
         </div>
@@ -102,10 +102,10 @@ export const AddressUnpublishingQueue = ({ onClose }: AddressUnpublishingQueuePr
                   </CardDescription>
                 </div>
                 <div className="flex gap-2 flex-wrap">
-                  <Badge variant="default" className="text-xs">{t('common:status.verified')}</Badge>
+                  <Badge variant="default" className="text-xs">{t('verified')}</Badge>
                   <Badge variant="default" className="text-xs">
                     <Globe className="h-3 w-3 mr-1" />
-                    {t('common:status.published')}
+                    {t('published')}
                   </Badge>
                 </div>
               </div>
@@ -113,10 +113,10 @@ export const AddressUnpublishingQueue = ({ onClose }: AddressUnpublishingQueuePr
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm mb-4">
                 <div className="break-words">
-                  <span className="font-medium">Type:</span> {address.address_type}
+                  <span className="font-medium">{t('type')}:</span> {t(address.address_type)}
                 </div>
                 <div className="break-words">
-                  <span className="font-medium">Created:</span> {new Date(address.created_at).toLocaleDateString()}
+                  <span className="font-medium">{t('created')}:</span> {new Date(address.created_at).toLocaleDateString()}
                 </div>
               </div>
 
@@ -128,8 +128,8 @@ export const AddressUnpublishingQueue = ({ onClose }: AddressUnpublishingQueuePr
                   className="flex items-center justify-center gap-1 text-xs sm:text-sm w-full sm:w-auto"
                 >
                   <EyeOff className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Remove from Public Registry</span>
-                  <span className="sm:hidden">Remove</span>
+                  <span className="hidden sm:inline">{t('removeFromPublicRegistry')}</span>
+                  <span className="sm:hidden">{t('remove')}</span>
                 </Button>
               </div>
             </CardContent>
