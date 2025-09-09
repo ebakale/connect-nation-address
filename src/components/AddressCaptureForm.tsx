@@ -374,10 +374,10 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
                 type="button"
                 onClick={getCurrentLocation}
                 variant="outline"
-                className="w-full"
+                className="w-full text-xs px-2"
               >
-                <MapPin className="mr-2 h-4 w-4" />
-                {t('captureCurrentLocation')}
+                <MapPin className="mr-1 h-3 w-3 flex-shrink-0" />
+                <span className="truncate">{t('captureCurrentLocation')}</span>
               </Button>
             </div>
           </div>
