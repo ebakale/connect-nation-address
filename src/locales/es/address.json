@@ -373,5 +373,12 @@
   "flaggedRequestApproved": "Solicitud marcada aprobada exitosamente",
   "failedToApproveFlagged": "Error al aprobar solicitud marcada",
   "flaggedRequestRejected": "Solicitud marcada rechazada con comentarios",
-  "failedToRejectFlagged": "Error al rechazar solicitud marcada"
+  "failedToRejectFlagged": "Error al rechazar solicitud marcada",
+  "googleMyMapsHeaders": {
+    "name": "Nombre",
+    "description": "Descripción",
+    "latitude": "Latitud", 
+    "longitude": "Longitud"
+  },
+  "typeLabel": "Tipo"
 }

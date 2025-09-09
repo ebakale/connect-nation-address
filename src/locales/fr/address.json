@@ -280,5 +280,12 @@
   "verified": "Vérifié",
   "unverified": "Non vérifié",
   "public": "Public",
-  "private": "Privé"
+  "private": "Privé",
+  "googleMyMapsHeaders": {
+    "name": "Nom",
+    "description": "Description",
+    "latitude": "Latitude",
+    "longitude": "Longitude"
+  },
+  "typeLabel": "Type"
 }

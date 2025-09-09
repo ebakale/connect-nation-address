@@ -436,5 +436,12 @@
   "verified": "Verified",
   "unverified": "Unverified",
   "public": "Public",
-  "private": "Private"
+  "private": "Private",
+  "googleMyMapsHeaders": {
+    "name": "Name",
+    "description": "Description", 
+    "latitude": "Latitude",
+    "longitude": "Longitude"
+  },
+  "typeLabel": "Type"
 }

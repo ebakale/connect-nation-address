@@ -171,10 +171,10 @@ export const AddressExporter: React.FC = () => {
       }
 
       // Create a simple CSV for Google My Maps import
-      const headers = ['Name', 'Description', 'Latitude', 'Longitude'];
+      const headers = [t('googleMyMapsHeaders.name'), t('googleMyMapsHeaders.description'), t('googleMyMapsHeaders.latitude'), t('googleMyMapsHeaders.longitude')];
       const rows = addresses.map(addr => [
         `${addr.uac} - ${addr.building || addr.street}`,
-        `${addr.building ? addr.building + ', ' : ''}${addr.street}, ${addr.city}, ${addr.region}. Type: ${addr.address_type}${addr.description ? '. ' + addr.description : ''}`,
+        `${addr.building ? addr.building + ', ' : ''}${addr.street}, ${addr.city}, ${addr.region}. ${t('typeLabel')}: ${addr.address_type}${addr.description ? '. ' + addr.description : ''}`,
         addr.latitude.toString(),
         addr.longitude.toString()
       ]);
