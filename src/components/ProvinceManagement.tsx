@@ -337,12 +337,12 @@ export const ProvinceManagement = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Code</TableHead>
-                  <TableHead>Region</TableHead>
-                  <TableHead>Population</TableHead>
-                  <TableHead>Area (km²)</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>{t('admin:name')}</TableHead>
+                  <TableHead>{t('admin:code')}</TableHead>
+                  <TableHead>{t('admin:region')}</TableHead>
+                  <TableHead>{t('admin:population')}</TableHead>
+                  <TableHead>{t('admin:area')}</TableHead>
+                  <TableHead>{t('admin:actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
