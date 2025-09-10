@@ -187,38 +187,38 @@ export const ProvinceManagement = () => {
   };
 
   if (loading) {
-    return <div className="p-4">Loading provinces...</div>;
+    return <div className="p-4">{t('admin:loadingProvinces')}</div>;
   }
 
   return (
     <div className="space-y-4 sm:space-y-6 p-4 max-w-full overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="min-w-0 flex-1">
-          <h2 className="text-xl sm:text-2xl font-bold break-words">Province Management</h2>
-          <p className="text-sm text-muted-foreground break-words">Manage administrative provinces and regions</p>
+          <h2 className="text-xl sm:text-2xl font-bold break-words">{t('admin:provinceManagement')}</h2>
+          <p className="text-sm text-muted-foreground break-words">{t('admin:manageAdministrativeProvinces')}</p>
         </div>
         
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button onClick={() => setEditingProvince(null)}>
               <Plus className="h-4 w-4 mr-2" />
-              Add Province
+              {t('admin:addProvince')}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {editingProvince ? "Edit Province" : "Add New Province"}
+                {editingProvince ? t('admin:editProvince') : t('admin:addNewProvince')}
               </DialogTitle>
               <DialogDescription>
-                Enter the province details below.
+                {t('admin:enterProvinceDetails')}
               </DialogDescription>
             </DialogHeader>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="name">Province Name</Label>
+                  <Label htmlFor="name">{t('admin:provinceName')}</Label>
                   <Input
                     id="name"
                     value={formData.name}
@@ -227,58 +227,58 @@ export const ProvinceManagement = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="code">Province Code</Label>
+                  <Label htmlFor="code">{t('admin:provinceCode')}</Label>
                   <Input
                     id="code"
                     value={formData.code}
                     onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                    placeholder="e.g., LUA"
+                    placeholder="LUA"
                     required
                   />
                 </div>
               </div>
               
               <div>
-                <Label htmlFor="region">Region</Label>
+                <Label htmlFor="region">{t('admin:region')}</Label>
                 <Input
                   id="region"
                   value={formData.region}
                   onChange={(e) => setFormData({ ...formData, region: e.target.value })}
-                  placeholder="e.g., Insular, Continental"
+                  placeholder={t('common:placeholders.enterText')}
                   required
                 />
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="population">Population</Label>
+                  <Label htmlFor="population">{t('admin:population')}</Label>
                   <Input
                     id="population"
                     type="number"
                     value={formData.population}
                     onChange={(e) => setFormData({ ...formData, population: e.target.value })}
-                    placeholder="Optional"
+                    placeholder={t('admin:optional')}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="area">Area (km²)</Label>
+                  <Label htmlFor="area">{t('admin:area')}</Label>
                   <Input
                     id="area"
                     type="number"
                     step="0.01"
                     value={formData.area}
                     onChange={(e) => setFormData({ ...formData, area: e.target.value })}
-                    placeholder="Optional"
+                    placeholder={t('admin:optional')}
                   />
                 </div>
               </div>
               
               <div className="flex flex-col sm:flex-row gap-2">
                 <Button type="submit" className="w-full sm:w-auto">
-                  {editingProvince ? "Update Province" : "Add Province"}
+                  {editingProvince ? t('admin:updateProvince') : t('admin:addProvince')}
                 </Button>
                 <Button type="button" variant="outline" onClick={resetForm} className="w-full sm:w-auto">
-                  Cancel
+                  {t('common:buttons.cancel')}
                 </Button>
               </div>
             </form>
@@ -290,7 +290,7 @@ export const ProvinceManagement = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Provinces</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:totalProvinces')}</CardTitle>
             <MapPin className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -300,7 +300,7 @@ export const ProvinceManagement = () => {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Population</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:totalPopulation')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -312,12 +312,12 @@ export const ProvinceManagement = () => {
         
         <Card className="sm:col-span-2 lg:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Area</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:totalArea')}</CardTitle>
             <Building className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-xl sm:text-2xl font-bold">
-              {provinces.reduce((sum, p) => sum + (p.area || 0), 0).toLocaleString()} km²
+              {provinces.reduce((sum, p) => sum + (p.area || 0), 0).toLocaleString()} {t('common:units.km2')}
             </div>
           </CardContent>
         </Card>
