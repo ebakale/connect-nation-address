@@ -89,8 +89,8 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
     } catch (error) {
       console.error('Failed to load pending addresses:', error);
       toast({
-        title: "Error",
-        description: "Unable to load pending addresses",
+        title: t('admin:error'),
+        description: t('admin:unableToLoadAddresses'),
         variant: "destructive",
       });
     } finally {
@@ -116,8 +116,8 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
     } catch (error) {
       console.error('Search failed:', error);
       toast({
-        title: "Search Failed",
-        description: "Unable to search addresses",
+        title: t('admin:searchFailed'),
+        description: t('admin:unableToSearchAddresses'),
         variant: "destructive",
       });
     } finally {
@@ -146,16 +146,16 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Verification record saved successfully",
+        title: t('admin:success'),
+        description: t('admin:successVerificationSaved'),
       });
 
       setVerificationNotes("");
     } catch (error) {
       console.error('Failed to save verification record:', error);
       toast({
-        title: "Error",
-        description: "Failed to save verification record",
+        title: t('admin:error'),
+        description: t('admin:errorVerificationFailed'),
         variant: "destructive",
       });
     }
@@ -172,8 +172,8 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: `${addressIds.length} addresses ${verified ? 'verified' : 'rejected'} successfully`,
+        title: t('admin:success'),
+        description: `${addressIds.length} ${verified ? t('admin:addressesVerifiedSuccessfully') : t('admin:addressesRejectedSuccessfully')}`,
       });
 
       // Refresh search results
@@ -183,8 +183,8 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
     } catch (error) {
       console.error('Bulk verification failed:', error);
       toast({
-        title: "Error",
-        description: "Bulk verification failed",
+        title: t('admin:error'),
+        description: t('admin:bulkVerificationFailed'),
         variant: "destructive",
       });
     }
@@ -194,13 +194,13 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
     <div className="space-y-4 p-4 max-w-full overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="min-w-0 flex-1">
-          <h3 className="text-lg font-semibold break-words">Verification Tools</h3>
-          <p className="text-sm text-muted-foreground break-words">Advanced tools for address verification and quality control</p>
+          <h3 className="text-lg font-semibold break-words">{t('admin:verificationTools')}</h3>
+          <p className="text-sm text-muted-foreground break-words">{t('admin:advancedToolsForAddressVerification')}</p>
         </div>
         {onClose && (
           <Button variant="outline" size="sm" onClick={onClose} className="self-start sm:self-center">
             <X className="h-4 w-4 mr-2" />
-            Close
+            {t('admin:close')}
           </Button>
         )}
       </div>
@@ -208,7 +208,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Total Addresses</CardTitle>
+            <CardTitle className="text-sm">{t('admin:totalAddresses')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-xl sm:text-2xl font-bold text-blue-600">
@@ -219,7 +219,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
         
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Verified Today</CardTitle>
+            <CardTitle className="text-sm">{t('admin:verifiedToday')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-xl sm:text-2xl font-bold text-green-600">
@@ -230,7 +230,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
         
         <Card className="sm:col-span-2 lg:col-span-1">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Quality Score</CardTitle>
+            <CardTitle className="text-sm">{t('admin:qualityScore')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-xl sm:text-2xl font-bold text-blue-600">
@@ -243,24 +243,24 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
       <Tabs defaultValue="search" className="w-full">
         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 h-auto">
           <TabsTrigger value="search" className="text-xs sm:text-sm p-2 sm:p-3">
-            <span className="hidden sm:inline">All Addresses</span>
-            <span className="sm:hidden">All</span>
+            <span className="hidden sm:inline">{t('admin:allAddresses')}</span>
+            <span className="sm:hidden">{t('admin:all')}</span>
           </TabsTrigger>
           <TabsTrigger value="individual" className="text-xs sm:text-sm p-2 sm:p-3">
-            <span className="hidden sm:inline">Individual Verify</span>
+            <span className="hidden sm:inline">{t('admin:individualVerify')}</span>
             <span className="sm:hidden">Verify</span>
           </TabsTrigger>
           <TabsTrigger value="verify" className="text-xs sm:text-sm p-2 sm:p-3">
-            <span className="hidden lg:inline">Verification Tools</span>
-            <span className="lg:hidden">Tools</span>
+            <span className="hidden lg:inline">{t('admin:verificationToolsTab')}</span>
+            <span className="lg:hidden">{t('admin:tools')}</span>
           </TabsTrigger>
           <TabsTrigger value="flagged" className="text-xs sm:text-sm p-2 sm:p-3">
-            <span className="hidden sm:inline">Flagged Addresses</span>
-            <span className="sm:hidden">Flagged</span>
+            <span className="hidden sm:inline">{t('admin:flaggedAddresses')}</span>
+            <span className="sm:hidden">{t('admin:flagged')}</span>
           </TabsTrigger>
           <TabsTrigger value="quality" className="text-xs sm:text-sm p-2 sm:p-3">
-            <span className="hidden sm:inline">Quality Control</span>
-            <span className="sm:hidden">Quality</span>
+            <span className="hidden sm:inline">{t('admin:qualityControl')}</span>
+            <span className="sm:hidden">{t('admin:quality')}</span>
           </TabsTrigger>
         </TabsList>
 
@@ -269,17 +269,17 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Search className="h-5 w-5" />
-                All Addresses in System
+                {t('admin:allAddressesInSystem')}
               </CardTitle>
               <CardDescription>
-                Browse and select any address in the system for verification or management
+                {t('admin:browseAndSelectAnyAddress')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {loading ? (
                   <div className="text-center py-8">
                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                   <p className="text-muted-foreground">Loading addresses...</p>
+                   <p className="text-muted-foreground">{t('admin:loadingAddresses')}</p>
                  </div>
               ) : pendingAddresses.length > 0 ? (
                 <div className="space-y-2 max-h-96 overflow-y-auto">
@@ -308,10 +308,10 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                           </div>
                           <div className="flex gap-1 flex-wrap">
                             <Badge variant={address.verified ? "default" : "secondary"} className="text-xs">
-                              {address.verified ? "Verified" : "Pending"}
+                              {address.verified ? t('common:status.verified') : t('common:status.pending')}
                             </Badge>
                             <Badge variant={address.public ? "default" : "outline"} className="text-xs">
-                              {address.public ? "Public" : "Private"}
+                              {address.public ? t('common:status.public') : "Private"}
                             </Badge>
                           </div>
                         </div>
@@ -322,8 +322,8 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
               ) : (
                 <div className="text-center text-muted-foreground py-8">
                   <CheckCircle2 className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>No addresses found</p>
-                  <p className="text-sm">No addresses exist in the system yet.</p>
+                  <p>{t('admin:noAddressesFound')}</p>
+                  <p className="text-sm">{t('admin:noAddressesExistYet')}</p>
                 </div>
               )}
               
@@ -335,7 +335,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                   disabled={loading}
                 >
                   <Search className="h-4 w-4 mr-2" />
-                  Refresh List
+                  {t('admin:refreshList')}
                 </Button>
               )}
             </CardContent>
@@ -347,10 +347,10 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5" />
-                Individual Address Verification
+                {t('admin:individualAddressVerification')}
               </CardTitle>
               <CardDescription>
-                Verify or reject individual addresses with detailed status updates
+                {t('admin:verifyOrRejectIndividualAddresses')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -358,7 +358,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                 <>
                   <div className="grid grid-cols-1 gap-4">
                     <div>
-                      <Label>Address Details</Label>
+                      <Label>{t('admin:addressDetails')}</Label>
                       <div className="p-4 bg-muted rounded-md space-y-2">
                         <div className="flex justify-between items-start">
                           <div>
@@ -367,7 +367,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                               {selectedAddress.street}, {selectedAddress.city}, {selectedAddress.region}
                             </p>
                             <p className="text-sm text-muted-foreground mt-1">
-                              Coordinates: {selectedAddress.latitude}, {selectedAddress.longitude}
+                              {t('admin:coordinates')}: {selectedAddress.latitude}, {selectedAddress.longitude}
                             </p>
                             {selectedAddress.description && (
                               <p className="text-sm mt-2">{selectedAddress.description}</p>
@@ -375,10 +375,10 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                           </div>
                           <div className="flex flex-col gap-1">
                             <Badge variant={selectedAddress.verified ? "default" : "secondary"}>
-                              {selectedAddress.verified ? "Verified" : "Pending"}
+                              {selectedAddress.verified ? t('common:status.verified') : t('common:status.pending')}
                             </Badge>
                             <Badge variant={selectedAddress.public ? "default" : "outline"}>
-                              {selectedAddress.public ? "Public" : "Private"}
+                              {selectedAddress.public ? t('common:status.public') : "Private"}
                             </Badge>
                           </div>
                         </div>
@@ -387,7 +387,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                     
                     {selectedAddress.photo_url && (
                       <div>
-                        <Label>Address Photo</Label>
+                        <Label>{t('admin:addressPhoto')}</Label>
                         <div className="p-2 bg-muted rounded-md">
                           <img 
                             src={selectedAddress.photo_url} 
@@ -411,8 +411,8 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                           if (error) throw error;
 
                           toast({
-                            title: "Address Verified",
-                            description: `Address ${selectedAddress.uac} has been verified successfully`,
+                            title: t('admin:addressVerified'),
+                            description: `${selectedAddress.uac} ${t('admin:addressVerifiedSuccessfully')}`,
                           });
 
                           // Update selected address state
@@ -423,8 +423,8 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                         } catch (error) {
                           console.error('Verification failed:', error);
                           toast({
-                            title: "Error",
-                            description: "Failed to verify address",
+                            title: t('admin:error'),
+                            description: t('admin:failedToVerifyAddress'),
                             variant: "destructive",
                           });
                         }
@@ -433,7 +433,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                       disabled={selectedAddress.verified}
                     >
                       <CheckCircle2 className="h-4 w-4 mr-2" />
-                      {selectedAddress.verified ? "Already Verified" : "Verify Address"}
+                      {selectedAddress.verified ? t('admin:alreadyVerified') : t('admin:verifyAddress')}
                     </Button>
                     
                     <Button
@@ -448,8 +448,8 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                           if (error) throw error;
 
                           toast({
-                            title: "Address Rejected",
-                            description: `Address ${selectedAddress.uac} has been rejected`,
+                            title: t('admin:addressRejected'),
+                            description: `${selectedAddress.uac} ${t('admin:addressRejectedSuccessfully')}`,
                           });
 
                           // Update selected address state
@@ -460,8 +460,8 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                         } catch (error) {
                           console.error('Rejection failed:', error);
                           toast({
-                            title: "Error",
-                            description: "Failed to reject address",
+                            title: t('admin:error'),
+                            description: t('admin:failedToRejectAddress'),
                             variant: "destructive",
                           });
                         }
@@ -469,7 +469,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                       className="w-full"
                     >
                       <AlertTriangle className="h-4 w-4 mr-2" />
-                      Reject Address
+                      {t('admin:rejectAddress')}
                     </Button>
                   </div>
 
@@ -515,14 +515,14 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                       className="flex-1"
                     >
                       <Map className="h-4 w-4 mr-2" />
-                      View on Map
+                      {t('admin:viewOnMap')}
                     </Button>
                   </div>
                 </>
               ) : (
                 <div className="text-center text-muted-foreground py-8">
                   <AlertTriangle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>Select an address from the search results to verify individually</p>
+                  <p>{t('admin:selectAddressFirst')}</p>
                 </div>
               )}
             </CardContent>
