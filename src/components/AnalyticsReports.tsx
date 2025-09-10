@@ -78,15 +78,15 @@ export const AnalyticsReports = () => {
   const { toast } = useToast();
   const { t } = useTranslation(['dashboard', 'common']);
 
-  // Specific colors for each address type using semantic design tokens
+  // Unique colors for each address type using semantic design tokens
   const typeColorMap: Record<string, string> = {
-    "Commercial": "hsl(var(--chart-commercial))",
-    "Public": "hsl(var(--chart-public))", 
-    "Residential": "hsl(var(--chart-residential))",
-    "Industrial": "hsl(var(--chart-industrial))"
+    "Residential": "hsl(var(--chart-1))",    // Blue
+    "Commercial": "hsl(var(--chart-2))",     // Green
+    "Industrial": "hsl(var(--chart-3))",     // Red
+    "Public": "hsl(var(--chart-4))",         // Orange
   };
 
-  const getColorForType = (type: string) => typeColorMap[type] || "hsl(var(--muted))";
+  const getColorForType = (type: string) => typeColorMap[type] || "hsl(var(--chart-5))";
 
   useEffect(() => {
     fetchRealAddresses();

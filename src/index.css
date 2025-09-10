@@ -65,6 +65,13 @@ All colors MUST be HSL.
     --system-green-light: 150 85% 80%;
     --system-red-light: 0 100% 95%;
     
+    /* Chart colors for analytics */
+    --chart-1: 240 100% 50%;     /* Blue - Residential */
+    --chart-2: 142 76% 36%;      /* Green - Commercial */
+    --chart-3: 0 84% 60%;        /* Red - Industrial */
+    --chart-4: 45 93% 58%;       /* Orange - Public */
+    --chart-5: 280 80% 50%;      /* Purple - Other */
+
     /* Gradient colors */
     --gradient-primary: linear-gradient(135deg, hsl(240 100% 27%), hsl(150 85% 10%));
     --gradient-secondary: linear-gradient(135deg, hsl(0 100% 27%), hsl(240 100% 27%));
@@ -122,6 +129,13 @@ All colors MUST be HSL.
     --border: 214 32% 88%;
     --input: 214 32% 88%;
     --ring: 214 100% 50%;
+
+    /* Chart colors for analytics (light mode) */
+    --chart-1: 214 100% 50%;     /* Blue - Residential */
+    --chart-2: 142 76% 36%;      /* Green - Commercial */
+    --chart-3: 0 84% 60%;        /* Red - Industrial */
+    --chart-4: 45 93% 58%;       /* Orange - Public */
+    --chart-5: 280 80% 50%;      /* Purple - Other */
 
     --gradient-primary: linear-gradient(135deg, hsl(214 100% 35%), hsl(142 76% 36%));
     --gradient-secondary: linear-gradient(135deg, hsl(0 84% 60%), hsl(214 100% 35%));
