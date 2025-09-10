@@ -539,6 +539,30 @@ export const AnalyticsReports = () => {
                   <Tooltip formatter={(value, name) => [value, name]} />
                 </PieChart>
               </ResponsiveContainer>
+              
+              {/* Legend */}
+              <div className="mt-4 space-y-2">
+                {typeData.map((type) => (
+                  <div key={type.type} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded-full" 
+                        style={{ backgroundColor: getColorForType(type.type) }}
+                      />
+                      <span className="text-sm font-medium">{type.type}</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-sm font-bold">{type.count.toLocaleString()}</span>
+                      <span className="text-xs text-muted-foreground ml-1">({type.percentage}%)</span>
+                    </div>
+                  </div>
+                ))}
+                {typeData.length === 0 && (
+                  <p className="text-center text-muted-foreground py-2 text-sm">
+                    {t('dashboard:noDataAvailable')}
+                  </p>
+                )}
+              </div>
               </CardContent>
             </Card>
             
