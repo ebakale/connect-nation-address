@@ -537,10 +537,10 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Target className="h-5 w-5" />
-                    Advanced Verification Tools - {selectedAddress.uac}
+                    {t('admin:advancedVerificationTools')} - {selectedAddress.uac}
                   </CardTitle>
                   <CardDescription>
-                    Comprehensive coordinate and photo quality verification
+                    {t('admin:comprehensiveCoordinatePhotoVerification')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -550,18 +550,18 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                       <div className="border rounded-lg p-4 space-y-3">
                         <h3 className="font-medium flex items-center gap-2">
                           <Crosshair className="h-4 w-4" />
-                          Coordinate Verification
+                          {t('admin:coordinateVerification')}
                         </h3>
                         
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label className="text-sm">Reported Coordinates</Label>
+                            <Label className="text-sm">{t('admin:reportedCoordinates')}</Label>
                             <div className="p-2 bg-muted rounded text-sm font-mono">
                               {selectedAddress.latitude}, {selectedAddress.longitude}
                             </div>
                           </div>
                           <div className="space-y-2">
-                            <Label className="text-sm">Address Components</Label>
+                            <Label className="text-sm">{t('admin:addressComponents')}</Label>
                             <div className="p-2 bg-muted rounded text-sm">
                               {selectedAddress.street}, {selectedAddress.city}
                             </div>
@@ -575,7 +575,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                             className="flex-1"
                           >
                             <Map className="h-4 w-4 mr-2" />
-                            Verify on Map
+                            {t('admin:verifyOnMap')}
                           </Button>
                           <Button
                             size="sm"
@@ -653,7 +653,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                             }}
                           >
                             <Zap className="h-4 w-4 mr-2" />
-                            Auto-Verify
+                            {t('admin:autoVerify')}
                           </Button>
                           <Button
                             size="sm"
@@ -666,7 +666,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                             }}
                           >
                             <Eye className="h-4 w-4 mr-2" />
-                            Cross-Reference
+                            {t('admin:crossReference')}
                           </Button>
                         </div>
 
@@ -674,15 +674,15 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                           <div className="grid grid-cols-3 gap-2 mt-3">
                             <div className="p-2 bg-blue-50 rounded text-center">
                               <div className="text-lg font-bold text-blue-600">{coordVerificationResults.accuracy}%</div>
-                              <div className="text-xs text-blue-600">Accuracy</div>
+                              <div className="text-xs text-blue-600">{t('admin:accuracy')}</div>
                             </div>
                             <div className="p-2 bg-green-50 rounded text-center">
                               <div className="text-lg font-bold text-green-600">{coordVerificationResults.distance}m</div>
-                              <div className="text-xs text-green-600">Distance</div>
+                              <div className="text-xs text-green-600">{t('admin:distance')}</div>
                             </div>
                             <div className="p-2 bg-purple-50 rounded text-center">
                               <div className="text-lg font-bold text-purple-600">{coordVerificationResults.confidence}</div>
-                              <div className="text-xs text-purple-600">Confidence</div>
+                              <div className="text-xs text-purple-600">{t('admin:confidence')}</div>
                             </div>
                           </div>
                         )}
@@ -693,7 +693,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                         <div className="border rounded-lg p-4 space-y-3">
                           <h3 className="font-medium flex items-center gap-2">
                             <Camera className="h-4 w-4" />
-                            Photo Quality Assessment
+                            {t('admin:photoQualityAssessment')}
                           </h3>
                           
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -742,7 +742,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                                 }}
                               >
                                 <Eye className="h-4 w-4 mr-2" />
-                                Analyze Photo
+                                {t('admin:analyzePhoto')}
                               </Button>
                             </div>
                             
@@ -750,11 +750,11 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                               <div className="space-y-3">
                                 <div className="grid grid-cols-2 gap-2 text-sm">
                                   <div className="p-2 bg-muted rounded">
-                                    <div className="font-medium">Resolution</div>
+                                    <div className="font-medium">{t('admin:resolution')}</div>
                                     <div className="text-muted-foreground">{photoAnalysis.resolution}</div>
                                   </div>
                                   <div className="p-2 bg-muted rounded">
-                                    <div className="font-medium">Quality</div>
+                                    <div className="font-medium">{t('admin:quality')}</div>
                                     <div className="text-muted-foreground">{photoAnalysis.quality}%</div>
                                   </div>
                                 </div>
@@ -762,11 +762,11 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                                 <div className="space-y-1">
                                   <div className="flex items-center gap-2 text-sm">
                                     <div className={`w-2 h-2 rounded-full ${photoAnalysis.hasAddressVisible ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                                    Address/Number Visible
+                                    {t('admin:addressNumberVisible')}
                                   </div>
                                   <div className="flex items-center gap-2 text-sm">
                                     <div className={`w-2 h-2 rounded-full ${photoAnalysis.gpsMatch ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                                    GPS Coordinates Match
+                                    {t('admin:gpsCoordinatesMatch')}
                                   </div>
                                 </div>
                               </div>
@@ -780,11 +780,11 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                     <div className="space-y-4">
                       <Card>
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-sm">Verification Status</CardTitle>
+                          <CardTitle className="text-sm">{t('admin:verificationStatus')}</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm">Overall Score</span>
+                            <span className="text-sm">{t('admin:overallScore')}</span>
                             <Badge variant={
                               coordVerificationResults && photoAnalysis 
                                 ? (coordVerificationResults.accuracy + photoAnalysis.quality) / 2 > 80 
@@ -800,15 +800,15 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                           
                           <div className="space-y-2 text-xs">
                             <div className="flex items-center justify-between">
-                              <span>Coordinates</span>
+                              <span>{t('admin:coordinates')}</span>
                               <span className={coordVerificationResults ? "text-green-600" : "text-muted-foreground"}>
-                                {coordVerificationResults ? "✓ Verified" : "Pending"}
+                                {coordVerificationResults ? t('admin:verified') : t('admin:pending')}
                               </span>
                             </div>
                             <div className="flex items-center justify-between">
-                              <span>Photo Quality</span>
+                              <span>{t('admin:photoQuality')}</span>
                               <span className={photoAnalysis ? "text-green-600" : "text-muted-foreground"}>
-                                {photoAnalysis ? "✓ Analyzed" : selectedAddress.photo_url ? "Pending" : "No Photo"}
+                                {photoAnalysis ? t('admin:analyzed') : selectedAddress.photo_url ? t('admin:pending') : t('admin:noPhoto')}
                               </span>
                             </div>
                           </div>
@@ -818,7 +818,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                       {/* Verification Actions */}
                       <Card>
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-sm">Actions</CardTitle>
+                          <CardTitle className="text-sm">{t('admin:actions')}</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-2">
                           <Button
@@ -850,7 +850,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                             }}
                           >
                             <CheckCircle2 className="h-4 w-4 mr-2" />
-                            Mark as Verified
+                            {t('admin:markAsVerified')}
                           </Button>
                           
                           <Button
@@ -897,7 +897,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                             }}
                           >
                             <AlertTriangle className="h-4 w-4 mr-2" />
-                            Flag for Review
+                            {t('admin:flagForReview')}
                           </Button>
                           
                           <Button
@@ -913,7 +913,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                               });
                             }}
                           >
-                            Reset Analysis
+                            {t('admin:resetAnalysis')}
                           </Button>
                         </CardContent>
                       </Card>
@@ -921,11 +921,11 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                       {/* Verification Notes */}
                       <Card>
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-sm">Notes</CardTitle>
+                          <CardTitle className="text-sm">{t('admin:notes')}</CardTitle>
                         </CardHeader>
                         <CardContent>
                           <Textarea
-                            placeholder="Add verification notes..."
+                            placeholder={t('admin:addVerificationNotes')}
                             value={verificationNotes}
                             onChange={(e) => setVerificationNotes(e.target.value)}
                             className="min-h-[80px] text-sm"
@@ -937,7 +937,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                             disabled={!verificationNotes.trim()}
                           >
                             <MessageSquare className="h-4 w-4 mr-2" />
-                            Save Notes
+                            {t('admin:saveNotes')}
                           </Button>
                         </CardContent>
                       </Card>
@@ -951,24 +951,24 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
               <CardContent className="py-12">
                 <div className="text-center text-muted-foreground">
                   <Target className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg font-medium">Advanced Verification Tools</p>
-                  <p className="text-sm">Select an address from the "All Addresses" tab to begin comprehensive verification</p>
+                  <p className="text-lg font-medium">{t('admin:advancedVerificationTools')}</p>
+                  <p className="text-sm">{t('admin:selectAddressFromAllAddresses')}</p>
                   <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2 max-w-md mx-auto text-xs">
                     <div className="p-2 bg-muted rounded">
                       <Crosshair className="h-4 w-4 mx-auto mb-1" />
-                      Coordinate Verification
+                      {t('admin:coordinateVerificationTool')}
                     </div>
                     <div className="p-2 bg-muted rounded">
                       <Camera className="h-4 w-4 mx-auto mb-1" />
-                      Photo Analysis
+                      {t('admin:photoAnalysisTool')}
                     </div>
                     <div className="p-2 bg-muted rounded">
                       <Map className="h-4 w-4 mx-auto mb-1" />
-                      Map Integration
+                      {t('admin:mapIntegration')}
                     </div>
                     <div className="p-2 bg-muted rounded">
                       <Eye className="h-4 w-4 mx-auto mb-1" />
-                      Cross-Reference
+                      {t('admin:crossReferenceTool')}
                     </div>
                   </div>
                 </div>
@@ -986,10 +986,10 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5" />
-                Quality Control & Bulk Actions
+                {t('admin:qualityControlBulkActions')}
               </CardTitle>
               <CardDescription>
-                Perform bulk verification and quality control operations
+                {t('admin:performBulkVerificationQualityControl')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -1005,7 +1005,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                       disabled={searchResults.filter(addr => !addr.verified).length === 0}
                     >
                       <CheckCircle2 className="h-4 w-4 mr-2" />
-                      Verify All Pending ({searchResults.filter(addr => !addr.verified).length})
+                      {t('admin:verifyAllPending')} ({searchResults.filter(addr => !addr.verified).length})
                     </Button>
                     <Button
                       variant="outline"
@@ -1016,22 +1016,22 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                       disabled={searchResults.filter(addr => addr.verified).length === 0}
                     >
                       <AlertTriangle className="h-4 w-4 mr-2" />
-                      Reject All Verified ({searchResults.filter(addr => addr.verified).length})
+                      {t('admin:rejectAllVerified')} ({searchResults.filter(addr => addr.verified).length})
                     </Button>
                   </div>
 
                   <div className="space-y-2">
-                    <h4 className="font-medium">Quality Metrics</h4>
+                    <h4 className="font-medium">{t('admin:qualityMetrics')}</h4>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div className="p-3 bg-muted rounded-md">
-                        <p className="font-medium">Verification Rate</p>
+                        <p className="font-medium">{t('admin:verificationRate')}</p>
                         <p className="text-muted-foreground">
                           {searchResults.length > 0 ? 
                             Math.round((searchResults.filter(addr => addr.verified).length / searchResults.length) * 100) : 0}%
                         </p>
                       </div>
                       <div className="p-3 bg-muted rounded-md">
-                        <p className="font-medium">Public Addresses</p>
+                        <p className="font-medium">{t('admin:publicAddresses')}</p>
                         <p className="text-muted-foreground">
                           {searchResults.filter(addr => addr.public).length} of {searchResults.length}
                         </p>
@@ -1042,7 +1042,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
               ) : (
                 <div className="text-center text-muted-foreground py-8">
                   <Clock className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>Search for addresses to access quality control tools</p>
+                  <p>{t('admin:searchForAddressesQualityControl')}</p>
                 </div>
               )}
             </CardContent>
@@ -1056,13 +1056,13 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Crosshair className="h-5 w-5" />
-              Coordinate Verification Map - {selectedAddress?.uac}
+              {t('admin:coordinateVerificationMap')} - {selectedAddress?.uac}
             </DialogTitle>
           </DialogHeader>
           {selectedAddress && (
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
               <div className="space-y-2">
-                <div className="text-sm font-medium">Interactive Verification Map</div>
+                <div className="text-sm font-medium">{t('admin:interactiveVerificationMap')}</div>
                 <AddressLocationMap
                   latitude={selectedAddress.latitude}
                   longitude={selectedAddress.longitude}
@@ -1077,40 +1077,40 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                 />
               </div>
               <div className="space-y-4">
-                <div className="text-sm font-medium">Verification Checklist</div>
+                <div className="text-sm font-medium">{t('admin:verificationChecklist')}</div>
                 <div className="space-y-3 text-sm">
                   <div className="flex items-start gap-2 p-2 bg-muted rounded">
                     <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
                     <div>
-                      <div className="font-medium">Coordinate Location</div>
-                      <div className="text-muted-foreground">Verify pin is placed on the correct building</div>
+                      <div className="font-medium">{t('admin:coordinateLocation')}</div>
+                      <div className="text-muted-foreground">{t('admin:verifyPinCorrectBuilding')}</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-2 p-2 bg-muted rounded">
                     <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
                     <div>
-                      <div className="font-medium">Street Access</div>
-                      <div className="text-muted-foreground">Confirm address is accessible from the street</div>
+                      <div className="font-medium">{t('admin:streetAccess')}</div>
+                      <div className="text-muted-foreground">{t('admin:confirmAddressAccessible')}</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-2 p-2 bg-muted rounded">
                     <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
                     <div>
-                      <div className="font-medium">Building Type</div>
-                      <div className="text-muted-foreground">Check if structure matches address type</div>
+                      <div className="font-medium">{t('admin:buildingType')}</div>
+                      <div className="text-muted-foreground">{t('admin:checkStructureMatches')}</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-2 p-2 bg-muted rounded">
                     <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
                     <div>
-                      <div className="font-medium">Surrounding Area</div>
-                      <div className="text-muted-foreground">Verify consistency with neighborhood</div>
+                      <div className="font-medium">{t('admin:surroundingArea')}</div>
+                      <div className="text-muted-foreground">{t('admin:verifyConsistencyNeighborhood')}</div>
                     </div>
                   </div>
                 </div>
                 
                 <div className="border-t pt-4">
-                  <div className="text-sm font-medium mb-2">Current Coordinates</div>
+                  <div className="text-sm font-medium mb-2">{t('admin:currentCoordinates')}</div>
                   <div className="p-2 bg-muted rounded font-mono text-sm">
                     {selectedAddress.latitude}, {selectedAddress.longitude}
                   </div>
@@ -1135,7 +1135,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                     className="flex-1"
                   >
                     <CheckCircle2 className="h-4 w-4 mr-2" />
-                    Approve Coordinates
+                    {t('admin:approveCoordinates')}
                   </Button>
                   <Button
                     size="sm"
@@ -1143,7 +1143,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                     onClick={() => setVerificationMapOpen(false)}
                     className="flex-1"
                   >
-                    Close
+                    {t('admin:close')}
                   </Button>
                 </div>
               </div>
@@ -1157,7 +1157,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
         <DialogContent className="max-w-4xl w-full h-[80vh]">
           <DialogHeader>
             <DialogTitle>
-              Address Location View - {selectedAddress?.uac}
+              {t('admin:addressLocationView')} - {selectedAddress?.uac}
             </DialogTitle>
           </DialogHeader>
           {selectedAddress && (
