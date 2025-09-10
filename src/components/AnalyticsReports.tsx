@@ -531,13 +531,12 @@ export const AnalyticsReports = () => {
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="count"
-                    label={({ type, percentage }) => `${type}: ${percentage}%`}
                   >
                     {typeData.map((entry) => (
                       <Cell key={`cell-${entry.type}`} fill={getColorForType(entry.type)} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip formatter={(value, name) => [value, name]} />
                 </PieChart>
               </ResponsiveContainer>
               </CardContent>
