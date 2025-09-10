@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { AddressLocationMap } from "@/components/AddressLocationMap";
 import { FlaggedAddressManager } from "@/components/FlaggedAddressManager";
+import { useTranslation } from 'react-i18next';
 
 interface VerificationRecord {
   id: string;
@@ -67,6 +68,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
   } | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { t } = useTranslation(['admin', 'common']);
 
   // Load pending addresses on component mount
   useEffect(() => {

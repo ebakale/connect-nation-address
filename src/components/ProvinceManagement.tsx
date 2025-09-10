@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { MapPin, Plus, Edit, Trash2, Users, Building } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 interface Province {
   id: string;
@@ -33,6 +34,7 @@ export const ProvinceManagement = () => {
     area: ""
   });
   const { toast } = useToast();
+  const { t } = useTranslation(['admin', 'common']);
 
   const fetchProvinces = async () => {
     setLoading(true);
@@ -48,8 +50,8 @@ export const ProvinceManagement = () => {
     } catch (error) {
       console.error("Error fetching provinces:", error);
       toast({
-        title: "Error",
-        description: "Failed to load provinces",
+        title: t('admin:error'),
+        description: t('admin:errorLoadingProvinces'),
         variant: "destructive"
       });
     } finally {
@@ -66,8 +68,8 @@ export const ProvinceManagement = () => {
     
     if (!formData.name || !formData.code || !formData.region) {
       toast({
-        title: "Validation Error",
-        description: "Please fill in all required fields",
+        title: t('admin:validationError'),
+        description: t('admin:fillAllRequiredFields'),
         variant: "destructive"
       });
       return;
@@ -97,8 +99,8 @@ export const ProvinceManagement = () => {
         setProvinces(provinces.map(p => p.id === editingProvince.id ? data : p));
         
         toast({
-          title: "Success",
-          description: "Province updated successfully"
+          title: t('admin:success'),
+          description: t('admin:provinceUpdatedSuccessfully')
         });
       } else {
         // Add new province
@@ -113,8 +115,8 @@ export const ProvinceManagement = () => {
         setProvinces([...provinces, data]);
         
         toast({
-          title: "Success",
-          description: "Province added successfully"
+          title: t('admin:success'),
+          description: t('admin:provinceAddedSuccessfully')
         });
       }
 
