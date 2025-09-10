@@ -311,7 +311,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                               {address.verified ? t('common:status.verified') : t('common:status.pending')}
                             </Badge>
                             <Badge variant={address.public ? "default" : "outline"} className="text-xs">
-                              {address.public ? t('common:status.public') : "Private"}
+                              {address.public ? t('common:status.public') : t('common:status.private')}
                             </Badge>
                           </div>
                         </div>

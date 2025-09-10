@@ -62,7 +62,8 @@
     "draft": "Borrador",
     "published": "Publicado",
     "verified": "Verificado",
-    "unverified": "No verificado"
+    "unverified": "No verificado",
+    "private": "Privado"
   },
   "messages": {
     "noData": "No hay datos disponibles",

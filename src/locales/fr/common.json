@@ -62,7 +62,8 @@
     "draft": "Brouillon",
     "published": "Publié",
     "verified": "Vérifié",
-    "unverified": "Non vérifié"
+    "unverified": "Non vérifié",
+    "private": "Privé"
   },
   "messages": {
     "noData": "Aucune donnée disponible",
