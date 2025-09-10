@@ -63,6 +63,7 @@
     "published": "Publicado",
     "verified": "Verificado",
     "unverified": "No verificado",
+    "public": "Público",
     "private": "Privado"
   },
   "messages": {
