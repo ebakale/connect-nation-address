@@ -515,88 +515,55 @@ export const AnalyticsReports = () => {
         </TabsContent>
         
         <TabsContent value="types" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>{t('dashboard:addressTypeDistribution')}</CardTitle>
-                <CardDescription>{t('dashboard:totalByType')}</CardDescription>
-              </CardHeader>
-              <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={typeData}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="count"
-                  >
-                    {typeData.map((entry) => (
-                      <Cell key={`cell-${entry.type}`} fill={getColorForType(entry.type)} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value, name) => [value, name]} />
-                </PieChart>
-              </ResponsiveContainer>
-              
-              {/* Legend */}
-              <div className="mt-4 space-y-2">
-                {typeData.map((type) => (
-                  <div key={type.type} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div 
-                        className="w-3 h-3 rounded-full" 
-                        style={{ backgroundColor: getColorForType(type.type) }}
-                      />
-                      <span className="text-sm font-medium">{type.type}</span>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-sm font-bold">{type.count.toLocaleString()}</span>
-                      <span className="text-xs text-muted-foreground ml-1">({type.percentage}%)</span>
-                    </div>
-                  </div>
-                ))}
-                {typeData.length === 0 && (
-                  <p className="text-center text-muted-foreground py-2 text-sm">
-                    {t('dashboard:noDataAvailable')}
-                  </p>
-                )}
-              </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>{t('dashboard:totalByType')}</CardTitle>
-                <CardDescription>{t('dashboard:addressTypeDistribution')}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {typeData.map((type, index) => (
-                    <div key={type.type} className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div 
-                          className="w-3 h-3 rounded-full" 
-                          style={{ backgroundColor: getColorForType(type.type) }}
-                        />
-                        <span className="font-medium">{type.type}</span>
-                      </div>
-                      <div className="text-right">
-                        <span className="font-bold">{type.count.toLocaleString()}</span>
-                        <span className="text-sm text-muted-foreground ml-2">({type.percentage}%)</span>
-                      </div>
-                    </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('dashboard:addressTypeDistribution')}</CardTitle>
+              <CardDescription>{t('dashboard:totalByType')}</CardDescription>
+            </CardHeader>
+            <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={typeData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="count"
+                >
+                  {typeData.map((entry) => (
+                    <Cell key={`cell-${entry.type}`} fill={getColorForType(entry.type)} />
                   ))}
-                  {typeData.length === 0 && (
-                    <p className="text-center text-muted-foreground py-4">
-                      {t('dashboard:noDataAvailable')}
-                    </p>
-                  )}
+                </Pie>
+                <Tooltip formatter={(value, name) => [value, name]} />
+              </PieChart>
+            </ResponsiveContainer>
+            
+            {/* Legend */}
+            <div className="mt-4 space-y-2">
+              {typeData.map((type) => (
+                <div key={type.type} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-3 h-3 rounded-full" 
+                      style={{ backgroundColor: getColorForType(type.type) }}
+                    />
+                    <span className="text-sm font-medium">{type.type}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-sm font-bold">{type.count.toLocaleString()}</span>
+                    <span className="text-xs text-muted-foreground ml-1">({type.percentage}%)</span>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              ))}
+              {typeData.length === 0 && (
+                <p className="text-center text-muted-foreground py-2 text-sm">
+                  {t('dashboard:noDataAvailable')}
+                </p>
+              )}
+            </div>
+            </CardContent>
+          </Card>
         </TabsContent>
         
         <TabsContent value="trends" className="space-y-4">
