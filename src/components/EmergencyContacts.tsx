@@ -120,7 +120,7 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber }: Emerg
           <DialogTrigger asChild>
             <Button variant="outline" size="sm" className="w-full border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground">
               <MapPin className="mr-2 h-4 w-4" />
-              {t('sendLocationAlert')}
+              {t('emergency:sendLocationAlert')}
             </Button>
           </DialogTrigger>
           <DialogContent>
