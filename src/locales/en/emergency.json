@@ -353,5 +353,34 @@
   "responseTimeMetrics": "Response Time Metrics",
   "unitPerformanceAnalysis": "Unit performance and response time analysis",
   "systemStatistics": "System Statistics",
-  "overallIncidentMetrics": "Overall incident management metrics"
+  "overallIncidentMetrics": "Overall incident management metrics",
+  
+  "policeAdminDashboard": {
+    "accessDenied": "Access Denied",
+    "accessDeniedMessage": "You need police administrator privileges to access this section.",
+    "policeAdministration": "Police Administration",
+    "managePoliceSystem": "Manage police system users, units, and configurations",
+    "totalOfficers": "Total Officers",
+    "currentlyActive": "currently active",
+    "policeUnits": "Police Units",
+    "availableForDeployment": "available for deployment",
+    "avgResponseTimeTitle": "Avg Response Time",
+    "last30Days": "Last 30 days",
+    "userManagement": "User Management",
+    "users": "Users",
+    "unitManagement": "Unit Management",
+    "systemConfig": "System Config",
+    "config": "Config",
+    "analytics": "Analytics",
+    "stats": "Stats",
+    "policeUserManagement": "Police User Management",
+    "manageOfficersDescription": "Manage police officers, dispatchers, and supervisors",
+    "policeUnitManagement": "Police Unit Management",
+    "manageUnitsDescription": "Create, edit, and manage police patrol units, rapid response teams, and specialized units",
+    "systemConfiguration": "System Configuration",
+    "configureSystemDescription": "Configure police system settings and integrations",
+    "policeAnalytics": "Police Analytics",
+    "viewMetricsDescription": "View performance metrics and operational analytics",
+    "failedToLoadStats": "Failed to load police statistics"
+  }
 }

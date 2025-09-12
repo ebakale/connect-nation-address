@@ -169,5 +169,34 @@
   "responseTimeMetrics": "Métriques de Temps de Réponse",
   "unitPerformanceAnalysis": "Analyse de performance des unités et temps de réponse",
   "systemStatistics": "Statistiques du Système",
-  "overallIncidentMetrics": "Métriques générales de gestion des incidents"
+  "overallIncidentMetrics": "Métriques générales de gestion des incidents",
+  
+  "policeAdminDashboard": {
+    "accessDenied": "Accès Refusé",
+    "accessDeniedMessage": "Vous avez besoin de privilèges d'administrateur de police pour accéder à cette section.",
+    "policeAdministration": "Administration de Police",
+    "managePoliceSystem": "Gérer les utilisateurs du système de police, les unités et les configurations",
+    "totalOfficers": "Total des Officiers",
+    "currentlyActive": "actuellement actifs",
+    "policeUnits": "Unités de Police",
+    "availableForDeployment": "disponibles pour déploiement",
+    "avgResponseTimeTitle": "Temps de Réponse Moyen",
+    "last30Days": "30 derniers jours",
+    "userManagement": "Gestion des Utilisateurs",
+    "users": "Utilisateurs",
+    "unitManagement": "Gestion des Unités",
+    "systemConfig": "Configuration Système",
+    "config": "Configuration",
+    "analytics": "Analyses",
+    "stats": "Statistiques",
+    "policeUserManagement": "Gestion des Utilisateurs de Police",
+    "manageOfficersDescription": "Gérer les officiers de police, répartiteurs et superviseurs",
+    "policeUnitManagement": "Gestion des Unités de Police",
+    "manageUnitsDescription": "Créer, modifier et gérer les unités de patrouille de police, équipes de réponse rapide et unités spécialisées",
+    "systemConfiguration": "Configuration du Système",
+    "configureSystemDescription": "Configurer les paramètres du système de police et les intégrations",
+    "policeAnalytics": "Analyses de Police",
+    "viewMetricsDescription": "Voir les métriques de performance et analyses opérationnelles",
+    "failedToLoadStats": "Échec du chargement des statistiques de police"
+  }
 }

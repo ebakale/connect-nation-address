@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useTranslation } from 'react-i18next';
 import UserManager from "./UserManager";
 import UnitManagement from "./UnitManagement";
 import SystemConfiguration from "./SystemConfiguration";
@@ -27,6 +28,7 @@ interface PoliceStats {
 }
 
 export const PoliceAdminDashboard = () => {
+  const { t } = useTranslation('emergency');
   const { hasPoliceAdminAccess, loading: roleLoading } = useUserRole();
   const [stats, setStats] = useState<PoliceStats>({
     totalOfficers: 0,
@@ -110,7 +112,7 @@ export const PoliceAdminDashboard = () => {
       });
     } catch (error) {
       console.error('Error fetching police stats:', error);
-      toast.error('Failed to load police statistics');
+      toast.error(t('policeAdminDashboard.failedToLoadStats'));
     } finally {
       setLoading(false);
     }
@@ -123,12 +125,12 @@ export const PoliceAdminDashboard = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-destructive">
             <Shield className="h-5 w-5" />
-            Access Denied
+            {t('policeAdminDashboard.accessDenied')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            You need police administrator privileges to access this section.
+            {t('policeAdminDashboard.accessDeniedMessage')}
           </p>
         </CardContent>
       </Card>
@@ -146,9 +148,9 @@ export const PoliceAdminDashboard = () => {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold">Police Administration</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold">{t('policeAdminDashboard.policeAdministration')}</h1>
         <p className="text-muted-foreground text-sm sm:text-base">
-          Manage police system users, units, and configurations
+          {t('policeAdminDashboard.managePoliceSystem')}
         </p>
       </div>
 
@@ -156,52 +158,52 @@ export const PoliceAdminDashboard = () => {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Officers</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('policeAdminDashboard.totalOfficers')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalOfficers}</div>
             <p className="text-xs text-muted-foreground">
-              {stats.activeOperators} currently active
+              {stats.activeOperators} {t('policeAdminDashboard.currentlyActive')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Police Units</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('policeAdminDashboard.policeUnits')}</CardTitle>
             <Radio className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalUnits}</div>
             <p className="text-xs text-muted-foreground">
-              {stats.activeUnits} available for deployment
+              {stats.activeUnits} {t('policeAdminDashboard.availableForDeployment')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Incidents</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('totalIncidents')}</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalIncidents}</div>
             <p className="text-xs text-muted-foreground">
-              {stats.activeIncidents} active
+              {stats.activeIncidents} {t('active')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg Response Time</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('policeAdminDashboard.avgResponseTimeTitle')}</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.avgResponseTime}m</div>
             <p className="text-xs text-muted-foreground">
-              Last 30 days
+              {t('policeAdminDashboard.last30Days')}
             </p>
           </CardContent>
         </Card>
@@ -211,29 +213,29 @@ export const PoliceAdminDashboard = () => {
       <Tabs defaultValue="users" className="w-full">
         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-2 h-auto p-1">
           <TabsTrigger value="users" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
-            <span className="hidden sm:inline">User Management</span>
-            <span className="sm:hidden">Users</span>
+            <span className="hidden sm:inline">{t('policeAdminDashboard.userManagement')}</span>
+            <span className="sm:hidden">{t('policeAdminDashboard.users')}</span>
           </TabsTrigger>
           <TabsTrigger value="units" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
-            <span className="hidden sm:inline">Unit Management</span>
-            <span className="sm:hidden">Units</span>
+            <span className="hidden sm:inline">{t('policeAdminDashboard.unitManagement')}</span>
+            <span className="sm:hidden">{t('policeAdminDashboard.units')}</span>
           </TabsTrigger>
           <TabsTrigger value="system" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
-            <span className="hidden sm:inline">System Config</span>
-            <span className="sm:hidden">Config</span>
+            <span className="hidden sm:inline">{t('policeAdminDashboard.systemConfig')}</span>
+            <span className="sm:hidden">{t('policeAdminDashboard.config')}</span>
           </TabsTrigger>
           <TabsTrigger value="analytics" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
-            <span className="hidden sm:inline">Analytics</span>
-            <span className="sm:hidden">Stats</span>
+            <span className="hidden sm:inline">{t('policeAdminDashboard.analytics')}</span>
+            <span className="sm:hidden">{t('policeAdminDashboard.stats')}</span>
           </TabsTrigger>
         </TabsList>
         
         <TabsContent value="users" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Police User Management</CardTitle>
+              <CardTitle>{t('policeAdminDashboard.policeUserManagement')}</CardTitle>
               <CardDescription>
-                Manage police officers, dispatchers, and supervisors
+                {t('policeAdminDashboard.manageOfficersDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -245,9 +247,9 @@ export const PoliceAdminDashboard = () => {
         <TabsContent value="units" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Police Unit Management</CardTitle>
+              <CardTitle>{t('policeAdminDashboard.policeUnitManagement')}</CardTitle>
               <CardDescription>
-                Create, edit, and manage police patrol units, rapid response teams, and specialized units
+                {t('policeAdminDashboard.manageUnitsDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -259,9 +261,9 @@ export const PoliceAdminDashboard = () => {
         <TabsContent value="system" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>System Configuration</CardTitle>
+              <CardTitle>{t('policeAdminDashboard.systemConfiguration')}</CardTitle>
               <CardDescription>
-                Configure police system settings and integrations
+                {t('policeAdminDashboard.configureSystemDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -273,9 +275,9 @@ export const PoliceAdminDashboard = () => {
         <TabsContent value="analytics" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Police Analytics</CardTitle>
+              <CardTitle>{t('policeAdminDashboard.policeAnalytics')}</CardTitle>
               <CardDescription>
-                View performance metrics and operational analytics
+                {t('policeAdminDashboard.viewMetricsDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent>

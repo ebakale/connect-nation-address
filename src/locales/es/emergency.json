@@ -353,5 +353,34 @@
   "responseTimeMetrics": "Métricas de Tiempo de Respuesta",
   "unitPerformanceAnalysis": "Análisis de rendimiento de unidades y tiempo de respuesta",
   "systemStatistics": "Estadísticas del Sistema",
-  "overallIncidentMetrics": "Métricas generales de gestión de incidentes"
+  "overallIncidentMetrics": "Métricas generales de gestión de incidentes",
+  
+  "policeAdminDashboard": {
+    "accessDenied": "Acceso Denegado",
+    "accessDeniedMessage": "Necesitas privilegios de administrador de policía para acceder a esta sección.",
+    "policeAdministration": "Administración Policial",
+    "managePoliceSystem": "Gestionar usuarios del sistema policial, unidades y configuraciones",
+    "totalOfficers": "Total de Oficiales",
+    "currentlyActive": "actualmente activos",
+    "policeUnits": "Unidades Policiales",
+    "availableForDeployment": "disponibles para despliegue",
+    "avgResponseTimeTitle": "Tiempo Promedio de Respuesta",
+    "last30Days": "Últimos 30 días",
+    "userManagement": "Gestión de Usuarios",
+    "users": "Usuarios",
+    "unitManagement": "Gestión de Unidades",
+    "systemConfig": "Configuración del Sistema",
+    "config": "Configuración",
+    "analytics": "Análisis",
+    "stats": "Estadísticas",
+    "policeUserManagement": "Gestión de Usuarios Policiales",
+    "manageOfficersDescription": "Gestionar oficiales de policía, despachadores y supervisores",
+    "policeUnitManagement": "Gestión de Unidades Policiales",
+    "manageUnitsDescription": "Crear, editar y gestionar unidades de patrulla policial, equipos de respuesta rápida y unidades especializadas",
+    "systemConfiguration": "Configuración del Sistema",
+    "configureSystemDescription": "Configurar ajustes del sistema policial e integraciones",
+    "policeAnalytics": "Análisis Policial",
+    "viewMetricsDescription": "Ver métricas de rendimiento y análisis operacional",
+    "failedToLoadStats": "Error al cargar estadísticas policiales"
+  }
 }
