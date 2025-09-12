@@ -229,15 +229,15 @@ const EmergencyContacts = () => {
     {
       type: 'police',
       icon: <Shield className="h-5 w-5" />,
-      title: t('police'),
-      description: t('policeDescription'),
+      title: t('emergency:police'),
+      description: t('emergency:policeDescription'),
       phoneNumber: '112'
     },
     {
       type: 'emergency',
       icon: <AlertTriangle className="h-5 w-5" />,
-      title: t('emergencyServices'),
-      description: t('emergencyServicesDescription'),
+      title: t('emergency:emergencyServices'),
+      description: t('emergency:emergencyServicesDescription'),
       phoneNumber: '911'
     }
   ];
