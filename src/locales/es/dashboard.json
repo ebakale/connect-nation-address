@@ -176,5 +176,16 @@
   "lastThirtyDaysText": "Últimos 30 Días",
   "lastNinetyDaysText": "Últimos 90 Días",
   "lastYearText": "Último Año",
-  "addressSystem": "Sistema de Direcciones"
+  "addressSystem": "Sistema de Direcciones",
+  "admin": "Administrador",
+  "verifier": "Verificador",
+  "registrar": "Registrador",
+  "fieldAgent": "Agente de Campo",
+  "citizen": "Ciudadano",
+  "unknownUser": "Usuario Desconocido",
+  "unknownEmail": "desconocido@ejemplo.com",
+  "user": "Usuario",
+  "assignedRoles": "Roles asignados",
+  "usersInSystem": "Usuarios en sistema",
+  "total": "total"
 }

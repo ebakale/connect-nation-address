@@ -176,5 +176,16 @@
   "lastThirtyDaysText": "Last 30 Days",
   "lastNinetyDaysText": "Last 90 Days",
   "lastYearText": "Last Year",
-  "addressSystem": "Address System"
+  "addressSystem": "Address System",
+  "admin": "Admin",
+  "verifier": "Verifier", 
+  "registrar": "Registrar",
+  "fieldAgent": "Field Agent",
+  "citizen": "Citizen",
+  "unknownUser": "Unknown User",
+  "unknownEmail": "unknown@example.com",
+  "user": "User",
+  "assignedRoles": "Assigned roles",
+  "usersInSystem": "Users in system",
+  "total": "total"
 }

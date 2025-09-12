@@ -204,8 +204,8 @@ const UnifiedDashboard = () => {
           return {
             ...request,
             profiles: {
-              full_name: profile?.full_name || 'Unknown User',
-              email: profile?.email || 'unknown@example.com'
+              full_name: profile?.full_name || t('dashboard:unknownUser'),
+              email: profile?.email || t('dashboard:unknownEmail')
             }
           };
         });
@@ -230,10 +230,10 @@ const UnifiedDashboard = () => {
           throw error;
         }
 
-        setUserProfile(data || { full_name: 'User', email: user.email || '' });
+        setUserProfile(data || { full_name: t('dashboard:user'), email: user.email || '' });
       } catch (error) {
         console.error('Error fetching user profile:', error);
-        setUserProfile({ full_name: 'User', email: user.email || '' });
+        setUserProfile({ full_name: t('dashboard:user'), email: user.email || '' });
       }
     };
 
@@ -269,11 +269,11 @@ const UnifiedDashboard = () => {
 
   const geographicScope = getGeographicScope();
   const userRoles = [];
-  if (isAdmin) userRoles.push('Admin');
-  if (isVerifier) userRoles.push('Verifier');
-  if (isRegistrar) userRoles.push('Registrar');
-  if (isFieldAgent) userRoles.push('Field Agent');
-  if (isCitizen) userRoles.push('Citizen');
+  if (isAdmin) userRoles.push(t('dashboard:admin'));
+  if (isVerifier) userRoles.push(t('dashboard:verifier'));
+  if (isRegistrar) userRoles.push(t('dashboard:registrar'));
+  if (isFieldAgent) userRoles.push(t('dashboard:fieldAgent'));
+  if (isCitizen) userRoles.push(t('dashboard:citizen'));
 
   const handleSidebarNavigation = (viewId: string) => {
     setActiveView(viewId);
@@ -402,7 +402,7 @@ const UnifiedDashboard = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{stats.totalUsers}</div>
-                      <p className="text-xs text-muted-foreground">Users in system</p>
+                      <p className="text-xs text-muted-foreground">{t('dashboard:usersInSystem')}</p>
                     </CardContent>
                   </Card>
 
@@ -413,7 +413,7 @@ const UnifiedDashboard = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{stats.activeRoles}</div>
-                      <p className="text-xs text-muted-foreground">Assigned roles</p>
+                      <p className="text-xs text-muted-foreground">{t('dashboard:assignedRoles')}</p>
                     </CardContent>
                   </Card>
 
@@ -435,7 +435,7 @@ const UnifiedDashboard = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{stats.publicAddresses}</div>
-                      <p className="text-xs text-muted-foreground">{stats.totalAddresses} total</p>
+                      <p className="text-xs text-muted-foreground">{stats.totalAddresses} {t('dashboard:total')}</p>
                     </CardContent>
                   </Card>
                 </div>
