@@ -72,7 +72,7 @@ const PoliceDashboard = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { role, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isPoliceAdmin, isAdmin, loading, hasPoliceAccess, hasPoliceAdminAccess, isUnitLead } = useUserRole();
-  const { t } = useTranslation();
+  const { t } = useTranslation('emergency');
   
   // Dashboard state
   const [activeTab, setActiveTab] = useState<string>('');
@@ -619,15 +619,15 @@ const PoliceDashboard = () => {
                <div className="flex items-center gap-2">
                  <Shield className="h-8 w-8 text-blue-600" />
                  <div>
-                   <h1 className="text-2xl font-bold">{t('policeCommandCenter')}</h1>
-                   <p className="text-sm text-muted-foreground">{t('emergencyIncidents')}</p>
+                    <h1 className="text-2xl font-bold">{t('policeCommandCenter')}</h1>
+                    <p className="text-sm text-muted-foreground">{t('emergencyIncidents')}</p>
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-2">
-                  <LogOut className="h-4 w-4" />
-                  {t('logout')}
+                   <LogOut className="h-4 w-4" />
+                   {t('common:logout')}
                 </Button>
               </div>
             </div>
@@ -687,7 +687,7 @@ const PoliceDashboard = () => {
               <OfflineIndicator />
               <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
                 <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">{t('logout')}</span>
+                <span className="hidden sm:inline">{t('common:logout')}</span>
               </Button>
             </div>
           </div>
@@ -746,19 +746,19 @@ const PoliceDashboard = () => {
                    {(isPoliceSupervisor || isAdmin) && (
                      <TabsTrigger value="leadership" className="text-sm">
                        <Award className="h-4 w-4 mr-2" />
-                       Leadership
+                        {t('leadership')}
                      </TabsTrigger>
                    )}
                    {(isPoliceSupervisor || isAdmin) && (
                      <TabsTrigger value="management" className="text-sm">
                        <Users className="h-4 w-4 mr-2" />
-                       Management
+                        {t('management')}
                      </TabsTrigger>
                    )}
                   {hasPoliceAdminAccess && (
                     <TabsTrigger value="admin" className="text-sm">
                       <Settings className="h-4 w-4 mr-2" />
-                       {t('admin')}
+                        {t('admin')}
                     </TabsTrigger>
                   )}
                 </TabsList>
@@ -815,9 +815,9 @@ const PoliceDashboard = () => {
             <TabsContent value="dispatch" className="space-y-4">
               {/* Header Section */}
               <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">
-                  {userCity ? `Coverage: ${userCity}` : 'All Areas'}
-                </p>
+                 <p className="text-sm text-muted-foreground">
+                   {userCity ? `${t('coverage')}: ${userCity}` : t('allAreas')}
+                 </p>
               </div>
 
               {/* Compact Key Metrics */}
@@ -843,7 +843,7 @@ const PoliceDashboard = () => {
                 <Card className="p-3">
                   <div className="text-center">
                     <p className="text-xl font-bold text-purple-600">{dashboardStats.operatorsOnline}</p>
-                    <p className="text-xs text-muted-foreground">Online</p>
+                    <p className="text-xs text-muted-foreground">{t('online')}</p>
                   </div>
                 </Card>
               </div>
@@ -853,27 +853,27 @@ const PoliceDashboard = () => {
                 <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-1">
                   <TabsTrigger value="incidents" className="flex items-center gap-1">
                     <AlertTriangle className="h-3 w-3" />
-                    Incidents
+                     {t('incidents')}
                   </TabsTrigger>
                   <TabsTrigger value="map" className="flex items-center gap-1">
                     <MapPin className="h-3 w-3" />
-                    Map
+                     {t('map')}
                   </TabsTrigger>
                   <TabsTrigger value="units" className="flex items-center gap-1">
                     <Shield className="h-3 w-3" />
-                    Units
+                     {t('units')}
                   </TabsTrigger>
                   <TabsTrigger value="communications" className="flex items-center gap-1">
                     <MessageSquare className="h-3 w-3" />
-                    Comms
+                    {t('comms')}
                   </TabsTrigger>
                   <TabsTrigger value="metrics" className="flex items-center gap-1">
                     <TrendingUp className="h-3 w-3" />
-                    Metrics
+                     {t('metrics')}
                   </TabsTrigger>
                   <TabsTrigger value="backup" className="flex items-center gap-1">
                     <Bell className="h-3 w-3" />
-                    Backup
+                     {t('backup')}
                   </TabsTrigger>
                 </TabsList>
 
@@ -883,7 +883,7 @@ const PoliceDashboard = () => {
                       <div className="flex items-center justify-between">
                         <CardTitle className="flex items-center gap-2">
                           <AlertTriangle className="h-5 w-5" />
-                          Emergency Incidents
+                          {t('emergencyIncidentsTitle')}
                         </CardTitle>
                         <Badge variant="secondary" className="whitespace-nowrap">
                           {incidents.length} active • {resolvedIncidents.length} resolved
@@ -895,11 +895,11 @@ const PoliceDashboard = () => {
                         <TabsList className="grid w-full grid-cols-2">
                           <TabsTrigger value="active" className="flex items-center gap-2">
                             <AlertTriangle className="h-4 w-4" />
-                            Active ({incidents.length})
+                            {t('active')} ({incidents.length})
                           </TabsTrigger>
                           <TabsTrigger value="resolved" className="flex items-center gap-2">
                             <CheckCircle className="h-4 w-4" />
-                            Resolved ({resolvedIncidents.length})
+                            {t('resolved')} ({resolvedIncidents.length})
                           </TabsTrigger>
                         </TabsList>
                         
@@ -961,7 +961,7 @@ const PoliceDashboard = () => {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <Card>
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-base">Units Overview</CardTitle>
+                        <CardTitle className="text-base">{t('unitsOverview')}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <Button 
@@ -970,7 +970,7 @@ const PoliceDashboard = () => {
                           className="w-full mb-4"
                         >
                           <Shield className="h-4 w-4 mr-2" />
-                          View All Units
+                          {t('viewAllUnits')}
                         </Button>
                         {userUnit && (
                           <div className="space-y-2">
@@ -999,7 +999,7 @@ const PoliceDashboard = () => {
             className="w-full mb-4"
           >
             <Users className="h-4 w-4 mr-2" />
-            Manage Units & Profiles
+            {t('manageUnitsProfiles')}
           </Button>
                         )}
                         <OperatorStatusPanel 
@@ -1019,7 +1019,7 @@ const PoliceDashboard = () => {
                     <CardHeader className="pb-3">
                       <CardTitle className="flex items-center gap-2">
                         <TrendingUp className="h-5 w-5" />
-                        Response Metrics
+                        {t('responseMetrics')}
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -1034,7 +1034,7 @@ const PoliceDashboard = () => {
                       <CardHeader className="pb-3">
                         <CardTitle className="text-base flex items-center gap-2">
                           <Shield className="h-4 w-4" />
-                          Sent Requests
+                          {t('sentRequests')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -1046,7 +1046,7 @@ const PoliceDashboard = () => {
                       <CardHeader className="pb-3">
                         <CardTitle className="text-base flex items-center gap-2">
                           <AlertTriangle className="h-4 w-4" />
-                          Received Notifications
+                          {t('receivedNotifications')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -1067,9 +1067,9 @@ const PoliceDashboard = () => {
                   <Users className="h-3 w-3" />
                    {t('coordinationCenter')}
                 </Badge>
-                <p className="text-xs sm:text-sm text-muted-foreground">
-                  Coordinate with other units and monitor area-specific incidents
-                </p>
+                 <p className="text-xs sm:text-sm text-muted-foreground">
+                   {t('coordinateOtherUnits')}
+                 </p>
               </div>
 
               {/* Simplified Stats for Supervisors */}
@@ -1078,7 +1078,7 @@ const PoliceDashboard = () => {
                   <CardContent className="p-3 sm:p-4">
                     <div className="flex items-center justify-between">
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs sm:text-sm text-muted-foreground truncate">My Area Incidents</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground truncate">{t('myAreaIncidents')}</p>
                         <p className="text-xl sm:text-2xl font-bold text-red-600 mt-1">{areaIncidents.filter(i => !['resolved','closed'].includes(i.status)).length}</p>
                       </div>
                       <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-red-600 flex-shrink-0 ml-2" />
@@ -1118,7 +1118,7 @@ const PoliceDashboard = () => {
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2">
                       <AlertTriangle className="h-5 w-5" />
-                       Area Incidents
+                        {t('areaIncidents')}
                        {(userUnit?.coverage_city || userCity) && (
                          <Badge variant="secondary" className="ml-2">
                            {userUnit?.coverage_city || userCity}
@@ -1142,8 +1142,8 @@ const PoliceDashboard = () => {
                   <BackupRequestsSentPanel />
                   <Card>
                     <CardHeader>
-                       <CardTitle className="text-lg">{t('coordinationActions')}</CardTitle>
-                       <CardDescription>{t('supervisorCoordinationTools')}</CardDescription>
+                        <CardTitle className="text-lg">{t('coordinationActions')}</CardTitle>
+                        <CardDescription>{t('supervisorCoordinationTools')}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <Button 
@@ -1174,7 +1174,7 @@ const PoliceDashboard = () => {
                   {userUnit && (
                     <Card>
                       <CardHeader>
-                        <CardTitle className="text-lg">Unit Status</CardTitle>
+                        <CardTitle className="text-lg">{t('unitStatus')}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <UnitStatusManager 
@@ -1197,18 +1197,18 @@ const PoliceDashboard = () => {
                 <div className="flex items-center gap-4 mb-2">
                   <Badge variant="outline" className="flex items-center gap-2">
                     <Award className="h-3 w-3" />
-                    Unit Leadership Tools
+                    {t('unitLeadershipTools')}
                   </Badge>
                 </div>
-                <p className="text-muted-foreground">
-                  Manage your units, analyze performance, and coordinate team operations
-                </p>
+                 <p className="text-muted-foreground">
+                   {t('manageUnitsPerformance')}
+                 </p>
               </div>
 
               <Tabs defaultValue="dashboard" className="space-y-4">
                 <TabsList>
-                  <TabsTrigger value="dashboard">Team Management</TabsTrigger>
-                  <TabsTrigger value="performance">Performance Analytics</TabsTrigger>
+                   <TabsTrigger value="dashboard">{t('teamManagement')}</TabsTrigger>
+                   <TabsTrigger value="performance">{t('performanceAnalytics')}</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="dashboard">
@@ -1232,16 +1232,16 @@ const PoliceDashboard = () => {
                     {t('unitManagement')}
                   </Badge>
                 </div>
-                <p className="text-muted-foreground">
-                  Manage emergency units, officer assignments, and performance analytics
-                </p>
+                 <p className="text-muted-foreground">
+                   {t('manageUnitsOfficers')}
+                 </p>
               </div>
 
               {/* Quick Actions Section */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold flex items-center gap-2">
                   <Users className="h-5 w-5" />
-                  Quick Actions
+                   {t('quickActions')}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Card className="cursor-pointer hover:shadow-md transition-all hover:-translate-y-1"
@@ -1252,8 +1252,8 @@ const PoliceDashboard = () => {
                           <Users className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                          <h4 className="font-medium">Units & Profiles</h4>
-                          <p className="text-sm text-muted-foreground">Manage emergency units and officers</p>
+                           <h4 className="font-medium">{t('unitsProfilesManagement')}</h4>
+                           <p className="text-sm text-muted-foreground">{t('manageUnitsOfficers')}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -1266,8 +1266,8 @@ const PoliceDashboard = () => {
                           <Shield className="h-5 w-5 text-blue-500" />
                         </div>
                         <div>
-                          <h4 className="font-medium">System Overview</h4>
-                          <p className="text-sm text-muted-foreground">{t('viewSystemHealthStats')}</p>
+                           <h4 className="font-medium">{t('systemOverview')}</h4>
+                           <p className="text-sm text-muted-foreground">{t('viewSystemHealthStats')}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -1279,17 +1279,17 @@ const PoliceDashboard = () => {
               <div className="space-y-6">
                 <h3 className="text-lg font-semibold flex items-center gap-2">
                   <TrendingUp className="h-5 w-5" />
-                  Performance Analytics
+                  {t('performanceAnalytics')}
                 </h3>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Response Time Analytics */}
                   <Card>
                     <CardHeader className="pb-4">
-                      <CardTitle className="text-base">Response Time Metrics</CardTitle>
-                      <CardDescription>
-                        Unit performance and response time analysis
-                      </CardDescription>
+                       <CardTitle className="text-base">{t('responseTimeMetrics')}</CardTitle>
+                       <CardDescription>
+                         {t('unitPerformanceAnalysis')}
+                       </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <ResponseTimeTracker showRecentOnly={false} />
@@ -1299,20 +1299,20 @@ const PoliceDashboard = () => {
                   {/* System Statistics */}
                   <Card>
                     <CardHeader className="pb-4">
-                      <CardTitle className="text-base">System Statistics</CardTitle>
-                      <CardDescription>
-                        Overall incident management metrics
-                      </CardDescription>
+                       <CardTitle className="text-base">{t('systemStatistics')}</CardTitle>
+                       <CardDescription>
+                         {t('overallIncidentMetrics')}
+                       </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-2 gap-6">
                         <div className="text-center p-4 bg-muted/50 rounded-lg">
                           <p className="text-2xl font-bold text-primary">{dashboardStats.totalIncidents}</p>
-                          <p className="text-sm text-muted-foreground mt-1">Total Incidents</p>
+                          <p className="text-sm text-muted-foreground mt-1">{t('totalIncidents')}</p>
                         </div>
                         <div className="text-center p-4 bg-muted/50 rounded-lg">
                           <p className="text-2xl font-bold text-green-600">{dashboardStats.resolvedIncidents}</p>
-                          <p className="text-sm text-muted-foreground mt-1">Resolved</p>
+                          <p className="text-sm text-muted-foreground mt-1">{t('resolved')}</p>
                         </div>
                         <div className="text-center p-4 bg-muted/50 rounded-lg col-span-2">
                           <p className="text-xl font-bold text-blue-600">
@@ -1320,7 +1320,7 @@ const PoliceDashboard = () => {
                               ? ((dashboardStats.resolvedIncidents / dashboardStats.totalIncidents) * 100).toFixed(1)
                               : 0}%
                           </p>
-                          <p className="text-sm text-muted-foreground mt-1">Resolution Rate</p>
+                          <p className="text-sm text-muted-foreground mt-1">{t('resolutionRate')}</p>
                         </div>
                       </div>
                     </CardContent>
