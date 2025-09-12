@@ -11,6 +11,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Radio, Users, Plus, Edit, Trash2, UserPlus, UserMinus, MapPin, Activity } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface EmergencyUnit {
   id: string;
@@ -51,6 +52,7 @@ interface Officer {
 }
 
 const UnitManagement: React.FC = () => {
+  const { t } = useTranslation('emergency');
   const [units, setUnits] = useState<EmergencyUnit[]>([]);
   const [officers, setOfficers] = useState<Officer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -154,7 +156,7 @@ const UnitManagement: React.FC = () => {
       setUnits(unitsWithMembers);
     } catch (error) {
       console.error('Error fetching units:', error);
-      toast.error('Failed to fetch emergency units');
+      toast.error(t('unitManagement.messages.failedToFetchUnits'));
     } finally {
       setLoading(false);
     }
@@ -376,7 +378,7 @@ const UnitManagement: React.FC = () => {
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              Create Police Unit
+              {t('unitManagement.createPoliceUnit')}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
