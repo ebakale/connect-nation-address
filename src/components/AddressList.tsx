@@ -235,7 +235,13 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
                         {address.uac}
                       </span>
                       <Badge variant="outline" className={getTypeColor(address.address_type)}>
-                        {address.address_type}
+                        {(() => {
+                          const v = address.address_type as string | undefined;
+                          const hasBraces = v ? v.includes('{{') || v.includes('}}') : false;
+                          const cleaned = v ? v.replace(/[{}]/g, '').trim() : '';
+                          const safe = !v || hasBraces || cleaned.toLowerCase() === 'type' || cleaned === '' ? 'unknown' : cleaned;
+                          return safe;
+                        })()}
                       </Badge>
                       <div className="flex gap-1">
                         {getStatusBadges(address)}

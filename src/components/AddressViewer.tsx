@@ -142,7 +142,13 @@ const AddressViewer: React.FC<AddressViewerProps> = ({ address, onBack, onEdit }
           <div className="flex flex-wrap gap-2">
             <Badge className={getTypeColor(address.address_type)}>
               <Tag className="h-3 w-3 mr-1" />
-              {address.address_type}
+              {(() => {
+                const v = address.address_type as string | undefined;
+                const hasBraces = v ? v.includes('{{') || v.includes('}}') : false;
+                const cleaned = v ? v.replace(/[{}]/g, '').trim() : '';
+                const safe = !v || hasBraces || cleaned.toLowerCase() === 'type' || cleaned === '' ? 'unknown' : cleaned;
+                return safe;
+              })()}
             </Badge>
             
             {address.verified ? (

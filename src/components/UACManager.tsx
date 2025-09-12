@@ -339,7 +339,13 @@ export const UACManager: React.FC = () => {
                               <XCircle className="h-4 w-4 text-red-600" />
                             )}
                             <Badge variant="outline" className="text-xs">
-                              {record.address_type}
+                              {(() => {
+                                const v = record.address_type as string | undefined;
+                                const hasBraces = v ? v.includes('{{') || v.includes('}}') : false;
+                                const cleaned = v ? v.replace(/[{}]/g, '').trim() : '';
+                                const safe = !v || hasBraces || cleaned.toLowerCase() === 'type' || cleaned === '' ? 'unknown' : cleaned;
+                                return safe;
+                              })()}
                             </Badge>
                           </div>
                         </div>
@@ -414,7 +420,13 @@ export const UACManager: React.FC = () => {
                             <div>
                               <div className="text-sm font-medium text-muted-foreground">{t('addressType')}</div>
                               <Badge variant="outline" className="text-xs">
-                                {record.address_type}
+                                {(() => {
+                                  const v = record.address_type as string | undefined;
+                                  const hasBraces = v ? v.includes('{{') || v.includes('}}') : false;
+                                  const cleaned = v ? v.replace(/[{}]/g, '').trim() : '';
+                                  const safe = !v || hasBraces || cleaned.toLowerCase() === 'type' || cleaned === '' ? 'unknown' : cleaned;
+                                  return safe;
+                                })()}
                               </Badge>
                             </div>
                           </div>

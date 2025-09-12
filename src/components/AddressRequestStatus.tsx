@@ -166,7 +166,13 @@ export const AddressRequestStatus = () => {
                             <CalendarDays className="w-4 h-4" />
                             <span>{t('submittedDate', { date: format(new Date(request.created_at), 'MMM dd, yyyy') })}</span>
                           </div>
-                          <span>{t('type', { type: request.address_type })}</span>
+                          <span>{t('type', { type: (() => {
+                            const v = request.address_type as string | undefined;
+                            const hasBraces = v ? v.includes('{{') || v.includes('}}') : false;
+                            const cleaned = v ? v.replace(/[{}]/g, '').trim() : '';
+                            const safe = !v || hasBraces || cleaned.toLowerCase() === 'type' || cleaned === '' ? 'unknown' : cleaned;
+                            return safe;
+                          })() })}</span>
                         </div>
                       </div>
                     <div className="ml-4">

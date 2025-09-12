@@ -158,7 +158,13 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
               address.address_type === 'residential' ? 'border-warning text-warning' :
               'border-destructive text-destructive'
             }>
-              {address.address_type}
+              {(() => {
+                const v = address.address_type as string | undefined;
+                const hasBraces = v ? v.includes('{{') || v.includes('}}') : false;
+                const cleaned = v ? v.replace(/[{}]/g, '').trim() : '';
+                const safe = !v || hasBraces || cleaned.toLowerCase() === 'type' || cleaned === '' ? 'unknown' : cleaned;
+                return safe;
+              })()}
             </Badge>
             {address.verified ? (
               <Badge variant="outline" className="border-success text-success">

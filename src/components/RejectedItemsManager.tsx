@@ -133,7 +133,13 @@ export const RejectedItemsManager = () => {
             <CardContent>
               <div className="grid grid-cols-2 gap-4 text-sm mb-4">
                 <div>
-                  <span className="font-medium">Type:</span> {item.address_type}
+                  <span className="font-medium">Type:</span> {(() => {
+                    const v = item.address_type as string | undefined;
+                    const hasBraces = v ? v.includes('{{') || v.includes('}}') : false;
+                    const cleaned = v ? v.replace(/[{}]/g, '').trim() : '';
+                    const safe = !v || hasBraces || cleaned.toLowerCase() === 'type' || cleaned === '' ? 'unknown' : cleaned;
+                    return safe;
+                  })()}
                 </div>
                 <div>
                   <span className="font-medium">Rejected:</span> {new Date(item.rejected_at || item.updated_at).toLocaleDateString()}

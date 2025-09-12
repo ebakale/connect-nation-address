@@ -203,7 +203,7 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
                 background: #dbeafe;
                 color: #1e40af;
               ">
-                ${address.address_type}
+                ${(() => { const v = address.address_type || ''; const cleaned = v.replace(/[{}]/g,'').trim(); return (!v || v.includes('{{') || v.includes('}}') || cleaned.toLowerCase() === 'type' || cleaned === '') ? 'unknown' : cleaned; })()}
               </span>
             </div>
             <p style="font-size: 10px; color: #999; margin: 0;">

@@ -219,7 +219,13 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                     <Building className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm font-medium">{t('type')}</span>
                   </div>
-                  <p className="text-sm pl-6 capitalize">{address.address_type}</p>
+                  <p className="text-sm pl-6 capitalize">{(() => {
+                    const v = address.address_type as string | undefined;
+                    const hasBraces = v ? v.includes('{{') || v.includes('}}') : false;
+                    const cleaned = v ? v.replace(/[{}]/g, '').trim() : '';
+                    const safe = !v || hasBraces || cleaned.toLowerCase() === 'type' || cleaned === '' ? 'unknown' : cleaned;
+                    return safe;
+                  })()}</p>
                 </div>
               </div>
 
