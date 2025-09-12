@@ -175,5 +175,6 @@
   "lastSevenDaysText": "Last 7 Days",
   "lastThirtyDaysText": "Last 30 Days",
   "lastNinetyDaysText": "Last 90 Days",
-  "lastYearText": "Last Year"
+  "lastYearText": "Last Year",
+  "addressSystem": "Address System"
 }
