@@ -18,6 +18,13 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from 'react-i18next';
 import { useUserRole } from '@/hooks/useUserRole';
+
+// Import images
+import addressVerificationIcon from "@/assets/address-verification-icon.jpg";
+import fieldAgentImage from "@/assets/field-agent-eg.jpg";
+import citizenMobileImage from "@/assets/citizen-mobile-eg.jpg";
+import analyticsDashboardImage from "@/assets/analytics-dashboard.jpg";
+import malaboStreetsImage from "@/assets/malabo-streets.jpg";
 import DashboardLocationMap from './DashboardLocationMap';
 import AddressSearch from './AddressSearch';
 
@@ -138,28 +145,32 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       description: t('findAndVerifyExisting'),
       icon: Search,
       action: () => onNavigate?.('search'),
-      variant: "default" as const
+      variant: "default" as const,
+      image: addressVerificationIcon
     },
     {
       title: t('addNewAddress'),
       description: t('registerNewLocation'),
       icon: Plus,
       action: () => onNavigate?.('add'),
-      variant: "hero" as const
+      variant: "hero" as const,
+      image: fieldAgentImage
     },
     {
       title: t('viewMap'),
       description: t('interactiveAddressMapping'),
       icon: MapPin,
       action: () => onNavigate?.('map'),
-      variant: "default" as const
+      variant: "default" as const,
+      image: malaboStreetsImage
     },
     {
       title: t('analytics'),
       description: t('coverageAndUsageStatistics'),
       icon: BarChart3,
       action: () => onNavigate?.('analytics'),
-      variant: "default" as const
+      variant: "default" as const,
+      image: analyticsDashboardImage
     }
   ];
 
@@ -267,18 +278,26 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {quickActions.map((action, index) => (
-              <Button
-                key={index}
-                variant={action.variant}
-                className="h-auto p-3 sm:p-4 flex flex-col items-start gap-2 text-left"
+              <Card 
+                key={index} 
+                className="group overflow-hidden cursor-pointer hover:shadow-elegant transition-all duration-300 transform hover:scale-105"
                 onClick={action.action}
               >
-                <action.icon className="h-4 w-4 sm:h-5 sm:w-5" />
-                <div className="text-left w-full">
-                  <p className="font-semibold text-sm sm:text-base truncate">{action.title}</p>
-                  <p className="text-xs opacity-90 line-clamp-2">{action.description}</p>
+                {/* Image Header */}
+                <div className="relative h-24 bg-cover bg-center" style={{ backgroundImage: `url(${action.image})` }}>
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/40 to-transparent"></div>
+                  <div className="absolute bottom-2 left-3 right-3">
+                    <div className="flex items-center gap-2">
+                      <action.icon className="h-4 w-4 text-white" />
+                      <h4 className="font-semibold text-white text-sm truncate">{action.title}</h4>
+                    </div>
+                  </div>
                 </div>
-              </Button>
+                {/* Content */}
+                <CardContent className="p-3">
+                  <p className="text-xs text-muted-foreground line-clamp-2">{action.description}</p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </CardContent>

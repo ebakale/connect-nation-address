@@ -82,6 +82,12 @@ All colors MUST be HSL.
     --shadow-green: 0 4px 20px hsl(142 76% 36% / 0.15);
     --shadow-red: 0 4px 20px hsl(0 84% 60% / 0.15);
     --shadow-card: 0 2px 10px hsl(214 32% 50% / 0.1);
+    --shadow-elegant: 0 4px 25px -2px hsl(var(--primary) / 0.1), 0 8px 10px -6px hsl(var(--primary) / 0.1);
+
+    /* Enhanced visual effects */
+    --overlay-gradient: linear-gradient(135deg, hsl(var(--primary) / 0.9), hsl(var(--secondary) / 0.8));
+    --glass-effect: backdrop-blur(10px) saturate(180%);
+    --image-overlay: linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.8) 50%, transparent 100%);
 
     --radius: 0.75rem;
 

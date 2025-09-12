@@ -11,15 +11,20 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+// Import images
+import policeOfficerImage from "@/assets/police-officer-eg.jpg";
+import emergencyServicesImage from "@/assets/emergency-services-eg.jpg";
+
 interface EmergencyContactProps {
   type: 'police' | 'emergency';
   icon: React.ReactNode;
   title: string;
   description: string;
   phoneNumber: string;
+  image: string;
 }
 
-const EmergencyContact = ({ type, icon, title, description, phoneNumber }: EmergencyContactProps) => {
+const EmergencyContact = ({ type, icon, title, description, phoneNumber, image }: EmergencyContactProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
@@ -84,13 +89,19 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber }: Emerg
   };
 
   return (
-    <Card className="border-destructive/20 bg-destructive/5">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-destructive">
-          {icon}
-          {title}
-        </CardTitle>
-        <CardDescription>
+    <Card className="border-destructive/20 bg-destructive/5 overflow-hidden">
+      {/* Image Header */}
+      <div className="relative h-32 bg-cover bg-center" style={{ backgroundImage: `url(${image})` }}>
+        <div className="absolute inset-0 bg-gradient-to-t from-destructive/90 via-destructive/40 to-transparent"></div>
+        <div className="absolute bottom-3 left-4 right-4">
+          <CardTitle className="flex items-center gap-2 text-white text-lg">
+            {icon}
+            {title}
+          </CardTitle>
+        </div>
+      </div>
+      <CardHeader className="pb-2">
+        <CardDescription className="text-sm">
           {description}
         </CardDescription>
       </CardHeader>
@@ -231,14 +242,16 @@ const EmergencyContacts = () => {
       icon: <Shield className="h-5 w-5" />,
       title: t('emergency:police'),
       description: t('emergency:policeDescription'),
-      phoneNumber: '112'
+      phoneNumber: '112',
+      image: policeOfficerImage
     },
     {
       type: 'emergency',
       icon: <AlertTriangle className="h-5 w-5" />,
       title: t('emergency:emergencyServices'),
       description: t('emergency:emergencyServicesDescription'),
-      phoneNumber: '911'
+      phoneNumber: '911',
+      image: emergencyServicesImage
     }
   ];
 
