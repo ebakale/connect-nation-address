@@ -16,9 +16,9 @@ import {
   PieChart,
   Pie,
   Cell,
-  LineChart,
-  Line
+  LineChart
 } from "recharts";
+import * as Recharts from "recharts";
 import { 
   TrendingUp, 
   MapPin, 
@@ -580,14 +580,14 @@ export const AnalyticsReports = () => {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line 
+                <Recharts.Line 
                   type="monotone" 
                   dataKey="addresses" 
                   stroke="hsl(var(--primary))" 
                   strokeWidth={2}
                   name={t('dashboard:newAddresses')}
                 />
-                <Line 
+                <Recharts.Line 
                   type="monotone" 
                   dataKey="verified" 
                   stroke="hsl(var(--success))" 

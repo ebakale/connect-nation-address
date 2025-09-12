@@ -8,7 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  LineChart, Line, PieChart, Pie, Cell, AreaChart, Area
+  LineChart, PieChart, Pie, Cell, AreaChart, Area
 } from 'recharts';
 import {
   TrendingUp, TrendingDown, Clock, Users, AlertTriangle,
