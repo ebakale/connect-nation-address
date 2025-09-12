@@ -4,20 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  LineChart
-} from "recharts";
 import * as Recharts from "recharts";
 import { 
   TrendingUp, 
@@ -463,17 +449,17 @@ export const AnalyticsReports = () => {
               </CardHeader>
               <CardContent>
               <div className="w-full overflow-x-auto">
-                <ResponsiveContainer width="100%" height={300} minWidth={300}>
-                  <BarChart data={regionData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="region" fontSize={12} />
-                    <YAxis fontSize={12} />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="addresses" fill="hsl(var(--primary))" name={t('dashboard:totalAddresses')} />
-                    <Bar dataKey="verified" fill="hsl(var(--success))" name={t('dashboard:verified')} />
-                  </BarChart>
-                </ResponsiveContainer>
+                <Recharts.ResponsiveContainer width="100%" height={300} minWidth={300}>
+                  <Recharts.BarChart data={regionData}>
+                    <Recharts.CartesianGrid strokeDasharray="3 3" />
+                    <Recharts.XAxis dataKey="region" fontSize={12} />
+                    <Recharts.YAxis fontSize={12} />
+                    <Recharts.Tooltip />
+                    <Recharts.Legend />
+                    <Recharts.Bar dataKey="addresses" fill="hsl(var(--primary))" name={t('dashboard:totalAddresses')} />
+                    <Recharts.Bar dataKey="verified" fill="hsl(var(--success))" name={t('dashboard:verified')} />
+                  </Recharts.BarChart>
+                </Recharts.ResponsiveContainer>
               </div>
               </CardContent>
             </Card>
@@ -521,9 +507,9 @@ export const AnalyticsReports = () => {
               <CardDescription>{t('dashboard:totalByType')}</CardDescription>
             </CardHeader>
             <CardContent>
-            <ResponsiveContainer width="100%" height={400}>
-              <PieChart>
-                <Pie
+            <Recharts.ResponsiveContainer width="100%" height={400}>
+              <Recharts.PieChart>
+                <Recharts.Pie
                   data={typeData}
                   cx="50%"
                   cy="50%"
@@ -532,12 +518,12 @@ export const AnalyticsReports = () => {
                   dataKey="count"
                 >
                   {typeData.map((entry) => (
-                    <Cell key={`cell-${entry.type}`} fill={getColorForType(entry.type)} />
+                    <Recharts.Cell key={`cell-${entry.type}`} fill={getColorForType(entry.type)} />
                   ))}
-                </Pie>
-                <Tooltip formatter={(value, name) => [value, name]} />
-              </PieChart>
-            </ResponsiveContainer>
+                </Recharts.Pie>
+                <Recharts.Tooltip formatter={(value, name) => [value, name]} />
+              </Recharts.PieChart>
+            </Recharts.ResponsiveContainer>
             
             {/* Legend */}
             <div className="mt-4 space-y-2">
@@ -573,13 +559,13 @@ export const AnalyticsReports = () => {
                <CardDescription>{t('dashboard:addressRegistrationOverTime')}</CardDescription>
             </CardHeader>
             <CardContent>
-            <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={timeSeriesData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
+            <Recharts.ResponsiveContainer width="100%" height={400}>
+              <Recharts.LineChart data={timeSeriesData}>
+                <Recharts.CartesianGrid strokeDasharray="3 3" />
+                <Recharts.XAxis dataKey="date" />
+                <Recharts.YAxis />
+                <Recharts.Tooltip />
+                <Recharts.Legend />
                 <Recharts.Line 
                   type="monotone" 
                   dataKey="addresses" 
@@ -594,8 +580,8 @@ export const AnalyticsReports = () => {
                   strokeWidth={2}
                   name={t('dashboard:verifiedAddresses')}
                 />
-              </LineChart>
-            </ResponsiveContainer>
+              </Recharts.LineChart>
+            </Recharts.ResponsiveContainer>
             </CardContent>
           </Card>
         </TabsContent>
