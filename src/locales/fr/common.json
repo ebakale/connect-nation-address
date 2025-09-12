@@ -31,7 +31,8 @@
     "open": "Ouvrir",
     "loading": "Chargement...",
     "retry": "Réessayer",
-    "tryAgain": "Essayer à nouveau"
+    "tryAgain": "Essayer à nouveau",
+    "call": "Appeler"
   },
   "navigation": {
     "home": "Accueil",

@@ -31,7 +31,8 @@
     "open": "Open",
     "loading": "Loading...",
     "retry": "Retry",
-    "tryAgain": "Try Again"
+    "tryAgain": "Try Again",
+    "call": "Call"
   },
   "navigation": {
     "home": "Home",

@@ -31,7 +31,8 @@
     "open": "Abrir",
     "loading": "Cargando...",
     "retry": "Reintentar",
-    "tryAgain": "Intentar de nuevo"
+    "tryAgain": "Intentar de nuevo",
+    "call": "Llamar"
   },
   "navigation": {
     "home": "Inicio",
