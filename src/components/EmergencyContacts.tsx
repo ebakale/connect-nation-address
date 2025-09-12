@@ -113,7 +113,7 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber, image }
           className="w-full"
         >
           <Phone className="mr-2 h-4 w-4" />
-          {t('call')} {phoneNumber}
+          {t('common:buttons.call')} {phoneNumber}
         </Button>
         
         <Dialog open={isOpen} onOpenChange={(open) => {
