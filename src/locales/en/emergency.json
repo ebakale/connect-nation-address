@@ -259,5 +259,23 @@
     "acknowledgment": "Acknowledgment",
     "status_update": "Status Update",
     "resolution": "Resolution"
-  }
+  },
+  "policeDescription": "Report crimes, incidents, or request immediate police assistance",
+  "emergencyServices": "Emergency Services",
+  "emergencyServicesDescription": "Fire, medical, rescue services for life-threatening emergencies",
+  "call": "Call",
+  "sendLocationAlert": "Send Location Alert",
+  "sendLocationToServices": "Send your location with emergency alert to {service}",
+  "automaticallyGettingLocation": "Automatically getting your location...",
+  "locationNeededForAlert": "Location is needed to send emergency alert",
+  "emergencyMessage": "Emergency Message",
+  "describeEmergency": "Describe the emergency situation...",
+  "gettingLocation": "Getting Location...",
+  "retryLocation": "Retry Location",
+  "sending": "Sending...",
+  "sent": "Sent",
+  "sendAlert": "Send Alert",
+  "locationRequired": "Location is required for emergency alerts",
+  "emergencyAlertSent": "Emergency alert sent successfully!",
+  "emergencyAlertFailed": "Failed to send emergency alert"
 }

@@ -259,5 +259,23 @@
     "acknowledgment": "Reconocimiento",
     "status_update": "Actualización de Estado",
     "resolution": "Resolución"
-  }
+  },
+  "policeDescription": "Reportar crímenes, incidentes o solicitar asistencia policial inmediata",
+  "emergencyServices": "Servicios de Emergencia",
+  "emergencyServicesDescription": "Bomberos, servicios médicos y de rescate para emergencias que amenacen la vida",
+  "call": "Llamar",
+  "sendLocationAlert": "Enviar Alerta de Ubicación",
+  "sendLocationToServices": "Envía tu ubicación con alerta de emergencia a {service}",
+  "automaticallyGettingLocation": "Obteniendo automáticamente tu ubicación...",
+  "locationNeededForAlert": "Se necesita ubicación para enviar alerta de emergencia",
+  "emergencyMessage": "Mensaje de Emergencia",
+  "describeEmergency": "Describe la situación de emergencia...",
+  "gettingLocation": "Obteniendo Ubicación...",
+  "retryLocation": "Reintentar Ubicación",
+  "sending": "Enviando...",
+  "sent": "Enviado",
+  "sendAlert": "Enviar Alerta",
+  "locationRequired": "Se requiere ubicación para alertas de emergencia",
+  "emergencyAlertSent": "¡Alerta de emergencia enviada con éxito!",
+  "emergencyAlertFailed": "Error al enviar alerta de emergencia"
 }

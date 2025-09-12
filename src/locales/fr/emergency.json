@@ -75,5 +75,23 @@
     "acknowledgment": "Accusé de Réception",
     "status_update": "Mise à Jour de Statut",
     "resolution": "Résolution"
-  }
+  },
+  "policeDescription": "Signaler des crimes, incidents ou demander une assistance policière immédiate",
+  "emergencyServices": "Services d'Urgence",
+  "emergencyServicesDescription": "Pompiers, services médicaux et de secours pour urgences mettant la vie en danger",
+  "call": "Appeler",
+  "sendLocationAlert": "Envoyer Alerte de Localisation",
+  "sendLocationToServices": "Envoyez votre localisation avec alerte d'urgence à {service}",
+  "automaticallyGettingLocation": "Obtention automatique de votre localisation...",
+  "locationNeededForAlert": "La localisation est nécessaire pour envoyer une alerte d'urgence",
+  "emergencyMessage": "Message d'Urgence",
+  "describeEmergency": "Décrivez la situation d'urgence...",
+  "gettingLocation": "Obtention de la Localisation...",
+  "retryLocation": "Réessayer la Localisation",
+  "sending": "Envoi...",
+  "sent": "Envoyé",
+  "sendAlert": "Envoyer Alerte",
+  "locationRequired": "La localisation est requise pour les alertes d'urgence",
+  "emergencyAlertSent": "Alerte d'urgence envoyée avec succès !",
+  "emergencyAlertFailed": "Échec de l'envoi de l'alerte d'urgence"
 }
