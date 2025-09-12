@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -27,14 +28,15 @@ interface AddressRequest {
 }
 
 const statusConfig = {
-  pending: { color: 'bg-yellow-500', label: 'Pending' },
-  under_review: { color: 'bg-blue-500', label: 'Under Review' },
-  approved: { color: 'bg-green-500', label: 'Approved' },
-  rejected: { color: 'bg-red-500', label: 'Rejected' },
-  completed: { color: 'bg-purple-500', label: 'Completed' }
+  pending: { color: 'bg-yellow-500', key: 'pending' },
+  under_review: { color: 'bg-blue-500', key: 'underReview' },
+  approved: { color: 'bg-green-500', key: 'approved' },
+  rejected: { color: 'bg-red-500', key: 'rejected' },
+  completed: { color: 'bg-purple-500', key: 'completed' }
 };
 
 export const AddressRequestStatus = () => {
+  const { t } = useTranslation('address');
   const [requests, setRequests] = useState<AddressRequest[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -85,7 +87,7 @@ export const AddressRequestStatus = () => {
     const config = statusConfig[status];
     return (
       <Badge variant="secondary" className="text-white" style={{ backgroundColor: config.color }}>
-        {config.label}
+        {t(config.key)}
       </Badge>
     );
   };
@@ -102,7 +104,7 @@ export const AddressRequestStatus = () => {
       <Card className="w-full max-w-4xl mx-auto">
         <CardContent className="flex items-center justify-center py-8">
           <RefreshCw className="w-6 h-6 animate-spin mr-2" />
-          Loading requests...
+          {t('loadingRequests')}
         </CardContent>
       </Card>
     );
@@ -113,9 +115,9 @@ export const AddressRequestStatus = () => {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Address Request Status</CardTitle>
+            <CardTitle>{t('requestStatusTitle')}</CardTitle>
             <CardDescription>
-              Track the status of your submitted address requests
+              {t('requestStatusDescription')}
             </CardDescription>
           </div>
           <Button onClick={fetchRequests} variant="outline" size="sm">

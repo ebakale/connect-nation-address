@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +18,7 @@ interface AddressRequestFormProps {
 }
 
 export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormProps) => {
+  const { t } = useTranslation('address');
   const [formData, setFormData] = useState({
     country: 'Equatorial Guinea',
     region: '',
@@ -79,23 +81,23 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
             longitude: position.coords.longitude.toString()
           }));
           toast({
-            title: "Location captured",
-            description: "Current location has been added to the request"
+            title: t('locationCaptured'),
+            description: t('locationCapturedDesc')
           });
         },
         (error) => {
           console.error('Geolocation error:', error);
           toast({
-            title: "Location error",
-            description: "Could not get current location. Please enter coordinates manually.",
+            title: t('locationError'),
+            description: t('locationErrorDesc'),
             variant: "destructive"
           });
         }
       );
     } else {
       toast({
-        title: "Location not supported",
-        description: "Geolocation is not supported by this browser",
+        title: t('locationNotSupported'),
+        description: t('locationNotSupportedDesc'),
         variant: "destructive"
       });
     }
@@ -106,8 +108,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     if (file) {
       if (file.size > 5 * 1024 * 1024) { // 5MB limit
         toast({
-          title: "File too large",
-          description: "Please select an image smaller than 5MB",
+          title: t('fileTooLarge'),
+          description: t('fileTooLargeDesc'),
           variant: "destructive"
         });
         return;
@@ -115,8 +117,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
 
       if (!file.type.startsWith('image/')) {
         toast({
-          title: "Invalid file type",
-          description: "Please select an image file",
+          title: t('invalidFileType'),
+          description: t('invalidFileTypeDesc'),
           variant: "destructive"
         });
         return;
@@ -153,8 +155,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     } catch (error) {
       console.error('Error uploading photo:', error);
       toast({
-        title: "Upload failed",
-        description: "Failed to upload photo. Please try again.",
+        title: t('uploadFailed'),
+        description: t('uploadFailedDesc'),
         variant: "destructive"
       });
       return null;
@@ -175,8 +177,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     if (file) {
       if (file.size > 10 * 1024 * 1024) { // 10MB limit for documents
         toast({
-          title: "File too large",
-          description: "Please select a document smaller than 10MB",
+          title: t('fileTooLarge'),
+          description: t('fileTooLargeDoc'),
           variant: "destructive"
         });
         return;
@@ -185,8 +187,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
       const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
       if (!allowedTypes.includes(file.type)) {
         toast({
-          title: "Invalid file type",
-          description: "Please select a PDF or image file",
+          title: t('invalidFileType'),
+          description: t('invalidFileTypeDoc'),
           variant: "destructive"
         });
         return;
@@ -233,8 +235,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     } catch (error) {
       console.error('Error uploading proof of ownership:', error);
       toast({
-        title: "Upload failed",
-        description: "Failed to upload proof of ownership. Please try again.",
+        title: t('uploadFailed'),
+        description: t('uploadFailedDocDesc'),
         variant: "destructive"
       });
       return null;
@@ -248,8 +250,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     
     if (!user) {
       toast({
-        title: "Error",
-        description: "You must be logged in to submit requests",
+        title: t('error'),
+        description: t('mustBeLoggedIn'),
         variant: "destructive"
       });
       return;
@@ -258,8 +260,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     // Validate required fields
     if (!formData.region || !formData.city || !formData.street || !formData.justification) {
       toast({
-        title: "Error",
-        description: "Please fill in all required fields",
+        title: t('error'),
+        description: t('fillAllRequired'),
         variant: "destructive"
       });
       return;
@@ -268,8 +270,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     // Validate proof of ownership for property claimants
     if (formData.claimant_type === 'owner' && !proofOfOwnership) {
       toast({
-        title: "Proof of ownership required",
-        description: "Property claimants must provide proof of ownership",
+        title: t('proofOfOwnershipRequired'),
+        description: t('proofOfOwnershipRequiredDesc'),
         variant: "destructive"
       });
       return;
@@ -307,8 +309,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Address request submitted successfully! You can track its status in the Address Status section."
+        title: t('success'),
+        description: t('successDesc')
       });
 
       // Reset form
@@ -334,8 +336,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
     } catch (error: any) {
       console.error('Error submitting request:', error);
       toast({
-        title: "Error",
-        description: error.message || "Failed to submit address request",
+        title: t('error'),
+        description: error.message || t('failedToSubmit'),
         variant: "destructive"
       });
     } finally {
@@ -346,16 +348,16 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Submit Address Request</CardTitle>
+        <CardTitle>{t('submitRequestTitle')}</CardTitle>
         <CardDescription>
-          Request a new address to be added to the national addressing system
+          {t('submitRequestDescription')}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="country">Country</Label>
+              <Label htmlFor="country">{t('country')}</Label>
               <Input
                 id="country"
                 value={formData.country}
@@ -364,7 +366,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
               />
             </div>
             <div>
-              <Label htmlFor="region">Province/Region *</Label>
+              <Label htmlFor="region">{t('provinceRegion')} *</Label>
               <Select 
                 value={formData.region} 
                 onValueChange={(value) => {
@@ -372,7 +374,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
                 }}
               >
                 <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Select a province" />
+                  <SelectValue placeholder={t('selectProvince')} />
                 </SelectTrigger>
                 <SelectContent className="bg-background border shadow-lg z-50">
                   {regions.map((region) => (
@@ -387,14 +389,14 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="city">City *</Label>
+              <Label htmlFor="city">{t('city')} *</Label>
               <Select 
                 value={formData.city} 
                 onValueChange={(value) => setFormData(prev => ({ ...prev, city: value }))}
                 disabled={!formData.region}
               >
                 <SelectTrigger className="bg-background">
-                  <SelectValue placeholder={formData.region ? "Select a city" : "Select province first"} />
+                  <SelectValue placeholder={formData.region ? t('selectCity') : t('selectProvinceFirst')} />
                 </SelectTrigger>
                 <SelectContent className="bg-background border shadow-lg z-50">
                   {availableCities.map((city) => (
@@ -406,56 +408,56 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
               </Select>
             </div>
             <div>
-              <Label htmlFor="street">Street Address *</Label>
+              <Label htmlFor="street">{t('streetAddress')} *</Label>
               <Input
                 id="street"
                 value={formData.street}
                 onChange={(e) => setFormData(prev => ({ ...prev, street: e.target.value }))}
-                placeholder="e.g., Calle de la Independencia 123"
+                placeholder={t('streetPlaceholder')}
                 required
               />
             </div>
           </div>
 
           <div>
-            <Label htmlFor="building">Building/Apartment (Optional)</Label>
+            <Label htmlFor="building">{t('buildingApartment')}</Label>
             <Input
               id="building"
               value={formData.building}
               onChange={(e) => setFormData(prev => ({ ...prev, building: e.target.value }))}
-              placeholder="e.g., Edificio Central, Apt 4B"
+              placeholder={t('buildingPlaceholder')}
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="address_type">Address Type</Label>
+              <Label htmlFor="address_type">{t('addressType')}</Label>
               <Select value={formData.address_type} onValueChange={(value) => setFormData(prev => ({ ...prev, address_type: value }))}>
                 <SelectTrigger className="bg-background">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-background border shadow-lg z-50">
-                  <SelectItem value="residential">Residential</SelectItem>
-                  <SelectItem value="commercial">Commercial</SelectItem>
-                  <SelectItem value="industrial">Industrial</SelectItem>
-                  <SelectItem value="government">Government</SelectItem>
-                  <SelectItem value="educational">Educational</SelectItem>
-                  <SelectItem value="healthcare">Healthcare</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="residential">{t('residential')}</SelectItem>
+                  <SelectItem value="commercial">{t('commercial')}</SelectItem>
+                  <SelectItem value="industrial">{t('industrial')}</SelectItem>
+                  <SelectItem value="government">{t('government')}</SelectItem>
+                  <SelectItem value="educational">{t('educational')}</SelectItem>
+                  <SelectItem value="healthcare">{t('healthcare')}</SelectItem>
+                  <SelectItem value="other">{t('other')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label htmlFor="claimant_type">Claimant Type</Label>
+              <Label htmlFor="claimant_type">{t('claimantType')}</Label>
               <Select value={formData.claimant_type} onValueChange={(value) => setFormData(prev => ({ ...prev, claimant_type: value }))}>
                 <SelectTrigger className="bg-background">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-background border shadow-lg z-50">
-                  <SelectItem value="owner">Property Owner</SelectItem>
-                  <SelectItem value="resident">Resident</SelectItem>
-                  <SelectItem value="representative">Authorized Representative</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="owner">{t('propertyOwner')}</SelectItem>
+                  <SelectItem value="resident">{t('resident')}</SelectItem>
+                  <SelectItem value="representative">{t('authorizedRepresentative')}</SelectItem>
+                  <SelectItem value="other">{t('other')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -463,25 +465,25 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <Label htmlFor="latitude">Latitude (Optional)</Label>
+              <Label htmlFor="latitude">{t('latitude')}</Label>
               <Input
                 id="latitude"
                 type="number"
                 step="any"
                 value={formData.latitude}
                 onChange={(e) => setFormData(prev => ({ ...prev, latitude: e.target.value }))}
-                placeholder="e.g., 1.5000"
+                placeholder={t('latitudePlaceholder')}
               />
             </div>
             <div>
-              <Label htmlFor="longitude">Longitude (Optional)</Label>
+              <Label htmlFor="longitude">{t('longitude')}</Label>
               <Input
                 id="longitude"
                 type="number"
                 step="any"
                 value={formData.longitude}
                 onChange={(e) => setFormData(prev => ({ ...prev, longitude: e.target.value }))}
-                placeholder="e.g., 9.7500"
+                placeholder={t('longitudePlaceholder')}
               />
             </div>
             <div className="flex items-end">
@@ -492,18 +494,18 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
                 className="w-full"
               >
                 <MapPin className="w-4 h-4 mr-2" />
-                Get Location
+                {t('getLocation')}
               </Button>
             </div>
           </div>
 
           <div>
-            <Label htmlFor="description">Description (Optional)</Label>
+            <Label htmlFor="description">{t('description')}</Label>
             <Textarea
               id="description"
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              placeholder="Additional details about the address or location"
+              placeholder={t('descriptionPlaceholder')}
               rows={3}
             />
           </div>
@@ -511,7 +513,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
           {/* Proof of Ownership Section - Required for Property Owners */}
           {formData.claimant_type === 'owner' && (
             <div className="space-y-4">
-              <Label>Proof of Ownership * <span className="text-sm text-muted-foreground">(Required for property owners)</span></Label>
+              <Label>{t('proofOfOwnership')} * <span className="text-sm text-muted-foreground">{t('proofRequired')}</span></Label>
               <div className="border-2 border-dashed border-border rounded-lg p-6">
                 {proofOfOwnership ? (
                   <div className="space-y-4">
@@ -519,14 +521,14 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
                       {proofPreview ? (
                         <img
                           src={proofPreview}
-                          alt="Proof of ownership preview"
+                          alt={t('proofPreviewAlt')}
                           className="w-full max-h-64 object-cover rounded-lg"
                         />
                       ) : (
                         <div className="bg-muted rounded-lg p-8 text-center">
                           <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
                           <p className="font-medium">{proofOfOwnership.name}</p>
-                          <p className="text-sm text-muted-foreground">PDF document ready to upload</p>
+                          <p className="text-sm text-muted-foreground">{t('documentReady')}</p>
                         </div>
                       )}
                       <Button
@@ -540,14 +542,14 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
                       </Button>
                     </div>
                     <p className="text-sm text-muted-foreground text-center">
-                      Document ready to upload with request
+                      {t('documentReadyUpload')}
                     </p>
                   </div>
                 ) : (
                   <div className="text-center space-y-4">
                     <Upload className="h-12 w-12 text-muted-foreground mx-auto" />
                     <p className="text-muted-foreground">
-                      Upload proof of ownership document
+                      {t('uploadProofDocument')}
                     </p>
                     <Button
                       type="button"
@@ -555,11 +557,11 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
                       onClick={() => proofInputRef.current?.click()}
                     >
                       <Upload className="mr-2 h-4 w-4" />
-                      Upload Document
+                      {t('uploadDocument')}
                     </Button>
                     <p className="text-xs text-muted-foreground">
-                      Max file size: 10MB. Accepted: PDF, JPG, PNG<br/>
-                      Examples: Property deed, title certificate, ownership contract
+                      {t('maxFileSize10MB')}<br/>
+                      {t('proofExamples')}
                     </p>
                   </div>
                 )}
@@ -578,14 +580,14 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
 
           {/* Photo Upload Section */}
           <div className="space-y-4">
-            <Label>Address Photo (Optional)</Label>
+            <Label>{t('addressPhoto')}</Label>
             <div className="border-2 border-dashed border-border rounded-lg p-6">
               {photoPreview ? (
                 <div className="space-y-4">
                   <div className="relative">
                     <img
                       src={photoPreview}
-                      alt="Address preview"
+                      alt={t('addressPreviewAlt')}
                       className="w-full max-h-64 object-cover rounded-lg"
                     />
                     <Button
@@ -599,14 +601,14 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
                     </Button>
                   </div>
                   <p className="text-sm text-muted-foreground text-center">
-                    Photo ready to upload with request
+                    {t('photoReady')}
                   </p>
                 </div>
               ) : (
                 <div className="text-center space-y-4">
                   <Image className="h-12 w-12 text-muted-foreground mx-auto" />
                   <p className="text-muted-foreground">
-                    Add a photo of the address location
+                    {t('addPhotoLocation')}
                   </p>
                   <div className="flex flex-col sm:flex-row gap-2 justify-center">
                     <Button
@@ -615,7 +617,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
                       onClick={() => setCameraOpen(true)}
                     >
                       <Camera className="mr-2 h-4 w-4" />
-                      Take Photo
+                      {t('takePhoto')}
                     </Button>
                     <Button
                       type="button"
@@ -623,11 +625,11 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
                       onClick={() => fileInputRef.current?.click()}
                     >
                       <Upload className="mr-2 h-4 w-4" />
-                      Upload Photo
+                      {t('uploadPhoto')}
                     </Button>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Max file size: 5MB. Supported formats: JPG, PNG, WEBP
+                    {t('maxFileSize5MB')}
                   </p>
                 </div>
               )}
@@ -652,12 +654,12 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
           </div>
 
           <div>
-            <Label htmlFor="justification">Justification *</Label>
+            <Label htmlFor="justification">{t('justification')} *</Label>
             <Textarea
               id="justification"
               value={formData.justification}
               onChange={(e) => setFormData(prev => ({ ...prev, justification: e.target.value }))}
-              placeholder="Please explain why this address needs to be added to the system (e.g., new building, missing coverage, business need)"
+              placeholder={t('justificationPlaceholder')}
               rows={4}
               required
             />
@@ -665,11 +667,11 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
 
           <div className="flex gap-4 pt-4">
             <Button type="submit" disabled={loading} className="flex-1">
-              {loading ? 'Submitting...' : 'Submit Request'}
+              {loading ? t('submitting') : t('submitRequest')}
             </Button>
             {onCancel && (
               <Button type="button" variant="outline" onClick={onCancel}>
-                Cancel
+                {t('cancel')}
               </Button>
             )}
           </div>
@@ -677,7 +679,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
         <Dialog open={cameraOpen} onOpenChange={setCameraOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Take Photo</DialogTitle>
+              <DialogTitle>{t('takePhotoTitle')}</DialogTitle>
             </DialogHeader>
             <CameraCapture
               onCapture={(file, dataUrl) => {
