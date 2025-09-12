@@ -247,5 +247,22 @@
     "verifiersDescription": "Examinent les rapports d'agents de terrain et effectuent une vérification supplémentaire si nécessaire.",
     "registrars": "Registraires",
     "registrarsDescription": "Génèrent des codes UAC officiels et publient les adresses vérifiées au registre national."
-  }
+  },
+  "pleaseLogInToEditProfile": "Veuillez vous connecter pour modifier votre profil",
+  "profileInformation": "Informations du Profil",
+  "updatePersonalInformation": "Mettez à jour vos informations personnelles et coordonnées",
+  "fullName": "Nom Complet",
+  "enterFullName": "Saisissez votre nom complet",
+  "email": "Email",
+  "enterEmail": "Saisissez votre adresse email",
+  "phoneNumber": "Numéro de Téléphone",
+  "enterPhoneNumber": "Saisissez votre numéro de téléphone",
+  "updating": "Mise à jour...",
+  "updateProfile": "Mettre à Jour le Profil",
+  "changePassword": "Changer le Mot de Passe",
+  "updateAccountPassword": "Mettez à jour le mot de passe de votre compte pour la sécurité",
+  "newPassword": "Nouveau Mot de Passe",
+  "enterNewPassword": "Saisissez le nouveau mot de passe",
+  "confirmNewPassword": "Confirmer le Nouveau Mot de Passe",
+  "confirmNewPasswordPlaceholder": "Confirmez votre nouveau mot de passe"
 }

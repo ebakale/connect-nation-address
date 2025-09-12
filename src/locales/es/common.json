@@ -247,5 +247,22 @@
     "verifiersDescription": "Revisan reportes de agentes de campo y realizan verificación adicional si es necesario.",
     "registrars": "Registradores",
     "registrarsDescription": "Generan códigos UAC oficiales y publican direcciones verificadas al registro nacional."
-  }
+  },
+  "pleaseLogInToEditProfile": "Por favor, inicia sesión para editar tu perfil",
+  "profileInformation": "Información del Perfil",
+  "updatePersonalInformation": "Actualiza tu información personal y datos de contacto",
+  "fullName": "Nombre Completo",
+  "enterFullName": "Ingresa tu nombre completo",
+  "email": "Correo Electrónico",
+  "enterEmail": "Ingresa tu dirección de correo electrónico",
+  "phoneNumber": "Número de Teléfono",
+  "enterPhoneNumber": "Ingresa tu número de teléfono",
+  "updating": "Actualizando...",
+  "updateProfile": "Actualizar Perfil",
+  "changePassword": "Cambiar Contraseña",
+  "updateAccountPassword": "Actualiza la contraseña de tu cuenta por seguridad",
+  "newPassword": "Nueva Contraseña",
+  "enterNewPassword": "Ingresa la nueva contraseña",
+  "confirmNewPassword": "Confirmar Nueva Contraseña",
+  "confirmNewPasswordPlaceholder": "Confirma tu nueva contraseña"
 }

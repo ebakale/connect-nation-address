@@ -247,5 +247,22 @@
     "verifiersDescription": "Review field agent reports and conduct additional verification if needed.",
     "registrars": "Registrars",
     "registrarsDescription": "Generate official UAC codes and publish verified addresses to the national registry."
-  }
+  },
+  "pleaseLogInToEditProfile": "Please log in to edit your profile",
+  "profileInformation": "Profile Information",
+  "updatePersonalInformation": "Update your personal information and contact details",
+  "fullName": "Full Name",
+  "enterFullName": "Enter your full name",
+  "email": "Email",
+  "enterEmail": "Enter your email address",
+  "phoneNumber": "Phone Number",
+  "enterPhoneNumber": "Enter your phone number",
+  "updating": "Updating...",
+  "updateProfile": "Update Profile",
+  "changePassword": "Change Password",
+  "updateAccountPassword": "Update your account password for security",
+  "newPassword": "New Password",
+  "enterNewPassword": "Enter new password",
+  "confirmNewPassword": "Confirm New Password",
+  "confirmNewPasswordPlaceholder": "Confirm your new password"
 }
