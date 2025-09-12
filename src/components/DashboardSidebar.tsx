@@ -57,6 +57,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   const { 
     isCitizen, 
     isFieldAgent, 
+    isPropertyClaimant,
     isVerifier, 
     isRegistrar,
     hasAdminAccess,
@@ -86,14 +87,14 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       title: t('submitRequest'),
       icon: FileText,
       onClick: () => handleItemClick('submit-request'),
-      visible: isCitizen || isFieldAgent
+      visible: isCitizen || isFieldAgent || isPropertyClaimant
     },
     {
       id: 'request-status',
       title: t('requestStatus'),
       icon: Clock,
       onClick: () => handleItemClick('request-status'),
-      visible: isCitizen || isFieldAgent
+      visible: isCitizen || isFieldAgent || isPropertyClaimant
     },
     {
       id: 'capture-address',
