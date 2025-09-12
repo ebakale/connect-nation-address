@@ -60,8 +60,8 @@ export const AddressRequestStatus = () => {
     } catch (error: any) {
       console.error('Error fetching requests:', error);
       toast({
-        title: "Error",
-        description: "Failed to fetch address requests",
+        title: t('error'),
+        description: t('errorFetchingRequests'),
         variant: "destructive"
       });
     } finally {
@@ -122,7 +122,7 @@ export const AddressRequestStatus = () => {
           </div>
           <Button onClick={fetchRequests} variant="outline" size="sm">
             <RefreshCw className="w-4 h-4 mr-2" />
-            Refresh
+            {t('refresh')}
           </Button>
         </div>
       </CardHeader>
@@ -130,19 +130,23 @@ export const AddressRequestStatus = () => {
         {requests.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
-            <p>No address requests found</p>
-            <p className="text-sm">Submit your first address request to get started</p>
+            <p>{t('noRequestsFound')}</p>
+            <p className="text-sm">{t('noRequestsDesc')}</p>
           </div>
         ) : (
           <>
             {/* Results count and pagination info */}
             <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
               <span>
-                Showing {startIndex + 1}-{Math.min(startIndex + requestsPerPage, requests.length)} of {requests.length} requests
+                {t('showingResults', { 
+                  start: startIndex + 1, 
+                  end: Math.min(startIndex + requestsPerPage, requests.length), 
+                  total: requests.length 
+                })}
               </span>
               {totalPages > 1 && (
                 <span>
-                  Page {currentPage} of {totalPages}
+                  {t('pageOf', { current: currentPage, total: totalPages })}
                 </span>
               )}
             </div>
@@ -160,9 +164,9 @@ export const AddressRequestStatus = () => {
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <div className="flex items-center gap-1">
                             <CalendarDays className="w-4 h-4" />
-                            <span>Submitted: {format(new Date(request.created_at), 'MMM dd, yyyy')}</span>
+                            <span>{t('submittedDate', { date: format(new Date(request.created_at), 'MMM dd, yyyy') })}</span>
                           </div>
-                          <span>Type: {request.address_type}</span>
+                          <span>{t('type', { type: request.address_type })}</span>
                         </div>
                       </div>
                     <div className="ml-4">
@@ -172,27 +176,27 @@ export const AddressRequestStatus = () => {
 
                   <div className="space-y-3">
                     <div>
-                      <h4 className="font-medium mb-1">Justification</h4>
+                      <h4 className="font-medium mb-1">{t('justificationLabel')}</h4>
                       <p className="text-sm text-muted-foreground">{request.justification}</p>
                     </div>
 
                     {request.description && (
                       <div>
-                        <h4 className="font-medium mb-1">Description</h4>
+                        <h4 className="font-medium mb-1">{t('descriptionLabel')}</h4>
                         <p className="text-sm text-muted-foreground">{request.description}</p>
                       </div>
                     )}
 
                     {request.reviewer_notes && (
                       <div>
-                        <h4 className="font-medium mb-1">Reviewer Notes</h4>
+                        <h4 className="font-medium mb-1">{t('reviewerNotes')}</h4>
                         <p className="text-sm text-muted-foreground">{request.reviewer_notes}</p>
                       </div>
                     )}
 
                     {request.latitude && request.longitude && (
                       <div>
-                        <h4 className="font-medium mb-1">Coordinates</h4>
+                        <h4 className="font-medium mb-1">{t('coordinates')}</h4>
                         <p className="text-sm text-muted-foreground">
                           {request.latitude}, {request.longitude}
                         </p>
@@ -200,9 +204,9 @@ export const AddressRequestStatus = () => {
                     )}
 
                     <div className="pt-2 border-t">
-                      <p className="text-xs text-muted-foreground">
-                        Last updated: {format(new Date(request.updated_at), 'MMM dd, yyyy HH:mm')}
-                      </p>
+                        <p className="text-xs text-muted-foreground">
+                          {t('lastUpdated', { date: format(new Date(request.updated_at), 'MMM dd, yyyy HH:mm') })}
+                        </p>
                     </div>
                   </div>
                 </CardContent>
@@ -220,7 +224,7 @@ export const AddressRequestStatus = () => {
                   disabled={currentPage === 1}
                 >
                   <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
+                  {t('previous')}
                 </Button>
                 
                 <div className="flex items-center gap-1">
@@ -243,7 +247,7 @@ export const AddressRequestStatus = () => {
                   onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
                 >
-                  Next
+                  {t('next')}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
