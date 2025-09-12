@@ -106,7 +106,7 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm mb-4">
                 <div className="break-words">
-                  <span className="font-medium">{t('type')}:</span> {t(address.address_type)}
+                  <span className="font-medium">{t('type')}:</span> {t(address.address_type || 'unknown')}
                 </div>
                 <div className="break-words">
                   <span className="font-medium">{t('created')}:</span> {new Date(address.created_at).toLocaleDateString()}
