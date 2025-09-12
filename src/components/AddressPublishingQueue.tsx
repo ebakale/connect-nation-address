@@ -106,7 +106,13 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm mb-4">
                 <div className="break-words">
-                  <span className="font-medium">{t('type')}:</span> {t(String(address.address_type || 'unknown').replace(/[{}]/g, ''))}
+                  <span className="font-medium">{t('type')}:</span>{' '}
+                  {(() => {
+                    const raw = address.address_type as string | undefined;
+                    const cleaned = raw ? raw.replace(/[{}]/g, '').trim() : '';
+                    const key = cleaned && cleaned !== 'type' ? cleaned : 'unknown';
+                    return t(key);
+                  })()}
                 </div>
                 <div className="break-words">
                   <span className="font-medium">{t('created')}:</span> {new Date(address.created_at).toLocaleDateString()}
