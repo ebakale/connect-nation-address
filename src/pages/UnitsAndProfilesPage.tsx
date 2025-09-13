@@ -34,7 +34,7 @@ export const UnitsAndProfilesPage: React.FC = () => {
           <CardContent className="p-8 text-center">
             <h2 className="text-2xl font-bold mb-4">{t('accessDenied')}</h2>
             <p className="text-muted-foreground">
-              You need supervisor or admin privileges to access unit management and officer profiles.
+              {t('dashboard:unitsProfiles.accessDeniedMessage')}
             </p>
           </CardContent>
         </Card>
@@ -51,8 +51,8 @@ export const UnitsAndProfilesPage: React.FC = () => {
           {t('back')}
         </Button>
         <div>
-          <h1 className="text-2xl font-bold">Supervisor Management</h1>
-          <p className="text-muted-foreground">Manage emergency units and officer profiles</p>
+          <h1 className="text-2xl font-bold">{t('dashboard:unitsProfiles.supervisorManagement')}</h1>
+          <p className="text-muted-foreground">{t('dashboard:unitsProfiles.manageUnitsAndProfiles')}</p>
         </div>
       </div>
 
@@ -61,11 +61,11 @@ export const UnitsAndProfilesPage: React.FC = () => {
         <TabsList className="flex w-full">
           <TabsTrigger value="units" className="flex items-center gap-2 flex-1">
             <Shield className="h-4 w-4" />
-            Unit Management
+            {t('dashboard:unitsProfiles.unitManagement')}
           </TabsTrigger>
           <TabsTrigger value="officers" className="flex items-center gap-2 flex-1">
             <Users className="h-4 w-4 flex-shrink-0" />
-            <span className="whitespace-nowrap">Officer Profiles & Performance</span>
+            <span className="whitespace-nowrap">{t('dashboard:unitsProfiles.officerProfilesPerformance')}</span>
           </TabsTrigger>
         </TabsList>
 

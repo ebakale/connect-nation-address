@@ -12,6 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 import { 
   Users, MapPin, Radio, Car, Crown, User, Plus, Edit, 
   Trash2, Clock, TrendingUp, AlertCircle, CheckCircle,
@@ -65,6 +66,7 @@ interface UnitManagementDashboardProps {
 export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = ({ onClose }) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation(['dashboard', 'common']);
   const [units, setUnits] = useState<UnitWithMembers[]>([]);
   const [availableOfficers, setAvailableOfficers] = useState<Officer[]>([]);
   const [selectedUnit, setSelectedUnit] = useState<UnitWithMembers | null>(null);
@@ -446,8 +448,8 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Unit Management</h1>
-        <p className="text-muted-foreground">Manage emergency units and officer assignments</p>
+        <h1 className="text-2xl font-bold">{t('unitManagement.title')}</h1>
+        <p className="text-muted-foreground">{t('unitManagement.description')}</p>
       </div>
       
       <div className="flex justify-start">
