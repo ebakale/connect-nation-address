@@ -925,6 +925,11 @@
     "noBackupRequestsSent": "No se han enviado solicitudes de refuerzo",
     "loadMore": "Cargar Más ({{remaining}} restantes)",
     "backupRequestDetails": "Detalles de Solicitud de Refuerzo",
+    "fromUnitTitle": "Solicitud de Refuerzo de {{unit}}",
+    "loadingBackupNotifications": "Cargando notificaciones de refuerzo...",
+    "readLabel": "Leído",
+    "receivedLabel": "Recibido",
+
     "priority": "Prioridad",
     "fulfilled": "Cumplido",
     "partial": "Parcial",

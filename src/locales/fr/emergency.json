@@ -741,6 +741,11 @@
     "noBackupRequestsSent": "Aucune demande de renfort envoyée",
     "loadMore": "Charger Plus ({{remaining}} restants)",
     "backupRequestDetails": "Détails de la Demande de Renfort",
+    "fromUnitTitle": "Demande de Renfort de {{unit}}",
+    "loadingBackupNotifications": "Chargement des notifications de renfort...",
+    "readLabel": "Lu",
+    "receivedLabel": "Reçu",
+
     "priority": "Priorité",
     "fulfilled": "Accompli",
     "partial": "Partiel",

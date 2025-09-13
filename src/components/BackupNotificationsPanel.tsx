@@ -9,6 +9,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
 import { Clock, MapPin, User, Calendar, ChevronRight, Shield, ShieldCheck, ShieldX, CheckCircle } from "lucide-react";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 interface BackupNotification {
   id: string;
@@ -44,6 +45,7 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
   const { user } = useAuth();
   const { isPoliceSupervisor, isPoliceDispatcher, isAdmin } = useUserRole();
   const { toast } = useToast();
+  const { t } = useTranslation('emergency');
 
   const pageSize = 5;
   const [receivedPage, setReceivedPage] = useState(1);
@@ -201,11 +203,11 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
 
   const getPriorityLabel = (level: number) => {
     switch (level) {
-      case 1: return 'Critical';
-      case 2: return 'High';
-      case 3: return 'Medium';
-      case 4: return 'Low';
-      default: return 'Unknown';
+      case 1: return t('backupRequests.critical');
+      case 2: return t('backupRequests.high');
+      case 3: return t('backupRequests.medium');
+      case 4: return t('backupRequests.low');
+      default: return t('backupRequests.unknown');
     }
   };
 
@@ -276,7 +278,7 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
     return (
       <div className={`space-y-4 ${className}`}>
         <div className="text-center py-8 text-muted-foreground">
-          Loading backup notifications...
+          {t('backupRequests.loadingBackupNotifications')}
         </div>
       </div>
     );
@@ -288,7 +290,7 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
       {unreadCount > 0 && (
         <div className="flex items-center justify-between">
           <Badge variant="outline" className="text-blue-600">
-            {unreadCount} new notification{unreadCount !== 1 ? 's' : ''}
+            {unreadCount} {t('new')}
           </Badge>
         </div>
       )}
@@ -296,10 +298,10 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
       {/* Received Notifications */}
       <div className="space-y-3">
         {displayedReceivedNotifications.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <Shield className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p>No backup notifications received</p>
-          </div>
+        <div className="text-center py-8 text-muted-foreground">
+          <Shield className="h-8 w-8 mx-auto mb-2 opacity-50" />
+          <p>{t('backupRequests.noBackupRequests')}</p>
+        </div>
         ) : (
           <>
             {displayedReceivedNotifications.map((notification) => (
@@ -315,15 +317,15 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
               />
             ))}
             
-            {hasMoreReceived && (
-              <Button
-                variant="outline"
-                onClick={() => setReceivedPage(prev => prev + 1)}
-                className="w-full"
-              >
-                Load More ({receivedNotifications.length - displayedReceivedNotifications.length} remaining)
-              </Button>
-            )}
+          {hasMoreReceived && (
+            <Button
+              variant="outline"
+              onClick={() => setReceivedPage(prev => prev + 1)}
+              className="w-full"
+            >
+              {t('backupRequests.loadMore', { remaining: receivedNotifications.length - displayedReceivedNotifications.length })}
+            </Button>
+          )}
           </>
         )}
       </div>
@@ -332,25 +334,25 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
       <Dialog open={!!selectedNotification} onOpenChange={() => setSelectedNotification(null)}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-lg">
-              <Shield className="h-5 w-5 text-orange-600" />
-              Backup Request from {selectedNotification?.metadata?.requesting_unit_name || 'Unit'}
-            </DialogTitle>
+          <DialogTitle className="flex items-center gap-2 text-lg">
+            <Shield className="h-5 w-5 text-orange-600" />
+            {t('backupRequests.fromUnitTitle', { unit: selectedNotification?.metadata?.requesting_unit_name || t('unit') })}
+          </DialogTitle>
           </DialogHeader>
           
           {selectedNotification && (
             <div className="space-y-4">
               <div className="flex flex-wrap gap-2">
                 <Badge className={getPriorityColor(selectedNotification.priority_level)}>
-                  {getPriorityLabel(selectedNotification.priority_level)} Priority
+                  {getPriorityLabel(selectedNotification.priority_level)} {t('priority')}
                 </Badge>
                 {getBackupStatusBadge(selectedNotification.backup_status)}
-                {selectedNotification.read && (
-                  <Badge variant="outline" className="text-green-600">
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                    Read
-                  </Badge>
-                )}
+              {selectedNotification.read && (
+                <Badge variant="outline" className="text-green-600">
+                  <CheckCircle className="h-3 w-3 mr-1" />
+                  {t('backupRequests.readLabel')}
+                </Badge>
+              )}
               </div>
 
               <div>
@@ -362,7 +364,7 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
                 {selectedNotification.metadata?.incident_number && (
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-medium">Incident:</span>
+                    <span className="font-medium">{t('incident')}:</span>
                     <span>{selectedNotification.metadata.incident_number}</span>
                   </div>
                 )}
@@ -370,7 +372,7 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
                 {selectedNotification.metadata?.location && (
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-medium">Location:</span>
+                    <span className="font-medium">{t('location')}:</span>
                     <span>{selectedNotification.metadata.location}</span>
                   </div>
                 )}
@@ -378,27 +380,27 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
                 {selectedNotification.metadata?.requesting_unit_name && (
                   <div className="flex items-center gap-2">
                     <Shield className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-medium">Requesting Unit:</span>
+                    <span className="font-medium">{t('backupRequests.requestingUnit')}:</span>
                     <span>{selectedNotification.metadata.requesting_unit_name}</span>
                   </div>
                 )}
                 
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="font-medium">Received:</span>
+                  <span className="font-medium">{t('backupRequests.receivedLabel')}:</span>
                   <span>{format(new Date(selectedNotification.created_at), 'MMM d, yyyy HH:mm')}</span>
                 </div>
 
                 {selectedNotification.metadata?.reason && (
-                  <div className="col-span-full">
-                    <span className="font-medium">Reason:</span>
-                    <p className="text-muted-foreground mt-1">{selectedNotification.metadata.reason}</p>
-                  </div>
+                <div className="col-span-full">
+                  <span className="font-medium">{t('backupRequests.reason')}:</span>
+                  <p className="text-muted-foreground mt-1">{selectedNotification.metadata.reason}</p>
+                </div>
                 )}
 
                 {selectedNotification.backup_status !== 'pending' && selectedNotification.units_added_after_request && selectedNotification.units_added_after_request.length > 0 && (
                   <div className="col-span-full">
-                    <span className="font-medium">Additional Units Assigned:</span>
+                    <span className="font-medium">{t('backupRequests.additionalUnitsAssigned')}:</span>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {selectedNotification.units_added_after_request.map((unit, index) => (
                         <Badge key={index} variant="secondary" className="text-xs">

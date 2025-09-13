@@ -925,6 +925,11 @@
     "noBackupRequestsSent": "No backup requests sent",
     "loadMore": "Load More ({{remaining}} remaining)",
     "backupRequestDetails": "Backup Request Details",
+    "fromUnitTitle": "Backup Request from {{unit}}",
+    "loadingBackupNotifications": "Loading backup notifications...",
+    "readLabel": "Read",
+    "receivedLabel": "Received",
+
     "priority": "Priority",
     "fulfilled": "Fulfilled",
     "partial": "Partial",
