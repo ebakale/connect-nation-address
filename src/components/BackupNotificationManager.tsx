@@ -10,6 +10,7 @@ import {
   Bell, Users, MapPin, Clock, AlertTriangle, 
   Check, X, ExternalLink, UserPlus
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface BackupNotification {
   id: string;
@@ -36,6 +37,7 @@ interface BackupNotificationManagerProps {
 export const BackupNotificationManager: React.FC<BackupNotificationManagerProps> = ({ className }) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation('emergency');
   const [notifications, setNotifications] = useState<BackupNotification[]>([]);
   const [selectedNotification, setSelectedNotification] = useState<BackupNotification | null>(null);
   const [loading, setLoading] = useState(true);
@@ -138,13 +140,13 @@ export const BackupNotificationManager: React.FC<BackupNotificationManagerProps>
 
       if (response === 'acknowledge') {
         toast({
-          title: "Backup Request Acknowledged",
-          description: `You have acknowledged the backup request for ${notification.metadata.incident_number}`
+          title: t('backupRequests.ackToastTitle'),
+          description: t('backupRequests.ackToastDescription', { incident: notification.metadata?.incident_number || t('unknown') })
         });
       } else {
         toast({
-          title: "Units Assignment Required",
-          description: `Please assign additional units to ${notification.metadata.incident_number} through the Unit Coordination tab`
+          title: t('backupRequests.assignToastTitle'),
+          description: t('backupRequests.assignToastDescription', { incident: notification.metadata?.incident_number || t('unknown') })
         });
       }
 
@@ -152,9 +154,9 @@ export const BackupNotificationManager: React.FC<BackupNotificationManagerProps>
     } catch (error) {
       console.error('Error responding to backup request:', error);
       toast({
-        title: "Error",
-        description: "Failed to respond to backup request",
-        variant: "destructive"
+        title: t('error'),
+        description: t('backupRequests.failedToRespond'),
+        variant: 'destructive'
       });
     }
   };
@@ -177,7 +179,7 @@ export const BackupNotificationManager: React.FC<BackupNotificationManagerProps>
       <Card className={className}>
         <CardContent className="p-6 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="text-sm text-muted-foreground mt-2">Loading notifications...</p>
+          <p className="text-sm text-muted-foreground mt-2">{t('loadingNotifications')}</p>
         </CardContent>
       </Card>
     );
