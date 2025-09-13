@@ -704,14 +704,14 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                 {incident.incident_number}
               </Badge>
               <Badge variant="secondary" className={`${getStatusColor(incident.status)} text-xs sm:text-sm whitespace-nowrap shrink-0`}>
-                {t(`status.${incident.status}`)}
+                {t(`statusLabels.${incident.status}`)}
               </Badge>
               <Badge variant="outline" className={`${getPriorityColor(incident.priority_level)} text-xs sm:text-sm whitespace-nowrap shrink-0`}>
                 {t('priorityLevel')} {incident.priority_level}
               </Badge>
             </div>
             <h3 className="text-xl font-semibold capitalize text-primary">
-              {t(`emergencyType.${incident.emergency_type}`)}
+              {t(`emergencyTypeLabels.${incident.emergency_type}`)}
             </h3>
             <p className="text-sm text-muted-foreground flex items-center gap-2">
               <Calendar className="h-4 w-4" />
