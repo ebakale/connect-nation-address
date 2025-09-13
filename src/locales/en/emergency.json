@@ -1272,6 +1272,47 @@
     "moreOperators": "+{{count}} more operators",
     "loading": "Loading...",
     "pleaseWait": "Please wait while we load your dashboard"
+  },
+  "requestBackupDialog": {
+    "requestBackup": "Request Backup",
+    "requestBackupSupervisor": "Request backup assistance for any unit under your supervision. Select the unit that needs backup and provide the necessary details.",
+    "requestAdditionalUnits": "Request additional units for backup assistance at {{unitCode}}. Provide details about the situation and required support.",
+    "provideReason": "Please provide a reason for the backup request.",
+    "selectUnit": "Please select a unit that needs backup.",
+    "selectUnitLabel": "Select Unit Requesting Backup",
+    "chooseUnitPlaceholder": "Choose unit...",
+    "backupType": "Backup Type",
+    "selectBackupType": "Select backup type",
+    "backupTypes": {
+      "general": "General Backup",
+      "highRisk": "High Risk Situation",
+      "pursuit": "Vehicle Pursuit",
+      "crowdControl": "Crowd Control",
+      "search": "Search & Rescue",
+      "domestic": "Domestic Disturbance",
+      "weapons": "Weapons Involved"
+    },
+    "urgencyLevel": "Urgency Level",
+    "selectUrgency": "Select urgency",
+    "urgentImmediate": "URGENT - Immediate",
+    "highPriority": "High Priority",
+    "standardPriority": "Standard Priority",
+    "additionalUnitsNeeded": "Additional Units Needed",
+    "selectNumberUnits": "Select number of units",
+    "oneUnit": "1 Additional Unit",
+    "twoUnits": "2 Additional Units",
+    "threeUnits": "3 Additional Units",
+    "fourPlusUnits": "4+ Additional Units",
+    "currentLocationOptional": "Current Location (Optional)",
+    "locationPlaceholder": "Provide specific location details if different from current position...",
+    "medicalSupportNeeded": "Medical Support Needed",
+    "supervisorResponseRequested": "Supervisor Response Requested",
+    "reasonForBackupRequest": "Reason for Backup Request *",
+    "reasonPlaceholder": "Describe the situation and why backup is needed...",
+    "cancel": "Cancel",
+    "requesting": "Requesting...",
+    "requestSentSuccessfully": "Backup request sent successfully!",
+    "failedToSendRequest": "Failed to send backup request. Please try again."
   }
 }
 }
