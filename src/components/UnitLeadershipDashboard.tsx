@@ -12,6 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 import { 
   Users, Shield, Activity, TrendingUp, MapPin, Radio,
   UserPlus, UserMinus, Clock, AlertTriangle, CheckCircle,
@@ -71,6 +72,7 @@ interface PerformanceMetrics {
 export const UnitLeadershipDashboard: React.FC = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation('emergency');
   const [selectedUnit, setSelectedUnit] = useState<UnitInfo | null>(null);
   const [managedUnits, setManagedUnits] = useState<UnitInfo[]>([]);
   const [unitMembers, setUnitMembers] = useState<UnitMember[]>([]);
@@ -281,14 +283,14 @@ export const UnitLeadershipDashboard: React.FC = () => {
 
       if (error) throw error;
 
-      toast({ title: 'Success', description: 'Officer added to unit successfully' });
+      toast({ title: t('common:success'), description: t('unitManagement.messages.officerAssignedSuccessfully') });
       setShowAddMemberDialog(false);
       setSelectedOfficerId('');
       setMemberRole('officer');
       fetchUnitMembers();
     } catch (error) {
       console.error('Error adding unit member:', error);
-      toast({ title: 'Error', description: 'Failed to add officer to unit', variant: 'destructive' });
+      toast({ title: t('common:error'), description: t('unitManagement.messages.failedToAssignOfficer'), variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
@@ -304,11 +306,11 @@ export const UnitLeadershipDashboard: React.FC = () => {
 
       if (error) throw error;
 
-      toast({ title: 'Success', description: 'Officer removed from unit successfully' });
+      toast({ title: t('common:success'), description: t('unitManagement.messages.officerRemovedFromUnit') });
       fetchUnitMembers();
     } catch (error) {
       console.error('Error removing unit member:', error);
-      toast({ title: 'Error', description: 'Failed to remove officer from unit', variant: 'destructive' });
+      toast({ title: t('common:error'), description: t('unitManagement.messages.failedToRemoveOfficer'), variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
@@ -335,8 +337,8 @@ export const UnitLeadershipDashboard: React.FC = () => {
       }
 
       toast({ 
-        title: 'Success', 
-        description: `${selectedIncidentIds.length} incident(s) assigned to ${selectedUnit.unit_code}` 
+        title: t('common:success'), 
+        description: `${selectedIncidentIds.length} ${t('incident')}(s) ${t('assigned')} ${t('to')} ${selectedUnit.unit_code}` 
       });
       
       setShowIncidentAssignDialog(false);
@@ -345,7 +347,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
       fetchAvailableIncidents();
     } catch (error) {
       console.error('Error assigning incidents:', error);
-      toast({ title: 'Error', description: 'Failed to assign incidents', variant: 'destructive' });
+      toast({ title: t('common:error'), description: t('failedToAssignIncidents'), variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
@@ -376,12 +378,12 @@ export const UnitLeadershipDashboard: React.FC = () => {
 
       if (error) throw error;
 
-      toast({ title: 'Success', description: 'Message sent to all team members' });
+      toast({ title: t('common:success'), description: t('messageSentToTeam') });
       setShowMessageDialog(false);
       setTeamMessage('');
     } catch (error) {
       console.error('Error sending team message:', error);
-      toast({ title: 'Error', description: 'Failed to send message', variant: 'destructive' });
+      toast({ title: t('common:error'), description: t('failedToSendMessage'), variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
@@ -402,10 +404,10 @@ export const UnitLeadershipDashboard: React.FC = () => {
       if (error) throw error;
 
       setSelectedUnit({ ...selectedUnit, status: newStatus });
-      toast({ title: 'Success', description: `Unit status updated to ${newStatus}` });
+      toast({ title: t('common:success'), description: t('unitManagement.messages.unitStatusUpdated') });
     } catch (error) {
       console.error('Error updating unit status:', error);
-      toast({ title: 'Error', description: 'Failed to update unit status', variant: 'destructive' });
+      toast({ title: t('common:error'), description: t('unitManagement.messages.failedToUpdateUnitStatus'), variant: 'destructive' });
     }
   };
 
@@ -435,9 +437,9 @@ export const UnitLeadershipDashboard: React.FC = () => {
         <CardContent className="flex items-center justify-center h-64">
           <div className="text-center">
             <Shield className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No Units to Manage</h3>
+            <h3 className="text-lg font-semibold mb-2">{t('unitLeadershipDashboard.noUnitsToManage')}</h3>
             <p className="text-muted-foreground">
-              You don't have leadership permissions for any units yet.
+              {t('unitLeadershipDashboard.noPermissionsText')}
             </p>
           </div>
         </CardContent>
@@ -448,8 +450,8 @@ export const UnitLeadershipDashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold">Unit Leadership Dashboard</h1>
-        <p className="text-muted-foreground">Manage your units and coordinate operations</p>
+        <h1 className="text-xl font-bold">{t('unitLeadershipDashboard.title')}</h1>
+        <p className="text-muted-foreground">{t('unitLeadershipDashboard.description')}</p>
       </div>
       <div className="flex items-center gap-4">
         <Select value={selectedUnit?.id || ''} onValueChange={(value) => {
@@ -457,7 +459,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
           setSelectedUnit(unit || null);
         }}>
           <SelectTrigger className="w-48">
-            <SelectValue placeholder="Select Unit" />
+            <SelectValue placeholder={t('unitLeadershipDashboard.selectUnit')} />
           </SelectTrigger>
           <SelectContent>
             {managedUnits.map(unit => (
@@ -469,7 +471,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
         </Select>
         <Button onClick={() => window.location.reload()} variant="outline" size="sm">
           <RefreshCw className="h-4 w-4 mr-2" />
-          Refresh
+          {t('unitLeadershipDashboard.refresh')}
         </Button>
       </div>
 
@@ -481,20 +483,20 @@ export const UnitLeadershipDashboard: React.FC = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Unit Status</p>
+                    <p className="text-sm font-medium text-muted-foreground">{t('unitLeadershipDashboard.unitStatus')}</p>
                     <div className="flex items-center gap-2 mt-2">
                       <Badge className={getStatusColor(selectedUnit.status)}>
-                        {selectedUnit.status}
+                        {t(`unitLeadershipDashboard.${selectedUnit.status}`)}
                       </Badge>
                       <Select onValueChange={updateUnitStatus}>
                         <SelectTrigger className="w-24 h-6 text-xs">
                           <Settings className="h-3 w-3" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="available">Available</SelectItem>
-                          <SelectItem value="busy">Busy</SelectItem>
-                          <SelectItem value="dispatched">Dispatched</SelectItem>
-                          <SelectItem value="maintenance">Maintenance</SelectItem>
+                          <SelectItem value="available">{t('unitLeadershipDashboard.available')}</SelectItem>
+                          <SelectItem value="busy">{t('unitLeadershipDashboard.busy')}</SelectItem>
+                          <SelectItem value="dispatched">{t('unitLeadershipDashboard.dispatched')}</SelectItem>
+                          <SelectItem value="maintenance">{t('unitLeadershipDashboard.maintenance')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -508,7 +510,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Active Members</p>
+                    <p className="text-sm font-medium text-muted-foreground">{t('unitLeadershipDashboard.activeMembers')}</p>
                     <p className="text-2xl font-bold">{performanceMetrics?.active_members || 0}</p>
                   </div>
                   <Users className="h-8 w-8 text-muted-foreground" />
@@ -520,7 +522,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Active Incidents</p>
+                    <p className="text-sm font-medium text-muted-foreground">{t('unitLeadershipDashboard.activeIncidents')}</p>
                     <p className="text-2xl font-bold">{unitIncidents.filter(i => !['resolved', 'closed'].includes(i.status)).length}</p>
                   </div>
                   <AlertTriangle className="h-8 w-8 text-muted-foreground" />
@@ -532,7 +534,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Completion Rate</p>
+                    <p className="text-sm font-medium text-muted-foreground">{t('unitLeadershipDashboard.completionRate')}</p>
                     <p className="text-2xl font-bold">{Math.round(performanceMetrics?.completion_rate || 0)}%</p>
                   </div>
                   <TrendingUp className="h-8 w-8 text-muted-foreground" />
@@ -544,34 +546,34 @@ export const UnitLeadershipDashboard: React.FC = () => {
           {/* Main Content Tabs */}
           <Tabs defaultValue="members" className="space-y-4">
             <TabsList>
-              <TabsTrigger value="members">Team Management</TabsTrigger>
-              <TabsTrigger value="incidents">Incident Oversight</TabsTrigger>
-              <TabsTrigger value="performance">Performance</TabsTrigger>
-              <TabsTrigger value="communications">Communications</TabsTrigger>
+              <TabsTrigger value="members">{t('unitLeadershipDashboard.teamManagement')}</TabsTrigger>
+              <TabsTrigger value="incidents">{t('unitLeadershipDashboard.incidentOversight')}</TabsTrigger>
+              <TabsTrigger value="performance">{t('unitLeadershipDashboard.performance')}</TabsTrigger>
+              <TabsTrigger value="communications">{t('unitLeadershipDashboard.communications')}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="members" className="space-y-4">
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">Unit Members</CardTitle>
+                    <CardTitle className="text-lg">{t('unitLeadershipDashboard.unitMembers')}</CardTitle>
                     <Dialog open={showAddMemberDialog} onOpenChange={setShowAddMemberDialog}>
                       <DialogTrigger asChild>
                         <Button>
                           <UserPlus className="h-4 w-4 mr-2" />
-                          Add Member
+                          {t('unitLeadershipDashboard.addMember')}
                         </Button>
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
-                          <DialogTitle>Add Unit Member</DialogTitle>
+                          <DialogTitle>{t('unitLeadershipDashboard.addUnitMember')}</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4">
                           <div>
-                            <Label htmlFor="officer">Select Officer</Label>
+                            <Label htmlFor="officer">{t('unitLeadershipDashboard.selectOfficer')}</Label>
                             <Select value={selectedOfficerId} onValueChange={setSelectedOfficerId}>
                               <SelectTrigger>
-                                <SelectValue placeholder="Choose an officer" />
+                                <SelectValue placeholder={t('unitLeadershipDashboard.chooseAnOfficer')} />
                               </SelectTrigger>
                               <SelectContent>
                                 {availableOfficers.map(officer => (
@@ -583,15 +585,15 @@ export const UnitLeadershipDashboard: React.FC = () => {
                             </Select>
                           </div>
                           <div>
-                            <Label htmlFor="role">Role</Label>
+                            <Label htmlFor="role">{t('unitLeadershipDashboard.role')}</Label>
                             <Select value={memberRole} onValueChange={setMemberRole}>
                               <SelectTrigger>
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="officer">Officer</SelectItem>
-                                <SelectItem value="senior_officer">Senior Officer</SelectItem>
-                                <SelectItem value="lead">Unit Lead</SelectItem>
+                                <SelectItem value="officer">{t('unitLeadershipDashboard.officers')}</SelectItem>
+                                <SelectItem value="senior_officer">{t('unitLeadershipDashboard.seniorOfficer')}</SelectItem>
+                                <SelectItem value="lead">{t('unitLeadershipDashboard.unitLead')}</SelectItem>
                               </SelectContent>
                             </Select>
                           </div>
@@ -600,7 +602,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
                             disabled={!selectedOfficerId || isLoading}
                             className="w-full"
                           >
-                            Add to Unit
+                            {t('unitLeadershipDashboard.addToUnit')}
                           </Button>
                         </div>
                       </DialogContent>
@@ -620,7 +622,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
                             <p className="text-sm text-muted-foreground">{member.profiles?.email}</p>
                             <div className="flex items-center gap-2 mt-1">
                               <Badge variant="secondary">{member.role}</Badge>
-                              {member.is_lead && <Badge variant="outline">Team Lead</Badge>}
+                              {member.is_lead && <Badge variant="outline">{t('unitLeadershipDashboard.teamLead')}</Badge>}
                             </div>
                           </div>
                         </div>
@@ -632,7 +634,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
                             disabled={isLoading}
                           >
                             <UserMinus className="h-4 w-4" />
-                            Remove
+                            {t('unitLeadershipDashboard.remove')}
                           </Button>
                         </div>
                       </div>
@@ -644,17 +646,17 @@ export const UnitLeadershipDashboard: React.FC = () => {
 
             <TabsContent value="incidents" className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold">Incident Management</h3>
+                <h3 className="text-lg font-semibold">{t('unitLeadershipDashboard.incidentManagement')}</h3>
                 <Dialog open={showIncidentAssignDialog} onOpenChange={setShowIncidentAssignDialog}>
                   <DialogTrigger asChild>
                     <Button>
                       <Target className="h-4 w-4 mr-2" />
-                      Assign Incidents
+                      {t('unitLeadershipDashboard.assignIncidents')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-2xl">
                     <DialogHeader>
-                      <DialogTitle>Assign Incidents to {selectedUnit.unit_code}</DialogTitle>
+                      <DialogTitle>{t('unitLeadershipDashboard.assignIncidentsTo')} {selectedUnit.unit_code}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4">
                       <div className="max-h-96 overflow-y-auto space-y-2">
@@ -680,7 +682,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
                                   <p className="text-sm text-muted-foreground">{incident.incident_message}</p>
                                 </div>
                                 <Badge className={getPriorityColor(incident.priority_level)}>
-                                  Priority {incident.priority_level}
+                                  {t('unitLeadershipDashboard.priority')} {incident.priority_level}
                                 </Badge>
                               </div>
                             </label>
@@ -692,7 +694,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
                         disabled={selectedIncidentIds.length === 0 || isLoading}
                         className="w-full"
                       >
-                        Assign {selectedIncidentIds.length} Incident(s)
+                        {t('assign')} {selectedIncidentIds.length} {t('incident')}(s)
                       </Button>
                     </div>
                   </DialogContent>
@@ -736,12 +738,12 @@ export const UnitLeadershipDashboard: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Performance Metrics</CardTitle>
+                    <CardTitle>{t('unitLeadershipDashboard.performanceMetrics')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
                       <div className="flex justify-between text-sm">
-                        <span>Incident Completion Rate</span>
+                        <span>{t('unitLeadershipDashboard.incidentCompletionRate')}</span>
                         <span>{Math.round(performanceMetrics?.completion_rate || 0)}%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
@@ -752,13 +754,13 @@ export const UnitLeadershipDashboard: React.FC = () => {
                       </div>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Average Response Time</p>
+                      <p className="text-sm text-muted-foreground">{t('unitLeadershipDashboard.averageResponseTime')}</p>
                       <p className="text-2xl font-bold">
-                        {Math.round(performanceMetrics?.average_response_time || 0)} min
+                        {Math.round(performanceMetrics?.average_response_time || 0)} {t('common:min')}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Total Incidents Handled</p>
+                      <p className="text-sm text-muted-foreground">{t('unitLeadershipDashboard.totalIncidentsHandled')}</p>
                       <p className="text-2xl font-bold">{performanceMetrics?.total_incidents || 0}</p>
                     </div>
                   </CardContent>
@@ -766,7 +768,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle>Recent Activity</CardTitle>
+                    <CardTitle>{t('unitLeadershipDashboard.recentActivity')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
@@ -789,24 +791,24 @@ export const UnitLeadershipDashboard: React.FC = () => {
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">Team Communications</CardTitle>
+                    <CardTitle className="text-lg">{t('unitLeadershipDashboard.teamCommunications')}</CardTitle>
                     <Dialog open={showMessageDialog} onOpenChange={setShowMessageDialog}>
                       <DialogTrigger asChild>
                         <Button size="sm" className="text-xs whitespace-nowrap">
                           <MessageSquare className="h-3 w-3 mr-1" />
-                          Send Message
+                          {t('unitLeadershipDashboard.sendMessage')}
                         </Button>
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
-                          <DialogTitle>Send Message to Team</DialogTitle>
+                          <DialogTitle>{t('unitLeadershipDashboard.sendMessageToTeam')}</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4">
                           <div>
-                            <Label htmlFor="message">Message</Label>
+                            <Label htmlFor="message">{t('unitLeadershipDashboard.message')}</Label>
                             <Textarea
                               id="message"
-                              placeholder="Enter your message to the team..."
+                              placeholder={t('unitLeadershipDashboard.enterMessagePlaceholder')}
                               value={teamMessage}
                               onChange={(e) => setTeamMessage(e.target.value)}
                               rows={4}
@@ -818,7 +820,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
                             className="w-full"
                           >
                             <Send className="h-4 w-4 mr-2" />
-                            Send Message
+                            {t('unitLeadershipDashboard.sendMessage')}
                           </Button>
                         </div>
                       </DialogContent>
@@ -828,8 +830,8 @@ export const UnitLeadershipDashboard: React.FC = () => {
                 <CardContent>
                   <div className="text-center text-muted-foreground py-8">
                     <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>Communication features coming soon</p>
-                    <p className="text-sm">Real-time messaging and coordination tools</p>
+                    <p>{t('unitLeadershipDashboard.communicationComingSoon')}</p>
+                    <p className="text-sm">{t('unitLeadershipDashboard.realTimeMessaging')}</p>
                   </div>
                 </CardContent>
               </Card>
