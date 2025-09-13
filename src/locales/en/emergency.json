@@ -782,5 +782,10 @@
   "selectUnitToAssign": "Select a unit to assign",
   "dispatcher": "Dispatcher",
   "noDispatcherAssigned": "No dispatcher assigned",
-  "failedToAssignIncident": "Failed to assign incident"
+  "failedToAssignIncident": "Failed to assign incident",
+  "incidentResolved": "Incident Resolved",
+  "dispatcherAssigned": "Dispatcher assigned",
+  "unassigned": "Unassigned",
+  "viewDetails": "View details",
+  "clickForDetails": "Click for details"
 }

@@ -782,5 +782,10 @@
   "selectUnitToAssign": "Seleccionar una unidad para asignar",
   "dispatcher": "Despachador",
   "noDispatcherAssigned": "Sin despachador asignado",
-  "failedToAssignIncident": "Error al asignar incidente"
+  "failedToAssignIncident": "Error al asignar incidente",
+  "incidentResolved": "Incidente Resuelto",
+  "dispatcherAssigned": "Despachador asignado",
+  "unassigned": "Sin asignar",
+  "viewDetails": "Ver detalles",
+  "clickForDetails": "Clic para detalles"
 }

@@ -598,5 +598,10 @@
   "selectUnitToAssign": "Sélectionner une unité à assigner",
   "dispatcher": "Répartiteur",
   "noDispatcherAssigned": "Aucun répartiteur assigné",
-  "failedToAssignIncident": "Échec d'assignation de l'incident"
+  "failedToAssignIncident": "Échec d'assignation de l'incident",
+  "incidentResolved": "Incident Résolu",
+  "dispatcherAssigned": "Répartiteur assigné",
+  "unassigned": "Non assigné",
+  "viewDetails": "Voir les détails",
+  "clickForDetails": "Cliquer pour les détails"
 }

@@ -510,16 +510,16 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
               <div className="flex items-center gap-2">
                 {isResolved ? (
                   <span className="text-green-600 font-medium">
-                    ✓ Incident Resolved
+                    ✓ {t('emergency:incidentResolved')}
                   </span>
                 ) : (
                   <span className={incident.assigned_operator_id ? 'text-emerald-600 font-medium' : 'text-red-600 font-medium'}>
-                    {incident.assigned_operator_id ? '✓ Dispatcher assigned' : '⚠ Unassigned'}
+                    {incident.assigned_operator_id ? `✓ ${t('emergency:dispatcherAssigned')}` : `⚠ ${t('emergency:unassigned')}`}
                   </span>
                 )}
               </div>
               <span className="text-xs text-primary">
-                {isResolved ? 'View details →' : 'Click for details →'}
+                {isResolved ? `${t('emergency:viewDetails')} →` : `${t('emergency:clickForDetails')} →`}
               </span>
             </div>
             </div>
