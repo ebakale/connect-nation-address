@@ -312,7 +312,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
                           <div className={`w-3 h-3 rounded-full ${getPriorityColor(incident.priority_level)}`} />
                           <div>
                             <p className="font-medium">{incident.incident_number}</p>
-                            <p className="text-sm text-muted-foreground">{incident.emergency_type.replace(/_/g, ' ').toUpperCase()}</p>
+                            <p className="text-sm text-muted-foreground">{t(`emergencyTypeLabels.${incident.emergency_type}`)}</p>
                           </div>
                         </div>
                         <div className="text-right">
