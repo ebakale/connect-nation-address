@@ -691,5 +691,47 @@
     "priority": "Priorité",
     "previous": "Précédent",
     "next": "Suivant"
+  },
+
+  "requestBackupDialog": {
+    "requestBackup": "Demander Renfort",
+    "requestBackupSupervisor": "Demander un renfort pour toute unité sous votre supervision",
+    "requestAdditionalUnits": "Demander des unités supplémentaires pour {{unitCode}}",
+    "selectUnitLabel": "Sélectionner Unité pour Demande de Renfort",
+    "chooseUnitPlaceholder": "Choisir quelle unité a besoin de renfort",
+    "backupType": "Type de Renfort",
+    "selectBackupType": "Sélectionner le type de renfort",
+    "backupTypes": {
+      "general": "Renfort Général",
+      "highRisk": "Situation à Haut Risque",
+      "pursuit": "Poursuite Véhiculaire",
+      "crowdControl": "Contrôle de Foule",
+      "search": "Opération de Recherche",
+      "domestic": "Incident Domestique",
+      "weapons": "Armes Impliquées"
+    },
+    "urgencyLevel": "Niveau d'Urgence",
+    "selectUrgency": "Sélectionner urgence",
+    "urgentImmediate": "URGENT - Immédiat",
+    "highPriority": "Priorité HAUTE",
+    "standardPriority": "Priorité STANDARD",
+    "additionalUnitsNeeded": "Unités Supplémentaires Nécessaires",
+    "selectNumberUnits": "Sélectionner le nombre d'unités",
+    "oneUnit": "1 Unité",
+    "twoUnits": "2 Unités",
+    "threeUnits": "3 Unités",
+    "fourPlusUnits": "4+ Unités",
+    "currentLocationOptional": "Emplacement Actuel (Optionnel)",
+    "locationPlaceholder": "Détails d'emplacement spécifiques (si différent des enregistrements de répartition)",
+    "medicalSupportNeeded": "Support médical nécessaire",
+    "supervisorResponseRequested": "Réponse du superviseur demandée",
+    "reasonForBackupRequest": "Raison de la Demande de Renfort",
+    "reasonPlaceholder": "Décrivez la situation nécessitant un renfort...",
+    "cancel": "Annuler",
+    "requesting": "Demande en cours...",
+    "provideReason": "Veuillez fournir une raison pour la demande de renfort",
+    "selectUnit": "Veuillez sélectionner une unité pour la demande de renfort",
+    "requestSentSuccessfully": "Demande de renfort envoyée avec succès",
+    "failedToSendRequest": "Échec de l'envoi de la demande de renfort"
   }
 }

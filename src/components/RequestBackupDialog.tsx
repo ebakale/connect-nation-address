@@ -9,6 +9,7 @@ import { Navigation, AlertTriangle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 
 interface RequestBackupDialogProps {
   unitId?: string;
@@ -24,6 +25,7 @@ export const RequestBackupDialog: React.FC<RequestBackupDialogProps> = ({
   isSupervisor = false
 }) => {
   const { user } = useAuth();
+  const { t } = useTranslation('emergency');
   const [open, setOpen] = useState(false);
   const [backupType, setBackupType] = useState('general');
   const [urgency, setUrgency] = useState('2');
@@ -55,13 +57,13 @@ export const RequestBackupDialog: React.FC<RequestBackupDialogProps> = ({
 
   const handleRequestBackup = async () => {
     if (!reason.trim()) {
-      toast.error("Please provide a reason for backup request");
+      toast.error(t('requestBackupDialog.provideReason'));
       return;
     }
 
     // For supervisors, ensure a unit is selected
     if (isSupervisor && !selectedUnit) {
-      toast.error("Please select a unit for backup request");
+      toast.error(t('requestBackupDialog.selectUnit'));
       return;
     }
 
@@ -125,7 +127,7 @@ ${isSupervisor ? 'Requested by: Supervisor' : ''}`;
         console.log('Backup processing function not available, message sent to dispatch');
       }
 
-      toast.success("Backup request sent successfully");
+      toast.success(t('requestBackupDialog.requestSentSuccessfully'));
       
       // Reset form
       setReason('');
@@ -139,7 +141,7 @@ ${isSupervisor ? 'Requested by: Supervisor' : ''}`;
       setOpen(false);
     } catch (error) {
       console.error('Error requesting backup:', error);
-      toast.error("Failed to send backup request");
+      toast.error(t('requestBackupDialog.failedToSendRequest'));
     } finally {
       setLoading(false);
     }
@@ -161,12 +163,12 @@ ${isSupervisor ? 'Requested by: Supervisor' : ''}`;
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Navigation className="h-5 w-5" />
-            Request Backup
+            {t('requestBackupDialog.requestBackup')}
           </DialogTitle>
           <DialogDescription>
             {isSupervisor 
-              ? "Request backup for any unit under your supervision"
-              : `Request additional units for ${unitCode}`
+              ? t('requestBackupDialog.requestBackupSupervisor')
+              : t('requestBackupDialog.requestAdditionalUnits', { unitCode })
             }
           </DialogDescription>
         </DialogHeader>
@@ -174,10 +176,10 @@ ${isSupervisor ? 'Requested by: Supervisor' : ''}`;
         <div className="space-y-4 max-h-[70vh] overflow-y-auto">
           {isSupervisor && (
             <div className="space-y-2">
-              <Label htmlFor="unit-select">Select Unit for Backup Request</Label>
+              <Label htmlFor="unit-select">{t('requestBackupDialog.selectUnitLabel')}</Label>
               <Select value={selectedUnit} onValueChange={setSelectedUnit}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Choose which unit needs backup" />
+                  <SelectValue placeholder={t('requestBackupDialog.chooseUnitPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {availableUnits.map((unit) => (
@@ -192,65 +194,65 @@ ${isSupervisor ? 'Requested by: Supervisor' : ''}`;
           
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="backup-type">Backup Type</Label>
+              <Label htmlFor="backup-type">{t('requestBackupDialog.backupType')}</Label>
               <Select value={backupType} onValueChange={setBackupType}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select backup type" />
+                  <SelectValue placeholder={t('requestBackupDialog.selectBackupType')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="general">General Backup</SelectItem>
-                  <SelectItem value="high_risk">High Risk Situation</SelectItem>
-                  <SelectItem value="pursuit">Vehicle Pursuit</SelectItem>
-                  <SelectItem value="crowd_control">Crowd Control</SelectItem>
-                  <SelectItem value="search">Search Operation</SelectItem>
-                  <SelectItem value="domestic">Domestic Incident</SelectItem>
-                  <SelectItem value="weapons">Weapons Involved</SelectItem>
+                  <SelectItem value="general">{t('requestBackupDialog.backupTypes.general')}</SelectItem>
+                  <SelectItem value="high_risk">{t('requestBackupDialog.backupTypes.highRisk')}</SelectItem>
+                  <SelectItem value="pursuit">{t('requestBackupDialog.backupTypes.pursuit')}</SelectItem>
+                  <SelectItem value="crowd_control">{t('requestBackupDialog.backupTypes.crowdControl')}</SelectItem>
+                  <SelectItem value="search">{t('requestBackupDialog.backupTypes.search')}</SelectItem>
+                  <SelectItem value="domestic">{t('requestBackupDialog.backupTypes.domestic')}</SelectItem>
+                  <SelectItem value="weapons">{t('requestBackupDialog.backupTypes.weapons')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="urgency">Urgency Level</Label>
+              <Label htmlFor="urgency">{t('requestBackupDialog.urgencyLevel')}</Label>
               <Select value={urgency} onValueChange={setUrgency}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select urgency" />
+                  <SelectValue placeholder={t('requestBackupDialog.selectUrgency')} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="1">
                     <div className="flex items-center gap-2">
                       <AlertTriangle className="h-4 w-4 text-red-500" />
-                      URGENT - Immediate
+                      {t('requestBackupDialog.urgentImmediate')}
                     </div>
                   </SelectItem>
-                  <SelectItem value="2">HIGH Priority</SelectItem>
-                  <SelectItem value="3">STANDARD Priority</SelectItem>
+                  <SelectItem value="2">{t('requestBackupDialog.highPriority')}</SelectItem>
+                  <SelectItem value="3">{t('requestBackupDialog.standardPriority')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="additional-units">Additional Units Needed</Label>
+            <Label htmlFor="additional-units">{t('requestBackupDialog.additionalUnitsNeeded')}</Label>
             <Select value={additionalUnits} onValueChange={setAdditionalUnits}>
               <SelectTrigger>
-                <SelectValue placeholder="Select number of units" />
+                <SelectValue placeholder={t('requestBackupDialog.selectNumberUnits')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">1 Unit</SelectItem>
-                <SelectItem value="2">2 Units</SelectItem>
-                <SelectItem value="3">3 Units</SelectItem>
-                <SelectItem value="4">4+ Units</SelectItem>
+                <SelectItem value="1">{t('requestBackupDialog.oneUnit')}</SelectItem>
+                <SelectItem value="2">{t('requestBackupDialog.twoUnits')}</SelectItem>
+                <SelectItem value="3">{t('requestBackupDialog.threeUnits')}</SelectItem>
+                <SelectItem value="4">{t('requestBackupDialog.fourPlusUnits')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="location">Current Location (Optional)</Label>
+            <Label htmlFor="location">{t('requestBackupDialog.currentLocationOptional')}</Label>
             <Textarea
               id="location"
               value={currentLocation}
               onChange={(e) => setCurrentLocation(e.target.value)}
-              placeholder="Specific location details (if different from dispatch records)"
+              placeholder={t('requestBackupDialog.locationPlaceholder')}
               rows={2}
             />
           </div>
@@ -262,7 +264,7 @@ ${isSupervisor ? 'Requested by: Supervisor' : ''}`;
                 checked={medicalNeeded} 
                 onCheckedChange={(checked) => setMedicalNeeded(checked === true)} 
               />
-              <Label htmlFor="medical">Medical support needed</Label>
+              <Label htmlFor="medical">{t('requestBackupDialog.medicalSupportNeeded')}</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox 
@@ -270,17 +272,17 @@ ${isSupervisor ? 'Requested by: Supervisor' : ''}`;
                 checked={supervisorNeeded} 
                 onCheckedChange={(checked) => setSupervisorNeeded(checked === true)} 
               />
-              <Label htmlFor="supervisor">Supervisor response requested</Label>
+              <Label htmlFor="supervisor">{t('requestBackupDialog.supervisorResponseRequested')}</Label>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="reason">Reason for Backup Request</Label>
+            <Label htmlFor="reason">{t('requestBackupDialog.reasonForBackupRequest')}</Label>
             <Textarea
               id="reason"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="Describe the situation requiring backup..."
+              placeholder={t('requestBackupDialog.reasonPlaceholder')}
               rows={3}
               required
             />
@@ -288,7 +290,7 @@ ${isSupervisor ? 'Requested by: Supervisor' : ''}`;
 
           <div className="flex justify-end gap-2 pt-4">
             <Button variant="outline" onClick={() => setOpen(false)}>
-              Cancel
+              {t('requestBackupDialog.cancel')}
             </Button>
             <Button 
               onClick={handleRequestBackup} 
@@ -296,7 +298,7 @@ ${isSupervisor ? 'Requested by: Supervisor' : ''}`;
               className="gap-2 bg-orange-600 hover:bg-orange-700"
             >
               <Navigation className="h-4 w-4" />
-              {loading ? 'Requesting...' : 'Request Backup'}
+              {loading ? t('requestBackupDialog.requesting') : t('requestBackupDialog.requestBackup')}
             </Button>
           </div>
         </div>

@@ -875,5 +875,47 @@
     "priority": "Prioridad",
     "previous": "Anterior",
     "next": "Siguiente"
+  },
+
+  "requestBackupDialog": {
+    "requestBackup": "Solicitar Refuerzo",
+    "requestBackupSupervisor": "Solicitar refuerzo para cualquier unidad bajo su supervisión",
+    "requestAdditionalUnits": "Solicitar unidades adicionales para {{unitCode}}",
+    "selectUnitLabel": "Seleccionar Unidad para Solicitud de Refuerzo",
+    "chooseUnitPlaceholder": "Elija qué unidad necesita refuerzo",
+    "backupType": "Tipo de Refuerzo",
+    "selectBackupType": "Seleccionar tipo de refuerzo",
+    "backupTypes": {
+      "general": "Refuerzo General",
+      "highRisk": "Situación de Alto Riesgo",
+      "pursuit": "Persecución Vehicular",
+      "crowdControl": "Control de Multitudes",
+      "search": "Operación de Búsqueda",
+      "domestic": "Incidente Doméstico",
+      "weapons": "Armas Involucradas"
+    },
+    "urgencyLevel": "Nivel de Urgencia",
+    "selectUrgency": "Seleccionar urgencia",
+    "urgentImmediate": "URGENTE - Inmediato",
+    "highPriority": "Prioridad ALTA",
+    "standardPriority": "Prioridad ESTÁNDAR",
+    "additionalUnitsNeeded": "Unidades Adicionales Necesarias",
+    "selectNumberUnits": "Seleccionar número de unidades",
+    "oneUnit": "1 Unidad",
+    "twoUnits": "2 Unidades",
+    "threeUnits": "3 Unidades",
+    "fourPlusUnits": "4+ Unidades",
+    "currentLocationOptional": "Ubicación Actual (Opcional)",
+    "locationPlaceholder": "Detalles específicos de ubicación (si es diferente a los registros de despacho)",
+    "medicalSupportNeeded": "Apoyo médico necesario",
+    "supervisorResponseRequested": "Respuesta del supervisor solicitada",
+    "reasonForBackupRequest": "Razón para Solicitud de Refuerzo",
+    "reasonPlaceholder": "Describa la situación que requiere refuerzo...",
+    "cancel": "Cancelar",
+    "requesting": "Solicitando...",
+    "provideReason": "Por favor proporcione una razón para la solicitud de refuerzo",
+    "selectUnit": "Por favor seleccione una unidad para la solicitud de refuerzo",
+    "requestSentSuccessfully": "Solicitud de refuerzo enviada exitosamente",
+    "failedToSendRequest": "Error al enviar solicitud de refuerzo"
   }
 }

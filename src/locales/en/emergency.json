@@ -875,5 +875,47 @@
     "priority": "Priority",
     "previous": "Previous",
     "next": "Next"
+  },
+
+  "requestBackupDialog": {
+    "requestBackup": "Request Backup",
+    "requestBackupSupervisor": "Request backup for any unit under your supervision",
+    "requestAdditionalUnits": "Request additional units for {{unitCode}}",
+    "selectUnitLabel": "Select Unit for Backup Request", 
+    "chooseUnitPlaceholder": "Choose which unit needs backup",
+    "backupType": "Backup Type",
+    "selectBackupType": "Select backup type",
+    "backupTypes": {
+      "general": "General Backup",
+      "highRisk": "High Risk Situation",
+      "pursuit": "Vehicle Pursuit",
+      "crowdControl": "Crowd Control",
+      "search": "Search Operation",
+      "domestic": "Domestic Incident",
+      "weapons": "Weapons Involved"
+    },
+    "urgencyLevel": "Urgency Level",
+    "selectUrgency": "Select urgency",
+    "urgentImmediate": "URGENT - Immediate",
+    "highPriority": "HIGH Priority",
+    "standardPriority": "STANDARD Priority",
+    "additionalUnitsNeeded": "Additional Units Needed",
+    "selectNumberUnits": "Select number of units",
+    "oneUnit": "1 Unit",
+    "twoUnits": "2 Units", 
+    "threeUnits": "3 Units",
+    "fourPlusUnits": "4+ Units",
+    "currentLocationOptional": "Current Location (Optional)",
+    "locationPlaceholder": "Specific location details (if different from dispatch records)",
+    "medicalSupportNeeded": "Medical support needed",
+    "supervisorResponseRequested": "Supervisor response requested",
+    "reasonForBackupRequest": "Reason for Backup Request",
+    "reasonPlaceholder": "Describe the situation requiring backup...",
+    "cancel": "Cancel",
+    "requesting": "Requesting...",
+    "provideReason": "Please provide a reason for backup request",
+    "selectUnit": "Please select a unit for backup request",
+    "requestSentSuccessfully": "Backup request sent successfully",
+    "failedToSendRequest": "Failed to send backup request"
   }
 }
