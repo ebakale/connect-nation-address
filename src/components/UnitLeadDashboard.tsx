@@ -290,7 +290,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
           <TabsTrigger value="incidents">{t('activeIncidents')}</TabsTrigger>
           <TabsTrigger value="team">{t('teamManagement')}</TabsTrigger>
           <TabsTrigger value="status">{t('unitStatus')}</TabsTrigger>
-          <TabsTrigger value="communications">{t('communications')}</TabsTrigger>
+          <TabsTrigger value="communications">{t('communications.unitCommunications')}</TabsTrigger>
         </TabsList>
 
         {/* Active Incidents Tab */}
