@@ -125,7 +125,13 @@
     "loadMore": "Load More",
     "showingOfficers": "Showing {{start}}-{{end}} of {{total}} officers",
     "noOfficersFound": "No officers found",
-    "errorFetchingOfficers": "Error fetching officers"
+    "errorFetchingOfficers": "Error fetching officers",
+    "officersList": "Officers List",
+    "contactInformation": "Contact Information",
+    "performanceMetrics": "Performance Metrics",
+    "role": "Role",
+    "previous": "Previous",
+    "next": "Next"
   },
   "title": "Dashboard",
   "overview": "Overview",

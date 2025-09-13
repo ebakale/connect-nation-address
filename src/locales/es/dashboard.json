@@ -125,7 +125,13 @@
     "loadMore": "Cargar Más",
     "showingOfficers": "Mostrando {{start}}-{{end}} de {{total}} oficiales",
     "noOfficersFound": "No se encontraron oficiales",
-    "errorFetchingOfficers": "Error al obtener oficiales"
+    "errorFetchingOfficers": "Error al obtener oficiales",
+    "officersList": "Lista de Oficiales",
+    "contactInformation": "Información de Contacto",
+    "performanceMetrics": "Métricas de Rendimiento",
+    "role": "Rol",
+    "previous": "Anterior",
+    "next": "Siguiente"
   },
   "title": "Panel de control",
   "overview": "Resumen",

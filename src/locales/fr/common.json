@@ -274,5 +274,6 @@
   "low": "Faible",
   "incidents": "incidents",
   "needDispatcherAssignment": "nécessitent une assignation de répartiteur",
-  "allStatus": "Tous les Statuts"
+  "allStatus": "Tous les Statuts",
+  "accessDenied": "Accès Refusé"
 }

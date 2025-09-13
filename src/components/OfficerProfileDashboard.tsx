@@ -321,9 +321,9 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
 
   const getRoleName = (role: string): string => {
     switch (role) {
-      case 'police_supervisor': return t('supervisor');
-      case 'police_dispatcher': return t('dispatcher');
-      case 'police_operator': return t('operator');
+      case 'police_supervisor': return t('dashboard:officerProfiles.supervisor');
+      case 'police_dispatcher': return t('dashboard:officerProfiles.dispatcher');
+      case 'police_operator': return t('dashboard:officerProfiles.operator');
       default: return role;
     }
   };
@@ -336,10 +336,10 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
   };
 
   const getPerformanceBadge = (score: number) => {
-    if (score >= 90) return { label: t('excellent'), variant: 'default' as const, color: 'text-yellow-600' };
-    if (score >= 75) return { label: t('good'), variant: 'secondary' as const, color: 'text-blue-600' };
-    if (score >= 60) return { label: t('average'), variant: 'outline' as const, color: 'text-green-600' };
-    return { label: t('needsImprovement'), variant: 'destructive' as const, color: 'text-red-600' };
+    if (score >= 90) return { label: t('dashboard:officerProfiles.excellent'), variant: 'default' as const, color: 'text-yellow-600' };
+    if (score >= 75) return { label: t('dashboard:officerProfiles.good'), variant: 'secondary' as const, color: 'text-blue-600' };
+    if (score >= 60) return { label: t('dashboard:officerProfiles.average'), variant: 'outline' as const, color: 'text-green-600' };
+    return { label: t('dashboard:officerProfiles.needsImprovement'), variant: 'destructive' as const, color: 'text-red-600' };
   };
 
   const toggleOfficerExpansion = (officerId: string) => {
@@ -357,8 +357,8 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">{t('officerProfilesAndPerformance')}</h1>
-        <p className="text-muted-foreground">{t('viewOfficerProfiles')}</p>
+        <h1 className="text-2xl font-bold">{t('dashboard:officerProfiles.title')}</h1>
+        <p className="text-muted-foreground">{t('dashboard:officerProfiles.description')}</p>
       </div>
 
       {/* Summary Cards */}
@@ -367,7 +367,7 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">{t('totalOfficers')}</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard:officerProfiles.totalOfficers')}</p>
                 <p className="text-2xl font-bold">{officers.length}</p>
               </div>
               <Shield className="h-5 w-5 text-muted-foreground" />
@@ -379,7 +379,7 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">{t('supervisors')}</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard:officerProfiles.supervisors')}</p>
                 <p className="text-2xl font-bold text-purple-600">
                   {officers.filter(o => o.user_roles.some(r => r.role === 'police_supervisor')).length}
                 </p>
@@ -393,7 +393,7 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">{t('dispatchers')}</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard:officerProfiles.dispatchers')}</p>
                 <p className="text-2xl font-bold text-blue-600">
                   {officers.filter(o => o.user_roles.some(r => r.role === 'police_dispatcher')).length}
                 </p>
@@ -407,7 +407,7 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">{t('operators')}</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard:officerProfiles.operators')}</p>
                 <p className="text-2xl font-bold text-green-600">
                   {officers.filter(o => o.user_roles.some(r => r.role === 'police_operator')).length}
                 </p>
@@ -423,7 +423,7 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <UsersIcon className="h-5 w-5" />
-            Officers List
+            {t('dashboard:officerProfiles.officersList')}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -487,7 +487,7 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
                       {/* Contact Information */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <h4 className="font-medium text-sm">Contact Information</h4>
+                          <h4 className="font-medium text-sm">{t('dashboard:officerProfiles.contactInformation')}</h4>
                           <div className="space-y-2">
                             <div className="flex items-center gap-2 text-sm">
                               <Mail className="h-4 w-4 text-muted-foreground" />
@@ -503,7 +503,7 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
                             
                             <div className="flex items-center gap-2 text-sm">
                               <Calendar className="h-4 w-4 text-muted-foreground" />
-                              <span>{t('joined')} {new Date(officer.created_at).toLocaleDateString()}</span>
+                              <span>{t('dashboard:officerProfiles.joinedUnit')} {new Date(officer.created_at).toLocaleDateString()}</span>
                             </div>
                           </div>
                         </div>
@@ -511,23 +511,23 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
                         {/* Performance Metrics */}
                         {stats && (
                           <div className="space-y-2">
-                            <h4 className="font-medium text-sm">Performance Metrics</h4>
+                            <h4 className="font-medium text-sm">{t('dashboard:officerProfiles.performanceMetrics')}</h4>
                             <div className="grid grid-cols-2 gap-3 text-sm">
                               <div className="text-center p-2 bg-background rounded">
                                 <p className="font-bold text-lg">{stats.total_incidents}</p>
-                                <p className="text-muted-foreground">{t('incidents')}</p>
+                                <p className="text-muted-foreground">{t('dashboard:officerProfiles.incidentsHandled')}</p>
                               </div>
                               <div className="text-center p-2 bg-background rounded">
                                 <p className="font-bold text-lg">{stats.incidents_responded}</p>
-                                <p className="text-muted-foreground">{t('responded')}</p>
+                                <p className="text-muted-foreground">{t('dashboard:officerProfiles.responded')}</p>
                               </div>
                               <div className="text-center p-2 bg-background rounded">
                                 <p className="font-bold text-lg">{stats.avg_response_time}m</p>
-                                <p className="text-muted-foreground">{t('avgResponse')}</p>
+                                <p className="text-muted-foreground">{t('dashboard:officerProfiles.responseTime')}</p>
                               </div>
                               <div className="text-center p-2 bg-background rounded">
                                 <p className="font-bold text-lg">{stats.units_assigned}</p>
-                                <p className="text-muted-foreground">{t('units')}</p>
+                                <p className="text-muted-foreground">{t('dashboard:officerProfiles.unitsAssigned')}</p>
                               </div>
                             </div>
                           </div>
@@ -538,7 +538,7 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
                       {officer.user_roles.some(role => role.role === 'police_operator') && 
                        officer.emergency_unit_members && officer.emergency_unit_members.length > 0 && (
                          <div className="space-y-2">
-                           <h4 className="font-medium text-sm">{t('currentAssignment')}</h4>
+                           <h4 className="font-medium text-sm">{t('dashboard:officerProfiles.currentAssignment')}</h4>
                            <div className="space-y-2">
                              {officer.emergency_unit_members
                                .filter((assignment) => assignment?.emergency_units)
@@ -550,7 +550,7 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
                                      <span className="font-medium">{assignment.emergency_units?.unit_code}</span>
                                    </div>
                                    <span className="text-muted-foreground">{assignment.emergency_units?.unit_name}</span>
-                                   <div className="text-xs text-muted-foreground">Role: {assignment.role}</div>
+                                   <div className="text-xs text-muted-foreground">{t('dashboard:officerProfiles.role')}: {assignment.role}</div>
                                  </div>
                                  <Badge 
                                    variant="outline" 
@@ -578,7 +578,7 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
                 >
-                  Previous
+                  {t('dashboard:officerProfiles.previous')}
                 </Button>
                 
                 <div className="flex items-center gap-1">
@@ -601,7 +601,7 @@ export const OfficerProfileDashboard: React.FC<OfficerProfileDashboardProps> = (
                   onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
                 >
-                  Next
+                  {t('dashboard:officerProfiles.next')}
                 </Button>
               </div>
             )}

@@ -274,5 +274,6 @@
   "low": "Low",
   "incidents": "incidents",
   "needDispatcherAssignment": "need dispatcher assignment",
-  "allStatus": "All Status"
+  "allStatus": "All Status",
+  "accessDenied": "Access Denied"
 }

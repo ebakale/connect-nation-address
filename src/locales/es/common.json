@@ -274,5 +274,6 @@
   "low": "Bajo",
   "incidents": "incidentes",
   "needDispatcherAssignment": "necesitan asignación de despachador",
-  "allStatus": "Todos los Estados"
+  "allStatus": "Todos los Estados",
+  "accessDenied": "Acceso Denegado"
 }

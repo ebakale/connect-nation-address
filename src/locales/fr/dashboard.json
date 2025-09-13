@@ -125,7 +125,14 @@
     "loadMore": "Charger Plus",
     "showingOfficers": "Affichage {{start}}-{{end}} sur {{total}} officiers",
     "noOfficersFound": "Aucun officier trouvé",
-    "errorFetchingOfficers": "Erreur lors de la récupération des officiers"
+    "errorFetchingOfficers": "Erreur lors de la récupération des officiers",
+    "officersList": "Liste des Officiers",
+    "contactInformation": "Informations de Contact",
+    "performanceMetrics": "Métriques de Performance",
+    "role": "Rôle",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "responded": "Répondu"
   },
   "title": "Tableau de bord",
   "overview": "Aperçu",
