@@ -252,7 +252,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
             <div className="flex items-center gap-2">
               <Activity className="h-5 w-5 text-green-600" />
               <div>
-                <p className="text-sm text-muted-foreground">{t('common:status.available')}</p>
+                <p className="text-sm text-muted-foreground">{t('available')}</p>
                 <p className="text-2xl font-bold">{unitStats.availableMembers}</p>
               </div>
             </div>
