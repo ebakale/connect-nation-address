@@ -265,5 +265,6 @@
   "newPassword": "Nouveau Mot de Passe",
   "enterNewPassword": "Saisissez le nouveau mot de passe",
   "confirmNewPassword": "Confirmer le Nouveau Mot de Passe",
-  "confirmNewPasswordPlaceholder": "Confirmez votre nouveau mot de passe"
+  "confirmNewPasswordPlaceholder": "Confirmez votre nouveau mot de passe",
+  "logout": "Se déconnecter"
 }

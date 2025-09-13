@@ -265,5 +265,6 @@
   "newPassword": "New Password",
   "enterNewPassword": "Enter new password",
   "confirmNewPassword": "Confirm New Password",
-  "confirmNewPasswordPlaceholder": "Confirm your new password"
+  "confirmNewPasswordPlaceholder": "Confirm your new password",
+  "logout": "Logout"
 }
