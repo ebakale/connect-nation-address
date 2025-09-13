@@ -12,6 +12,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { MessageSquare, Send, CheckCheck, Clock, Radio, Filter, AlertTriangle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 interface CommunicationMessage {
   id: string;
@@ -35,21 +36,22 @@ interface CommunicationMessage {
   };
 }
 
-const RADIO_CODES = [
-  { code: '10-4', message: 'Acknowledged/Copy' },
-  { code: '10-8', message: 'In Service' },
-  { code: '10-7', message: 'Out of Service' },
-  { code: '10-20', message: 'Location' },
-  { code: '10-23', message: 'Arrived at Scene' },
-  { code: '10-24', message: 'Assignment Completed' },
-  { code: '10-97', message: 'Arrived at Scene' },
-  { code: '10-98', message: 'Assignment Complete' },
-  { code: '10-99', message: 'Officer Safety/Emergency' },
-];
-
 const DispatcherCommunications: React.FC = () => {
   const { session } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation('emergency');
+
+  const RADIO_CODES = [
+    { code: '10-4', message: t('communications.radioCodes.10-4') },
+    { code: '10-8', message: t('communications.radioCodes.10-8') },
+    { code: '10-7', message: t('communications.radioCodes.10-7') },
+    { code: '10-20', message: t('communications.radioCodes.10-20') },
+    { code: '10-23', message: t('communications.radioCodes.10-23') },
+    { code: '10-24', message: t('communications.radioCodes.10-24') },
+    { code: '10-97', message: t('communications.radioCodes.10-97') },
+    { code: '10-98', message: t('communications.radioCodes.10-98') },
+    { code: '10-99', message: t('communications.radioCodes.10-99') },
+  ];
   const [messages, setMessages] = useState<CommunicationMessage[]>([]);
   const [replyMessage, setReplyMessage] = useState('');
   const [selectedUnitId, setSelectedUnitId] = useState<string>('');
@@ -79,8 +81,8 @@ const DispatcherCommunications: React.FC = () => {
     } catch (error) {
       console.error('Error fetching messages:', error);
       toast({
-        title: "Error",
-        description: "Failed to load communications",
+        title: t('communications.errorTitle'),
+        description: t('communications.failedToLoadCommunications'),
         variant: "destructive"
       });
     } finally {
@@ -130,14 +132,14 @@ const DispatcherCommunications: React.FC = () => {
       );
 
       toast({
-        title: "Message Acknowledged",
-        description: "Message has been marked as acknowledged"
+        title: t('communications.messageAcknowledged'),
+        description: t('communications.messageMarkedAcknowledged')
       });
     } catch (error) {
       console.error('Error acknowledging message:', error);
       toast({
-        title: "Error",
-        description: "Failed to acknowledge message",
+        title: t('communications.errorTitle'),
+        description: t('communications.failedToAcknowledgeMessage'),
         variant: "destructive"
       });
     }
@@ -163,16 +165,16 @@ const DispatcherCommunications: React.FC = () => {
 
       setReplyMessage('');
       toast({
-        title: "Message Sent",
-        description: "Your message has been sent to the unit"
+        title: t('communications.messageSent'),
+        description: t('communications.messageSentToUnit')
       });
 
       fetchMessages();
     } catch (error) {
       console.error('Error sending reply:', error);
       toast({
-        title: "Error",
-        description: "Failed to send message",
+        title: t('communications.errorTitle'),
+        description: t('communications.failedToSendMessage'),
         variant: "destructive"
       });
     }
@@ -193,10 +195,10 @@ const DispatcherCommunications: React.FC = () => {
 
   const getPriorityLabel = (priority: number) => {
     switch (priority) {
-      case 1: return 'High';
-      case 2: return 'Medium';
-      case 3: return 'Low';
-      default: return 'Normal';
+      case 1: return t('communications.priorityLabels.high');
+      case 2: return t('communications.priorityLabels.medium');
+      case 3: return t('communications.priorityLabels.low');
+      default: return t('communications.priorityLabels.normal');
     }
   };
 
@@ -242,12 +244,12 @@ const DispatcherCommunications: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
-            Unit Communications
+            {t('communications.unitCommunications')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center h-32">
-            <div className="text-muted-foreground">Loading communications...</div>
+            <div className="text-muted-foreground">{t('communications.loadingCommunications')}</div>
           </div>
         </CardContent>
       </Card>
@@ -261,12 +263,12 @@ const DispatcherCommunications: React.FC = () => {
           <CardTitle className="flex items-center flex-wrap gap-2 text-lg">
             <div className="flex items-center gap-2">
               <MessageSquare className="h-5 w-5" />
-              Unit Communications
+              {t('communications.unitCommunications')}
               <Badge variant="secondary">{messages.length}</Badge>
               {unreadCount > 0 && (
                 <Badge variant="destructive" className="flex items-center gap-1">
                   <AlertTriangle className="h-3 w-3" />
-                  {unreadCount} Unread
+                  {unreadCount} {t('communications.unread')}
                 </Badge>
               )}
             </div>
@@ -278,10 +280,10 @@ const DispatcherCommunications: React.FC = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Priority</SelectItem>
-                <SelectItem value="1">High Priority</SelectItem>
-                <SelectItem value="2">Medium Priority</SelectItem>
-                <SelectItem value="3">Low Priority</SelectItem>
+                <SelectItem value="all">{t('communications.allPriority')}</SelectItem>
+                <SelectItem value="1">{t('communications.highPriority')}</SelectItem>
+                <SelectItem value="2">{t('communications.mediumPriority')}</SelectItem>
+                <SelectItem value="3">{t('communications.lowPriority')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -289,8 +291,8 @@ const DispatcherCommunications: React.FC = () => {
         <CardContent>
           <Tabs defaultValue="messages" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="messages">Messages</TabsTrigger>
-              <TabsTrigger value="compose">Compose</TabsTrigger>
+               <TabsTrigger value="messages">{t('communications.messages')}</TabsTrigger>
+               <TabsTrigger value="compose">{t('communications.compose')}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="messages" className="mt-4 space-y-6">
@@ -298,7 +300,7 @@ const DispatcherCommunications: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold text-lg flex items-center gap-2">
-                    Quick Comm
+                    {t('communications.quickComm')}
                     {quickCommMessages.length > 0 && (
                       <Badge variant="destructive">{quickCommMessages.length}</Badge>
                     )}
@@ -308,7 +310,7 @@ const DispatcherCommunications: React.FC = () => {
                   <div className="space-y-3">
                     {quickCommMessages.length === 0 ? (
                       <div className="text-center text-muted-foreground py-8">
-                        No unacknowledged messages
+                        {t('communications.noUnacknowledgedMessages')}
                       </div>
                     ) : (
                       quickCommMessages.map((message) => (
@@ -318,8 +320,8 @@ const DispatcherCommunications: React.FC = () => {
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                              <Badge variant="outline" className="text-xs">
-                                {message.emergency_units?.unit_code || 'Unknown Unit'}
+                               <Badge variant="outline" className="text-xs">
+                                 {message.emergency_units?.unit_code || t('communications.unknownUnit')}
                               </Badge>
                               <Badge variant={getPriorityColor(message.priority_level)} className="text-xs">
                                 {getPriorityLabel(message.priority_level)}
@@ -337,7 +339,7 @@ const DispatcherCommunications: React.FC = () => {
                                 variant="outline"
                                 onClick={() => acknowledgeMessage(message.id)}
                               >
-                                Acknowledge
+                                {t('communications.acknowledge')}
                               </Button>
                             </div>
                           </div>
@@ -346,9 +348,9 @@ const DispatcherCommunications: React.FC = () => {
                             {message.message_content}
                           </div>
                           
-                          <div className="flex items-center justify-between text-xs text-muted-foreground">
-                            <span>
-                              From: {message.profiles?.full_name || 'Unknown Officer'}
+                           <div className="flex items-center justify-between text-xs text-muted-foreground">
+                             <span>
+                               {t('communications.from')}: {message.profiles?.full_name || t('communications.unknownOfficer')}
                             </span>
                             <span className="flex items-center gap-1">
                               <Clock className="h-3 w-3" />
@@ -366,7 +368,7 @@ const DispatcherCommunications: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold text-lg flex items-center gap-2">
-                    Recent Communications
+                    {t('communications.recentCommunications')}
                     {recentCommMessages.length > 0 && (
                       <Badge variant="secondary">{recentCommMessages.length}</Badge>
                     )}
@@ -381,8 +383,8 @@ const DispatcherCommunications: React.FC = () => {
                       >
                         <ChevronLeft className="h-4 w-4" />
                       </Button>
-                      <span className="text-sm text-muted-foreground">
-                        Page {currentPage} of {totalPages}
+                       <span className="text-sm text-muted-foreground">
+                         {t('communications.page')} {currentPage} {t('communications.of')} {totalPages}
                       </span>
                       <Button
                         variant="outline"
@@ -397,9 +399,9 @@ const DispatcherCommunications: React.FC = () => {
                 </div>
                 <div className="space-y-3">
                   {paginatedRecentMessages.length === 0 ? (
-                    <div className="text-center text-muted-foreground py-8">
-                      No recent messages
-                    </div>
+                     <div className="text-center text-muted-foreground py-8">
+                       {t('communications.noRecentMessages')}
+                     </div>
                   ) : (
                     paginatedRecentMessages.map((message) => (
                       <div 
@@ -410,8 +412,8 @@ const DispatcherCommunications: React.FC = () => {
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs">
-                              {message.emergency_units?.unit_code || 'Unknown Unit'}
+                             <Badge variant="outline" className="text-xs">
+                               {message.emergency_units?.unit_code || t('communications.unknownUnit')}
                             </Badge>
                             <Badge variant={getPriorityColor(message.priority_level)} className="text-xs">
                               {getPriorityLabel(message.priority_level)}
@@ -427,12 +429,12 @@ const DispatcherCommunications: React.FC = () => {
                              {message.acknowledged ? (
                                <div className="flex items-center gap-1 text-green-600">
                                  <CheckCheck className="h-4 w-4" />
-                                 <span className="text-xs">Acknowledged</span>
+                                 <span className="text-xs">{t('communications.acknowledged')}</span>
                                </div>
                              ) : message.from_user_id === session?.user?.id ? (
                                <div className="flex items-center gap-1 text-blue-600">
                                  <Send className="h-4 w-4" />
-                                 <span className="text-xs">Sent by you</span>
+                                 <span className="text-xs">{t('communications.sentByYou')}</span>
                                </div>
                              ) : (
                                <Button
@@ -440,7 +442,7 @@ const DispatcherCommunications: React.FC = () => {
                                  variant="outline"
                                  onClick={() => acknowledgeMessage(message.id)}
                                >
-                                 Acknowledge
+                                  {t('communications.acknowledge')}
                                </Button>
                              )}
                            </div>
@@ -451,8 +453,8 @@ const DispatcherCommunications: React.FC = () => {
                         </div>
                         
                         <div className="flex items-center justify-between text-xs text-muted-foreground">
-                          <span>
-                            From: {message.profiles?.full_name || 'Unknown Officer'}
+                           <span>
+                             {t('communications.from')}: {message.profiles?.full_name || t('communications.unknownOfficer')}
                           </span>
                           <span className="flex items-center gap-1">
                             <Clock className="h-3 w-3" />
@@ -469,11 +471,11 @@ const DispatcherCommunications: React.FC = () => {
             <TabsContent value="compose" className="mt-4">
               <div className="space-y-4">
                 {/* Unit Selection */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Select Unit</label>
+                 <div className="space-y-2">
+                   <label className="text-sm font-medium">{t('communications.selectUnit')}</label>
                   <Select value={selectedUnitId} onValueChange={setSelectedUnitId}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Choose unit to message" />
+                      <SelectValue placeholder={t('communications.chooseUnitToMessage')} />
                     </SelectTrigger>
                     <SelectContent>
                       {Array.from(new Set(messages.map(m => m.from_unit_id))).map(unitId => {
@@ -489,8 +491,8 @@ const DispatcherCommunications: React.FC = () => {
                 </div>
 
                 {/* Quick Radio Codes */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Quick Radio Codes</label>
+                 <div className="space-y-2">
+                   <label className="text-sm font-medium">{t('communications.quickRadioCodes')}</label>
                   <div className="grid grid-cols-3 gap-2">
                     {RADIO_CODES.map((code) => (
                       <Button
@@ -508,11 +510,11 @@ const DispatcherCommunications: React.FC = () => {
                 </div>
 
                 {/* Custom Message */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Custom Message</label>
+                 <div className="space-y-2">
+                   <label className="text-sm font-medium">{t('communications.customMessage')}</label>
                   <div className="flex gap-2">
                     <Textarea
-                      placeholder="Type your custom message..."
+                      placeholder={t('communications.typeCustomMessage')}
                       value={replyMessage}
                       onChange={(e) => setReplyMessage(e.target.value)}
                       className="flex-1"
@@ -525,7 +527,7 @@ const DispatcherCommunications: React.FC = () => {
                     className="w-full"
                   >
                     <Send className="h-4 w-4 mr-2" />
-                    Send Message
+                    {t('communications.sendMessage')}
                   </Button>
                 </div>
               </div>
