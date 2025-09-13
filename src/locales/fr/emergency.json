@@ -940,6 +940,9 @@
       "offline": "Hors Ligne",
       "ended": "Terminé",
       "inactive": "Inactif"
-    }
+    },
+    "operatorsCurrentlyOnline_one": "{{count}} opérateur actuellement en ligne",
+    "operatorsCurrentlyOnline_other": "{{count}} opérateurs actuellement en ligne",
+    "noOtherOperatorsOnline": "Aucun autre opérateur en ligne"
   }
 }

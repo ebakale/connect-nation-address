@@ -1124,6 +1124,9 @@
       "offline": "Desconectado",
       "ended": "Terminado",
       "inactive": "Inactivo"
-    }
+    },
+    "operatorsCurrentlyOnline_one": "{{count}} operador actualmente en línea",
+    "operatorsCurrentlyOnline_other": "{{count}} operadores actualmente en línea",
+    "noOtherOperatorsOnline": "No hay otros operadores en línea"
   }
 }
