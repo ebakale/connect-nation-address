@@ -603,5 +603,13 @@
   "dispatcherAssigned": "Répartiteur assigné",
   "unassigned": "Non assigné",
   "viewDetails": "Voir les détails",
-  "clickForDetails": "Cliquer pour les détails"
+  "clickForDetails": "Cliquer pour les détails",
+  "statusLabels": {
+    "reported": "SIGNALÉ",
+    "dispatched": "EXPÉDIÉ",
+    "responding": "EN RÉPONSE",
+    "on_scene": "SUR SCÈNE", 
+    "resolved": "RÉSOLU",
+    "closed": "FERMÉ"
+  }
 }

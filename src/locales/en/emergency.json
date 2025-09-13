@@ -787,5 +787,13 @@
   "dispatcherAssigned": "Dispatcher assigned",
   "unassigned": "Unassigned",
   "viewDetails": "View details",
-  "clickForDetails": "Click for details"
+  "clickForDetails": "Click for details",
+  "statusLabels": {
+    "reported": "REPORTED",
+    "dispatched": "DISPATCHED", 
+    "responding": "RESPONDING",
+    "on_scene": "ON SCENE",
+    "resolved": "RESOLVED",
+    "closed": "CLOSED"
+  }
 }

@@ -787,5 +787,13 @@
   "dispatcherAssigned": "Despachador asignado",
   "unassigned": "Sin asignar",
   "viewDetails": "Ver detalles",
-  "clickForDetails": "Clic para detalles"
+  "clickForDetails": "Clic para detalles",
+  "statusLabels": {
+    "reported": "REPORTADO",
+    "dispatched": "DESPACHADO",
+    "responding": "RESPONDIENDO", 
+    "on_scene": "EN ESCENA",
+    "resolved": "RESUELTO",
+    "closed": "CERRADO"
+  }
 }

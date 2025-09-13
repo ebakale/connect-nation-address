@@ -500,7 +500,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
                   P{incident.priority_level}
                 </Badge>
                 <Badge className={getStatusColor(incident.status)} variant="outline">
-                  {incident.status.replace('_', ' ').toUpperCase()}
+                  {t(`emergency:statusLabels.${incident.status}`) || incident.status.replace('_', ' ').toUpperCase()}
                 </Badge>
               </div>
             </div>
