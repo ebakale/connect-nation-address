@@ -204,6 +204,11 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
     }
   };
 
+  const sanitizeAddressDisplay = (input?: string) => {
+    if (!input) return '';
+    return input.replace(/^\s*(Emergency Location|Dirección)\s*:\s*/i, '').trim();
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -325,7 +330,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
                       {incident.location_address && (
                         <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
                           <MapPin className="h-4 w-4" />
-                          <span>{t('address')}: {incident.location_address}</span>
+                          <span>{t('address')}: {sanitizeAddressDisplay(incident.location_address)}</span>
                         </div>
                       )}
                     </div>
