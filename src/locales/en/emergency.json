@@ -753,5 +753,21 @@
   "activeIncidents": "Active Incidents",
   "teamManagement": "Team Management",
   "unitStatus": "Unit Status",
-  "communications": "Communications"
+  "communications": "Communications",
+  "needDispatcherAssignment": "need dispatcher assignment",
+  "incident": "incident",
+  "incidents": "incidents",
+  "showing": "Showing",
+  "of": "of",
+  "page": "Page",
+  "selectAUnit": "Select a unit",
+  "cancel": "Cancel",
+  "dispatchUnit": "Dispatch Unit",
+  "status": "Status",
+  "priority": "Priority",
+  "allStatus": "All Status",
+  "reported": "Reported",
+  "dispatched": "Dispatched", 
+  "responding": "Responding",
+  "onScene": "On Scene"
 }

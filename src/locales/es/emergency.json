@@ -753,5 +753,21 @@
   "activeIncidents": "Incidentes Activos",
   "teamManagement": "Gestión de Equipo",
   "unitStatus": "Estado de la Unidad",
-  "communications": "Comunicaciones"
+  "communications": "Comunicaciones",
+  "needDispatcherAssignment": "necesitan asignación de despachador",
+  "incident": "incidente",
+  "incidents": "incidentes",
+  "showing": "Mostrando",
+  "of": "de",
+  "page": "Página",
+  "selectAUnit": "Seleccionar una unidad",
+  "cancel": "Cancelar",
+  "dispatchUnit": "Despachar Unidad",
+  "status": "Estado",
+  "priority": "Prioridad",
+  "allStatus": "Todos los Estados",
+  "reported": "Reportado",
+  "dispatched": "Despachado",
+  "responding": "Respondiendo",
+  "onScene": "En Escena"
 }

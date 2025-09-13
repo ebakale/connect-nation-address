@@ -402,7 +402,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
               <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2 flex items-center gap-2 mb-3">
                 <AlertTriangle className="h-4 w-4 text-red-600" />
                 <span className="text-sm font-medium text-red-800">
-                  {unassignedIncidents.length} incident{unassignedIncidents.length > 1 ? 's' : ''} need dispatcher assignment
+                  {unassignedIncidents.length} {unassignedIncidents.length > 1 ? t('incidents') : t('incident')} {t('needDispatcherAssignment')}
                 </span>
               </div>
             );
@@ -413,7 +413,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
           {showStatusFilter && (
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder="Status" />
+                <SelectValue placeholder={t('status')} />
               </SelectTrigger>
               <SelectContent className="bg-background z-50">
                 <SelectItem value="all">{t('allStatus')}</SelectItem>
@@ -428,7 +428,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
           {showPriorityFilter && (
             <Select value={priorityFilter} onValueChange={setPriorityFilter}>
               <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder="Priority" />
+                <SelectValue placeholder={t('priority')} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('common:allPriority')}</SelectItem>
@@ -445,10 +445,10 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
       {/* Pagination info */}
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <span>
-          Showing {startIndex + 1}-{Math.min(startIndex + incidentsPerPage, filteredIncidents.length)} of {filteredIncidents.length} incidents
+          {t('showing')} {startIndex + 1}-{Math.min(startIndex + incidentsPerPage, filteredIncidents.length)} {t('of')} {filteredIncidents.length} {t('incidents')}
         </span>
         <span>
-          Page {currentPage} of {totalPages}
+          {t('page')} {currentPage} {t('of')} {totalPages}
         </span>
       </div>
 
@@ -582,7 +582,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
           <div className="space-y-4">
             <Select value={dispatchingUnit} onValueChange={setDispatchingUnit}>
               <SelectTrigger>
-                <SelectValue placeholder="Select a unit" />
+                <SelectValue placeholder={t('selectAUnit')} />
               </SelectTrigger>
               <SelectContent className="bg-background z-50">
                 {availableOfficers
@@ -600,13 +600,13 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
             </Select>
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setAssignDialog(null)}>
-                Cancel
+                {t('cancel')}
               </Button>
               <Button 
                 onClick={() => assignDialog && handleDispatchIncident(assignDialog)}
                 disabled={!dispatchingUnit}
               >
-                Dispatch Unit
+                {t('dispatchUnit')}
               </Button>
             </div>
           </div>

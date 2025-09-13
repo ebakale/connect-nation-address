@@ -569,5 +569,21 @@
   "activeIncidents": "Incidents Actifs",
   "teamManagement": "Gestion d'Équipe",
   "unitStatus": "Statut de l'Unité",
-  "communications": "Communications"
+  "communications": "Communications",
+  "needDispatcherAssignment": "nécessitent une assignation de répartiteur",
+  "incident": "incident",
+  "incidents": "incidents", 
+  "showing": "Affichage",
+  "of": "de",
+  "page": "Page",
+  "selectAUnit": "Sélectionner une unité",
+  "cancel": "Annuler",
+  "dispatchUnit": "Dépêcher l'Unité",
+  "status": "Statut",
+  "priority": "Priorité",
+  "allStatus": "Tous les Statuts",
+  "reported": "Signalé",
+  "dispatched": "Dépêché",
+  "responding": "En Réponse",
+  "onScene": "Sur les Lieux"
 }
