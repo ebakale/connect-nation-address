@@ -32,7 +32,9 @@
     "loading": "Chargement...",
     "retry": "Réessayer",
     "tryAgain": "Essayer à nouveau",
-    "call": "Appeler"
+    "call": "Appeler",
+    "updating": "Mise à jour...",
+    "updateStatus": "Mettre à Jour le Statut"
   },
   "navigation": {
   "home": "Accueil",
@@ -66,7 +68,9 @@
     "verified": "Vérifié",
     "unverified": "Non vérifié",
     "public": "Public",
-    "private": "Privé"
+    "private": "Privé",
+    "busy": "Occupé",
+    "status": "Statut"
   },
   "messages": {
     "noData": "Aucune donnée disponible",

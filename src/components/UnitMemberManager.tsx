@@ -14,6 +14,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 interface UnitInfo {
   id: string;
@@ -40,6 +41,7 @@ interface UnitMemberManagerProps {
 
 export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUpdate }) => {
   const { user } = useAuth();
+  const { t } = useTranslation('emergency');
   const [selectedMember, setSelectedMember] = useState<any>(null);
   const [isAssignmentDialogOpen, setIsAssignmentDialogOpen] = useState(false);
   const [assignmentData, setAssignmentData] = useState({
@@ -64,11 +66,11 @@ export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUp
 
   const formatRoleTitle = (role: string) => {
     switch (role) {
-      case 'lieutenant': return 'Lieutenant';
-      case 'sergeant': return 'Sergeant';
-      case 'corporal': return 'Corporal';
-      case 'senior_officer': return 'Senior Officer';
-      default: return 'Police Officer';
+      case 'lieutenant': return t('unitMemberManager.roles.lieutenant');
+      case 'sergeant': return t('unitMemberManager.roles.sergeant');
+      case 'corporal': return t('unitMemberManager.roles.corporal');
+      case 'senior_officer': return t('unitMemberManager.roles.seniorOfficer');
+      default: return t('unitMemberManager.roles.policeOfficer');
     }
   };
 
@@ -76,11 +78,11 @@ export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUp
     try {
       // This would typically update a member status table
       // For now, we'll show a success message
-      toast.success(`Officer status updated to ${status}`);
+      toast.success(t('unitMemberManager.officerStatusUpdated', { status }));
       onUpdate();
     } catch (error) {
       console.error('Error updating member status:', error);
-      toast.error("Failed to update officer status");
+      toast.error(t('unitMemberManager.failedToUpdateStatus'));
     }
   };
 
@@ -89,7 +91,7 @@ export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUp
 
     try {
       // In a real implementation, this would create a task assignment record
-      toast.success(`Task assigned to ${selectedMember.profiles.full_name}`);
+      toast.success(t('unitMemberManager.taskAssigned', { name: selectedMember.profiles.full_name }));
       
       setIsAssignmentDialogOpen(false);
       setAssignmentData({ task: '', notes: '', priority: 'normal' });
@@ -97,14 +99,14 @@ export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUp
       onUpdate();
     } catch (error) {
       console.error('Error assigning task:', error);
-      toast.error("Failed to assign task");
+      toast.error(t('unitMemberManager.failedToAssignTask'));
     }
   };
 
   const sendMessage = async (memberId: string) => {
     try {
       // This would typically open a communication interface
-      toast.success("Opening secure communication channel...");
+      toast.success(t('unitMemberManager.openingCommunication'));
     } catch (error) {
       console.error('Error opening communication:', error);
     }
@@ -116,10 +118,10 @@ export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUp
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <Users className="h-5 w-5" />
-            Unit Team Management
+            {t('unitMemberManager.title')}
           </CardTitle>
           <CardDescription>
-            Manage assignments and coordination for your unit members
+            {t('unitMemberManager.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -148,7 +150,7 @@ export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUp
                           {member.is_lead && (
                             <>
                               <span>•</span>
-                              <span className="text-yellow-600 font-medium">Unit Lead</span>
+                              <span className="text-yellow-600 font-medium">{t('unitMemberManager.unitLead')}</span>
                             </>
                           )}
                         </div>
@@ -159,7 +161,7 @@ export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUp
                       {/* Status Indicator */}
                       <div className="flex items-center gap-1">
                         <div className="w-2 h-2 rounded-full bg-green-500" />
-                        <span className="text-xs text-muted-foreground">Available</span>
+                        <span className="text-xs text-muted-foreground">{t('common:status.available')}</span>
                       </div>
 
                       {/* Quick Actions */}
@@ -184,20 +186,20 @@ export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUp
                           </DialogTrigger>
                           <DialogContent>
                             <DialogHeader>
-                              <DialogTitle>Assign Task to {member.profiles.full_name}</DialogTitle>
+                              <DialogTitle>{t('unitMemberManager.assignTask', { name: member.profiles.full_name })}</DialogTitle>
                             </DialogHeader>
                             <div className="space-y-4">
                               <div>
-                                <Label>Task Assignment</Label>
+                                <Label>{t('unitMemberManager.taskAssignment')}</Label>
                                 <Textarea
-                                  placeholder="Describe the task or assignment..."
+                                  placeholder={t('unitMemberManager.taskPlaceholder')}
                                   value={assignmentData.task}
                                   onChange={(e) => setAssignmentData({...assignmentData, task: e.target.value})}
                                 />
                               </div>
                               
                               <div>
-                                <Label>Priority</Label>
+                                <Label>{t('common:priority')}</Label>
                                 <Select
                                   value={assignmentData.priority}
                                   onValueChange={(value) => setAssignmentData({...assignmentData, priority: value})}
@@ -206,25 +208,25 @@ export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUp
                                     <SelectValue />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value="low">Low Priority</SelectItem>
-                                    <SelectItem value="normal">Normal Priority</SelectItem>
-                                    <SelectItem value="high">High Priority</SelectItem>
-                                    <SelectItem value="urgent">Urgent</SelectItem>
+                                    <SelectItem value="low">{t('unitMemberManager.priorities.low')}</SelectItem>
+                                    <SelectItem value="normal">{t('unitMemberManager.priorities.normal')}</SelectItem>
+                                    <SelectItem value="high">{t('unitMemberManager.priorities.high')}</SelectItem>
+                                    <SelectItem value="urgent">{t('unitMemberManager.priorities.urgent')}</SelectItem>
                                   </SelectContent>
                                 </Select>
                               </div>
 
                               <div>
-                                <Label>Additional Notes</Label>
+                                <Label>{t('unitMemberManager.additionalNotes')}</Label>
                                 <Textarea
-                                  placeholder="Any additional instructions or context..."
+                                  placeholder={t('unitMemberManager.notesPlaceholder')}
                                   value={assignmentData.notes}
                                   onChange={(e) => setAssignmentData({...assignmentData, notes: e.target.value})}
                                 />
                               </div>
 
                               <Button onClick={assignTask} className="w-full">
-                                Assign Task
+                                {t('unitMemberManager.assignTaskButton')}
                               </Button>
                             </div>
                           </DialogContent>
@@ -232,13 +234,13 @@ export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUp
 
                         <Select onValueChange={(value) => updateMemberStatus(member.id, value)}>
                           <SelectTrigger className="w-24">
-                            <SelectValue placeholder="Status" />
+                            <SelectValue placeholder={t('common:status.status')} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="available">Available</SelectItem>
-                            <SelectItem value="busy">Busy</SelectItem>
-                            <SelectItem value="patrol">On Patrol</SelectItem>
-                            <SelectItem value="break">On Break</SelectItem>
+                            <SelectItem value="available">{t('common:status.available')}</SelectItem>
+                            <SelectItem value="busy">{t('common:status.busy')}</SelectItem>
+                            <SelectItem value="patrol">{t('unitMemberManager.statuses.onPatrol')}</SelectItem>
+                            <SelectItem value="break">{t('unitMemberManager.statuses.onBreak')}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -266,10 +268,10 @@ export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUp
                   {/* Current Assignment Info */}
                   <div className="mt-2 flex items-center gap-2 text-xs">
                     <Badge variant="secondary" className="text-xs">
-                      On Duty
+                      {t('unitMemberManager.onDuty')}
                     </Badge>
                     <span className="text-muted-foreground">
-                      No active assignment
+                      {t('unitMemberManager.noActiveAssignment')}
                     </span>
                   </div>
                 </CardContent>
@@ -278,8 +280,8 @@ export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUp
             ) : (
               <div className="text-center py-8">
                 <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No unit members found.</p>
-                <p className="text-sm text-muted-foreground">Contact your supervisor to be assigned to this unit.</p>
+                <p className="text-muted-foreground">{t('unitMemberManager.noMembers')}</p>
+                <p className="text-sm text-muted-foreground">{t('unitMemberManager.contactSupervisor')}</p>
               </div>
             )}
           </div>
@@ -291,22 +293,22 @@ export const UnitMemberManager: React.FC<UnitMemberManagerProps> = ({ unit, onUp
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Activity className="h-5 w-5" />
-            Unit Performance Summary
+            {t('unitMemberManager.performanceSummary')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center">
               <p className="text-2xl font-bold text-green-600">100%</p>
-              <p className="text-sm text-muted-foreground">Team Availability</p>
+              <p className="text-sm text-muted-foreground">{t('unitMemberManager.teamAvailability')}</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold text-blue-600">8.5m</p>
-              <p className="text-sm text-muted-foreground">Avg Response Time</p>
+              <p className="text-sm text-muted-foreground">{t('unitMemberManager.avgResponseTime')}</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold text-purple-600">12</p>
-              <p className="text-sm text-muted-foreground">Incidents Today</p>
+              <p className="text-sm text-muted-foreground">{t('unitMemberManager.incidentsToday')}</p>
             </div>
           </div>
         </CardContent>

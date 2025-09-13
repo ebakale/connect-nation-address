@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { MapPin, Clock, AlertCircle, CheckCircle, Radio, Navigation } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface UnitInfo {
   id: string;
@@ -50,18 +51,19 @@ interface UnitStatus {
   updated_at: string;
 }
 
-const statusOptions = [
-  { value: 'available', label: 'Available', icon: CheckCircle, color: 'bg-green-500' },
-  { value: 'dispatched', label: 'Dispatched', icon: Radio, color: 'bg-blue-500' },
-  { value: 'en_route', label: 'En Route', icon: Navigation, color: 'bg-orange-500' },
-  { value: 'on_scene', label: 'On Scene', icon: MapPin, color: 'bg-red-500' },
-  { value: 'busy', label: 'Busy', icon: Clock, color: 'bg-yellow-500' },
-  { value: 'unavailable', label: 'Unavailable', icon: AlertCircle, color: 'bg-gray-500' }
+const getStatusOptions = (t: any) => [
+  { value: 'available', label: t('unitStatusManager.statuses.available'), icon: CheckCircle, color: 'bg-green-500' },
+  { value: 'dispatched', label: t('unitStatusManager.statuses.dispatched'), icon: Radio, color: 'bg-blue-500' },
+  { value: 'en_route', label: t('unitStatusManager.statuses.enRoute'), icon: Navigation, color: 'bg-orange-500' },
+  { value: 'on_scene', label: t('unitStatusManager.statuses.onScene'), icon: MapPin, color: 'bg-red-500' },
+  { value: 'busy', label: t('unitStatusManager.statuses.busy'), icon: Clock, color: 'bg-yellow-500' },
+  { value: 'unavailable', label: t('unitStatusManager.statuses.unavailable'), icon: AlertCircle, color: 'bg-gray-500' }
 ];
 
 export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unit, onUpdate }) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation('emergency');
   const [unitStatus, setUnitStatus] = useState<UnitStatus | null>(null);
   const [assignments, setAssignments] = useState<IncidentAssignment[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string>('');
@@ -229,14 +231,14 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unit, onUp
       setUnitStatus({ ...unitStatus, ...updateData });
       setLocationNotes('');
       toast({
-        title: "Status Updated",
-        description: `Unit status updated to ${statusOptions.find(s => s.value === selectedStatus)?.label}`
+        title: t('unitStatusManager.statusUpdated'),
+        description: t('unitStatusManager.statusUpdatedTo', { status: getStatusOptions(t).find(s => s.value === selectedStatus)?.label })
       });
     } catch (error) {
       console.error('Error updating unit status:', error);
       toast({
-        title: "Error",
-        description: "Failed to update unit status",
+        title: t('common:messages.loadingError'),
+        description: t('unitStatusManager.failedToUpdateStatus'),
         variant: "destructive"
       });
     } finally {
@@ -272,14 +274,14 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unit, onUp
 
       fetchActiveAssignments();
       toast({
-        title: "Response Recorded",
-        description: "Marked as responded to incident"
+        title: t('unitStatusManager.responseRecorded'),
+        description: t('unitStatusManager.markedAsResponded')
       });
     } catch (error) {
       console.error('Error responding to incident:', error);
       toast({
-        title: "Error",
-        description: "Failed to update incident status",
+        title: t('common:messages.loadingError'),
+        description: t('unitStatusManager.failedToUpdateIncident'),
         variant: "destructive"
       });
     }
@@ -296,14 +298,14 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unit, onUp
   };
 
   const getCurrentStatusInfo = () => {
-    return statusOptions.find(s => s.value === (unitStatus?.status || selectedStatus));
+    return getStatusOptions(t).find(s => s.value === (unitStatus?.status || selectedStatus));
   };
 
   if (!unitStatus) {
     return (
       <Card>
         <CardContent className="p-6 text-center">
-          <p className="text-muted-foreground">No unit assignment found</p>
+          <p className="text-muted-foreground">{t('unitStatusManager.noUnitAssignment')}</p>
         </CardContent>
       </Card>
     );
@@ -317,7 +319,7 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unit, onUp
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <Radio className="h-5 w-5" />
-            Unit Status - {unitStatus.unit_code}
+            {t('unitStatusManager.title', { unitCode: unitStatus.unit_code })}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -336,10 +338,10 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unit, onUp
           <div className="space-y-3">
             <Select value={selectedStatus} onValueChange={setSelectedStatus}>
               <SelectTrigger>
-                <SelectValue placeholder="Update status" />
+                <SelectValue placeholder={t('unitStatusManager.updateStatus')} />
               </SelectTrigger>
               <SelectContent>
-                {statusOptions.map((status) => (
+                {getStatusOptions(t).map((status) => (
                   <SelectItem key={status.value} value={status.value}>
                     <div className="flex items-center gap-2">
                       <div className={`w-2 h-2 rounded-full ${status.color}`} />
@@ -351,7 +353,7 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unit, onUp
             </Select>
 
             <Textarea
-              placeholder="Current location or notes (optional)"
+              placeholder={t('unitStatusManager.locationPlaceholder')}
               value={locationNotes}
               onChange={(e) => setLocationNotes(e.target.value)}
               rows={2}
@@ -366,7 +368,7 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unit, onUp
                 className="rounded"
               />
               <label htmlFor="location-tracking" className="text-sm">
-                Include GPS location
+                {t('unitStatusManager.includeGPS')}
               </label>
             </div>
 
@@ -375,7 +377,7 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unit, onUp
               disabled={isUpdating || selectedStatus === unitStatus.status}
               className="w-full"
             >
-              {isUpdating ? 'Updating...' : 'Update Status'}
+              {isUpdating ? t('common:buttons.updating') : t('common:buttons.updateStatus')}
             </Button>
           </div>
         </CardContent>
@@ -386,7 +388,7 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unit, onUp
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5" />
-              Active Assignments ({assignments.length})
+              {t('unitStatusManager.activeAssignments', { count: assignments.length })}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -397,7 +399,7 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unit, onUp
                     <div>
                       <p className="font-medium">{assignment.incident_number}</p>
                       <p className="text-sm text-muted-foreground">
-                        {assignment.emergency_type.replace(/_/g, ' ').toUpperCase()} - Priority {assignment.priority_level}
+                        {assignment.emergency_type.replace(/_/g, ' ').toUpperCase()} - {t('unitStatusManager.priorityLevel', { level: assignment.priority_level })}
                       </p>
                       {assignment.location_address && (
                         <p className="text-sm text-muted-foreground">
@@ -416,7 +418,7 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unit, onUp
                       onClick={() => respondToIncident(assignment.id)}
                       className="w-full"
                     >
-                      Mark as Responded
+                      {t('unitStatusManager.markAsResponded')}
                     </Button>
                   )}
                 </div>

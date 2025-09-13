@@ -308,6 +308,73 @@
     "failedToAcknowledgeMessage": "Échec de la confirmation du message"
   },
   
+  "unitMemberManager": {
+    "title": "Gestion d'Équipe d'Unité",
+    "description": "Gérer les affectations et la coordination pour les membres de votre unité",
+    "roles": {
+      "lieutenant": "Lieutenant",
+      "sergeant": "Sergent",
+      "corporal": "Caporal",
+      "seniorOfficer": "Officier Principal",
+      "policeOfficer": "Officier de Police"
+    },
+    "unitLead": "Chef d'Unité",
+    "assignTask": "Assigner une Tâche à {{name}}",
+    "taskAssignment": "Affectation de Tâche",
+    "taskPlaceholder": "Décrivez la tâche ou l'affectation...",
+    "priorities": {
+      "low": "Priorité Basse",
+      "normal": "Priorité Normale",
+      "high": "Priorité Haute",
+      "urgent": "Urgent"
+    },
+    "additionalNotes": "Notes Supplémentaires",
+    "notesPlaceholder": "Toute instruction supplémentaire ou contexte...",
+    "assignTaskButton": "Assigner la Tâche",
+    "statuses": {
+      "onPatrol": "En Patrouille",
+      "onBreak": "En Pause"
+    },
+    "onDuty": "En Service",
+    "noActiveAssignment": "Aucune affectation active",
+    "noMembers": "Aucun membre d'unité trouvé.",
+    "contactSupervisor": "Contactez votre superviseur pour être affecté à cette unité.",
+    "performanceSummary": "Résumé de Performance d'Unité",
+    "teamAvailability": "Disponibilité de l'Équipe",
+    "avgResponseTime": "Temps de Réponse Moyen",
+    "incidentsToday": "Incidents Aujourd'hui",
+    "officerStatusUpdated": "Statut de l'officier mis à jour à {{status}}",
+    "failedToUpdateStatus": "Échec de la mise à jour du statut de l'officier",
+    "taskAssigned": "Tâche assignée à {{name}}",
+    "failedToAssignTask": "Échec de l'assignation de la tâche",
+    "openingCommunication": "Ouverture du canal de communication sécurisé..."
+  },
+  
+  "unitStatusManager": {
+    "title": "Statut d'Unité - {{unitCode}}",
+    "statuses": {
+      "available": "Disponible",
+      "dispatched": "Dépêché",
+      "enRoute": "En Route",
+      "onScene": "Sur Les Lieux",
+      "busy": "Occupé",
+      "unavailable": "Indisponible"
+    },
+    "updateStatus": "Mettre à jour le statut",
+    "locationPlaceholder": "Localisation actuelle ou notes (optionnel)",
+    "includeGPS": "Inclure la localisation GPS",
+    "statusUpdated": "Statut Mis à Jour",
+    "statusUpdatedTo": "Statut de l'unité mis à jour à {{status}}",
+    "failedToUpdateStatus": "Échec de la mise à jour du statut de l'unité",
+    "responseRecorded": "Réponse Enregistrée",
+    "markedAsResponded": "Marqué comme ayant répondu à l'incident",
+    "failedToUpdateIncident": "Échec de la mise à jour du statut de l'incident",
+    "noUnitAssignment": "Aucune affectation d'unité trouvée",
+    "activeAssignments": "Affectations Actives ({{count}})",
+    "priorityLevel": "Priorité {{level}}",
+    "markAsResponded": "Marquer comme Répondu"
+  },
+  
   "policeAdminDashboard": {
     "accessDenied": "Accès Refusé",
     "accessDeniedMessage": "Vous n'avez pas la permission d'accéder au Tableau de Bord d'Administration de Police.",

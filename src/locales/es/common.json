@@ -32,7 +32,9 @@
     "loading": "Cargando...",
     "retry": "Reintentar",
     "tryAgain": "Intentar de nuevo",
-    "call": "Llamar"
+    "call": "Llamar",
+    "updating": "Actualizando...",
+    "updateStatus": "Actualizar Estado"
   },
   "navigation": {
     "home": "Inicio",
@@ -66,7 +68,9 @@
     "verified": "Verificado",
     "unverified": "No verificado",
     "public": "Público",
-    "private": "Privado"
+    "private": "Privado",
+    "busy": "Ocupado",
+    "status": "Estado"
   },
   "messages": {
     "noData": "No hay datos disponibles",

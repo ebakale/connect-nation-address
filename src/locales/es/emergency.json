@@ -492,6 +492,73 @@
     "failedToAcknowledgeMessage": "Error al confirmar mensaje"
   },
   
+  "unitMemberManager": {
+    "title": "Gestión de Equipo de Unidad",
+    "description": "Gestionar asignaciones y coordinación para los miembros de tu unidad",
+    "roles": {
+      "lieutenant": "Teniente",
+      "sergeant": "Sargento",
+      "corporal": "Cabo",
+      "seniorOfficer": "Oficial Senior",
+      "policeOfficer": "Oficial de Policía"
+    },
+    "unitLead": "Líder de Unidad",
+    "assignTask": "Asignar Tarea a {{name}}",
+    "taskAssignment": "Asignación de Tarea",
+    "taskPlaceholder": "Describe la tarea o asignación...",
+    "priorities": {
+      "low": "Prioridad Baja",
+      "normal": "Prioridad Normal",
+      "high": "Prioridad Alta",
+      "urgent": "Urgente"
+    },
+    "additionalNotes": "Notas Adicionales",
+    "notesPlaceholder": "Cualquier instrucción adicional o contexto...",
+    "assignTaskButton": "Asignar Tarea",
+    "statuses": {
+      "onPatrol": "En Patrulla",
+      "onBreak": "En Descanso"
+    },
+    "onDuty": "En Servicio",
+    "noActiveAssignment": "Sin asignación activa",
+    "noMembers": "No se encontraron miembros de la unidad.",
+    "contactSupervisor": "Contacta a tu supervisor para ser asignado a esta unidad.",
+    "performanceSummary": "Resumen de Rendimiento de Unidad",
+    "teamAvailability": "Disponibilidad del Equipo",
+    "avgResponseTime": "Tiempo de Respuesta Promedio",
+    "incidentsToday": "Incidentes Hoy",
+    "officerStatusUpdated": "Estado del oficial actualizado a {{status}}",
+    "failedToUpdateStatus": "Error al actualizar el estado del oficial",
+    "taskAssigned": "Tarea asignada a {{name}}",
+    "failedToAssignTask": "Error al asignar tarea",
+    "openingCommunication": "Abriendo canal de comunicación seguro..."
+  },
+  
+  "unitStatusManager": {
+    "title": "Estado de Unidad - {{unitCode}}",
+    "statuses": {
+      "available": "Disponible",
+      "dispatched": "Despachado",
+      "enRoute": "En Ruta",
+      "onScene": "En el Lugar",
+      "busy": "Ocupado",
+      "unavailable": "No Disponible"
+    },
+    "updateStatus": "Actualizar estado",
+    "locationPlaceholder": "Ubicación actual o notas (opcional)",
+    "includeGPS": "Incluir ubicación GPS",
+    "statusUpdated": "Estado Actualizado",
+    "statusUpdatedTo": "Estado de unidad actualizado a {{status}}",
+    "failedToUpdateStatus": "Error al actualizar el estado de la unidad",
+    "responseRecorded": "Respuesta Registrada",
+    "markedAsResponded": "Marcado como respondido al incidente",
+    "failedToUpdateIncident": "Error al actualizar el estado del incidente",
+    "noUnitAssignment": "No se encontró asignación de unidad",
+    "activeAssignments": "Asignaciones Activas ({{count}})",
+    "priorityLevel": "Prioridad {{level}}",
+    "markAsResponded": "Marcar como Respondido"
+  },
+  
   "policeAdminDashboard": {
     "accessDenied": "Acceso Denegado",
     "accessDeniedMessage": "No tiene permisos para acceder al Panel de Administración Policial.",

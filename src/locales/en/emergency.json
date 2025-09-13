@@ -492,6 +492,73 @@
     "failedToAcknowledgeMessage": "Failed to acknowledge message"
   },
   
+  "unitMemberManager": {
+    "title": "Unit Team Management",
+    "description": "Manage assignments and coordination for your unit members",
+    "roles": {
+      "lieutenant": "Lieutenant",
+      "sergeant": "Sergeant",
+      "corporal": "Corporal",
+      "seniorOfficer": "Senior Officer",
+      "policeOfficer": "Police Officer"
+    },
+    "unitLead": "Unit Lead",
+    "assignTask": "Assign Task to {{name}}",
+    "taskAssignment": "Task Assignment",
+    "taskPlaceholder": "Describe the task or assignment...",
+    "priorities": {
+      "low": "Low Priority",
+      "normal": "Normal Priority",
+      "high": "High Priority",
+      "urgent": "Urgent"
+    },
+    "additionalNotes": "Additional Notes",
+    "notesPlaceholder": "Any additional instructions or context...",
+    "assignTaskButton": "Assign Task",
+    "statuses": {
+      "onPatrol": "On Patrol",
+      "onBreak": "On Break"
+    },
+    "onDuty": "On Duty",
+    "noActiveAssignment": "No active assignment",
+    "noMembers": "No unit members found.",
+    "contactSupervisor": "Contact your supervisor to be assigned to this unit.",
+    "performanceSummary": "Unit Performance Summary",
+    "teamAvailability": "Team Availability",
+    "avgResponseTime": "Avg Response Time",
+    "incidentsToday": "Incidents Today",
+    "officerStatusUpdated": "Officer status updated to {{status}}",
+    "failedToUpdateStatus": "Failed to update officer status",
+    "taskAssigned": "Task assigned to {{name}}",
+    "failedToAssignTask": "Failed to assign task",
+    "openingCommunication": "Opening secure communication channel..."
+  },
+  
+  "unitStatusManager": {
+    "title": "Unit Status - {{unitCode}}",
+    "statuses": {
+      "available": "Available",
+      "dispatched": "Dispatched",
+      "enRoute": "En Route",
+      "onScene": "On Scene",
+      "busy": "Busy",
+      "unavailable": "Unavailable"
+    },
+    "updateStatus": "Update status",
+    "locationPlaceholder": "Current location or notes (optional)",
+    "includeGPS": "Include GPS location",
+    "statusUpdated": "Status Updated",
+    "statusUpdatedTo": "Unit status updated to {{status}}",
+    "failedToUpdateStatus": "Failed to update unit status",
+    "responseRecorded": "Response Recorded",
+    "markedAsResponded": "Marked as responded to incident",
+    "failedToUpdateIncident": "Failed to update incident status",
+    "noUnitAssignment": "No unit assignment found",
+    "activeAssignments": "Active Assignments ({{count}})",
+    "priorityLevel": "Priority {{level}}",
+    "markAsResponded": "Mark as Responded"
+  },
+  
   "policeAdminDashboard": {
     "accessDenied": "Access Denied",
     "accessDeniedMessage": "You do not have permission to access the Police Administration Dashboard.",
