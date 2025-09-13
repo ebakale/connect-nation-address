@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 import { toast } from '@/hooks/use-toast';
 import { UnitStatusManager } from './UnitStatusManager';
 import { UnitMemberManager } from './UnitMemberManager';
@@ -57,6 +58,7 @@ interface UnitLeadDashboardProps {
 
 export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, onRefresh }) => {
   const { user } = useAuth();
+  const { t } = useTranslation('emergency');
   const [activeIncidents, setActiveIncidents] = useState<ActiveIncident[]>([]);
   const [unitStats, setUnitStats] = useState({
     totalMembers: 0,
@@ -118,8 +120,8 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
     } catch (error) {
       console.error('Error fetching unit data:', error);
       toast({
-        title: "Error",
-        description: "Failed to fetch unit data",
+        title: t('common:error'),
+        description: t('failedToFetchUnitData'),
         variant: "destructive"
       });
     } finally {
@@ -171,14 +173,14 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
       setUnreadCount(prev => Math.max(0, prev - 1));
 
       toast({
-        title: "Message Acknowledged",
-        description: "Message has been marked as acknowledged"
+        title: t('messageAcknowledged'),
+        description: t('messageMarkedAsAcknowledged')
       });
     } catch (error) {
       console.error('Error acknowledging message:', error);
       toast({
-        title: "Error",
-        description: "Failed to acknowledge message",
+        title: t('common:error'),
+        description: t('failedToAcknowledgeMessage'),
         variant: "destructive"
       });
     }
@@ -285,10 +287,10 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
       {/* Main Content Tabs */}
       <Tabs defaultValue="incidents" className="w-full">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-1">
-          <TabsTrigger value="incidents">Active Incidents</TabsTrigger>
-          <TabsTrigger value="team">Team Management</TabsTrigger>
-          <TabsTrigger value="status">Unit Status</TabsTrigger>
-          <TabsTrigger value="communications">Communications</TabsTrigger>
+          <TabsTrigger value="incidents">{t('activeIncidents')}</TabsTrigger>
+          <TabsTrigger value="team">{t('teamManagement')}</TabsTrigger>
+          <TabsTrigger value="status">{t('unitStatus')}</TabsTrigger>
+          <TabsTrigger value="communications">{t('communications')}</TabsTrigger>
         </TabsList>
 
         {/* Active Incidents Tab */}

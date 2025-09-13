@@ -552,14 +552,14 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
       setUnreadCount(prev => Math.max(0, prev - 1));
 
       toast({
-        title: "Message Acknowledged",
-        description: "Message has been marked as acknowledged"
+        title: t('messageAcknowledged'),
+        description: t('messageMarkedAsAcknowledged')
       });
     } catch (error) {
       console.error('Error acknowledging message:', error);
       toast({
-        title: "Error",
-        description: "Failed to acknowledge message",
+        title: t('common:error'),
+        description: t('failedToAcknowledgeMessage'),
         variant: "destructive"
       });
     }
@@ -806,8 +806,8 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
         }
 
         toast({
-          title: "Backup Requested Successfully",
-          description: `Backup request sent to supervisors and dispatchers. ${backupResult?.notifications_sent || 0} notification(s) sent.`
+          title: t('backupRequestedSuccessfully'),
+          description: `${t('backupRequestSentToSupervisors')} ${backupResult?.notifications_sent || 0} ${t('notificationsSent')}`
         });
         
         // Skip the general success toast for backup requests since we show specific message above
@@ -823,14 +823,14 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
       setActionNotes('');
 
       toast({
-        title: "Action Completed",
-        description: `${action.label} executed successfully for ${incident.incident_number}`
+        title: t('actionCompleted'),
+        description: `${action.label} ${t('executedSuccessfullyFor')} ${incident.incident_number}`
       });
     } catch (error) {
       console.error('Error executing field action:', error);
       toast({
-        title: "Error",
-        description: "Failed to execute action",
+        title: t('common:error'),
+        description: t('failedToExecuteAction'),
         variant: "destructive"
       });
     }

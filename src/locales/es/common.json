@@ -266,5 +266,10 @@
   "enterNewPassword": "Ingresa la nueva contraseña",
   "confirmNewPassword": "Confirmar Nueva Contraseña",
   "confirmNewPasswordPlaceholder": "Confirma tu nueva contraseña",
-  "logout": "Cerrar sesión"
+  "logout": "Cerrar sesión",
+  "allPriority": "Todas las Prioridades",
+  "critical": "Crítico",
+  "high": "Alto",
+  "medium": "Medio",
+  "low": "Bajo"
 }

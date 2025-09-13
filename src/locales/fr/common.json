@@ -266,5 +266,10 @@
   "enterNewPassword": "Saisissez le nouveau mot de passe",
   "confirmNewPassword": "Confirmer le Nouveau Mot de Passe",
   "confirmNewPasswordPlaceholder": "Confirmez votre nouveau mot de passe",
-  "logout": "Se déconnecter"
+  "logout": "Se déconnecter",
+  "allPriority": "Toutes les Priorités",
+  "critical": "Critique",
+  "high": "Élevé",
+  "medium": "Moyen",
+  "low": "Faible"
 }

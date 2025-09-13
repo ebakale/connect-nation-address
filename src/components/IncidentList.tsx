@@ -431,11 +431,11 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
                 <SelectValue placeholder="Priority" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{t('allPriority')}</SelectItem>
-                <SelectItem value="1">{t('critical')}</SelectItem>
-                <SelectItem value="2">{t('high')}</SelectItem>
-                <SelectItem value="3">{t('medium')}</SelectItem>
-                <SelectItem value="4">{t('low')}</SelectItem>
+                <SelectItem value="all">{t('common:allPriority')}</SelectItem>
+                <SelectItem value="1">{t('common:critical')}</SelectItem>
+                <SelectItem value="2">{t('common:high')}</SelectItem>
+                <SelectItem value="3">{t('common:medium')}</SelectItem>
+                <SelectItem value="4">{t('common:low')}</SelectItem>
               </SelectContent>
             </Select>
           )}
