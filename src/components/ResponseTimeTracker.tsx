@@ -261,7 +261,7 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
                       <div>
                         <p className="font-medium">{metric.incident_number}</p>
                         <p className="text-sm text-muted-foreground">
-                          {metric.emergency_type.toUpperCase()} - {t('emergency:responseTimeTracker.priority')} {metric.priority_level}
+                          {metric.emergency_type.replace(/_/g, ' ').toUpperCase()} - {t('emergency:responseTimeTracker.priority')} {metric.priority_level}
                         </p>
                       </div>
                       <div className="flex gap-2">

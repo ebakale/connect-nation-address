@@ -1313,7 +1313,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                           }`} />
                           <div>
                             <p className="font-medium">{incident.incident_number}</p>
-                            <p className="text-sm text-muted-foreground">{incident.emergency_type}</p>
+                            <p className="text-sm text-muted-foreground">{incident.emergency_type.replace(/_/g, ' ').toUpperCase()}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
@@ -1709,7 +1709,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
             </DialogHeader>
             <div className="space-y-4">
               <div className="p-4 bg-muted/30 rounded">
-                <p className="font-medium">{actionDialog.incident.emergency_type.toUpperCase()}</p>
+                <p className="font-medium">{actionDialog.incident.emergency_type.replace(/_/g, ' ').toUpperCase()}</p>
                 <p className="text-sm text-muted-foreground">
                   Priority {actionDialog.incident.priority_level} • {formatLocation(actionDialog.incident)}
                 </p>
@@ -1781,7 +1781,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                 <div key={incident.id} className="flex items-center justify-between p-2 border rounded text-sm">
                   <div>
                     <span className="font-medium">{incident.incident_number}</span>
-                    <span className="ml-2 text-muted-foreground">{incident.emergency_type}</span>
+                    <span className="ml-2 text-muted-foreground">{incident.emergency_type.replace(/_/g, ' ').toUpperCase()}</span>
                   </div>
                   <Badge variant="outline" className="text-xs">
                     {incident.status}

@@ -95,7 +95,7 @@ const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: Incident
           lng: incident.location_longitude
         },
         map: map.current,
-        title: `${incident.incident_number} - ${incident.emergency_type}`,
+        title: `${incident.incident_number} - ${incident.emergency_type.replace(/_/g, ' ').toUpperCase()}`,
         icon: {
           url: `data:image/svg+xml,${encodeURIComponent(`
             <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -120,7 +120,7 @@ const IncidentMap = ({ incidents, selectedIncident, onSelectIncident }: Incident
               ${incident.incident_number}
             </div>
             <div style="margin-bottom: 4px;">
-              <strong>Type:</strong> ${incident.emergency_type}
+              <strong>Type:</strong> ${incident.emergency_type.replace(/_/g, ' ').toUpperCase()}
             </div>
             <div style="margin-bottom: 4px;">
               <strong>Priority:</strong> P${incident.priority_level}

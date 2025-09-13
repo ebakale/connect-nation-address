@@ -397,7 +397,7 @@ export const UnitStatusManager: React.FC<UnitStatusManagerProps> = ({ unit, onUp
                     <div>
                       <p className="font-medium">{assignment.incident_number}</p>
                       <p className="text-sm text-muted-foreground">
-                        {assignment.emergency_type.toUpperCase()} - Priority {assignment.priority_level}
+                        {assignment.emergency_type.replace(/_/g, ' ').toUpperCase()} - Priority {assignment.priority_level}
                       </p>
                       {assignment.location_address && (
                         <p className="text-sm text-muted-foreground">

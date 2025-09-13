@@ -255,7 +255,7 @@ export const ReporterNotifications = () => {
                                 {notification.metadata.emergency_type && (
                                   <>
                                     <span>•</span>
-                                    <span className="capitalize">{notification.metadata.emergency_type}</span>
+                                    <span className="capitalize">{notification.metadata.emergency_type.replace('_', ' ')}</span>
                                   </>
                                 )}
                               </div>
