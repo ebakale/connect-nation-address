@@ -277,16 +277,16 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
           }
         });
 
-      toast.success('Incident status updated');
+      toast.success(t('emergency:incidentStatusUpdated'));
     } catch (error) {
       console.error('Error updating status:', error);
-      toast.error('Failed to update incident status');
+      toast.error(t('emergency:failedToUpdateIncidentStatus'));
     }
   };
 
   const handleDispatchIncident = async (incidentId: string) => {
     if (!dispatchingUnit.trim()) {
-      toast.error('Please select a unit to dispatch');
+      toast.error(t('emergency:pleaseSelectUnitToDispatch'));
       return;
     }
 
@@ -302,7 +302,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
 
       const incident = incidents.find(i => i.id === incidentId);
       if (incident?.status === 'resolved' || incident?.status === 'closed') {
-        toast.error('Cannot dispatch units to a resolved/closed incident');
+        toast.error(t('emergency:cannotDispatchToResolvedIncident'));
         setAssignDialog(null);
         return;
       }
@@ -352,7 +352,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
         })
         .eq('id', incidentId);
 
-      toast.success(`Unit ${unitData.unit_name} (${unitCode}) dispatched to incident`);
+      toast.success(t('emergency:unitDispatchedToIncident', { unitName: unitData.unit_name, unitCode: unitCode }));
       setAssignDialog(null);
       setDispatchingUnit('');
       
@@ -362,7 +362,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
       }
     } catch (error) {
       console.error('Error assigning incident:', error);
-      toast.error('Failed to assign incident');
+      toast.error(t('emergency:failedToAssignIncident'));
     }
   };
 

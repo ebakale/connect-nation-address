@@ -886,7 +886,7 @@ const PoliceDashboard = () => {
                           {t('emergencyIncidentsTitle')}
                         </CardTitle>
                         <Badge variant="secondary" className="whitespace-nowrap">
-                          {incidents.length} active • {resolvedIncidents.length} resolved
+                          {incidents.length} {t('active')} • {resolvedIncidents.length} {t('resolved')}
                         </Badge>
                       </div>
                     </CardHeader>
