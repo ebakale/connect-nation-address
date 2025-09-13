@@ -71,6 +71,7 @@
     "public": "Público",
     "private": "Privado",
     "busy": "Ocupado",
+    "available": "Disponible",
     "status": "Estado"
   },
   "messages": {

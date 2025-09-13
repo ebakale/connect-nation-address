@@ -70,6 +70,7 @@
     "public": "Public",
     "private": "Privé",
     "busy": "Occupé",
+    "available": "Disponible",
     "status": "Statut"
   },
   "messages": {
