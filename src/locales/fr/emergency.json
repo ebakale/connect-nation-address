@@ -779,6 +779,10 @@
     "emergencyBackupRequest": "Demande de Renfort d'Urgence",
     "urgentBackupNeeded": "Renfort Urgent Nécessaire",
     "additionalUnitsRequired": "Unités Supplémentaires Requises",
+    "backupAssistanceRequested": "Assistance de renfort demandée",
+    "emergencyBackupRequired": "Renfort d'urgence requis",
+    "additionalUnitsNeededImmediately": "Unités supplémentaires nécessaires immédiatement",
+    "highPriorityBackupRequest": "Demande de renfort haute priorité",
     "errorTitle": "Erreur",
     "failedToLoadRequests": "Échec du chargement des demandes de renfort"
   },

@@ -963,6 +963,10 @@
     "emergencyBackupRequest": "Solicitud de Refuerzo de Emergencia",
     "urgentBackupNeeded": "Refuerzo Urgente Necesario",
     "additionalUnitsRequired": "Unidades Adicionales Requeridas",
+    "backupAssistanceRequested": "Asistencia de refuerzo solicitada",
+    "emergencyBackupRequired": "Refuerzo de emergencia requerido",
+    "additionalUnitsNeededImmediately": "Unidades adicionales necesarias inmediatamente",
+    "highPriorityBackupRequest": "Solicitud de refuerzo de alta prioridad",
     "errorTitle": "Error",
     "failedToLoadRequests": "Error al cargar solicitudes de refuerzo"
   },

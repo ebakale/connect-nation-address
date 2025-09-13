@@ -963,6 +963,10 @@
     "emergencyBackupRequest": "Emergency Backup Request",
     "urgentBackupNeeded": "Urgent Backup Needed",
     "additionalUnitsRequired": "Additional Units Required",
+    "backupAssistanceRequested": "Backup assistance requested",
+    "emergencyBackupRequired": "Emergency backup required",
+    "additionalUnitsNeededImmediately": "Additional units needed immediately",
+    "highPriorityBackupRequest": "High priority backup request",
     "errorTitle": "Error",
     "failedToLoadRequests": "Failed to load backup requests"
   },

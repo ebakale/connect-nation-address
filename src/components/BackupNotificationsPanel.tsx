@@ -236,6 +236,18 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
     return titleMappings[title] || title;
   };
 
+  const translateNotificationMessage = (message: string) => {
+    // Common backup notification messages that need translation
+    const messageMappings: { [key: string]: string } = {
+      'Backup assistance requested': t('backupRequests.backupAssistanceRequested'),
+      'Emergency backup required': t('backupRequests.emergencyBackupRequired'),
+      'Additional units needed immediately': t('backupRequests.additionalUnitsNeededImmediately'),
+      'High priority backup request': t('backupRequests.highPriorityBackupRequest'),
+    };
+    
+    return messageMappings[message] || message;
+  };
+
   const NotificationListItem = ({ notification, onClick }: { notification: BackupNotification; onClick: () => void }) => (
     <div
       className={`p-4 border rounded-lg cursor-pointer transition-all hover:bg-muted/50 ${
@@ -369,7 +381,7 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
 
               <div>
                 <h3 className="font-semibold mb-2">{translateNotificationTitle(selectedNotification.title)}</h3>
-                <p className="text-muted-foreground">{selectedNotification.message}</p>
+                <p className="text-muted-foreground">{translateNotificationMessage(selectedNotification.message)}</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
