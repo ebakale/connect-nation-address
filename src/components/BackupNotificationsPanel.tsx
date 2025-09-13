@@ -214,11 +214,11 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
   const getBackupStatusBadge = (status?: string) => {
     switch (status) {
       case 'fulfilled':
-        return <Badge variant="secondary"><ShieldCheck className="h-3 w-3 mr-1" />Fulfilled</Badge>;
+        return <Badge variant="secondary"><ShieldCheck className="h-3 w-3 mr-1" />{t('backupRequests.fulfilled')}</Badge>;
       case 'partially_fulfilled':
-        return <Badge variant="default"><Shield className="h-3 w-3 mr-1" />Partial</Badge>;
+        return <Badge variant="default"><Shield className="h-3 w-3 mr-1" />{t('backupRequests.partial')}</Badge>;
       case 'pending':
-        return <Badge variant="outline"><ShieldX className="h-3 w-3 mr-1" />Pending</Badge>;
+        return <Badge variant="outline"><ShieldX className="h-3 w-3 mr-1" />{t('backupRequests.pending')}</Badge>;
       default:
         return null;
     }
@@ -239,7 +239,7 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
             </Badge>
             {getBackupStatusBadge(notification.backup_status)}
             {!notification.read && (
-              <Badge variant="outline" className="text-xs">New</Badge>
+              <Badge variant="outline" className="text-xs">{t('new')}</Badge>
             )}
           </div>
           
