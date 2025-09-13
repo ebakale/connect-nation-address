@@ -83,6 +83,11 @@
     "traffic_violation": "Infraction Routière",
     "suspicious_activity": "Activité Suspecte"
   },
+  "incidentDetails": "Détails de l'Incident",
+  "ofEmergencyIncidents": "d'incidents d'urgence",
+  "showingRange": "Affichage de {{start}} à {{end}} sur {{total}} incidents",
+  "pageOf": "Page {{current}} sur {{total}}",
+  "dispatchUnit": "Déployer l'Unité",
   "metadataFields": {
     "incident_number": "Numéro d'Incident",
     "emergency_type": "Type d'Urgence",

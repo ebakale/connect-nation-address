@@ -267,6 +267,11 @@
     "traffic_violation": "Traffic Violation",
     "suspicious_activity": "Suspicious Activity"
   },
+  "incidentDetails": "Incident Details",
+  "ofEmergencyIncidents": "of emergency incidents",
+  "showingRange": "Showing {{start}} to {{end}} of {{total}} incidents",
+  "pageOf": "Page {{current}} of {{total}}",
+  "dispatchUnit": "Dispatch Unit",
   "metadataFields": {
     "incident_number": "Incident Number",
     "emergency_type": "Emergency Type",

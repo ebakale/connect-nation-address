@@ -622,7 +622,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
         <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
           <DialogContent className="max-w-5xl max-h-[80vh] overflow-y-auto">
             <DialogHeader className="text-left">
-              <DialogTitle>Incident Details: {selectedIncident.incident_number}</DialogTitle>
+              <DialogTitle>{t('emergency:incidentDetails')}: {selectedIncident.incident_number}</DialogTitle>
             </DialogHeader>
             <div className="mt-4">
               <IncidentDetailDialog 
