@@ -775,6 +775,10 @@
     "assignToastDescription": "Veuillez assigner des unités supplémentaires à {{incident}} via l'onglet Coordination d'Unités",
     "failedToRespond": "Échec de la réponse à la demande de renfort",
     "assignUnits": "Assigner Unités",
+    "backupRequest": "Demande de Renfort",
+    "emergencyBackupRequest": "Demande de Renfort d'Urgence",
+    "urgentBackupNeeded": "Renfort Urgent Nécessaire",
+    "additionalUnitsRequired": "Unités Supplémentaires Requises",
     "errorTitle": "Erreur",
     "failedToLoadRequests": "Échec du chargement des demandes de renfort"
   },

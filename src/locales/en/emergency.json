@@ -959,6 +959,10 @@
     "assignToastDescription": "Please assign additional units to {{incident}} through the Unit Coordination tab",
     "failedToRespond": "Failed to respond to backup request",
     "assignUnits": "Assign Units",
+    "backupRequest": "Backup Request",
+    "emergencyBackupRequest": "Emergency Backup Request",
+    "urgentBackupNeeded": "Urgent Backup Needed",
+    "additionalUnitsRequired": "Additional Units Required",
     "errorTitle": "Error",
     "failedToLoadRequests": "Failed to load backup requests"
   },
