@@ -1276,15 +1276,15 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
             </TabsTrigger>
             <TabsTrigger value="map" className="flex items-center gap-2">
               <MapPin className="h-4 w-4" />
-              {t('map')}
+              {t('navigation.map')}
             </TabsTrigger>
             <TabsTrigger value="operations" className="flex items-center gap-2">
               <Settings className="h-4 w-4" />
-              {t('fieldOperations')}
+              {t('fieldDashboard.fieldOperationsControl')}
             </TabsTrigger>
             <TabsTrigger value="communication" className="flex items-center gap-2">
               <MessageSquare className="h-4 w-4" />
-              {t('communications')}
+              {t('fieldDashboard.unitCommunications')}
             </TabsTrigger>
           </TabsList>
 
