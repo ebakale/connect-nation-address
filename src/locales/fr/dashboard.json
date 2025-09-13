@@ -34,7 +34,10 @@
       "rapid_response": "Réponse Rapide",
       "dispatch": "Répartition",
       "k9": "Unité K-9",
-      "swat": "Équipe SWAT"
+      "swat": "Équipe SWAT",
+      "marine": "Unité Marine",
+      "response": "Unité de Réponse",
+      "security": "Unité de Sécurité"
     },
     "statuses": {
       "available": "Disponible",

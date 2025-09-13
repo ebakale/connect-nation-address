@@ -691,7 +691,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                       
                       <div className="flex items-center gap-3">
                         <Badge variant="outline">
-                          {t(`unitManagement.unitTypes.${unit.unit_type}`) || unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1)}
+                          {t(`unitManagement.unitTypes.${unit.unit_type}`, { defaultValue: unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1).replace('_', ' ') })}
                         </Badge>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Users className="h-4 w-4" />
