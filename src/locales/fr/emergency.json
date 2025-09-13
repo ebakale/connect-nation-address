@@ -612,5 +612,6 @@
     "resolved": "RÉSOLU",
     "closed": "FERMÉ"
   },
-  "ofEmergencyIncidents": "d'incidents d'urgence"
+  "ofEmergencyIncidents": "d'incidents d'urgence",
+  "showingRange": "Affichage {{start}}-{{end}} sur {{total}} incidents"
 }

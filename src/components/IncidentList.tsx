@@ -445,7 +445,11 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
       {/* Pagination info */}
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <span>
-          {t('showing')} {startIndex + 1}-{Math.min(startIndex + incidentsPerPage, filteredIncidents.length)} {t('of')} {filteredIncidents.length} {t('common:incidents')}
+          {t('emergency:showingRange', { 
+            start: startIndex + 1, 
+            end: Math.min(startIndex + incidentsPerPage, filteredIncidents.length), 
+            total: filteredIncidents.length 
+          })}
         </span>
         <span>
           {t('page')} {currentPage} {t('of')} {totalPages}

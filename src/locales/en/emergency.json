@@ -796,5 +796,6 @@
     "resolved": "RESOLVED",
     "closed": "CLOSED"
   },
-  "ofEmergencyIncidents": "of emergency incidents"
+  "ofEmergencyIncidents": "of emergency incidents",
+  "showingRange": "Showing {{start}}-{{end}} of {{total}} incidents"
 }
