@@ -325,7 +325,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
                       {incident.location_address && (
                         <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
                           <MapPin className="h-4 w-4" />
-                          <span>{t('location')}: {incident.location_address}</span>
+                          <span>{t('address')}: {incident.location_address}</span>
                         </div>
                       )}
                     </div>
