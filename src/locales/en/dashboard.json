@@ -30,7 +30,8 @@
       "emergency": "Emergency",
       "special": "Special",
       "traffic": "Traffic",
-      "investigation": "Investigation"
+      "investigation": "Investigation",
+      "rapid_response": "Rapid Response"
     },
     "statuses": {
       "available": "Available",

@@ -30,7 +30,8 @@
       "emergency": "Emergencia",
       "special": "Especial",
       "traffic": "Tráfico",
-      "investigation": "Investigación"
+      "investigation": "Investigación",
+      "rapid_response": "Respuesta Rápida"
     },
     "statuses": {
       "available": "Disponible",

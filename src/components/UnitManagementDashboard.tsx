@@ -555,7 +555,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit_unit_type">Police Unit Type</Label>
+                <Label htmlFor="edit_unit_type">{t('unitManagement.unitType')}</Label>
                 <Select
                   value={editUnit.unit_type}
                   onValueChange={(value) => setEditUnit({ ...editUnit, unit_type: value })}
@@ -564,16 +564,16 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="patrol">Patrol Unit</SelectItem>
-                    <SelectItem value="rapid_response">Rapid Response Team</SelectItem>
-                    <SelectItem value="traffic">Traffic Enforcement</SelectItem>
-                    <SelectItem value="investigation">Investigation Unit</SelectItem>
-                    <SelectItem value="special">Special Operations</SelectItem>
+                    <SelectItem value="patrol">{t('unitManagement.unitTypes.patrol')}</SelectItem>
+                    <SelectItem value="rapid_response">{t('unitManagement.rapidResponseTeam')}</SelectItem>
+                    <SelectItem value="traffic">{t('unitManagement.unitTypes.traffic')}</SelectItem>
+                    <SelectItem value="investigation">{t('unitManagement.unitTypes.investigation')}</SelectItem>
+                    <SelectItem value="special">{t('unitManagement.unitTypes.special')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit_vehicle_id">Vehicle ID</Label>
+                <Label htmlFor="edit_vehicle_id">{t('unitManagement.vehicleId')}</Label>
                 <Input
                   id="edit_vehicle_id"
                   value={editUnit.vehicle_id}
@@ -582,7 +582,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                 />
               </div>
               <div className="col-span-2 space-y-2">
-                <Label htmlFor="edit_radio_frequency">Radio Frequency</Label>
+                <Label htmlFor="edit_radio_frequency">{t('unitManagement.radioFrequency')}</Label>
                 <Input
                   id="edit_radio_frequency"
                   value={editUnit.radio_frequency}
@@ -592,8 +592,8 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
               </div>
             </div>
             <div className="flex justify-end gap-2 mt-4">
-              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Cancel</Button>
-              <Button onClick={updateUnit}>Update Unit</Button>
+              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>{t('unitManagement.cancel')}</Button>
+              <Button onClick={updateUnit}>{t('unitManagement.saveChanges')}</Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -691,7 +691,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                       
                       <div className="flex items-center gap-3">
                         <Badge variant="outline">
-                          {unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1)}
+                          {t(`unitManagement.unitTypes.${unit.unit_type}`) || unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1)}
                         </Badge>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Users className="h-4 w-4" />
