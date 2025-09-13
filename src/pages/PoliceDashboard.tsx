@@ -989,7 +989,7 @@ const PoliceDashboard = () => {
                     
                     <Card>
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-base">{t('unitManagement')}</CardTitle>
+                        <CardTitle className="text-base">{t('emergency:unitManagement')}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         {(isPoliceSupervisor || isAdmin) && (
