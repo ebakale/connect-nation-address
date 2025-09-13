@@ -316,7 +316,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
                           </div>
                         </div>
                         <div className="text-right">
-                          <Badge variant="outline">{incident.status}</Badge>
+                          <Badge variant="outline">{t(`statusLabels.${incident.status}`)}</Badge>
                           <p className="text-xs text-muted-foreground mt-1">
                             {new Date(incident.reported_at).toLocaleTimeString()}
                           </p>
