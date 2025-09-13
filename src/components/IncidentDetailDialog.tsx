@@ -711,7 +711,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
               </Badge>
             </div>
             <h3 className="text-xl font-semibold capitalize text-primary">
-              {t(`emergencyTypeLabels.${incident.emergency_type}`)}
+              {incident.emergency_type.replace(/_/g, ' ').toUpperCase()}
             </h3>
             <p className="text-sm text-muted-foreground flex items-center gap-2">
               <Calendar className="h-4 w-4" />
