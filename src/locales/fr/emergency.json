@@ -611,5 +611,6 @@
     "on_scene": "SUR SCÈNE", 
     "resolved": "RÉSOLU",
     "closed": "FERMÉ"
-  }
+  },
+  "ofEmergencyIncidents": "d'incidents d'urgence"
 }

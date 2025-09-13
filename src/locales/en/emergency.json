@@ -795,5 +795,6 @@
     "on_scene": "ON SCENE",
     "resolved": "RESOLVED",
     "closed": "CLOSED"
-  }
+  },
+  "ofEmergencyIncidents": "of emergency incidents"
 }

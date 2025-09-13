@@ -389,7 +389,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
         <div>
           <h3 className="text-sm sm:text-lg font-semibold">Active Incidents</h3>
           <p className="text-xs text-muted-foreground">
-            {filteredIncidents.length} of {incidents.length} emergency incidents
+            {filteredIncidents.length} {t('emergency:ofEmergencyIncidents')} {incidents.length}
           </p>
         </div>
         
