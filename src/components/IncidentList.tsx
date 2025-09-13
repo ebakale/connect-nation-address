@@ -387,7 +387,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
       {/* Header with filters */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-sm sm:text-lg font-semibold">Active Incidents</h3>
+          <h3 className="text-sm sm:text-lg font-semibold">{t('emergency:activeIncidents')}</h3>
           <p className="text-xs text-muted-foreground">
             {filteredIncidents.length} {t('emergency:ofEmergencyIncidents')} {incidents.length}
           </p>

@@ -350,6 +350,7 @@
   "showingRange": "Mostrando {{start}} a {{end}} de {{total}} incidentes",
   "pageOf": "Página {{current}} de {{total}}",
   "dispatchUnit": "Despachar Unidad",
+  "activeIncidents": "Incidentes Activos",
   "metadataFields": {
     "incident_number": "Número de Incidente",
     "emergency_type": "Tipo de Emergencia",
