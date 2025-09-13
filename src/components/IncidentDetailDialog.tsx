@@ -175,12 +175,12 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
       await supabase.functions.invoke('police-incident-actions', {
         body: { action: 'assignOperator', incidentId: incident.id, data: { operatorId } }
       });
-      toast.success('Dispatcher assigned successfully');
+      toast.success(t('incidentDetails.dispatcherAssignedSuccessfully'));
       setEditData((prev) => ({ ...prev, assigned_operator_id: operatorId }));
       onUpdate?.();
     } catch (error) {
       console.error('Error assigning dispatcher:', error);
-      toast.error('Failed to assign dispatcher');
+      toast.error(t('incidentDetails.failedToAssignDispatcher'));
     }
   };
 
@@ -384,7 +384,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
   const handleSave = async () => {
     try {
       if (isResolved) {
-        toast.error('Resolved/closed incidents cannot be modified');
+        toast.error(t('incidentDetails.resolvedIncidentsCannotBeModified'));
         setIsEditing(false);
         return;
       }
@@ -456,20 +456,20 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
         });
       }
 
-      toast.success('Incident updated successfully');
+      toast.success(t('incidentDetails.incidentUpdatedSuccessfully'));
       setIsEditing(false);
       onUpdate?.();
       loadIncidentLogs();
     } catch (error) {
       console.error('Error updating incident:', error);
-      toast.error('Failed to update incident');
+      toast.error(t('incidentDetails.failedToUpdateIncident'));
     }
   };
 
   const handleMarkComplete = async () => {
     try {
       if (isResolved) {
-        toast.error('Incident is already resolved/closed');
+        toast.error(t('incidentDetails.incidentAlreadyResolved'));
         return;
       }
       const { error } = await supabase.functions.invoke('police-incident-actions', {
@@ -484,7 +484,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
 
       if (error) throw error;
 
-      toast.success('Incident marked as complete');
+      toast.success(t('incidentDetails.incidentMarkedComplete'));
       onUpdate?.();
       loadIncidentLogs();
     } catch (error) {
@@ -585,7 +585,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
       }
     } catch (error) {
       console.error('Error assigning incident:', error);
-      toast.error(t('failedToAssignIncident'));
+      toast.error(t('incidentDetails.failedToAssignIncident'));
     }
   };
   // Permission checks - restrict modifications for resolved incidents
@@ -630,17 +630,17 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
         }
       });
 
-      toast.success('Incident reopened successfully');
+      toast.success(t('incidentDetails.incidentReopenedSuccessfully'));
       onUpdate?.();
     } catch (error) {
       console.error('Error reopening incident:', error);
-      toast.error('Failed to reopen incident');
+      toast.error(t('incidentDetails.failedToReopenIncident'));
     }
   };
 
   const handleAddNote = async () => {
     if (!newNote.trim()) {
-      toast.error('Please enter a note');
+      toast.error(t('incidentDetails.pleaseEnterNote'));
       return;
     }
 
@@ -656,13 +656,13 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
         }
       });
 
-      toast.success('Note added successfully');
+      toast.success(t('incidentDetails.noteAddedSuccessfully'));
       setNewNote('');
       onUpdate?.();
       loadIncidentLogs();
     } catch (error) {
       console.error('Error adding note:', error);
-      toast.error('Failed to add note');
+      toast.error(t('incidentDetails.failedToAddNote'));
     } finally {
       setAddingNote(false);
     }
@@ -754,14 +754,14 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
         <Card className="border-accent/20 bg-accent/5">
           <CardHeader className="pb-4">
             <CardTitle className="text-sm font-medium">
-              Add Field Note
-              {isResolved && <span className="text-xs text-muted-foreground ml-2">(Documentation only)</span>}
+               {t('incidentDetails.addFieldNote')}
+               {isResolved && <span className="text-xs text-muted-foreground ml-2">{t('incidentDetails.documentationOnly')}</span>}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col sm:flex-row gap-3">
               <Textarea
-                placeholder="Add field notes, observations, or updates..."
+                placeholder={t('incidentDetails.addFieldNotesPlaceholder')}
                 value={newNote}
                 onChange={(e) => setNewNote(e.target.value)}
                 className="flex-1 min-h-[80px] resize-none"
@@ -778,11 +778,11 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                 className="sm:self-end w-full sm:w-auto"
               >
                 <FileText className="h-4 w-4 mr-2" />
-                Add Note
+                {t('incidentDetails.addNote')}
               </Button>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              Press Ctrl+Enter to quickly add note
+              {t('incidentDetails.ctrlEnterToAdd')}
             </p>
           </CardContent>
         </Card>
@@ -796,10 +796,10 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2 text-destructive">
                 <AlertTriangle className="h-5 w-5" />
-                Emergency Information
+                {t('incidentDetails.emergencyInformation')}
               </CardTitle>
               <CardDescription>
-                Critical incident details for immediate response
+                {t('incidentDetails.criticalIncidentDetails')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -807,7 +807,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
               <div>
                 <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                   <MessageSquare className="h-4 w-4" />
-                  Emergency Message
+                  {t('incidentDetails.emergencyMessage')}
                 </label>
                 <p className="mt-1 p-3 bg-white rounded border">{incident.incident_message}</p>
               </div>
@@ -818,24 +818,24 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
               <div>
                 <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                   <User className="h-4 w-4" />
-                  Reporter Information
+                  {t('incidentDetails.reporterInformation')}
                 </label>
                 <div className="mt-1 space-y-1">
                    {(incident.reporter_name || reporterInfo.name) && (
                      <p className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                       <span className="text-sm font-medium shrink-0">Name:</span>
+                       <span className="text-sm font-medium shrink-0">{t('incidentDetails.name')}:</span>
                        <span className="break-words">{incident.reporter_name || reporterInfo.name}</span>
                      </p>
                    )}
                    {(incident.reporter_email || reporterInfo.email) && (
                      <p className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                       <span className="text-sm font-medium shrink-0">Email:</span>
+                       <span className="text-sm font-medium shrink-0">{t('incidentDetails.email')}:</span>
                        <span className="font-mono text-xs sm:text-sm break-all overflow-hidden">{incident.reporter_email || reporterInfo.email}</span>
                      </p>
                    )}
                    {(incident.reporter_contact_info || reporterInfo.contact) && (
                      <p className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                       <span className="text-sm font-medium shrink-0">Contact:</span>
+                       <span className="text-sm font-medium shrink-0">{t('incidentDetails.contact')}:</span>
                        <span className="font-mono text-xs sm:text-sm break-all overflow-hidden">{incident.reporter_contact_info || reporterInfo.contact}</span>
                      </p>
                    )}
@@ -847,13 +847,13 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
               <div>
                 <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
-                  Emergency Location
+                  {t('incidentDetails.emergencyLocation')}
                 </label>
                 <div className="mt-1 space-y-3">
                    {/* Primary: UAC */}
                    {incident.incident_uac && (
                      <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg">
-                       <p className="text-xs font-medium text-blue-600 mb-1">Unified Address Code (UAC)</p>
+                       <p className="text-xs font-medium text-blue-600 mb-1">{t('incidentDetails.unifiedAddressCode')}</p>
                        <p className="font-mono text-xs sm:text-sm lg:text-base font-semibold text-blue-800 break-all overflow-hidden">{incident.incident_uac}</p>
                      </div>
                    )}
@@ -861,35 +861,35 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                   {/* Secondary: Structured Address (if available) */}
                   {(incident.street || incident.city || incident.region || incident.country) && (
                     <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
-                      <p className="text-xs font-medium text-gray-600 mb-2">Address Information</p>
+                      <p className="text-xs font-medium text-gray-600 mb-2">{t('incidentDetails.addressInformation')}</p>
                        <div className="space-y-1 text-sm">
                          {incident.building && (
                            <p className="flex flex-col sm:flex-row gap-1 sm:gap-2">
-                             <span className="font-medium shrink-0">Building:</span> 
+                             <span className="font-medium shrink-0">{t('incidentDetails.building')}:</span> 
                              <span className="break-words">{incident.building}</span>
                            </p>
                          )}
                          {incident.street && (
                            <p className="flex flex-col sm:flex-row gap-1 sm:gap-2">
-                             <span className="font-medium shrink-0">Street:</span> 
+                             <span className="font-medium shrink-0">{t('incidentDetails.street')}:</span> 
                              <span className="break-words">{incident.street}</span>
                            </p>
                          )}
                          {incident.city && (
                            <p className="flex flex-col sm:flex-row gap-1 sm:gap-2">
-                             <span className="font-medium shrink-0">City:</span> 
+                             <span className="font-medium shrink-0">{t('incidentDetails.city')}:</span> 
                              <span className="break-words">{incident.city}</span>
                            </p>
                          )}
                          {incident.region && (
                            <p className="flex flex-col sm:flex-row gap-1 sm:gap-2">
-                             <span className="font-medium shrink-0">Region:</span> 
+                             <span className="font-medium shrink-0">{t('incidentDetails.region')}:</span> 
                              <span className="break-words">{incident.region}</span>
                            </p>
                          )}
                          {incident.country && (
                            <p className="flex flex-col sm:flex-row gap-1 sm:gap-2">
-                             <span className="font-medium shrink-0">Country:</span> 
+                             <span className="font-medium shrink-0">{t('incidentDetails.country')}:</span> 
                              <span className="break-words">{incident.country}</span>
                            </p>
                          )}
@@ -899,7 +899,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                   
                    {/* Coordinates */}
                    <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
-                     <p className="text-xs font-medium text-gray-600 mb-1">GPS Coordinates</p>
+                     <p className="text-xs font-medium text-gray-600 mb-1">{t('incidentDetails.gpsCoordinates')}</p>
                       <p className="font-mono text-xs break-all overflow-hidden">
                         {incident.location_latitude.toFixed(6)}, {incident.location_longitude.toFixed(6)}
                       </p>
@@ -908,7 +908,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                   {/* Generated Address (fallback) */}
                   {incident.location_address && !incident.street && (
                     <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg">
-                      <p className="text-xs font-medium text-gray-600 mb-1">Generated Address</p>
+                      <p className="text-xs font-medium text-gray-600 mb-1">{t('incidentDetails.generatedAddress')}</p>
                       <p className="text-xs sm:text-sm text-muted-foreground break-words overflow-hidden">{incident.location_address}</p>
                     </div>
                   )}
@@ -977,7 +977,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                      className="w-full text-xs sm:text-sm"
                    >
                      <Navigation className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                     Navigate
+                     {t('incidentDetails.navigate')}
                    </Button>
                 </div>
               </div>
@@ -989,12 +989,12 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
           <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center justify-between">
-              Assignment & Notes
+              {t('incidentDetails.assignmentAndNotes')}
               <div className="flex gap-2">
                 {!isEditing && canEdit && (
                   <Button onClick={handleEdit} size="sm" variant="outline">
                     <Edit className="h-4 w-4 mr-2" />
-                    Edit
+                    {t('incidentDetails.edit')}
                   </Button>
                 )}
                 {isEditing && (
@@ -1017,20 +1017,20 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
             <div>
               <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <User className="h-4 w-4" />
-                Assigned Dispatcher
+                {t('incidentDetails.assignedDispatcher')}
               </label>
               {isEditing && isPoliceSupervisor ? (
                 <div className="mt-2">
                   <Select value={editData.assigned_operator_id} onValueChange={(value) => { setEditData({...editData, assigned_operator_id: value}); assignDispatcher(value); }}>
                   <SelectTrigger className="w-full bg-background border border-input">
-                    <SelectValue placeholder="Assign to dispatcher..." />
+                    <SelectValue placeholder={t('incidentDetails.assignToDispatcher')} />
                   </SelectTrigger>
                   <SelectContent className="bg-background border border-input z-50">
                     {availableOperators.map((operator) => (
                       <SelectItem key={operator.id} value={operator.id}>
                         <div className="flex items-center gap-2">
                           <span className="font-medium">{operator.name}</span>
-                          <span className="text-muted-foreground">(dispatcher)</span>
+                          <span className="text-muted-foreground">({t('incidentDetails.dispatcher')})</span>
                         </div>
                       </SelectItem>
                     ))}
@@ -1040,17 +1040,17 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
               ) : isEditing && !isPoliceSupervisor ? (
                 <div className="mt-1 p-3 bg-yellow-50 border border-yellow-200 rounded">
                   <p className="text-sm text-yellow-800">
-                    Only supervisors can assign incidents to dispatchers.
+                    {t('incidentDetails.onlySupervisorsCanAssign')}
                   </p>
                 </div>
               ) : (
                 <div className="mt-1">
                   {incident.assigned_operator_id ? (
                     <Badge variant="secondary">
-                      {userNames[incident.assigned_operator_id] || `${t('dispatcher')} ${incident.assigned_operator_id.slice(0,8)}`}
+                      {userNames[incident.assigned_operator_id] || `${t('incidentDetails.dispatcher')} ${incident.assigned_operator_id.slice(0,8)}`}
                     </Badge>
                   ) : (
-                    <span className="text-muted-foreground">{t('noDispatcherAssigned')}</span>
+                    <span className="text-muted-foreground">{t('incidentDetails.noDispatcherAssigned')}</span>
                   )}
                 </div>
               )}
@@ -1059,14 +1059,14 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
             <div>
               <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <Users className="h-4 w-4" />
-                Dispatched Units
+                {t('incidentDetails.dispatchedUnits')}
               </label>
                {isEditing && canAssignUnits ? (
                  <div className="mt-2 space-y-3">
                     <div className="flex flex-col sm:flex-row gap-2">
                       <Select value={newUnit} onValueChange={setNewUnit}>
                         <SelectTrigger className="flex-1 bg-background border border-input min-w-0">
-                          <SelectValue placeholder={t('selectUnitToAssign')} />
+                          <SelectValue placeholder={t('incidentDetails.selectUnitToAssign')} />
                         </SelectTrigger>
                          <SelectContent className="bg-background border border-input z-50">
                            {availableUnits
@@ -1097,9 +1097,9 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                  </div>
                 ) : isEditing && !canAssignUnits ? (
                   <div className="mt-1 p-3 bg-yellow-50 border border-yellow-200 rounded">
-                    <p className="text-sm text-yellow-800">
-                      Only dispatchers can dispatch or reassign units to incidents.
-                    </p>
+                     <p className="text-sm text-yellow-800">
+                       {t('incidentDetails.onlyDispatchersCanAssign')}
+                     </p>
                   </div>
               ) : (
                 <div className="mt-1 flex flex-wrap gap-2">
@@ -1109,32 +1109,32 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                     </Badge>
                   ))}
                    {(!incident.assigned_units || incident.assigned_units.length === 0) && (
-                     <span className="text-muted-foreground">No units dispatched</span>
+                     <span className="text-muted-foreground">{t('incidentDetails.noUnitsDispatched')}</span>
                    )}
                 </div>
               )}
             </div>
             
             <div>
-              <label className="text-sm font-medium text-muted-foreground">Dispatcher Notes</label>
+              <label className="text-sm font-medium text-muted-foreground">{t('incidentDetails.dispatcherNotes')}</label>
               {isEditing ? (
                 <Textarea
                   className="mt-1"
                   value={editData.dispatcher_notes}
                   onChange={(e) => setEditData({...editData, dispatcher_notes: e.target.value})}
-                  placeholder="Add notes about this incident..."
+                  placeholder={t('incidentDetails.addNotesPlaceholder')}
                   rows={4}
                 />
               ) : (
                 <p className="mt-1 p-3 bg-muted rounded">
-                  {incident.dispatcher_notes || 'No notes available'}
+                  {incident.dispatcher_notes || t('incidentDetails.noNotesAvailable')}
                 </p>
               )}
             </div>
 
             {/* Field Notes Section */}
             <div>
-              <label className="text-sm font-medium text-muted-foreground">Field Notes</label>
+              <label className="text-sm font-medium text-muted-foreground">{t('incidentDetails.fieldNotes')}</label>
               <div className="mt-1 space-y-2 max-h-48 overflow-y-auto">
                 {logs.filter(log => log.action === 'field_note_added').length > 0 ? (
                   logs
@@ -1143,20 +1143,20 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                       <div key={log.id || index} className="p-3 bg-blue-50 border border-blue-200 rounded">
                         <div className="flex justify-between items-start mb-1">
                           <span className="text-xs text-blue-600 font-medium">
-                            {userNames[log.user_id] || 'Unknown Officer'}
+                            {userNames[log.user_id] || t('incidentDetails.unknownOfficer')}
                           </span>
                           <span className="text-xs text-muted-foreground">
                             {new Date(log.timestamp).toLocaleString()}
                           </span>
                         </div>
                         <p className="text-sm text-gray-800">
-                          {log.details?.notes || log.details?.message || 'No note content'}
+                          {log.details?.notes || log.details?.message || t('incidentDetails.noNoteContent')}
                         </p>
                       </div>
                     ))
                 ) : (
                   <p className="mt-1 p-3 bg-muted rounded text-sm text-muted-foreground">
-                    No field notes available
+                    {t('incidentDetails.noFieldNotesAvailable')}
                   </p>
                 )}
               </div>
@@ -1172,7 +1172,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
               {canComplete && incident.status !== 'resolved' && incident.status !== 'closed' && (
                 <Button onClick={handleMarkComplete}>
                   <CheckCircle className="h-4 w-4 mr-2" />
-                  Mark Complete
+                  {t('incidentDetails.markComplete')}
                 </Button>
               )}
             </div>
@@ -1182,7 +1182,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
               <div className="flex flex-col gap-2 w-full">
                 <Select onValueChange={(value) => { setEditData({...editData, assigned_operator_id: value}); assignDispatcher(value); }} value={editData.assigned_operator_id}>
                   <SelectTrigger className="w-full min-w-0">
-                    <SelectValue placeholder="Assign dispatcher..." />
+                    <SelectValue placeholder={t('incidentDetails.assignToDispatcher')} />
                   </SelectTrigger>
                   <SelectContent className="bg-background border border-input z-50 max-w-[90vw]">
                     {availableOperators.map((operator) => (
@@ -1204,17 +1204,17 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                           }
                         }
                       });
-                      toast.success('Dispatcher assigned successfully');
+                      toast.success(t('incidentDetails.dispatcherAssignedSuccessfully'));
                       onUpdate?.();
                     } catch (error) {
                       console.error('Error assigning dispatcher:', error);
-                      toast.error('Failed to assign dispatcher');
+                      toast.error(t('incidentDetails.failedToAssignDispatcher'));
                     }
                   }}
                   disabled={!editData.assigned_operator_id}
                   className="w-full text-xs sm:text-sm whitespace-nowrap"
                 >
-                  Assign Dispatcher
+                  {t('incidentDetails.assignDispatcher')}
                 </Button>
               </div>
             )}
@@ -1222,7 +1222,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
               <div className="flex flex-col gap-2 w-full">
                 <Select onValueChange={setDispatchingUnit} value={dispatchingUnit}>
                   <SelectTrigger className="w-full min-w-0">
-                    <SelectValue placeholder="Dispatch unit..." />
+                    <SelectValue placeholder={`${t('incidentDetails.dispatchUnit')}...`} />
                   </SelectTrigger>
                   <SelectContent className="bg-background z-50 max-w-[90vw]">
                     {availableOfficers.map((unit) => (
@@ -1237,7 +1237,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                   disabled={!dispatchingUnit}
                   className="w-full whitespace-nowrap"
                 >
-                  Dispatch Unit
+                  {t('incidentDetails.dispatchUnit')}
                 </Button>
               </div>
             )}
@@ -1249,33 +1249,33 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
       <div className="space-y-3 md:space-y-4">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Timeline</CardTitle>
+            <CardTitle className="text-base">{t('incidentDetails.timeline')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-blue-600" />
-                <span className="font-medium">Reported:</span>
+                <span className="font-medium">{t('incidentDetails.reported')}:</span>
                 <span>{new Date(incident.reported_at).toLocaleString()}</span>
               </div>
               {incident.dispatched_at && (
                 <div className="flex items-center gap-2">
                   <Play className="h-4 w-4 text-orange-600" />
-                  <span className="font-medium">Dispatched:</span>
+                  <span className="font-medium">{t('incidentDetails.dispatched')}:</span>
                   <span>{new Date(incident.dispatched_at).toLocaleString()}</span>
                 </div>
               )}
               {incident.responded_at && (
                 <div className="flex items-center gap-2">
                   <Shield className="h-4 w-4 text-purple-600" />
-                  <span className="font-medium">Responded:</span>
+                  <span className="font-medium">{t('incidentDetails.responded')}:</span>
                   <span>{new Date(incident.responded_at).toLocaleString()}</span>
                 </div>
               )}
               {incident.resolved_at && (
                 <div className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span className="font-medium">Resolved:</span>
+                  <span className="font-medium">{t('incidentDetails.resolved')}:</span>
                   <span>{new Date(incident.resolved_at).toLocaleString()}</span>
                 </div>
               )}
@@ -1286,7 +1286,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
         {/* Detailed Activity Log */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Activity Log</CardTitle>
+            <CardTitle className="text-base">{t('incidentDetails.activityLog')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -1305,7 +1305,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                           </Badge>
                         </div>
                         <p className="text-sm font-medium mb-1">
-                          {userNames[log.user_id] || 'Unknown User'}
+                          {userNames[log.user_id] || t('incidentDetails.unknownUser')}
                         </p>
                         {(log.details?.message || log.details?.notes) && (
                           <p className="text-sm text-gray-700 mb-1">
@@ -1314,7 +1314,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                         )}
                         {log.details?.unit_name && (
                           <p className="text-xs text-muted-foreground">
-                            Unit: {log.details.unit_name} ({log.details.unit_code})
+                            {t('incidentDetails.unit')}: {log.details.unit_name} ({log.details.unit_code})
                           </p>
                         )}
                       </div>
@@ -1367,7 +1367,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                   )}
                 </>
               ) : (
-                <p className="text-sm text-muted-foreground">No activity logs available</p>
+                <p className="text-sm text-muted-foreground">{t('incidentDetails.noActivityLogsAvailable')}</p>
               )}
             </div>
           </CardContent>
