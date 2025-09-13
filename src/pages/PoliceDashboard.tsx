@@ -989,7 +989,7 @@ const PoliceDashboard = () => {
                     
                     <Card>
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-base">{t('emergency:unitManagement')}</CardTitle>
+                        <CardTitle className="text-base">{t('emergency:unitManagementLabel')}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         {(isPoliceSupervisor || isAdmin) && (
@@ -1229,7 +1229,7 @@ const PoliceDashboard = () => {
                 <div className="flex items-center gap-4 mb-2">
                   <Badge variant="outline" className="flex items-center gap-2">
                     <Users className="h-3 w-3" />
-                    {t('emergency:unitManagement')}
+                    {t('emergency:unitManagementLabel')}
                   </Badge>
                 </div>
                  <p className="text-muted-foreground">
