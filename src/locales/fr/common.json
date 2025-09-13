@@ -35,8 +35,9 @@
     "call": "Appeler"
   },
   "navigation": {
-    "home": "Accueil",
-    "dashboard": "Tableau de bord",
+  "home": "Accueil",
+  "dashboard": "Tableau de bord",
+  "map": "Carte",
     "profile": "Profil",
     "settings": "Paramètres",
     "help": "Aide",

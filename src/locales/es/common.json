@@ -37,6 +37,7 @@
   "navigation": {
     "home": "Inicio",
     "dashboard": "Panel de control",
+    "map": "Mapa",
     "profile": "Perfil",
     "settings": "Configuración",
     "help": "Ayuda",
