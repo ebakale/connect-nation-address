@@ -26,7 +26,7 @@ interface Unit {
 
 const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps) => {
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t } = useTranslation('emergency');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [units, setUnits] = useState<Unit[]>([]);
   const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
@@ -95,8 +95,8 @@ const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps)
 
       if (recipientUnits.length === 0) {
         toast({
-          title: "No Recipients",
-          description: "Please select at least one unit to broadcast to",
+          title: t('dialogs.broadcastAlert.noRecipientsTitle'),
+          description: t('dialogs.broadcastAlert.noRecipientsDescription'),
           variant: "destructive"
         });
         setIsSubmitting(false);
@@ -118,10 +118,10 @@ const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps)
 
       if (error) throw error;
 
-      toast({
-        title: "Broadcast Alert Sent",
-        description: `Alert sent to ${recipientUnits.length} unit(s)`,
-      });
+        toast({
+          title: t('dialogs.broadcastAlert.successTitle'),
+          description: t('dialogs.broadcastAlert.successDescription', { count: recipientUnits.length }),
+        });
 
       // Reset form and close dialog
       setFormData({
@@ -137,8 +137,8 @@ const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps)
     } catch (error) {
       console.error('Error sending broadcast alert:', error);
       toast({
-        title: "Error",
-        description: "Failed to send broadcast alert",
+        title: t('errorTitle', { defaultValue: 'Error' }),
+        description: t('dialogs.broadcastAlert.errorDescription'),
         variant: "destructive"
       });
     } finally {
@@ -152,28 +152,28 @@ const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps)
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-orange-600">
             <RadioTower className="h-5 w-5" />
-            Broadcast Alert
+            {t('broadcastAlert')}
           </DialogTitle>
           <DialogDescription>
-            Send an alert message to emergency units
+            {t('dialogs.broadcastAlert.description')}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="alertType">Alert Type</Label>
+              <Label htmlFor="alertType">{t('dialogs.broadcastAlert.alertType')}</Label>
               <Select 
                 value={formData.alertType} 
                 onValueChange={(value) => setFormData(prev => ({ ...prev, alertType: value }))}
               >
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder={t('dialogs.broadcastAlert.selectAlertType')} />
                 </SelectTrigger>
                 <SelectContent>
                   {alertTypes.map(type => (
                     <SelectItem key={type} value={type}>
-                      {type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                      {t(`dialogs.broadcastAlert.alertTypes.${type}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -181,7 +181,7 @@ const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps)
             </div>
 
             <div>
-              <Label htmlFor="priority">Priority</Label>
+              <Label htmlFor="priority">{t('priority')}</Label>
               <Select 
                 value={formData.priority} 
                 onValueChange={(value) => setFormData(prev => ({ ...prev, priority: value }))}
@@ -190,40 +190,40 @@ const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps)
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="urgent">Urgent</SelectItem>
+                  <SelectItem value="low">{t('low')}</SelectItem>
+                  <SelectItem value="medium">{t('medium')}</SelectItem>
+                  <SelectItem value="high">{t('high')}</SelectItem>
+                  <SelectItem value="urgent">{t('urgent')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           <div>
-            <Label htmlFor="subject">Subject</Label>
+            <Label htmlFor="subject">{t('dialogs.broadcastAlert.subject')}</Label>
             <Input
               id="subject"
               value={formData.subject}
               onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
-              placeholder="Alert subject line"
+              placeholder={t('dialogs.broadcastAlert.subjectPlaceholder')}
               required
             />
           </div>
 
           <div>
-            <Label htmlFor="message">Message</Label>
+            <Label htmlFor="message">{t('message')}</Label>
             <Textarea
               id="message"
               value={formData.message}
               onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
-              placeholder="Alert message content"
+              placeholder={t('dialogs.broadcastAlert.messagePlaceholder')}
               rows={4}
               required
             />
           </div>
 
           <div>
-            <Label>Target Audience</Label>
+            <Label>{t('dialogs.broadcastAlert.targetAudience')}</Label>
             <Select 
               value={formData.targetAudience} 
               onValueChange={(value) => setFormData(prev => ({ ...prev, targetAudience: value }))}
@@ -232,8 +232,8 @@ const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps)
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all_units">All Available Units</SelectItem>
-                <SelectItem value="selected_units">Selected Units</SelectItem>
+                <SelectItem value="all_units">{t('dialogs.broadcastAlert.allAvailableUnits')}</SelectItem>
+                <SelectItem value="selected_units">{t('dialogs.broadcastAlert.selectedUnits')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -243,14 +243,14 @@ const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps)
               <div className="flex items-center justify-between">
                 <Label className="flex items-center gap-2">
                   <Users className="h-4 w-4" />
-                  Select Units ({selectedUnits.length} selected)
+                  {t('dialogs.broadcastAlert.selectUnits', { count: selectedUnits.length })}
                 </Label>
                 <div className="space-x-2">
                   <Button type="button" variant="outline" size="sm" onClick={selectAllUnits}>
-                    Select All
+                    {t('dialogs.broadcastAlert.selectAll')}
                   </Button>
                   <Button type="button" variant="outline" size="sm" onClick={clearAllUnits}>
-                    Clear All
+                    {t('dialogs.broadcastAlert.clearAll')}
                   </Button>
                 </div>
               </div>
@@ -281,7 +281,7 @@ const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps)
                 {units.length === 0 && (
                   <div className="text-center text-muted-foreground py-4">
                     <AlertTriangle className="h-6 w-6 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No available units</p>
+                    <p className="text-sm">{t('dialogs.broadcastAlert.noAvailableUnits')}</p>
                   </div>
                 )}
               </div>
@@ -290,14 +290,14 @@ const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps)
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t('cancel')}
             </Button>
             <Button 
               type="submit" 
               disabled={isSubmitting || !formData.subject || !formData.message}
               className="bg-orange-600 hover:bg-orange-700"
             >
-              {isSubmitting ? "Broadcasting..." : "Send Broadcast"}
+              {isSubmitting ? t('dialogs.broadcastAlert.submitting') : t('dialogs.broadcastAlert.submit')}
             </Button>
           </DialogFooter>
         </form>

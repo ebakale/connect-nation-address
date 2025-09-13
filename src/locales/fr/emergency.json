@@ -958,5 +958,51 @@
     "teamManagement": "Gestion d'Équipe",
     "performanceAnalytics": "Analyses de Performance",
     "yourStatus": "Votre Statut"
+  },
+  "urgent": "Urgent",
+  "dialogs": {
+    "emergencyDispatch": {
+      "description": "Créer et dépêcher un incident d'urgence aux unités disponibles",
+      "locationPlaceholder": "Adresse ou description",
+      "descriptionPlaceholder": "Description détaillée de l'urgence",
+      "callerName": "Nom de l'appelant",
+      "phoneNumber": "Numéro de téléphone",
+      "submit": "Déclencher l'urgence",
+      "submitting": "Envoi...",
+      "successTitle": "Déclenchement d'urgence initié",
+      "successDescription": "Incident n°{{incidentNumber}} créé et opérateurs notifiés",
+      "errorDescription": "Échec de la création du déclenchement d'urgence"
+    },
+    "broadcastAlert": {
+      "description": "Envoyer un message d'alerte aux unités d'urgence",
+      "alertType": "Type d'alerte",
+      "selectAlertType": "Sélectionner le type d'alerte",
+      "alertTypes": {
+        "general": "Général",
+        "weather": "Météo",
+        "traffic": "Trafic",
+        "security": "Sécurité",
+        "operational": "Opérationnel",
+        "emergency": "Urgence"
+      },
+      "subject": "Objet",
+      "subjectPlaceholder": "Objet de l'alerte",
+      "messagePlaceholder": "Contenu du message d'alerte",
+      "targetAudience": "Public cible",
+      "allAvailableUnits": "Toutes les unités disponibles",
+      "selectedUnits": "Unités sélectionnées",
+      "selectUnits": "Sélectionner les unités ({{count}} sélectionnées)",
+      "selectAll": "Tout sélectionner",
+      "clearAll": "Tout effacer",
+      "noAvailableUnits": "Aucune unité disponible",
+      "submit": "Envoyer la diffusion",
+      "submitting": "Diffusion en cours...",
+      "successTitle": "Alerte de diffusion envoyée",
+      "successDescription_one": "Alerte envoyée à {{count}} unité",
+      "successDescription_other": "Alerte envoyée à {{count}} unités",
+      "noRecipientsTitle": "Aucun destinataire",
+      "noRecipientsDescription": "Veuillez sélectionner au moins une unité à diffuser",
+      "errorDescription": "Échec de l'envoi de l'alerte de diffusion"
+    }
   }
 }

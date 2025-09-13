@@ -1142,5 +1142,51 @@
     "teamManagement": "Team Management",
     "performanceAnalytics": "Performance Analytics",
     "yourStatus": "Your Status"
+  },
+  "urgent": "Urgent",
+  "dialogs": {
+    "emergencyDispatch": {
+      "description": "Create and dispatch an emergency incident to available units",
+      "locationPlaceholder": "Street address or description",
+      "descriptionPlaceholder": "Detailed description of the emergency",
+      "callerName": "Caller Name",
+      "phoneNumber": "Phone Number",
+      "submit": "Dispatch Emergency",
+      "submitting": "Dispatching...",
+      "successTitle": "Emergency Dispatch Initiated",
+      "successDescription": "Incident #{{incidentNumber}} created and operators notified",
+      "errorDescription": "Failed to create emergency dispatch"
+    },
+    "broadcastAlert": {
+      "description": "Send an alert message to emergency units",
+      "alertType": "Alert Type",
+      "selectAlertType": "Select alert type",
+      "alertTypes": {
+        "general": "General",
+        "weather": "Weather",
+        "traffic": "Traffic",
+        "security": "Security",
+        "operational": "Operational",
+        "emergency": "Emergency"
+      },
+      "subject": "Subject",
+      "subjectPlaceholder": "Alert subject line",
+      "messagePlaceholder": "Alert message content",
+      "targetAudience": "Target Audience",
+      "allAvailableUnits": "All Available Units",
+      "selectedUnits": "Selected Units",
+      "selectUnits": "Select Units ({{count}} selected)",
+      "selectAll": "Select All",
+      "clearAll": "Clear All",
+      "noAvailableUnits": "No available units",
+      "submit": "Send Broadcast",
+      "submitting": "Broadcasting...",
+      "successTitle": "Broadcast Alert Sent",
+      "successDescription_one": "Alert sent to {{count}} unit",
+      "successDescription_other": "Alert sent to {{count}} units",
+      "noRecipientsTitle": "No Recipients",
+      "noRecipientsDescription": "Please select at least one unit to broadcast to",
+      "errorDescription": "Failed to send broadcast alert"
+    }
   }
 }

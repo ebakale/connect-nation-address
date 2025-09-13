@@ -1142,5 +1142,51 @@
     "teamManagement": "Gestión de Equipo",
     "performanceAnalytics": "Análisis de Rendimiento",
     "yourStatus": "Tu Estado"
+  },
+  "urgent": "Urgente",
+  "dialogs": {
+    "emergencyDispatch": {
+      "description": "Crear y despachar un incidente de emergencia a las unidades disponibles",
+      "locationPlaceholder": "Dirección o descripción",
+      "descriptionPlaceholder": "Descripción detallada de la emergencia",
+      "callerName": "Nombre del llamante",
+      "phoneNumber": "Número de teléfono",
+      "submit": "Despachar emergencia",
+      "submitting": "Despachando...",
+      "successTitle": "Despacho de emergencia iniciado",
+      "successDescription": "Incidente #{{incidentNumber}} creado y operadores notificados",
+      "errorDescription": "No se pudo crear el despacho de emergencia"
+    },
+    "broadcastAlert": {
+      "description": "Enviar un mensaje de alerta a las unidades de emergencia",
+      "alertType": "Tipo de alerta",
+      "selectAlertType": "Seleccionar tipo de alerta",
+      "alertTypes": {
+        "general": "General",
+        "weather": "Clima",
+        "traffic": "Tráfico",
+        "security": "Seguridad",
+        "operational": "Operativa",
+        "emergency": "Emergencia"
+      },
+      "subject": "Asunto",
+      "subjectPlaceholder": "Asunto de la alerta",
+      "messagePlaceholder": "Contenido del mensaje de alerta",
+      "targetAudience": "Público objetivo",
+      "allAvailableUnits": "Todas las unidades disponibles",
+      "selectedUnits": "Unidades seleccionadas",
+      "selectUnits": "Seleccionar unidades ({{count}} seleccionadas)",
+      "selectAll": "Seleccionar todo",
+      "clearAll": "Limpiar todo",
+      "noAvailableUnits": "No hay unidades disponibles",
+      "submit": "Enviar difusión",
+      "submitting": "Difundiendo...",
+      "successTitle": "Alerta de difusión enviada",
+      "successDescription_one": "Alerta enviada a {{count}} unidad",
+      "successDescription_other": "Alerta enviada a {{count}} unidades",
+      "noRecipientsTitle": "Sin destinatarios",
+      "noRecipientsDescription": "Seleccione al menos una unidad para difundir",
+      "errorDescription": "No se pudo enviar la alerta de difusión"
+    }
   }
 }

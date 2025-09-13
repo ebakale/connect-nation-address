@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AlertTriangle, MapPin, Phone, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from 'react-i18next';
 
 interface EmergencyDispatchDialogProps {
   open: boolean;
@@ -15,6 +16,7 @@ interface EmergencyDispatchDialogProps {
 }
 
 const EmergencyDispatchDialog = ({ open, onOpenChange }: EmergencyDispatchDialogProps) => {
+  const { t } = useTranslation('emergency');
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -76,8 +78,8 @@ const EmergencyDispatchDialog = ({ open, onOpenChange }: EmergencyDispatchDialog
       }
 
       toast({
-        title: "Emergency Dispatch Initiated",
-        description: `Incident #${incident.incident_number} created and operators notified`,
+        title: t('dialogs.emergencyDispatch.successTitle'),
+        description: t('dialogs.emergencyDispatch.successDescription', { incidentNumber: incident.incident_number }),
       });
 
       // Reset form and close dialog
@@ -94,8 +96,8 @@ const EmergencyDispatchDialog = ({ open, onOpenChange }: EmergencyDispatchDialog
     } catch (error) {
       console.error('Error creating emergency dispatch:', error);
       toast({
-        title: "Error",
-        description: "Failed to create emergency dispatch",
+        title: t('errorTitle', { defaultValue: 'Error' }),
+        description: t('dialogs.emergencyDispatch.errorDescription'),
         variant: "destructive"
       });
     } finally {
@@ -109,29 +111,29 @@ const EmergencyDispatchDialog = ({ open, onOpenChange }: EmergencyDispatchDialog
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-red-600">
             <AlertTriangle className="h-5 w-5" />
-            Emergency Dispatch
+            {t('emergencyDispatch')}
           </DialogTitle>
           <DialogDescription>
-            Create and dispatch an emergency incident to available units
+            {t('dialogs.emergencyDispatch.description')}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="emergencyType">Emergency Type</Label>
+              <Label htmlFor="emergencyType">{t('emergencyType')}</Label>
               <Select 
                 value={formData.emergencyType} 
                 onValueChange={(value) => setFormData(prev => ({ ...prev, emergencyType: value }))}
                 required
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder={t('selectEmergencyType')} />
                 </SelectTrigger>
                 <SelectContent>
                   {emergencyTypes.map(type => (
                     <SelectItem key={type} value={type}>
-                      {type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                      {t(`types.${type}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -139,7 +141,7 @@ const EmergencyDispatchDialog = ({ open, onOpenChange }: EmergencyDispatchDialog
             </div>
 
             <div>
-              <Label htmlFor="priority">Priority</Label>
+              <Label htmlFor="priority">{t('priority')}</Label>
               <Select 
                 value={formData.priority} 
                 onValueChange={(value) => setFormData(prev => ({ ...prev, priority: value }))}
@@ -148,10 +150,10 @@ const EmergencyDispatchDialog = ({ open, onOpenChange }: EmergencyDispatchDialog
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="critical">Critical</SelectItem>
+                  <SelectItem value="low">{t('low')}</SelectItem>
+                  <SelectItem value="medium">{t('medium')}</SelectItem>
+                  <SelectItem value="high">{t('high')}</SelectItem>
+                  <SelectItem value="critical">{t('critical')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -160,24 +162,24 @@ const EmergencyDispatchDialog = ({ open, onOpenChange }: EmergencyDispatchDialog
           <div>
             <Label htmlFor="location" className="flex items-center gap-2">
               <MapPin className="h-4 w-4" />
-              Location
+              {t('location')}
             </Label>
             <Input
               id="location"
               value={formData.location}
               onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-              placeholder="Street address or description"
+              placeholder={t('dialogs.emergencyDispatch.locationPlaceholder')}
               required
             />
           </div>
 
           <div>
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t('description')}</Label>
             <Textarea
               id="description"
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              placeholder="Detailed description of the emergency"
+              placeholder={t('dialogs.emergencyDispatch.descriptionPlaceholder')}
               rows={3}
               required
             />
@@ -187,40 +189,40 @@ const EmergencyDispatchDialog = ({ open, onOpenChange }: EmergencyDispatchDialog
             <div>
               <Label htmlFor="callerName" className="flex items-center gap-2">
                 <User className="h-4 w-4" />
-                Caller Name
+                {t('dialogs.emergencyDispatch.callerName')}
               </Label>
               <Input
                 id="callerName"
                 value={formData.callerName}
                 onChange={(e) => setFormData(prev => ({ ...prev, callerName: e.target.value }))}
-                placeholder="Caller's name"
+                placeholder={t('dialogs.emergencyDispatch.callerName')}
               />
             </div>
 
             <div>
               <Label htmlFor="callerPhone" className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
-                Phone Number
+                {t('dialogs.emergencyDispatch.phoneNumber')}
               </Label>
               <Input
                 id="callerPhone"
                 value={formData.callerPhone}
                 onChange={(e) => setFormData(prev => ({ ...prev, callerPhone: e.target.value }))}
-                placeholder="Contact number"
+                placeholder={t('dialogs.emergencyDispatch.phoneNumber')}
               />
             </div>
           </div>
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t('cancel')}
             </Button>
             <Button 
               type="submit" 
               disabled={isSubmitting || !formData.emergencyType || !formData.location || !formData.description}
               className="bg-red-600 hover:bg-red-700"
             >
-              {isSubmitting ? "Dispatching..." : "Dispatch Emergency"}
+              {isSubmitting ? t('dialogs.emergencyDispatch.submitting') : t('dialogs.emergencyDispatch.submit')}
             </Button>
           </DialogFooter>
         </form>
