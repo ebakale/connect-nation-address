@@ -1021,5 +1021,18 @@
       "break": "En Pause",
       "offline": "Hors Ligne"
     }
+  },
+  
+  "dashboard": {
+    "logout": "Déconnexion",
+    "noActiveSession": "Aucune session active",
+    "accessDenied": "Accès Refusé",
+    "loginRequired": "Veuillez vous connecter avec les identifiants de police pour accéder à ce système",
+    "dashboard": "Tableau de Bord",
+    "policeAndEmergencyServices": "Police et Services d'Urgence",
+    "unknownOperator": "Opérateur inconnu",
+    "moreOperators": "+{{count}} opérateurs de plus",
+    "loading": "Chargement...",
+    "pleaseWait": "Veuillez patienter pendant que nous chargeons votre tableau de bord"
   }
 }

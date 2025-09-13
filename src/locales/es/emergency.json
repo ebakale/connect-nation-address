@@ -1205,5 +1205,18 @@
       "break": "En Descanso", 
       "offline": "Sin Conexión"
     }
+  },
+  
+  "dashboard": {
+    "logout": "Cerrar Sesión",
+    "noActiveSession": "Sin sesión activa",
+    "accessDenied": "Acceso Denegado",
+    "loginRequired": "Inicie sesión con credenciales policiales para acceder a este sistema",
+    "dashboard": "Panel de Control",
+    "policeAndEmergencyServices": "Policía y Servicios de Emergencia",
+    "unknownOperator": "Operador desconocido",
+    "moreOperators": "+{{count}} operadores más",
+    "loading": "Cargando...",
+    "pleaseWait": "Espere mientras cargamos su panel de control"
   }
 }

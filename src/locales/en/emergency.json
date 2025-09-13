@@ -1204,6 +1204,19 @@
       "active": "Active",
       "break": "On Break",
       "offline": "Offline"
-    }
+  },
+  
+  "dashboard": {
+    "logout": "Logout",
+    "noActiveSession": "No active session",
+    "accessDenied": "Access Denied",
+    "loginRequired": "Please log in with police credentials to access this system",
+    "dashboard": "Dashboard",
+    "policeAndEmergencyServices": "Police and Emergency Services",
+    "unknownOperator": "Unknown operator",
+    "moreOperators": "+{{count}} more operators",
+    "loading": "Loading...",
+    "pleaseWait": "Please wait while we load your dashboard"
   }
+}
 }
