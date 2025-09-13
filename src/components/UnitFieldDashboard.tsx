@@ -616,8 +616,8 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
           
           if (payload.new.acknowledged && payload.new.from_user_id === user.id) {
             toast({ 
-              title: 'Message acknowledged', 
-              description: 'Your message has been received by dispatch' 
+              title: t('fieldDashboard.messageAcknowledged'), 
+              description: t('fieldDashboard.messageReceivedByDispatch') 
             });
           }
         }
@@ -1178,8 +1178,8 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
       }
 
       toast({
-        title: "Backup Requested Successfully",
-        description: `General backup request sent to supervisors and dispatchers. ${backupResult?.notifications_sent || 0} notification(s) sent.`
+        title: t('backupRequests.backupRequestCreated'),
+        description: t('fieldDashboard.backupRequestSent', { count: backupResult?.notifications_sent || 0 })
       });
       
       setShowBackupDialog(false);
@@ -1187,9 +1187,9 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
     } catch (error) {
       console.error('Error requesting backup:', error);
       toast({
-        title: "Error",
-        description: "Failed to request backup",
-        variant: "destructive"
+        title: t('fieldDashboard.errorTitle'),
+        description: t('fieldDashboard.failedToRequestBackup'),
+        variant: 'destructive'
       });
     }
   };
