@@ -155,8 +155,8 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
     } catch (error) {
       console.error('Error fetching units:', error);
       toast({
-        title: "Error",
-        description: "Failed to fetch units",
+        title: t('unitManagement.error'),
+        description: t('unitManagement.failedToFetchUnits'),
         variant: "destructive"
       });
     }
@@ -234,8 +234,8 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
     } catch (error) {
       console.error('Error creating unit:', error);
       toast({
-        title: "Error",
-        description: "Failed to create unit",
+        title: t('unitManagement.error'),
+        description: t('unitManagement.failedToCreateUnit'),
         variant: "destructive"
       });
     }
@@ -280,8 +280,8 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
     } catch (error) {
       console.error('Error assigning officer:', error);
       toast({
-        title: "Error",
-        description: "Failed to assign officer to unit",
+        title: t('unitManagement.error'),
+        description: t('unitManagement.failedToAssignOfficer'),
         variant: "destructive"
       });
     }
@@ -298,14 +298,14 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
 
       await fetchUnits();
       toast({
-        title: "Success",
-        description: "Officer removed from unit"
+        title: t('unitManagement.success'),
+        description: t('unitManagement.officerRemovedSuccessfully')
       });
     } catch (error) {
       console.error('Error removing officer:', error);
       toast({
-        title: "Error",
-        description: "Failed to remove officer from unit",
+        title: t('unitManagement.error'),
+        description: t('unitManagement.failedToRemoveOfficer'),
         variant: "destructive"
       });
     }
@@ -322,14 +322,14 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
 
       await fetchUnits();
       toast({
-        title: "Success",
-        description: "Unit status updated"
+        title: t('unitManagement.success'),
+        description: t('unitManagement.statusUpdatedSuccessfully')
       });
     } catch (error) {
       console.error('Error updating unit status:', error);
       toast({
-        title: "Error",
-        description: "Failed to update unit status",
+        title: t('unitManagement.error'),
+        description: t('unitManagement.failedToUpdateStatus'),
         variant: "destructive"
       });
     }
@@ -355,14 +355,14 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
       setSelectedUnit(null);
 
       toast({
-        title: "Success",
-        description: "Unit information updated successfully"
+        title: t('unitManagement.success'),
+        description: t('unitManagement.unitUpdatedSuccessfully')
       });
     } catch (error) {
       console.error('Error updating unit:', error);
       toast({
-        title: "Error",
-        description: "Failed to update unit information",
+        title: t('unitManagement.error'),
+        description: t('unitManagement.failedToUpdateUnit'),
         variant: "destructive"
       });
     }
@@ -401,11 +401,11 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
 
   const formatRoleTitle = (role: string) => {
     switch (role) {
-      case 'officer': return 'Police Officer';
-      case 'senior_officer': return 'Senior Officer';
-      case 'corporal': return 'Corporal';
-      case 'sergeant': return 'Sergeant';
-      case 'lieutenant': return 'Lieutenant';
+      case 'officer': return t('unitManagement.roles.officer');
+      case 'senior_officer': return t('unitManagement.roles.senior_officer');
+      case 'corporal': return t('unitManagement.roles.corporal');
+      case 'sergeant': return t('unitManagement.roles.sergeant');
+      case 'lieutenant': return t('unitManagement.roles.lieutenant');
       default: return role.charAt(0).toUpperCase() + role.slice(1);
     }
   };
@@ -457,17 +457,17 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              Create Police Unit
+              {t('unitManagement.createNewUnit')}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Create Police Unit</DialogTitle>
-              <DialogDescription>Create a new police unit (patrol, rapid response, traffic, investigation)</DialogDescription>
+              <DialogTitle>{t('unitManagement.createNewUnit')}</DialogTitle>
+              <DialogDescription>{t('unitManagement.description')}</DialogDescription>
             </DialogHeader>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="unit_name">Unit Name</Label>
+                <Label htmlFor="unit_name">{t('unitManagement.unitName')}</Label>
                 <Input
                   id="unit_name"
                   value={newUnit.unit_name}
@@ -476,7 +476,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="unit_code">Unit Code</Label>
+                <Label htmlFor="unit_code">{t('unitManagement.unitCode')}</Label>
                 <Input
                   id="unit_code"
                   value={newUnit.unit_code}
@@ -485,7 +485,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="unit_type">Police Unit Type</Label>
+                <Label htmlFor="unit_type">{t('unitManagement.unitType')}</Label>
                 <Select
                   value={newUnit.unit_type}
                   onValueChange={(value) => setNewUnit({ ...newUnit, unit_type: value })}
@@ -494,16 +494,16 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="patrol">Patrol Unit</SelectItem>
+                    <SelectItem value="patrol">{t('unitManagement.unitTypes.patrol')}</SelectItem>
                     <SelectItem value="rapid_response">Rapid Response Team</SelectItem>
-                    <SelectItem value="traffic">Traffic Enforcement</SelectItem>
-                    <SelectItem value="investigation">Investigation Unit</SelectItem>
-                    <SelectItem value="special">Special Operations</SelectItem>
+                    <SelectItem value="traffic">{t('unitManagement.unitTypes.traffic')}</SelectItem>
+                    <SelectItem value="investigation">{t('unitManagement.unitTypes.investigation')}</SelectItem>
+                    <SelectItem value="special">{t('unitManagement.unitTypes.special')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="vehicle_id">Vehicle ID</Label>
+                <Label htmlFor="vehicle_id">{t('unitManagement.vehicleId')}</Label>
                 <Input
                   id="vehicle_id"
                   value={newUnit.vehicle_id}
@@ -512,7 +512,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                 />
               </div>
               <div className="col-span-2 space-y-2">
-                <Label htmlFor="radio_frequency">Radio Frequency</Label>
+                <Label htmlFor="radio_frequency">{t('unitManagement.radioFrequency')}</Label>
                 <Input
                   id="radio_frequency"
                   value={newUnit.radio_frequency}
@@ -522,8 +522,8 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
               </div>
             </div>
             <div className="flex justify-end gap-2 mt-4">
-              <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>Cancel</Button>
-              <Button onClick={createUnit}>Create Unit</Button>
+              <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>{t('unitManagement.cancel')}</Button>
+              <Button onClick={createUnit}>{t('unitManagement.create')}</Button>
             </div>
           </DialogContent>
         </Dialog>
