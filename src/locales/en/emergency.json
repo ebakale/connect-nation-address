@@ -801,5 +801,28 @@
   "pageOf": "Page {{current}} of {{total}}",
   "previous": "Previous", 
   "next": "Next",
-  "noIncidentsMatch": "No incidents match the current filters"
+  "noIncidentsMatch": "No incidents match the current filters",
+  "backupRequests": {
+    "loadingSentRequests": "Loading sent backup requests...",
+    "noBackupRequestsSent": "No backup requests sent",
+    "loadMore": "Load More ({{remaining}} remaining)",
+    "backupRequestDetails": "Backup Request Details",
+    "priority": "Priority",
+    "fulfilled": "Fulfilled",
+    "partial": "Partial", 
+    "pending": "Pending",
+    "critical": "Critical",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
+    "unknown": "Unknown",
+    "incident": "Incident",
+    "location": "Location",
+    "requestingUnit": "Requesting Unit",
+    "sent": "Sent",
+    "reason": "Reason",
+    "additionalUnitsAssigned": "Additional Units Assigned",
+    "errorTitle": "Error",
+    "failedToLoadRequests": "Failed to load backup requests"
+  }
 }

@@ -617,5 +617,28 @@
   "pageOf": "Page {{current}} sur {{total}}",
   "previous": "Précédent",
   "next": "Suivant",
-  "noIncidentsMatch": "Aucun incident ne correspond aux filtres actuels"
+  "noIncidentsMatch": "Aucun incident ne correspond aux filtres actuels",
+  "backupRequests": {
+    "loadingSentRequests": "Chargement des demandes de renfort envoyées...",
+    "noBackupRequestsSent": "Aucune demande de renfort envoyée",
+    "loadMore": "Charger Plus ({{remaining}} restants)",
+    "backupRequestDetails": "Détails de la Demande de Renfort",
+    "priority": "Priorité",
+    "fulfilled": "Accompli",
+    "partial": "Partiel",
+    "pending": "En attente",
+    "critical": "Critique",
+    "high": "Élevé",
+    "medium": "Moyen",
+    "low": "Faible",
+    "unknown": "Inconnu",
+    "incident": "Incident",
+    "location": "Emplacement",
+    "requestingUnit": "Unité Demandante",
+    "sent": "Envoyé",
+    "reason": "Raison",
+    "additionalUnitsAssigned": "Unités Supplémentaires Assignées",
+    "errorTitle": "Erreur",
+    "failedToLoadRequests": "Échec du chargement des demandes de renfort"
+  }
 }

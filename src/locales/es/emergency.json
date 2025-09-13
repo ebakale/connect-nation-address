@@ -801,5 +801,28 @@
   "pageOf": "Página {{current}} de {{total}}",
   "previous": "Anterior",
   "next": "Siguiente", 
-  "noIncidentsMatch": "Ningún incidente coincide con los filtros actuales"
+  "noIncidentsMatch": "Ningún incidente coincide con los filtros actuales",
+  "backupRequests": {
+    "loadingSentRequests": "Cargando solicitudes de refuerzo enviadas...",
+    "noBackupRequestsSent": "No se han enviado solicitudes de refuerzo",
+    "loadMore": "Cargar Más ({{remaining}} restantes)",
+    "backupRequestDetails": "Detalles de Solicitud de Refuerzo",
+    "priority": "Prioridad",
+    "fulfilled": "Cumplido",
+    "partial": "Parcial",
+    "pending": "Pendiente",
+    "critical": "Crítico",
+    "high": "Alto",
+    "medium": "Medio",
+    "low": "Bajo",
+    "unknown": "Desconocido",
+    "incident": "Incidente",
+    "location": "Ubicación",
+    "requestingUnit": "Unidad Solicitante",
+    "sent": "Enviado",
+    "reason": "Razón",
+    "additionalUnitsAssigned": "Unidades Adicionales Asignadas",
+    "errorTitle": "Error",
+    "failedToLoadRequests": "Error al cargar solicitudes de refuerzo"
+  }
 }

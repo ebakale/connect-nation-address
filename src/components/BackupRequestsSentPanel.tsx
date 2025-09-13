@@ -9,6 +9,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
 import { Clock, MapPin, User, Calendar, ChevronRight, Shield, ShieldCheck, ShieldX } from "lucide-react";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 interface BackupRequest {
   id: string;
@@ -44,6 +45,7 @@ export function BackupRequestsSentPanel({ className }: BackupRequestsSentPanelPr
   const { user } = useAuth();
   const { isPoliceSupervisor, isPoliceDispatcher, isAdmin } = useUserRole();
   const { toast } = useToast();
+  const { t } = useTranslation(['emergency']);
 
   const pageSize = 5;
   const [sentPage, setSentPage] = useState(1);
@@ -155,8 +157,8 @@ export function BackupRequestsSentPanel({ className }: BackupRequestsSentPanelPr
     } catch (error) {
       console.error('Error fetching backup requests:', error);
       toast({
-        title: "Error",
-        description: "Failed to load backup requests",
+        title: t('backupRequests.errorTitle'),
+        description: t('backupRequests.failedToLoadRequests'),
         variant: "destructive",
       });
     } finally {
@@ -176,22 +178,22 @@ export function BackupRequestsSentPanel({ className }: BackupRequestsSentPanelPr
 
   const getPriorityLabel = (level: number) => {
     switch (level) {
-      case 1: return 'Critical';
-      case 2: return 'High';
-      case 3: return 'Medium';
-      case 4: return 'Low';
-      default: return 'Unknown';
+      case 1: return t('backupRequests.critical');
+      case 2: return t('backupRequests.high');
+      case 3: return t('backupRequests.medium');
+      case 4: return t('backupRequests.low');
+      default: return t('backupRequests.unknown');
     }
   };
 
   const getBackupStatusBadge = (status?: string) => {
     switch (status) {
       case 'fulfilled':
-        return <Badge variant="secondary"><ShieldCheck className="h-3 w-3 mr-1" />Fulfilled</Badge>;
+        return <Badge variant="secondary"><ShieldCheck className="h-3 w-3 mr-1" />{t('backupRequests.fulfilled')}</Badge>;
       case 'partially_fulfilled':
-        return <Badge variant="default"><Shield className="h-3 w-3 mr-1" />Partial</Badge>;
+        return <Badge variant="default"><Shield className="h-3 w-3 mr-1" />{t('backupRequests.partial')}</Badge>;
       case 'pending':
-        return <Badge variant="outline"><ShieldX className="h-3 w-3 mr-1" />Pending</Badge>;
+        return <Badge variant="outline"><ShieldX className="h-3 w-3 mr-1" />{t('backupRequests.pending')}</Badge>;
       default:
         return null;
     }
@@ -247,7 +249,7 @@ export function BackupRequestsSentPanel({ className }: BackupRequestsSentPanelPr
     return (
       <div className={`space-y-4 ${className}`}>
         <div className="text-center py-8 text-muted-foreground">
-          Loading sent backup requests...
+          {t('backupRequests.loadingSentRequests')}
         </div>
       </div>
     );
@@ -260,7 +262,7 @@ export function BackupRequestsSentPanel({ className }: BackupRequestsSentPanelPr
         {displayedSentRequests.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Shield className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p>No backup requests sent</p>
+            <p>{t('backupRequests.noBackupRequestsSent')}</p>
           </div>
         ) : (
           <>
@@ -278,7 +280,7 @@ export function BackupRequestsSentPanel({ className }: BackupRequestsSentPanelPr
                 onClick={() => setSentPage(prev => prev + 1)}
                 className="w-full"
               >
-                Load More ({sentRequests.length - displayedSentRequests.length} remaining)
+                {t('backupRequests.loadMore', { remaining: sentRequests.length - displayedSentRequests.length })}
               </Button>
             )}
           </>
@@ -291,7 +293,7 @@ export function BackupRequestsSentPanel({ className }: BackupRequestsSentPanelPr
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Shield className="h-5 w-5 text-blue-600" />
-              Backup Request Details
+              {t('backupRequests.backupRequestDetails')}
             </DialogTitle>
           </DialogHeader>
           
@@ -299,7 +301,7 @@ export function BackupRequestsSentPanel({ className }: BackupRequestsSentPanelPr
             <div className="space-y-4">
               <div className="flex flex-wrap gap-2">
                 <Badge className={getPriorityColor(selectedRequest.priority_level)}>
-                  {getPriorityLabel(selectedRequest.priority_level)} Priority
+                  {getPriorityLabel(selectedRequest.priority_level)} {t('backupRequests.priority')}
                 </Badge>
                 {getBackupStatusBadge(selectedRequest.backup_status)}
               </div>
@@ -313,7 +315,7 @@ export function BackupRequestsSentPanel({ className }: BackupRequestsSentPanelPr
                 {selectedRequest.metadata?.incident_number && (
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-medium">Incident:</span>
+                    <span className="font-medium">{t('backupRequests.incident')}:</span>
                     <span>{selectedRequest.metadata.incident_number}</span>
                   </div>
                 )}
@@ -321,7 +323,7 @@ export function BackupRequestsSentPanel({ className }: BackupRequestsSentPanelPr
                 {selectedRequest.metadata?.location && (
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-medium">Location:</span>
+                    <span className="font-medium">{t('backupRequests.location')}:</span>
                     <span>{selectedRequest.metadata.location}</span>
                   </div>
                 )}
@@ -329,27 +331,27 @@ export function BackupRequestsSentPanel({ className }: BackupRequestsSentPanelPr
                 {selectedRequest.metadata?.requesting_unit_name && (
                   <div className="flex items-center gap-2">
                     <Shield className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-medium">Requesting Unit:</span>
+                    <span className="font-medium">{t('backupRequests.requestingUnit')}:</span>
                     <span>{selectedRequest.metadata.requesting_unit_name}</span>
                   </div>
                 )}
                 
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="font-medium">Sent:</span>
+                  <span className="font-medium">{t('backupRequests.sent')}:</span>
                   <span>{format(new Date(selectedRequest.created_at), 'MMM d, yyyy HH:mm')}</span>
                 </div>
 
                 {selectedRequest.metadata?.reason && (
                   <div className="col-span-full">
-                    <span className="font-medium">Reason:</span>
+                    <span className="font-medium">{t('backupRequests.reason')}:</span>
                     <p className="text-muted-foreground mt-1">{selectedRequest.metadata.reason}</p>
                   </div>
                 )}
 
                 {selectedRequest.backup_status !== 'pending' && selectedRequest.units_added_after_request && selectedRequest.units_added_after_request.length > 0 && (
                   <div className="col-span-full">
-                    <span className="font-medium">Additional Units Assigned:</span>
+                    <span className="font-medium">{t('backupRequests.additionalUnitsAssigned')}:</span>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {selectedRequest.units_added_after_request.map((unit, index) => (
                         <Badge key={index} variant="secondary" className="text-xs">
