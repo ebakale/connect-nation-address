@@ -62,6 +62,27 @@
   "notificationSuccess": {
     "allMarkedAsRead": "Toutes les notifications marquées comme lues"
   },
+  "status": {
+    "pending": "EN ATTENTE",
+    "in_progress": "EN COURS",
+    "resolved": "RÉSOLU",
+    "closed": "FERMÉ",
+    "cancelled": "ANNULÉ"
+  },
+  "emergencyType": {
+    "fire": "Incendie",
+    "medical": "Médical",
+    "theft": "Vol",
+    "assault": "Agression",
+    "accident": "Accident",
+    "disturbance": "Trouble",
+    "vandalism": "Vandalisme",
+    "burglary": "Cambriolage",
+    "domestic_violence": "Violence Domestique",
+    "drug_related": "Lié à la Drogue",
+    "traffic_violation": "Infraction Routière",
+    "suspicious_activity": "Activité Suspecte"
+  },
   "metadataFields": {
     "incident_number": "Numéro d'Incident",
     "emergency_type": "Type d'Urgence",
