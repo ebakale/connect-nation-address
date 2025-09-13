@@ -406,18 +406,21 @@ const UnitManagement: React.FC = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="unit_type">Police Unit Type</Label>
+                <Label htmlFor="unit_type">{t('unitManagement.unitType')}</Label>
                 <Select value={unitForm.unit_type} onValueChange={(value) => setUnitForm({ ...unitForm, unit_type: value })}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="patrol">Patrol Unit</SelectItem>
-                    <SelectItem value="rapid_response">Rapid Response Team</SelectItem>
-                    <SelectItem value="traffic">Traffic Enforcement</SelectItem>
-                    <SelectItem value="investigation">Investigation Unit</SelectItem>
-                    <SelectItem value="k9">K-9 Unit</SelectItem>
-                    <SelectItem value="swat">SWAT Team</SelectItem>
+                    <SelectItem value="patrol">{t('unitManagement.unitTypes.patrol')}</SelectItem>
+                    <SelectItem value="rapid_response">{t('unitManagement.unitTypes.rapid_response')}</SelectItem>
+                    <SelectItem value="traffic">{t('unitManagement.unitTypes.traffic')}</SelectItem>
+                    <SelectItem value="investigation">{t('unitManagement.unitTypes.investigation')}</SelectItem>
+                    <SelectItem value="k9">{t('unitManagement.unitTypes.k9')}</SelectItem>
+                    <SelectItem value="swat">{t('unitManagement.unitTypes.swat')}</SelectItem>
+                    <SelectItem value="emergency">{t('unitManagement.unitTypes.emergency')}</SelectItem>
+                    <SelectItem value="special">{t('unitManagement.unitTypes.special')}</SelectItem>
+                    <SelectItem value="dispatch">{t('unitManagement.unitTypes.dispatch')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -690,18 +693,21 @@ const UnitManagement: React.FC = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit_unit_type">Police Unit Type</Label>
+              <Label htmlFor="edit_unit_type">{t('unitManagement.unitType')}</Label>
               <Select value={unitForm.unit_type} onValueChange={(value) => setUnitForm({ ...unitForm, unit_type: value })}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="patrol">Patrol Unit</SelectItem>
-                  <SelectItem value="rapid_response">Rapid Response Team</SelectItem>
-                  <SelectItem value="traffic">Traffic Enforcement</SelectItem>
-                  <SelectItem value="investigation">Investigation Unit</SelectItem>
-                  <SelectItem value="k9">K-9 Unit</SelectItem>
-                  <SelectItem value="swat">SWAT Team</SelectItem>
+                  <SelectItem value="patrol">{t('unitManagement.unitTypes.patrol')}</SelectItem>
+                  <SelectItem value="rapid_response">{t('unitManagement.unitTypes.rapid_response')}</SelectItem>
+                  <SelectItem value="traffic">{t('unitManagement.unitTypes.traffic')}</SelectItem>
+                  <SelectItem value="investigation">{t('unitManagement.unitTypes.investigation')}</SelectItem>
+                  <SelectItem value="k9">{t('unitManagement.unitTypes.k9')}</SelectItem>
+                  <SelectItem value="swat">{t('unitManagement.unitTypes.swat')}</SelectItem>
+                  <SelectItem value="emergency">{t('unitManagement.unitTypes.emergency')}</SelectItem>
+                  <SelectItem value="special">{t('unitManagement.unitTypes.special')}</SelectItem>
+                  <SelectItem value="dispatch">{t('unitManagement.unitTypes.dispatch')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>

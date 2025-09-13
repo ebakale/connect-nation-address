@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { RadioTower, Users, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 interface BroadcastAlertDialogProps {
   open: boolean;
@@ -25,6 +26,7 @@ interface Unit {
 
 const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps) => {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [units, setUnits] = useState<Unit[]>([]);
   const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
@@ -263,9 +265,9 @@ const BroadcastAlertDialog = ({ open, onOpenChange }: BroadcastAlertDialogProps)
                     />
                     <label htmlFor={unit.id} className="flex items-center gap-2 cursor-pointer flex-1">
                       <span className="font-medium">{unit.unit_code}</span>
-                      <Badge variant="secondary" className="text-xs">
-                        {unit.unit_type}
-                      </Badge>
+                       <Badge variant="secondary" className="text-xs">
+                         {t(`unitManagement.unitTypes.${unit.unit_type}`) || unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1)}
+                       </Badge>
                       <Badge 
                         variant={unit.status === 'available' ? 'default' : 'secondary'}
                         className="text-xs"

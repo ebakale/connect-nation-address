@@ -31,7 +31,10 @@
       "special": "Spécial",
       "traffic": "Circulation",
       "investigation": "Enquête",
-      "rapid_response": "Réponse Rapide"
+      "rapid_response": "Réponse Rapide",
+      "dispatch": "Répartition",
+      "k9": "Unité K-9",
+      "swat": "Équipe SWAT"
     },
     "statuses": {
       "available": "Disponible",

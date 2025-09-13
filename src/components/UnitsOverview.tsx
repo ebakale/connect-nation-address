@@ -13,6 +13,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 
 interface OfficerInfo {
   id: string;
@@ -50,6 +51,7 @@ interface UnitsOverviewProps {
 export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
   const { toast } = useToast();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [units, setUnits] = useState<UnitInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -446,9 +448,9 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
                     </CardTitle>
                     <p className="text-sm text-muted-foreground font-medium">{unit.unit_name}</p>
                     <div className="flex gap-2 mt-2">
-                      <Badge variant="outline">
-                        {unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1)}
-                      </Badge>
+                       <Badge variant="outline">
+                         {t(`unitManagement.unitTypes.${unit.unit_type}`) || unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1)}
+                       </Badge>
                       <Badge variant={getStatusBadgeVariant(unit.status)}>
                         {unit.status.charAt(0).toUpperCase() + unit.status.slice(1)}
                       </Badge>
