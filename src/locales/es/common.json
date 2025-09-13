@@ -49,7 +49,8 @@
     "terms": "Términos de servicio",
     "logout": "Cerrar sesión",
     "login": "Iniciar sesión",
-    "register": "Registrarse"
+    "register": "Registrarse",
+    "address": "Dirección"
   },
   "status": {
     "active": "Activo",

@@ -37,9 +37,9 @@
     "updateStatus": "Update Status"
   },
   "navigation": {
-  "home": "Home",
-  "dashboard": "Dashboard",
-  "map": "Map",
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "map": "Map",
     "profile": "Profile",
     "settings": "Settings",
     "help": "Help",
@@ -49,7 +49,8 @@
     "terms": "Terms of Service",
     "logout": "Logout",
     "login": "Login",
-    "register": "Register"
+    "register": "Register",
+    "address": "Address"
   },
   "status": {
     "active": "Active",
