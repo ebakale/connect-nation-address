@@ -918,6 +918,21 @@
     "failedToMarkComplete": "Erreur lors du marquage de l'incident comme complet",
     "dispatcherAssignedSuccessfully": "Répartiteur assigné avec succès",
     "failedToAssignDispatcher": "Échec de l'assignation du répartiteur",
-    "failedToAssignIncident": "Échec de l'assignation de l'incident"
+    "failedToAssignIncident": "Échec de l'assignation de l'incident",
+    "yourStatus": "Votre Statut",
+    "sessionDuration": "Durée de Session",
+    "updateStatus": "Mettre à Jour le Statut",
+    "onBreak": "En Pause",
+    "goingOffline": "Se Déconnecter",
+    "sessionStarted": "Session commencée",
+    "noActiveSession": "Aucune session active",
+    "activeOperators": "Opérateurs Actifs",
+    "operatorsCurrentlyOnline": "{{count}} opérateurs actuellement en ligne",
+    "unknownOperator": "Opérateur Inconnu",
+    "noOtherOperatorsOnline": "Aucun autre opérateur en ligne",
+    "moreOperators": "+{{count}} autres opérateurs",
+    "quickActions": "Actions Rapides",
+    "emergencyDispatch": "Répartition d'Urgence",
+    "broadcastAlert": "Alerte de Diffusion"
   }
 }

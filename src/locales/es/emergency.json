@@ -1102,6 +1102,21 @@
     "failedToMarkComplete": "Error al marcar incidente como completo",
     "dispatcherAssignedSuccessfully": "Despachador asignado exitosamente",
     "failedToAssignDispatcher": "Error al asignar despachador",
-    "failedToAssignIncident": "Error al asignar incidente"
+    "failedToAssignIncident": "Error al asignar incidente",
+    "yourStatus": "Tu Estado",
+    "sessionDuration": "Duración de Sesión",
+    "updateStatus": "Actualizar Estado",
+    "onBreak": "En Descanso",
+    "goingOffline": "Desconectando",
+    "sessionStarted": "Sesión iniciada",
+    "noActiveSession": "Sin sesión activa",
+    "activeOperators": "Operadores Activos",
+    "operatorsCurrentlyOnline": "{{count}} operadores actualmente en línea",
+    "unknownOperator": "Operador Desconocido",
+    "noOtherOperatorsOnline": "No hay otros operadores en línea",
+    "moreOperators": "+{{count}} más operadores",
+    "quickActions": "Acciones Rápidas",
+    "emergencyDispatch": "Despacho de Emergencia",
+    "broadcastAlert": "Alerta de Difusión"
   }
 }

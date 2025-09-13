@@ -1102,6 +1102,21 @@
     "failedToMarkComplete": "Error marking incident complete",
     "dispatcherAssignedSuccessfully": "Dispatcher assigned successfully",
     "failedToAssignDispatcher": "Failed to assign dispatcher",
-    "failedToAssignIncident": "Failed to assign incident"
+    "failedToAssignIncident": "Failed to assign incident",
+    "yourStatus": "Your Status",
+    "sessionDuration": "Session Duration",
+    "updateStatus": "Update Status",
+    "onBreak": "On Break",
+    "goingOffline": "Going Offline",
+    "sessionStarted": "Session started",
+    "noActiveSession": "No active session",
+    "activeOperators": "Active Operators",
+    "operatorsCurrentlyOnline": "{{count}} operators currently online",
+    "unknownOperator": "Unknown Operator",
+    "noOtherOperatorsOnline": "No other operators online",
+    "moreOperators": "+{{count}} more operators",
+    "quickActions": "Quick Actions",
+    "emergencyDispatch": "Emergency Dispatch",
+    "broadcastAlert": "Broadcast Alert"
   }
 }
