@@ -171,7 +171,7 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
                 <div>
                   <Badge className={getStatusColor(status)}>
                     {getStatusIcon(status)}
-                    <span className="ml-1 capitalize">{status}</span>
+                    <span className="ml-1 capitalize">{t(`status.${status}`)}</span>
                   </Badge>
                 </div>
                 <div className="text-right">
@@ -244,7 +244,7 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
                   </span>
                 </div>
                 <Badge className={getStatusColor(operator.status)} variant="secondary">
-                  {operator.status}
+                  {t(`status.${operator.status}`)}
                 </Badge>
               </div>
             ))}

@@ -1117,6 +1117,13 @@
     "moreOperators": "+{{count}} more operators",
     "quickActions": "Quick Actions",
     "emergencyDispatch": "Emergency Dispatch",
-    "broadcastAlert": "Broadcast Alert"
+    "broadcastAlert": "Broadcast Alert",
+    "status": {
+      "active": "Active",
+      "break": "On Break",
+      "offline": "Offline",
+      "ended": "Ended",
+      "inactive": "Inactive"
+    }
   }
 }

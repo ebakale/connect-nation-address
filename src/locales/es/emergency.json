@@ -1117,6 +1117,13 @@
     "moreOperators": "+{{count}} más operadores",
     "quickActions": "Acciones Rápidas",
     "emergencyDispatch": "Despacho de Emergencia",
-    "broadcastAlert": "Alerta de Difusión"
+    "broadcastAlert": "Alerta de Difusión",
+    "status": {
+      "active": "Activo",
+      "break": "En Descanso",
+      "offline": "Desconectado",
+      "ended": "Terminado",
+      "inactive": "Inactivo"
+    }
   }
 }

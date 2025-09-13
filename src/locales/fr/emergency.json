@@ -933,6 +933,13 @@
     "moreOperators": "+{{count}} autres opérateurs",
     "quickActions": "Actions Rapides",
     "emergencyDispatch": "Répartition d'Urgence",
-    "broadcastAlert": "Alerte de Diffusion"
+    "broadcastAlert": "Alerte de Diffusion",
+    "status": {
+      "active": "Actif",
+      "break": "En Pause",
+      "offline": "Hors Ligne",
+      "ended": "Terminé",
+      "inactive": "Inactif"
+    }
   }
 }
