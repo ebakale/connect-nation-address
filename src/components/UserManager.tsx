@@ -33,7 +33,7 @@ interface UserProfile {
 }
 
 const UserManager: React.FC = () => {
-  const { t } = useTranslation(['admin']);
+  const { t } = useTranslation(['emergency']);
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -182,8 +182,8 @@ const UserManager: React.FC = () => {
     } catch (error) {
       console.error('Error fetching users:', error);
       toast({
-        title: t('admin:error'),
-        description: t('admin:failedToFetchUsers'),
+        title: t('userManagement.error'),
+        description: t('userManagement.failedToFetchUsers'),
         variant: "destructive"
       });
     } finally {
@@ -229,8 +229,8 @@ const UserManager: React.FC = () => {
       }
 
       toast({
-        title: t('admin:success'),
-        description: t('admin:roleAssignedSuccessfully') + (cityScope ? ' with city scope' : '')
+        title: t('userManagement.success'),
+        description: t('userManagement.roleAssignedSuccessfully') + (cityScope ? ' with city scope' : '')
       });
 
       await fetchUsers();
@@ -241,8 +241,8 @@ const UserManager: React.FC = () => {
     } catch (error) {
       console.error('Error assigning role:', error);
       toast({
-        title: t('admin:error'),
-        description: t('admin:failedToAssignRole'),
+        title: t('userManagement.error'),
+        description: t('userManagement.failedToAssignRole'),
         variant: "destructive"
       });
     }
@@ -259,16 +259,16 @@ const UserManager: React.FC = () => {
       if (error) throw error;
 
       toast({
-        title: t('admin:success'),
-        description: t('admin:roleRemovedSuccessfully')
+        title: t('userManagement.success'),
+        description: t('userManagement.roleRemovedSuccessfully')
       });
 
       await fetchUsers();
     } catch (error) {
       console.error('Error removing role:', error);
       toast({
-        title: t('admin:error'),
-        description: t('admin:failedToRemoveRole'),
+        title: t('userManagement.error'),
+        description: t('userManagement.failedToRemoveRole'),
         variant: "destructive"
       });
     }
@@ -309,8 +309,8 @@ const UserManager: React.FC = () => {
       }
 
       toast({
-        title: t('admin:success'),
-        description: t('admin:userInformationUpdatedSuccessfully')
+        title: t('userManagement.success'),
+        description: t('userManagement.userInformationUpdatedSuccessfully')
       });
 
       await fetchUsers();
@@ -319,8 +319,8 @@ const UserManager: React.FC = () => {
     } catch (error) {
       console.error('Error updating user:', error);
       toast({
-        title: t('admin:error'),
-        description: error instanceof Error ? error.message : t('admin:failedToUpdateUser'),
+        title: t('userManagement.error'),
+        description: error instanceof Error ? error.message : t('userManagement.failedToUpdateUser'),
         variant: "destructive"
       });
     }
@@ -347,8 +347,8 @@ const UserManager: React.FC = () => {
       }
 
       toast({
-        title: t('admin:success'),
-        description: t('admin:userDeletedSuccessfully')
+        title: t('userManagement.success'),
+        description: t('userManagement.userDeletedSuccessfully')
       });
 
       await fetchUsers();
@@ -357,8 +357,8 @@ const UserManager: React.FC = () => {
     } catch (error) {
       console.error('Error deleting user:', error);
       toast({
-        title: t('admin:error'),
-        description: error instanceof Error ? error.message : t('admin:failedToDeleteUser'),
+        title: t('userManagement.error'),
+        description: error instanceof Error ? error.message : t('userManagement.failedToDeleteUser'),
         variant: "destructive"
       });
     }
@@ -385,8 +385,8 @@ const UserManager: React.FC = () => {
       }
 
       toast({
-        title: "Success",
-        description: "User created successfully"
+        title: t('userManagement.success'),
+        description: t('userManagement.userCreatedSuccessfully')
       });
 
       await fetchUsers();
@@ -402,8 +402,8 @@ const UserManager: React.FC = () => {
     } catch (error) {
       console.error('Error creating user:', error);
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to create user",
+        title: t('userManagement.error'),
+        description: error instanceof Error ? error.message : t('userManagement.failedToCreateUser'),
         variant: "destructive"
       });
     }
@@ -431,10 +431,10 @@ const UserManager: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            {hasPoliceAdminAccess ? 'Police User Management' : 'User Management'}
+            {hasPoliceAdminAccess ? t('userManagement.policeUserManagement') : t('userManagement.userManagement')}
           </CardTitle>
           <CardDescription>
-            Access denied. Admin privileges required.
+            {t('userManagement.accessDenied')}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -447,7 +447,7 @@ const UserManager: React.FC = () => {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder={t('admin:searchUsers')}
+                placeholder={t('userManagement.searchUsers')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -458,21 +458,21 @@ const UserManager: React.FC = () => {
                 <DialogTrigger asChild>
                   <Button className="flex items-center gap-2 flex-1 sm:flex-none">
                     <UserPlus className="h-4 w-4" />
-                    <span className="hidden sm:inline">{t('admin:createUser')}</span>
-                    <span className="sm:hidden">Create</span>
+                    <span className="hidden sm:inline">{t('userManagement.createUser')}</span>
+                    <span className="sm:hidden">{t('userManagement.createUser')}</span>
                   </Button>
                 </DialogTrigger>
               </Dialog>
               <Button onClick={fetchUsers} variant="outline" className="flex items-center gap-2 flex-1 sm:flex-none">
                 <RefreshCw className="h-4 w-4" />
-                <span className="hidden sm:inline">{t('admin:refresh')}</span>
+                <span className="hidden sm:inline">{t('userManagement.refresh')}</span>
               </Button>
             </div>
           </div>
 
           {loading ? (
             <div className="text-center py-8">
-              <p className="text-muted-foreground">{t('admin:loadingUsers')}</p>
+              <p className="text-muted-foreground">{t('userManagement.loadingUsers')}</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -481,11 +481,11 @@ const UserManager: React.FC = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>{t('admin:user')}</TableHead>
-                      <TableHead>{t('admin:organization')}</TableHead>
-                      <TableHead>{t('admin:contact')}</TableHead>
-                      <TableHead>{t('admin:roles')}</TableHead>
-                      <TableHead>{t('admin:actions')}</TableHead>
+                      <TableHead>{t('userManagement.user')}</TableHead>
+                      <TableHead>{t('userManagement.organization')}</TableHead>
+                      <TableHead>{t('userManagement.contact')}</TableHead>
+                      <TableHead>{t('userManagement.roles')}</TableHead>
+                      <TableHead>{t('userManagement.actions')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -493,15 +493,15 @@ const UserManager: React.FC = () => {
                       <TableRow key={user.user_id}>
                         <TableCell>
                           <div>
-                            <p className="font-medium">{user.full_name || t('admin:noName')}</p>
+                            <p className="font-medium">{user.full_name || t('userManagement.noName')}</p>
                             <p className="text-sm text-muted-foreground">{user.email}</p>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <p className="text-sm">{user.organization || t('admin:notSpecified')}</p>
+                          <p className="text-sm">{user.organization || t('userManagement.notSpecified')}</p>
                         </TableCell>
                         <TableCell>
-                          <p className="text-sm">{user.phone || t('admin:notProvided')}</p>
+                          <p className="text-sm">{user.phone || t('userManagement.notProvided')}</p>
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-wrap gap-1">
@@ -511,7 +511,7 @@ const UserManager: React.FC = () => {
                                 variant="secondary"
                                 className="cursor-pointer"
                                 onClick={() => removeRole(user.user_id, roleData.role)}
-                                title="Click to remove role"
+                                title={t('userManagement.tapToRemoveRole')}
                               >
                                 {roleData.role}
                                 {roleData.metadata.length > 0 && (
@@ -522,7 +522,7 @@ const UserManager: React.FC = () => {
                               </Badge>
                             ))}
                             {user.roles.length === 0 && (
-                              <span className="text-sm text-muted-foreground">{t('admin:noRolesAssigned')}</span>
+                              <span className="text-sm text-muted-foreground">{t('userManagement.noRolesAssigned')}</span>
                             )}
                           </div>
                         </TableCell>
@@ -536,7 +536,7 @@ const UserManager: React.FC = () => {
                               }}
                             >
                               <SelectTrigger className="w-32">
-                                <SelectValue placeholder={t('admin:assignRole')} />
+                                <SelectValue placeholder={t('userManagement.assignRole')} />
                               </SelectTrigger>
                               <SelectContent>
                                 {(hasPoliceAdminAccess ? policeRoles : addressingRoles).filter(role => 
@@ -545,7 +545,7 @@ const UserManager: React.FC = () => {
                                   <SelectItem key={role} value={role}>
                                     {role.replace('_', ' ')}
                                     {(role === 'police_dispatcher' || role === 'police_supervisor') && (
-                                      <span className="text-xs text-muted-foreground ml-1">(requires city scope)</span>
+                                      <span className="text-xs text-muted-foreground ml-1">({t('userManagement.requiresCityScope')})</span>
                                     )}
                                   </SelectItem>
                                 ))}
@@ -582,24 +582,24 @@ const UserManager: React.FC = () => {
                     <div className="space-y-3">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <p className="font-medium">{user.full_name || 'No name'}</p>
+                          <p className="font-medium">{user.full_name || t('userManagement.noName')}</p>
                           <p className="text-sm text-muted-foreground break-all">{user.email}</p>
                         </div>
                       </div>
                       
                       <div className="grid grid-cols-1 gap-2 text-sm">
                         <div>
-                          <span className="font-medium">Organization:</span>
-                          <span className="ml-2">{user.organization || 'Not specified'}</span>
+                          <span className="font-medium">{t('userManagement.organization')}:</span>
+                          <span className="ml-2">{user.organization || t('userManagement.notSpecified')}</span>
                         </div>
                         <div>
-                          <span className="font-medium">Phone:</span>
-                          <span className="ml-2">{user.phone || t('admin:notProvided')}</span>
+                          <span className="font-medium">{t('userManagement.phone')}:</span>
+                          <span className="ml-2">{user.phone || t('userManagement.notProvided')}</span>
                         </div>
                       </div>
 
                       <div>
-                        <span className="font-medium text-sm">Roles:</span>
+                        <span className="font-medium text-sm">{t('userManagement.roles')}:</span>
                         <div className="flex flex-wrap gap-1 mt-1">
                           {user.roles.map((roleData, index) => (
                             <Badge 
@@ -607,7 +607,7 @@ const UserManager: React.FC = () => {
                               variant="secondary"
                               className="cursor-pointer text-xs"
                               onClick={() => removeRole(user.user_id, roleData.role)}
-                              title="Tap to remove role"
+                              title={t('userManagement.tapToRemoveRole')}
                             >
                               {roleData.role}
                               {roleData.metadata.length > 0 && (
@@ -618,7 +618,7 @@ const UserManager: React.FC = () => {
                             </Badge>
                           ))}
                           {user.roles.length === 0 && (
-                            <span className="text-sm text-muted-foreground">{t('admin:noRolesAssigned')}</span>
+                            <span className="text-sm text-muted-foreground">{t('userManagement.noRolesAssigned')}</span>
                           )}
                         </div>
                       </div>
@@ -632,7 +632,7 @@ const UserManager: React.FC = () => {
                           }}
                         >
                           <SelectTrigger className="w-full">
-                            <SelectValue placeholder={t('admin:assignRole')} />
+                            <SelectValue placeholder={t('userManagement.assignRole')} />
                           </SelectTrigger>
                           <SelectContent>
                             {(hasPoliceAdminAccess ? policeRoles : addressingRoles).filter(role => 
@@ -641,7 +641,7 @@ const UserManager: React.FC = () => {
                               <SelectItem key={role} value={role}>
                                 {role.replace('_', ' ')}
                                 {(role === 'police_dispatcher' || role === 'police_supervisor') && (
-                                  <span className="text-xs text-muted-foreground ml-1">(requires city scope)</span>
+                                  <span className="text-xs text-muted-foreground ml-1">({t('userManagement.requiresCityScope')})</span>
                                 )}
                               </SelectItem>
                             ))}
@@ -656,7 +656,7 @@ const UserManager: React.FC = () => {
                             className="flex-1 flex items-center gap-2"
                           >
                             <Edit className="h-4 w-4" />
-                            Edit
+                            {t('userManagement.edit')}
                           </Button>
                           <Button
                             variant="outline"
@@ -665,7 +665,7 @@ const UserManager: React.FC = () => {
                             className="flex-1 flex items-center gap-2 text-destructive hover:text-destructive"
                           >
                             <Trash2 className="h-4 w-4" />
-                            Delete
+                            {t('userManagement.delete')}
                           </Button>
                         </div>
                       </div>
@@ -683,7 +683,7 @@ const UserManager: React.FC = () => {
                     onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                     disabled={currentPage === 1}
                   >
-                    Previous
+                    {t('userManagement.previous')}
                   </Button>
                   
                   <div className="flex items-center gap-1">
@@ -706,7 +706,7 @@ const UserManager: React.FC = () => {
                     onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                     disabled={currentPage === totalPages}
                   >
-                    Next
+                    {t('userManagement.next')}
                   </Button>
                 </div>
               )}
@@ -714,7 +714,7 @@ const UserManager: React.FC = () => {
               {filteredUsers.length === 0 && (
                 <div className="text-center py-8">
                   <UserCog className="mx-auto h-12 w-12 text-muted-foreground" />
-                  <p className="mt-2 text-muted-foreground">No {hasPoliceAdminAccess ? 'police' : 'addressing'} users found</p>
+                  <p className="mt-2 text-muted-foreground">{hasPoliceAdminAccess ? t('userManagement.noPoliceUsersFound') : t('userManagement.noAddressingUsersFound')}</p>
                 </div>
               )}
             </div>
@@ -726,15 +726,15 @@ const UserManager: React.FC = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <MapPin className="h-5 w-5" />
-              Assign City Scope
+              {t('userManagement.assignCityScope')}
             </DialogTitle>
             <DialogDescription>
-              Police dispatchers and supervisors must be assigned to a specific city in Equatorial Guinea.
+              {t('userManagement.assignCityScopeDescription')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="region-scope">Select Region</Label>
+              <Label htmlFor="region-scope">{t('userManagement.selectRegion')}</Label>
               <Select
                 value={selectedGeographicScope}
                 onValueChange={(value) => {
@@ -743,7 +743,7 @@ const UserManager: React.FC = () => {
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Choose a region..." />
+                  <SelectValue placeholder={t('userManagement.chooseRegion')} />
                 </SelectTrigger>
                 <SelectContent>
                   {geographicScopes.map((scope) => (
@@ -756,14 +756,14 @@ const UserManager: React.FC = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="city-scope">Select City</Label>
+              <Label htmlFor="city-scope">{t('userManagement.selectCity')}</Label>
               <Select
                 value={selectedCity}
                 onValueChange={setSelectedCity}
                 disabled={!selectedGeographicScope}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={selectedGeographicScope ? "Choose a city..." : "Select region first"} />
+                  <SelectValue placeholder={selectedGeographicScope ? t('userManagement.chooseCity') : t('userManagement.selectRegionFirst')} />
                 </SelectTrigger>
                 <SelectContent>
                   {selectedGeographicScope && regionCities[selectedGeographicScope]?.map((city) => (
@@ -785,7 +785,7 @@ const UserManager: React.FC = () => {
                   setSelectedCity('');
                 }}
               >
-                Cancel
+                {t('userManagement.cancel')}
               </Button>
               <Button
                 onClick={() => {
@@ -799,7 +799,7 @@ const UserManager: React.FC = () => {
                 }}
                 disabled={!selectedCity}
               >
-                {t('admin:assignRole')}
+                {t('userManagement.assignRole')}
               </Button>
             </div>
           </div>
@@ -812,58 +812,58 @@ const UserManager: React.FC = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Edit className="h-5 w-5" />
-              {t('admin:editUserInformation')}
+              {t('userManagement.editUserInformation')}
             </DialogTitle>
             <DialogDescription>
-              {t('admin:updateUserProfile')}
+              {t('userManagement.updateUserProfile')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-full-name">Full Name</Label>
+              <Label htmlFor="edit-full-name">{t('userManagement.fullName')}</Label>
               <Input
                 id="edit-full-name"
                 value={editForm.full_name}
                 onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
-                placeholder="Enter full name"
+                placeholder={t('userManagement.enterFullName')}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-email">Email</Label>
+              <Label htmlFor="edit-email">{t('userManagement.email')}</Label>
               <Input
                 id="edit-email"
                 type="email"
                 value={editForm.email}
                 onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                placeholder="Enter email address"
+                placeholder={t('userManagement.enterEmail')}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-organization">Organization</Label>
+              <Label htmlFor="edit-organization">{t('userManagement.organization')}</Label>
               <Input
                 id="edit-organization"
                 value={editForm.organization}
                 onChange={(e) => setEditForm({ ...editForm, organization: e.target.value })}
-                placeholder="Enter organization"
+                placeholder={t('userManagement.enterOrganization')}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-phone">Phone</Label>
+              <Label htmlFor="edit-phone">{t('userManagement.phone')}</Label>
               <Input
                 id="edit-phone"
                 value={editForm.phone}
                 onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                placeholder="Enter phone number"
+                placeholder={t('userManagement.enterPhone')}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-password">New Password (optional)</Label>
+              <Label htmlFor="edit-password">{t('userManagement.newPassword')}</Label>
               <Input
                 id="edit-password"
                 type="password"
                 value={editForm.password}
                 onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
-                placeholder="Leave empty to keep current password"
+                placeholder={t('userManagement.leaveEmptyPassword')}
               />
             </div>
             <div className="flex justify-end gap-2">
@@ -874,10 +874,10 @@ const UserManager: React.FC = () => {
                   setSelectedUser(null);
                 }}
               >
-                Cancel
+                {t('userManagement.cancel')}
               </Button>
               <Button onClick={updateUserProfile}>
-                Update User
+                {t('userManagement.updateUser')}
               </Button>
             </div>
           </div>
@@ -890,71 +890,71 @@ const UserManager: React.FC = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <UserPlus className="h-5 w-5" />
-              {hasPoliceAdminAccess ? 'Create New Police User' : 'Create New User'}
+              {hasPoliceAdminAccess ? t('userManagement.createNewPoliceUser') : t('userManagement.createNewUser')}
             </DialogTitle>
             <DialogDescription>
-              {hasPoliceAdminAccess ? 'Create a new user account for the police system.' : 'Create a new user account for the addressing system.'}
+              {hasPoliceAdminAccess ? t('userManagement.createPoliceUserDescription') : t('userManagement.createUserDescription')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="create-full-name">Full Name</Label>
+              <Label htmlFor="create-full-name">{t('userManagement.fullName')}</Label>
               <Input
                 id="create-full-name"
                 value={createForm.full_name}
                 onChange={(e) => setCreateForm({ ...createForm, full_name: e.target.value })}
-                placeholder="Enter full name"
+                placeholder={t('userManagement.enterFullName')}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="create-email">Email</Label>
+              <Label htmlFor="create-email">{t('userManagement.email')}</Label>
               <Input
                 id="create-email"
                 type="email"
                 value={createForm.email}
                 onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
-                placeholder="Enter email address"
+                placeholder={t('userManagement.enterEmail')}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="create-organization">Organization</Label>
+              <Label htmlFor="create-organization">{t('userManagement.organization')}</Label>
               <Input
                 id="create-organization"
                 value={createForm.organization}
                 onChange={(e) => setCreateForm({ ...createForm, organization: e.target.value })}
-                placeholder="Enter organization (e.g., Guardia Civil)"
+                placeholder={t('userManagement.enterOrganization')}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="create-phone">Phone</Label>
+              <Label htmlFor="create-phone">{t('userManagement.phone')}</Label>
               <Input
                 id="create-phone"
                 value={createForm.phone}
                 onChange={(e) => setCreateForm({ ...createForm, phone: e.target.value })}
-                placeholder="Enter phone number"
+                placeholder={t('userManagement.enterPhone')}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="create-password">Password</Label>
+              <Label htmlFor="create-password">{t('userManagement.password')}</Label>
               <Input
                 id="create-password"
                 type="password"
                 value={createForm.password}
                 onChange={(e) => setCreateForm({ ...createForm, password: e.target.value })}
-                placeholder="Enter initial password"
+                placeholder={t('userManagement.enterPassword')}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="create-role">Initial Role</Label>
+              <Label htmlFor="create-role">{t('userManagement.selectRole')}</Label>
               <Select
                 value={createForm.role}
                 onValueChange={(role) => setCreateForm({ ...createForm, role })}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select role" />
+                  <SelectValue placeholder={t('userManagement.chooseRole')} />
                 </SelectTrigger>
                 <SelectContent>
                   {(hasPoliceAdminAccess ? policeRoles : addressingRoles).map((role) => (
@@ -980,13 +980,13 @@ const UserManager: React.FC = () => {
                   });
                 }}
               >
-                Cancel
+                {t('userManagement.cancel')}
               </Button>
               <Button 
                 onClick={createUser}
                 disabled={!createForm.full_name || !createForm.email || !createForm.password}
               >
-                Create User
+                {t('userManagement.createUser')}
               </Button>
             </div>
           </div>
@@ -999,22 +999,21 @@ const UserManager: React.FC = () => {
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <Trash2 className="h-5 w-5 text-destructive" />
-              {t('admin:deleteUser')}
+              {t('userManagement.deleteUserConfirmation')}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete <strong>{selectedUser?.full_name || selectedUser?.email}</strong>? 
-              This action cannot be undone and will permanently remove the user and all associated data.
+              {t('userManagement.deleteUserWarning')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setSelectedUser(null)}>
-              Cancel
+              {t('userManagement.cancel')}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={deleteUser}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Delete User
+              {t('userManagement.delete')} {t('userManagement.user')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
