@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { Clock, TrendingDown, TrendingUp, Target, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface ResponseMetrics {
   incident_id: string;
@@ -27,6 +28,7 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
   className, 
   showRecentOnly = false 
 }) => {
+  const { t } = useTranslation();
   const [metrics, setMetrics] = useState<ResponseMetrics[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [averages, setAverages] = useState<{
@@ -198,7 +200,7 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Avg Response</p>
+                <p className="text-sm text-muted-foreground">{t('emergency.responseTimeTracker.avgResponse')}</p>
                 <p className="text-2xl font-bold">{formatTime(averages.avgResponse)}</p>
               </div>
               <div className="flex items-center gap-2">
@@ -213,7 +215,7 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Avg Resolution</p>
+                <p className="text-sm text-muted-foreground">{t('emergency.responseTimeTracker.avgResolution')}</p>
                 <p className="text-2xl font-bold">{formatTime(averages.avgResolution)}</p>
               </div>
               <Target className="h-5 w-5 text-muted-foreground" />
@@ -225,7 +227,7 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Target Response</p>
+                <p className="text-sm text-muted-foreground">{t('emergency.responseTimeTracker.targetResponse')}</p>
                 <p className="text-2xl font-bold">{formatTime(averages.targetResponse)}</p>
               </div>
               <div className={`w-3 h-3 rounded-full ${
@@ -241,7 +243,7 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5" />
-            {showRecentOnly ? 'Recent Response Times (24h)' : 'Response Time History'}
+            {showRecentOnly ? t('emergency.responseTimeTracker.recentResponseTimes') : t('emergency.responseTimeTracker.responseTimeHistory')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -250,7 +252,7 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
             <div className="space-y-3">
               {metrics.length === 0 ? (
                 <p className="text-center text-muted-foreground py-4">
-                  No response data available
+                  {t('emergency.responseTimeTracker.noResponseData')}
                 </p>
               ) : (
                 currentPageMetrics.map((metric) => (
@@ -259,18 +261,18 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
                       <div>
                         <p className="font-medium">{metric.incident_number}</p>
                         <p className="text-sm text-muted-foreground">
-                          {metric.emergency_type.toUpperCase()} - Priority {metric.priority_level}
+                          {metric.emergency_type.toUpperCase()} - {t('emergency.responseTimeTracker.priority')} {metric.priority_level}
                         </p>
                       </div>
                       <div className="flex gap-2">
                         {metric.response_time_minutes && (
                           <Badge variant={getResponseBadgeColor(metric.response_time_minutes)}>
-                            Response: {formatTime(metric.response_time_minutes)}
+                            {t('emergency.responseTimeTracker.response')}: {formatTime(metric.response_time_minutes)}
                           </Badge>
                         )}
                         {metric.resolution_time_minutes && (
                           <Badge variant="outline">
-                            Total: {formatTime(metric.resolution_time_minutes)}
+                            {t('emergency.responseTimeTracker.total')}: {formatTime(metric.resolution_time_minutes)}
                           </Badge>
                         )}
                       </div>
@@ -278,11 +280,11 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
                     
                     <div className="flex justify-between items-center text-sm text-muted-foreground">
                       <span>
-                        Dispatched: {new Date(metric.dispatched_at).toLocaleString()}
+                        {t('emergency.responseTimeTracker.dispatched')}: {new Date(metric.dispatched_at).toLocaleString()}
                       </span>
                       {metric.assigned_units && metric.assigned_units.length > 0 && (
                         <span>
-                          Units: {metric.assigned_units.join(', ')}
+                          {t('emergency.responseTimeTracker.units')}: {metric.assigned_units.join(', ')}
                         </span>
                       )}
                     </div>
@@ -300,7 +302,7 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
                 >
-                  Previous
+                  {t('emergency.responseTimeTracker.previous')}
                 </Button>
                 
                 <div className="flex items-center gap-1">
@@ -323,7 +325,7 @@ export const ResponseTimeTracker: React.FC<ResponseTimeTrackerProps> = ({
                   onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
                 >
-                  Next
+                  {t('emergency.responseTimeTracker.next')}
                 </Button>
               </div>
             )}

@@ -858,5 +858,20 @@
   "performanceReportExportedSuccessfully": "Reporte de rendimiento exportado exitosamente",
   "failedToExportReport": "Error al exportar reporte",
   "error": "Error",
-  "success": "Éxito"
+  "success": "Éxito",
+  "responseTimeTracker": {
+    "avgResponse": "Respuesta Promedio",
+    "avgResolution": "Resolución Promedio",
+    "targetResponse": "Respuesta Objetivo", 
+    "recentResponseTimes": "Tiempos de Respuesta Recientes (24h)",
+    "responseTimeHistory": "Historial de Tiempos de Respuesta",
+    "noResponseData": "No hay datos de respuesta disponibles",
+    "response": "Respuesta",
+    "total": "Total",
+    "dispatched": "Enviado",
+    "units": "Unidades",
+    "priority": "Prioridad",
+    "previous": "Anterior",
+    "next": "Siguiente"
+  }
 }

@@ -858,5 +858,20 @@
   "performanceReportExportedSuccessfully": "Performance report exported successfully",
   "failedToExportReport": "Failed to export report",
   "error": "Error",
-  "success": "Success"
+  "success": "Success",
+  "responseTimeTracker": {
+    "avgResponse": "Avg Response",
+    "avgResolution": "Avg Resolution", 
+    "targetResponse": "Target Response",
+    "recentResponseTimes": "Recent Response Times (24h)",
+    "responseTimeHistory": "Response Time History",
+    "noResponseData": "No response data available",
+    "response": "Response",
+    "total": "Total",
+    "dispatched": "Dispatched",
+    "units": "Units",
+    "priority": "Priority",
+    "previous": "Previous",
+    "next": "Next"
+  }
 }
