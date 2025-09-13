@@ -711,7 +711,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                       {/* Unit Details */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <h4 className="font-medium text-sm">Unit Information</h4>
+                          <h4 className="font-medium text-sm">{t('unitManagement.unitInformation')}</h4>
                           <div className="space-y-1 text-sm">
                             <div className="flex items-center gap-2">
                               <Shield className="h-4 w-4 text-muted-foreground" />

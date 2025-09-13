@@ -87,7 +87,8 @@
     "specialOperations": "Special Operations",
     "actions": "Actions",
     "chooseAnOfficer": "Choose an officer",
-    "updateUnitDetails": "Update the unit details and configuration"
+    "updateUnitDetails": "Update the unit details and configuration",
+    "unitInformation": "Unit Information"
   },
   "officerProfiles": {
     "title": "Officer Profiles & Performance",

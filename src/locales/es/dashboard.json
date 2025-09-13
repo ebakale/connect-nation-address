@@ -87,7 +87,8 @@
     "specialOperations": "Operaciones Especiales",
     "actions": "Acciones",
     "chooseAnOfficer": "Elegir un oficial",
-    "updateUnitDetails": "Actualizar los detalles y configuración de la unidad"
+    "updateUnitDetails": "Actualizar los detalles y configuración de la unidad",
+    "unitInformation": "Información de la Unidad"
   },
   "officerProfiles": {
     "title": "Perfiles y Rendimiento de Oficiales",
