@@ -1396,6 +1396,45 @@
   "unknown": "Unknown",
   "unknownOperator": "Unknown Operator",
   "noActiveSession": "No active session",
-  "moreOperators": "+{{count}} more operators"
-}
+  "moreOperators": "+{{count}} more operators",
+  "unitLeadActions": {
+    "title": "Unit Leadership Tools",
+    "description": "Enhanced capabilities available as Unit Lead",
+    "openDashboard": "Unit Command Dashboard",
+    "privileges": "Leadership Privileges",
+    "manageStatus": "Manage unit status & location",
+    "assignTasks": "Assign tasks to team members",
+    "coordinateResponses": "Coordinate unit responses",
+    "accessPerformanceData": "Access unit performance data"
+  },
+  "unitLeadershipDashboard": {
+    "title": "Unit Leadership Dashboard",
+    "description": "Manage and coordinate your unit operations",
+    "noUnitsToManage": "No Units to Manage",
+    "noPermissionsText": "You don't have leadership permissions for any emergency units.",
+    "selectUnit": "Select Unit",
+    "refresh": "Refresh",
+    "unitStatus": "Unit Status",
+    "available": "Available",
+    "busy": "Busy",
+    "dispatched": "Dispatched",
+    "maintenance": "Maintenance",
+    "activeMembers": "Active Members",
+    "activeIncidents": "Active Incidents",
+    "completionRate": "Completion Rate",
+    "teamManagement": "Team Management",
+    "incidentOversight": "Incident Oversight",
+    "performanceMetrics": "Performance Metrics",
+    "incidentCompletionRate": "Incident Completion Rate",
+    "averageResponseTime": "Average Response Time",
+    "totalIncidentsHandled": "Total Incidents Handled",
+    "recentActivity": "Recent Activity",
+    "teamCommunications": "Team Communications",
+    "sendMessage": "Send Message",
+    "sendMessageToTeam": "Send Message to Team",
+    "message": "Message",
+    "enterMessagePlaceholder": "Enter your message to team members...",
+    "communicationComingSoon": "Communication features coming soon",
+    "realTimeMessaging": "Real-time messaging and coordination tools"
+  }
 }
