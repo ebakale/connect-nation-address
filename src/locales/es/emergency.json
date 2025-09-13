@@ -1127,6 +1127,19 @@
     },
     "operatorsCurrentlyOnline_one": "{{count}} operador actualmente en línea",
     "operatorsCurrentlyOnline_other": "{{count}} operadores actualmente en línea",
-    "noOtherOperatorsOnline": "No hay otros operadores en línea"
+    "noOtherOperatorsOnline": "No hay otros operadores en línea",
+    "unitManagementLabel": "Gestión de Unidades",
+    "quickActions": "Acciones Rápidas",
+    "unitsProfilesManagement": "Gestión de Unidades y Perfiles",
+    "systemOverview": "Resumen del Sistema",
+    "viewSystemHealthStats": "Ver estado del sistema y estadísticas",
+    "coordinationActions": "Acciones de Coordinación",
+    "supervisorCoordinationTools": "Herramientas para coordinación y supervisión de unidades",
+    "manageMyUnits": "Gestionar Mis Unidades",
+    "requestRegionalBackup": "Solicitar Respaldo Regional",
+    "unitLeadershipTools": "Herramientas de Liderazgo de Unidades",
+    "manageUnitsPerformance": "Gestionar unidades y seguir métricas de rendimiento",
+    "teamManagement": "Gestión de Equipo",
+    "performanceAnalytics": "Análisis de Rendimiento"
   }
 }

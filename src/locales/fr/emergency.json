@@ -943,6 +943,19 @@
     },
     "operatorsCurrentlyOnline_one": "{{count}} opérateur actuellement en ligne",
     "operatorsCurrentlyOnline_other": "{{count}} opérateurs actuellement en ligne",
-    "noOtherOperatorsOnline": "Aucun autre opérateur en ligne"
+    "noOtherOperatorsOnline": "Aucun autre opérateur en ligne",
+    "unitManagementLabel": "Gestion des Unités",
+    "quickActions": "Actions Rapides",
+    "unitsProfilesManagement": "Gestion des Unités et Profils",
+    "systemOverview": "Aperçu du Système",
+    "viewSystemHealthStats": "Voir l'état du système et les statistiques",
+    "coordinationActions": "Actions de Coordination",
+    "supervisorCoordinationTools": "Outils pour la coordination et la supervision des unités",
+    "manageMyUnits": "Gérer Mes Unités",
+    "requestRegionalBackup": "Demander un Soutien Régional",
+    "unitLeadershipTools": "Outils de Leadership d'Unité",
+    "manageUnitsPerformance": "Gérer les unités et suivre les métriques de performance",
+    "teamManagement": "Gestion d'Équipe",
+    "performanceAnalytics": "Analyses de Performance"
   }
 }

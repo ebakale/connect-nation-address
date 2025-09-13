@@ -1127,6 +1127,19 @@
     },
     "operatorsCurrentlyOnline_one": "{{count}} operator currently online",
     "operatorsCurrentlyOnline_other": "{{count}} operators currently online",
-    "noOtherOperatorsOnline": "No other operators online"
+    "noOtherOperatorsOnline": "No other operators online",
+    "unitManagementLabel": "Unit Management",
+    "quickActions": "Quick Actions",
+    "unitsProfilesManagement": "Units & Profiles Management",
+    "systemOverview": "System Overview",
+    "viewSystemHealthStats": "View system health and statistics",
+    "coordinationActions": "Coordination Actions",
+    "supervisorCoordinationTools": "Tools for unit coordination and oversight",
+    "manageMyUnits": "Manage My Units",
+    "requestRegionalBackup": "Request Regional Backup",
+    "unitLeadershipTools": "Unit Leadership Tools",
+    "manageUnitsPerformance": "Manage units and track performance metrics",
+    "teamManagement": "Team Management",
+    "performanceAnalytics": "Performance Analytics"
   }
 }
