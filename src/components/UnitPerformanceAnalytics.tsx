@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 import { 
   BarChart3, TrendingUp, Clock, Target, Award, Users,
   CalendarIcon, Download, FileText, PieChart, Activity,
@@ -48,6 +49,7 @@ interface ResponseTimeMetrics {
 export const UnitPerformanceAnalytics: React.FC = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation('emergency');
   const [selectedUnit, setSelectedUnit] = useState<string>('all');
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
@@ -108,7 +110,7 @@ export const UnitPerformanceAnalytics: React.FC = () => {
       setManagedUnits(data || []);
     } catch (error) {
       console.error('Error fetching managed units:', error);
-      toast({ title: 'Error', description: 'Failed to fetch units', variant: 'destructive' });
+      toast({ title: t('error'), description: t('failedToFetchUnits'), variant: 'destructive' });
     }
   };
 
@@ -204,7 +206,7 @@ export const UnitPerformanceAnalytics: React.FC = () => {
       setPerformanceData(performanceArray);
     } catch (error) {
       console.error('Error fetching performance data:', error);
-      toast({ title: 'Error', description: 'Failed to fetch performance data', variant: 'destructive' });
+      toast({ title: t('error'), description: t('failedToFetchPerformanceData'), variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
@@ -342,27 +344,27 @@ export const UnitPerformanceAnalytics: React.FC = () => {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      toast({ title: 'Success', description: 'Performance report exported successfully' });
+      toast({ title: t('success'), description: t('performanceReportExportedSuccessfully') });
     } catch (error) {
       console.error('Error exporting report:', error);
-      toast({ title: 'Error', description: 'Failed to export report', variant: 'destructive' });
+      toast({ title: t('error'), description: t('failedToExportReport'), variant: 'destructive' });
     }
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold">Unit Performance Analytics</h1>
-        <p className="text-muted-foreground">Analyze unit performance and operational metrics</p>
+        <h1 className="text-xl font-bold">{t('unitPerformanceAnalytics')}</h1>
+        <p className="text-muted-foreground">{t('analyzeUnitPerformanceOperationalMetrics')}</p>
       </div>
       <div className="flex items-center gap-4">
         <Button onClick={exportReport} variant="outline">
           <Download className="h-4 w-4 mr-2" />
-          Export Report
+          {t('exportReport')}
         </Button>
         <Button onClick={() => window.location.reload()} variant="outline">
           <RefreshCw className="h-4 w-4 mr-2" />
-          Refresh
+          {t('refresh')}
         </Button>
       </div>
 
@@ -371,13 +373,13 @@ export const UnitPerformanceAnalytics: React.FC = () => {
         <CardContent className="p-6">
           <div className="flex flex-wrap items-center gap-4">
             <div>
-              <label className="text-sm font-medium">Unit</label>
+              <label className="text-sm font-medium">{t('unit')}</label>
               <Select value={selectedUnit} onValueChange={setSelectedUnit}>
                 <SelectTrigger className="w-48">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Units</SelectItem>
+                  <SelectItem value="all">{t('allUnits')}</SelectItem>
                   {managedUnits.map(unit => (
                     <SelectItem key={unit.id} value={unit.unit_code}>
                       {unit.unit_code} - {unit.unit_name}
@@ -387,20 +389,20 @@ export const UnitPerformanceAnalytics: React.FC = () => {
               </Select>
             </div>
             <div>
-              <label className="text-sm font-medium">Date Range</label>
+              <label className="text-sm font-medium">{t('dateRange')}</label>
               <div className="text-sm text-muted-foreground">
                 {dateRange?.from?.toLocaleDateString()} - {dateRange?.to?.toLocaleDateString()}
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium">Report Type</label>
+              <label className="text-sm font-medium">{t('reportType')}</label>
               <Select value={reportType} onValueChange={(value: any) => setReportType(value)}>
                 <SelectTrigger className="w-32">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="summary">Summary</SelectItem>
-                  <SelectItem value="detailed">Detailed</SelectItem>
+                  <SelectItem value="summary">{t('summary')}</SelectItem>
+                  <SelectItem value="detailed">{t('detailed')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -414,7 +416,7 @@ export const UnitPerformanceAnalytics: React.FC = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Incidents</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('totalIncidents')}</p>
                 <p className="text-2xl font-bold">
                   {performanceData.reduce((sum, unit) => sum + unit.total_incidents, 0)}
                 </p>
@@ -428,7 +430,7 @@ export const UnitPerformanceAnalytics: React.FC = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Avg Response Time</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('avgResponseTime')}</p>
                 <p className="text-2xl font-bold">
                   {Math.round(responseTimeMetrics?.average || 0)}m
                 </p>
@@ -442,7 +444,7 @@ export const UnitPerformanceAnalytics: React.FC = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Completion Rate</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('completionRate')}</p>
                 <p className="text-2xl font-bold">
                   {Math.round(
                     performanceData.reduce((sum, unit) => sum + unit.completion_rate, 0) / 
@@ -459,7 +461,7 @@ export const UnitPerformanceAnalytics: React.FC = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Active Units</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('activeUnits')}</p>
                 <p className="text-2xl font-bold">{performanceData.length}</p>
               </div>
               <Users className="h-8 w-8 text-muted-foreground" />
@@ -471,7 +473,7 @@ export const UnitPerformanceAnalytics: React.FC = () => {
       {/* Unit Performance Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Unit Performance Breakdown</CardTitle>
+          <CardTitle>{t('unitPerformanceBreakdown')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:hidden">
@@ -487,31 +489,31 @@ export const UnitPerformanceAnalytics: React.FC = () => {
                     unit.completion_rate >= 90 ? 'default' :
                     unit.completion_rate >= 70 ? 'secondary' : 'destructive'
                   }>
-                    {unit.completion_rate >= 90 ? 'Excellent' :
-                     unit.completion_rate >= 70 ? 'Good' : 'Needs Improvement'}
+                    {unit.completion_rate >= 90 ? t('excellent') :
+                     unit.completion_rate >= 70 ? t('good') : t('needsImprovement')}
                   </Badge>
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="text-muted-foreground">Members:</span>
+                    <span className="text-muted-foreground">{t('members')}:</span>
                     <span className="ml-1 font-medium">{unit.member_count}</span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Response:</span>
+                    <span className="text-muted-foreground">{t('response')}:</span>
                     <span className="ml-1 font-medium">{Math.round(unit.average_response_time)}m</span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Incidents:</span>
+                    <span className="text-muted-foreground">{t('incidents')}:</span>
                     <span className="ml-1 font-medium">{unit.total_incidents}</span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Resolved:</span>
+                    <span className="text-muted-foreground">{t('resolved')}:</span>
                     <span className="ml-1 font-medium">{unit.resolved_incidents}</span>
                   </div>
                 </div>
                 <div>
                   <div className="flex items-center justify-between text-sm mb-1">
-                    <span className="text-muted-foreground">Completion Rate</span>
+                    <span className="text-muted-foreground">{t('completionRate')}</span>
                     <span className="font-medium">{Math.round(unit.completion_rate)}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
@@ -530,13 +532,13 @@ export const UnitPerformanceAnalytics: React.FC = () => {
             <table className="w-full min-w-max">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left p-2 min-w-[80px]">Unit</th>
-                  <th className="text-left p-2 min-w-[70px]">Members</th>
-                  <th className="text-left p-2 min-w-[80px]">Incidents</th>
-                  <th className="text-left p-2 min-w-[70px]">Resolved</th>
-                  <th className="text-left p-2 min-w-[100px]">Rate %</th>
-                  <th className="text-left p-2 min-w-[80px]">Response</th>
-                  <th className="text-left p-2 min-w-[90px]">Score</th>
+                  <th className="text-left p-2 min-w-[80px]">{t('unit')}</th>
+                  <th className="text-left p-2 min-w-[70px]">{t('members')}</th>
+                  <th className="text-left p-2 min-w-[80px]">{t('incidents')}</th>
+                  <th className="text-left p-2 min-w-[70px]">{t('resolved')}</th>
+                  <th className="text-left p-2 min-w-[100px]">{t('ratePercent')}</th>
+                  <th className="text-left p-2 min-w-[80px]">{t('response')}</th>
+                  <th className="text-left p-2 min-w-[90px]">{t('score')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -568,8 +570,8 @@ export const UnitPerformanceAnalytics: React.FC = () => {
                         unit.completion_rate >= 90 ? 'default' :
                         unit.completion_rate >= 70 ? 'secondary' : 'destructive'
                       }>
-                        {unit.completion_rate >= 90 ? 'Excellent' :
-                         unit.completion_rate >= 70 ? 'Good' : 'Needs Improvement'}
+                        {unit.completion_rate >= 90 ? t('excellent') :
+                         unit.completion_rate >= 70 ? t('good') : t('needsImprovement')}
                       </Badge>
                     </td>
                   </tr>
@@ -584,59 +586,59 @@ export const UnitPerformanceAnalytics: React.FC = () => {
       {responseTimeMetrics && (
         <Card>
           <CardHeader>
-            <CardTitle>Response Time Analysis</CardTitle>
+            <CardTitle>{t('responseTimeAnalysis')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h4 className="font-semibold mb-4">Overall Metrics</h4>
+                <h4 className="font-semibold mb-4">{t('overallMetrics')}</h4>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span>Average:</span>
-                    <span className="font-medium">{Math.round(responseTimeMetrics.average)} minutes</span>
+                    <span>{t('average')}:</span>
+                    <span className="font-medium">{Math.round(responseTimeMetrics.average)} {t('minutes')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Median:</span>
-                    <span className="font-medium">{Math.round(responseTimeMetrics.median)} minutes</span>
+                    <span>{t('median')}:</span>
+                    <span className="font-medium">{Math.round(responseTimeMetrics.median)} {t('minutes')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Fastest:</span>
-                    <span className="font-medium text-green-600">{Math.round(responseTimeMetrics.fastest)} minutes</span>
+                    <span>{t('fastest')}:</span>
+                    <span className="font-medium text-green-600">{Math.round(responseTimeMetrics.fastest)} {t('minutes')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Slowest:</span>
-                    <span className="font-medium text-red-600">{Math.round(responseTimeMetrics.slowest)} minutes</span>
+                    <span>{t('slowest')}:</span>
+                    <span className="font-medium text-red-600">{Math.round(responseTimeMetrics.slowest)} {t('minutes')}</span>
                   </div>
                 </div>
               </div>
               <div>
-                <h4 className="font-semibold mb-4">By Priority Level</h4>
+                <h4 className="font-semibold mb-4">{t('byPriorityLevel')}</h4>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="flex items-center gap-2">
                       <Badge className="bg-red-500">P1</Badge>
-                      Critical
+                      {t('critical')}
                     </span>
                     <span className="font-medium">{Math.round(responseTimeMetrics.by_priority.priority_1)}m</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="flex items-center gap-2">
                       <Badge className="bg-orange-500">P2</Badge>
-                      High
+                      {t('high')}
                     </span>
                     <span className="font-medium">{Math.round(responseTimeMetrics.by_priority.priority_2)}m</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="flex items-center gap-2">
                       <Badge className="bg-yellow-500">P3</Badge>
-                      Medium
+                      {t('medium')}
                     </span>
                     <span className="font-medium">{Math.round(responseTimeMetrics.by_priority.priority_3)}m</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="flex items-center gap-2">
                       <Badge className="bg-blue-500">P4</Badge>
-                      Low
+                      {t('low')}
                     </span>
                     <span className="font-medium">{Math.round(responseTimeMetrics.by_priority.priority_4)}m</span>
                   </div>
@@ -650,7 +652,7 @@ export const UnitPerformanceAnalytics: React.FC = () => {
       {/* Incident Trends */}
       <Card>
         <CardHeader>
-          <CardTitle>Incident Trends</CardTitle>
+          <CardTitle>{t('incidentTrends')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -662,14 +664,14 @@ export const UnitPerformanceAnalytics: React.FC = () => {
                 <div className="flex flex-wrap items-center gap-2 sm:gap-4">
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-orange-500" />
-                    <span className="text-sm">{trend.incidents} incidents</span>
+                    <span className="text-sm">{trend.incidents} {t('incidents')}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-green-500" />
-                    <span className="text-sm">{trend.resolved} resolved</span>
+                    <span className="text-sm">{trend.resolved} {t('resolved')}</span>
                   </div>
                   <Badge variant="outline" className="text-xs">
-                    {trend.incidents > 0 ? Math.round((trend.resolved / trend.incidents) * 100) : 0}% resolved
+                    {trend.incidents > 0 ? Math.round((trend.resolved / trend.incidents) * 100) : 0}% {t('resolved')}
                   </Badge>
                 </div>
               </div>
@@ -681,7 +683,7 @@ export const UnitPerformanceAnalytics: React.FC = () => {
       {isLoading && (
         <div className="flex items-center justify-center py-8">
           <RefreshCw className="h-6 w-6 animate-spin mr-2" />
-          <span>Loading performance data...</span>
+          <span>{t('loadingPerformanceData')}</span>
         </div>
       )}
     </div>
