@@ -1199,9 +1199,9 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
       <div className="container mx-auto px-4 py-8">
         <Card>
           <CardContent className="p-8 text-center">
-            <h2 className="text-2xl font-bold mb-4">No Unit Assignment</h2>
+            <h2 className="text-2xl font-bold mb-4">{t('fieldDashboard.noUnitAssignment')}</h2>
             <p className="text-muted-foreground">
-              You are not currently assigned to any emergency unit. Please contact your supervisor.
+              {t('fieldDashboard.noUnitAssignmentDescription')}
             </p>
           </CardContent>
         </Card>
@@ -1218,10 +1218,10 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
             <div>
               <CardTitle className="text-xl flex items-center gap-2">
                 <Shield className="h-5 w-5" />
-                Field Operations Dashboard
+                {t('fieldDashboard.title')}
               </CardTitle>
               <p className="text-sm text-muted-foreground mt-1">
-                {unitInfo ? `${unitInfo.unit_code} - ${unitInfo.unit_name}` : 'Loading unit info...'}
+                {unitInfo ? `${unitInfo.unit_code} - ${unitInfo.unit_name}` : t('fieldDashboard.loadingUnitInfo')}
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -1245,21 +1245,21 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
           <div className="grid grid-cols-4 gap-4 text-sm">
             <div className="flex items-center gap-2">
               <Battery className="h-4 w-4" />
-              <span>Battery: {batteryLevel}%</span>
+              <span>{t('fieldDashboard.battery')}: {batteryLevel}%</span>
             </div>
             <div className="flex items-center gap-2">
               <Wifi className="h-4 w-4" />
-              <span>Signal: {signalStrength}/4</span>
+              <span>{t('fieldDashboard.signal')}: {signalStrength}/4</span>
             </div>
             <div className="flex items-center gap-2">
               <Locate className="h-4 w-4" />
               <span className={gpsEnabled ? 'text-green-600' : 'text-red-600'}>
-                GPS: {gpsEnabled ? 'ON' : 'OFF'}
+                {t('fieldDashboard.gps')}: {gpsEnabled ? t('fieldDashboard.on') : t('fieldDashboard.off')}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <Radio className="h-4 w-4" />
-              <span>Radio: {unitInfo?.radio_frequency || 'N/A'}</span>
+              <span>{t('fieldDashboard.radio')}: {unitInfo?.radio_frequency || t('fieldDashboard.na')}</span>
             </div>
           </div>
         </CardContent>
@@ -1267,24 +1267,24 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="incidents" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-1">
-          <TabsTrigger value="incidents" className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4" />
-            Active Incidents
-          </TabsTrigger>
-          <TabsTrigger value="map" className="flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
-            Map
-          </TabsTrigger>
-          <TabsTrigger value="operations" className="flex items-center gap-2">
-            <Settings className="h-4 w-4" />
-            Field Operations
-          </TabsTrigger>
-          <TabsTrigger value="communication" className="flex items-center gap-2">
-            <MessageSquare className="h-4 w-4" />
-            Communications
-          </TabsTrigger>
-        </TabsList>
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-1">
+            <TabsTrigger value="incidents" className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4" />
+              {t('fieldDashboard.activeIncidents')}
+            </TabsTrigger>
+            <TabsTrigger value="map" className="flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              {t('map')}
+            </TabsTrigger>
+            <TabsTrigger value="operations" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              {t('fieldOperations')}
+            </TabsTrigger>
+            <TabsTrigger value="communication" className="flex items-center gap-2">
+              <MessageSquare className="h-4 w-4" />
+              {t('communications')}
+            </TabsTrigger>
+          </TabsList>
 
         {/* Active Incidents Tab */}
         <TabsContent value="incidents" className="space-y-4">
@@ -1292,7 +1292,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5" />
-                Current Assignments
+                {t('fieldDashboard.currentAssignments')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -1344,7 +1344,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MapPin className="h-5 w-5" />
-                Incident Locations
+                {t('fieldDashboard.incidentLocations')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -1365,7 +1365,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Settings className="h-4 w-4" />
-                Field Operations Control
+                {t('fieldDashboard.fieldOperationsControl')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -1379,12 +1379,12 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                   {shiftStatus === 'on_duty' ? (
                     <>
                       <LogOut className="h-4 w-4" />
-                      End Shift
+                      {t('fieldDashboard.endShift')}
                     </>
                   ) : (
                     <>
                       <LogIn className="h-4 w-4" />
-                      Start Shift
+                      {t('fieldDashboard.startShift')}
                     </>
                   )}
                 </Button>
@@ -1396,23 +1396,23 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                   className="flex items-center gap-2"
                 >
                   <AlertCircle className="h-4 w-4" />
-                  EMERGENCY
+                  {t('fieldDashboard.emergencyButton')}
                 </Button>
               </div>
 
               {/* Unit Status */}
               <div className="space-y-3">
-                <h4 className="font-medium">Unit Status</h4>
+                <h4 className="font-medium">{t('fieldDashboard.unitStatus.label')}</h4>
                 <Select value={unitStatus} onValueChange={updateUnitStatus}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="available">Available</SelectItem>
-                    <SelectItem value="busy">Busy</SelectItem>
-                    <SelectItem value="en_route">En Route</SelectItem>
-                    <SelectItem value="on_scene">On Scene</SelectItem>
-                    <SelectItem value="out_of_service">Out of Service</SelectItem>
+                    <SelectItem value="available">{t('fieldDashboard.unitStatus.available')}</SelectItem>
+                    <SelectItem value="busy">{t('fieldDashboard.unitStatus.busy')}</SelectItem>
+                    <SelectItem value="en_route">{t('fieldDashboard.unitStatus.en_route')}</SelectItem>
+                    <SelectItem value="on_scene">{t('fieldDashboard.unitStatus.on_scene')}</SelectItem>
+                    <SelectItem value="out_of_service">{t('fieldDashboard.unitStatus.out_of_service')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -1421,7 +1421,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
               <div className="space-y-3">
                 <h4 className="font-medium flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
-                  Location Management
+                  {t('fieldDashboard.locationManagement')}
                 </h4>
                 
                 <div className="grid grid-cols-2 gap-2">
@@ -1432,7 +1432,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                     className="flex items-center gap-2"
                   >
                     <Navigation2 className="h-4 w-4" />
-                    {isUpdatingLocation ? 'Getting GPS...' : 'Update GPS'}
+                    {isUpdatingLocation ? t('fieldDashboard.gettingGPS') : t('fieldDashboard.updateGPS')}
                   </Button>
                   
                   <Button
@@ -1441,14 +1441,14 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                     className="flex items-center gap-2"
                   >
                     <MapPin className="h-4 w-4" />
-                    Pick on Map
+                    {t('fieldDashboard.pickOnMap')}
                   </Button>
                 </div>
 
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="Enter UAC or location..."
+                    placeholder={t('fieldDashboard.enterUacOrLocation')}
                     value={currentLocation}
                     onChange={(e) => setCurrentLocation(e.target.value)}
                     className="flex-1 px-3 py-2 border rounded-md text-sm"
@@ -1458,41 +1458,41 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                     disabled={!currentLocation.trim() || isUpdatingLocation}
                     size="sm"
                   >
-                    Update
+                    {t('fieldDashboard.update')}
                   </Button>
                 </div>
                 
                 {(unitInfo?.current_location || currentUAC) && (
                   <p className="text-sm text-muted-foreground">
-                    Current: <span className="font-mono">{currentUAC || unitInfo?.current_location}</span>
+                    {t('fieldDashboard.currentLabel')} <span className="font-mono">{currentUAC || unitInfo?.current_location}</span>
                   </p>
                 )}
               </div>
 
               {/* Quick Actions */}
               <div className="space-y-3">
-                <h4 className="font-medium">Quick Actions</h4>
+                <h4 className="font-medium">{t('quickActions')}</h4>
                 <div className="grid grid-cols-2 gap-2">
                   <Button variant="outline" className="text-xs" onClick={() => setShowBackupDialog(true)}>
                     <Users className="h-4 w-4 mr-2" />
-                    Request Backup
+                    {t('backupRequests.requestBackup')}
                   </Button>
                   
                   <Button variant="outline" className="text-xs" onClick={() => setShowResourceDialog(true)}>
                     <Car className="h-4 w-4 mr-2" />
-                    Request Resources
+                    {t('fieldDashboard.requestResources')}
                   </Button>
                   
                   <Button variant="outline" className="text-xs" onClick={() => setShowHistory(!showHistory)}>
                     <History className="h-4 w-4 mr-2" />
-                    View History
+                    {t('fieldDashboard.viewHistory')}
                   </Button>
                   
                   <label className="cursor-pointer">
                     <Button variant="outline" asChild className="w-full text-xs">
                       <span>
                         <Camera className="h-4 w-4 mr-2" />
-                        Evidence
+                        {t('fieldDashboard.evidence')}
                       </span>
                     </Button>
                     <input
@@ -1515,10 +1515,10 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MessageSquare className="h-4 w-4" />
-                Unit Communications
+                {t('fieldDashboard.unitCommunications')}
                 {unreadCount > 0 && (
                   <Badge variant="destructive" className="ml-2 whitespace-nowrap">
-                    {unreadCount} unread
+                    {t('fieldDashboard.unread', { count: unreadCount })}
                   </Badge>
                 )}
               </CardTitle>
@@ -1528,7 +1528,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
               <div className="bg-muted/30 rounded-lg p-4 h-64 overflow-y-auto">
                 {recentMessages.length === 0 ? (
                   <div className="text-sm text-muted-foreground text-center py-8">
-                    No recent communications
+                    {t('fieldDashboard.noRecentCommunications')}
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -1550,7 +1550,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                                 </Badge>
                               )}
                               <span className="text-xs text-muted-foreground">
-                                {comm.type === 'outgoing' ? 'TO DISPATCH' : 'FROM DISPATCH'}
+                                {comm.type === 'outgoing' ? t('fieldDashboard.toDispatch') : t('fieldDashboard.fromDispatch')}
                               </span>
                             </div>
                             <p className="mb-1">{comm.message_content}</p>
@@ -1560,7 +1560,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                               </span>
                               {comm.type === 'outgoing' && (
                                 <span className={`text-xs ${comm.acknowledged ? 'text-green-600' : 'text-yellow-600'}`}>
-                                  {comm.acknowledged ? '✓ Acknowledged' : '⏳ Pending'}
+                                  {comm.acknowledged ? t('fieldDashboard.acknowledged') : t('fieldDashboard.pending')}
                                 </span>
                               )}
                             </div>
@@ -1572,7 +1572,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                               className="h-6 px-2 text-xs ml-2"
                               onClick={() => acknowledgeMessage(comm.id)}
                             >
-                              ACK
+                              {t('fieldDashboard.ack')}
                             </Button>
                           )}
                         </div>
@@ -1583,23 +1583,23 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
               </div>
               
               {/* Send Message */}
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Send message to dispatch..."
-                  value={quickMessage}
-                  onChange={(e) => setQuickMessage(e.target.value)}
-                  className="flex-1 px-3 py-2 text-sm border rounded-md"
-                  onKeyPress={(e) => e.key === 'Enter' && sendQuickMessage()}
-                />
-                <Button onClick={sendQuickMessage} disabled={!quickMessage.trim()}>
-                  <Send className="h-4 w-4" />
-                </Button>
-              </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder={t('fieldDashboard.sendMessagePlaceholder')}
+                    value={quickMessage}
+                    onChange={(e) => setQuickMessage(e.target.value)}
+                    className="flex-1 px-3 py-2 text-sm border rounded-md"
+                    onKeyPress={(e) => e.key === 'Enter' && sendQuickMessage()}
+                  />
+                  <Button onClick={sendQuickMessage} disabled={!quickMessage.trim()}>
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </div>
               
               {/* Radio Codes */}
               <div className="space-y-3">
-                <h4 className="text-sm font-medium">Quick Radio Codes</h4>
+                <h4 className="text-sm font-medium">{t('fieldDashboard.quickRadioCodes')}</h4>
                 <div className="grid grid-cols-3 gap-2">
                   <Button variant="outline" size="sm" onClick={() => sendRadioCode('10-4', '10-4 Acknowledged')}>
                     <Radio className="h-3 w-3 mr-1" />
@@ -1650,31 +1650,31 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
             })
             .eq('id', unitInfo.id);
           if (error) {
-            toast({ title: 'Error', description: 'Failed to save manual location', variant: 'destructive' });
+            toast({ title: t('fieldDashboard.errorTitle'), description: t('fieldDashboard.failedToSaveManualLocation'), variant: 'destructive' });
             return;
           }
           setUnitInfo(prev => prev ? { ...prev, current_location: desc, location_latitude: lat, location_longitude: lng } : prev);
           // Try to find and set the nearest UAC for display
           const nearest = await findNearestUAC(lat, lng);
           setCurrentUAC(nearest || '');
-          toast({ title: 'Location Updated', description: 'Manual location set successfully' });
+          toast({ title: t('fieldDashboard.locationUpdated'), description: t('fieldDashboard.manualLocationSet') });
         }}
       />
 
       <Dialog open={showBackupDialog} onOpenChange={setShowBackupDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Request Backup</DialogTitle>
+            <DialogTitle>{t('backupRequests.requestBackup')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <Textarea
               value={backupReason}
               onChange={(e) => setBackupReason(e.target.value)}
-              placeholder="Describe the reason for backup request..."
+              placeholder={t('requestBackupDialog.reasonPlaceholder')}
               rows={3}
             />
             <Button onClick={requestBackup} disabled={!backupReason.trim()}>
-              Send Backup Request
+              {t('fieldDashboard.sendBackupRequest')}
             </Button>
           </div>
         </DialogContent>
@@ -1683,17 +1683,17 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
       <Dialog open={showResourceDialog} onOpenChange={setShowResourceDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Request Resources</DialogTitle>
+            <DialogTitle>{t('fieldDashboard.requestResources')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <Textarea
               value={resourceRequest}
               onChange={(e) => setResourceRequest(e.target.value)}
-              placeholder="Describe the resources needed..."
+              placeholder={t('fieldDashboard.resourcesPlaceholder')}
               rows={3}
             />
             <Button onClick={requestResource} disabled={!resourceRequest.trim()}>
-              Send Request
+              {t('fieldDashboard.sendRequest')}
             </Button>
           </div>
         </DialogContent>
@@ -1718,14 +1718,14 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
               {actionDialog.action.requiresNotes && (
                 <div>
                   <label className="text-sm font-medium">
-                    {actionDialog.action.action === 'request_backup' ? 'Reason for backup request:' : 'Notes:'}
+                    {actionDialog.action.action === 'request_backup' ? t('fieldDashboard.reasonForBackup') : t('fieldDashboard.notes')}
                   </label>
                   <Textarea
                     value={actionNotes}
                     onChange={(e) => setActionNotes(e.target.value)}
                     placeholder={actionDialog.action.action === 'request_backup' 
-                      ? "Describe the situation requiring backup..." 
-                      : "Add any relevant notes..."
+                      ? t('fieldDashboard.describeBackupSituation')
+                      : t('fieldDashboard.addNotesPlaceholder')
                     }
                     rows={3}
                   />
@@ -1737,7 +1737,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                 className="w-full"
                 disabled={actionDialog.action.requiresNotes && !actionNotes.trim()}
               >
-                {actionDialog.action.label}
+                {t('fieldDashboard.confirmAction', { action: actionDialog.action.label })}
               </Button>
             </div>
           </DialogContent>
@@ -1750,7 +1750,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileText className="h-5 w-5" />
-              Evidence Files ({evidenceFiles.length})
+              {t('fieldDashboard.evidenceFiles')} ({evidenceFiles.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -1772,7 +1772,7 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <History className="h-5 w-5" />
-              Recent Incident History
+              {t('fieldDashboard.recentIncidentHistory')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -1798,10 +1798,10 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
         <Dialog open={!!selectedIncident} onOpenChange={() => setSelectedIncident(null)}>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Incident Details: {selectedIncident.incident_number}</DialogTitle>
-              <DialogDescription>
-                View and manage incident information, status updates, and field actions.
-              </DialogDescription>
+            <DialogTitle>{t('fieldDashboard.incidentDetailsTitle', { number: selectedIncident.incident_number })}</DialogTitle>
+            <DialogDescription>
+              {t('fieldDashboard.incidentDetailsDescription')}
+            </DialogDescription>
             </DialogHeader>
             <IncidentDetailDialog
               incident={selectedIncident}
