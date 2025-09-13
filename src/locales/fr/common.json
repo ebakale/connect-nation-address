@@ -343,6 +343,9 @@
     "notes": "Notes :",
     "describeBackupSituation": "Décrivez la situation nécessitant des renforts...",
     "addNotesPlaceholder": "Ajoutez des notes pertinentes...",
-    "confirmAction": "Confirmer : {{action}}"
+    "confirmAction": "Confirmer : {{action}}",
+    "onDuty": "EN SERVICE",
+    "offDuty": "HORS SERVICE",
+    "onBreak": "EN PAUSE"
   }
 }

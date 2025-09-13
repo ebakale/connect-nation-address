@@ -1226,7 +1226,9 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
             </div>
             <div className="flex items-center gap-2">
               <Badge variant={shiftStatus === 'on_duty' ? 'default' : 'secondary'} className="whitespace-nowrap">
-                {shiftStatus.replace('_', ' ').toUpperCase()}
+                {shiftStatus === 'on_duty' ? t('fieldDashboard.onDuty') : 
+                 shiftStatus === 'off_duty' ? t('fieldDashboard.offDuty') : 
+                 t('fieldDashboard.onBreak')}
               </Badge>
               <div className={`w-3 h-3 rounded-full ${
                 unitStatus === 'available' ? 'bg-green-500' :
