@@ -191,7 +191,7 @@ export const BackupNotificationManager: React.FC<BackupNotificationManagerProps>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Bell className="h-5 w-5" />
-            Backup Requests
+            {t('backupRequests')}
             {unreadCount > 0 && (
               <Badge variant="destructive" className="text-xs">
                 {unreadCount}
@@ -203,7 +203,7 @@ export const BackupNotificationManager: React.FC<BackupNotificationManagerProps>
           {notifications.length === 0 ? (
             <div className="text-center py-6">
               <Users className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
-              <p className="text-muted-foreground">No backup requests</p>
+              <p className="text-muted-foreground">{t('backupRequests.noBackupRequests')}</p>
             </div>
           ) : (
             <>
@@ -226,7 +226,7 @@ export const BackupNotificationManager: React.FC<BackupNotificationManagerProps>
                       <div className="flex items-center gap-2">
                         <div className={`w-2 h-2 rounded-full ${getPriorityColor(notification.priority_level)}`} />
                         <span className="font-medium text-sm">
-                          {notification.metadata?.incident_number || 'Unknown Incident'}
+                          {notification.metadata?.incident_number || t('backupRequests.unknownIncident')}
                         </span>
                         {!notification.read && (
                           <div className="w-2 h-2 bg-blue-500 rounded-full" />
@@ -237,11 +237,11 @@ export const BackupNotificationManager: React.FC<BackupNotificationManagerProps>
                       </span>
                     </div>
                     <p className="text-sm text-muted-foreground mb-1">
-                      Unit {notification.metadata?.requesting_unit || 'Unknown'} requesting backup
+                      {t('backupRequests.unitRequestingBackup', { unit: notification.metadata?.requesting_unit || t('unknown') })}
                     </p>
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
                       <MapPin className="h-3 w-3" />
-                      {notification.metadata?.location || 'Location unavailable'}
+                      {notification.metadata?.location || t('backupRequests.locationUnavailable')}
                     </div>
                   </div>
                 ))}
@@ -254,10 +254,10 @@ export const BackupNotificationManager: React.FC<BackupNotificationManagerProps>
                     onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                     disabled={currentPage === 1}
                   >
-                    Previous
+                    {t('previous')}
                   </Button>
                   <span className="text-sm text-muted-foreground px-2 py-1">
-                    Page {currentPage} of {Math.ceil(notifications.length / ITEMS_PER_PAGE)}
+                    {t('pageOf', { current: currentPage, total: Math.ceil(notifications.length / ITEMS_PER_PAGE) })}
                   </span>
                   <Button
                     variant="outline"
@@ -265,7 +265,7 @@ export const BackupNotificationManager: React.FC<BackupNotificationManagerProps>
                     onClick={() => setCurrentPage(prev => Math.min(Math.ceil(notifications.length / ITEMS_PER_PAGE), prev + 1))}
                     disabled={currentPage === Math.ceil(notifications.length / ITEMS_PER_PAGE)}
                   >
-                    Next
+                    {t('next')}
                   </Button>
                 </div>
               )}
@@ -280,7 +280,7 @@ export const BackupNotificationManager: React.FC<BackupNotificationManagerProps>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-red-500" />
-              Backup Request Details
+              {t('backupRequests.backupRequestDetails')}
             </DialogTitle>
           </DialogHeader>
           
@@ -288,48 +288,48 @@ export const BackupNotificationManager: React.FC<BackupNotificationManagerProps>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium">Incident Number</label>
+                  <label className="text-sm font-medium">{t('incidentNumber')}</label>
                   <p className="text-sm text-muted-foreground">
-                    {selectedNotification.metadata?.incident_number || 'Unknown'}
+                    {selectedNotification.metadata?.incident_number || t('unknown')}
                   </p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Priority Level</label>
+                  <label className="text-sm font-medium">{t('backupRequests.priority')}</label>
                   <div className="flex items-center gap-2">
                     <div className={`w-3 h-3 rounded-full ${getPriorityColor(selectedNotification.priority_level)}`} />
                     <span className="text-sm">{selectedNotification.priority_level}</span>
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Requesting Unit</label>
+                  <label className="text-sm font-medium">{t('backupRequests.requestingUnit')}</label>
                   <p className="text-sm text-muted-foreground">
-                    {selectedNotification.metadata?.requesting_unit || 'Unknown'} - {selectedNotification.metadata?.requesting_unit_name || 'Unknown Unit'}
+                    {selectedNotification.metadata?.requesting_unit || t('unknown')} - {selectedNotification.metadata?.requesting_unit_name || t('backupRequests.unknownUnit')}
                   </p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Request Time</label>
+                  <label className="text-sm font-medium">{t('backupRequests.requestTime')}</label>
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
                     <Clock className="h-3 w-3" />
                     {selectedNotification.metadata?.request_timestamp ? 
                       new Date(selectedNotification.metadata.request_timestamp).toLocaleString() : 
-                      'Unknown time'
+                      t('backupRequests.unknownTime')
                     }
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="text-sm font-medium">Location</label>
+                <label className="text-sm font-medium">{t('backupRequests.location')}</label>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                   <MapPin className="h-4 w-4" />
-                  {selectedNotification.metadata?.location || 'Location unavailable'}
+                  {selectedNotification.metadata?.location || t('backupRequests.locationUnavailable')}
                 </div>
               </div>
 
               <div>
-                <label className="text-sm font-medium">Reason for Backup</label>
+                <label className="text-sm font-medium">{t('backupRequests.reason')}</label>
                 <p className="text-sm text-muted-foreground mt-1 p-3 bg-muted rounded-md">
-                  {selectedNotification.metadata?.reason || 'No reason provided'}
+                  {selectedNotification.metadata?.reason || t('backupRequests.noReasonProvided')}
                 </p>
               </div>
 
@@ -340,14 +340,14 @@ export const BackupNotificationManager: React.FC<BackupNotificationManagerProps>
                   className="flex-1"
                 >
                   <Check className="h-4 w-4 mr-2" />
-                  Acknowledge
+                  {t('acknowledge')}
                 </Button>
                 <Button
                   onClick={() => respondToBackupRequest(selectedNotification, 'assign_units')}
                   className="flex-1"
                 >
                   <UserPlus className="h-4 w-4 mr-2" />
-                  Assign Units
+                  {t('backupRequests.assignUnits')}
                 </Button>
               </div>
             </div>
