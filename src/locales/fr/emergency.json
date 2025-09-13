@@ -1004,5 +1004,22 @@
       "noRecipientsDescription": "Veuillez sélectionner au moins une unité à diffuser",
       "errorDescription": "Échec de l'envoi de l'alerte de diffusion"
     }
+  },
+  
+  "operatorStatus": {
+    "yourStatus": "Votre Statut",
+    "sessionDuration": "Durée de Session",
+    "updateStatus": "Mettre à Jour le Statut",
+    "sessionStarted": "Session commencée", 
+    "activeOperators": "Opérateurs Actifs",
+    "operatorsCurrentlyOnline": "opérateurs actuellement en ligne",
+    "noOtherOperatorsOnline": "Aucun autre opérateur en ligne",
+    "emergencyDispatch": "Répartition d'Urgence",
+    "broadcastAlert": "Alerte de Diffusion",
+    "status": {
+      "active": "Actif",
+      "break": "En Pause",
+      "offline": "Hors Ligne"
+    }
   }
 }

@@ -1188,5 +1188,22 @@
       "noRecipientsDescription": "Seleccione al menos una unidad para difundir",
       "errorDescription": "No se pudo enviar la alerta de difusión"
     }
+  },
+  
+  "operatorStatus": {
+    "yourStatus": "Tu Estado",
+    "sessionDuration": "Duración de Sesión",
+    "updateStatus": "Actualizar Estado", 
+    "sessionStarted": "Sesión iniciada",
+    "activeOperators": "Operadores Activos",
+    "operatorsCurrentlyOnline": "operadores actualmente en línea",
+    "noOtherOperatorsOnline": "No hay otros operadores en línea",
+    "emergencyDispatch": "Despacho de Emergencia",
+    "broadcastAlert": "Alerta de Difusión",
+    "status": {
+      "active": "Activo",
+      "break": "En Descanso", 
+      "offline": "Sin Conexión"
+    }
   }
 }

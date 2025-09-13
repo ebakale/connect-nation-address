@@ -161,7 +161,7 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <Shield className="h-5 w-5 text-blue-600" />
-            {t('yourStatus', { defaultValue: 'Your Status' })}
+            {t('operatorStatus.yourStatus')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -171,17 +171,17 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
                 <div>
                   <Badge className={getStatusColor(status)}>
                     {getStatusIcon(status)}
-                    <span className="ml-1 capitalize">{t(`status.${status}`)}</span>
+                    <span className="ml-1 capitalize">{t(`operatorStatus.status.${status}`)}</span>
                   </Badge>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm text-muted-foreground">{t('sessionDuration', { defaultValue: 'Session Duration' })}</div>
+                  <div className="text-sm text-muted-foreground">{t('operatorStatus.sessionDuration')}</div>
                   <div className="font-semibold">{sessionDuration}</div>
                 </div>
               </div>
 
               <div>
-                <label className="text-sm font-medium">{t('updateStatus', { defaultValue: 'Update Status' })}</label>
+                <label className="text-sm font-medium">{t('operatorStatus.updateStatus')}</label>
                 <Select value={status} onValueChange={handleStatusChange}>
                   <SelectTrigger className="w-full">
                     <SelectValue />
@@ -190,19 +190,19 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
                     <SelectItem value="active">
                       <div className="flex items-center gap-2">
                         <Activity className="h-4 w-4 text-green-600" />
-                        {t('status.active')}
+                        {t('operatorStatus.status.active')}
                       </div>
                     </SelectItem>
                     <SelectItem value="break">
                       <div className="flex items-center gap-2">
                         <Coffee className="h-4 w-4 text-yellow-600" />
-                        {t('status.break')}
+                        {t('operatorStatus.status.break')}
                       </div>
                     </SelectItem>
                     <SelectItem value="offline">
                       <div className="flex items-center gap-2">
                         <CheckCircle className="h-4 w-4 text-gray-600" />
-                        {t('status.offline')}
+                        {t('operatorStatus.status.offline')}
                       </div>
                     </SelectItem>
                   </SelectContent>
@@ -212,7 +212,7 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
               <div className="text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />
-                  {t('sessionStarted', { defaultValue: 'Session started' })}: {new Date(operatorSession.session_start).toLocaleTimeString()}
+                  {t('operatorStatus.sessionStarted')}: {new Date(operatorSession.session_start).toLocaleTimeString()}
                 </div>
               </div>
             </>
@@ -228,9 +228,9 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
       {/* Active Operators */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">{t('activeOperators', { defaultValue: 'Active Operators' })}</CardTitle>
+          <CardTitle className="text-lg">{t('operatorStatus.activeOperators')}</CardTitle>
           <CardDescription>
-            {t('operatorsCurrentlyOnline', { count: activeOperators.length, defaultValue: '{{count}} operators currently online' })}
+            {activeOperators.length} {t('operatorStatus.operatorsCurrentlyOnline')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -244,7 +244,7 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
                   </span>
                 </div>
                 <Badge className={getStatusColor(operator.status)} variant="secondary">
-                  {t(`status.${operator.status}`)}
+                  {t(`operatorStatus.status.${operator.status}`)}
                 </Badge>
               </div>
             ))}
@@ -252,7 +252,7 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
             {activeOperators.length === 0 && (
               <div className="text-center text-muted-foreground py-4">
                 <User className="h-6 w-6 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">{t('noOtherOperatorsOnline', { defaultValue: 'No other operators online' })}</p>
+                <p className="text-sm">{t('operatorStatus.noOtherOperatorsOnline')}</p>
               </div>
             )}
             
@@ -268,7 +268,7 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
       {/* Quick Actions */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">{t('quickActions', { defaultValue: 'Quick Actions' })}</CardTitle>
+          <CardTitle className="text-lg">{t('quickActions')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           <Button 
@@ -278,7 +278,7 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
             onClick={handleEmergencyDispatch}
           >
             <PhoneCall className="mr-2 h-4 w-4 text-red-600" />
-            {t('emergencyDispatch', { defaultValue: 'Emergency Dispatch' })}
+            {t('operatorStatus.emergencyDispatch')}
           </Button>
           <Button 
             size="sm" 
@@ -287,7 +287,7 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
             onClick={handleBroadcastAlert}
           >
             <AlertTriangle className="mr-2 h-4 w-4 text-orange-600" />
-            {t('broadcastAlert', { defaultValue: 'Broadcast Alert' })}
+            {t('operatorStatus.broadcastAlert')}
           </Button>
         </CardContent>
       </Card>

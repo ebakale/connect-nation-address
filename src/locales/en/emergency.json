@@ -1188,5 +1188,22 @@
       "noRecipientsDescription": "Please select at least one unit to broadcast to",
       "errorDescription": "Failed to send broadcast alert"
     }
+  },
+  
+  "operatorStatus": {
+    "yourStatus": "Your Status",
+    "sessionDuration": "Session Duration", 
+    "updateStatus": "Update Status",
+    "sessionStarted": "Session started",
+    "activeOperators": "Active Operators",
+    "operatorsCurrentlyOnline": "operators currently online",
+    "noOtherOperatorsOnline": "No other operators online",
+    "emergencyDispatch": "Emergency Dispatch",
+    "broadcastAlert": "Broadcast Alert",
+    "status": {
+      "active": "Active",
+      "break": "On Break",
+      "offline": "Offline"
+    }
   }
 }
