@@ -495,7 +495,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="patrol">{t('unitManagement.unitTypes.patrol')}</SelectItem>
-                    <SelectItem value="rapid_response">Rapid Response Team</SelectItem>
+                    <SelectItem value="rapid_response">{t('unitManagement.rapidResponseTeam')}</SelectItem>
                     <SelectItem value="traffic">{t('unitManagement.unitTypes.traffic')}</SelectItem>
                     <SelectItem value="investigation">{t('unitManagement.unitTypes.investigation')}</SelectItem>
                     <SelectItem value="special">{t('unitManagement.unitTypes.special')}</SelectItem>
@@ -532,12 +532,12 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Edit Unit Information</DialogTitle>
-              <DialogDescription>Update the unit details and configuration</DialogDescription>
+              <DialogTitle>{t('unitManagement.editUnitInformation')}</DialogTitle>
+              <DialogDescription>{t('unitManagement.updateUnitDetails')}</DialogDescription>
             </DialogHeader>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="edit_unit_name">Unit Name</Label>
+                <Label htmlFor="edit_unit_name">{t('unitManagement.unitName')}</Label>
                 <Input
                   id="edit_unit_name"
                   value={editUnit.unit_name}
@@ -605,7 +605,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Units</p>
+                <p className="text-sm text-muted-foreground">{t('unitManagement.totalUnits')}</p>
                 <p className="text-2xl font-bold">{units.length}</p>
               </div>
               <Shield className="h-5 w-5 text-muted-foreground" />
@@ -617,7 +617,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Available</p>
+                <p className="text-sm text-muted-foreground">{t('unitManagement.available')}</p>
                 <p className="text-2xl font-bold text-green-600">
                   {units.filter(u => u.status === 'available').length}
                 </p>
@@ -631,7 +631,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Dispatched</p>
+                <p className="text-sm text-muted-foreground">{t('unitManagement.dispatched')}</p>
                 <p className="text-2xl font-bold text-blue-600">
                   {units.filter(u => u.status === 'dispatched').length}
                 </p>
@@ -645,7 +645,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Officers</p>
+                <p className="text-sm text-muted-foreground">{t('unitManagement.totalOfficers')}</p>
                 <p className="text-2xl font-bold text-purple-600">
                   {units.reduce((total, unit) => total + unit.emergency_unit_members.length, 0)}
                 </p>
@@ -661,7 +661,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            Emergency Units
+            {t('unitManagement.emergencyUnits')}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -715,57 +715,57 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                           <div className="space-y-1 text-sm">
                             <div className="flex items-center gap-2">
                               <Shield className="h-4 w-4 text-muted-foreground" />
-                              <span>Status: {unit.status}</span>
+                              <span>{t('unitManagement.status')}: {unit.status}</span>
                             </div>
                             {unit.radio_frequency && (
                               <div className="flex items-center gap-2">
                                 <Radio className="h-4 w-4 text-muted-foreground" />
-                                <span>Radio: {unit.radio_frequency}</span>
+                                <span>{t('unitManagement.radioFrequency')}: {unit.radio_frequency}</span>
                               </div>
                             )}
                             {unit.vehicle_id && (
                               <div className="flex items-center gap-2">
                                 <Car className="h-4 w-4 text-muted-foreground" />
-                                <span>Vehicle: {unit.vehicle_id}</span>
+                                <span>{t('unitManagement.vehicleId')}: {unit.vehicle_id}</span>
                               </div>
                             )}
                             {unit.current_location && (
                               <div className="flex items-center gap-2">
                                 <MapPin className="h-4 w-4 text-muted-foreground" />
-                                <span>Location: {unit.current_location}</span>
+                                <span>{t('unitManagement.currentLocation')}: {unit.current_location}</span>
                               </div>
                             )}
                           </div>
                         </div>
 
                         <div className="space-y-2">
-                          <h4 className="font-medium text-sm">Actions</h4>
+                          <h4 className="font-medium text-sm">{t('unitManagement.actions')}</h4>
                           <div className="flex flex-wrap gap-2">
                             <Button size="sm" variant="outline" onClick={() => openEditDialog(unit)}>
                               <Edit className="h-3 w-3 mr-1" />
-                              Edit Unit
+                              {t('unitManagement.editUnit')}
                             </Button>
                             
                             <Dialog open={isAssignDialogOpen} onOpenChange={setIsAssignDialogOpen}>
                               <DialogTrigger asChild>
                                 <Button size="sm" variant="outline" onClick={() => setSelectedUnit(unit)}>
                                   <Plus className="h-3 w-3 mr-1" />
-                                  Assign Officer
+                                  {t('unitManagement.assignOfficer')}
                                 </Button>
                               </DialogTrigger>
                               <DialogContent>
                                 <DialogHeader>
-                                  <DialogTitle>Assign Officer to {selectedUnit?.unit_code}</DialogTitle>
+                                  <DialogTitle>{t('unitManagement.assignOfficerTo', { unitCode: selectedUnit?.unit_code })}</DialogTitle>
                                 </DialogHeader>
                                 <div className="space-y-4">
                                   <div>
-                                    <Label htmlFor="officer_select">Select Officer</Label>
+                                    <Label htmlFor="officer_select">{t('unitManagement.selectOfficer')}</Label>
                                     <Select
                                       value={assignmentData.officer_id}
                                       onValueChange={(value) => setAssignmentData({...assignmentData, officer_id: value})}
                                     >
                                       <SelectTrigger>
-                                        <SelectValue placeholder="Choose an officer" />
+                                        <SelectValue placeholder={t('unitManagement.chooseAnOfficer')} />
                                       </SelectTrigger>
                                       <SelectContent>
                                         {getUnassignedOfficers().map((officer) => (
@@ -777,7 +777,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                                     </Select>
                                   </div>
                                   <div>
-                                    <Label htmlFor="role_select">Role</Label>
+                                    <Label htmlFor="role_select">{t('unitManagement.officerRole')}</Label>
                                     <Select
                                       value={assignmentData.role}
                                       onValueChange={(value) => setAssignmentData({...assignmentData, role: value})}
@@ -786,11 +786,11 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                                         <SelectValue />
                                       </SelectTrigger>
                                       <SelectContent>
-                                        <SelectItem value="officer">Police Officer</SelectItem>
-                                        <SelectItem value="senior_officer">Senior Officer</SelectItem>
-                                        <SelectItem value="corporal">Corporal</SelectItem>
-                                        <SelectItem value="sergeant">Sergeant</SelectItem>
-                                        <SelectItem value="lieutenant">Lieutenant</SelectItem>
+                                        <SelectItem value="officer">{t('unitManagement.roles.officer')}</SelectItem>
+                                        <SelectItem value="senior_officer">{t('unitManagement.roles.senior_officer')}</SelectItem>
+                                        <SelectItem value="corporal">{t('unitManagement.roles.corporal')}</SelectItem>
+                                        <SelectItem value="sergeant">{t('unitManagement.roles.sergeant')}</SelectItem>
+                                        <SelectItem value="lieutenant">{t('unitManagement.roles.lieutenant')}</SelectItem>
                                       </SelectContent>
                                     </Select>
                                   </div>
@@ -801,10 +801,10 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                                       checked={assignmentData.is_lead}
                                       onChange={(e) => setAssignmentData({...assignmentData, is_lead: e.target.checked})}
                                     />
-                                    <Label htmlFor="is_lead">Make Unit Lead</Label>
+                                    <Label htmlFor="is_lead">{t('unitManagement.setAsLeader')}</Label>
                                   </div>
                                   <Button onClick={() => selectedUnit && assignOfficerToUnit(selectedUnit.id)} className="w-full">
-                                    Assign Officer
+                                    {t('unitManagement.assign')}
                                   </Button>
                                 </div>
                               </DialogContent>
@@ -831,7 +831,7 @@ export const UnitManagementDashboard: React.FC<UnitManagementDashboardProps> = (
                       {/* Unit Members */}
                       {unit.emergency_unit_members.length > 0 && (
                         <div className="space-y-2">
-                          <h4 className="font-medium text-sm">Unit Members ({unit.emergency_unit_members.length})</h4>
+                          <h4 className="font-medium text-sm">{t('unitManagement.unitMembers')} ({unit.emergency_unit_members.length})</h4>
                           <div className="space-y-2">
                             {unit.emergency_unit_members
                               .sort((a, b) => {
