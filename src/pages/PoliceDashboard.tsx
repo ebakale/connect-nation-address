@@ -1229,7 +1229,7 @@ const PoliceDashboard = () => {
                 <div className="flex items-center gap-4 mb-2">
                   <Badge variant="outline" className="flex items-center gap-2">
                     <Users className="h-3 w-3" />
-                    {t('emergency:unitManagementLabel')}
+                    {t('emergency:unitManagementLabel', { defaultValue: 'Unit Management' })}
                   </Badge>
                 </div>
                  <p className="text-muted-foreground">
@@ -1241,7 +1241,7 @@ const PoliceDashboard = () => {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold flex items-center gap-2">
                   <Users className="h-5 w-5" />
-                   {t('quickActions')}
+                   {t('quickActions', { defaultValue: 'Quick Actions' })}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Card className="cursor-pointer hover:shadow-md transition-all hover:-translate-y-1"
@@ -1252,8 +1252,8 @@ const PoliceDashboard = () => {
                           <Users className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                           <h4 className="font-medium">{t('unitsProfilesManagement')}</h4>
-                           <p className="text-sm text-muted-foreground">{t('manageUnitsOfficers')}</p>
+                           <h4 className="font-medium">{t('unitsProfilesManagement', { defaultValue: 'Units & Profiles' })}</h4>
+                           <p className="text-sm text-muted-foreground">{t('manageUnitsOfficers', { defaultValue: 'Manage units and officers' })}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -1266,8 +1266,8 @@ const PoliceDashboard = () => {
                           <Shield className="h-5 w-5 text-blue-500" />
                         </div>
                         <div>
-                           <h4 className="font-medium">{t('systemOverview')}</h4>
-                           <p className="text-sm text-muted-foreground">{t('viewSystemHealthStats')}</p>
+                           <h4 className="font-medium">{t('systemOverview', { defaultValue: 'System Overview' })}</h4>
+                           <p className="text-sm text-muted-foreground">{t('viewSystemHealthStats', { defaultValue: 'View system health and stats' })}</p>
                         </div>
                       </div>
                     </CardContent>

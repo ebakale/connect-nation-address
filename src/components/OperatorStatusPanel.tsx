@@ -161,7 +161,7 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <Shield className="h-5 w-5 text-blue-600" />
-            {t('yourStatus')}
+            {t('yourStatus', { defaultValue: 'Your Status' })}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -268,7 +268,7 @@ const OperatorStatusPanel = ({ operatorSession }: OperatorStatusPanelProps) => {
       {/* Quick Actions */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">{t('quickActions')}</CardTitle>
+          <CardTitle className="text-lg">{t('quickActions', { defaultValue: 'Quick Actions' })}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           <Button 
