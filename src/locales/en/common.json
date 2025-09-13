@@ -346,6 +346,22 @@
     "confirmAction": "Confirm: {{action}}",
     "onDuty": "ON DUTY",
     "offDuty": "OFF DUTY",
-    "onBreak": "ON BREAK"
+    "onBreak": "ON BREAK",
+    "emergencyTypes": {
+      "police": "POLICE",
+      "fire": "FIRE",
+      "medical": "MEDICAL",
+      "rescue": "RESCUE",
+      "traffic": "TRAFFIC",
+      "domestic": "DOMESTIC"
+    },
+    "statuses": {
+      "reported": "Reported",
+      "dispatched": "Dispatched",
+      "responding": "Responding",
+      "on_scene": "On Scene",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    }
   }
 }

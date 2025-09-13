@@ -346,6 +346,22 @@
     "confirmAction": "Confirmar: {{action}}",
     "onDuty": "EN SERVICIO",
     "offDuty": "FUERA DE SERVICIO",
-    "onBreak": "EN DESCANSO"
+    "onBreak": "EN DESCANSO",
+    "emergencyTypes": {
+      "police": "POLICÍA",
+      "fire": "BOMBEROS",
+      "medical": "MÉDICO",
+      "rescue": "RESCATE",
+      "traffic": "TRÁFICO",
+      "domestic": "DOMÉSTICO"
+    },
+    "statuses": {
+      "reported": "Reportado",
+      "dispatched": "Despachado",
+      "responding": "Respondiendo",
+      "on_scene": "En Escena",
+      "resolved": "Resuelto",
+      "closed": "Cerrado"
+    }
   }
 }

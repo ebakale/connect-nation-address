@@ -1315,11 +1315,11 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                           }`} />
                           <div>
                             <p className="font-medium">{incident.incident_number}</p>
-                            <p className="text-sm text-muted-foreground">{incident.emergency_type.replace(/_/g, ' ').toUpperCase()}</p>
+                            <p className="text-sm text-muted-foreground">{t(`fieldDashboard.emergencyTypes.${incident.emergency_type}`) || incident.emergency_type.replace(/_/g, ' ').toUpperCase()}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Badge variant="outline">{incident.status}</Badge>
+                          <Badge variant="outline">{t(`fieldDashboard.statuses.${incident.status}`) || incident.status}</Badge>
                           <ArrowRight className="h-4 w-4 text-muted-foreground" />
                         </div>
                       </div>
