@@ -452,7 +452,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
           })}
         </span>
         <span>
-          {t('page')} {currentPage} {t('of')} {totalPages}
+          {t('emergency:pageOf', { current: currentPage, total: totalPages })}
         </span>
       </div>
 
@@ -532,7 +532,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
         {paginatedIncidents.length === 0 && (
           <div className="p-8 text-center text-muted-foreground">
             <AlertTriangle className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p>No incidents match the current filters</p>
+            <p>{t('emergency:noIncidentsMatch')}</p>
           </div>
         )}
       </div>
@@ -546,7 +546,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             disabled={currentPage === 1}
           >
-            Previous
+            {t('emergency:previous')}
           </Button>
           
           <div className="flex items-center gap-1">
@@ -569,7 +569,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
             disabled={currentPage === totalPages}
           >
-            Next
+            {t('emergency:next')}
           </Button>
         </div>
       )}

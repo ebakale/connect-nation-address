@@ -613,5 +613,9 @@
     "closed": "FERMÉ"
   },
   "ofEmergencyIncidents": "d'incidents d'urgence",
-  "showingRange": "Affichage {{start}}-{{end}} sur {{total}} incidents"
+  "showingRange": "Affichage {{start}}-{{end}} sur {{total}} incidents",
+  "pageOf": "Page {{current}} sur {{total}}",
+  "previous": "Précédent",
+  "next": "Suivant",
+  "noIncidentsMatch": "Aucun incident ne correspond aux filtres actuels"
 }

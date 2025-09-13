@@ -797,5 +797,9 @@
     "closed": "CERRADO"
   },
   "ofEmergencyIncidents": "de incidentes de emergencia",
-  "showingRange": "Mostrando {{start}}-{{end}} de {{total}} incidentes"
+  "showingRange": "Mostrando {{start}}-{{end}} de {{total}} incidentes",
+  "pageOf": "Página {{current}} de {{total}}",
+  "previous": "Anterior",
+  "next": "Siguiente", 
+  "noIncidentsMatch": "Ningún incidente coincide con los filtros actuales"
 }
