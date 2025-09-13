@@ -332,6 +332,7 @@
   "coordinateOtherUnits": "Coordinate with other units and monitor area-specific incidents",
   "myAreaIncidents": "My Area Incidents",
   "availableUnits": "Available Units",
+  "activeUnits": "Active Units",
   "avgResponseTime": "Avg Response Time",
   "areaIncidents": "Area Incidents",
   "coordinationActions": "Coordination Actions",
