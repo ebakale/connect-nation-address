@@ -769,5 +769,18 @@
   "reported": "Reported",
   "dispatched": "Dispatched", 
   "responding": "Responding",
-  "onScene": "On Scene"
+  "onScene": "On Scene",
+  "priorityLevel": "Priority",
+  "reported": "Reported",
+  "backup": "Backup",
+  "status": "Status",
+  "reopen": "Reopen",
+  "edit": "Edit",
+  "save": "Save",
+  "cancel": "Cancel",
+  "add": "Add",
+  "selectUnitToAssign": "Select a unit to assign",
+  "dispatcher": "Dispatcher",
+  "noDispatcherAssigned": "No dispatcher assigned",
+  "failedToAssignIncident": "Failed to assign incident"
 }

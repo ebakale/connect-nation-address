@@ -271,5 +271,8 @@
   "critical": "Critique",
   "high": "Élevé",
   "medium": "Moyen",
-  "low": "Faible"
+  "low": "Faible",
+  "incidents": "incidents",
+  "needDispatcherAssignment": "nécessitent une assignation de répartiteur",
+  "allStatus": "Tous les Statuts"
 }

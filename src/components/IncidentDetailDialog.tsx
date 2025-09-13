@@ -17,6 +17,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { RequestBackupDialog } from "@/components/RequestBackupDialog";
 import { IncidentStatusUpdateDialog } from "@/components/IncidentStatusUpdateDialog";
@@ -86,6 +87,7 @@ interface IncidentDetailDialogProps {
 const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hideResolvedOption = false }: IncidentDetailDialogProps) => {
   const { user } = useAuth();
   const { isPoliceSupervisor, isPoliceDispatcher, isPoliceOperator } = useUserRole();
+  const { t } = useTranslation('emergency');
   
   const [logs, setLogs] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -583,7 +585,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
       }
     } catch (error) {
       console.error('Error assigning incident:', error);
-      toast.error('Failed to assign incident');
+      toast.error(t('failedToAssignIncident'));
     }
   };
   // Permission checks - restrict modifications for resolved incidents
@@ -705,7 +707,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                 {incident.status.replace('_', ' ').toUpperCase()}
               </Badge>
               <Badge variant="outline" className={`${getPriorityColor(incident.priority_level)} text-xs sm:text-sm whitespace-nowrap shrink-0`}>
-                Priority {incident.priority_level}
+                {t('priorityLevel')} {incident.priority_level}
               </Badge>
             </div>
             <h3 className="text-xl font-semibold capitalize text-primary">
@@ -713,7 +715,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
             </h3>
             <p className="text-sm text-muted-foreground flex items-center gap-2">
               <Calendar className="h-4 w-4" />
-              Reported: {new Date(incident.reported_at).toLocaleString()}
+              {t('reported')}: {new Date(incident.reported_at).toLocaleString()}
             </p>
           </div>
           
@@ -723,7 +725,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
               <RequestBackupDialog unitId={user?.id || ''} unitCode="OFFICER">
                 <Button variant="outline" size="sm" className="text-xs">
                   <Radio className="h-3 w-3 mr-1" />
-                  Backup
+                  {t('backup')}
                 </Button>
               </RequestBackupDialog>
             )}
@@ -732,7 +734,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
               <IncidentStatusUpdateDialog incident={incident} onUpdate={onUpdate} hideResolvedOption={hideResolvedOption}>
                 <Button variant="outline" size="sm" className="text-xs">
                   <Edit className="h-3 w-3 mr-1" />
-                  Status
+                  {t('status')}
                 </Button>
               </IncidentStatusUpdateDialog>
             )}
@@ -740,7 +742,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
             {canReopenIncident && (
               <Button variant="outline" size="sm" className="text-xs" onClick={handleReopenIncident}>
                 <AlertTriangle className="h-3 w-3 mr-1" />
-                Reopen
+                {t('reopen')}
               </Button>
             )}
           </div>
@@ -999,11 +1001,11 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                   <>
                     <Button onClick={handleSave} size="sm">
                       <Save className="h-4 w-4 mr-2" />
-                      Save
+                      {t('save')}
                     </Button>
                     <Button onClick={() => setIsEditing(false)} size="sm" variant="outline">
                       <X className="h-4 w-4 mr-2" />
-                      Cancel
+                      {t('cancel')}
                     </Button>
                   </>
                 )}
@@ -1045,10 +1047,10 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                 <div className="mt-1">
                   {incident.assigned_operator_id ? (
                     <Badge variant="secondary">
-                      {userNames[incident.assigned_operator_id] || `Dispatcher ${incident.assigned_operator_id.slice(0,8)}`}
+                      {userNames[incident.assigned_operator_id] || `${t('dispatcher')} ${incident.assigned_operator_id.slice(0,8)}`}
                     </Badge>
                   ) : (
-                    <span className="text-muted-foreground">No dispatcher assigned</span>
+                    <span className="text-muted-foreground">{t('noDispatcherAssigned')}</span>
                   )}
                 </div>
               )}
@@ -1064,7 +1066,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                     <div className="flex flex-col sm:flex-row gap-2">
                       <Select value={newUnit} onValueChange={setNewUnit}>
                         <SelectTrigger className="flex-1 bg-background border border-input min-w-0">
-                          <SelectValue placeholder="Select a unit to assign" />
+                          <SelectValue placeholder={t('selectUnitToAssign')} />
                         </SelectTrigger>
                          <SelectContent className="bg-background border border-input z-50">
                            {availableUnits
@@ -1082,7 +1084,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                              ))}
                          </SelectContent>
                       </Select>
-                      <Button onClick={addUnit} size="sm" disabled={!newUnit} className="whitespace-nowrap w-full sm:w-auto">Add</Button>
+                      <Button onClick={addUnit} size="sm" disabled={!newUnit} className="whitespace-nowrap w-full sm:w-auto">{t('add')}</Button>
                     </div>
                    <div className="flex flex-wrap gap-2">
                      {editData.assigned_units.map((unit, index) => (

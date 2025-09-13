@@ -402,7 +402,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
               <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2 flex items-center gap-2 mb-3">
                 <AlertTriangle className="h-4 w-4 text-red-600" />
                 <span className="text-sm font-medium text-red-800">
-                  {unassignedIncidents.length} {unassignedIncidents.length > 1 ? t('incidents') : t('incident')} {t('needDispatcherAssignment')}
+                  {unassignedIncidents.length} {unassignedIncidents.length > 1 ? t('common:incidents') : t('incident')} {t('common:needDispatcherAssignment')}
                 </span>
               </div>
             );
@@ -416,7 +416,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
                 <SelectValue placeholder={t('status')} />
               </SelectTrigger>
               <SelectContent className="bg-background z-50">
-                <SelectItem value="all">{t('allStatus')}</SelectItem>
+                <SelectItem value="all">{t('common:allStatus')}</SelectItem>
                 <SelectItem value="reported">{t('reported')}</SelectItem>
                 <SelectItem value="dispatched">{t('dispatched')}</SelectItem>
                 <SelectItem value="responding">{t('responding')}</SelectItem>
@@ -445,7 +445,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
       {/* Pagination info */}
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <span>
-          {t('showing')} {startIndex + 1}-{Math.min(startIndex + incidentsPerPage, filteredIncidents.length)} {t('of')} {filteredIncidents.length} {t('incidents')}
+          {t('showing')} {startIndex + 1}-{Math.min(startIndex + incidentsPerPage, filteredIncidents.length)} {t('of')} {filteredIncidents.length} {t('common:incidents')}
         </span>
         <span>
           {t('page')} {currentPage} {t('of')} {totalPages}

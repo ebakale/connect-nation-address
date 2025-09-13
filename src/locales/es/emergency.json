@@ -769,5 +769,18 @@
   "reported": "Reportado",
   "dispatched": "Despachado",
   "responding": "Respondiendo",
-  "onScene": "En Escena"
+  "onScene": "En Escena",
+  "priorityLevel": "Prioridad",
+  "reported": "Reportado",
+  "backup": "Refuerzo",
+  "status": "Estado",
+  "reopen": "Reabrir",
+  "edit": "Editar",
+  "save": "Guardar",
+  "cancel": "Cancelar",
+  "add": "Agregar",
+  "selectUnitToAssign": "Seleccionar una unidad para asignar",
+  "dispatcher": "Despachador",
+  "noDispatcherAssigned": "Sin despachador asignado",
+  "failedToAssignIncident": "Error al asignar incidente"
 }

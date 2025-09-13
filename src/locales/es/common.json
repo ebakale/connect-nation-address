@@ -271,5 +271,8 @@
   "critical": "Crítico",
   "high": "Alto",
   "medium": "Medio",
-  "low": "Bajo"
+  "low": "Bajo",
+  "incidents": "incidentes",
+  "needDispatcherAssignment": "necesitan asignación de despachador",
+  "allStatus": "Todos los Estados"
 }

@@ -271,5 +271,8 @@
   "critical": "Critical",
   "high": "High",
   "medium": "Medium",
-  "low": "Low"
+  "low": "Low",
+  "incidents": "incidents",
+  "needDispatcherAssignment": "need dispatcher assignment",
+  "allStatus": "All Status"
 }

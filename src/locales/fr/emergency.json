@@ -585,5 +585,18 @@
   "reported": "Signalé",
   "dispatched": "Dépêché",
   "responding": "En Réponse",
-  "onScene": "Sur les Lieux"
+  "onScene": "Sur les Lieux",
+  "priorityLevel": "Priorité",
+  "reported": "Signalé",
+  "backup": "Renfort",
+  "status": "Statut",
+  "reopen": "Rouvrir",
+  "edit": "Modifier",
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "add": "Ajouter",
+  "selectUnitToAssign": "Sélectionner une unité à assigner",
+  "dispatcher": "Répartiteur",
+  "noDispatcherAssigned": "Aucun répartiteur assigné",
+  "failedToAssignIncident": "Échec d'assignation de l'incident"
 }
