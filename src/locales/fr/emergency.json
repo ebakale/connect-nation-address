@@ -1253,5 +1253,29 @@
     "enterMessagePlaceholder": "Entrez votre message pour les membres de l'équipe...",
     "communicationComingSoon": "Fonctionnalités de communication bientôt disponibles",
     "realTimeMessaging": "Messagerie en temps réel et outils de coordination"
+  },
+  "incidentList": {
+    "dispatchUnitToIncident": "Dépêcher une Unité vers l'Incident",
+    "selectAvailableUnitToDispatch": "Sélectionnez une unité disponible à dépêcher vers cet incident",
+    "selectAUnit": "Sélectionner une Unité",
+    "cancel": "Annuler",
+    "dispatchUnit": "Dépêcher l'Unité",
+    "status": "Statut",
+    "priority": "Priorité",
+    "reported": "Signalé",
+    "dispatched": "Dépêché",
+    "responding": "En Route",
+    "onScene": "Sur Place",
+    "showingRange": "Affichage {{start}}-{{end}} de {{total}} incidents",
+    "pageOf": "Page {{current}} de {{total}}",
+    "incidentResolved": "Incident résolu",
+    "dispatcherAssigned": "Répartiteur assigné",
+    "unassigned": "Non assigné",
+    "viewDetails": "Voir les détails",
+    "clickForDetails": "Cliquer pour les détails",
+    "noIncidentsMatch": "Aucun incident ne correspond aux filtres actuels",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "incidentDetailsTitle": "Détails de l'Incident"
   }
 }

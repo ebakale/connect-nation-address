@@ -413,14 +413,14 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
           {showStatusFilter && (
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder={t('status')} />
+                <SelectValue placeholder={t('emergency:status')} />
               </SelectTrigger>
               <SelectContent className="bg-background z-50">
                 <SelectItem value="all">{t('common:allStatus')}</SelectItem>
-                <SelectItem value="reported">{t('reported')}</SelectItem>
-                <SelectItem value="dispatched">{t('dispatched')}</SelectItem>
-                <SelectItem value="responding">{t('responding')}</SelectItem>
-                <SelectItem value="on_scene">{t('onScene')}</SelectItem>
+                <SelectItem value="reported">{t('emergency:reported')}</SelectItem>
+                <SelectItem value="dispatched">{t('emergency:dispatched')}</SelectItem>
+                <SelectItem value="responding">{t('emergency:responding')}</SelectItem>
+                <SelectItem value="on_scene">{t('emergency:onScene')}</SelectItem>
               </SelectContent>
             </Select>
           )}
@@ -428,7 +428,7 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
           {showPriorityFilter && (
             <Select value={priorityFilter} onValueChange={setPriorityFilter}>
               <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder={t('priority')} />
+                <SelectValue placeholder={t('emergency:priority')} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('common:allPriority')}</SelectItem>
@@ -578,15 +578,15 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
       <Dialog open={!!assignDialog} onOpenChange={() => setAssignDialog(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Dispatch Unit to Incident</DialogTitle>
+            <DialogTitle>{t('emergency:dispatchUnitToIncident')}</DialogTitle>
             <DialogDescription>
-              Select an available unit to dispatch to this incident
+              {t('emergency:selectAvailableUnitToDispatch')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <Select value={dispatchingUnit} onValueChange={setDispatchingUnit}>
               <SelectTrigger>
-                <SelectValue placeholder={t('selectAUnit')} />
+                <SelectValue placeholder={t('emergency:selectAUnit')} />
               </SelectTrigger>
               <SelectContent className="bg-background z-50">
                 {availableOfficers
@@ -604,13 +604,13 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
             </Select>
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setAssignDialog(null)}>
-                {t('cancel')}
+                {t('emergency:cancel')}
               </Button>
               <Button 
                 onClick={() => assignDialog && handleDispatchIncident(assignDialog)}
                 disabled={!dispatchingUnit}
               >
-                {t('dispatchUnit')}
+                {t('emergency:dispatchUnit')}
               </Button>
             </div>
           </div>

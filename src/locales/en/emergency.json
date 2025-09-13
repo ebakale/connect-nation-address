@@ -1437,5 +1437,29 @@
     "enterMessagePlaceholder": "Enter your message to team members...",
     "communicationComingSoon": "Communication features coming soon",
     "realTimeMessaging": "Real-time messaging and coordination tools"
+  },
+  "incidentList": {
+    "dispatchUnitToIncident": "Dispatch Unit to Incident",
+    "selectAvailableUnitToDispatch": "Select an available unit to dispatch to this incident",
+    "selectAUnit": "Select a Unit",
+    "cancel": "Cancel",
+    "dispatchUnit": "Dispatch Unit",
+    "status": "Status",
+    "priority": "Priority",
+    "reported": "Reported",
+    "dispatched": "Dispatched", 
+    "responding": "Responding",
+    "onScene": "On Scene",
+    "showingRange": "Showing {{start}}-{{end}} of {{total}} incidents",
+    "pageOf": "Page {{current}} of {{total}}",
+    "incidentResolved": "Incident resolved",
+    "dispatcherAssigned": "Dispatcher assigned",
+    "unassigned": "Unassigned",
+    "viewDetails": "View details",
+    "clickForDetails": "Click for details",
+    "noIncidentsMatch": "No incidents match the current filters",
+    "previous": "Previous",
+    "next": "Next",
+    "incidentDetailsTitle": "Incident Details"
   }
 }
