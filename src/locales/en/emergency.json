@@ -731,5 +731,9 @@
   "incident": "incident",
   "failedToAssignIncidents": "Failed to assign incidents",
   "messageSentToTeam": "Message sent to all team members",
-  "failedToSendMessage": "Failed to send message"
+  "failedToSendMessage": "Failed to send message",
+  "failedToInitializeOperatorSession": "Failed to initialize operator session",
+  "successfullyCreatedPoliceUsers": "Successfully created {count} police users",
+  "failedToCreatePoliceUsers": "Failed to create police users",
+  "unknown": "Unknown"
 }

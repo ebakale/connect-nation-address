@@ -731,5 +731,9 @@
   "incident": "incidente",
   "failedToAssignIncidents": "Error al asignar incidentes",
   "messageSentToTeam": "Mensaje enviado a todos los miembros del equipo",
-  "failedToSendMessage": "Error al enviar mensaje"
+  "failedToSendMessage": "Error al enviar mensaje",
+  "failedToInitializeOperatorSession": "Error al inicializar sesión de operador",
+  "successfullyCreatedPoliceUsers": "Se crearon exitosamente {count} usuarios policiales",
+  "failedToCreatePoliceUsers": "Error al crear usuarios policiales",
+  "unknown": "Desconocido"
 }

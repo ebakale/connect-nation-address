@@ -146,7 +146,7 @@ const PoliceDashboard = () => {
         }
       } catch (error) {
         console.error('Error initializing operator session:', error);
-        toast.error('Failed to initialize operator session');
+        toast.error(t('failedToInitializeOperatorSession'));
       }
     };
 
@@ -262,7 +262,7 @@ const PoliceDashboard = () => {
 
       const enrichedIncidents = incidentsData?.map(incident => ({
         ...incident,
-        reporter_name: 'Unknown',
+        reporter_name: t('unknown'),
         reporter_email: ''
       })) || [];
 
@@ -309,7 +309,7 @@ const PoliceDashboard = () => {
 
       const enrichedIncidents = incidentsData?.map(incident => ({
         ...incident,
-        reporter_name: 'Unknown',
+        reporter_name: t('unknown'),
         reporter_email: ''
       })) || [];
 
@@ -371,7 +371,7 @@ const PoliceDashboard = () => {
 
       const enrichedIncidents = incidentsData?.map(incident => ({
         ...incident,
-        reporter_name: 'Unknown',
+        reporter_name: t('unknown'),
         reporter_email: ''
       })) || [];
 
@@ -440,7 +440,7 @@ const PoliceDashboard = () => {
 
       const enrichedIncidents = incidentsData?.map(incident => ({
         ...incident,
-        reporter_name: 'Unknown',
+        reporter_name: t('unknown'),
         reporter_email: ''
       })) || [];
 
@@ -556,13 +556,13 @@ const PoliceDashboard = () => {
       if (error) throw error;
       
       if (data?.success) {
-        toast.success(`Successfully created ${data.users?.length || 0} police users`);
+        toast.success(t('successfullyCreatedPoliceUsers', { count: data.users?.length || 0 }));
       } else {
         throw new Error(data?.error || 'Failed to create users');
       }
     } catch (error) {
       console.error('Error creating police users:', error);
-      toast.error('Failed to create police users');
+      toast.error(t('failedToCreatePoliceUsers'));
     }
   };
 
