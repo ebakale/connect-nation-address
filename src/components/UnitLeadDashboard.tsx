@@ -120,8 +120,8 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
     } catch (error) {
       console.error('Error fetching unit data:', error);
       toast({
-        title: t('common:error'),
-        description: t('failedToFetchUnitData'),
+        title: t('common:messages.loadingError'),
+        description: t('unitLeadDashboard.failedToFetchUnitData'),
         variant: "destructive"
       });
     } finally {
@@ -173,14 +173,14 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
       setUnreadCount(prev => Math.max(0, prev - 1));
 
       toast({
-        title: t('messageAcknowledged'),
-        description: t('messageMarkedAsAcknowledged')
+        title: t('fieldDashboard.messageAcknowledged'),
+        description: t('unitLeadDashboard.messageMarkedAsAcknowledged')
       });
     } catch (error) {
       console.error('Error acknowledging message:', error);
       toast({
-        title: t('common:error'),
-        description: t('failedToAcknowledgeMessage'),
+        title: t('common:messages.loadingError'),
+        description: t('unitLeadDashboard.failedToAcknowledgeMessage'),
         variant: "destructive"
       });
     }
@@ -221,7 +221,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
             <div className="flex items-center gap-3">
               <Crown className="h-6 w-6 text-primary" />
               <div>
-                <CardTitle className="text-xl">Unit Lead Dashboard</CardTitle>
+                <CardTitle className="text-xl">{t('unitLeadDashboard.title')}</CardTitle>
                 <CardDescription className="flex items-center gap-2">
                   <Shield className="h-4 w-4" />
                   {userUnit.unit_code} - {userUnit.unit_name}
@@ -240,7 +240,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
             <div className="flex items-center gap-2">
               <Users className="h-5 w-5 text-blue-600" />
               <div>
-                <p className="text-sm text-muted-foreground">Team Members</p>
+                <p className="text-sm text-muted-foreground">{t('unitLeadDashboard.teamMembers')}</p>
                 <p className="text-2xl font-bold">{unitStats.totalMembers}</p>
               </div>
             </div>
@@ -252,7 +252,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
             <div className="flex items-center gap-2">
               <Activity className="h-5 w-5 text-green-600" />
               <div>
-                <p className="text-sm text-muted-foreground">Available</p>
+                <p className="text-sm text-muted-foreground">{t('common:status.available')}</p>
                 <p className="text-2xl font-bold">{unitStats.availableMembers}</p>
               </div>
             </div>
@@ -264,7 +264,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
             <div className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-orange-600" />
               <div>
-                <p className="text-sm text-muted-foreground">Active Incidents</p>
+                <p className="text-sm text-muted-foreground">{t('activeIncidents')}</p>
                 <p className="text-2xl font-bold">{unitStats.activeIncidents}</p>
               </div>
             </div>
@@ -276,7 +276,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
             <div className="flex items-center gap-2">
               <Clock className="h-5 w-5 text-purple-600" />
               <div>
-                <p className="text-sm text-muted-foreground">Avg Response</p>
+                <p className="text-sm text-muted-foreground">{t('unitLeadDashboard.avgResponse')}</p>
                 <p className="text-2xl font-bold">{unitStats.responseTime}m</p>
               </div>
             </div>
@@ -299,7 +299,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
                 <AlertTriangle className="h-5 w-5" />
-                Active Incidents Assigned to Your Unit
+                {t('unitLeadDashboard.activeIncidentsAssigned')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -332,7 +332,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
                   ))}
                 </div>
               ) : (
-                <p className="text-muted-foreground text-center py-8">No active incidents assigned to your unit</p>
+                <p className="text-muted-foreground text-center py-8">{t('unitLeadDashboard.noActiveIncidents')}</p>
               )}
             </CardContent>
           </Card>
@@ -366,7 +366,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
                 <MessageSquare className="h-5 w-5" />
-                Leadership Communications
+                {t('unitLeadDashboard.leadershipCommunications')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -375,30 +375,30 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
                 <SendUnitMessageDialog unitId={userUnit.id} unitCode={userUnit.unit_code}>
                   <Button className="w-full text-xs" variant="outline">
                     <MessageSquare className="h-4 w-4 mr-2" />
-                    Send Unit Message
+                    {t('unitLeadDashboard.sendUnitMessage')}
                   </Button>
                 </SendUnitMessageDialog>
                 
                 <RequestBackupDialog unitId={userUnit.id} unitCode={userUnit.unit_code}>
                   <Button className="w-full text-xs" variant="outline">
                     <Navigation className="h-4 w-4 mr-2" />
-                    Request Backup
+                    {t('requestBackup')}
                   </Button>
                 </RequestBackupDialog>
               </div>
 
               <div className="flex items-center gap-2 p-3 bg-muted/50 rounded">
                 <Radio className="h-4 w-4" />
-                <span className="text-sm">Radio: {userUnit.radio_frequency || 'Not assigned'}</span>
+                <span className="text-sm">{t('unitLeadDashboard.radio')}: {userUnit.radio_frequency || t('unitLeadDashboard.notAssigned')}</span>
               </div>
 
               {/* Recent Messages with Acknowledgment */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-medium">Recent Communications</h4>
+                  <h4 className="font-medium">{t('unitLeadDashboard.recentCommunications')}</h4>
                   {unreadCount > 0 && (
                     <Badge variant="destructive">
-                      {unreadCount} unread
+                      {unreadCount} {t('fieldDashboard.unread')}
                     </Badge>
                   )}
                 </div>
@@ -413,7 +413,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
                               comm.type === 'incoming' ? 'bg-blue-500' : 'bg-green-500'
                             }`} />
                             <span className="font-medium text-sm">
-                              {comm.type === 'incoming' ? 'Dispatch' : 'Unit'}
+                              {comm.type === 'incoming' ? t('unitLeadDashboard.dispatch') : t('unitLeadDashboard.unit')}
                             </span>
                             <span className="text-xs text-muted-foreground">
                               {new Date(comm.timestamp).toLocaleTimeString()}
@@ -446,7 +446,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
                                 className="h-6 px-2 text-xs"
                                 onClick={() => acknowledgeMessage(comm.id)}
                               >
-                                Acknowledge
+                                {t('common:buttons.confirm')}
                               </Button>
                             )}
                           </div>
@@ -455,7 +455,7 @@ export const UnitLeadDashboard: React.FC<UnitLeadDashboardProps> = ({ userUnit, 
                     ))}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground text-center py-4">No recent communications</p>
+                  <p className="text-muted-foreground text-center py-4">{t('unitLeadDashboard.noCommunications')}</p>
                 )}
               </div>
             </CardContent>

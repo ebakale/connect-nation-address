@@ -289,6 +289,25 @@
   "systemStatistics": "Statistiques du Système",
   "overallIncidentMetrics": "Métriques générales de gestion des incidents",
   
+  "unitLeadDashboard": {
+    "title": "Tableau de Bord de Chef d'Unité",
+    "teamMembers": "Membres de l'Équipe",
+    "avgResponse": "Réponse Moyenne",
+    "activeIncidentsAssigned": "Incidents Actifs Assignés à Votre Unité",
+    "noActiveIncidents": "Aucun incident actif assigné à votre unité",
+    "leadershipCommunications": "Communications de Leadership",
+    "sendUnitMessage": "Envoyer Message à l'Unité",
+    "radio": "Radio",
+    "notAssigned": "Non assigné",
+    "recentCommunications": "Communications Récentes",
+    "dispatch": "Répartition",
+    "unit": "Unité",
+    "noCommunications": "Aucune communication récente",
+    "failedToFetchUnitData": "Échec du chargement des données de l'unité",
+    "messageMarkedAsAcknowledged": "Message marqué comme confirmé",
+    "failedToAcknowledgeMessage": "Échec de la confirmation du message"
+  },
+  
   "policeAdminDashboard": {
     "accessDenied": "Accès Refusé",
     "accessDeniedMessage": "Vous n'avez pas la permission d'accéder au Tableau de Bord d'Administration de Police.",

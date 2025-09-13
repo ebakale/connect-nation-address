@@ -473,6 +473,25 @@
   "systemStatistics": "Estadísticas del Sistema",
   "overallIncidentMetrics": "Métricas generales de gestión de incidentes",
   
+  "unitLeadDashboard": {
+    "title": "Panel de Liderazgo de Unidad",
+    "teamMembers": "Miembros del Equipo",
+    "avgResponse": "Respuesta Promedio",
+    "activeIncidentsAssigned": "Incidentes Activos Asignados a Tu Unidad",
+    "noActiveIncidents": "No hay incidentes activos asignados a tu unidad",
+    "leadershipCommunications": "Comunicaciones de Liderazgo",
+    "sendUnitMessage": "Enviar Mensaje a la Unidad",
+    "radio": "Radio",
+    "notAssigned": "No asignado",
+    "recentCommunications": "Comunicaciones Recientes",
+    "dispatch": "Despacho",
+    "unit": "Unidad",
+    "noCommunications": "No hay comunicaciones recientes",
+    "failedToFetchUnitData": "Error al obtener datos de la unidad",
+    "messageMarkedAsAcknowledged": "Mensaje marcado como confirmado",
+    "failedToAcknowledgeMessage": "Error al confirmar mensaje"
+  },
+  
   "policeAdminDashboard": {
     "accessDenied": "Acceso Denegado",
     "accessDeniedMessage": "No tiene permisos para acceder al Panel de Administración Policial.",

@@ -473,6 +473,25 @@
   "systemStatistics": "System Statistics",
   "overallIncidentMetrics": "Overall incident management metrics",
   
+  "unitLeadDashboard": {
+    "title": "Unit Lead Dashboard",
+    "teamMembers": "Team Members",
+    "avgResponse": "Avg Response",
+    "activeIncidentsAssigned": "Active Incidents Assigned to Your Unit",
+    "noActiveIncidents": "No active incidents assigned to your unit",
+    "leadershipCommunications": "Leadership Communications",
+    "sendUnitMessage": "Send Unit Message",
+    "radio": "Radio",
+    "notAssigned": "Not assigned",
+    "recentCommunications": "Recent Communications",
+    "dispatch": "Dispatch",
+    "unit": "Unit",
+    "noCommunications": "No recent communications",
+    "failedToFetchUnitData": "Failed to fetch unit data",
+    "messageMarkedAsAcknowledged": "Message marked as acknowledged",
+    "failedToAcknowledgeMessage": "Failed to acknowledge message"
+  },
+  
   "policeAdminDashboard": {
     "accessDenied": "Access Denied",
     "accessDeniedMessage": "You do not have permission to access the Police Administration Dashboard.",
