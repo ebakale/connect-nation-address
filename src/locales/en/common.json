@@ -400,5 +400,11 @@
   "share": "Share",
   "getTurnByTurnDirections": "Get Turn-by-Turn Directions",
   "copyUAC": "Copy UAC",
-  "copyCoords": "Copy Coords"
+  "copyCoords": "Copy Coords",
+  "interactiveMap": "Interactive Map",
+  "locationInformation": "Location Information",
+  "qrCodeContainsInfo": "• The QR code contains the UAC, coordinates, and address information for easy sharing",
+  "clickGetDirections": "• Click \"Get Directions\" to navigate from your current location or another address",
+  "useViewOnMapButton": "• Use \"View on Map\" button in the address card to open in your device's default map application",
+  "coordinatesProvidedPrecision": "• Coordinates are provided with high precision for navigation"
 }

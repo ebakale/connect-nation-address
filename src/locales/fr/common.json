@@ -399,5 +399,11 @@
   "share": "Partager",
   "getTurnByTurnDirections": "Obtenir des directions étape par étape",
   "copyUAC": "Copier UAC",
-  "copyCoords": "Copier coordonnées"
+  "copyCoords": "Copier coordonnées",
+  "interactiveMap": "Carte Interactive",
+  "locationInformation": "Informations de Localisation",
+  "qrCodeContainsInfo": "• Le code QR contient l'UAC, les coordonnées et les informations d'adresse pour un partage facile",
+  "clickGetDirections": "• Cliquez sur \"Obtenir Directions\" pour naviguer depuis votre position actuelle ou une autre adresse",
+  "useViewOnMapButton": "• Utilisez le bouton \"Voir sur la Carte\" dans la carte d'adresse pour ouvrir dans l'application de cartes par défaut de votre appareil",
+  "coordinatesProvidedPrecision": "• Les coordonnées sont fournies avec une haute précision pour la navigation"
 }

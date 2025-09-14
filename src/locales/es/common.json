@@ -400,5 +400,11 @@
   "share": "Compartir",
   "getTurnByTurnDirections": "Obtener direcciones paso a paso",
   "copyUAC": "Copiar UAC",
-  "copyCoords": "Copiar coordenadas"
+  "copyCoords": "Copiar coordenadas",
+  "interactiveMap": "Mapa Interactivo",
+  "locationInformation": "Información de Ubicación",
+  "qrCodeContainsInfo": "• El código QR contiene el UAC, coordenadas e información de dirección para compartir fácilmente",
+  "clickGetDirections": "• Haga clic en \"Obtener Direcciones\" para navegar desde su ubicación actual u otra dirección",
+  "useViewOnMapButton": "• Use el botón \"Ver en el Mapa\" en la tarjeta de dirección para abrir en la aplicación de mapas predeterminada de su dispositivo",
+  "coordinatesProvidedPrecision": "• Las coordenadas se proporcionan con alta precisión para la navegación"
 }

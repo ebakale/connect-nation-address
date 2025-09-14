@@ -185,7 +185,7 @@ const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack, au
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Maximize2 className="h-5 w-5" />
-              Interactive Map
+              {t('interactiveMap')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -212,11 +212,11 @@ const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack, au
             <div className="flex items-start gap-2">
               <MapPin className="h-4 w-4 mt-0.5" />
               <div>
-                <p className="font-medium mb-1">Location Information</p>
-                <p>• The QR code contains the UAC, coordinates, and address information for easy sharing</p>
-                <p>• Click "Get Directions" to navigate from your current location or another address</p>
-                <p>• Use "View on Map" button in the address card to open in your device's default map application</p>
-                <p>• Coordinates are provided with high precision for navigation</p>
+                <p className="font-medium mb-1">{t('locationInformation')}</p>
+                <p>{t('qrCodeContainsInfo')}</p>
+                <p>{t('clickGetDirections')}</p>
+                <p>{t('useViewOnMapButton')}</p>
+                <p>{t('coordinatesProvidedPrecision')}</p>
               </div>
             </div>
           </div>
