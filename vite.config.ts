@@ -17,18 +17,11 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      "qr-scanner": "qr-scanner/qr-scanner.min.js",
     },
-  },
-  optimizeDeps: {
-    include: ['qr-scanner'],
   },
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'qr-scanner': ['qr-scanner'],
-        },
       },
     },
   },
