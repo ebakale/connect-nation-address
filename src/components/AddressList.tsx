@@ -20,6 +20,7 @@ import {
 import { useAddresses, Address } from '@/hooks/useAddresses';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
+import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 
 interface AddressListProps {
   onEditAddress?: (address: Address) => void;
@@ -312,6 +313,12 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
                     
                     {/* Edit/View/Delete Actions */}
                     <div className="flex gap-1">
+                      <QRCodeGenerator 
+                        uac={address.uac}
+                        addressText={`${address.street}${address.building ? ', ' + address.building : ''}, ${address.city}`}
+                        variant="icon"
+                        size="md"
+                      />
                       <Button
                         variant="ghost"
                         size="sm"

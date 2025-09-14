@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Search, MapPin, Navigation } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAddresses } from '@/hooks/useAddresses';
+import { QRCodeScanner } from '@/components/QRCodeScanner';
 
 interface SearchResult {
   uac: string;
@@ -97,6 +98,31 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
     console.log('AddressSearch: Calling onSelectAddress with:', result);
     onSelectAddress?.(result);
   };
+
+  const handleQRScanResult = async (uac: string) => {
+    console.log('QR Code scanned:', uac);
+    setQuery(uac);
+    
+    // Automatically search for the scanned UAC
+    setIsSearching(true);
+    setShowResults(true);
+    
+    try {
+      const searchResults = await searchAddresses(uac);
+      const formattedResults = searchResults.map(convertToSearchResult);
+      setResults(formattedResults);
+      
+      // If exactly one result found, auto-select it
+      if (formattedResults.length === 1) {
+        handleSelectResult(formattedResults[0]);
+      }
+    } catch (error) {
+      console.error('QR search error:', error);
+      setResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
   return (
     <div className={cn("w-full max-w-2xl", className)}>
       <div className="flex gap-2">
@@ -110,6 +136,10 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
           />
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         </div>
+        <QRCodeScanner 
+          onScanResult={handleQRScanResult}
+          variant="button"
+        />
         <Button 
           onClick={handleSearch} 
           disabled={isSearching || !query.trim()}

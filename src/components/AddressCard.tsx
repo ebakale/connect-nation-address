@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, QrCode, Copy, ExternalLink, Check, Navigation } from 'lucide-react';
-import QRCode from 'qrcode';
+import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 
 interface AddressData {
   uac: string;
@@ -29,33 +29,7 @@ interface AddressCardProps {
 }
 
 const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
-  const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    const generateQR = async () => {
-      try {
-        const addressData = {
-          uac: address.uac,
-          coordinates: address.coordinates,
-          readable: `${address.street}, ${address.city}, ${address.region}, ${address.country}`
-        };
-        const qrUrl = await QRCode.toDataURL(JSON.stringify(addressData), {
-          width: 128,
-          margin: 2,
-          color: {
-            dark: '#1e40af',
-            light: '#ffffff'
-          }
-        });
-        setQrCodeUrl(qrUrl);
-      } catch (error) {
-        console.error('Error generating QR code:', error);
-      }
-    };
-
-    generateQR();
-  }, [address]);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -171,21 +145,14 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
         {/* QR Code */}
         <div className="space-y-2">
           <p className="text-sm font-medium text-muted-foreground">QR Code</p>
-          {qrCodeUrl ? (
-            <div className="flex justify-center">
-              <div className="bg-background p-3 rounded-lg border border-border shadow-sm">
-                <img src={qrCodeUrl} alt="Address QR Code" className="w-32 h-32" />
-              </div>
-            </div>
-          ) : (
-            <div className="flex justify-center">
-              <div className="bg-muted/50 p-3 rounded-lg border border-dashed">
-                <div className="w-32 h-32 flex items-center justify-center text-muted-foreground">
-                  <QrCode className="h-8 w-8" />
-                </div>
-              </div>
-            </div>
-          )}
+          <div className="flex justify-center">
+            <QRCodeGenerator 
+              uac={address.uac}
+              addressText={`${address.street}, ${address.city}, ${address.region}, ${address.country}`}
+              variant="button"
+              size="sm"
+            />
+          </div>
         </div>
 
         {/* Actions */}
@@ -203,13 +170,12 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
             <Navigation className="h-4 w-4" />
             Directions
           </Button>
-          <Button 
-            variant="outline" 
+          <QRCodeGenerator 
+            uac={address.uac}
+            addressText={`${address.street}, ${address.city}, ${address.region}, ${address.country}`}
+            variant="icon"
             size="sm"
-            onClick={() => copyToClipboard(qrCodeUrl)}
-          >
-            <QrCode className="h-4 w-4" />
-          </Button>
+          />
         </div>
       </CardContent>
     </Card>
