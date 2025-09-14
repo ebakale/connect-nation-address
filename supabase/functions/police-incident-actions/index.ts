@@ -149,23 +149,44 @@ serve(async (req) => {
         break;
 
       case 'assignOperator':
-        // Only dispatchers and admins can assign incidents to dispatchers
-        const canAssign = ['police_dispatcher', 'police_admin', 'admin'].includes(userRole);
-        if (!canAssign) {
-          throw new Error('Only dispatchers and admins can assign incidents');
+        // Only dispatchers can reassign incidents to other dispatchers in the same city
+        const canReassign = ['police_dispatcher', 'police_admin', 'admin'].includes(userRole);
+        if (!canReassign) {
+          throw new Error('Only dispatchers can reassign incidents');
         }
 
-        // If operatorId is provided, validate it's a dispatcher
+        // If operatorId is provided, validate it's a dispatcher in the same city
         if (data.operatorId) {
           const { data: operatorRole, error: roleError } = await supabase
             .from('user_roles')
-            .select('role')
+            .select(`
+              role,
+              user_role_metadata(scope_value)
+            `)
             .eq('user_id', data.operatorId)
             .eq('role', 'police_dispatcher')
             .single();
 
           if (roleError || !operatorRole) {
             throw new Error('Incidents can only be assigned to dispatchers');
+          }
+
+          // Check if dispatchers are in the same city (if not admin)
+          if (userRole === 'police_dispatcher') {
+            const { data: currentUserRole } = await supabase
+              .from('user_roles')
+              .select('user_role_metadata(scope_value)')
+              .eq('user_id', user.id)
+              .eq('role', 'police_dispatcher')
+              .single();
+
+            const currentUserCity = currentUserRole?.user_role_metadata?.[0]?.scope_value;
+            const targetUserCity = operatorRole.user_role_metadata?.[0]?.scope_value;
+
+            if (currentUserCity && targetUserCity && 
+                currentUserCity.toLowerCase() !== targetUserCity.toLowerCase()) {
+              throw new Error('Can only reassign incidents within the same city');
+            }
           }
         }
 

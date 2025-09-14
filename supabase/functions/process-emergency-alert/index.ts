@@ -138,12 +138,62 @@ serve(async (req) => {
     const tempIncidentId = crypto.randomUUID();
     const uacResult = await findNearbyAddressAndGenerateUAC(latitude, longitude, tempIncidentId);
     
+    // Auto-assign to available dispatcher in the city
+    let assignedDispatcherId = null;
+    try {
+      // Extract city from the incident location
+      const incidentCity = uacResult.addressData?.city || 'Bata'; // Default to Bata if no city found
+      
+      // Find available dispatchers in the same city with least active incidents
+      const { data: cityDispatchers } = await supabase
+        .from('user_roles')
+        .select(`
+          user_id,
+          user_role_metadata(scope_value),
+          profiles(full_name)
+        `)
+        .eq('role', 'police_dispatcher');
+
+      if (cityDispatchers && cityDispatchers.length > 0) {
+        // Filter dispatchers by city and get their incident counts
+        const dispatcherCounts = await Promise.all(
+          cityDispatchers
+            .filter(d => d.user_role_metadata?.some(m => m.scope_value?.toLowerCase() === incidentCity.toLowerCase()))
+            .map(async (dispatcher) => {
+              const { count } = await supabase
+                .from('emergency_incidents')
+                .select('*', { count: 'exact', head: true })
+                .eq('assigned_operator_id', dispatcher.user_id)
+                .in('status', ['reported', 'dispatched', 'responding', 'on_scene']);
+              
+              return {
+                user_id: dispatcher.user_id,
+                count: count || 0,
+                name: dispatcher.profiles?.full_name
+              };
+            })
+        );
+
+        // Assign to dispatcher with least active incidents
+        if (dispatcherCounts.length > 0) {
+          const selectedDispatcher = dispatcherCounts.reduce((prev, current) => 
+            current.count < prev.count ? current : prev
+          );
+          assignedDispatcherId = selectedDispatcher.user_id;
+          console.log(`Auto-assigned incident to dispatcher: ${selectedDispatcher.name} (${selectedDispatcher.count} active incidents)`);
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to auto-assign dispatcher:', error);
+    }
+    
     const { data: incident, error: incidentError } = await supabase
       .from('emergency_incidents')
       .insert({
         reporter_id: reporterId,
         emergency_type: emergencyType,
         priority_level: priority,
+        assigned_operator_id: assignedDispatcherId,
         // Keep encrypted fields for backup/audit purposes
         encrypted_latitude: encryptedLatitude,
         encrypted_longitude: encryptedLongitude,

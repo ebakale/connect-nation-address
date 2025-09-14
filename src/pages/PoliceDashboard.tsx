@@ -320,7 +320,7 @@ const PoliceDashboard = () => {
           return true;
         }
         
-        // Dispatchers: see incidents assigned to them or unassigned incidents in their city
+        // Dispatchers: see incidents assigned to them or any unassigned incidents
         if (isPoliceDispatcher) {
           return incident.assigned_operator_id === user?.id || !incident.assigned_operator_id;
         }
@@ -450,7 +450,7 @@ const PoliceDashboard = () => {
           return true;
         }
         
-        // Dispatchers: see incidents assigned to them or unassigned incidents in their city
+        // Dispatchers: see incidents assigned to them or any unassigned incidents
         if (isPoliceDispatcher) {
           return incident.assigned_operator_id === user?.id || !incident.assigned_operator_id;
         }
