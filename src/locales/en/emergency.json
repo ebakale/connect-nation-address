@@ -818,6 +818,7 @@
     "unitTypes": {
       "patrol": "Patrol Unit",
       "rapidResponse": "Rapid Response Team",
+      "rapid_response": "Rapid Response Team",
       "traffic": "Traffic Enforcement",
       "investigation": "Investigation Unit",
       "k9": "K-9 Unit",
@@ -1508,7 +1509,7 @@
   "manageUnitsPerformance": "Manage your units and view performance metrics",
   "teamManagement": "Team Management",
   "performanceAnalytics": "Performance Analytics",
-  "unitManagement": "Unit Management",
+  "unitManagementTitle": "Unit Management",
   "manageUnitsOfficers": "Manage units and officers under your supervision",
   "quickActions": "Quick Actions",
   "unitsProfilesManagement": "Units & Profiles Management",

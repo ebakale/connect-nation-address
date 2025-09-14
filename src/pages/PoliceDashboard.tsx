@@ -1229,7 +1229,7 @@ const PoliceDashboard = () => {
                 <div className="flex items-center gap-4 mb-2">
                   <Badge variant="outline" className="flex items-center gap-2">
                     <Users className="h-3 w-3" />
-                    {t('unitManagement')}
+                    {t('unitManagementLabel')}
                   </Badge>
                 </div>
                  <p className="text-muted-foreground">

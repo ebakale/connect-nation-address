@@ -53,6 +53,10 @@ interface Officer {
 
 const UnitManagement: React.FC = () => {
   const { t } = useTranslation('emergency');
+
+  // Normalize backend unit_type values (e.g., "rapid_response") to translation keys (e.g., "rapidResponse")
+  const normalizeUnitTypeKey = (value: string) => value.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+  const humanizeUnitType = (value: string) => value.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
   const [units, setUnits] = useState<EmergencyUnit[]>([]);
   const [officers, setOfficers] = useState<Officer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -531,7 +535,7 @@ const UnitManagement: React.FC = () => {
                       <span className="truncate">{unit.unit_name} ({unit.unit_code})</span>
                     </CardTitle>
                     <CardDescription className="truncate text-xs sm:text-sm">
-                      {t(`emergency:unitManagement.unitTypes.${unit.unit_type}`, { defaultValue: unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1) })} {t('emergency:unitManagement.unit')} • 
+                      {t(`emergency:unitManagement.unitTypes.${normalizeUnitTypeKey(unit.unit_type)}`, { defaultValue: humanizeUnitType(unit.unit_type) })} {t('emergency:unitManagement.unit')} • 
                       {unit.coverage_city}, {unit.coverage_region}
                     </CardDescription>
                   </div>

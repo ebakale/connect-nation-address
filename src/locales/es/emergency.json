@@ -818,6 +818,7 @@
     "unitTypes": {
       "patrol": "Unidad de Patrullaje",
       "rapidResponse": "Equipo de Respuesta Rápida",
+      "rapid_response": "Equipo de Respuesta Rápida",
       "traffic": "Control de Tráfico",
       "investigation": "Unidad de Investigación",
       "k9": "Unidad K-9",
@@ -1508,7 +1509,7 @@
   "manageUnitsPerformance": "Gestionar sus unidades y ver métricas de rendimiento",
   "teamManagement": "Gestión de Equipo",
   "performanceAnalytics": "Análisis de Rendimiento",
-  "unitManagement": "Gestión de Unidades",
+  "unitManagementTitle": "Gestión de Unidades",
   "manageUnitsOfficers": "Gestionar unidades y oficiales bajo su supervisión",
   "quickActions": "Acciones Rápidas",
   "unitsProfilesManagement": "Gestión de Unidades y Perfiles",

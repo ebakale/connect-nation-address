@@ -634,6 +634,7 @@
     "unitTypes": {
       "patrol": "Unité de Patrouille",
       "rapidResponse": "Équipe d'Intervention Rapide",
+      "rapid_response": "Équipe d'Intervention Rapide",
       "traffic": "Application Circulation",
       "investigation": "Unité d'Enquête",
       "k9": "Unité K-9",
@@ -1324,7 +1325,7 @@
   "manageUnitsPerformance": "Gérer vos unités et voir les métriques de performance",
   "teamManagement": "Gestion d'Équipe",
   "performanceAnalytics": "Analyse de Performance",
-  "unitManagement": "Gestion d'Unités",
+  "unitManagementTitle": "Gestion d'Unités",
   "manageUnitsOfficers": "Gérer les unités et officiers sous votre supervision",
   "quickActions": "Actions Rapides",
   "unitsProfilesManagement": "Gestion des Unités et Profils",
