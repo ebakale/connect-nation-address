@@ -411,6 +411,16 @@ export const UnitLeadershipDashboard: React.FC = () => {
     }
   };
 
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'available': return t('unitLeadershipDashboard.available');
+      case 'busy': return t('unitLeadershipDashboard.busy');
+      case 'dispatched': return t('unitLeadershipDashboard.dispatched');
+      case 'maintenance': return t('unitLeadershipDashboard.maintenance');
+      default: return status;
+    }
+  };
+
   const getPriorityColor = (level: number) => {
     switch (level) {
       case 1: return 'bg-red-500';
@@ -486,7 +496,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
                     <p className="text-sm font-medium text-muted-foreground">{t('unitLeadershipDashboard.unitStatus')}</p>
                     <div className="flex items-center gap-2 mt-2">
                       <Badge className={getStatusColor(selectedUnit.status)}>
-                        {t(`unitLeadershipDashboard.${selectedUnit.status}`)}
+                        {getStatusLabel(selectedUnit.status)}
                       </Badge>
                       <Select onValueChange={updateUnitStatus}>
                         <SelectTrigger className="w-24 h-6 text-xs">
