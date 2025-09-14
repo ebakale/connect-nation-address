@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "qr-scanner": "qr-scanner/qr-scanner.min.js",
     },
   },
   optimizeDeps: {
