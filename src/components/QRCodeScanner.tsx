@@ -41,7 +41,16 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
       setError('');
       setIsScanning(true);
       
-      if (!videoRef.current) return;
+      if (!videoRef.current) {
+        throw new Error('Video element not available');
+      }
+
+      // Check if camera is available
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      console.log('Camera access granted, stream:', stream);
+      
+      // Stop the test stream
+      stream.getTracks().forEach(track => track.stop());
 
       const scanner = new QrScanner(
         videoRef.current,
@@ -73,13 +82,28 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
 
       await scanner.start();
       setQrScanner(scanner);
-    } catch (err) {
+      console.log('QR Scanner started successfully');
+    } catch (err: any) {
       console.error('Error starting scanner:', err);
-      setError('Failed to access camera. Please check permissions.');
+      let errorMessage = 'Failed to access camera.';
+      
+      if (err.name === 'NotAllowedError') {
+        errorMessage = 'Camera access denied. Please allow camera permissions.';
+      } else if (err.name === 'NotFoundError') {
+        errorMessage = 'No camera found on this device.';
+      } else if (err.name === 'NotSupportedError') {
+        errorMessage = 'Camera not supported in this browser.';
+      } else if (err.name === 'NotReadableError') {
+        errorMessage = 'Camera is being used by another application.';
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
       setIsScanning(false);
       toast({
         title: "Camera Error",
-        description: "Failed to access camera. Please check permissions.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
