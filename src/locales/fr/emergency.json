@@ -1014,7 +1014,7 @@
     "failedToReopenIncident": "Échec de la réouverture de l'incident",
     "pleaseEnterNote": "Veuillez saisir une note",
     "noteAddedSuccessfully": "Note ajoutée avec succès",
-    "failedToAddNote": "Échec de l'ajout de la note"
+    "failedToAddNote": "Échec de l'ajout de la note",
     "emergencyLocation": "Emplacement d'Urgence",
     "unifiedAddressCode": "Code d'Adresse Unifié (UAC)",
     "addressInformation": "Informations d'Adresse",
