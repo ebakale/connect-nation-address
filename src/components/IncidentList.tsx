@@ -509,19 +509,8 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
               </div>
             </div>
 
-            {/* Bottom row - Assigned units and action hint */}
-            <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-              <div className="flex items-center gap-2">
-                {isResolved ? (
-                  <span className="text-green-600 font-medium">
-                    ✓ {t('emergency:incidentResolved')}
-                  </span>
-                ) : (
-                  <span className={incident.assigned_operator_id ? 'text-emerald-600 font-medium' : 'text-red-600 font-medium'}>
-                    {incident.assigned_operator_id ? `✓ ${t('emergency:dispatcherAssigned')}` : `⚠ ${t('emergency:unassigned')}`}
-                  </span>
-                )}
-              </div>
+            {/* Bottom row - Action hint */}
+            <div className="mt-2 flex items-center justify-end text-xs text-muted-foreground">
               <span className="text-xs text-primary">
                 {isResolved ? `${t('emergency:viewDetails')} →` : `${t('emergency:clickForDetails')} →`}
               </span>
