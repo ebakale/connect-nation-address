@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useUserRole } from '@/hooks/useUserRole';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
 import { 
@@ -71,6 +72,7 @@ interface PerformanceMetrics {
 
 export const UnitLeadershipDashboard: React.FC = () => {
   const { user } = useAuth();
+  const { roleMetadata } = useUserRole();
   const { toast } = useToast();
   const { t } = useTranslation('emergency');
   const [selectedUnit, setSelectedUnit] = useState<UnitInfo | null>(null);
@@ -131,6 +133,26 @@ export const UnitLeadershipDashboard: React.FC = () => {
           return;
         }
         query = query.in('id', unitIds);
+      } else {
+        // For supervisors, filter units by their geographic scope
+        const geographicMetadata = roleMetadata.find(m => m.scope_type === 'geographic');
+        if (geographicMetadata?.scope_value) {
+          // Check if scope value is a region or city and filter accordingly
+          const scopeValue = geographicMetadata.scope_value;
+          
+          // Try filtering by region first, then by city
+          const regionQuery = supabase.from('emergency_units')
+            .select('*')
+            .eq('coverage_region', scopeValue);
+          
+          const { data: regionUnits } = await regionQuery;
+          
+          if (regionUnits && regionUnits.length > 0) {
+            query = query.eq('coverage_region', scopeValue);
+          } else {
+            query = query.eq('coverage_city', scopeValue);
+          }
+        }
       }
 
       const { data, error } = await query.order('unit_code');
