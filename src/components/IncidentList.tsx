@@ -509,8 +509,19 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
               </div>
             </div>
 
-            {/* Bottom row - Action hint */}
-            <div className="mt-2 flex items-center justify-end text-xs text-muted-foreground">
+            {/* Bottom row - Unit assignment and action hint */}
+            <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+              <div className="flex items-center gap-2">
+                {isResolved ? (
+                  <span className="text-green-600 font-medium">
+                    ✓ {t('emergency:incidentResolved')}
+                  </span>
+                ) : (
+                  <span className={incident.assigned_units && incident.assigned_units.length > 0 ? 'text-emerald-600 font-medium' : 'text-red-600 font-medium'}>
+                    {incident.assigned_units && incident.assigned_units.length > 0 ? `✓ ${t('emergency:emergencyUnitAssigned')}` : `⚠ ${t('emergency:unitNotAssigned')}`}
+                  </span>
+                )}
+              </div>
               <span className="text-xs text-primary">
                 {isResolved ? `${t('emergency:viewDetails')} →` : `${t('emergency:clickForDetails')} →`}
               </span>
