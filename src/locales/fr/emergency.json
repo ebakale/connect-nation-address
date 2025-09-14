@@ -152,8 +152,7 @@
     "failedToReopenIncident": "Échec de la réouverture de l'incident",
     "pleaseEnterNote": "Veuillez saisir une note avant d'ajouter",
     "noteAddedSuccessfully": "Note ajoutée avec succès",
-    "failedToAddNote": "Échec de l'ajout de la note"
-  },
+    "failedToAddNote": "Échec de l'ajout de la note",
   "ofEmergencyIncidents": "d'incidents d'urgence",
   "showingRange": "Affichage de {{start}} à {{end}} sur {{total}} incidents",
   "pageOf": "Page {{current}} sur {{total}}",
