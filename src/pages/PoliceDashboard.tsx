@@ -976,7 +976,7 @@ const PoliceDashboard = () => {
                           <div className="space-y-2">
                             <h4 className="font-medium">{t('myUnit')}</h4>
                             <p className="text-sm text-muted-foreground">
-                              {userUnit.unit_name} ({userUnit.unit_code})
+                              {String(userUnit.unit_name || 'Unknown Unit')} ({String(userUnit.unit_code || 'Unknown Code')})
                             </p>
                             <UnitStatusManager 
                               unit={userUnit} 
