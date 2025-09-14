@@ -370,6 +370,16 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
     if (statusFilter !== 'all' && incident.status !== statusFilter) return false;
     if (priorityFilter !== 'all' && incident.priority_level.toString() !== priorityFilter) return false;
     return true;
+  }).sort((a, b) => {
+    // First, prioritize incidents with no units dispatched
+    const aHasUnits = a.assigned_units && a.assigned_units.length > 0;
+    const bHasUnits = b.assigned_units && b.assigned_units.length > 0;
+    
+    if (!aHasUnits && bHasUnits) return -1; // a comes first (no units)
+    if (aHasUnits && !bHasUnits) return 1;  // b comes first (no units)
+    
+    // Then sort by reported date/time (most recent first)
+    return new Date(b.reported_at).getTime() - new Date(a.reported_at).getTime();
   });
 
   // Reset pagination when incidents change
