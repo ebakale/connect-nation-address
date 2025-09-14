@@ -34,6 +34,7 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
 
     return () => {
       clearTimeout(timer);
+      stopScanner();
     };
   }, [isOpen]);
 
@@ -115,13 +116,24 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
     }
   };
 
-  const stopScanner = () => {
-    if (qrScanner) {
-      qrScanner.stop();
-      qrScanner.destroy();
-      setQrScanner(null);
+  const stopScanner = async () => {
+    try {
+      if (qrScanner) {
+        await qrScanner.stop();
+        qrScanner.destroy();
+        setQrScanner(null);
+      }
+    } finally {
+      const video = videoRef.current;
+      const mediaStream = (video?.srcObject as MediaStream | null) || null;
+      if (mediaStream) {
+        mediaStream.getTracks().forEach((track) => track.stop());
+      }
+      if (video) {
+        video.srcObject = null;
+      }
+      setIsScanning(false);
     }
-    setIsScanning(false);
   };
 
   const isValidUAC = (text: string): boolean => {
