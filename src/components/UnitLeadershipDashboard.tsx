@@ -493,7 +493,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
           <SelectTrigger className="w-48">
             <SelectValue placeholder={t('unitLeadershipDashboard.selectUnit')} />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-background border shadow-md z-50" side="bottom" align="start">
             {managedUnits.map(unit => (
               <SelectItem key={unit.id} value={unit.id}>
                 {unit.unit_code} - {unit.unit_name}
