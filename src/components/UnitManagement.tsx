@@ -52,7 +52,7 @@ interface Officer {
 }
 
 const UnitManagement: React.FC = () => {
-  const { t } = useTranslation('emergency');
+  const { t } = useTranslation('dashboard');
   const [units, setUnits] = useState<EmergencyUnit[]>([]);
   const [officers, setOfficers] = useState<Officer[]>([]);
   const [loading, setLoading] = useState(true);
