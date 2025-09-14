@@ -144,6 +144,7 @@
     "description": "Gestion Unifiée des Adresses Numériques et des Urgences • Connecter Citoyens, Services et Sécurité"
   },
   "platform": {
+    "conEGPlatform": "Plateforme ConEG",
     "connectEGPlatform": "Plateforme ConEG",
     "connectEG": "ConEG",
     "digitalPlatform": "Plateforme Numérique",

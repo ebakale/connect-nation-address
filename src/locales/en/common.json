@@ -145,6 +145,7 @@
     "description": "Unified Digital Addressing and Emergency Management • Connecting Citizens, Services, and Safety"
   },
   "platform": {
+    "conEGPlatform": "ConEG Platform",
     "connectEGPlatform": "ConEG Platform",
     "connectEG": "ConEG",
     "digitalPlatform": "Digital Platform",
