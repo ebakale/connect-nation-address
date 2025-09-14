@@ -44,7 +44,7 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber, image }
 
   const handleSendAlert = async () => {
     if (!latitude || !longitude) {
-      toast.error(t('locationRequired'));
+      toast.error(t('emergency:locationRequired'));
       return;
     }
 
@@ -66,7 +66,7 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber, image }
       if (error) throw error;
       
       setSent(true);
-      toast.success(t('emergencyAlertSent'));
+      toast.success(t('emergency:emergencyAlertSent'));
       
       // Auto close after showing success
       setTimeout(() => {
@@ -78,7 +78,7 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber, image }
       
     } catch (error) {
       console.error('Error sending emergency alert:', error);
-      toast.error(t('emergencyAlertFailed'));
+      toast.error(t('emergency:emergencyAlertFailed'));
     } finally {
       setIsSending(false);
     }
@@ -138,10 +138,10 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber, image }
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 text-destructive">
                 <AlertTriangle className="h-5 w-5" />
-                {t('emergencyAlert')}
+                {t('emergency:emergencyAlert')}
               </DialogTitle>
               <DialogDescription>
-                {t('sendLocationToServices').replace('{service}', title)}
+                {t('emergency:sendLocationToServices').replace('{service}', title)}
               </DialogDescription>
             </DialogHeader>
             
@@ -150,7 +150,7 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber, image }
                 <Alert>
                   <Loader2 className="h-4 w-4 animate-spin" />
                   <AlertDescription>
-                    {t('automaticallyGettingLocation')}
+                    {t('emergency:automaticallyGettingLocation')}
                   </AlertDescription>
                 </Alert>
               )}
@@ -159,7 +159,7 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber, image }
                 <Alert>
                   <MapPin className="h-4 w-4" />
                   <AlertDescription>
-                    {t('locationNeededForAlert')}
+                    {t('emergency:locationNeededForAlert')}
                   </AlertDescription>
                 </Alert>
               )}
@@ -177,16 +177,16 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber, image }
                 <Alert>
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <AlertDescription>
-                    {t('locationDetected')}: {latitude.toFixed(6)}, {longitude.toFixed(6)}
+                    {t('emergency:locationDetected')}: {latitude.toFixed(6)}, {longitude.toFixed(6)}
                     {accuracy && ` (±${accuracy.toFixed(0)}m)`}
                   </AlertDescription>
                 </Alert>
               )}
               
               <div>
-                <label className="text-sm font-medium">{t('emergencyMessage')}</label>
+                <label className="text-sm font-medium">{t('emergency:emergencyMessage')}</label>
                 <Textarea
-                  placeholder={t('describeEmergency')}
+                  placeholder={t('emergency:describeEmergency')}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={3}
@@ -206,7 +206,7 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber, image }
                   ) : (
                     <MapPin className="mr-2 h-4 w-4" />
                   )}
-                  {locationLoading ? t('gettingLocation') : t('retryLocation')}
+                  {locationLoading ? t('emergency:gettingLocation') : t('emergency:retryLocation')}
                 </Button>
                 
                 <Button
@@ -222,7 +222,7 @@ const EmergencyContact = ({ type, icon, title, description, phoneNumber, image }
                   ) : (
                     <AlertTriangle className="mr-2 h-4 w-4" />
                   )}
-                  {isSending ? t('sending') : sent ? t('sent') : t('sendAlert')}
+                  {isSending ? t('emergency:sending') : sent ? t('emergency:sent') : t('emergency:sendAlert')}
                 </Button>
               </div>
             </div>
