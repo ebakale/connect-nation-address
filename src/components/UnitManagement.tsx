@@ -378,7 +378,7 @@ const UnitManagement: React.FC = () => {
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              {t('unitManagement.createPoliceUnit')}
+              {t('emergency:unitManagement.createPoliceUnit')}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
@@ -406,21 +406,21 @@ const UnitManagement: React.FC = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="unit_type">{t('unitManagement.unitType')}</Label>
+                <Label htmlFor="unit_type">{t('emergency:unitManagement.unitType')}</Label>
                 <Select value={unitForm.unit_type} onValueChange={(value) => setUnitForm({ ...unitForm, unit_type: value })}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="patrol">{t('unitManagement.unitTypes.patrol')}</SelectItem>
-                    <SelectItem value="rapid_response">{t('unitManagement.unitTypes.rapidResponse')}</SelectItem>
-                    <SelectItem value="traffic">{t('unitManagement.unitTypes.traffic')}</SelectItem>
-                    <SelectItem value="investigation">{t('unitManagement.unitTypes.investigation')}</SelectItem>
-                    <SelectItem value="k9">{t('unitManagement.unitTypes.k9')}</SelectItem>
-                    <SelectItem value="swat">{t('unitManagement.unitTypes.swat')}</SelectItem>
-                    <SelectItem value="emergency">{t('unitManagement.unitTypes.emergency')}</SelectItem>
-                    <SelectItem value="special">{t('unitManagement.unitTypes.special')}</SelectItem>
-                    <SelectItem value="dispatch">{t('unitManagement.unitTypes.dispatch')}</SelectItem>
+                    <SelectItem value="patrol">{t('emergency:unitManagement.unitTypes.patrol')}</SelectItem>
+                    <SelectItem value="rapid_response">{t('emergency:unitManagement.unitTypes.rapidResponse')}</SelectItem>
+                    <SelectItem value="traffic">{t('emergency:unitManagement.unitTypes.traffic')}</SelectItem>
+                    <SelectItem value="investigation">{t('emergency:unitManagement.unitTypes.investigation')}</SelectItem>
+                    <SelectItem value="k9">{t('emergency:unitManagement.unitTypes.k9')}</SelectItem>
+                    <SelectItem value="swat">{t('emergency:unitManagement.unitTypes.swat')}</SelectItem>
+                    <SelectItem value="emergency">{t('emergency:unitManagement.unitTypes.emergency')}</SelectItem>
+                    <SelectItem value="special">{t('emergency:unitManagement.unitTypes.special')}</SelectItem>
+                    <SelectItem value="dispatch">{t('emergency:unitManagement.unitTypes.dispatch')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -508,12 +508,12 @@ const UnitManagement: React.FC = () => {
           <Card>
             <CardContent className="p-8 text-center">
               <Radio className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">{t('unitManagement.noPoliceUnitsFound')}</h3>
+              <h3 className="text-lg font-semibold mb-2">{t('emergency:unitManagement.noPoliceUnitsFound')}</h3>
               <p className="text-muted-foreground mb-4">
-                {t('unitManagement.createFirstPoliceUnit')}
+                {t('emergency:unitManagement.createFirstPoliceUnit')}
               </p>
               <p className="text-sm text-muted-foreground">
-                {t('unitManagement.onceCreatedUnitsDescription')}
+                {t('emergency:unitManagement.onceCreatedUnitsDescription')}
               </p>
             </CardContent>
           </Card>
@@ -531,7 +531,7 @@ const UnitManagement: React.FC = () => {
                       <span className="truncate">{unit.unit_name} ({unit.unit_code})</span>
                     </CardTitle>
                     <CardDescription className="truncate text-xs sm:text-sm">
-                      {t(`unitManagement.unitTypes.${unit.unit_type}`, { defaultValue: unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1) })} {t('unitManagement.unit')} • 
+                      {t(`emergency:unitManagement.unitTypes.${unit.unit_type}`, { defaultValue: unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1) })} {t('emergency:unitManagement.unit')} • 
                       {unit.coverage_city}, {unit.coverage_region}
                     </CardDescription>
                   </div>
@@ -544,7 +544,7 @@ const UnitManagement: React.FC = () => {
                     <SelectContent>
                       {unitStatuses.map(status => (
                         <SelectItem key={status} value={status}>
-                          {t(`unitManagement.statuses.${status}`, { defaultValue: status.charAt(0).toUpperCase() + status.slice(1) })}
+                          {t(`emergency:unitManagement.statuses.${status}`, { defaultValue: status.charAt(0).toUpperCase() + status.slice(1) })}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -552,11 +552,11 @@ const UnitManagement: React.FC = () => {
                   <div className="flex gap-2">
                     <Button variant="outline" size="sm" onClick={() => openAssignDialog(unit)}>
                       <UserPlus className="h-4 w-4" />
-                      <span className="ml-1 hidden sm:inline">{t('unitManagement.assign')}</span>
+                      <span className="ml-1 hidden sm:inline">{t('emergency:unitManagement.assign')}</span>
                     </Button>
                     <Button variant="outline" size="sm" onClick={() => openEditDialog(unit)}>
                       <Edit className="h-4 w-4" />
-                      <span className="ml-1 hidden sm:inline">{t('unitManagement.edit')}</span>
+                      <span className="ml-1 hidden sm:inline">{t('emergency:unitManagement.edit')}</span>
                     </Button>
                     <Button 
                       variant="outline" 
@@ -568,7 +568,7 @@ const UnitManagement: React.FC = () => {
                       className="text-destructive hover:text-destructive"
                     >
                       <Trash2 className="h-4 w-4" />
-                      <span className="ml-1 hidden sm:inline">{t('unitManagement.delete')}</span>
+                      <span className="ml-1 hidden sm:inline">{t('emergency:unitManagement.delete')}</span>
                     </Button>
                   </div>
                 </div>
@@ -578,25 +578,25 @@ const UnitManagement: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 <div className="flex items-center gap-2 min-w-0">
                   <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-xs sm:text-sm truncate">{unit.current_location || t('unitManagement.noLocation')}</span>
+                  <span className="text-xs sm:text-sm truncate">{unit.current_location || t('emergency:unitManagement.noLocation')}</span>
                 </div>
                 <div className="flex items-center gap-2 min-w-0">
                   <Radio className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-xs sm:text-sm truncate">{unit.radio_frequency || t('unitManagement.noFrequency')}</span>
+                  <span className="text-xs sm:text-sm truncate">{unit.radio_frequency || t('emergency:unitManagement.noFrequency')}</span>
                 </div>
                 <div className="flex items-center gap-2 min-w-0">
                   <Activity className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-xs sm:text-sm truncate">{unit.vehicle_id || t('unitManagement.noVehicle')}</span>
+                  <span className="text-xs sm:text-sm truncate">{unit.vehicle_id || t('emergency:unitManagement.noVehicle')}</span>
                 </div>
                 <div className="flex items-center gap-2 min-w-0">
                   <Users className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-xs sm:text-sm truncate">{unit.members?.length || 0} {t('unitManagement.members')}</span>
+                  <span className="text-xs sm:text-sm truncate">{unit.members?.length || 0} {t('emergency:unitManagement.members')}</span>
                 </div>
               </div>
 
               {unit.members && unit.members.length > 0 && (
                 <div>
-                  <h4 className="font-medium mb-2 text-sm sm:text-base">{t('unitManagement.unitMembers')}</h4>
+                  <h4 className="font-medium mb-2 text-sm sm:text-base">{t('emergency:unitManagement.unitMembers')}</h4>
                   <div className="space-y-2">
                     {unit.members.map((member) => (
                        <div key={member.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-2 sm:p-3 bg-muted rounded-lg gap-1 sm:gap-2">
@@ -604,8 +604,8 @@ const UnitManagement: React.FC = () => {
                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0">
                               <span className="font-medium text-xs sm:text-base break-words">{member.profile?.full_name}</span>
                               <Badge variant={member.is_lead ? "default" : "secondary"} className="text-xs w-fit py-0 px-1 sm:px-2">
-                                {t(`unitManagement.roles.${member.role}`, { defaultValue: member.role })}
-                                {member.is_lead && ` (${t('unitManagement.unitLeader')})`}
+                                {t(`emergency:unitManagement.roles.${member.role}`, { defaultValue: member.role })}
+                                {member.is_lead && ` (${t('emergency:unitManagement.unitLeader')})`}
                               </Badge>
                            </div>
                            <span className="text-xs text-muted-foreground break-all">{member.profile?.email}</span>
@@ -617,7 +617,7 @@ const UnitManagement: React.FC = () => {
                            className="text-destructive hover:text-destructive self-start sm:self-center p-1 sm:p-2"
                          >
                            <UserMinus className="h-3 w-3 sm:h-4 sm:w-4" />
-                           <span className="ml-1 text-xs sm:hidden">{t('unitManagement.remove')}</span>
+                           <span className="ml-1 text-xs sm:hidden">{t('emergency:unitManagement.remove')}</span>
                          </Button>
                        </div>
                     ))}
@@ -693,21 +693,21 @@ const UnitManagement: React.FC = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit_unit_type">{t('unitManagement.unitType')}</Label>
+              <Label htmlFor="edit_unit_type">{t('emergency:unitManagement.unitType')}</Label>
               <Select value={unitForm.unit_type} onValueChange={(value) => setUnitForm({ ...unitForm, unit_type: value })}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="patrol">{t('unitManagement.unitTypes.patrol')}</SelectItem>
-                  <SelectItem value="rapid_response">{t('unitManagement.unitTypes.rapidResponse')}</SelectItem>
-                  <SelectItem value="traffic">{t('unitManagement.unitTypes.traffic')}</SelectItem>
-                  <SelectItem value="investigation">{t('unitManagement.unitTypes.investigation')}</SelectItem>
-                  <SelectItem value="k9">{t('unitManagement.unitTypes.k9')}</SelectItem>
-                  <SelectItem value="swat">{t('unitManagement.unitTypes.swat')}</SelectItem>
-                  <SelectItem value="emergency">{t('unitManagement.unitTypes.emergency')}</SelectItem>
-                  <SelectItem value="special">{t('unitManagement.unitTypes.special')}</SelectItem>
-                  <SelectItem value="dispatch">{t('unitManagement.unitTypes.dispatch')}</SelectItem>
+                  <SelectItem value="patrol">{t('emergency:unitManagement.unitTypes.patrol')}</SelectItem>
+                  <SelectItem value="rapid_response">{t('emergency:unitManagement.unitTypes.rapidResponse')}</SelectItem>
+                  <SelectItem value="traffic">{t('emergency:unitManagement.unitTypes.traffic')}</SelectItem>
+                  <SelectItem value="investigation">{t('emergency:unitManagement.unitTypes.investigation')}</SelectItem>
+                  <SelectItem value="k9">{t('emergency:unitManagement.unitTypes.k9')}</SelectItem>
+                  <SelectItem value="swat">{t('emergency:unitManagement.unitTypes.swat')}</SelectItem>
+                  <SelectItem value="emergency">{t('emergency:unitManagement.unitTypes.emergency')}</SelectItem>
+                  <SelectItem value="special">{t('emergency:unitManagement.unitTypes.special')}</SelectItem>
+                  <SelectItem value="dispatch">{t('emergency:unitManagement.unitTypes.dispatch')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>

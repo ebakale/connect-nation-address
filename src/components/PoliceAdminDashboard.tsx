@@ -148,9 +148,9 @@ export const PoliceAdminDashboard = () => {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold">{t('policeAdminDashboard.policeAdministration')}</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold">{t('emergency:policeAdminDashboard.policeAdministration')}</h1>
         <p className="text-muted-foreground text-sm sm:text-base">
-          {t('policeAdminDashboard.managePoliceSystem')}
+          {t('emergency:policeAdminDashboard.managePoliceSystem')}
         </p>
       </div>
 
@@ -158,52 +158,36 @@ export const PoliceAdminDashboard = () => {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('policeAdminDashboard.totalOfficers')}</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalOfficers}</div>
-            <p className="text-xs text-muted-foreground">
-              {stats.activeOperators} {t('policeAdminDashboard.currentlyActive')}
+            <CardTitle className="text-sm font-medium">{t('emergency:policeAdminDashboard.totalOfficers')}</CardTitle>
+...
+              {stats.activeOperators} {t('emergency:policeAdminDashboard.currentlyActive')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('policeAdminDashboard.policeUnits')}</CardTitle>
-            <Radio className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalUnits}</div>
-            <p className="text-xs text-muted-foreground">
-              {stats.activeUnits} {t('policeAdminDashboard.availableForDeployment')}
+            <CardTitle className="text-sm font-medium">{t('emergency:policeAdminDashboard.policeUnits')}</CardTitle>
+...
+              {stats.activeUnits} {t('emergency:policeAdminDashboard.availableForDeployment')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('totalIncidents')}</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalIncidents}</div>
-            <p className="text-xs text-muted-foreground">
-              {stats.activeIncidents} {t('active')}
+            <CardTitle className="text-sm font-medium">{t('emergency:totalIncidents')}</CardTitle>
+...
+              {stats.activeIncidents} {t('emergency:active')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('policeAdminDashboard.avgResponseTimeTitle')}</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.avgResponseTime}m</div>
-            <p className="text-xs text-muted-foreground">
-              {t('policeAdminDashboard.last30Days')}
+            <CardTitle className="text-sm font-medium">{t('emergency:policeAdminDashboard.avgResponseTimeTitle')}</CardTitle>
+...
+              {t('emergency:policeAdminDashboard.last30Days')}
             </p>
           </CardContent>
         </Card>
@@ -213,29 +197,29 @@ export const PoliceAdminDashboard = () => {
       <Tabs defaultValue="users" className="w-full">
         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-2 h-auto p-1">
           <TabsTrigger value="users" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
-            <span className="hidden sm:inline">{t('policeAdminDashboard.userManagement')}</span>
-            <span className="sm:hidden">{t('policeAdminDashboard.users')}</span>
+            <span className="hidden sm:inline">{t('emergency:policeAdminDashboard.userManagement')}</span>
+            <span className="sm:hidden">{t('emergency:policeAdminDashboard.users')}</span>
           </TabsTrigger>
           <TabsTrigger value="units" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
-            <span className="hidden sm:inline">{t('policeAdminDashboard.unitManagement')}</span>
-            <span className="sm:hidden">{t('policeAdminDashboard.units')}</span>
+            <span className="hidden sm:inline">{t('emergency:policeAdminDashboard.unitManagement')}</span>
+            <span className="sm:hidden">{t('emergency:policeAdminDashboard.units')}</span>
           </TabsTrigger>
           <TabsTrigger value="system" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
-            <span className="hidden sm:inline">{t('policeAdminDashboard.systemConfig')}</span>
-            <span className="sm:hidden">{t('policeAdminDashboard.config')}</span>
+            <span className="hidden sm:inline">{t('emergency:policeAdminDashboard.systemConfig')}</span>
+            <span className="sm:hidden">{t('emergency:policeAdminDashboard.config')}</span>
           </TabsTrigger>
           <TabsTrigger value="analytics" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
-            <span className="hidden sm:inline">{t('policeAdminDashboard.analytics')}</span>
-            <span className="sm:hidden">{t('policeAdminDashboard.stats')}</span>
+            <span className="hidden sm:inline">{t('emergency:policeAdminDashboard.analytics')}</span>
+            <span className="sm:hidden">{t('emergency:policeAdminDashboard.stats')}</span>
           </TabsTrigger>
         </TabsList>
         
         <TabsContent value="users" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>{t('policeAdminDashboard.policeUserManagement')}</CardTitle>
+              <CardTitle>{t('emergency:policeAdminDashboard.policeUserManagement')}</CardTitle>
               <CardDescription>
-                {t('policeAdminDashboard.manageOfficersDescription')}
+                {t('emergency:policeAdminDashboard.manageOfficersDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -247,9 +231,9 @@ export const PoliceAdminDashboard = () => {
         <TabsContent value="units" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>{t('policeAdminDashboard.policeUnitManagement')}</CardTitle>
+              <CardTitle>{t('emergency:policeAdminDashboard.policeUnitManagement')}</CardTitle>
               <CardDescription>
-                {t('policeAdminDashboard.manageUnitsDescription')}
+                {t('emergency:policeAdminDashboard.manageUnitsDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -261,9 +245,9 @@ export const PoliceAdminDashboard = () => {
         <TabsContent value="system" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>{t('policeAdminDashboard.systemConfiguration')}</CardTitle>
+              <CardTitle>{t('emergency:policeAdminDashboard.systemConfiguration')}</CardTitle>
               <CardDescription>
-                {t('policeAdminDashboard.configureSystemDescription')}
+                {t('emergency:policeAdminDashboard.configureSystemDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -275,9 +259,9 @@ export const PoliceAdminDashboard = () => {
         <TabsContent value="analytics" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>{t('policeAdminDashboard.policeAnalytics')}</CardTitle>
+              <CardTitle>{t('emergency:policeAdminDashboard.policeAnalytics')}</CardTitle>
               <CardDescription>
-                {t('policeAdminDashboard.viewMetricsDescription')}
+                {t('emergency:policeAdminDashboard.viewMetricsDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent>
