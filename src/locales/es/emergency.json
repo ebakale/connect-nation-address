@@ -1564,5 +1564,67 @@
     "previous": "Anterior",
     "next": "Siguiente",
     "incidentDetailsTitle": "Detalles del Incidente"
+  },
+
+  "unitsOverview": {
+    "title": "Resumen de Unidades de Emergencia",
+    "back": "Atrás",
+    "refresh": "Actualizar",
+    "completeViewDescription": "Vista completa de todas las unidades y su composición",
+    "unitsInCity": "Unidades en {{city}}",
+    "searchPlaceholder": "Buscar unidades, oficiales...",
+    "statusFilters": {
+      "all": "Todas",
+      "available": "Disponible",
+      "dispatched": "Despachada",
+      "busy": "Ocupada",
+      "unavailable": "No disponible"
+    },
+    "stats": {
+      "totalUnits": "Total de Unidades",
+      "totalOfficers": "Total de Oficiales",
+      "available": "Disponibles",
+      "onDuty": "En Servicio",
+      "unassignedUnits": "Unidades Sin Asignar"
+    },
+    "resultsSummary": {
+      "showing": "Mostrando {{count}} de {{total}} unidades",
+      "matching": " que coinciden con \"{{query}}\"",
+      "withStatus": " con estado \"{{status}}\""
+    },
+    "membersCount": "{{count}} miembros",
+    "unitStatus": {
+      "available": "Disponible",
+      "dispatched": "Despachada",
+      "busy": "Ocupada",
+      "unavailable": "No disponible",
+      "on_duty": "En Servicio",
+      "on_call": "De Guardia",
+      "maintenance": "Mantenimiento"
+    },
+    "unitDetails": {
+      "radio": "Radio",
+      "vehicle": "Vehículo",
+      "lastUpdate": "Última actualización"
+    },
+    "unitMembers": {
+      "title": "Miembros de la Unidad ({{count}})",
+      "lead": "Líder",
+      "email": "Correo",
+      "phone": "Teléfono",
+      "joined": "Se unió",
+      "noOfficers": "No hay oficiales asignados"
+    },
+    "emptyState": {
+      "noUnitsTitle": "No se Encontraron Unidades",
+      "noUnitsDescription": "Aún no se han creado unidades de emergencia. Contacte a un administrador para configurar unidades.",
+      "noMatchingTitle": "No Hay Unidades Coincidentes",
+      "noMatchingDescription": "Ninguna unidad coincide con sus criterios de búsqueda actuales. Intente ajustar sus filtros.",
+      "clearFilters": "Limpiar Filtros"
+    },
+    "error": {
+      "title": "Error",
+      "failedToFetch": "Error al obtener datos de unidades"
+    }
   }
 }

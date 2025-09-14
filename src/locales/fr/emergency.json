@@ -1380,5 +1380,67 @@
     "previous": "Précédent",
     "next": "Suivant",
     "incidentDetailsTitle": "Détails de l'Incident"
+  },
+
+  "unitsOverview": {
+    "title": "Aperçu des Unités d'Urgence",
+    "back": "Retour",
+    "refresh": "Actualiser",
+    "completeViewDescription": "Vue complète de toutes les unités et de leur composition",
+    "unitsInCity": "Unités à {{city}}",
+    "searchPlaceholder": "Rechercher unités, officiers...",
+    "statusFilters": {
+      "all": "Toutes",
+      "available": "Disponible",
+      "dispatched": "Déployée",
+      "busy": "Occupée",
+      "unavailable": "Indisponible"
+    },
+    "stats": {
+      "totalUnits": "Total des Unités",
+      "totalOfficers": "Total des Officiers",
+      "available": "Disponibles",
+      "onDuty": "En Service",
+      "unassignedUnits": "Unités Non Assignées"
+    },
+    "resultsSummary": {
+      "showing": "Affichage de {{count}} sur {{total}} unités",
+      "matching": " correspondant à \"{{query}}\"",
+      "withStatus": " avec le statut \"{{status}}\""
+    },
+    "membersCount": "{{count}} membres",
+    "unitStatus": {
+      "available": "Disponible",
+      "dispatched": "Déployée",
+      "busy": "Occupée",
+      "unavailable": "Indisponible",
+      "on_duty": "En Service",
+      "on_call": "De Garde",
+      "maintenance": "Maintenance"
+    },
+    "unitDetails": {
+      "radio": "Radio",
+      "vehicle": "Véhicule",
+      "lastUpdate": "Dernière mise à jour"
+    },
+    "unitMembers": {
+      "title": "Membres de l'Unité ({{count}})",
+      "lead": "Chef",
+      "email": "Email",
+      "phone": "Téléphone",
+      "joined": "Rejoint",
+      "noOfficers": "Aucun officier assigné"
+    },
+    "emptyState": {
+      "noUnitsTitle": "Aucune Unité Trouvée",
+      "noUnitsDescription": "Aucune unité d'urgence n'a encore été créée. Contactez un administrateur pour configurer les unités.",
+      "noMatchingTitle": "Aucune Unité Correspondante",
+      "noMatchingDescription": "Aucune unité ne correspond à vos critères de recherche actuels. Essayez d'ajuster vos filtres.",
+      "clearFilters": "Effacer les Filtres"
+    },
+    "error": {
+      "title": "Erreur",
+      "failedToFetch": "Échec de récupération des données des unités"
+    }
   }
 }

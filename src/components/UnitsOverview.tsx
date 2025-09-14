@@ -51,7 +51,7 @@ interface UnitsOverviewProps {
 export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
   const { toast } = useToast();
   const { user } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useTranslation('emergency');
   const [units, setUnits] = useState<UnitInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -163,8 +163,8 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
     } catch (error) {
       console.error('Error fetching units data:', error);
       toast({
-        title: "Error",
-        description: "Failed to fetch units data",
+        title: t('unitsOverview.error.title'),
+        description: t('unitsOverview.error.failedToFetch'),
         variant: "destructive"
       });
     } finally {
@@ -314,21 +314,21 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
       {onClose && (
         <Button variant="outline" size="sm" onClick={onClose}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
+          {t('unitsOverview.back')}
         </Button>
       )}
       
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <h1 className="text-xl font-bold">Emergency Units Overview</h1>
+          <h1 className="text-xl font-bold">{t('unitsOverview.title')}</h1>
           <p className="text-muted-foreground">
-            {userCity ? `Units in ${userCity}` : 'Complete view of all units and their composition'}
+            {userCity ? t('unitsOverview.unitsInCity', { city: userCity }) : t('unitsOverview.completeViewDescription')}
           </p>
         </div>
         <Button onClick={handleRefresh} variant="outline" size="sm" disabled={refreshing}>
           <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-          Refresh
+          {t('unitsOverview.refresh')}
         </Button>
       </div>
 
@@ -337,7 +337,7 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search units, officers..."
+            placeholder={t('unitsOverview.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
@@ -352,7 +352,7 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
               onClick={() => setStatusFilter(status)}
               className="capitalize text-xs px-2 py-1 min-w-0 flex-shrink-0"
             >
-              {status === 'all' ? 'All' : status}
+              {status === 'all' ? t('unitsOverview.statusFilters.all') : t(`unitsOverview.statusFilters.${status}`)}
             </Button>
           ))}
         </div>
@@ -364,7 +364,7 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Shield className="h-4 w-4 text-blue-600" />
-              Total Units
+              {t('unitsOverview.stats.totalUnits')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -376,7 +376,7 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Users className="h-4 w-4 text-purple-600" />
-              Total Officers
+              {t('unitsOverview.stats.totalOfficers')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -388,7 +388,7 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Activity className="h-4 w-4 text-green-600" />
-              Available
+              {t('unitsOverview.stats.available')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -400,7 +400,7 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Target className="h-4 w-4 text-orange-600" />
-              On Duty
+              {t('unitsOverview.stats.onDuty')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -412,7 +412,7 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <User className="h-4 w-4 text-amber-600" />
-              Unassigned Units
+              {t('unitsOverview.stats.unassignedUnits')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -424,9 +424,12 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
       {/* Results Summary */}
       {searchQuery || statusFilter !== 'all' ? (
         <div className="text-sm text-muted-foreground">
-          Showing {filteredUnits.length} of {units.length} units
-          {searchQuery && ` matching "${searchQuery}"`}
-          {statusFilter !== 'all' && ` with status "${statusFilter}"`}
+          {t('unitsOverview.resultsSummary.showing', { 
+            count: filteredUnits.length, 
+            total: units.length 
+          })}
+          {searchQuery && t('unitsOverview.resultsSummary.matching', { query: searchQuery })}
+          {statusFilter !== 'all' && t('unitsOverview.resultsSummary.withStatus', { status: statusFilter })}
         </div>
       ) : null}
 
@@ -449,16 +452,16 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
                     <p className="text-sm text-muted-foreground font-medium">{unit.unit_name}</p>
                     <div className="flex gap-2 mt-2">
                        <Badge variant="outline">
-                         {t(`unitManagement.unitTypes.${unit.unit_type}`) || unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1)}
+                         {t(`unitManagement.unitTypes.${unit.unit_type}`, { defaultValue: unit.unit_type.charAt(0).toUpperCase() + unit.unit_type.slice(1) })}
                        </Badge>
                       <Badge variant={getStatusBadgeVariant(unit.status)}>
-                        {unit.status.charAt(0).toUpperCase() + unit.status.slice(1)}
+                        {t(`unitsOverview.unitStatus.${unit.status}`, { defaultValue: unit.status.charAt(0).toUpperCase() + unit.status.slice(1) })}
                       </Badge>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="secondary" className="text-xs">
-                      {unit.emergency_unit_members.length} members
+                      {t('unitsOverview.membersCount', { count: unit.emergency_unit_members.length })}
                     </Badge>
                     {isExpanded ? (
                       <ChevronUp className="h-4 w-4 text-muted-foreground" />
@@ -476,14 +479,14 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
                 {unit.radio_frequency && (
                   <div className="flex items-center gap-2 text-sm">
                     <Radio className="h-4 w-4 text-muted-foreground" />
-                    <span>Radio: {unit.radio_frequency}</span>
+                    <span>{t('unitsOverview.unitDetails.radio')}: {unit.radio_frequency}</span>
                   </div>
                 )}
                 
                 {unit.vehicle_id && (
                   <div className="flex items-center gap-2 text-sm">
                     <Car className="h-4 w-4 text-muted-foreground" />
-                    <span>Vehicle: {unit.vehicle_id}</span>
+                    <span>{t('unitsOverview.unitDetails.vehicle')}: {unit.vehicle_id}</span>
                   </div>
                 )}
                 
@@ -497,7 +500,7 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
                 {unit.location_updated_at && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Clock className="h-4 w-4" />
-                    <span>Last update: {new Date(unit.location_updated_at).toLocaleString()}</span>
+                    <span>{t('unitsOverview.unitDetails.lastUpdate')}: {new Date(unit.location_updated_at).toLocaleString()}</span>
                   </div>
                 )}
               </div>
@@ -509,7 +512,7 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="font-medium flex items-center gap-2">
                     <Users className="h-4 w-4" />
-                    Unit Members ({unit.emergency_unit_members.length})
+                    {t('unitsOverview.unitMembers.title', { count: unit.emergency_unit_members.length })}
                   </h4>
                 </div>
 
@@ -528,22 +531,22 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
                           </div>
                           <div className="flex gap-1">
                             <Badge variant={getRoleBadgeVariant(member.role)} className="text-xs">
-                              {member.role}
+                              {t(`unitManagement.roles.${member.role}`, { defaultValue: member.role })}
                             </Badge>
                             {member.is_lead && (
                               <Badge variant="secondary" className="text-xs">
-                                Lead
+                                {t('unitsOverview.unitMembers.lead')}
                               </Badge>
                             )}
                           </div>
                         </div>
                         
                         <div className="text-sm text-muted-foreground space-y-1">
-                          <div>Email: {member.profiles.email}</div>
+                          <div>{t('unitsOverview.unitMembers.email')}: {member.profiles.email}</div>
                           {member.profiles.phone && (
-                            <div>Phone: {member.profiles.phone}</div>
+                            <div>{t('unitsOverview.unitMembers.phone')}: {member.profiles.phone}</div>
                           )}
-                          <div>Joined: {new Date(member.joined_at).toLocaleDateString()}</div>
+                          <div>{t('unitsOverview.unitMembers.joined')}: {new Date(member.joined_at).toLocaleDateString()}</div>
                         </div>
                       </div>
                     ))}
@@ -551,7 +554,7 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
                 ) : (
                   <div className="text-center py-4 text-muted-foreground">
                     <User className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No officers assigned</p>
+                    <p className="text-sm">{t('unitsOverview.unitMembers.noOfficers')}</p>
                   </div>
                 )}
               </div>
@@ -568,19 +571,19 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
             {units.length === 0 ? (
               <>
                 <Shield className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-medium mb-2">No Units Found</h3>
+                <h3 className="text-lg font-medium mb-2">{t('unitsOverview.emptyState.noUnitsTitle')}</h3>
                 <p className="text-muted-foreground">
-                  No emergency units have been created yet. Contact an administrator to set up units.
+                  {t('unitsOverview.emptyState.noUnitsDescription')}
                 </p>
               </>
             ) : (
               <>
                 <Filter className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-medium mb-2">No Matching Units</h3>
+                <h3 className="text-lg font-medium mb-2">{t('unitsOverview.emptyState.noMatchingTitle')}</h3>
                 <p className="text-muted-foreground">
-                  No units match your current search criteria. Try adjusting your filters.
+                  {t('unitsOverview.emptyState.noMatchingDescription')}
                 </p>
-                <Button 
+                <Button
                   variant="outline" 
                   className="mt-4"
                   onClick={() => {
@@ -588,7 +591,7 @@ export const UnitsOverview: React.FC<UnitsOverviewProps> = ({ onClose }) => {
                     setStatusFilter('all');
                   }}
                 >
-                  Clear Filters
+                  {t('unitsOverview.emptyState.clearFilters')}
                 </Button>
               </>
             )}

@@ -1564,5 +1564,67 @@
     "previous": "Previous",
     "next": "Next",
     "incidentDetailsTitle": "Incident Details"
+  },
+
+  "unitsOverview": {
+    "title": "Emergency Units Overview",
+    "back": "Back",
+    "refresh": "Refresh",
+    "completeViewDescription": "Complete view of all units and their composition",
+    "unitsInCity": "Units in {{city}}",
+    "searchPlaceholder": "Search units, officers...",
+    "statusFilters": {
+      "all": "All",
+      "available": "Available",
+      "dispatched": "Dispatched",
+      "busy": "Busy",
+      "unavailable": "Unavailable"
+    },
+    "stats": {
+      "totalUnits": "Total Units",
+      "totalOfficers": "Total Officers",
+      "available": "Available",
+      "onDuty": "On Duty",
+      "unassignedUnits": "Unassigned Units"
+    },
+    "resultsSummary": {
+      "showing": "Showing {{count}} of {{total}} units",
+      "matching": " matching \"{{query}}\"",
+      "withStatus": " with status \"{{status}}\""
+    },
+    "membersCount": "{{count}} members",
+    "unitStatus": {
+      "available": "Available",
+      "dispatched": "Dispatched",
+      "busy": "Busy",
+      "unavailable": "Unavailable",
+      "on_duty": "On Duty",
+      "on_call": "On Call",
+      "maintenance": "Maintenance"
+    },
+    "unitDetails": {
+      "radio": "Radio",
+      "vehicle": "Vehicle",
+      "lastUpdate": "Last update"
+    },
+    "unitMembers": {
+      "title": "Unit Members ({{count}})",
+      "lead": "Lead",
+      "email": "Email",
+      "phone": "Phone",
+      "joined": "Joined",
+      "noOfficers": "No officers assigned"
+    },
+    "emptyState": {
+      "noUnitsTitle": "No Units Found",
+      "noUnitsDescription": "No emergency units have been created yet. Contact an administrator to set up units.",
+      "noMatchingTitle": "No Matching Units",
+      "noMatchingDescription": "No units match your current search criteria. Try adjusting your filters.",
+      "clearFilters": "Clear Filters"
+    },
+    "error": {
+      "title": "Error",
+      "failedToFetch": "Failed to fetch units data"
+    }
   }
 }
