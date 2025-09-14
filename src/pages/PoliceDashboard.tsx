@@ -961,7 +961,7 @@ const PoliceDashboard = () => {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <Card>
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-base">{t('unitsOverview')}</CardTitle>
+                        <CardTitle className="text-base">{t('unitsOverview.title')}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <Button 
