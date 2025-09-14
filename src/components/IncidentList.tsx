@@ -393,16 +393,16 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
           </p>
         </div>
         
-        {/* Unassigned Incidents Alert */}
+        {/* Unassigned Units Alert */}
         {(() => {
-          const unassignedIncidents = filteredIncidents.filter(i => !i.assigned_operator_id);
+          const unassignedIncidents = filteredIncidents.filter(i => !i.assigned_units || i.assigned_units.length === 0);
           
           if (unassignedIncidents.length > 0) {
             return (
               <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2 flex items-center gap-2 mb-3">
                 <AlertTriangle className="h-4 w-4 text-red-600" />
                 <span className="text-sm font-medium text-red-800">
-                  {unassignedIncidents.length} {unassignedIncidents.length > 1 ? t('common:incidents') : t('incident')} {t('common:needDispatcherAssignment')}
+                  {unassignedIncidents.length} {unassignedIncidents.length > 1 ? t('common:incidents') : t('emergency:incident')} {t('emergency:needUnitAssignment')}
                 </span>
               </div>
             );

@@ -1628,5 +1628,6 @@
     }
   },
   "emergencyUnitAssigned": "Emergency Unit Assigned",
-  "unitNotAssigned": "Unit not assigned"
+  "unitNotAssigned": "Unit not assigned",
+  "needUnitAssignment": "need unit assignment"
 }

@@ -1444,5 +1444,6 @@
     }
   },
   "emergencyUnitAssigned": "Unité d'urgence assignée",
-  "unitNotAssigned": "Unité non assignée"
+  "unitNotAssigned": "Unité non assignée",
+  "needUnitAssignment": "ont besoin d'assignation d'unité"
 }

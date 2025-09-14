@@ -1628,5 +1628,6 @@
     }
   },
   "emergencyUnitAssigned": "Unidad de emergencia asignada",
-  "unitNotAssigned": "Unidad no asignada"
+  "unitNotAssigned": "Unidad no asignada",
+  "needUnitAssignment": "necesitan asignación de unidad"
 }
