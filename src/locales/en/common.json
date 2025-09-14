@@ -388,5 +388,14 @@
   "manageDigitalAddresses": "Manage digital addresses, UACs, and location data",
   "enterAddressModule": "Enter Address Module",
   "searchSubmitVerifyManage": "Search, submit, verify, and manage digital addresses",
-  "systemModules": "System Modules"
+  "systemModules": "System Modules",
+  "generateQRCode": "Generate QR Code",
+  "addressQRCode": "Address QR Code",
+  "othersCanScanQRCode": "Others can scan this QR code to navigate to this address",
+  "emailWithImage": "Email (with image)",
+  "whatsAppDownloadsImage": "WhatsApp (downloads image)",
+  "saveShareImage": "Save & Share Image",
+  "copyAddressText": "Copy Address Text",
+  "download": "Download",
+  "share": "Share"
 }

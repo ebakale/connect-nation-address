@@ -387,5 +387,14 @@
   "manageDigitalAddresses": "Gérer les adresses numériques, UACs et données de localisation",
   "enterAddressModule": "Entrer dans le Module d'Adresses",
   "searchSubmitVerifyManage": "Rechercher, soumettre, vérifier et gérer les adresses numériques",
-  "systemModules": "Modules du Système"
+  "systemModules": "Modules du Système",
+  "generateQRCode": "Générer le code QR",
+  "addressQRCode": "Code QR d'adresse",
+  "othersCanScanQRCode": "D'autres peuvent scanner ce code QR pour naviguer vers cette adresse",
+  "emailWithImage": "E-mail (avec image)",
+  "whatsAppDownloadsImage": "WhatsApp (télécharge l'image)",
+  "saveShareImage": "Enregistrer et partager l'image",
+  "copyAddressText": "Copier le texte de l'adresse",
+  "download": "Télécharger",
+  "share": "Partager"
 }

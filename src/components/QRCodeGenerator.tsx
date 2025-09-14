@@ -155,7 +155,7 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   ) : (
     <Button variant="outline" size="sm">
       <QrCode className="h-4 w-4 mr-2" />
-      Generate QR Code
+      {t('generateQRCode')}
     </Button>
   );
 
@@ -168,7 +168,7 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <QrCode className="h-5 w-5" />
-            Address QR Code
+            {t('addressQRCode')}
           </DialogTitle>
         </DialogHeader>
         
@@ -193,31 +193,31 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
           <div className="flex gap-2 justify-center">
             <Button onClick={downloadQRCode} variant="outline" size="sm">
               <Download className="h-4 w-4 mr-2" />
-              Download
+              {t('download')}
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
                   <Share className="h-4 w-4 mr-2" />
-                  Share
+                  {t('share')}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="center" className="w-56">
                 <DropdownMenuItem onClick={shareViaEmail}>
                   <Mail className="h-4 w-4 mr-2" />
-                  Email (with image)
+                  {t('emailWithImage')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={shareViaWhatsApp}>
                   <MessageCircle className="h-4 w-4 mr-2" />
-                  WhatsApp (downloads image)
+                  {t('whatsAppDownloadsImage')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={downloadAndShare}>
                   <FileImage className="h-4 w-4 mr-2" />
-                  Save & Share Image
+                  {t('saveShareImage')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={copyShareText}>
                   <Copy className="h-4 w-4 mr-2" />
-                  Copy Address Text
+                  {t('copyAddressText')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -225,7 +225,7 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
 
           <div className="text-center">
             <p className="text-xs text-muted-foreground">
-              Others can scan this QR code to navigate to this address
+              {t('othersCanScanQRCode')}
             </p>
           </div>
         </div>

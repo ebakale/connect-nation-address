@@ -388,5 +388,14 @@
   "manageDigitalAddresses": "Gestionar direcciones digitales, UACs y datos de ubicación",
   "enterAddressModule": "Entrar al Módulo de Direcciones",
   "searchSubmitVerifyManage": "Buscar, enviar, verificar y gestionar direcciones digitales",
-  "systemModules": "Módulos del Sistema"
+  "systemModules": "Módulos del Sistema",
+  "generateQRCode": "Generar código QR",
+  "addressQRCode": "Código QR de dirección",
+  "othersCanScanQRCode": "Otros pueden escanear este código QR para navegar a esta dirección",
+  "emailWithImage": "Correo (con imagen)",
+  "whatsAppDownloadsImage": "WhatsApp (descarga imagen)",
+  "saveShareImage": "Guardar y compartir imagen",
+  "copyAddressText": "Copiar texto de dirección",
+  "download": "Descargar",
+  "share": "Compartir"
 }
