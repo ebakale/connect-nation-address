@@ -336,8 +336,7 @@
     "failedToReopenIncident": "Failed to reopen incident",
     "pleaseEnterNote": "Please enter a note before adding",
     "noteAddedSuccessfully": "Note added successfully",
-    "failedToAddNote": "Failed to add note"
-  },
+    "failedToAddNote": "Failed to add note",
   "ofEmergencyIncidents": "of emergency incidents",
   "showingRange": "Showing {{start}} to {{end}} of {{total}} incidents",
   "pageOf": "Page {{current}} of {{total}}",

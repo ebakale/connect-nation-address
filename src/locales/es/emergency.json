@@ -336,8 +336,7 @@
     "failedToReopenIncident": "Error al reabrir el incidente",
     "pleaseEnterNote": "Por favor, ingresa una nota antes de agregar",
     "noteAddedSuccessfully": "Nota agregada con éxito",
-    "failedToAddNote": "Error al agregar la nota"
-  },
+    "failedToAddNote": "Error al agregar la nota",
   "ofEmergencyIncidents": "de incidentes de emergencia",
   "showingRange": "Mostrando {{start}} a {{end}} de {{total}} incidentes",
   "pageOf": "Página {{current}} de {{total}}",
