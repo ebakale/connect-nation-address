@@ -12,6 +12,7 @@ import {
   Maximize2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 import MapView from './MapView';
 import AddressDirections from './AddressDirections';
 import AddressCard from './AddressCard';
@@ -36,6 +37,7 @@ interface AddressMapViewerProps {
 const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack, autoShowDirections = false }) => {
   const [showDirections, setShowDirections] = useState(!!autoShowDirections);
   const { toast } = useToast();
+  const { t } = useTranslation('common');
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
@@ -149,7 +151,7 @@ const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack, au
                   className="w-full flex items-center gap-2"
                 >
                   <Navigation className="h-4 w-4" />
-                  Get Turn-by-Turn Directions
+                  {t('getTurnByTurnDirections')}
                 </Button>
                 
                 <div className="grid grid-cols-2 gap-2">
@@ -159,7 +161,7 @@ const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack, au
                     className="flex items-center gap-2"
                   >
                     <Copy className="h-4 w-4" />
-                    Copy UAC
+                    {t('copyUAC')}
                   </Button>
                   <Button 
                     variant="secondary"
@@ -170,7 +172,7 @@ const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack, au
                     className="flex items-center gap-2"
                   >
                     <Copy className="h-4 w-4" />
-                    Copy Coords
+                    {t('copyCoords')}
                   </Button>
                 </div>
               </div>

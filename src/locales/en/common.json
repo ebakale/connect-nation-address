@@ -397,5 +397,8 @@
   "saveShareImage": "Save & Share Image",
   "copyAddressText": "Copy Address Text",
   "download": "Download",
-  "share": "Share"
+  "share": "Share",
+  "getTurnByTurnDirections": "Get Turn-by-Turn Directions",
+  "copyUAC": "Copy UAC",
+  "copyCoords": "Copy Coords"
 }

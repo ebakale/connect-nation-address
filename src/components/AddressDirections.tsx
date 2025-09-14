@@ -507,7 +507,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
               className="flex items-center gap-2"
             >
               <Copy className="h-4 w-4" />
-              Copy UAC
+              {t('copyUAC')}
             </Button>
             <Button 
               variant="outline"

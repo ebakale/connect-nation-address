@@ -16,6 +16,7 @@ import {
   MapPin as LocationIcon
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 
 interface AddressDetailModalProps {
   isOpen: boolean;
@@ -44,6 +45,7 @@ const AddressDetailModal: React.FC<AddressDetailModalProps> = ({
   address 
 }) => {
   const { toast } = useToast();
+  const { t } = useTranslation('common');
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -223,7 +225,7 @@ const AddressDetailModal: React.FC<AddressDetailModalProps> = ({
               className="flex items-center gap-2"
             >
               <Copy className="h-4 w-4" />
-              Copy UAC
+              {t('copyUAC')}
             </Button>
             
             <Button 
@@ -232,7 +234,7 @@ const AddressDetailModal: React.FC<AddressDetailModalProps> = ({
               className="flex items-center gap-2"
             >
               <Copy className="h-4 w-4" />
-              Copy Coordinates
+              {t('copyCoords')}
             </Button>
             
             <Button 
@@ -241,7 +243,7 @@ const AddressDetailModal: React.FC<AddressDetailModalProps> = ({
               className="flex items-center gap-2"
             >
               <Navigation className="h-4 w-4" />
-              Get Directions
+              {t('directions')}
             </Button>
           </div>
         </div>

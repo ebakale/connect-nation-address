@@ -396,5 +396,8 @@
   "saveShareImage": "Enregistrer et partager l'image",
   "copyAddressText": "Copier le texte de l'adresse",
   "download": "Télécharger",
-  "share": "Partager"
+  "share": "Partager",
+  "getTurnByTurnDirections": "Obtenir des directions étape par étape",
+  "copyUAC": "Copier UAC",
+  "copyCoords": "Copier coordonnées"
 }
