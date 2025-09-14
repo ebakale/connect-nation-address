@@ -433,13 +433,24 @@ export const UnitLeadershipDashboard: React.FC = () => {
     }
   };
 
+  const normalizeStatus = (raw?: string) => {
+    if (!raw) return 'available';
+    let s = raw.toLowerCase().trim();
+    if (s.startsWith('unitleadershipdashboard.')) {
+      const parts = s.split('.');
+      s = parts[parts.length - 1] || s;
+    }
+    return s;
+  };
+
   const getStatusLabel = (status: string) => {
-    switch (status) {
+    const s = normalizeStatus(status);
+    switch (s) {
       case 'available': return t('unitLeadershipDashboard.available');
       case 'busy': return t('unitLeadershipDashboard.busy');
       case 'dispatched': return t('unitLeadershipDashboard.dispatched');
       case 'maintenance': return t('unitLeadershipDashboard.maintenance');
-      default: return status;
+      default: return s.replace(/_/g, ' ');
     }
   };
 
@@ -454,7 +465,8 @@ export const UnitLeadershipDashboard: React.FC = () => {
   };
 
   const getStatusColor = (status: string) => {
-    switch (status) {
+    const s = normalizeStatus(status);
+    switch (s) {
       case 'available': return 'bg-green-500';
       case 'busy': return 'bg-red-500';
       case 'dispatched': return 'bg-blue-500';
@@ -462,7 +474,6 @@ export const UnitLeadershipDashboard: React.FC = () => {
       default: return 'bg-gray-500';
     }
   };
-
   if (managedUnits.length === 0) {
     return (
       <Card>
