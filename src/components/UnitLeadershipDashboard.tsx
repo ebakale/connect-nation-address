@@ -72,7 +72,7 @@ interface PerformanceMetrics {
 
 export const UnitLeadershipDashboard: React.FC = () => {
   const { user } = useAuth();
-  const { roleMetadata } = useUserRole();
+  const { roleMetadata, loading: roleLoading, getGeographicScope } = useUserRole();
   const { toast } = useToast();
   const { t } = useTranslation('emergency');
   const [selectedUnit, setSelectedUnit] = useState<UnitInfo | null>(null);
@@ -92,12 +92,12 @@ export const UnitLeadershipDashboard: React.FC = () => {
   const [showMessageDialog, setShowMessageDialog] = useState(false);
 
   useEffect(() => {
-    if (user) {
+    if (user && !roleLoading) {
       fetchManagedUnits();
       fetchAvailableOfficers();
       fetchAvailableIncidents();
     }
-  }, [user]);
+  }, [user, roleLoading]);
 
   useEffect(() => {
     if (selectedUnit) {
@@ -134,28 +134,36 @@ export const UnitLeadershipDashboard: React.FC = () => {
         }
         query = query.in('id', unitIds);
       } else {
-        // For supervisors, filter units by their geographic scope
-        const geographicMetadata = roleMetadata.find(m => m.scope_type === 'geographic');
-        console.log('Geographic metadata for supervisor:', geographicMetadata);
-        
-        if (geographicMetadata?.scope_value) {
-          const scopeValue = geographicMetadata.scope_value;
-          console.log('Filtering units by scope value:', scopeValue);
-          
-          // Filter by city first (more specific), then by region if no city match
-          query = query.eq('coverage_city', scopeValue);
-        } else {
-          console.log('No geographic scope found, showing all units');
+        // For supervisors, filter units by their geographic scope (support multiple scopes)
+        const scopes = getGeographicScope?.() || [];
+        if (scopes.length > 0) {
+          // Try server-side filter by city first (case-sensitive IN); client-side will enforce exact scoping
+          query = query.in('coverage_city', scopes as string[]);
         }
       }
 
       const { data, error } = await query.order('unit_code');
 
       if (error) throw error;
-      setManagedUnits(data || []);
+      let units = data || [];
+
+      // Enforce client-side scoping as a safety net
+      if (isSupervisor) {
+        const scopes = getGeographicScope?.() || [];
+        if (scopes.length > 0) {
+          const scopesLower = scopes.map((s: string) => s.toLowerCase());
+          units = units.filter((u) => {
+            const city = u.coverage_city?.toLowerCase();
+            const region = u.coverage_region?.toLowerCase();
+            return (city && scopesLower.includes(city)) || (region && scopesLower.includes(region));
+          });
+        }
+      }
+
+      setManagedUnits(units);
       
-      if (data && data.length > 0 && !selectedUnit) {
-        setSelectedUnit(data[0]);
+      if (units && units.length > 0 && !selectedUnit) {
+        setSelectedUnit(units[0]);
       }
     } catch (error) {
       console.error('Error fetching managed units:', error);
