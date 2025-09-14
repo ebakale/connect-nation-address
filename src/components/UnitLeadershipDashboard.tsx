@@ -537,7 +537,7 @@ export const UnitLeadershipDashboard: React.FC = () => {
                      <div className="flex items-center gap-2 mt-2">
                        <Badge 
                          variant="secondary" 
-                         className={`${getStatusColor(selectedUnit.status)} text-white font-medium px-3 py-1 text-xs uppercase tracking-wide min-w-[80px] justify-center`}
+                         className={`${getStatusColor(selectedUnit.status)} text-white font-medium px-3 py-1 text-xs uppercase tracking-wide min-w-[80px] justify-center whitespace-nowrap`}
                        >
                          {getStatusLabel(selectedUnit.status)}
                        </Badge>
