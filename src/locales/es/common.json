@@ -371,5 +371,6 @@
       "resolved": "Resuelto",
       "closed": "Cerrado"
     }
-  }
+  },
+  "scanQRCode": "Escanear código QR"
 }

@@ -155,7 +155,7 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
   ) : (
     <Button variant="outline" size="sm">
       <QrCode className="h-4 w-4 mr-2" />
-      Scan QR Code
+      {t('scanQRCode')}
     </Button>
   );
 
