@@ -72,7 +72,7 @@ export function AdminSidebar({ activeTab, onTabChange }: AdminSidebarProps) {
               <h2 className="font-semibold text-sm">
                 {hasNDAAAccess ? 'NDAA Admin' : 'System Admin'}
               </h2>
-              <p className="text-xs text-muted-foreground">ConnectEG Platform</p>
+              <p className="text-xs text-muted-foreground">ConEG Platform</p>
             </div>
           )}
         </div>
@@ -119,7 +119,7 @@ export function AdminSidebar({ activeTab, onTabChange }: AdminSidebarProps) {
         <div className="space-y-2">
           {state !== "collapsed" && (
             <div className="text-xs text-muted-foreground">
-              <p>ConnectEG Platform v2.1.0</p>
+              <p>ConEG Platform v2.1.0</p>
               <p>© 2025 BIAKAM</p>
             </div>
           )}

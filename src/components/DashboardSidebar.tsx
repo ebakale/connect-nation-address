@@ -238,7 +238,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
                 />
               </div>
               <div>
-                <h2 className="font-semibold text-sm">ConnectEG</h2>
+                <h2 className="font-semibold text-sm">ConEG</h2>
                 <p className="text-xs text-muted-foreground">{t('addressSystem')}</p>
               </div>
             </div>

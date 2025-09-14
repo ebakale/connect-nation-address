@@ -494,7 +494,7 @@ const navigationItems = [
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <h4 className="font-semibold">{t('common:help.emailSupport')}</h4>
-                      <p className="text-sm text-muted-foreground">support@connecteg.gov.gq</p>
+                      <p className="text-sm text-muted-foreground">support@coneg.gov.gq</p>
                       <p className="text-xs text-muted-foreground">{t('common:help.responseTime')}</p>
                     </div>
                     <div>

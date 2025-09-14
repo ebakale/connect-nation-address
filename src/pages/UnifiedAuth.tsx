@@ -109,7 +109,7 @@ const UnifiedAuth = () => {
               <Globe className="h-12 w-12 text-white" />
             </div>
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold text-white tracking-tight">ConnectEG</h1>
+              <h1 className="text-4xl font-bold text-white tracking-tight">ConEG</h1>
               <p className="text-white/80 max-w-md mx-auto leading-relaxed">{t('auth:title')}</p>
               <p className="text-white/60 text-sm">
                 {isOnlineMode 

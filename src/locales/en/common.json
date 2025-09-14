@@ -141,12 +141,12 @@
     "enterPhone": "Enter phone number..."
   },
   "footer": {
-    "copyright": "© 2025 BIAKAM - ConnectEG Platform for the Republic of Equatorial Guinea",
+    "copyright": "© 2025 BIAKAM - ConEG Platform for the Republic of Equatorial Guinea",
     "description": "Unified Digital Addressing and Emergency Management • Connecting Citizens, Services, and Safety"
   },
   "platform": {
-    "connectEGPlatform": "ConnectEG Platform",
-    "connectEG": "ConnectEG",
+    "connectEGPlatform": "ConEG Platform",
+    "connectEG": "ConEG",
     "digitalPlatform": "Digital Platform",
     "connectEGDescription": "Unified platform for digital addressing and emergency management in Equatorial Guinea.",
     "connectingCitizensServices": "Connecting citizens, addresses, and emergency services",
@@ -180,7 +180,7 @@
     "dataExcellence": "Data Excellence",
     "dataExcellenceDesc": "Promote data quality, interoperability, and secure access across agencies.",
 
-    "aboutConnectEG": "ConnectEG is the national platform for unified digital addressing and emergency management.",
+    "aboutConnectEG": "ConEG is the national platform for unified digital addressing and emergency management.",
     "ourMission": "Our Mission",
     "missionDescription": "To connect citizens, addresses, and emergency services through reliable technology.",
     "ourVision": "Our Vision",

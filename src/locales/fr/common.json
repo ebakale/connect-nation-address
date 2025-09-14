@@ -140,12 +140,12 @@
     "enterPhone": "Saisir le numéro de téléphone..."
   },
   "footer": {
-    "copyright": "© 2025 BIAKAM - Plateforme ConnectEG pour la République de Guinée Équatoriale",
+    "copyright": "© 2025 BIAKAM - Plateforme ConEG pour la République de Guinée Équatoriale",
     "description": "Gestion Unifiée des Adresses Numériques et des Urgences • Connecter Citoyens, Services et Sécurité"
   },
   "platform": {
-    "connectEGPlatform": "Plateforme ConnectEG",
-    "connectEG": "ConnectEG",
+    "connectEGPlatform": "Plateforme ConEG",
+    "connectEG": "ConEG",
     "digitalPlatform": "Plateforme Numérique",
     "connectEGDescription": "Plateforme unifiée pour l'adressage numérique et la gestion des urgences en Guinée Équatoriale.",
     "connectingCitizensServices": "Connecter citoyens, adresses et services d'urgence",
@@ -179,7 +179,7 @@
     "dataExcellence": "Excellence des Données",
     "dataExcellenceDesc": "Promouvoir la qualité des données, l'interopérabilité et l'accès sécurisé entre les agences.",
 
-    "aboutConnectEG": "ConnectEG est la plateforme nationale pour l'adressage numérique unifié et la gestion des urgences.",
+    "aboutConnectEG": "ConEG est la plateforme nationale pour l'adressage numérique unifié et la gestion des urgences.",
     "ourMission": "Notre Mission",
     "missionDescription": "Connecter citoyens, adresses et services d'urgence grâce à une technologie fiable.",
     "ourVision": "Notre Vision",

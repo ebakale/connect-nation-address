@@ -141,12 +141,12 @@
     "enterPhone": "Ingresa número de teléfono..."
   },
   "footer": {
-    "copyright": "© 2025 BIAKAM - Plataforma ConnectEG para la República de Guinea Ecuatorial",
+    "copyright": "© 2025 BIAKAM - Plataforma ConEG para la República de Guinea Ecuatorial",
     "description": "Gestión Unificada de Direcciones Digitales y Emergencias • Conectando Ciudadanos, Servicios y Seguridad"
   },
   "platform": {
-    "connectEGPlatform": "Plataforma ConnectEG",
-    "connectEG": "ConnectEG",
+    "connectEGPlatform": "Plataforma ConEG",
+    "connectEG": "ConEG",
     "digitalPlatform": "Plataforma Digital",
     "connectEGDescription": "Plataforma unificada para direcciones digitales y gestión de emergencias en Guinea Ecuatorial.",
     "connectingCitizensServices": "Conectando ciudadanos, direcciones y servicios de emergencia",
@@ -180,7 +180,7 @@
     "dataExcellence": "Excelencia de Datos",
     "dataExcellenceDesc": "Promover calidad de datos, interoperabilidad y acceso seguro entre agencias.",
 
-    "aboutConnectEG": "ConnectEG es la plataforma nacional para direccionamiento digital unificado y gestión de emergencias.",
+    "aboutConnectEG": "ConEG es la plataforma nacional para direccionamiento digital unificado y gestión de emergencias.",
     "ourMission": "Nuestra Misión",
     "missionDescription": "Conectar ciudadanos, direcciones y servicios de emergencia a través de tecnología confiable.",
     "ourVision": "Nuestra Visión",
