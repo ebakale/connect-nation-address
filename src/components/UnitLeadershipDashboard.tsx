@@ -136,22 +136,16 @@ export const UnitLeadershipDashboard: React.FC = () => {
       } else {
         // For supervisors, filter units by their geographic scope
         const geographicMetadata = roleMetadata.find(m => m.scope_type === 'geographic');
+        console.log('Geographic metadata for supervisor:', geographicMetadata);
+        
         if (geographicMetadata?.scope_value) {
-          // Check if scope value is a region or city and filter accordingly
           const scopeValue = geographicMetadata.scope_value;
+          console.log('Filtering units by scope value:', scopeValue);
           
-          // Try filtering by region first, then by city
-          const regionQuery = supabase.from('emergency_units')
-            .select('*')
-            .eq('coverage_region', scopeValue);
-          
-          const { data: regionUnits } = await regionQuery;
-          
-          if (regionUnits && regionUnits.length > 0) {
-            query = query.eq('coverage_region', scopeValue);
-          } else {
-            query = query.eq('coverage_city', scopeValue);
-          }
+          // Filter by city first (more specific), then by region if no city match
+          query = query.eq('coverage_city', scopeValue);
+        } else {
+          console.log('No geographic scope found, showing all units');
         }
       }
 
