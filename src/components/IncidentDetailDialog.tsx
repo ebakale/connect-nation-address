@@ -1084,7 +1084,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                       </SelectTrigger>
                       <SelectContent className="bg-background border border-input z-50">
                         {availableOperators.length === 0 ? (
-                          <SelectItem value="" disabled>
+                          <SelectItem value="no-operators" disabled>
                             {t('incidentDetails.noOtherOperatorsOnline')}
                           </SelectItem>
                         ) : (
