@@ -29,8 +29,11 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   const qrSize = size === 'sm' ? 200 : size === 'md' ? 300 : 400;
 
   useEffect(() => {
-    if (isOpen && canvasRef.current && uac) {
-      generateQRCode();
+    if (isOpen && uac) {
+      // Add a small delay to ensure canvas is rendered
+      setTimeout(() => {
+        generateQRCode();
+      }, 100);
     }
   }, [isOpen, uac]);
 
