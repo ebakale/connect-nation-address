@@ -637,7 +637,10 @@
       "traffic": "Application Circulation",
       "investigation": "Unité d'Enquête",
       "k9": "Unité K-9",
-      "swat": "Équipe SWAT"
+      "swat": "Équipe SWAT",
+      "emergency": "Unité de Réponse d'Urgence",
+      "special": "Unité d'Opérations Spéciales",
+      "dispatch": "Unité de Répartition"
     },
     "statuses": {
       "available": "Disponible",

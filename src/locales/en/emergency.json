@@ -821,7 +821,10 @@
       "traffic": "Traffic Enforcement",
       "investigation": "Investigation Unit",
       "k9": "K-9 Unit",
-      "swat": "SWAT Team"
+      "swat": "SWAT Team",
+      "emergency": "Emergency Response Unit",
+      "special": "Special Operations Unit",
+      "dispatch": "Dispatch Unit"
     },
     "statuses": {
       "available": "Available",

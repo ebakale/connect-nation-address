@@ -52,7 +52,7 @@ interface Officer {
 }
 
 const UnitManagement: React.FC = () => {
-  const { t } = useTranslation('dashboard');
+  const { t } = useTranslation('emergency');
   const [units, setUnits] = useState<EmergencyUnit[]>([]);
   const [officers, setOfficers] = useState<Officer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -413,7 +413,7 @@ const UnitManagement: React.FC = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="patrol">{t('unitManagement.unitTypes.patrol')}</SelectItem>
-                    <SelectItem value="rapid_response">{t('unitManagement.unitTypes.rapid_response')}</SelectItem>
+                    <SelectItem value="rapid_response">{t('unitManagement.unitTypes.rapidResponse')}</SelectItem>
                     <SelectItem value="traffic">{t('unitManagement.unitTypes.traffic')}</SelectItem>
                     <SelectItem value="investigation">{t('unitManagement.unitTypes.investigation')}</SelectItem>
                     <SelectItem value="k9">{t('unitManagement.unitTypes.k9')}</SelectItem>
@@ -700,7 +700,7 @@ const UnitManagement: React.FC = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="patrol">{t('unitManagement.unitTypes.patrol')}</SelectItem>
-                  <SelectItem value="rapid_response">{t('unitManagement.unitTypes.rapid_response')}</SelectItem>
+                  <SelectItem value="rapid_response">{t('unitManagement.unitTypes.rapidResponse')}</SelectItem>
                   <SelectItem value="traffic">{t('unitManagement.unitTypes.traffic')}</SelectItem>
                   <SelectItem value="investigation">{t('unitManagement.unitTypes.investigation')}</SelectItem>
                   <SelectItem value="k9">{t('unitManagement.unitTypes.k9')}</SelectItem>
