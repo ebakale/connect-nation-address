@@ -1019,28 +1019,10 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                 <User className="h-4 w-4" />
                 {t('incidentDetails.assignedDispatcher')}
               </label>
-              {isEditing && isPoliceSupervisor ? (
-                <div className="mt-2">
-                  <Select value={editData.assigned_operator_id} onValueChange={(value) => { setEditData({...editData, assigned_operator_id: value}); assignDispatcher(value); }}>
-                  <SelectTrigger className="w-full bg-background border border-input">
-                    <SelectValue placeholder={t('incidentDetails.assignToDispatcher')} />
-                  </SelectTrigger>
-                  <SelectContent className="bg-background border border-input z-50">
-                    {availableOperators.map((operator) => (
-                      <SelectItem key={operator.id} value={operator.id}>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{operator.name}</span>
-                          <span className="text-muted-foreground">({t('incidentDetails.dispatcher')})</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                </div>
-              ) : isEditing && !isPoliceSupervisor ? (
-                <div className="mt-1 p-3 bg-yellow-50 border border-yellow-200 rounded">
-                  <p className="text-sm text-yellow-800">
-                    {t('incidentDetails.onlySupervisorsCanAssign')}
+              {isEditing ? (
+                <div className="mt-1 p-3 bg-gray-50 border border-gray-200 rounded">
+                  <p className="text-sm text-gray-600">
+                    {t('incidentDetails.dispatcherAssignmentDisabled')}
                   </p>
                 </div>
               ) : (
@@ -1177,47 +1159,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
               )}
             </div>
 
-            {/* Quick Action Section */}
-            {isPoliceSupervisor && !isResolved && (
-              <div className="flex flex-col gap-2 w-full">
-                <Select onValueChange={(value) => { setEditData({...editData, assigned_operator_id: value}); assignDispatcher(value); }} value={editData.assigned_operator_id}>
-                  <SelectTrigger className="w-full min-w-0">
-                    <SelectValue placeholder={t('incidentDetails.assignToDispatcher')} />
-                  </SelectTrigger>
-                  <SelectContent className="bg-background border border-input z-50 max-w-[90vw]">
-                    {availableOperators.map((operator) => (
-                      <SelectItem key={operator.id} value={operator.id} className="max-w-full">
-                        <div className="truncate">{operator.name}</div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Button 
-                  onClick={async () => {
-                    try {
-                      await supabase.functions.invoke('police-incident-actions', {
-                        body: {
-                          action: 'assignOperator',
-                          incidentId: incident.id,
-                          data: {
-                            operatorId: editData.assigned_operator_id || null
-                          }
-                        }
-                      });
-                      toast.success(t('incidentDetails.dispatcherAssignedSuccessfully'));
-                      onUpdate?.();
-                    } catch (error) {
-                      console.error('Error assigning dispatcher:', error);
-                      toast.error(t('incidentDetails.failedToAssignDispatcher'));
-                    }
-                  }}
-                  disabled={!editData.assigned_operator_id}
-                  className="w-full text-xs sm:text-sm whitespace-nowrap"
-                >
-                  {t('incidentDetails.assignDispatcher')}
-                </Button>
-              </div>
-            )}
+            {/* Quick Action Section - Supervisor dispatcher assignment removed */}
             {canAssignUnits && (
               <div className="flex flex-col gap-2 w-full">
                 <Select onValueChange={setDispatchingUnit} value={dispatchingUnit}>

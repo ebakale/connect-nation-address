@@ -1172,7 +1172,7 @@
     "assignedDispatcher": "Assigned Dispatcher",
     "assignToDispatcher": "Assign to dispatcher...",
     "dispatcher": "Dispatcher",
-    "onlySupervisorsCanAssign": "Only supervisors can assign incidents to dispatchers.",
+    "dispatcherAssignmentDisabled": "Dispatcher assignment is managed automatically during incident flow.",
     "noDispatcherAssigned": "No dispatcher assigned",
     "dispatchedUnits": "Dispatched Units",
     "selectUnitToAssign": "Select unit to assign",

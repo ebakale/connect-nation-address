@@ -149,10 +149,10 @@ serve(async (req) => {
         break;
 
       case 'assignOperator':
-        // Allow dispatchers to reassign to other dispatchers, supervisors to assign to anyone
-        const canAssign = ['police_dispatcher', 'police_supervisor', 'police_admin', 'admin'].includes(userRole);
+        // Only dispatchers and admins can assign incidents to dispatchers
+        const canAssign = ['police_dispatcher', 'police_admin', 'admin'].includes(userRole);
         if (!canAssign) {
-          throw new Error('Only dispatchers and supervisors can assign incidents');
+          throw new Error('Only dispatchers and admins can assign incidents');
         }
 
         // If operatorId is provided, validate it's a dispatcher

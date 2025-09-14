@@ -988,7 +988,7 @@
     "assignedDispatcher": "Répartiteur Assigné",
     "assignToDispatcher": "Assigner au répartiteur...",
     "dispatcher": "Répartiteur",
-    "onlySupervisorsCanAssign": "Seuls les superviseurs peuvent assigner des incidents aux répartiteurs.",
+    "dispatcherAssignmentDisabled": "L'assignation de répartiteur est gérée automatiquement pendant le flux d'incident.",
     "noDispatcherAssigned": "Aucun répartiteur assigné",
     "dispatchedUnits": "Unités Dépêchées",
     "selectUnitToAssign": "Sélectionner l'unité à assigner",
