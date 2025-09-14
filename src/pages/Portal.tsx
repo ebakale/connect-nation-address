@@ -239,16 +239,16 @@ const Portal = () => {
           {/* Module Navigation */}
           <div className="lg:col-span-2 space-y-6">
             <div>
-              <h3 className="text-xl font-semibold mb-4">System Modules</h3>
+              <h3 className="text-xl font-semibold mb-4">{t('systemModules')}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Card className="cursor-pointer hover:shadow-lg transition-all duration-200 group">
                   <CardHeader>
                     <div className="flex items-center space-x-3">
                       <MapPin className="h-8 w-8 text-primary group-hover:scale-110 transition-transform" />
                       <div>
-                        <CardTitle>Address Registry</CardTitle>
+                        <CardTitle>{t('addressRegistry')}</CardTitle>
                         <CardDescription>
-                          Manage digital addresses, UACs, and location data
+                          {t('manageDigitalAddresses')}
                         </CardDescription>
                       </div>
                     </div>
@@ -260,10 +260,10 @@ const Portal = () => {
                         onClick={() => handleModuleNavigation('address')}
                       >
                         <Search className="h-4 w-4 mr-2" />
-                        Enter Address Module
+                        {t('enterAddressModule')}
                       </Button>
                       <p className="text-xs text-muted-foreground">
-                        Search, submit, verify, and manage digital addresses
+                        {t('searchSubmitVerifyManage')}
                       </p>
                     </div>
                   </CardContent>

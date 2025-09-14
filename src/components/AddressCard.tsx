@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, QrCode, Copy, ExternalLink, Check, Navigation } from 'lucide-react';
 import { QRCodeGenerator } from '@/components/QRCodeGenerator';
+import { useTranslation } from 'react-i18next';
 
 interface AddressData {
   uac: string;
@@ -30,6 +31,7 @@ interface AddressCardProps {
 
 const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
   const [copied, setCopied] = useState(false);
+  const { t } = useTranslation('common');
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -82,13 +84,13 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-semibold text-foreground">
-            Digital Address
+            {t('digitalAddress')}
           </CardTitle>
           <Badge 
             variant={address.metadata.verified ? "default" : "secondary"}
             className={address.metadata.verified ? "bg-success text-success-foreground" : ""}
           >
-            {address.metadata.verified ? "Verified" : "Pending"}
+            {address.metadata.verified ? t('verified') : t('pending')}
           </Badge>
         </div>
       </CardHeader>
@@ -98,7 +100,7 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
         <div className="bg-muted/50 p-3 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Unique Address Code</p>
+              <p className="text-sm font-medium text-muted-foreground">{t('uniqueAddressCode')}</p>
               <p className="text-lg font-mono font-bold text-primary">{address.uac}</p>
             </div>
             <Button
@@ -114,7 +116,7 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
 
         {/* Readable Address */}
         <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground">Readable Address</p>
+          <p className="text-sm font-medium text-muted-foreground">{t('readableAddress')}</p>
           <div className="space-y-1">
             <p className="font-semibold">{address.country}</p>
             <p className="text-sm">{address.region}</p>
@@ -133,7 +135,7 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
 
         {/* Metadata */}
         <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground">Property Details</p>
+          <p className="text-sm font-medium text-muted-foreground">{t('propertyDetails')}</p>
           <div className="flex gap-2">
             <Badge variant="outline">{address.metadata.type}</Badge>
           </div>
@@ -144,7 +146,7 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
 
         {/* QR Code */}
         <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground">QR Code</p>
+          <p className="text-sm font-medium text-muted-foreground">{t('qrCode')}</p>
           <div className="flex justify-center">
             <QRCodeGenerator 
               uac={address.uac}
@@ -159,7 +161,7 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
         <div className="flex gap-2 pt-2">
           <Button variant="default" size="sm" onClick={onViewMap} className="flex-1">
             <ExternalLink className="h-4 w-4" />
-            View on Map
+            {t('viewOnMap')}
           </Button>
           <Button 
             variant="hero" 
@@ -168,7 +170,7 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
             className="flex-1"
           >
             <Navigation className="h-4 w-4" />
-            Directions
+            {t('directions')}
           </Button>
           <QRCodeGenerator 
             uac={address.uac}

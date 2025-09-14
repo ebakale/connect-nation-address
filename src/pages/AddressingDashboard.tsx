@@ -283,8 +283,8 @@ const AddressingDashboard = () => {
         <div className="mb-8">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">Digital Addressing System</h1>
-              <p className="text-muted-foreground">National Digital Address Management Platform</p>
+              <h1 className="text-3xl font-bold text-foreground mb-2">{t('digitalAddressingSystem')}</h1>
+              <p className="text-muted-foreground">{t('nationalDigitalAddressManagement')}</p>
               
               {/* User greeting */}
               {userProfile && (

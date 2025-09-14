@@ -371,5 +371,21 @@
       "closed": "Fermé"
     }
   },
-  "scanQRCode": "Scanner le code QR"
+  "scanQRCode": "Scanner le code QR",
+  "digitalAddress": "Adresse Numérique",
+  "digitalAddressingSystem": "Système d'Adressage Numérique",
+  "nationalDigitalAddressManagement": "Plateforme Nationale de Gestion d'Adresses Numériques",
+  "uniqueAddressCode": "Code d'Adresse Unique",
+  "readableAddress": "Adresse Lisible",
+  "propertyDetails": "Détails de la Propriété",
+  "qrCode": "Code QR",
+  "viewOnMap": "Voir sur la Carte",
+  "directions": "Directions",
+  "verified": "Vérifié",
+  "pending": "En Attente",
+  "addressRegistry": "Registre d'Adresses",
+  "manageDigitalAddresses": "Gérer les adresses numériques, UACs et données de localisation",
+  "enterAddressModule": "Entrer dans le Module d'Adresses",
+  "searchSubmitVerifyManage": "Rechercher, soumettre, vérifier et gérer les adresses numériques",
+  "systemModules": "Modules du Système"
 }

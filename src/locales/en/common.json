@@ -372,5 +372,21 @@
       "closed": "Closed"
     }
   },
-  "scanQRCode": "Scan QR Code"
+  "scanQRCode": "Scan QR Code",
+  "digitalAddress": "Digital Address",
+  "digitalAddressingSystem": "Digital Addressing System",
+  "nationalDigitalAddressManagement": "National Digital Address Management Platform",
+  "uniqueAddressCode": "Unique Address Code",
+  "readableAddress": "Readable Address",
+  "propertyDetails": "Property Details",
+  "qrCode": "QR Code",
+  "viewOnMap": "View on Map",
+  "directions": "Directions",
+  "verified": "Verified",
+  "pending": "Pending",
+  "addressRegistry": "Address Registry",
+  "manageDigitalAddresses": "Manage digital addresses, UACs, and location data",
+  "enterAddressModule": "Enter Address Module",
+  "searchSubmitVerifyManage": "Search, submit, verify, and manage digital addresses",
+  "systemModules": "System Modules"
 }

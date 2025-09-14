@@ -372,5 +372,21 @@
       "closed": "Cerrado"
     }
   },
-  "scanQRCode": "Escanear código QR"
+  "scanQRCode": "Escanear código QR",
+  "digitalAddress": "Dirección Digital",
+  "digitalAddressingSystem": "Sistema de Direccionamiento Digital",
+  "nationalDigitalAddressManagement": "Plataforma Nacional de Gestión de Direcciones Digitales",
+  "uniqueAddressCode": "Código Único de Dirección",
+  "readableAddress": "Dirección Legible",
+  "propertyDetails": "Detalles de la Propiedad",
+  "qrCode": "Código QR",
+  "viewOnMap": "Ver en el Mapa",
+  "directions": "Direcciones",
+  "verified": "Verificado",
+  "pending": "Pendiente",
+  "addressRegistry": "Registro de Direcciones",
+  "manageDigitalAddresses": "Gestionar direcciones digitales, UACs y datos de ubicación",
+  "enterAddressModule": "Entrar al Módulo de Direcciones",
+  "searchSubmitVerifyManage": "Buscar, enviar, verificar y gestionar direcciones digitales",
+  "systemModules": "Módulos del Sistema"
 }
