@@ -320,9 +320,9 @@ const PoliceDashboard = () => {
           return true;
         }
         
-        // Dispatchers: only see incidents assigned to them
+        // Dispatchers: see incidents assigned to them or unassigned incidents in their city
         if (isPoliceDispatcher) {
-          return incident.assigned_operator_id === user?.id;
+          return incident.assigned_operator_id === user?.id || !incident.assigned_operator_id;
         }
         
         // Operators: only incidents assigned to their units
@@ -450,9 +450,9 @@ const PoliceDashboard = () => {
           return true;
         }
         
-        // Dispatchers: only see incidents assigned to them
+        // Dispatchers: see incidents assigned to them or unassigned incidents in their city
         if (isPoliceDispatcher) {
-          return incident.assigned_operator_id === user?.id;
+          return incident.assigned_operator_id === user?.id || !incident.assigned_operator_id;
         }
         
         // Operators: only incidents assigned to their units
