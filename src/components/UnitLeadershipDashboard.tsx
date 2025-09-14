@@ -534,10 +534,13 @@ export const UnitLeadershipDashboard: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">{t('unitLeadershipDashboard.unitStatus')}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <Badge className={getStatusColor(selectedUnit.status)}>
-                        {getStatusLabel(selectedUnit.status)}
-                      </Badge>
+                     <div className="flex items-center gap-2 mt-2">
+                       <Badge 
+                         variant="secondary" 
+                         className={`${getStatusColor(selectedUnit.status)} text-white font-medium px-3 py-1 text-xs uppercase tracking-wide min-w-[80px] justify-center`}
+                       >
+                         {getStatusLabel(selectedUnit.status)}
+                       </Badge>
                       <Select onValueChange={updateUnitStatus}>
                         <SelectTrigger className="w-24 h-6 text-xs">
                           <Settings className="h-3 w-3" />
