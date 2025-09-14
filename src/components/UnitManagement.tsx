@@ -534,7 +534,7 @@ const UnitManagement: React.FC = () => {
                       <Radio className="h-5 w-5" />
                       <span className="truncate">{unit.unit_name} ({unit.unit_code})</span>
                     </CardTitle>
-                    <CardDescription className="truncate text-xs sm:text-sm">
+                    <CardDescription className="text-xs sm:text-sm">
                       {t(`emergency:unitManagement.unitTypes.${normalizeUnitTypeKey(unit.unit_type)}`, { defaultValue: humanizeUnitType(unit.unit_type) })} {t('emergency:unitManagement.unit')} • 
                       {unit.coverage_city}, {unit.coverage_region}
                     </CardDescription>
