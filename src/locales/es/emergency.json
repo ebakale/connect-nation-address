@@ -1198,7 +1198,7 @@
     "failedToReopenIncident": "Error al reabrir incidente",
     "pleaseEnterNote": "Por favor ingrese una nota",
     "noteAddedSuccessfully": "Nota agregada exitosamente",
-    "failedToAddNote": "Error al agregar nota"
+    "failedToAddNote": "Error al agregar nota",
     "emergencyLocation": "Ubicación de Emergencia",
     "unifiedAddressCode": "Código de Dirección Unificado (UAC)",
     "addressInformation": "Información de Dirección",

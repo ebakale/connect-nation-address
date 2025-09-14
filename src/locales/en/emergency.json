@@ -1198,7 +1198,7 @@
     "failedToReopenIncident": "Failed to reopen incident",
     "pleaseEnterNote": "Please enter a note",
     "noteAddedSuccessfully": "Note added successfully",
-    "failedToAddNote": "Failed to add note"
+    "failedToAddNote": "Failed to add note",
     "emergencyLocation": "Emergency Location",
     "unifiedAddressCode": "Unified Address Code (UAC)",
     "addressInformation": "Address Information",
