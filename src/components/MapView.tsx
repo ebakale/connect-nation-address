@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Settings, Layers, Maximize2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from "@/integrations/supabase/client";
 import AddressDetailModal from './AddressDetailModal';
 import { 
@@ -65,6 +66,7 @@ const MapView: React.FC<MapViewProps> = ({
   const [selectedAddress, setSelectedAddress] = useState<MapLocation | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const markers = useRef<google.maps.Marker[]>([]);
+  const { t } = useTranslation('common');
 
   // Fetch Google Maps API key using unified configuration
   useEffect(() => {
@@ -199,6 +201,10 @@ const MapView: React.FC<MapViewProps> = ({
           type: location.type,
           verified: location.verified,
           coordinates: position
+        },
+        {
+          coordinates: t('coordinates'),
+          clickMarkerForFullDetails: t('clickMarkerForFullDetails')
         }
       );
 
@@ -268,6 +274,15 @@ const MapView: React.FC<MapViewProps> = ({
     return MAP_CONFIG.markers.colors[type as keyof typeof MAP_CONFIG.markers.colors] || MAP_CONFIG.markers.colors.residential;
   };
 
+  // Create legend items with translation
+  const legendItems = [
+    { color: MAP_CONFIG.markers.colors.commercial, label: t('commercial') },
+    { color: MAP_CONFIG.markers.colors.landmark, label: t('landmark') },
+    { color: MAP_CONFIG.markers.colors.government, label: t('government') },
+    { color: MAP_CONFIG.markers.colors.industrial, label: t('industrial') },
+    { color: MAP_CONFIG.markers.colors.residential, label: t('residential') },
+  ];
+
   useEffect(() => {
     if (isApiReady) {
       initializeMap();
@@ -289,17 +304,17 @@ const MapView: React.FC<MapViewProps> = ({
               <div className="text-sm text-destructive">{apiError}</div>
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">
-                  Failed to load Google Maps. Please refresh the page.
+                  {t('failedToLoadGoogleMaps')}
                 </p>
                 <Button onClick={() => window.location.reload()} className="w-full">
-                  Refresh Page
+                  {t('refreshPage')}
                 </Button>
               </div>
             </div>
           ) : (
             <div className="text-center space-y-2">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-              <p className="text-sm text-muted-foreground">Loading Google Maps...</p>
+              <p className="text-sm text-muted-foreground">{t('loadingGoogleMaps')}</p>
             </div>
           )}
         </CardContent>
@@ -317,10 +332,10 @@ const MapView: React.FC<MapViewProps> = ({
           <CardContent className="p-3">
             <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
               <Layers className="h-4 w-4" />
-              {STANDARD_LEGEND.title}
+              {t('pointsOfInterest')}
             </h4>
             <div className="space-y-1">
-              {STANDARD_LEGEND.items.slice(0, -1).map((item, index) => (
+              {legendItems.map((item, index) => (
                 <div key={index} className="flex items-center gap-2 text-xs">
                   <div 
                     className="w-3 h-3 rounded-full"
@@ -331,7 +346,7 @@ const MapView: React.FC<MapViewProps> = ({
               ))}
             </div>
             <div className="mt-2 pt-2 border-t text-xs text-muted-foreground">
-              Hover for UAC • Click for details
+              {t('hoverForUACClickForDetails')}
             </div>
           </CardContent>
         </Card>
@@ -342,7 +357,7 @@ const MapView: React.FC<MapViewProps> = ({
             <div className="flex items-center gap-2 text-sm">
               <MapPin className="h-4 w-4 text-primary" />
               <span className="font-semibold">{allLocations.length}</span>
-              <span className="text-muted-foreground">addresses mapped</span>
+              <span className="text-muted-foreground">{t('addressesMapped')}</span>
             </div>
           </CardContent>
         </Card>

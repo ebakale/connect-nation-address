@@ -405,5 +405,19 @@
   "qrCodeContainsInfo": "• Le code QR contient l'UAC, les coordonnées et les informations d'adresse pour un partage facile",
   "clickGetDirections": "• Cliquez sur \"Obtenir Directions\" pour naviguer depuis votre position actuelle ou une autre adresse",
   "useViewOnMapButton": "• Utilisez le bouton \"Voir sur la Carte\" dans la carte d'adresse pour ouvrir dans l'application de cartes par défaut de votre appareil",
-  "coordinatesProvidedPrecision": "• Les coordonnées sont fournies avec une haute précision pour la navigation"
+  "coordinatesProvidedPrecision": "• Les coordonnées sont fournies avec une haute précision pour la navigation",
+  "pointsOfInterest": "Points d'Intérêt",
+  "commercial": "Commercial",
+  "landmark": "Point de Repère",
+  "government": "Gouvernement",
+  "industrial": "Industriel", 
+  "residential": "Résidentiel",
+  "yourLocation": "Votre Position",
+  "hoverForUACClickForDetails": "Survoler pour UAC • Cliquer pour détails",
+  "addressesMapped": "adresses cartographiées",
+  "failedToLoadGoogleMaps": "Échec du chargement de Google Maps. Veuillez actualiser la page.",
+  "refreshPage": "Actualiser la Page",
+  "loadingGoogleMaps": "Chargement de Google Maps...",
+  "clickMarkerForFullDetails": "Cliquer sur le marqueur pour les détails complets",
+  "coordinates": "Coordonnées"
 }

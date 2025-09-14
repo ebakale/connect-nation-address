@@ -406,5 +406,19 @@
   "qrCodeContainsInfo": "• The QR code contains the UAC, coordinates, and address information for easy sharing",
   "clickGetDirections": "• Click \"Get Directions\" to navigate from your current location or another address",
   "useViewOnMapButton": "• Use \"View on Map\" button in the address card to open in your device's default map application",
-  "coordinatesProvidedPrecision": "• Coordinates are provided with high precision for navigation"
+  "coordinatesProvidedPrecision": "• Coordinates are provided with high precision for navigation",
+  "pointsOfInterest": "Points of Interest",
+  "commercial": "Commercial",
+  "landmark": "Landmark", 
+  "government": "Government",
+  "industrial": "Industrial",
+  "residential": "Residential",
+  "yourLocation": "Your Location",
+  "hoverForUACClickForDetails": "Hover for UAC • Click for details",
+  "addressesMapped": "addresses mapped",
+  "failedToLoadGoogleMaps": "Failed to load Google Maps. Please refresh the page.",
+  "refreshPage": "Refresh Page",
+  "loadingGoogleMaps": "Loading Google Maps...",
+  "clickMarkerForFullDetails": "Click marker for full details",
+  "coordinates": "Coordinates"
 }

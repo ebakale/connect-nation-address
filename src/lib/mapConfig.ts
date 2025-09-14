@@ -300,8 +300,17 @@ export const createStandardInfoWindow = (
     type?: string;
     verified?: boolean;
     coordinates?: { lat: number; lng: number };
+  },
+  translations?: {
+    coordinates?: string;
+    clickMarkerForFullDetails?: string;
   }
 ): google.maps.InfoWindow => {
+  const t = translations || {
+    coordinates: 'Coordinates',
+    clickMarkerForFullDetails: 'Click marker for full details'
+  };
+
   const infoContent = `
     <div style="padding: 8px; font-family: Arial, sans-serif; min-width: 200px;">
       <div style="font-weight: 600; margin-bottom: 4px; color: #111;">${title}</div>
@@ -315,8 +324,8 @@ export const createStandardInfoWindow = (
           </span>
         </div>
       ` : ''}
-      ${metadata?.coordinates ? `<div style="font-size: 10px; color: #9ca3af; margin-top: 4px;">Coordinates: ${metadata.coordinates.lat.toFixed(6)}, ${metadata.coordinates.lng.toFixed(6)}</div>` : ''}
-      <div style="font-size: 11px; color: #6b7280; margin-top: 4px;">Click marker for full details</div>
+      ${metadata?.coordinates ? `<div style="font-size: 10px; color: #9ca3af; margin-top: 4px;">${t.coordinates}: ${metadata.coordinates.lat.toFixed(6)}, ${metadata.coordinates.lng.toFixed(6)}</div>` : ''}
+      <div style="font-size: 11px; color: #6b7280; margin-top: 4px;">${t.clickMarkerForFullDetails}</div>
     </div>
   `;
 
