@@ -28,17 +28,17 @@ serve(async (req) => {
       );
     }
 
-    // Check if user has supervisor or admin role
+    // Check if user has supervisor, admin, or dispatcher role
     const { data: userRoles } = await supabase
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id);
     
-    const hasSupervisorRole = userRoles?.some(r => 
-      ['police_supervisor', 'police_admin', 'admin'].includes(r.role)
+    const hasRequiredRole = userRoles?.some(r => 
+      ['police_supervisor', 'police_admin', 'admin', 'police_dispatcher'].includes(r.role)
     );
 
-    if (!hasSupervisorRole) {
+    if (!hasRequiredRole) {
       return new Response(
         JSON.stringify({ error: 'Insufficient permissions' }),
         { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -145,47 +145,100 @@ serve(async (req) => {
         break;
 
       case 'getDispatchersInScope':
-        // Fetch supervisor scope (role metadata)
-        const { data: rolesWithMeta, error: scopeErr } = await supabase
-          .from('user_roles')
-          .select('id, role, user_role_metadata!fk_user_role_metadata_user_role(scope_type, scope_value)')
-          .eq('user_id', user.id);
-        if (scopeErr) throw scopeErr;
-
-        const supRole = (rolesWithMeta || []).find((r: any) => r.role === 'police_supervisor');
-        const supScope = supRole?.user_role_metadata?.[0];
+        // Get current user's role
+        const currentUserRole = userRoles?.find(r => 
+          ['police_supervisor', 'police_admin', 'admin', 'police_dispatcher'].includes(r.role)
+        )?.role;
 
         let dispatcherUserIds: string[] = [];
-        if (supScope && supScope.scope_type && supScope.scope_value) {
-          // 1) Get role IDs for dispatchers that have matching metadata
-          const { data: metaRows, error: metaErr } = await supabase
-            .from('user_role_metadata')
-            .select('user_role_id')
-            .eq('scope_type', supScope.scope_type)
-            .eq('scope_value', supScope.scope_value);
-          if (metaErr) throw metaErr;
+        
+        if (currentUserRole === 'police_dispatcher') {
+          // For dispatchers, get all dispatchers in the same city
+          // First get the dispatcher's city from their role metadata
+          const { data: dispatcherRoles, error: drErr } = await supabase
+            .from('user_roles')
+            .select(`
+              id, 
+              user_id,
+              user_role_metadata!fk_user_role_metadata_user_role(scope_type, scope_value)
+            `)
+            .eq('user_id', user.id)
+            .eq('role', 'police_dispatcher');
+          if (drErr) throw drErr;
 
-          const roleIds = Array.from(new Set((metaRows || []).map((m: any) => m.user_role_id)));
+          const currentDispatcherMeta = dispatcherRoles?.[0]?.user_role_metadata?.[0];
+          
+          if (currentDispatcherMeta && currentDispatcherMeta.scope_type && currentDispatcherMeta.scope_value) {
+            // Get all dispatchers in the same city
+            const { data: metaRows, error: metaErr } = await supabase
+              .from('user_role_metadata')
+              .select('user_role_id')
+              .eq('scope_type', currentDispatcherMeta.scope_type)
+              .eq('scope_value', currentDispatcherMeta.scope_value);
+            if (metaErr) throw metaErr;
 
-          if (roleIds.length > 0) {
+            const roleIds = Array.from(new Set((metaRows || []).map((m: any) => m.user_role_id)));
+
+            if (roleIds.length > 0) {
+              const { data: sameCityDispatchers, error: scdErr } = await supabase
+                .from('user_roles')
+                .select('user_id')
+                .in('id', roleIds)
+                .eq('role', 'police_dispatcher');
+              if (scdErr) throw scdErr;
+              dispatcherUserIds = Array.from(new Set((sameCityDispatchers || []).map((r: any) => r.user_id)));
+            }
+          } else {
+            // No scope metadata, return all dispatchers
+            const { data: allDispatchers, error: adErr } = await supabase
+              .from('user_roles')
+              .select('user_id')
+              .eq('role', 'police_dispatcher');
+            if (adErr) throw adErr;
+            dispatcherUserIds = Array.from(new Set((allDispatchers || []).map((r: any) => r.user_id)));
+          }
+        } else {
+          // For supervisors/admins, use the existing scope logic
+          const { data: rolesWithMeta, error: scopeErr } = await supabase
+            .from('user_roles')
+            .select('id, role, user_role_metadata!fk_user_role_metadata_user_role(scope_type, scope_value)')
+            .eq('user_id', user.id);
+          if (scopeErr) throw scopeErr;
+
+          const supRole = (rolesWithMeta || []).find((r: any) => r.role === 'police_supervisor');
+          const supScope = supRole?.user_role_metadata?.[0];
+
+          if (supScope && supScope.scope_type && supScope.scope_value) {
+            // Get role IDs for dispatchers that have matching metadata
+            const { data: metaRows, error: metaErr } = await supabase
+              .from('user_role_metadata')
+              .select('user_role_id')
+              .eq('scope_type', supScope.scope_type)
+              .eq('scope_value', supScope.scope_value);
+            if (metaErr) throw metaErr;
+
+            const roleIds = Array.from(new Set((metaRows || []).map((m: any) => m.user_role_id)));
+
+            if (roleIds.length > 0) {
+              const { data: dispatcherRoles, error: drErr } = await supabase
+                .from('user_roles')
+                .select('user_id')
+                .in('id', roleIds)
+                .eq('role', 'police_dispatcher');
+              if (drErr) throw drErr;
+              dispatcherUserIds = Array.from(new Set((dispatcherRoles || []).map((r: any) => r.user_id)));
+            } else {
+              dispatcherUserIds = [];
+            }
+          } else {
+            // No specific scope: list all dispatchers
             const { data: dispatcherRoles, error: drErr } = await supabase
               .from('user_roles')
               .select('user_id')
-              .in('id', roleIds)
               .eq('role', 'police_dispatcher');
             if (drErr) throw drErr;
             dispatcherUserIds = Array.from(new Set((dispatcherRoles || []).map((r: any) => r.user_id)));
-          } else {
-            dispatcherUserIds = [];
           }
-        } else {
-          // No specific scope: list all dispatchers
-          const { data: dispatcherRoles, error: drErr } = await supabase
-            .from('user_roles')
-            .select('user_id')
-            .eq('role', 'police_dispatcher');
-          if (drErr) throw drErr;
-          dispatcherUserIds = Array.from(new Set((dispatcherRoles || []).map((r: any) => r.user_id)));
         }
 
         let dispatchers: any[] = [];
