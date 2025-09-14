@@ -133,38 +133,16 @@ export const UnitLeadershipDashboard: React.FC = () => {
           return;
         }
         query = query.in('id', unitIds);
-      } else {
-        // Supervisors: we'll apply strict client-side filtering based on scope metadata (city/region)
-        // Keep server query broad to avoid mismatches due to case/formatting
       }
+      // Note: Supervisors will automatically see only units in their geographic scope due to RLS policies
 
       const { data, error } = await query.order('unit_code');
 
       if (error) throw error;
-      let units = data || [];
-
-      // Enforce client-side scoping for supervisors based on metadata
-      if (isSupervisor) {
-        const cityScopes = roleMetadata
-          .filter((m) => ['geographic', 'city'].includes(m.scope_type))
-          .map((m) => (m.scope_value || '').toLowerCase().trim())
-          .filter(Boolean);
-        const regionScopes = roleMetadata
-          .filter((m) => ['region', 'province'].includes(m.scope_type))
-          .map((m) => (m.scope_value || '').toLowerCase().trim())
-          .filter(Boolean);
-
-        if (cityScopes.length > 0) {
-          units = units.filter((u) => u.coverage_city && cityScopes.includes(String(u.coverage_city).toLowerCase().trim()));
-        } else if (regionScopes.length > 0) {
-          units = units.filter((u) => u.coverage_region && regionScopes.includes(String(u.coverage_region).toLowerCase().trim()));
-        }
-      }
-
-      setManagedUnits(units);
+      setManagedUnits(data || []);
       
-      if (units && units.length > 0 && !selectedUnit) {
-        setSelectedUnit(units[0]);
+      if (data && data.length > 0 && !selectedUnit) {
+        setSelectedUnit(data[0]);
       }
     } catch (error) {
       console.error('Error fetching managed units:', error);
