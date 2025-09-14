@@ -166,6 +166,8 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
       setAvailableOperators(ops);
     } catch (error) {
       console.error('Error fetching operators:', error);
+      // Still show the reassignment UI even if loading operators failed
+      setAvailableOperators([]);
     }
   };
 
@@ -1081,18 +1083,24 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                         <SelectValue placeholder={t('incidentDetails.selectDispatcherToReassign')} />
                       </SelectTrigger>
                       <SelectContent className="bg-background border border-input z-50">
-                        {availableOperators
-                          .filter(op => op.id !== incident.assigned_operator_id)
-                          .map((operator) => (
-                            <SelectItem key={operator.id} value={operator.id}>
-                              <div className="flex items-center gap-2">
-                                <span className="font-medium">{operator.name}</span>
-                                <Badge variant="outline" className="text-xs">
-                                  {operator.role.replace('police_', '')}
-                                </Badge>
-                              </div>
-                            </SelectItem>
-                          ))}
+                        {availableOperators.length === 0 ? (
+                          <SelectItem value="" disabled>
+                            {t('incidentDetails.noOtherOperatorsOnline')}
+                          </SelectItem>
+                        ) : (
+                          availableOperators
+                            .filter(op => op.id !== incident.assigned_operator_id)
+                            .map((operator) => (
+                              <SelectItem key={operator.id} value={operator.id}>
+                                <div className="flex items-center gap-2">
+                                  <span className="font-medium">{operator.name}</span>
+                                  <Badge variant="outline" className="text-xs">
+                                    {operator.role.replace('police_', '')}
+                                  </Badge>
+                                </div>
+                              </SelectItem>
+                            ))
+                        )}
                       </SelectContent>
                     </Select>
                   </div>

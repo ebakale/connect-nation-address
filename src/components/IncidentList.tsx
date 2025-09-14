@@ -588,15 +588,15 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
       <Dialog open={!!assignDialog} onOpenChange={() => setAssignDialog(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('emergency:dispatchUnitToIncident')}</DialogTitle>
+            <DialogTitle>{t('emergency:incidentList.dispatchUnitToIncident')}</DialogTitle>
             <DialogDescription>
-              {t('emergency:selectAvailableUnitToDispatch')}
+              {t('emergency:incidentList.selectAvailableUnitToDispatch')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <Select value={dispatchingUnit} onValueChange={setDispatchingUnit}>
               <SelectTrigger>
-                <SelectValue placeholder={t('emergency:selectAUnit')} />
+                <SelectValue placeholder={t('emergency:incidentList.selectAUnit')} />
               </SelectTrigger>
               <SelectContent className="bg-background z-50">
                 {availableOfficers
@@ -614,13 +614,13 @@ const IncidentList = ({ incidents, onSelectIncident, selectedIncident, onUpdate,
             </Select>
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setAssignDialog(null)}>
-                {t('emergency:cancel')}
+                {t('emergency:incidentList.cancel')}
               </Button>
               <Button 
                 onClick={() => assignDialog && handleDispatchIncident(assignDialog)}
                 disabled={!dispatchingUnit}
               >
-                {t('emergency:dispatchUnit')}
+                {t('emergency:incidentList.dispatchUnit')}
               </Button>
             </div>
           </div>
