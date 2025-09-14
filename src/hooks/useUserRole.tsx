@@ -11,7 +11,7 @@ export type UserRole =
   | null;
 
 export interface RoleMetadata {
-  scope_type: 'geographic' | 'organization' | 'partner_type';
+  scope_type: 'geographic' | 'organization' | 'partner_type' | 'city' | 'region' | 'province';
   scope_value: string;
 }
 
@@ -252,7 +252,7 @@ export const useUserRole = () => {
   // Get geographic scope
   const getGeographicScope = () => {
     return roleMetadata
-      .filter(m => m.scope_type === 'geographic')
+      .filter(m => m.scope_type === 'geographic' || m.scope_type === 'city' || m.scope_type === 'region' || m.scope_type === 'province')
       .map(m => m.scope_value);
   };
 

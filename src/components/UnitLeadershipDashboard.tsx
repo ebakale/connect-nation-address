@@ -146,10 +146,24 @@ export const UnitLeadershipDashboard: React.FC = () => {
       const { data, error } = await query.order('unit_code');
 
       if (error) throw error;
-      setManagedUnits(data || []);
+      const units = data || [];
+
+      let scopedUnits = units;
+      if (isSupervisor) {
+        const geographicScopes = getGeographicScope();
+        if (geographicScopes.length > 0) {
+          const scopesLower = geographicScopes.map(s => s.toLowerCase());
+          scopedUnits = units.filter(u => 
+            (u.coverage_city && scopesLower.includes(String(u.coverage_city).toLowerCase())) ||
+            (u.coverage_region && scopesLower.includes(String(u.coverage_region).toLowerCase()))
+          );
+        }
+      }
+
+      setManagedUnits(scopedUnits);
       
-      if (data && data.length > 0 && !selectedUnit) {
-        setSelectedUnit(data[0]);
+      if (scopedUnits.length > 0 && !selectedUnit) {
+        setSelectedUnit(scopedUnits[0]);
       }
     } catch (error) {
       console.error('Error fetching managed units:', error);
