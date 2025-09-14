@@ -134,12 +134,8 @@ export const UnitLeadershipDashboard: React.FC = () => {
         }
         query = query.in('id', unitIds);
       } else {
-        // For supervisors, filter units by their geographic scope (support multiple scopes)
-        const scopes = getGeographicScope?.() || [];
-        if (scopes.length > 0) {
-          // Try server-side filter by city first (case-sensitive IN); client-side will enforce exact scoping
-          query = query.in('coverage_city', scopes as string[]);
-        }
+        // Supervisors: we'll apply strict client-side filtering based on scope metadata (city/region)
+        // Keep server query broad to avoid mismatches due to case/formatting
       }
 
       const { data, error } = await query.order('unit_code');
@@ -147,16 +143,21 @@ export const UnitLeadershipDashboard: React.FC = () => {
       if (error) throw error;
       let units = data || [];
 
-      // Enforce client-side scoping as a safety net
+      // Enforce client-side scoping for supervisors based on metadata
       if (isSupervisor) {
-        const scopes = getGeographicScope?.() || [];
-        if (scopes.length > 0) {
-          const scopesLower = scopes.map((s: string) => s.toLowerCase());
-          units = units.filter((u) => {
-            const city = u.coverage_city?.toLowerCase();
-            const region = u.coverage_region?.toLowerCase();
-            return (city && scopesLower.includes(city)) || (region && scopesLower.includes(region));
-          });
+        const cityScopes = roleMetadata
+          .filter((m) => ['geographic', 'city'].includes(m.scope_type))
+          .map((m) => (m.scope_value || '').toLowerCase().trim())
+          .filter(Boolean);
+        const regionScopes = roleMetadata
+          .filter((m) => ['region', 'province'].includes(m.scope_type))
+          .map((m) => (m.scope_value || '').toLowerCase().trim())
+          .filter(Boolean);
+
+        if (cityScopes.length > 0) {
+          units = units.filter((u) => u.coverage_city && cityScopes.includes(String(u.coverage_city).toLowerCase().trim()));
+        } else if (regionScopes.length > 0) {
+          units = units.filter((u) => u.coverage_region && regionScopes.includes(String(u.coverage_region).toLowerCase().trim()));
         }
       }
 
