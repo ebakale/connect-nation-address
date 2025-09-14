@@ -68,7 +68,11 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
     }
   };
 
-  const downloadQRCode = () => {
+  const downloadQRCode = async () => {
+    if (!qrDataUrl) {
+      await generateQRCode();
+    }
+    
     if (!qrDataUrl) return;
     
     const link = document.createElement('a');
@@ -83,6 +87,10 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   };
 
   const shareQRCode = async () => {
+    if (!qrDataUrl) {
+      await generateQRCode();
+    }
+    
     if (navigator.share && qrDataUrl) {
       try {
         // Convert data URL to blob
