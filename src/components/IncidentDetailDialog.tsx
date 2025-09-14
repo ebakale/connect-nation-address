@@ -108,6 +108,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
   const [userUnits, setUserUnits] = useState<string[]>([]);
   const [dispatchingUnit, setDispatchingUnit] = useState('');
   const [availableOfficers, setAvailableOfficers] = useState<{id: string, label: string, coverage_city?: string}[]>([]);
+  const [availableOperators, setAvailableOperators] = useState<{id: string, name: string, role: string}[]>([]);
   const [newNote, setNewNote] = useState('');
   const [addingNote, setAddingNote] = useState(false);
 
@@ -151,7 +152,48 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
   };
 
 
-  // Load user's units for assignment restrictions (only for operators)
+  // Fetch available operators via edge function (scope-aware)
+  const fetchAvailableOperators = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('police-operator-management', {
+        body: { action: 'getDispatchersInScope' }
+      });
+      if (error) throw error;
+      const ops = (data?.data || []).map((op: any) => ({
+        id: op.id,
+        name: op.name,
+        role: 'police_dispatcher'
+      }));
+      setAvailableOperators(ops);
+    } catch (error) {
+      console.error('Error fetching operators:', error);
+      // Still show the reassignment UI even if loading operators failed
+      setAvailableOperators([]);
+    }
+  };
+
+  // Reassign dispatcher to another dispatcher in the same city
+  const reassignDispatcher = async (newOperatorId: string) => {
+    try {
+      await supabase.functions.invoke('police-incident-actions', {
+        body: { 
+          action: 'reassignOperator', 
+          incidentId: incident.id, 
+          data: { 
+            newOperatorId,
+            oldOperatorId: incident.assigned_operator_id
+          } 
+        }
+      });
+      toast.success(t('incidentDetails.dispatcherReassignedSuccessfully'));
+      onUpdate?.();
+      loadIncidentLogs();
+    } catch (error) {
+      console.error('Error reassigning dispatcher:', error);
+      toast.error(t('incidentDetails.failedToReassignDispatcher'));
+    }
+  };
+
   const loadUserUnits = async () => {
     if (!user?.id || !isPoliceOperator) return;
     
@@ -297,6 +339,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
   useEffect(() => {
     loadIncidentLogs();
     fetchAvailableOfficers();
+    fetchAvailableOperators();
     loadUserUnits();
   }, [incident.id, user?.id]);
 
@@ -979,6 +1022,55 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            
+            {/* Dispatcher Reassignment - Only for dispatchers */}
+            {isPoliceDispatcher && (
+              <div>
+                <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  {t('incidentDetails.reassignDispatcher')}
+                </label>
+                <div className="mt-2 space-y-3">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Select 
+                      value="" 
+                      onValueChange={(operatorId) => {
+                        if (operatorId && operatorId !== incident.assigned_operator_id) {
+                          reassignDispatcher(operatorId);
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="flex-1 bg-background border border-input min-w-0">
+                        <SelectValue placeholder={t('incidentDetails.selectDispatcherToReassign')} />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border border-input z-50">
+                        {availableOperators.length === 0 ? (
+                          <SelectItem value="no-operators" disabled>
+                            {t('incidentDetails.noOtherOperatorsOnline')}
+                          </SelectItem>
+                        ) : (
+                          availableOperators
+                            .filter(op => op.id !== incident.assigned_operator_id)
+                            .map((operator) => (
+                              <SelectItem key={operator.id} value={operator.id}>
+                                <div className="flex items-center gap-2">
+                                  <span className="font-medium">{operator.name}</span>
+                                  <Badge variant="outline" className="text-xs">
+                                    {operator.role.replace('police_', '')}
+                                  </Badge>
+                                </div>
+                              </SelectItem>
+                            ))
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {t('incidentDetails.reassignDispatcherHelp')}
+                  </p>
+                </div>
+              </div>
+            )}
             
             <div>
               <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
