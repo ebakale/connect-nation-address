@@ -133,8 +133,15 @@ export const UnitLeadershipDashboard: React.FC = () => {
           return;
         }
         query = query.in('id', unitIds);
+      } else {
+        // For supervisors, filter units based on their geographic scope
+        const geographicScopes = getGeographicScope();
+        if (geographicScopes.length > 0) {
+          // Apply geographic filters - try both city and region fields
+          // Since we can't distinguish between city/region in scope_value, we filter on both
+          query = query.or(`coverage_city.in.(${geographicScopes.join(',')}),coverage_region.in.(${geographicScopes.join(',')})`);
+        }
       }
-      // Note: Supervisors will automatically see only units in their geographic scope due to RLS policies
 
       const { data, error } = await query.order('unit_code');
 
