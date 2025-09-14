@@ -41,8 +41,57 @@ serve(async (req) => {
 
     console.log(`Incident location: ${incident.region}, ${incident.city}`);
 
-    // First, try to find regional police supervisor for the incident location
-    const { data: regionalSupervisors, error: supervisorError } = await supabase
+    // Find available dispatchers first for direct assignment
+    const { data: availableDispatchers } = await supabase
+      .from('emergency_operator_sessions')
+      .select(`
+        operator_id,
+        profiles!emergency_operator_sessions_operator_id_fkey (
+          user_id,
+          full_name,
+          email
+        )
+      `)
+      .eq('status', 'active')
+      .is('session_end', null);
+
+    let assignedDispatcher = null;
+    let availableDispatchersList = [];
+
+    if (availableDispatchers) {
+      for (const session of availableDispatchers) {
+        const { data: userRoles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.operator_id);
+
+        const isDispatcher = userRoles?.some(role => role.role === 'police_dispatcher');
+        if (isDispatcher) {
+          availableDispatchersList.push({
+            user_id: session.operator_id,
+            profiles: session.profiles
+          });
+        }
+      }
+
+      // Auto-assign to first available dispatcher (in practice, use load balancing)
+      if (availableDispatchersList.length > 0) {
+        assignedDispatcher = availableDispatchersList[0];
+        console.log(`Auto-assigned to dispatcher: ${assignedDispatcher.profiles.full_name}`);
+        
+        // Update incident with assigned dispatcher
+        await supabase
+          .from('emergency_incidents')
+          .update({
+            assigned_operator_id: assignedDispatcher.user_id,
+            status: 'dispatched'
+          })
+          .eq('id', incidentId);
+      }
+    }
+
+    // Find supervisors for oversight notifications (not assignment)
+    const { data: regionalSupervisors } = await supabase
       .from('user_roles')
       .select(`
         user_id,
@@ -59,84 +108,57 @@ serve(async (req) => {
       .eq('user_role_metadata.scope_type', 'region')
       .eq('user_role_metadata.scope_value', incident.region || 'Litoral');
 
-    let primarySupervisor = null;
-    if (!supervisorError && regionalSupervisors && regionalSupervisors.length > 0) {
-      // Check if any regional supervisor is currently active
-      const { data: activeSupervisor } = await supabase
+    let oversightSupervisors = [];
+    if (regionalSupervisors && regionalSupervisors.length > 0) {
+      // Get active regional supervisors for oversight
+      const { data: activeSupervisors } = await supabase
         .from('emergency_operator_sessions')
         .select('operator_id')
         .eq('status', 'active')
         .is('session_end', null)
-        .in('operator_id', regionalSupervisors.map(s => s.user_id))
-        .limit(1)
-        .single();
+        .in('operator_id', regionalSupervisors.map(s => s.user_id));
 
-      if (activeSupervisor) {
-        primarySupervisor = regionalSupervisors.find(s => s.user_id === activeSupervisor.operator_id);
-        console.log(`Found active regional supervisor: ${primarySupervisor.profiles.full_name}`);
-      }
-    }
-
-    // If no regional supervisor available, find any active supervisor or dispatcher
-    if (!primarySupervisor) {
-      console.log('No regional supervisor available, finding backup supervisor/dispatcher');
-      
-      const { data: backupSupervisors } = await supabase
-        .from('emergency_operator_sessions')
-        .select(`
-          operator_id,
-          profiles!emergency_operator_sessions_operator_id_fkey (
-            user_id,
-            full_name,
-            email
-          )
-        `)
-        .eq('status', 'active')
-        .is('session_end', null);
-
-      if (backupSupervisors) {
-        for (const session of backupSupervisors) {
-          const { data: userRoles } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', session.operator_id);
-
-          const isSupervisorOrDispatcher = userRoles?.some(role => 
-            ['police_supervisor', 'police_dispatcher', 'police_admin'].includes(role.role)
-          );
-
-          if (isSupervisorOrDispatcher) {
-            primarySupervisor = {
-              user_id: session.operator_id,
-              profiles: session.profiles
-            };
-            console.log(`Using backup supervisor/dispatcher: ${primarySupervisor.profiles.full_name}`);
-            break;
-          }
-        }
+      if (activeSupervisors) {
+        oversightSupervisors = regionalSupervisors.filter(s => 
+          activeSupervisors.some(as => as.operator_id === s.user_id)
+        );
+        console.log(`Found ${oversightSupervisors.length} supervisors for oversight notifications`);
       }
     }
 
     const notifications = [];
-    let primaryNotified = false;
+    let dispatcherNotified = false;
 
-    // Notify primary supervisor first
-    if (primarySupervisor) {
+    // Notify assigned dispatcher (primary handling)
+    if (assignedDispatcher) {
       notifications.push({
-        operator_id: primarySupervisor.user_id,
+        operator_id: assignedDispatcher.user_id,
         incident_id: incidentId,
-        notification_type: 'new_emergency_primary',
+        notification_type: 'incident_assigned',
         priority: priority,
-        role: 'primary_supervisor',
+        role: 'assigned_dispatcher',
         sent_at: new Date().toISOString()
       });
-      primaryNotified = true;
-      console.log(`Primary notification sent to: ${primarySupervisor.profiles.full_name}`);
+      dispatcherNotified = true;
+      console.log(`Primary dispatch notification sent to: ${assignedDispatcher.profiles.full_name}`);
     }
 
-    // For high priority incidents (1-2) or if no supervisor available, also notify all active operators
-    if (priority <= 2 || !primaryNotified) {
-      console.log(`High priority incident (${priority}) or no supervisor - notifying all active operators`);
+    // Notify supervisors for oversight (not assignment)
+    for (const supervisor of oversightSupervisors) {
+      notifications.push({
+        operator_id: supervisor.user_id,
+        incident_id: incidentId,
+        notification_type: 'incident_oversight',
+        priority: priority,
+        role: 'oversight_supervisor',
+        sent_at: new Date().toISOString()
+      });
+      console.log(`Oversight notification sent to supervisor: ${supervisor.profiles.full_name}`);
+    }
+
+    // For critical incidents (priority 4+) or if no dispatcher available, notify all available staff
+    if (priority >= 4 || !dispatcherNotified) {
+      console.log(`Critical incident (${priority}) or no dispatcher - notifying all available staff`);
       
       const { data: allActiveSessions } = await supabase
         .from('emergency_operator_sessions')
@@ -153,10 +175,9 @@ serve(async (req) => {
 
       if (allActiveSessions) {
         for (const session of allActiveSessions) {
-          // Skip if already notified as primary supervisor
-          if (primaryNotified && session.operator_id === primarySupervisor.user_id) {
-            continue;
-          }
+          // Skip if already notified
+          const alreadyNotified = notifications.some(n => n.operator_id === session.operator_id);
+          if (alreadyNotified) continue;
 
           const { data: userRoles } = await supabase
             .from('user_roles')
@@ -171,9 +192,9 @@ serve(async (req) => {
             notifications.push({
               operator_id: session.operator_id,
               incident_id: incidentId,
-              notification_type: priority <= 2 ? 'high_priority_emergency' : 'backup_notification',
+              notification_type: priority >= 4 ? 'critical_emergency' : 'backup_notification',
               priority: priority,
-              role: 'backup_operator',
+              role: 'backup_staff',
               sent_at: new Date().toISOString()
             });
           }
@@ -190,14 +211,15 @@ serve(async (req) => {
     // For demonstration, we'll log the notifications
     console.log('Would send notifications to operators:', notifications);
 
-    // Update incident with notification timestamp only - leave status as 'reported'
-    await supabase
-      .from('emergency_incidents')
-      .update({
-        dispatched_at: new Date().toISOString()
-        // Remove automatic status change - operators should manually dispatch
-      })
-      .eq('id', incidentId);
+    // Update incident with notification timestamp - status already set if dispatcher assigned
+    if (!assignedDispatcher) {
+      await supabase
+        .from('emergency_incidents')
+        .update({
+          dispatched_at: new Date().toISOString()
+        })
+        .eq('id', incidentId);
+    }
 
     // Log the notification
     await supabase
@@ -207,7 +229,9 @@ serve(async (req) => {
         user_id: '00000000-0000-0000-0000-000000000000', // System user
         action: 'operators_notified',
         details: {
-          operators_notified: activeOperators.length,
+          dispatchers_notified: availableDispatchersList.length,
+          supervisors_notified: oversightSupervisors.length,
+          assigned_dispatcher: assignedDispatcher?.user_id || null,
           priority: priority,
           emergency_type: emergencyType
         }
@@ -219,7 +243,8 @@ serve(async (req) => {
       priority: priority,
       type: emergencyType,
       timestamp: new Date().toISOString(),
-      operators_available: activeOperators.length
+      dispatchers_available: availableDispatchersList.length,
+      assigned_dispatcher: assignedDispatcher?.profiles.full_name || 'None available'
     };
 
     console.log('Dispatch system integration payload:', dispatchPayload);
@@ -227,9 +252,10 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: true,
-        operatorsNotified: activeOperators.length,
+        dispatchersNotified: availableDispatchersList.length,
+        assignedDispatcher: assignedDispatcher?.profiles.full_name || null,
         incidentNumber: incidentNumber,
-        dispatchStatus: 'notified' // All incidents start as reported, not dispatched
+        dispatchStatus: assignedDispatcher ? 'dispatched' : 'notified'
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
