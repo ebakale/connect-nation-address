@@ -112,7 +112,7 @@ export const PoliceAdminDashboard = () => {
       });
     } catch (error) {
       console.error('Error fetching police stats:', error);
-      toast.error(t('policeAdminDashboard.failedToLoadStats'));
+      toast.error(t('emergency:policeAdminDashboard.failedToLoadStats'));
     } finally {
       setLoading(false);
     }
@@ -125,12 +125,12 @@ export const PoliceAdminDashboard = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-destructive">
             <Shield className="h-5 w-5" />
-            {t('policeAdminDashboard.accessDenied')}
+            {t('emergency:policeAdminDashboard.accessDenied')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            {t('policeAdminDashboard.accessDeniedMessage')}
+            {t('emergency:policeAdminDashboard.accessDeniedMessage')}
           </p>
         </CardContent>
       </Card>
@@ -159,7 +159,11 @@ export const PoliceAdminDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{t('emergency:policeAdminDashboard.totalOfficers')}</CardTitle>
-...
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalOfficers}</div>
+            <p className="text-xs text-muted-foreground">
               {stats.activeOperators} {t('emergency:policeAdminDashboard.currentlyActive')}
             </p>
           </CardContent>
@@ -168,7 +172,11 @@ export const PoliceAdminDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{t('emergency:policeAdminDashboard.policeUnits')}</CardTitle>
-...
+            <Radio className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalUnits}</div>
+            <p className="text-xs text-muted-foreground">
               {stats.activeUnits} {t('emergency:policeAdminDashboard.availableForDeployment')}
             </p>
           </CardContent>
@@ -177,7 +185,11 @@ export const PoliceAdminDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{t('emergency:totalIncidents')}</CardTitle>
-...
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalIncidents}</div>
+            <p className="text-xs text-muted-foreground">
               {stats.activeIncidents} {t('emergency:active')}
             </p>
           </CardContent>
@@ -186,7 +198,11 @@ export const PoliceAdminDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{t('emergency:policeAdminDashboard.avgResponseTimeTitle')}</CardTitle>
-...
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.avgResponseTime}m</div>
+            <p className="text-xs text-muted-foreground">
               {t('emergency:policeAdminDashboard.last30Days')}
             </p>
           </CardContent>

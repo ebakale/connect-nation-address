@@ -156,7 +156,7 @@ const UnitManagement: React.FC = () => {
       setUnits(unitsWithMembers);
     } catch (error) {
       console.error('Error fetching units:', error);
-      toast.error(t('unitManagement.messages.failedToFetchUnits'));
+      toast.error(t('emergency:unitManagement.messages.failedToFetchUnits'));
     } finally {
       setLoading(false);
     }
@@ -406,7 +406,7 @@ const UnitManagement: React.FC = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="unit_type">{t('emergency:unitManagement.unitType')}</Label>
+                <Label htmlFor="unit_type">{t('emergency:unitManagement.policeUnitType')}</Label>
                 <Select value={unitForm.unit_type} onValueChange={(value) => setUnitForm({ ...unitForm, unit_type: value })}>
                   <SelectTrigger>
                     <SelectValue />
@@ -693,7 +693,7 @@ const UnitManagement: React.FC = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit_unit_type">{t('emergency:unitManagement.unitType')}</Label>
+              <Label htmlFor="edit_unit_type">{t('emergency:unitManagement.policeUnitType')}</Label>
               <Select value={unitForm.unit_type} onValueChange={(value) => setUnitForm({ ...unitForm, unit_type: value })}>
                 <SelectTrigger>
                   <SelectValue />
