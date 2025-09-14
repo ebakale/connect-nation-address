@@ -1626,5 +1626,7 @@
       "title": "Error",
       "failedToFetch": "Error al obtener datos de unidades"
     }
-  }
+  },
+  "emergencyUnitAssigned": "Unidad de emergencia asignada",
+  "unitNotAssigned": "Unidad no asignada"
 }

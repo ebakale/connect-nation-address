@@ -1442,5 +1442,7 @@
       "title": "Erreur",
       "failedToFetch": "Échec de récupération des données des unités"
     }
-  }
+  },
+  "emergencyUnitAssigned": "Unité d'urgence assignée",
+  "unitNotAssigned": "Unité non assignée"
 }
