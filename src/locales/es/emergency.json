@@ -1629,5 +1629,10 @@
   },
   "emergencyUnitAssigned": "Unidad de emergencia asignada",
   "unitNotAssigned": "Unidad no asignada",
-  "needUnitAssignment": "necesitan asignación de unidad"
+  "needUnitAssignment": "necesitan asignación de unidad",
+  "reassignDispatcher": "Reasignar a Otro Despachador",
+  "selectDispatcherToReassign": "Seleccionar despachador para reasignar",
+  "reassignDispatcherHelp": "Solo los despachadores en la misma ciudad pueden ser asignados a este incidente",
+  "dispatcherReassignedSuccessfully": "Incidente reasignado al despachador exitosamente",
+  "failedToReassignDispatcher": "Error al reasignar despachador"
 }

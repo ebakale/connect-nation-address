@@ -1629,5 +1629,10 @@
   },
   "emergencyUnitAssigned": "Emergency Unit Assigned",
   "unitNotAssigned": "Unit not assigned",
-  "needUnitAssignment": "need unit assignment"
+  "needUnitAssignment": "need unit assignment",
+  "reassignDispatcher": "Reassign to Another Dispatcher",
+  "selectDispatcherToReassign": "Select dispatcher to reassign to",
+  "reassignDispatcherHelp": "Only dispatchers in the same city can be assigned to this incident",
+  "dispatcherReassignedSuccessfully": "Incident reassigned to dispatcher successfully",
+  "failedToReassignDispatcher": "Failed to reassign dispatcher"
 }

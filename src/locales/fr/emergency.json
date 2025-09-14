@@ -1445,5 +1445,10 @@
   },
   "emergencyUnitAssigned": "Unité d'urgence assignée",
   "unitNotAssigned": "Unité non assignée",
-  "needUnitAssignment": "ont besoin d'assignation d'unité"
+  "needUnitAssignment": "ont besoin d'assignation d'unité",
+  "reassignDispatcher": "Réassigner à un Autre Répartiteur",
+  "selectDispatcherToReassign": "Sélectionner un répartiteur à réassigner",
+  "reassignDispatcherHelp": "Seuls les répartiteurs de la même ville peuvent être assignés à cet incident",
+  "dispatcherReassignedSuccessfully": "Incident réassigné au répartiteur avec succès",
+  "failedToReassignDispatcher": "Échec de la réassignation du répartiteur"
 }

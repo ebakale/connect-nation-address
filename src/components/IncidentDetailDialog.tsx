@@ -184,6 +184,28 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
     }
   };
 
+  // Reassign dispatcher to another dispatcher in the same city
+  const reassignDispatcher = async (newOperatorId: string) => {
+    try {
+      await supabase.functions.invoke('police-incident-actions', {
+        body: { 
+          action: 'reassignOperator', 
+          incidentId: incident.id, 
+          data: { 
+            newOperatorId,
+            oldOperatorId: incident.assigned_operator_id
+          } 
+        }
+      });
+      toast.success(t('incidentDetails.dispatcherReassignedSuccessfully'));
+      onUpdate?.();
+      loadIncidentLogs();
+    } catch (error) {
+      console.error('Error reassigning dispatcher:', error);
+      toast.error(t('incidentDetails.failedToReassignDispatcher'));
+    }
+  };
+
   // Load user's units for assignment restrictions (only for operators)
   const loadUserUnits = async () => {
     if (!user?.id || !isPoliceOperator) return;
@@ -1037,6 +1059,49 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                 </div>
               )}
             </div>
+
+            {/* Dispatcher Reassignment - Only for dispatchers */}
+            {isPoliceDispatcher && incident.assigned_operator_id && availableOperators.length > 0 && (
+              <div>
+                <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  {t('incidentDetails.reassignDispatcher')}
+                </label>
+                <div className="mt-2 space-y-3">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Select 
+                      value="" 
+                      onValueChange={(operatorId) => {
+                        if (operatorId && operatorId !== incident.assigned_operator_id) {
+                          reassignDispatcher(operatorId);
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="flex-1 bg-background border border-input min-w-0">
+                        <SelectValue placeholder={t('incidentDetails.selectDispatcherToReassign')} />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border border-input z-50">
+                        {availableOperators
+                          .filter(op => op.id !== incident.assigned_operator_id)
+                          .map((operator) => (
+                            <SelectItem key={operator.id} value={operator.id}>
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium">{operator.name}</span>
+                                <Badge variant="outline" className="text-xs">
+                                  {operator.role.replace('police_', '')}
+                                </Badge>
+                              </div>
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {t('incidentDetails.reassignDispatcherHelp')}
+                  </p>
+                </div>
+              </div>
+            )}
             
             <div>
               <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
