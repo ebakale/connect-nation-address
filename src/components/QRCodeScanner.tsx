@@ -68,6 +68,8 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
               title: "QR Code Scanned",
               description: `Found address: ${result.data}`,
             });
+            // Close the scanner after successful scan
+            stopScanner();
             setIsOpen(false);
           } else {
             toast({
