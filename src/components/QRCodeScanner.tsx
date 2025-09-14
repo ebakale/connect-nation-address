@@ -25,14 +25,15 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
   const { t } = useTranslation('common');
 
   useEffect(() => {
-    if (isOpen && videoRef.current) {
+    if (!isOpen) return;
+
+    // Delay to ensure the dialog and video element are mounted
+    const timer = setTimeout(() => {
       startScanner();
-    }
-    
+    }, 150);
+
     return () => {
-      if (qrScanner) {
-        qrScanner.destroy();
-      }
+      clearTimeout(timer);
     };
   }, [isOpen]);
 
@@ -42,12 +43,15 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
       setIsScanning(true);
       
       if (!videoRef.current) {
-        throw new Error('Video element not available');
+        // If the video element isn't mounted yet, retry shortly
+        setTimeout(startScanner, 120);
+        return;
       }
 
-      // Check if camera is available
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      console.log('Camera access granted, stream:', stream);
+      // Check if camera is available (prefer back camera on mobile)
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: { ideal: 'environment' } }
+      });
       
       // Stop the test stream
       stream.getTracks().forEach(track => track.stop());
