@@ -562,18 +562,18 @@ const UnitManagement: React.FC = () => {
                       <Edit className="h-4 w-4" />
                       <span className="ml-1 hidden sm:inline">{t('emergency:unitManagement.edit')}</span>
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => {
-                        setSelectedUnit(unit);
-                        setShowDeleteDialog(true);
-                      }}
-                      className="text-destructive hover:text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      <span className="ml-1 hidden sm:inline">{t('emergency:unitManagement.delete')}</span>
-                    </Button>
+                     <Button 
+                       variant="outline" 
+                       size="sm" 
+                       onClick={() => {
+                         setSelectedUnit(unit);
+                         setShowDeleteDialog(true);
+                       }}
+                       className="text-destructive hover:text-destructive flex-shrink-0 min-w-0"
+                     >
+                       <Trash2 className="h-4 w-4 flex-shrink-0" />
+                       <span className="ml-1 hidden sm:inline truncate">{t('emergency:unitManagement.delete')}</span>
+                     </Button>
                   </div>
                 </div>
               </div>
