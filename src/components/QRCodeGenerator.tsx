@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Card, CardContent } from '@/components/ui/card';
-import { QrCode, Download, Share, Mail, MessageCircle, Smartphone, Copy } from 'lucide-react';
+import { QrCode, Download, Share, Mail, MessageCircle, Copy, FileImage } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -90,26 +90,43 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
     });
   };
 
-  const shareViaEmail = () => {
+  const shareViaEmail = async () => {
+    if (!qrDataUrl) {
+      await generateQRCode();
+    }
+    
     const subject = encodeURIComponent(`Address QR Code - ${uac}`);
     const body = encodeURIComponent(
-      `Here's the address QR code:\n\nUAC: ${uac}\n${addressText ? `Address: ${addressText}\n` : ''}\nScan this QR code to navigate to the address.`
+      `Here's the address QR code:\n\nUAC: ${uac}\n${addressText ? `Address: ${addressText}\n` : ''}\nQR Code Image: ${qrDataUrl}\n\nScan this QR code to navigate to the address.`
     );
     window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
   };
 
-  const shareViaWhatsApp = () => {
-    const text = encodeURIComponent(
-      `Address QR Code - UAC: ${uac}\n${addressText ? `Address: ${addressText}\n` : ''}Scan the QR code to navigate to this address.`
-    );
-    window.open(`https://wa.me/?text=${text}`, '_blank');
+  const downloadAndShare = async () => {
+    if (!qrDataUrl) {
+      await generateQRCode();
+    }
+    
+    // Create a temporary link to download the image
+    const link = document.createElement('a');
+    link.download = `address-qr-${uac}.png`;
+    link.href = qrDataUrl;
+    link.click();
+    
+    toast({
+      title: "QR Code Downloaded",
+      description: "Image saved to your device. You can now share it from your files.",
+    });
   };
 
-  const shareViaSMS = () => {
+  const shareViaWhatsApp = () => {
     const text = encodeURIComponent(
-      `Address QR Code - UAC: ${uac}\n${addressText ? `Address: ${addressText}\n` : ''}Scan the QR code to navigate to this address.`
+      `Address QR Code - UAC: ${uac}\n${addressText ? `Address: ${addressText}\n` : ''}\nI'm sharing a QR code for this address. Please save the image that was sent separately and scan it to navigate.`
     );
-    window.open(`sms:?body=${text}`, '_blank');
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+    
+    // Also trigger download so user can manually attach the image
+    downloadAndShare();
   };
 
   const copyShareText = () => {
@@ -185,22 +202,22 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
                   Share
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="center">
+              <DropdownMenuContent align="center" className="w-56">
                 <DropdownMenuItem onClick={shareViaEmail}>
                   <Mail className="h-4 w-4 mr-2" />
-                  Email
+                  Email (with image)
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={shareViaWhatsApp}>
                   <MessageCircle className="h-4 w-4 mr-2" />
-                  WhatsApp
+                  WhatsApp (downloads image)
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={shareViaSMS}>
-                  <Smartphone className="h-4 w-4 mr-2" />
-                  SMS
+                <DropdownMenuItem onClick={downloadAndShare}>
+                  <FileImage className="h-4 w-4 mr-2" />
+                  Save & Share Image
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={copyShareText}>
                   <Copy className="h-4 w-4 mr-2" />
-                  Copy Text
+                  Copy Address Text
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
