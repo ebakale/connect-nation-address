@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import QRCode from 'qrcode';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Card, CardContent } from '@/components/ui/card';
-import { QrCode, Download, Share } from 'lucide-react';
+import { QrCode, Download, Share, Mail, MessageCircle, Smartphone, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -89,32 +90,36 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
     });
   };
 
-  const shareQRCode = async () => {
-    if (!qrDataUrl) {
-      await generateQRCode();
-    }
-    
-    if (navigator.share && qrDataUrl) {
-      try {
-        // Convert data URL to blob
-        const response = await fetch(qrDataUrl);
-        const blob = await response.blob();
-        const file = new File([blob], `address-qr-${uac}.png`, { type: 'image/png' });
-        
-        await navigator.share({
-          title: `Address QR Code - ${uac}`,
-          text: addressText ? `Address: ${addressText}` : `Address UAC: ${uac}`,
-          files: [file]
-        });
-      } catch (error) {
-        console.error('Error sharing QR code:', error);
-        // Fallback to copying UAC
-        copyToClipboard();
-      }
-    } else {
-      // Fallback to copying UAC
-      copyToClipboard();
-    }
+  const shareViaEmail = () => {
+    const subject = encodeURIComponent(`Address QR Code - ${uac}`);
+    const body = encodeURIComponent(
+      `Here's the address QR code:\n\nUAC: ${uac}\n${addressText ? `Address: ${addressText}\n` : ''}\nScan this QR code to navigate to the address.`
+    );
+    window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+  };
+
+  const shareViaWhatsApp = () => {
+    const text = encodeURIComponent(
+      `Address QR Code - UAC: ${uac}\n${addressText ? `Address: ${addressText}\n` : ''}Scan the QR code to navigate to this address.`
+    );
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+  };
+
+  const shareViaSMS = () => {
+    const text = encodeURIComponent(
+      `Address QR Code - UAC: ${uac}\n${addressText ? `Address: ${addressText}\n` : ''}Scan the QR code to navigate to this address.`
+    );
+    window.open(`sms:?body=${text}`, '_blank');
+  };
+
+  const copyShareText = () => {
+    const shareText = `Address QR Code - UAC: ${uac}\n${addressText ? `Address: ${addressText}\n` : ''}Scan the QR code to navigate to this address.`;
+    navigator.clipboard.writeText(shareText).then(() => {
+      toast({
+        title: "Copied",
+        description: "Address information copied to clipboard",
+      });
+    });
   };
 
   const copyToClipboard = () => {
@@ -173,10 +178,32 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
               <Download className="h-4 w-4 mr-2" />
               Download
             </Button>
-            <Button onClick={shareQRCode} variant="outline" size="sm">
-              <Share className="h-4 w-4 mr-2" />
-              Share
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Share className="h-4 w-4 mr-2" />
+                  Share
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center">
+                <DropdownMenuItem onClick={shareViaEmail}>
+                  <Mail className="h-4 w-4 mr-2" />
+                  Email
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={shareViaWhatsApp}>
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  WhatsApp
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={shareViaSMS}>
+                  <Smartphone className="h-4 w-4 mr-2" />
+                  SMS
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={copyShareText}>
+                  <Copy className="h-4 w-4 mr-2" />
+                  Copy Text
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <div className="text-center">
