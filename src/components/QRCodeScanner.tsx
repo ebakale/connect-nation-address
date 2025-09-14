@@ -118,7 +118,13 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
   );
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      if (open) {
+        setIsOpen(true);
+      } else {
+        handleClose();
+      }
+    }}>
       <DialogTrigger asChild>
         {TriggerButton}
       </DialogTrigger>
