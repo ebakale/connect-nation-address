@@ -162,14 +162,15 @@ Deno.serve(async (req) => {
       // Extract from address components (with safety check)
       if (components && Array.isArray(components)) {
         for (const component of components) {
-        if (component.types.includes('route') || component.types.includes('street_number')) {
-          street = component.long_name;
-        } else if (component.types.includes('locality') || component.types.includes('administrative_area_level_2')) {
-          city = component.long_name;
-        } else if (component.types.includes('administrative_area_level_1')) {
-          region = component.long_name;
-        } else if (component.types.includes('country')) {
-          country = component.long_name;
+          if (component.types.includes('route') || component.types.includes('street_number')) {
+            street = component.long_name;
+          } else if (component.types.includes('locality') || component.types.includes('administrative_area_level_2')) {
+            city = component.long_name;
+          } else if (component.types.includes('administrative_area_level_1')) {
+            region = component.long_name;
+          } else if (component.types.includes('country')) {
+            country = component.long_name;
+          }
         }
       }
 
@@ -471,4 +472,3 @@ Deno.serve(async (req) => {
       }
     );
   }
-});
