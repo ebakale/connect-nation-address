@@ -1063,7 +1063,7 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
             </div>
 
             {/* Dispatcher Reassignment - Only for dispatchers */}
-            {isPoliceDispatcher && incident.assigned_operator_id && availableOperators.length > 0 && (
+            {isPoliceDispatcher && (
               <div>
                 <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                   <Users className="h-4 w-4" />
