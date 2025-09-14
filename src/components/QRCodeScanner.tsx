@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import QrScanner from '@/lib/vendor/qr-scanner.min.js';
+import { Camera as CapacitorCamera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Capacitor } from '@capacitor/core';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Card, CardContent } from '@/components/ui/card';
@@ -43,8 +45,27 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
       setError('');
       setIsScanning(true);
       
+      // Check if running on native platform
+      if (Capacitor.isNativePlatform()) {
+        // Use Capacitor Camera for native platforms
+        const image = await CapacitorCamera.getPhoto({
+          quality: 90,
+          allowEditing: false,
+          resultType: CameraResultType.DataUrl,
+          source: CameraSource.Camera,
+          width: 1920,
+          height: 1920
+        });
+
+        if (image.dataUrl) {
+          // Process the image for QR code detection
+          await processImageForQR(image.dataUrl);
+        }
+        return;
+      }
+
+      // Web platform - use existing QR scanner
       if (!videoRef.current) {
-        // If the video element isn't mounted yet, retry shortly
         setTimeout(startScanner, 120);
         return;
       }
@@ -113,6 +134,48 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
         description: errorMessage,
         variant: "destructive",
       });
+    }
+  };
+
+  const processImageForQR = async (dataUrl: string) => {
+    try {
+      // Create an image element to process with QR scanner
+      const img = new Image();
+      img.onload = async () => {
+        try {
+          const result = await QrScanner.scanImage(img, { returnDetailedScanResult: true });
+          console.log('QR code detected from image:', result.data);
+          
+          if (isValidUAC(result.data)) {
+            onScanResult(result.data.trim().toUpperCase());
+            toast({
+              title: "QR Code Scanned",
+              description: `Found address: ${result.data}`,
+            });
+            setIsOpen(false);
+          } else {
+            toast({
+              title: "Invalid QR Code",
+              description: "This doesn't appear to be an address UAC",
+              variant: "destructive",
+            });
+          }
+        } catch (err) {
+          console.error('No QR code found in image:', err);
+          toast({
+            title: "No QR Code Found",
+            description: "Please try again and make sure the QR code is clearly visible",
+            variant: "destructive",
+          });
+        } finally {
+          setIsScanning(false);
+        }
+      };
+      img.src = dataUrl;
+    } catch (err) {
+      console.error('Error processing image:', err);
+      setError('Failed to process image');
+      setIsScanning(false);
     }
   };
 
