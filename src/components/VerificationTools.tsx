@@ -242,25 +242,25 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
 
       <Tabs defaultValue="search" className="w-full">
         <TabsList className="flex flex-wrap w-full gap-1 h-auto p-1 justify-start">
-          <TabsTrigger value="search" className="text-xs sm:text-sm p-2 sm:p-3 flex-1 min-w-0">
-            <span className="hidden sm:inline truncate">{t('admin:allAddresses')}</span>
-            <span className="sm:hidden truncate">{t('admin:all')}</span>
+          <TabsTrigger value="search" className="text-xs sm:text-sm p-2 sm:p-3 whitespace-nowrap">
+            <span className="hidden sm:inline">{t('admin:allAddresses')}</span>
+            <span className="sm:hidden">{t('admin:all')}</span>
           </TabsTrigger>
-          <TabsTrigger value="individual" className="text-xs sm:text-sm p-2 sm:p-3 flex-1 min-w-0">
-            <span className="hidden sm:inline truncate">{t('admin:individualVerify')}</span>
-            <span className="sm:hidden truncate">Verify</span>
+          <TabsTrigger value="individual" className="text-xs sm:text-sm p-2 sm:p-3 whitespace-nowrap">
+            <span className="hidden sm:inline">{t('admin:individualVerify')}</span>
+            <span className="sm:hidden">Verify</span>
           </TabsTrigger>
-          <TabsTrigger value="verify" className="text-xs sm:text-sm p-2 sm:p-3 flex-1 min-w-0">
-            <span className="hidden lg:inline truncate">{t('admin:verificationToolsTab')}</span>
-            <span className="lg:hidden truncate">{t('admin:tools')}</span>
+          <TabsTrigger value="verify" className="text-xs sm:text-sm p-2 sm:p-3 whitespace-nowrap">
+            <span className="hidden lg:inline">{t('admin:verificationToolsTab')}</span>
+            <span className="lg:hidden">{t('admin:tools')}</span>
           </TabsTrigger>
-          <TabsTrigger value="flagged" className="text-xs sm:text-sm p-2 sm:p-3 flex-1 min-w-0">
-            <span className="hidden sm:inline truncate">{t('admin:flaggedAddresses')}</span>
-            <span className="sm:hidden truncate">{t('admin:flagged')}</span>
+          <TabsTrigger value="flagged" className="text-xs sm:text-sm p-2 sm:p-3 whitespace-nowrap">
+            <span className="hidden sm:inline">{t('admin:flaggedAddresses')}</span>
+            <span className="sm:hidden">{t('admin:flagged')}</span>
           </TabsTrigger>
-          <TabsTrigger value="quality" className="text-xs sm:text-sm p-2 sm:p-3 flex-1 min-w-0">
-            <span className="hidden sm:inline truncate">{t('admin:qualityControl')}</span>
-            <span className="sm:hidden truncate">{t('admin:quality')}</span>
+          <TabsTrigger value="quality" className="text-xs sm:text-sm p-2 sm:p-3 whitespace-nowrap">
+            <span className="hidden sm:inline">{t('admin:qualityControl')}</span>
+            <span className="sm:hidden">{t('admin:quality')}</span>
           </TabsTrigger>
         </TabsList>
 
