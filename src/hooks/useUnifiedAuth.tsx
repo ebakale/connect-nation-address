@@ -132,12 +132,13 @@ export const UnifiedAuthProvider = ({ children }: { children: ReactNode }) => {
         .eq('user_id', onlineAuth.user.id)
         .single();
 
-      // Fetch user role
+      // Fetch one user role (avoid 406 when multiple roles)
       const { data: userRole } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', onlineAuth.user.id)
-        .single();
+        .limit(1)
+        .maybeSingle();
 
       // Sync to local storage
       const { localAuth } = await import('@/lib/localAuth');
