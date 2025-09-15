@@ -443,7 +443,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
 
                       {/* Recommended Actions */}
                       {(request.verification_analysis.recommendations || request.verification_recommendations) && (
-                        <div className="bg-blue-50 border border-blue-200 p-3 rounded text-[10px]">
+                        <div className="bg-blue-50 border border-blue-200 p-3 rounded text-xs">
                           <h4 className="font-medium text-blue-800 mb-2">Recommended Actions</h4>
                           <ul className="text-blue-700 space-y-1">
                             {(request.verification_analysis.recommendations || request.verification_recommendations || []).map((rec, index) => (
