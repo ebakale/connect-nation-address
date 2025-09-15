@@ -160,14 +160,15 @@ async function processBatchVerification(supabase: any, requestIds?: string[]) {
 
 async function analyzeAddressRequest(supabase: any, request: any) {
   // First check for duplicates
-  const { data: duplicateCheck, error: dupError } = await supabase.rpc('check_address_duplicates', {
-    p_latitude: request.latitude,
-    p_longitude: request.longitude,
-    p_street: request.street,
-    p_city: request.city,
-    p_region: request.region,
-    p_country: request.country
-  });
+  const { data: duplicateCheck, error: dupError } = await supabase
+    .rpc('check_address_duplicates', {
+      p_latitude: request.latitude,
+      p_longitude: request.longitude,
+      p_street: request.street,
+      p_city: request.city,
+      p_region: request.region,
+      p_country: request.country
+    });
 
   if (!openAIApiKey) {
     // Fallback analysis without AI
@@ -245,7 +246,7 @@ Only respond with valid JSON.`;
     return analysis;
   } catch (error) {
     console.error('AI analysis failed, using fallback:', error);
-    return createBasicAnalysis(request);
+    return createBasicAnalysis(request, duplicateCheck);
   }
 }
 
