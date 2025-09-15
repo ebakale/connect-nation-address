@@ -159,9 +159,19 @@ async function processBatchVerification(supabase: any, requestIds?: string[]) {
 }
 
 async function analyzeAddressRequest(request: any) {
+  // First check for duplicates
+  const { data: duplicateCheck, error: dupError } = await supabase.rpc('check_address_duplicates', {
+    p_latitude: request.latitude,
+    p_longitude: request.longitude,
+    p_street: request.street,
+    p_city: request.city,
+    p_region: request.region,
+    p_country: request.country
+  });
+
   if (!openAIApiKey) {
     // Fallback analysis without AI
-    return createBasicAnalysis(request);
+    return createBasicAnalysis(request, duplicateCheck);
   }
 
   const prompt = `Analyze this address request for verification:
@@ -177,12 +187,21 @@ Address Details:
 - Description: ${request.description || 'Not provided'}
 - Justification: ${request.justification}
 
+Duplicate Check Results:
+${duplicateCheck ? `
+- Has Duplicates: ${duplicateCheck.has_duplicates}
+- Coordinate Matches: ${duplicateCheck.coordinate_duplicates?.count || 0}
+- Address Matches: ${duplicateCheck.address_duplicates?.count || 0}
+- Details: ${JSON.stringify(duplicateCheck, null, 2)}
+` : 'No duplicate check performed'}
+
 Analyze for:
 1. Coordinate validity (realistic for the location)
 2. Address completeness and consistency
 3. Geographic accuracy
 4. Potential fraud indicators
 5. Data quality
+6. Duplicate address concerns
 
 Provide a JSON response with:
 - overallScore (0-100)
@@ -221,6 +240,7 @@ Only respond with valid JSON.`;
     // Add timestamp and request metadata
     analysis.analyzedAt = new Date().toISOString();
     analysis.method = 'ai_analysis';
+    analysis.duplicateCheck = duplicateCheck;
     
     return analysis;
   } catch (error) {
@@ -229,7 +249,7 @@ Only respond with valid JSON.`;
   }
 }
 
-function createBasicAnalysis(request: any) {
+function createBasicAnalysis(request: any, duplicateCheck?: any) {
   let score = 70; // Base score
   const recommendations = [];
 
@@ -252,6 +272,17 @@ function createBasicAnalysis(request: any) {
     recommendations.push('Missing description or justification');
   }
 
+  // Check for duplicates
+  if (duplicateCheck?.has_duplicates) {
+    score -= 25;
+    if (duplicateCheck.coordinate_duplicates?.count > 0) {
+      recommendations.push(`Found ${duplicateCheck.coordinate_duplicates.count} addresses with similar coordinates`);
+    }
+    if (duplicateCheck.address_duplicates?.count > 0) {
+      recommendations.push(`Found ${duplicateCheck.address_duplicates.count} addresses with identical street address`);
+    }
+  }
+
   return {
     overallScore: Math.max(0, score),
     coordinateValidity: request.latitude && request.longitude ? 85 : 20,
@@ -261,13 +292,25 @@ function createBasicAnalysis(request: any) {
     recommendations,
     reasoning: 'Basic rule-based analysis (AI analysis unavailable)',
     analyzedAt: new Date().toISOString(),
-    method: 'basic_rules'
+    method: 'basic_rules',
+    duplicateCheck
   };
 }
 
 function determineVerificationDecision(analysis: any) {
   const score = analysis.overallScore;
   const fraudRisk = analysis.fraudRisk || 0;
+  const hasDuplicates = analysis.duplicateCheck?.has_duplicates || false;
+
+  // If duplicates found, require manual review
+  if (hasDuplicates) {
+    return {
+      action: 'manual_review',
+      requiresManualReview: true,
+      confidence: 'high',
+      reasoning: 'Potential duplicate addresses detected - manual review required'
+    };
+  }
 
   if (score >= 85 && fraudRisk < 30) {
     return {

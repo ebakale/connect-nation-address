@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AddressRejectionDialog } from "./AddressRejectionDialog";
 import { AddressMapDialog } from "./AddressMapDialog";
+import { DuplicateAddressDialog } from "./DuplicateAddressDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -49,6 +50,9 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
   const [selectedMapAddress, setSelectedMapAddress] = useState<AddressRequest | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingRequest, setEditingRequest] = useState<EditableRequest | null>(null);
+  const [duplicateDialogOpen, setDuplicateDialogOpen] = useState(false);
+  const [duplicateAnalysis, setDuplicateAnalysis] = useState<any>(null);
+  const [pendingApproval, setPendingApproval] = useState<{requestId: string, updatedData?: Partial<AddressRequest>} | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const requestsPerPage = 5;
 
@@ -57,7 +61,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
   const startIndex = (currentPage - 1) * requestsPerPage;
   const paginatedRequests = requests.slice(startIndex, startIndex + requestsPerPage);
 
-  const handleApprove = async (requestId: string, updatedData?: Partial<AddressRequest>) => {
+  const handleApprove = async (requestId: string, updatedData?: Partial<AddressRequest>, ignoreDuplicates = false) => {
     setProcessing(requestId);
     try {
       // If there are updates, apply them first
@@ -80,20 +84,48 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
         if (updateError) throw updateError;
       }
 
-      const { error } = await supabase.rpc('approve_address_request', {
-        p_request_id: requestId
+      const { data, error } = await supabase.rpc('approve_address_request_with_duplicate_check', {
+        p_request_id: requestId,
+        p_ignore_duplicates: ignoreDuplicates
       });
 
       if (error) throw error;
 
-      toast.success(t('approvedSuccessfully'));
-      onUpdate();
+      const result = data as any;
+      if (result?.success) {
+        toast.success(t('approvedSuccessfully'));
+        onUpdate();
+      } else if (result?.requires_review) {
+        // Show duplicate analysis dialog
+        setDuplicateAnalysis(result.duplicate_analysis);
+        setPendingApproval({ requestId, updatedData });
+        setDuplicateDialogOpen(true);
+      } else {
+        throw new Error(result?.error || 'Approval failed');
+      }
     } catch (error) {
       console.error('Error approving request:', error);
       toast.error(t('failedToApprove'));
     } finally {
       setProcessing(null);
     }
+  };
+
+  const handleProceedWithDuplicates = async () => {
+    if (!pendingApproval) return;
+    
+    setDuplicateDialogOpen(false);
+    setDuplicateAnalysis(null);
+    
+    // Retry with ignore duplicates flag
+    await handleApprove(pendingApproval.requestId, pendingApproval.updatedData, true);
+    setPendingApproval(null);
+  };
+
+  const handleCancelDuplicateApproval = () => {
+    setDuplicateDialogOpen(false);
+    setDuplicateAnalysis(null);
+    setPendingApproval(null);
   };
 
   const handleViewOnMap = (request: AddressRequest) => {
@@ -383,6 +415,16 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
             />
           </DialogContent>
         </Dialog>
+      )}
+
+      {duplicateAnalysis && (
+        <DuplicateAddressDialog
+          isOpen={duplicateDialogOpen}
+          onClose={handleCancelDuplicateApproval}
+          duplicateAnalysis={duplicateAnalysis}
+          onProceedAnyway={handleProceedWithDuplicates}
+          actionLabel="Approve Anyway"
+        />
       )}
     </>
   );

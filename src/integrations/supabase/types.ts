@@ -851,6 +851,26 @@ export type Database = {
         Args: { p_approved_by?: string; p_request_id: string }
         Returns: string
       }
+      approve_address_request_with_duplicate_check: {
+        Args: {
+          p_approved_by?: string
+          p_ignore_duplicates?: boolean
+          p_request_id: string
+        }
+        Returns: Json
+      }
+      check_address_duplicates: {
+        Args: {
+          p_city: string
+          p_country: string
+          p_exclude_id?: string
+          p_latitude: number
+          p_longitude: number
+          p_region: string
+          p_street: string
+        }
+        Returns: Json
+      }
       flag_address_for_review: {
         Args:
           | {

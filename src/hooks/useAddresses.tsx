@@ -118,6 +118,35 @@ export const useAddresses = () => {
         photoUrl = urlData.publicUrl;
       }
 
+      // Check for duplicates before creating
+      const { data: duplicateCheck, error: dupError } = await supabase.rpc('check_address_duplicates', {
+        p_latitude: addressData.latitude,
+        p_longitude: addressData.longitude,
+        p_street: addressData.street,
+        p_city: addressData.city,
+        p_region: addressData.region,
+        p_country: addressData.country
+      });
+
+      if (dupError) {
+        console.warn('Duplicate check failed:', dupError);
+      } else if (duplicateCheck && (duplicateCheck as any).has_duplicates) {
+        const duplicateInfo = duplicateCheck as any;
+        const coordinateDuplicates = duplicateInfo.coordinate_duplicates?.count || 0;
+        const addressDuplicates = duplicateInfo.address_duplicates?.count || 0;
+        
+        const confirmMessage = `Warning: Potential duplicates found:\n- ${coordinateDuplicates} addresses with similar coordinates\n- ${addressDuplicates} addresses with identical street address\n\nDo you want to create this address anyway?`;
+        
+        if (!window.confirm(confirmMessage)) {
+          toast({
+            title: "Creation cancelled",
+            description: "Address creation cancelled due to potential duplicates",
+            variant: "destructive",
+          });
+          return null;
+        }
+      }
+
       // Prepare address data without the photo file
       const { photo, ...addressDataWithoutPhoto } = addressData;
       
