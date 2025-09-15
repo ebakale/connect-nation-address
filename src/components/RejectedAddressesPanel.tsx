@@ -240,11 +240,11 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
                      <AlertTriangle className="h-4 w-4 text-destructive" />
                      <strong className="text-xs text-destructive">{t('rejectionReason')}</strong>
                    </div>
-                   <p className="text-xs text-destructive">{address.rejection_reason}</p>
+                   <p className="text-xs text-destructive">{translateAIComment(address.rejection_reason, t)}</p>
                    {address.rejection_notes && (
                      <div className="mt-2">
                        <strong className="text-xs text-destructive">{t('additionalNotes')}:</strong>
-                       <p className="text-xs text-destructive/80 mt-1">{address.rejection_notes}</p>
+                       <p className="text-xs text-destructive/80 mt-1">{translateAIComment(address.rejection_notes, t)}</p>
                      </div>
                    )}
                 </div>
