@@ -96,7 +96,7 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium">{t('rejectedAddressesCount', { count: rejectedAddresses.length })}</h3>
+        <h3 className="text-base font-medium">{t('rejectedAddressesCount', { count: rejectedAddresses.length })}</h3>
         <Button onClick={fetchRejectedAddresses} variant="outline" size="sm">
           {t('refresh')}
         </Button>
