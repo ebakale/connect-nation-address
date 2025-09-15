@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Search, MapPin, Navigation } from 'lucide-react';
@@ -127,12 +127,13 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
     <div className={cn("w-full max-w-2xl", className)}>
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Input
+          <Textarea
             placeholder={t('searchPlaceholder')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="pr-10"
+            className="pr-10 min-h-[40px]"
+            autoResize
           />
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         </div>
