@@ -469,20 +469,6 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                     </div>
                   )}
 
-                  {/* Recommendations */}
-                  {request.verification_recommendations && request.verification_recommendations.length > 0 && (
-                    <div className="bg-blue-50 border border-blue-200 p-3 rounded">
-                      <span className="text-sm font-medium text-blue-800 block mb-2">Recommended Actions</span>
-                      <ul className="space-y-1">
-                        {request.verification_recommendations.map((rec, index) => (
-                          <li key={index} className="text-xs text-blue-700 flex items-start gap-1">
-                            <span className="text-blue-500 mt-0.5">→</span>
-                            <span>{rec}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
 
                 </div>
               )}
