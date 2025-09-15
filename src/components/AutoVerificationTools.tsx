@@ -234,11 +234,15 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
       {pendingRequests.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center justify-between">
+            <CardTitle>
               <div className="flex items-center gap-2 text-base">
                 <CheckSquare className="h-5 w-5 text-primary" />
                 {t('selectRequestsForAutoVerification')}
               </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="mb-4">
               <Button
                 variant="outline"
                 size="sm"
@@ -248,9 +252,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
               >
                 {selectedRequests.length === pendingRequests.length ? t('deselectAll') : t('selectAll')}
               </Button>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </div>
             {loadingRequests ? (
               <div className="flex items-center justify-center py-8">
                 <Clock className="h-6 w-6 animate-spin text-muted-foreground" />
