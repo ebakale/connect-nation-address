@@ -25,6 +25,8 @@ interface AddressRequest {
   photo_url?: string;
   justification: string;
   created_at: string;
+  flagged?: boolean;
+  requires_manual_review?: boolean;
 }
 
 export function AddressRequestApprovalPanel() {
@@ -36,7 +38,13 @@ export function AddressRequestApprovalPanel() {
     try {
       const { data, error } = await supabase.rpc('get_review_queue');
       if (error) throw error;
-      setAddressRequests(data || []);
+      
+      // Filter out flagged requests and those requiring manual review for the "Requests" tab
+      const filteredRequests = (data || []).filter((request: any) => 
+        !request.flagged && !request.requires_manual_review
+      );
+      
+      setAddressRequests(filteredRequests);
     } catch (error) {
       console.error('Error fetching address requests:', error);
       toast.error(t('failedToLoadRequests'));

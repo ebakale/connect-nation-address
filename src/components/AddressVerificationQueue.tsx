@@ -1,5 +1,5 @@
 import { AddressRequestApprovalPanel } from "./AddressRequestApprovalPanel";
-import { ReviewQueuePanel } from "./ReviewQueuePanel";
+import { ManualReviewPanel } from "./ManualReviewPanel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { CheckSquare, Flag, X } from "lucide-react";
@@ -49,7 +49,7 @@ export function AddressVerificationQueue({ onClose }: AddressVerificationQueuePr
         
         <TabsContent value="review" className="mt-4 max-w-full overflow-hidden">
           <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
-            <ReviewQueuePanel />
+            <ManualReviewPanel />
           </div>
         </TabsContent>
       </Tabs>
