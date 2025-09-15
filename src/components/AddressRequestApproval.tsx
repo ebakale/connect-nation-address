@@ -400,6 +400,21 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                         </div>
                       )}
 
+                      {/* Recommended Actions */}
+                      {(request.verification_analysis.recommendations || request.verification_recommendations) && (
+                        <div className="bg-blue-50 border border-blue-200 p-3 rounded">
+                          <h4 className="text-sm font-medium text-blue-800 mb-2">Recommended Actions</h4>
+                          <ul className="text-sm text-blue-700 space-y-1">
+                            {(request.verification_analysis.recommendations || request.verification_recommendations || []).map((rec, index) => (
+                              <li key={index} className="flex items-start gap-2">
+                                <span className="text-blue-500">•</span>
+                                <span>{rec}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
                       {/* AI Decision */}
                       {request.verification_analysis.decision && (
                         <div className="bg-indigo-50 border border-indigo-200 p-3 rounded">
