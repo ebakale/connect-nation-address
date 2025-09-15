@@ -145,8 +145,8 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
           <Button 
             onClick={handleSearch} 
             disabled={isSearching || !query.trim()}
-            variant="default"
-            className="w-24 sm:w-auto px-3 sm:px-6"
+            variant="outline"
+            size="sm"
           >
             {isSearching ? t('searching') : t('search')}
           </Button>
