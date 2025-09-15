@@ -84,38 +84,42 @@ export function AddressRequestApprovalPanel() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="requests" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="requests" className="relative">
-                <CheckSquare className="h-4 w-4 mr-2" />
-                {t('pendingRequests')}
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1">
+              <TabsTrigger value="requests" className="relative flex-col sm:flex-row text-xs sm:text-sm">
+                <CheckSquare className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">{t('pendingRequests')}</span>
+                <span className="sm:hidden">Pending</span>
                 {addressRequests.length > 0 && (
                   <Badge 
                     variant="secondary" 
-                    className="ml-2 h-5 w-5 rounded-full p-0 text-xs"
+                    className="ml-0 sm:ml-2 mt-1 sm:mt-0 h-4 w-4 sm:h-5 sm:w-5 rounded-full p-0 text-xs"
                   >
                     {addressRequests.length}
                   </Badge>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="manual-review" className="relative">
-                <AlertTriangle className="h-4 w-4 mr-2" />
-                {t('manualReview')}
+              <TabsTrigger value="manual-review" className="relative flex-col sm:flex-row text-xs sm:text-sm">
+                <AlertTriangle className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">{t('manualReview')}</span>
+                <span className="sm:hidden">Review</span>
                 {manualReviewRequests.length > 0 && (
                   <Badge 
                     variant="destructive" 
-                    className="ml-2 h-5 w-5 rounded-full p-0 text-xs"
+                    className="ml-0 sm:ml-2 mt-1 sm:mt-0 h-4 w-4 sm:h-5 sm:w-5 rounded-full p-0 text-xs"
                   >
                     {manualReviewRequests.length}
                   </Badge>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="auto-verify">
-                <Zap className="h-4 w-4 mr-2" />
-                {t('autoVerification')}
+              <TabsTrigger value="auto-verify" className="flex-col sm:flex-row text-xs sm:text-sm">
+                <Zap className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">{t('autoVerification')}</span>
+                <span className="sm:hidden">Auto</span>
               </TabsTrigger>
-              <TabsTrigger value="rejected">
-                <XCircle className="h-4 w-4 mr-2" />
-                {t('rejected')}
+              <TabsTrigger value="rejected" className="flex-col sm:flex-row text-xs sm:text-sm">
+                <XCircle className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">{t('rejected')}</span>
+                <span className="sm:hidden">Rejected</span>
               </TabsTrigger>
             </TabsList>
             
