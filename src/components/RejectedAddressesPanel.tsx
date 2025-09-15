@@ -112,6 +112,8 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
             >
               <div>
                 <div className="space-y-2">
+                  <Badge variant="destructive" className="w-fit">{t('rejectedLabel')}</Badge>
+                  
                   <CardTitle className="text-base flex items-center gap-2">
                     <MapPin className="h-4 w-4" />
                     {address.street}, {address.city}
@@ -123,8 +125,6 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
                       )}
                     </div>
                   </CardTitle>
-                  
-                  <Badge variant="destructive" className="w-fit">{t('rejectedLabel')}</Badge>
                   
                   {/* Compact view when collapsed */}
                   {!isExpanded && (
