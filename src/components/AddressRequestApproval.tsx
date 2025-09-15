@@ -518,7 +518,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                 <Button
                   onClick={() => handleApprove(request.id)}
                   disabled={processing === request.id || autoVerifying === request.id}
-                  className="w-full"
+                  className="w-full text-xs"
                 >
                   {processing === request.id ? t('approving') : t('approve')}
                 </Button>
