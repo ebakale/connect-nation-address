@@ -261,7 +261,7 @@ Only respond with valid JSON.`;
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: 'You are an expert address verification system. Analyze address requests and provide verification scores.' },
           { role: 'user', content: prompt }
@@ -271,6 +271,13 @@ Only respond with valid JSON.`;
     });
 
     const data = await response.json();
+    
+    // Check if OpenAI response has the expected structure
+    if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
+      console.error('Unexpected OpenAI response format:', JSON.stringify(data));
+      throw new Error('Invalid OpenAI response format');
+    }
+    
     const content = data.choices[0].message.content;
     
     // Parse JSON response
