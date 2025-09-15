@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -31,10 +31,13 @@ const UnifiedAuth = () => {
   const { isPoliceRole, loading: roleLoading } = useUserRole();
   const { t } = useTranslation(); // Using i18next directly
 
-  if (user) {
-    if (roleLoading) return null;
-    return <Navigate to={isPoliceRole ? '/police' : '/dashboard'} replace />;
-  }
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user && !roleLoading) {
+      navigate(isPoliceRole ? '/police' : '/dashboard', { replace: true });
+    }
+  }, [user, roleLoading, isPoliceRole, navigate]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
