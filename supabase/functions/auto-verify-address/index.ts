@@ -73,6 +73,18 @@ async function processSingleVerification(supabase: any, requestId: string) {
       p_request_id: requestId
     });
     if (approveError) throw approveError;
+  } else if (decision.action === 'flag') {
+    // Flag the address request for manual review
+    const { error: flagError } = await supabase
+      .from('address_requests')
+      .update({
+        flagged: true,
+        flag_reason: decision.reasoning,
+        flagged_at: new Date().toISOString(),
+        status: 'flagged'
+      })
+      .eq('id', requestId);
+    if (flagError) throw flagError;
   }
 
   return new Response(
@@ -131,6 +143,16 @@ async function processBatchVerification(supabase: any, requestIds?: string[]) {
         });
         approved++;
       } else if (decision.action === 'flag') {
+        // Flag the address request for manual review
+        await supabase
+          .from('address_requests')
+          .update({
+            flagged: true,
+            flag_reason: decision.reasoning,
+            flagged_at: new Date().toISOString(),
+            status: 'flagged'
+          })
+          .eq('id', request.id);
         flagged++;
       } else {
         manualReview++;
