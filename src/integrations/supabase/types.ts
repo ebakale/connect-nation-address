@@ -1005,6 +1005,7 @@ export type Database = {
           photo_url: string
           public: boolean
           region: string
+          requires_manual_review: boolean
           source_type: string
           status: string
           street: string

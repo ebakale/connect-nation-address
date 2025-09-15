@@ -85,6 +85,15 @@ async function processSingleVerification(supabase: any, requestId: string) {
       })
       .eq('id', requestId);
     if (flagError) throw flagError;
+  } else if (decision.action === 'manual_review') {
+    // Update status to pending to ensure it appears in Review tab
+    const { error: reviewError } = await supabase
+      .from('address_requests')
+      .update({
+        status: 'pending'  // Ensure it stays in pending status for manual review
+      })
+      .eq('id', requestId);
+    if (reviewError) throw reviewError;
   }
 
   return new Response(
@@ -154,7 +163,14 @@ async function processBatchVerification(supabase: any, requestIds?: string[]) {
           })
           .eq('id', request.id);
         flagged++;
-      } else {
+      } else if (decision.action === 'manual_review') {
+        // Ensure it stays pending for manual review
+        await supabase
+          .from('address_requests')
+          .update({
+            status: 'pending'
+          })
+          .eq('id', request.id);
         manualReview++;
       }
 
