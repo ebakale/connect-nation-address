@@ -322,16 +322,16 @@ const UnifiedDashboard = () => {
           <div className="space-y-6">
             {/* User greeting */}
             {userProfile && (
-              <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-6">
-                <h2 className="text-2xl font-bold text-foreground mb-2">
+              <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-4">
+                <h2 className="text-xl font-bold text-foreground mb-1">
                   {t('dashboard:welcomeBack', { name: userProfile.full_name })}
                 </h2>
-                <p className="text-muted-foreground mb-4">{t('dashboard:welcomeMessage')}</p>
+                <p className="text-muted-foreground mb-3 text-sm">{t('dashboard:welcomeMessage')}</p>
                 
                 {/* User roles display */}
-                <div className="flex gap-2 mb-4">
+                <div className="flex gap-2 mb-3">
                   {userRoles.map((roleLabel) => (
-                    <Badge key={roleLabel} variant="default">
+                    <Badge key={roleLabel} variant="default" className="text-xs">
                       {roleLabel}
                     </Badge>
                   ))}
@@ -341,7 +341,7 @@ const UnifiedDashboard = () => {
                 {geographicScope.length > 0 && (
                   <div className="flex gap-2">
                     {geographicScope.map((scope) => (
-                      <Badge key={scope} variant="secondary">
+                      <Badge key={scope} variant="secondary" className="text-xs">
                         {scope}
                       </Badge>
                     ))}
