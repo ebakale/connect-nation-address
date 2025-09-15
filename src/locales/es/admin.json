@@ -621,5 +621,21 @@
     "operationalRoles": "Roles Operacionales",
     "policeRoles": "Roles Policiales",
     "systemRoles": "Roles del Sistema"
+  },
+  "pdfContent": {
+    "introductionText": "El Sistema Nacional de Direcciones Digitales es una plataforma integral diseñada para modernizar la gestión de direcciones y los servicios de respuesta de emergencia en Guinea Ecuatorial. Este sistema integra capacidades de direccionamiento tradicionales con gestión avanzada de operaciones policiales, creando una plataforma unificada para servicios gubernamentales.",
+    "introductionText2": "Este manual proporciona orientación completa para todos los usuarios del sistema, desde ciudadanos que envían solicitudes de direcciones hasta administradores que gestionan operaciones en todo el sistema. La plataforma sirve múltiples roles de usuario y facilita flujos de trabajo complejos mientras mantiene altos estándares de seguridad.",
+    "systemOverviewText": "La plataforma consta de dos módulos principales: Módulo de Registro de Direcciones: Gestiona el ciclo de vida completo de creación, verificación y publicación de direcciones. Módulo de Operaciones Policiales: Maneja la gestión de incidentes de emergencia, coordinación de unidades y sistemas de comunicación.",
+    "systemOverviewText2": "Estos módulos trabajan juntos para proporcionar servicios integrados, permitiendo a los socorristas de emergencia acceder a información de direcciones verificadas durante incidentes y permitiendo que los datos de direcciones se utilicen en servicios gubernamentales.",
+    "citizenRole": "Enviar nuevas solicitudes de direcciones con detalles de ubicación y documentación, rastrear el estado de envío y recibir notificaciones, acceder a sus propios registros de direcciones y estado de verificación, reenviar solicitudes después de abordar comentarios de rechazo.",
+    "fieldAgentRole": "Visitar ubicaciones solicitadas para capturar coordenadas GPS, tomar fotos de verificación y documentar condiciones del sitio, crear borradores de direcciones detallados con especificaciones técnicas, trabajar sin conexión en áreas con conectividad limitada.",
+    "verifierRole": "Revisar borradores de direcciones para precisión e integridad, verificar direcciones duplicadas en el sistema, resolver conflictos entre múltiples envíos, marcar solicitudes problemáticas para revisión adicional, proporcionar recomendaciones para mejoras de direcciones.",
+    "registrarRole": "Realizar revisiones finales de borradores de direcciones verificados, publicar direcciones aprobadas en el registro oficial, generar Códigos de Direcciones Únicos (UAC) para ubicaciones verificadas, gestionar el estado de publicación y visibilidad de direcciones, manejar apelaciones administrativas y casos complejos.",
+    "policeOperatorRole": "Responder a incidentes de emergencia y actualizar estado en tiempo real, solicitar apoyo de respaldo cuando las situaciones requieren recursos adicionales, comunicarse con despachadores y otras unidades a través de canales seguros, documentar detalles de incidentes y evidencia durante operaciones de campo.",
+    "policeDispatcherRole": "Recibir llamadas de emergencia y crear registros de incidentes, asignar unidades apropiadas basadas en ubicación y tipo de incidente, coordinar respuestas multi-unidad y asignación de recursos, monitorear incidentes activos y mantener enlaces de comunicación, procesar solicitudes de respaldo y coordinar recursos adicionales.",
+    "policeSupervisorRole": "Monitorear el rendimiento de unidades y tiempos de respuesta a incidentes, aprobar solicitudes de respaldo y decisiones de asignación de recursos, supervisar operaciones dentro de áreas geográficas asignadas, gestionar escalaciones y situaciones de incidentes complejos, realizar revisiones de rendimiento y mejoras de procesos.",
+    "policeAdminRole": "Configurar ajustes del sistema y permisos de usuario, gestionar asignaciones de unidades y estructura organizacional, analizar métricas de rendimiento en toda la fuerza, supervisar seguridad del sistema y controles de acceso, generar informes para personal de comando y funcionarios gubernamentales.",
+    "generatedBy": "Generado por el Sistema de Autoridad Nacional de Direcciones Digitales",
+    "generatedOn": "Generado el:"
   }
 }
