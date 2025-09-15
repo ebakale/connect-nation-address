@@ -269,7 +269,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
                       <Checkbox
                         checked={selectedRequests.includes(request.id)}
                         onCheckedChange={() => handleSelectRequest(request.id)}
-                        className="mt-1 flex-shrink-0 h-4 w-4"
+                        className="mt-1 flex-shrink-0 h-3 w-3 sm:h-4 sm:w-4"
                       />
                       <div className="flex-1 min-w-0 space-y-2">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
