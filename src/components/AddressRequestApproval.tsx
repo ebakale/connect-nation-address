@@ -440,14 +440,6 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                                 </span>
                               </div>
                             )}
-                            {request.verification_analysis.decision.reasoning && (
-                              <div className="mt-2">
-                                <span className="text-indigo-600 font-medium">Analysis Reasoning:</span>
-                                <p className="text-indigo-700 mt-1 text-xs leading-relaxed">
-                                  {request.verification_analysis.decision.reasoning}
-                                </p>
-                              </div>
-                            )}
                           </div>
                         </div>
                       )}
