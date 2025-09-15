@@ -245,18 +245,20 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                 className="cursor-pointer transition-colors duration-200 hover:bg-muted/50"
                 onClick={() => toggleCardExpansion(request.id)}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <CardTitle className="text-sm whitespace-nowrap">{t('addressRequest')}</CardTitle>
-                    <div className="transition-transform duration-200">
-                      {isExpanded ? (
-                        <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                      ) : (
-                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                      )}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <CardTitle className="text-sm whitespace-nowrap">{t('addressRequest')}</CardTitle>
+                      <div className="transition-transform duration-200">
+                        {isExpanded ? (
+                          <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <Badge variant="outline" className="bg-yellow-50 text-yellow-700">
+                  <Badge variant="outline" className="bg-yellow-50 text-yellow-700 text-xs w-fit">
                     {t('pendingApproval')}
                   </Badge>
                 </div>
