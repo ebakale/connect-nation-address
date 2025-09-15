@@ -666,13 +666,13 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                       <span className="hidden sm:inline">{t('autoVerifying')}</span>
                       <span className="sm:hidden">{t('verifying')}</span>
                     </>
-                  ) : (
-                    <>
-                      <Zap className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <span className="hidden sm:inline">{t('autoVerify')}</span>
-                      <span className="sm:hidden text-xs">{t('verifying')}</span>
-                    </>
-                  )}
+                   ) : (
+                     <>
+                       <Zap className="h-3 w-3 sm:h-4 sm:w-4" />
+                       <span className="hidden md:inline text-xs">{t('autoVerify')}</span>
+                       <span className="md:hidden text-xs">{t('verifying')}</span>
+                     </>
+                   )}
                 </Button>
               </div>
               </CardContent>
