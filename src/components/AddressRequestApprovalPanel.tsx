@@ -99,7 +99,7 @@ export function AddressRequestApprovalPanel() {
               </TabsTrigger>
               <TabsTrigger value="manual-review" className="relative">
                 <AlertTriangle className="h-4 w-4 mr-2" />
-                Manual Review
+                {t('manualReview')}
                 {manualReviewRequests.length > 0 && (
                   <Badge 
                     variant="destructive" 
@@ -115,7 +115,7 @@ export function AddressRequestApprovalPanel() {
               </TabsTrigger>
               <TabsTrigger value="rejected">
                 <XCircle className="h-4 w-4 mr-2" />
-                Rejected
+                {t('rejected')}
               </TabsTrigger>
             </TabsList>
             

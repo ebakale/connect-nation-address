@@ -271,6 +271,8 @@
   "addressRequestApprovalPanel": "Panel de Aprobación de Solicitudes de Dirección",
   "pendingRequests": "Solicitudes Pendientes",
   "autoVerification": "Verificación Automática",
+  "manualReview": "Revisión Manual",
+  "rejected": "Rechazado",
   "reviewQueueFlagged": "Cola de Revisión - Direcciones Marcadas",
   "loadingAddressRequests": "Cargando solicitudes de dirección...",
   "loadingReviewQueue": "Cargando cola de revisión...",

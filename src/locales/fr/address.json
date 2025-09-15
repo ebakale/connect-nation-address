@@ -115,6 +115,8 @@
   "addressRequestApprovalPanel": "Panneau d'Approbation des Demandes d'Adresse",
   "pendingRequests": "Demandes en Attente",
   "autoVerification": "Vérification Automatique",
+  "manualReview": "Révision Manuelle",
+  "rejected": "Rejeté",
   "reviewQueueFlagged": "File de Révision - Adresses Signalées",
   "loadingAddressRequests": "Chargement des demandes d'adresse...",
   "loadingReviewQueue": "Chargement de la file de révision...",
