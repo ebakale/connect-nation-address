@@ -588,27 +588,27 @@ const navigationItems = [
                     <CardContent className="space-y-4">
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <h4 className="font-semibold">{t('common:help.citizens')}</h4>
+                          <h4 className="font-semibold">Citizens</h4>
                           <p className="text-sm text-muted-foreground">
-                            {t('common:help.citizensDescription')}
+                            Submit address requests with location details and documentation, track submission status, and access verified addresses.
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">{t('common:help.fieldAgents')}</h4>
+                          <h4 className="font-semibold">Field Agents</h4>
                           <p className="text-sm text-muted-foreground">
-                            {t('common:help.fieldAgentsDescription')}
+                            Visit locations to capture GPS coordinates, take verification photos, and create detailed address drafts for review.
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">{t('common:help.verifiers')}</h4>
+                          <h4 className="font-semibold">Verifiers</h4>
                           <p className="text-sm text-muted-foreground">
-                            {t('common:help.verifiersDescription')}
+                            Review address drafts for accuracy, check for duplicates, resolve conflicts, and ensure quality standards before publication.
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">{t('common:help.registrars')}</h4>
+                          <h4 className="font-semibold">Registrars</h4>
                           <p className="text-sm text-muted-foreground">
-                            {t('common:help.registrarsDescription')}
+                            Perform final reviews, publish verified addresses to the registry, generate UACs, and manage address lifecycle.
                           </p>
                         </div>
                       </div>
