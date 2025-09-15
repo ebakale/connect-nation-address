@@ -484,17 +484,6 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                     </div>
                   )}
 
-                  {/* Summary Status */}
-                  <div className="bg-yellow-100 border-l-4 border-yellow-500 p-3">
-                    <p className="text-xs font-medium text-yellow-800">
-                      {request.verification_analysis?.decision?.action === 'approve' ? 
-                        'AI recommends approval but manual review triggered due to quality concerns or duplicates.' :
-                        request.verification_analysis?.decision?.action === 'reject' ?
-                        'AI recommends rejection. Manual review required to confirm decision.' :
-                        'Manual review required due to analysis complexity or policy requirements.'
-                      }
-                    </p>
-                  </div>
                 </div>
               )}
 
