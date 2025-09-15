@@ -243,24 +243,19 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
       <Tabs defaultValue="search" className="w-full">
         <TabsList className="flex flex-wrap w-full gap-1 h-auto p-1 justify-start">
           <TabsTrigger value="search" className="text-xs sm:text-sm p-2 sm:p-3 whitespace-nowrap">
-            <span className="hidden sm:inline">{t('admin:allAddresses')}</span>
-            <span className="sm:hidden">{t('admin:all')}</span>
+            {t('admin:allAddresses')}
           </TabsTrigger>
           <TabsTrigger value="individual" className="text-xs sm:text-sm p-2 sm:p-3 whitespace-nowrap">
-            <span className="hidden sm:inline">{t('admin:individualVerify')}</span>
-            <span className="sm:hidden">Verify</span>
+            {t('admin:individualVerify')}
           </TabsTrigger>
           <TabsTrigger value="verify" className="text-xs sm:text-sm p-2 sm:p-3 whitespace-nowrap">
-            <span className="hidden lg:inline">{t('admin:verificationToolsTab')}</span>
-            <span className="lg:hidden">{t('admin:tools')}</span>
+            {t('admin:verificationToolsTab')}
           </TabsTrigger>
           <TabsTrigger value="flagged" className="text-xs sm:text-sm p-2 sm:p-3 whitespace-nowrap">
-            <span className="hidden sm:inline">{t('admin:flaggedAddresses')}</span>
-            <span className="sm:hidden">{t('admin:flagged')}</span>
+            {t('admin:flaggedAddresses')}
           </TabsTrigger>
           <TabsTrigger value="quality" className="text-xs sm:text-sm p-2 sm:p-3 whitespace-nowrap">
-            <span className="hidden sm:inline">{t('admin:qualityControl')}</span>
-            <span className="sm:hidden">{t('admin:quality')}</span>
+            {t('admin:qualityControl')}
           </TabsTrigger>
         </TabsList>
 
