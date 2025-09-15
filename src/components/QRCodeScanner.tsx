@@ -132,7 +132,6 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
       variant: "destructive",
     });
   };
-  };
 
   const processImageForQR = async (dataUrl: string) => {
     try {
