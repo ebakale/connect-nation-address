@@ -88,7 +88,7 @@ export function AddressRequestApprovalPanel() {
               <TabsTrigger value="requests" className="relative flex-col sm:flex-row text-xs sm:text-sm">
                 <CheckSquare className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">{t('pendingRequests')}</span>
-                <span className="sm:hidden">Pending</span>
+                <span className="sm:hidden">{t('pendingShort')}</span>
                 {addressRequests.length > 0 && (
                   <Badge 
                     variant="secondary" 
@@ -101,7 +101,7 @@ export function AddressRequestApprovalPanel() {
               <TabsTrigger value="manual-review" className="relative flex-col sm:flex-row text-xs sm:text-sm">
                 <AlertTriangle className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">{t('manualReview')}</span>
-                <span className="sm:hidden">Review</span>
+                <span className="sm:hidden">{t('reviewShort')}</span>
                 {manualReviewRequests.length > 0 && (
                   <Badge 
                     variant="destructive" 
@@ -114,12 +114,12 @@ export function AddressRequestApprovalPanel() {
               <TabsTrigger value="auto-verify" className="flex-col sm:flex-row text-xs sm:text-sm">
                 <Zap className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">{t('autoVerification')}</span>
-                <span className="sm:hidden">Auto</span>
+                <span className="sm:hidden">{t('autoShort')}</span>
               </TabsTrigger>
               <TabsTrigger value="rejected" className="flex-col sm:flex-row text-xs sm:text-sm">
                 <XCircle className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">{t('rejected')}</span>
-                <span className="sm:hidden">Rejected</span>
+                <span className="sm:hidden">{t('rejectedShort')}</span>
               </TabsTrigger>
             </TabsList>
             
