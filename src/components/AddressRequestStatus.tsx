@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { CalendarDays, MapPin, MessageSquare, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CalendarDays, MapPin, MessageSquare, RefreshCw, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface AddressRequest {
@@ -43,6 +43,7 @@ export const AddressRequestStatus = () => {
   const requestsPerPage = 5;
   const { user } = useAuth();
   const { toast } = useToast();
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
 
   const fetchRequests = async () => {
     if (!user) return;
@@ -99,6 +100,18 @@ export const AddressRequestStatus = () => {
     return parts.join(', ');
   };
 
+  const toggleCardExpansion = (requestId: string) => {
+    setExpandedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(requestId)) {
+        newSet.delete(requestId);
+      } else {
+        newSet.add(requestId);
+      }
+      return newSet;
+    });
+  };
+
   if (loading) {
     return (
       <Card className="w-full max-w-4xl mx-auto">
@@ -152,72 +165,103 @@ export const AddressRequestStatus = () => {
             </div>
 
             <div className="space-y-4">
-              {paginatedRequests.map((request) => (
-                <Card key={request.id} className="border-l-4 border-l-primary">
-                  <CardContent className="pt-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <MapPin className="w-4 h-4 text-muted-foreground" />
-                          <h3 className="font-semibold">{formatAddress(request)}</h3>
-                        </div>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <CalendarDays className="w-4 h-4" />
-                            <span>{t('submittedDate', { date: format(new Date(request.created_at), 'MMM dd, yyyy') })}</span>
+              {paginatedRequests.map((request) => {
+                const isExpanded = expandedCards.has(request.id);
+                return (
+                  <Card key={request.id} className="border-l-4 border-l-primary transition-all duration-200 hover:shadow-md">
+                    <CardContent className="pt-6">
+                      <div 
+                        className="cursor-pointer transition-colors duration-200 hover:bg-muted/50 p-2 -m-2 rounded"
+                        onClick={() => toggleCardExpansion(request.id)}
+                      >
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <MapPin className="w-4 h-4 text-muted-foreground" />
+                              <h3 className="font-semibold">{formatAddress(request)}</h3>
+                              <div className="transition-transform duration-200 ml-2">
+                                {isExpanded ? (
+                                  <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                                ) : (
+                                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                                )}
+                              </div>
+                            </div>
+                            
+                            {/* Compact view when collapsed */}
+                            {!isExpanded && (
+                              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                <div className="flex items-center gap-1">
+                                  <CalendarDays className="w-4 h-4" />
+                                  <span>{t('submittedDate', { date: format(new Date(request.created_at), 'MMM dd, yyyy') })}</span>
+                                </div>
+                              </div>
+                            )}
+                            
+                            {/* Full info when expanded */}
+                            {isExpanded && (
+                              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                <div className="flex items-center gap-1">
+                                  <CalendarDays className="w-4 h-4" />
+                                  <span>{t('submittedDate', { date: format(new Date(request.created_at), 'MMM dd, yyyy') })}</span>
+                                </div>
+                                <span>{t('type', { type: (() => {
+                                  const v = request.address_type as string | undefined;
+                                  const hasBraces = v ? v.includes('{{') || v.includes('}}') : false;
+                                  const cleaned = v ? v.replace(/[{}]/g, '').trim() : '';
+                                  const safe = !v || hasBraces || cleaned.toLowerCase() === 'type' || cleaned === '' ? 'unknown' : cleaned;
+                                  return safe;
+                                })() })}</span>
+                              </div>
+                            )}
                           </div>
-                          <span>{t('type', { type: (() => {
-                            const v = request.address_type as string | undefined;
-                            const hasBraces = v ? v.includes('{{') || v.includes('}}') : false;
-                            const cleaned = v ? v.replace(/[{}]/g, '').trim() : '';
-                            const safe = !v || hasBraces || cleaned.toLowerCase() === 'type' || cleaned === '' ? 'unknown' : cleaned;
-                            return safe;
-                          })() })}</span>
+                          <div className="ml-4">
+                            {getStatusBadge(request.status)}
+                          </div>
                         </div>
                       </div>
-                    <div className="ml-4">
-                      {getStatusBadge(request.status)}
-                    </div>
-                  </div>
 
-                  <div className="space-y-3">
-                    <div>
-                      <h4 className="font-medium mb-1">{t('justificationLabel')}</h4>
-                      <p className="text-sm text-muted-foreground">{request.justification}</p>
-                    </div>
+                      {isExpanded && (
+                        <div className="space-y-3 animate-fade-in">
+                          <div>
+                            <h4 className="font-medium mb-1">{t('justificationLabel')}</h4>
+                            <p className="text-sm text-muted-foreground">{request.justification}</p>
+                          </div>
 
-                    {request.description && (
-                      <div>
-                        <h4 className="font-medium mb-1">{t('descriptionLabel')}</h4>
-                        <p className="text-sm text-muted-foreground">{request.description}</p>
-                      </div>
-                    )}
+                          {request.description && (
+                            <div>
+                              <h4 className="font-medium mb-1">{t('descriptionLabel')}</h4>
+                              <p className="text-sm text-muted-foreground">{request.description}</p>
+                            </div>
+                          )}
 
-                    {request.reviewer_notes && (
-                      <div>
-                        <h4 className="font-medium mb-1">{t('reviewerNotes')}</h4>
-                        <p className="text-sm text-muted-foreground">{request.reviewer_notes}</p>
-                      </div>
-                    )}
+                          {request.reviewer_notes && (
+                            <div>
+                              <h4 className="font-medium mb-1">{t('reviewerNotes')}</h4>
+                              <p className="text-sm text-muted-foreground">{request.reviewer_notes}</p>
+                            </div>
+                          )}
 
-                    {request.latitude && request.longitude && (
-                      <div>
-                        <h4 className="font-medium mb-1">{t('coordinates')}</h4>
-                        <p className="text-sm text-muted-foreground">
-                          {request.latitude}, {request.longitude}
-                        </p>
-                      </div>
-                    )}
+                          {request.latitude && request.longitude && (
+                            <div>
+                              <h4 className="font-medium mb-1">{t('coordinates')}</h4>
+                              <p className="text-sm text-muted-foreground">
+                                {request.latitude}, {request.longitude}
+                              </p>
+                            </div>
+                          )}
 
-                    <div className="pt-2 border-t">
-                        <p className="text-xs text-muted-foreground">
-                          {t('lastUpdated', { date: format(new Date(request.updated_at), 'MMM dd, yyyy HH:mm') })}
-                        </p>
-                    </div>
-                  </div>
-                </CardContent>
-                </Card>
-              ))}
+                          <div className="pt-2 border-t">
+                              <p className="text-xs text-muted-foreground">
+                                {t('lastUpdated', { date: format(new Date(request.updated_at), 'MMM dd, yyyy HH:mm') })}
+                              </p>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
 
             {/* Pagination controls */}
