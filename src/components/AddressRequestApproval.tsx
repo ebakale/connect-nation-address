@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, User, Building, Calendar, CheckCircle, X, Zap, Eye, Edit, AlertTriangle, Info, Shield } from "lucide-react";
+import { MapPin, User, Building, Calendar, CheckCircle, X, Zap, Eye, Edit, AlertTriangle, Info, Shield, ChevronDown, ChevronUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AddressRejectionDialog } from "./AddressRejectionDialog";
@@ -62,6 +62,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
   const [pendingApproval, setPendingApproval] = useState<{requestId: string, updatedData?: Partial<AddressRequest>} | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const requestsPerPage = 5;
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
 
   // Calculate pagination
   const totalPages = Math.ceil(requests.length / requestsPerPage);
@@ -199,6 +200,18 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
     }
   };
 
+  const toggleCardExpansion = (requestId: string) => {
+    setExpandedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(requestId)) {
+        newSet.delete(requestId);
+      } else {
+        newSet.add(requestId);
+      }
+      return newSet;
+    });
+  };
+
   if (requests.length === 0) {
     return (
       <div className="text-center py-8">
@@ -224,17 +237,45 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
       </div>
 
       <div className="space-y-4">
-        {paginatedRequests.map((request) => (
-          <Card key={request.id} className="border-l-4 border-l-yellow-500">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">{t('addressRequest')}</CardTitle>
-                <Badge variant="outline" className="bg-yellow-50 text-yellow-700">
-                  {t('pendingApproval')}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
+        {paginatedRequests.map((request) => {
+          const isExpanded = expandedCards.has(request.id);
+          return (
+            <Card key={request.id} className="border-l-4 border-l-yellow-500 transition-all duration-200 hover:shadow-md">
+              <CardHeader 
+                className="cursor-pointer transition-colors duration-200 hover:bg-muted/50"
+                onClick={() => toggleCardExpansion(request.id)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <CardTitle className="text-lg">{t('addressRequest')}</CardTitle>
+                    <div className="transition-transform duration-200">
+                      {isExpanded ? (
+                        <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                      )}
+                    </div>
+                  </div>
+                  <Badge variant="outline" className="bg-yellow-50 text-yellow-700">
+                    {t('pendingApproval')}
+                  </Badge>
+                </div>
+                
+                {/* Compact view when collapsed */}
+                {!isExpanded && (
+                  <div className="mt-2 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-3 w-3" />
+                      <span>
+                        {request.building && `${request.building}, `}
+                        {request.street}, {request.city}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </CardHeader>
+            {isExpanded && (
+              <CardContent className="space-y-4 animate-fade-in">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
@@ -529,9 +570,11 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                   )}
                 </Button>
               </div>
-            </CardContent>
+              </CardContent>
+            )}
           </Card>
-        ))}
+          );
+        })}
       </div>
 
       {/* Pagination controls */}
