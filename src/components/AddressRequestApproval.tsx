@@ -344,7 +344,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-yellow-600" />
                     <span className="text-sm font-medium text-yellow-800">
-                      Analysis Results
+                      {t('analysisResults')}
                     </span>
                   </div>
                   {/* Prominent Review Score Display - Show whenever available */}
@@ -356,11 +356,11 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                         ? 'bg-yellow-100 text-yellow-800 border-yellow-300' : 
                         'bg-red-100 text-red-800 border-red-300'
                     }`}>
-                      Review Score: {request.verification_analysis.overallScore.toFixed(1)}%
+                      {t('reviewScore')}: {request.verification_analysis.overallScore.toFixed(1)}%
                     </div>
                   ) : (
                     <div className="px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-600 border-2 border-gray-300 whitespace-nowrap w-fit">
-                      Pending Analysis
+                      {t('pendingAnalysis')}
                     </div>
                   )}
                   
@@ -369,12 +369,12 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                     <div className="space-y-2">
                       {request.flagged && (
                         <div className="text-sm text-yellow-700">
-                          <span className="font-medium">Manual Flag Reason:</span> {request.flag_reason || 'No specific reason provided'}
+                          <span className="font-medium">{t('manualFlagReason')}:</span> {request.flag_reason || t('noSpecificReason')}
                         </div>
                       )}
                       {request.requires_manual_review && (
                         <div className="text-sm text-yellow-700">
-                          <span className="font-medium">Status:</span> Requires manual review
+                          <span className="font-medium">{t('status')}:</span> {t('requiresManualReview')}
                         </div>
                       )}
                     </div>
@@ -389,28 +389,28 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                         <div className="bg-orange-50 border border-orange-200 p-3 rounded">
                           <div className="flex items-center gap-2 mb-2">
                             <Info className="h-4 w-4 text-orange-600" />
-                            <span className="text-sm font-medium text-orange-800">Duplicate Check Results</span>
+                            <span className="text-sm font-medium text-orange-800">{t('duplicateCheckResults')}</span>
                           </div>
                           
                           {request.verification_analysis.duplicate_check.has_duplicates ? (
                             <div className="space-y-2">
-                              <p className="text-xs text-orange-700 font-medium">Potential duplicates detected:</p>
+                              <p className="text-xs text-orange-700 font-medium">{t('potentialDuplicatesDetected')}</p>
                               {request.verification_analysis.duplicate_check.coordinate_duplicates?.count > 0 && (
                                 <div className="text-xs text-orange-600">
-                                  • {request.verification_analysis.duplicate_check.coordinate_duplicates.count} address(es) found within ~111m radius
+                                  • {request.verification_analysis.duplicate_check.coordinate_duplicates.count} {t('addressesFoundWithinRadius')}
                                 </div>
                               )}
                               {request.verification_analysis.duplicate_check.address_duplicates?.count > 0 && (
                                 <div className="text-xs text-orange-600">
-                                  • {request.verification_analysis.duplicate_check.address_duplicates.count} exact address match(es) found
+                                  • {request.verification_analysis.duplicate_check.address_duplicates.count} {t('exactAddressMatches')}
                                 </div>
                               )}
                               <p className="text-xs text-orange-600 italic mt-1">
-                                Review required to confirm if this is a legitimate new address or duplicate.
+                                {t('reviewRequiredForDuplicate')}
                               </p>
                             </div>
                           ) : (
-                            <p className="text-xs text-green-600">✓ No duplicates found</p>
+                            <p className="text-xs text-green-600">✓ {t('noDuplicatesFound')}</p>
                           )}
                         </div>
                       )}
@@ -418,7 +418,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                       {/* Quality Metrics */}
                       {request.verification_analysis.qualityMetrics && (
                         <div className="bg-gray-50 border border-gray-200 p-3 rounded">
-                          <span className="text-sm font-medium text-gray-800 block mb-2">Quality Assessment</span>
+                          <span className="text-sm font-medium text-gray-800 block mb-2">{t('qualityAssessment')}</span>
                           <div className="grid grid-cols-2 gap-2 text-xs">
                             {Object.entries(request.verification_analysis.qualityMetrics).map(([key, value]) => {
                               const score = typeof value === 'number' ? value : 0;
@@ -444,7 +444,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                       {/* Recommended Actions */}
                       {(request.verification_analysis.recommendations || request.verification_recommendations) && (
                         <div className="bg-blue-50 border border-blue-200 p-3 rounded text-xs">
-                          <h4 className="font-medium text-blue-800 mb-2">Recommended Actions</h4>
+                          <h4 className="font-medium text-blue-800 mb-2">{t('recommendedActions')}</h4>
                           <ul className="text-blue-700 space-y-1">
                             {(request.verification_analysis.recommendations || request.verification_recommendations || []).map((rec, index) => (
                               <li key={index} className="flex items-start gap-2">

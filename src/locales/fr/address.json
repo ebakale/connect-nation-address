@@ -413,5 +413,20 @@
   "additionalNotes": "Notes Supplémentaires",
   "guideResubmission": "Guider la Resoumission",
   "resubmissionComingSoon": "Fonction de resoumission bientôt disponible. Les utilisateurs peuvent créer une nouvelle demande.",
-  "failedToResubmitAddress": "Échec de la resoumission de l'adresse"
+  "failedToResubmitAddress": "Échec de la resoumission de l'adresse",
+  "analysisResults": "Résultats d'Analyse",
+  "reviewScore": "Score de Révision",
+  "pendingAnalysis": "Analyse en Attente",
+  "manualFlagReason": "Raison du Marquage Manuel",
+  "status": "Statut",
+  "requiresManualReview": "Nécessite une révision manuelle",
+  "noSpecificReason": "Aucune raison spécifique fournie",
+  "duplicateCheckResults": "Résultats de Vérification des Doublons",
+  "potentialDuplicatesDetected": "Doublons potentiels détectés:",
+  "addressesFoundWithinRadius": "adresse(s) trouvée(s) dans un rayon de ~111m",
+  "exactAddressMatches": "correspondance(s) exacte(s) d'adresse trouvée(s)",
+  "reviewRequiredForDuplicate": "Révision requise pour confirmer s'il s'agit d'une nouvelle adresse légitime ou d'un doublon.",
+  "noDuplicatesFound": "Aucun doublon trouvé",
+  "qualityAssessment": "Évaluation de la Qualité",
+  "recommendedActions": "Actions Recommandées"
 }

@@ -563,5 +563,20 @@
   "additionalNotes": "Notas Adicionales",
   "guideResubmission": "Guiar Reenvío",
   "resubmissionComingSoon": "Función de reenvío próximamente. Los usuarios pueden crear una nueva solicitud.",
-  "failedToResubmitAddress": "Error al reenviar dirección"
+  "failedToResubmitAddress": "Error al reenviar dirección",
+  "analysisResults": "Resultados del Análisis",
+  "reviewScore": "Puntuación de Revisión",
+  "pendingAnalysis": "Análisis Pendiente",
+  "manualFlagReason": "Razón de Marcado Manual",
+  "status": "Estado",
+  "requiresManualReview": "Requiere revisión manual",
+  "noSpecificReason": "No se proporcionó razón específica",
+  "duplicateCheckResults": "Resultados de Verificación de Duplicados",
+  "potentialDuplicatesDetected": "Duplicados potenciales detectados:",
+  "addressesFoundWithinRadius": "dirección(es) encontrada(s) dentro de ~111m de radio",
+  "exactAddressMatches": "coincidencia(s) exacta(s) de dirección encontrada(s)",
+  "reviewRequiredForDuplicate": "Se requiere revisión para confirmar si esta es una nueva dirección legítima o duplicada.",
+  "noDuplicatesFound": "No se encontraron duplicados",
+  "qualityAssessment": "Evaluación de Calidad",
+  "recommendedActions": "Acciones Recomendadas"
 }

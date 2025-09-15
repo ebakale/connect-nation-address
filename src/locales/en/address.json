@@ -569,5 +569,20 @@
   "additionalNotes": "Additional Notes",
   "guideResubmission": "Guide Resubmission",
   "resubmissionComingSoon": "Resubmission feature coming soon. Users can create a new request.",
-  "failedToResubmitAddress": "Failed to resubmit address"
+  "failedToResubmitAddress": "Failed to resubmit address",
+  "analysisResults": "Analysis Results",
+  "reviewScore": "Review Score",
+  "pendingAnalysis": "Pending Analysis",
+  "manualFlagReason": "Manual Flag Reason",
+  "status": "Status",
+  "requiresManualReview": "Requires manual review",
+  "noSpecificReason": "No specific reason provided",
+  "duplicateCheckResults": "Duplicate Check Results",
+  "potentialDuplicatesDetected": "Potential duplicates detected:",
+  "addressesFoundWithinRadius": "address(es) found within ~111m radius",
+  "exactAddressMatches": "exact address match(es) found",
+  "reviewRequiredForDuplicate": "Review required to confirm if this is a legitimate new address or duplicate.",
+  "noDuplicatesFound": "No duplicates found",
+  "qualityAssessment": "Quality Assessment",
+  "recommendedActions": "Recommended Actions"
 }
