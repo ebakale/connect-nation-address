@@ -348,6 +348,7 @@ export const SystemManualPDF: React.FC = () => {
 
   return (
     <Button onClick={generatePDF} className="flex items-center gap-2">
+      <FileText className="h-4 w-4" />
       <Download className="h-4 w-4" />
       {t('admin:downloadSystemManual')}
     </Button>
