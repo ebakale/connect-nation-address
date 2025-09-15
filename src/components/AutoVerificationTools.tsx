@@ -263,38 +263,42 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
                 {pendingRequests.map((request) => (
                   <div 
                     key={request.id} 
-                    className="flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50"
+                    className="flex flex-col gap-3 p-3 border rounded-lg hover:bg-muted/50"
                   >
-                    <Checkbox
-                      checked={selectedRequests.includes(request.id)}
-                      onCheckedChange={() => handleSelectRequest(request.id)}
-                      className="mt-1"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1">
-                          <p className="font-medium text-sm">
-                            {request.street}, {request.city}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {request.region}, {request.country}
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-1">
+                    <div className="flex items-start gap-3">
+                      <Checkbox
+                        checked={selectedRequests.includes(request.id)}
+                        onCheckedChange={() => handleSelectRequest(request.id)}
+                        className="mt-1 flex-shrink-0"
+                      />
+                      <div className="flex-1 min-w-0 space-y-2">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">
+                              {request.street}, {request.city}
+                            </p>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {request.region}, {request.country}
+                            </p>
+                          </div>
+                          <div className="flex flex-col sm:items-end gap-1">
+                            <Badge variant="outline" className="text-xs w-fit">
+                              {request.id.slice(0, 8)}...
+                            </Badge>
+                            <p className="text-xs text-muted-foreground">
+                              {new Date(request.created_at).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-xs text-muted-foreground break-all">
                             {t('coordinates')}: {request.latitude}, {request.longitude}
                           </p>
                           {request.justification && (
-                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                            <p className="text-xs text-muted-foreground line-clamp-2 break-words">
                               {request.justification}
                             </p>
                           )}
-                        </div>
-                        <div className="text-right">
-                          <Badge variant="outline" className="text-xs">
-                            {request.id.slice(0, 8)}...
-                          </Badge>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {new Date(request.created_at).toLocaleDateString()}
-                          </p>
                         </div>
                       </div>
                     </div>
