@@ -298,7 +298,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                     <Building className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm font-medium">{t('typeLabel')}</span>
                   </div>
-                  <p className="text-sm pl-6 capitalize">{(() => {
+                  <p className="text-sm ml-6 capitalize whitespace-nowrap">{(() => {
                     const v = request.address_type as string | undefined;
                     const hasBraces = v ? v.includes('{{') || v.includes('}}') : false;
                     const cleaned = v ? v.replace(/[{}]/g, '').trim() : '';
