@@ -301,98 +301,178 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-yellow-600" />
                     <span className="text-sm font-medium text-yellow-800">
-                      {request.flagged ? "Flagged for Review" : "Requires Manual Review"}
+                      Analysis Results
                     </span>
                   </div>
                   
-                  {request.flag_reason && (
-                    <div className="space-y-1">
-                      <span className="text-xs font-medium text-yellow-700">Flag Reason</span>
-                      <p className="text-xs text-yellow-700 bg-yellow-100 p-2 rounded">
-                        {request.flag_reason}
-                      </p>
-                    </div>
-                  )}
-
+                  {/* Show specific analysis reasons */}
                   {request.verification_analysis && (
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <Shield className="h-3 w-3 text-blue-600" />
-                        <span className="text-xs font-medium text-blue-700">Verification Analysis</span>
-                      </div>
-                      
-                      {request.verification_analysis.overallScore && (
-                        <div className="bg-blue-50 p-2 rounded">
-                          <span className="text-xs text-blue-700">
-                            Verification Score: {(request.verification_analysis.overallScore * 100).toFixed(1)}%
-                          </span>
+                    <div className="space-y-3">
+                      {/* Overall Score */}
+                      {request.verification_analysis.overallScore !== undefined && (
+                        <div className="bg-blue-50 border border-blue-200 p-3 rounded">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium text-blue-800">Verification Score</span>
+                            <span className={`text-sm font-bold ${
+                              request.verification_analysis.overallScore >= 0.8 ? 'text-green-600' :
+                              request.verification_analysis.overallScore >= 0.6 ? 'text-yellow-600' : 'text-red-600'
+                            }`}>
+                              {(request.verification_analysis.overallScore * 100).toFixed(1)}%
+                            </span>
+                          </div>
+                          {request.verification_analysis.overallScore < 0.7 && (
+                            <p className="text-xs text-blue-700">
+                              Low verification score indicates potential quality issues requiring review.
+                            </p>
+                          )}
                         </div>
                       )}
 
-                      {request.verification_analysis.duplicate_check?.has_duplicates && (
-                        <div className="bg-orange-50 border border-orange-200 p-2 rounded">
-                          <div className="flex items-center gap-1 mb-1">
-                            <Info className="h-3 w-3 text-orange-600" />
-                            <span className="text-xs font-medium text-orange-700">Potential Duplicates Found</span>
+                      {/* Duplicate Analysis */}
+                      {request.verification_analysis.duplicate_check && (
+                        <div className="bg-orange-50 border border-orange-200 p-3 rounded">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Info className="h-4 w-4 text-orange-600" />
+                            <span className="text-sm font-medium text-orange-800">Duplicate Check Results</span>
                           </div>
-                          <div className="text-xs text-orange-600 space-y-1">
-                            {request.verification_analysis.duplicate_check.coordinate_duplicates?.count > 0 && (
-                              <div>Coordinate matches: {request.verification_analysis.duplicate_check.coordinate_duplicates.count}</div>
-                            )}
-                            {request.verification_analysis.duplicate_check.address_duplicates?.count > 0 && (
-                              <div>Address matches: {request.verification_analysis.duplicate_check.address_duplicates.count}</div>
-                            )}
-                          </div>
+                          
+                          {request.verification_analysis.duplicate_check.has_duplicates ? (
+                            <div className="space-y-2">
+                              <p className="text-xs text-orange-700 font-medium">Potential duplicates detected:</p>
+                              {request.verification_analysis.duplicate_check.coordinate_duplicates?.count > 0 && (
+                                <div className="text-xs text-orange-600">
+                                  • {request.verification_analysis.duplicate_check.coordinate_duplicates.count} address(es) found within ~111m radius
+                                </div>
+                              )}
+                              {request.verification_analysis.duplicate_check.address_duplicates?.count > 0 && (
+                                <div className="text-xs text-orange-600">
+                                  • {request.verification_analysis.duplicate_check.address_duplicates.count} exact address match(es) found
+                                </div>
+                              )}
+                              <p className="text-xs text-orange-600 italic mt-1">
+                                Review required to confirm if this is a legitimate new address or duplicate.
+                              </p>
+                            </div>
+                          ) : (
+                            <p className="text-xs text-green-600">✓ No duplicates found</p>
+                          )}
                         </div>
                       )}
 
+                      {/* Quality Metrics */}
                       {request.verification_analysis.qualityMetrics && (
-                        <div className="bg-gray-50 p-2 rounded">
-                          <span className="text-xs font-medium text-gray-700">Quality Assessment</span>
-                          <div className="text-xs text-gray-600 mt-1 space-y-1">
-                            {Object.entries(request.verification_analysis.qualityMetrics).map(([key, value]) => (
-                              <div key={key} className="flex justify-between">
-                                <span className="capitalize">{key.replace(/([A-Z])/g, ' $1').toLowerCase()}:</span>
-                                <span>{typeof value === 'number' ? (value * 100).toFixed(1) + '%' : String(value)}</span>
-                              </div>
-                            ))}
+                        <div className="bg-gray-50 border border-gray-200 p-3 rounded">
+                          <span className="text-sm font-medium text-gray-800 block mb-2">Quality Assessment</span>
+                          <div className="grid grid-cols-2 gap-2 text-xs">
+                            {Object.entries(request.verification_analysis.qualityMetrics).map(([key, value]) => {
+                              const score = typeof value === 'number' ? value : 0;
+                              const percentage = (score * 100).toFixed(1);
+                              const isLow = score < 0.6;
+                              
+                              return (
+                                <div key={key} className="flex justify-between items-center">
+                                  <span className="text-gray-600 capitalize">
+                                    {key.replace(/([A-Z])/g, ' $1').toLowerCase()}:
+                                  </span>
+                                  <span className={`font-medium ${isLow ? 'text-red-600' : score < 0.8 ? 'text-yellow-600' : 'text-green-600'}`}>
+                                    {typeof value === 'number' ? percentage + '%' : String(value)}
+                                    {isLow && ' ⚠️'}
+                                  </span>
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
                       )}
 
+                      {/* AI Decision */}
                       {request.verification_analysis.decision && (
-                        <div className="bg-indigo-50 border border-indigo-200 p-2 rounded">
-                          <div className="flex items-center gap-1 mb-1">
-                            <Shield className="h-3 w-3 text-indigo-600" />
-                            <span className="text-xs font-medium text-indigo-700">AI Recommendation</span>
+                        <div className="bg-indigo-50 border border-indigo-200 p-3 rounded">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Shield className="h-4 w-4 text-indigo-600" />
+                            <span className="text-sm font-medium text-indigo-800">AI Analysis Decision</span>
                           </div>
-                          <div className="text-xs text-indigo-600">
-                            <div><strong>Action:</strong> {request.verification_analysis.decision.action}</div>
+                          <div className="space-y-1 text-xs">
+                            <div className="flex justify-between">
+                              <span className="text-indigo-600">Recommended Action:</span>
+                              <span className={`font-medium ${
+                                request.verification_analysis.decision.action === 'approve' ? 'text-green-600' :
+                                request.verification_analysis.decision.action === 'reject' ? 'text-red-600' : 'text-yellow-600'
+                              }`}>
+                                {request.verification_analysis.decision.action.toUpperCase()}
+                              </span>
+                            </div>
                             {request.verification_analysis.decision.confidence && (
-                              <div><strong>Confidence:</strong> {(request.verification_analysis.decision.confidence * 100).toFixed(1)}%</div>
+                              <div className="flex justify-between">
+                                <span className="text-indigo-600">Confidence Level:</span>
+                                <span className="font-medium text-indigo-700">
+                                  {(request.verification_analysis.decision.confidence * 100).toFixed(1)}%
+                                </span>
+                              </div>
                             )}
                             {request.verification_analysis.decision.reasoning && (
-                              <div className="mt-1"><strong>Reason:</strong> {request.verification_analysis.decision.reasoning}</div>
+                              <div className="mt-2">
+                                <span className="text-indigo-600 font-medium">Analysis Reasoning:</span>
+                                <p className="text-indigo-700 mt-1 text-xs leading-relaxed">
+                                  {request.verification_analysis.decision.reasoning}
+                                </p>
+                              </div>
                             )}
                           </div>
+                        </div>
+                      )}
+
+                      {/* Risk Factors */}
+                      {request.verification_analysis.riskFactors && request.verification_analysis.riskFactors.length > 0 && (
+                        <div className="bg-red-50 border border-red-200 p-3 rounded">
+                          <span className="text-sm font-medium text-red-800 block mb-2">Risk Factors Identified</span>
+                          <ul className="space-y-1">
+                            {request.verification_analysis.riskFactors.map((risk: string, index: number) => (
+                              <li key={index} className="text-xs text-red-700 flex items-start gap-1">
+                                <span className="text-red-500 mt-0.5">⚠</span>
+                                <span>{risk}</span>
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       )}
                     </div>
                   )}
 
+                  {/* Flag Reason (if manually flagged) */}
+                  {request.flag_reason && (
+                    <div className="bg-yellow-100 border border-yellow-300 p-3 rounded">
+                      <span className="text-sm font-medium text-yellow-800 block mb-1">Manual Flag Reason</span>
+                      <p className="text-xs text-yellow-700">{request.flag_reason}</p>
+                    </div>
+                  )}
+
+                  {/* Recommendations */}
                   {request.verification_recommendations && request.verification_recommendations.length > 0 && (
-                    <div className="space-y-1">
-                      <span className="text-xs font-medium text-blue-700">Recommendations</span>
-                      <ul className="text-xs text-blue-600 space-y-1">
+                    <div className="bg-blue-50 border border-blue-200 p-3 rounded">
+                      <span className="text-sm font-medium text-blue-800 block mb-2">Recommended Actions</span>
+                      <ul className="space-y-1">
                         {request.verification_recommendations.map((rec, index) => (
-                          <li key={index} className="flex items-start gap-1">
-                            <span className="text-blue-400 mt-0.5">•</span>
+                          <li key={index} className="text-xs text-blue-700 flex items-start gap-1">
+                            <span className="text-blue-500 mt-0.5">→</span>
                             <span>{rec}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
                   )}
+
+                  {/* Summary Status */}
+                  <div className="bg-yellow-100 border-l-4 border-yellow-500 p-3">
+                    <p className="text-xs font-medium text-yellow-800">
+                      {request.verification_analysis?.decision?.action === 'approve' ? 
+                        'AI recommends approval but manual review triggered due to quality concerns or duplicates.' :
+                        request.verification_analysis?.decision?.action === 'reject' ?
+                        'AI recommends rejection. Manual review required to confirm decision.' :
+                        'Manual review required due to analysis complexity or policy requirements.'
+                      }
+                    </p>
+                  </div>
                 </div>
               )}
 
