@@ -349,7 +349,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                   </div>
                   {/* Prominent Review Score Display - Show whenever available */}
                   {request.verification_analysis?.overallScore !== undefined ? (
-                    <div className={`px-3 py-1 rounded-full text-xs font-bold border-2 whitespace-nowrap w-fit ${
+                    <div className={`px-3 py-1 rounded-full text-[10px] font-bold border-2 whitespace-nowrap w-fit ${
                       request.verification_analysis.overallScore >= 0.8 
                         ? 'bg-green-100 text-green-800 border-green-300' :
                       request.verification_analysis.overallScore >= 0.6 
