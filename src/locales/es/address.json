@@ -628,4 +628,8 @@
     "moderateConfidenceRating": "Calificación de confianza moderada asignada",
     "lowConfidenceRating": "Calificación de baja confianza asignada"
   }
-}
+  }
+,
+  "addressTypes": {
+    "unknown": "Desconocido"
+  }

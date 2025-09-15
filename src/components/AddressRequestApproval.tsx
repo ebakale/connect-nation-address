@@ -403,13 +403,13 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                     <Building className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm font-medium">{t('typeLabel')}</span>
                   </div>
-                  <p className="text-sm ml-6 capitalize whitespace-nowrap">{(() => {
-                    const v = request.address_type as string | undefined;
-                    const hasBraces = v ? v.includes('{{') || v.includes('}}') : false;
-                    const cleaned = v ? v.replace(/[{}]/g, '').trim() : '';
-                    const safe = !v || hasBraces || cleaned.toLowerCase() === 'type' || cleaned === '' ? 'unknown' : cleaned;
-                    return safe;
-                  })()}</p>
+                   <p className="text-sm ml-6 capitalize whitespace-nowrap">{(() => {
+                     const v = request.address_type as string | undefined;
+                     const hasBraces = v ? v.includes('{{') || v.includes('}}') : false;
+                     const cleaned = v ? v.replace(/[{}]/g, '').trim() : '';
+                     const safe = !v || hasBraces || cleaned.toLowerCase() === 'type' || cleaned === '' ? t('addressTypes.unknown') : cleaned;
+                     return safe;
+                   })()}</p>
                 </div>
               </div>
 

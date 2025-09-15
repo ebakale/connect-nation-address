@@ -478,4 +478,8 @@
     "moderateConfidenceRating": "Note de confiance modérée attribuée",
     "lowConfidenceRating": "Note de confiance faible attribuée"
   }
-}
+  }
+,
+  "addressTypes": {
+    "unknown": "Inconnu"
+  }

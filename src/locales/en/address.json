@@ -634,4 +634,8 @@
     "moderateConfidenceRating": "Moderate confidence rating assigned",
     "lowConfidenceRating": "Low confidence rating assigned"
   }
-}
+  }
+,
+  "addressTypes": {
+    "unknown": "Unknown"
+  }
