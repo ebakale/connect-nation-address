@@ -183,7 +183,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
       {/* Auto-Verification Controls */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-base">
             <Zap className="h-5 w-5 text-primary" />
             {t('autoVerificationTools')}
           </CardTitle>
