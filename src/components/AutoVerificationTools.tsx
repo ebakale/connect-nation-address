@@ -235,7 +235,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 text-base">
                 <CheckSquare className="h-5 w-5 text-primary" />
                 {t('selectRequestsForAutoVerification')}
               </div>
