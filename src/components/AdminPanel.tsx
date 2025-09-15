@@ -85,21 +85,25 @@ const AdminPanel: React.FC = () => {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
-                <div>
+                <div className="flex flex-col h-full">
                   <h3 className="text-lg font-semibold mb-2">{t('admin:systemRolesDocumentation')}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <p className="text-sm text-muted-foreground mb-4 flex-grow">
                     {t('admin:generateComprehensiveDocumentation')}
                   </p>
-                  <RolesDocumentGenerator />
+                  <div className="mt-auto">
+                    <RolesDocumentGenerator />
+                  </div>
                 </div>
               </div>
               <div className="space-y-4">
-                <div>
+                <div className="flex flex-col h-full">
                   <h3 className="text-lg font-semibold mb-2">{t('admin:userManual')}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <p className="text-sm text-muted-foreground mb-4 flex-grow">
                     {t('admin:generateUserManualDescription')}
                   </p>
-                  <SystemManualPDF />
+                  <div className="mt-auto">
+                    <SystemManualPDF />
+                  </div>
                 </div>
               </div>
             </div>
