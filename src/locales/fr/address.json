@@ -429,6 +429,11 @@
   "noDuplicatesFound": "Aucun doublon trouvé",
   "qualityAssessment": "Évaluation de la Qualité",
   "recommendedActions": "Actions Recommandées",
+  "latitude": "Latitude",
+  "longitude": "Longitude",
+  "description": "Description",
+  "saveAndApprove": "Sauvegarder et Approuver", 
+  "cancel": "Annuler",
   "recommendations": {
     "invalidCoordinateFormat": "Format de coordonnées invalide - veuillez vérifier les valeurs de latitude et longitude",
     "coordinatesInWater": "Les coordonnées semblent être dans l'eau - veuillez vérifier l'emplacement",

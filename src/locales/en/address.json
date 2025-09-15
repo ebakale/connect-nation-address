@@ -585,6 +585,11 @@
   "noDuplicatesFound": "No duplicates found",
   "qualityAssessment": "Quality Assessment",
   "recommendedActions": "Recommended Actions",
+  "latitude": "Latitude",
+  "longitude": "Longitude", 
+  "description": "Description",
+  "saveAndApprove": "Save & Approve",
+  "cancel": "Cancel",
   "recommendations": {
     "invalidCoordinateFormat": "Invalid coordinate format - please verify latitude and longitude values",
     "coordinatesInWater": "Coordinates appear to be in water - please verify the location", 

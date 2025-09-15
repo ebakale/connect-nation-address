@@ -835,7 +835,7 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
           </Select>
         </div>
         <div>
-          <Label htmlFor="latitude">Latitude</Label>
+          <Label htmlFor="latitude">{t('latitude')}</Label>
           <Input
             id="latitude"
             type="number"
@@ -845,7 +845,7 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
           />
         </div>
         <div>
-          <Label htmlFor="longitude">Longitude</Label>
+          <Label htmlFor="longitude">{t('longitude')}</Label>
           <Input
             id="longitude"
             type="number"
@@ -856,7 +856,7 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
         </div>
       </div>
       <div>
-        <Label htmlFor="description">Description</Label>
+        <Label htmlFor="description">{t('description')}</Label>
         <Textarea
           id="description"
           value={formData.description || ''}
@@ -865,10 +865,10 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
       </div>
       <div className="flex gap-2 pt-4">
         <Button onClick={handleSave} className="flex-1">
-          Save & Approve
+          {t('saveAndApprove')}
         </Button>
         <Button variant="outline" onClick={onCancel}>
-          Cancel
+          {t('cancel')}
         </Button>
       </div>
     </div>
