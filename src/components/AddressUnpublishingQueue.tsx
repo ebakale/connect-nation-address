@@ -92,26 +92,26 @@ export const AddressUnpublishingQueue = ({ onClose }: AddressUnpublishingQueuePr
       ) : (
         publishedAddresses.map((address) => (
           <Card key={address.id} className="max-w-full overflow-hidden">
-            <CardHeader>
+            <CardHeader className="pb-3">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
                 <div className="min-w-0 flex-1">
-                  <CardTitle className="text-base sm:text-lg break-words">{address.uac}</CardTitle>
-                  <CardDescription className="break-words">
+                  <CardTitle className="text-sm sm:text-base break-words">{address.uac}</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm break-words">
                     {address.building && `${address.building}, `}
                     {address.street}, {address.city}, {address.region}
                   </CardDescription>
                 </div>
-                <div className="flex gap-2 flex-wrap">
-                  <Badge variant="default" className="text-xs">{t('verified')}</Badge>
-                  <Badge variant="default" className="text-xs">
+                <div className="flex gap-1 flex-wrap">
+                  <Badge variant="default" className="text-xs px-2 py-0.5">{t('verified')}</Badge>
+                  <Badge variant="default" className="text-xs px-2 py-0.5">
                     <Globe className="h-3 w-3 mr-1" />
                     {t('published')}
                   </Badge>
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm mb-4">
+            <CardContent className="pt-0">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-xs sm:text-sm mb-3">
                 <div className="break-words">
                   <span className="font-medium">{t('typeLabel')}:</span>{' '}
                   {(() => {
