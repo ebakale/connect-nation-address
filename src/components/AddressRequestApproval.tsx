@@ -669,7 +669,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                    ) : (
                      <>
                        <Zap className="h-3 w-3 sm:h-4 sm:w-4" />
-                       <span className="hidden md:inline text-xs">{t('autoVerify')}</span>
+                       <span className="hidden md:inline text-xs whitespace-normal break-words">{t('autoVerify')}</span>
                        <span className="md:hidden text-xs">{t('verifying')}</span>
                      </>
                    )}
