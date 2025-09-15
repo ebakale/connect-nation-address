@@ -585,6 +585,17 @@
   "noDuplicatesFound": "No duplicates found",
   "qualityAssessment": "Quality Assessment",
   "recommendedActions": "Recommended Actions",
+  "aiAnalysisComments": {
+    "basicRuleAnalysisUnavailable": "Basic rule-based analysis (AI analysis unavailable)",
+    "coordinateValidityCheck": "Coordinate validity check completed",
+    "addressConsistencyAnalysis": "Address consistency analysis performed",
+    "completenessAssessment": "Completeness assessment finished",
+    "fraudRiskEvaluation": "Fraud risk evaluation conducted",
+    "lowQualityData": "Low quality data detected",
+    "highConfidenceRating": "High confidence rating assigned",
+    "moderateConfidenceRating": "Moderate confidence rating assigned",
+    "lowConfidenceRating": "Low confidence rating assigned"
+  },
   "latitude": "Latitude",
   "longitude": "Longitude", 
   "description": "Description",
@@ -611,5 +622,16 @@
     "similarCoordinatesFound": "Found {{count}} addresses with similar coordinates",
     "identicalAddressFound": "Found {{count}} addresses with identical street address",
     "photoLocationDistance": "Photo location is {{distance}}m from expected address location"
+  },
+  "aiAnalysisComments": {
+    "basicRuleAnalysisUnavailable": "Basic rule-based analysis (AI analysis unavailable)",
+    "coordinateValidityCheck": "Coordinate validity check completed",
+    "addressConsistencyAnalysis": "Address consistency analysis performed",
+    "completenessAssessment": "Completeness assessment finished",
+    "fraudRiskEvaluation": "Fraud risk evaluation conducted",
+    "lowQualityData": "Low quality data detected",
+    "highConfidenceRating": "High confidence rating assigned",
+    "moderateConfidenceRating": "Moderate confidence rating assigned",
+    "lowConfidenceRating": "Low confidence rating assigned"
   }
 }

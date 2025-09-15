@@ -31,6 +31,59 @@ interface RejectedAddressesPanelProps {
   onUpdate?: () => void;
 }
 
+// Helper function to translate AI analysis comments
+const translateAIComment = (comment: string, t: any): string => {
+  // Define mapping patterns for common AI analysis comments
+  const patterns = [
+    { 
+      pattern: /Basic rule-based analysis \(AI analysis unavailable\)/i, 
+      key: 'aiAnalysisComments.basicRuleAnalysisUnavailable' 
+    },
+    { 
+      pattern: /Coordinate validity check completed/i, 
+      key: 'aiAnalysisComments.coordinateValidityCheck' 
+    },
+    { 
+      pattern: /Address consistency analysis performed/i, 
+      key: 'aiAnalysisComments.addressConsistencyAnalysis' 
+    },
+    { 
+      pattern: /Completeness assessment finished/i, 
+      key: 'aiAnalysisComments.completenessAssessment' 
+    },
+    { 
+      pattern: /Fraud risk evaluation conducted/i, 
+      key: 'aiAnalysisComments.fraudRiskEvaluation' 
+    },
+    { 
+      pattern: /Low quality data detected/i, 
+      key: 'aiAnalysisComments.lowQualityData' 
+    },
+    { 
+      pattern: /High confidence rating assigned/i, 
+      key: 'aiAnalysisComments.highConfidenceRating' 
+    },
+    { 
+      pattern: /Moderate confidence rating assigned/i, 
+      key: 'aiAnalysisComments.moderateConfidenceRating' 
+    },
+    { 
+      pattern: /Low confidence rating assigned/i, 
+      key: 'aiAnalysisComments.lowConfidenceRating' 
+    }
+  ];
+
+  // Try to match and translate known patterns
+  for (const { pattern, key } of patterns) {
+    if (pattern.test(comment)) {
+      return t(key);
+    }
+  }
+
+  // Return original comment if no pattern matches
+  return comment;
+};
+
 export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps) {
   const { t } = useTranslation('address');
   const [rejectedAddresses, setRejectedAddresses] = useState<RejectedAddress[]>([]);
@@ -179,7 +232,7 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
 
                  <div>
                    <strong className="text-xs">{t('originalJustification')}:</strong>
-                   <p className="text-xs text-muted-foreground mt-1">{address.justification}</p>
+                   <p className="text-xs text-muted-foreground mt-1">{translateAIComment(address.justification, t)}</p>
                  </div>
 
                 <div className="bg-destructive/10 p-3 rounded-lg">

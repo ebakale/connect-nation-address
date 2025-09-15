@@ -579,6 +579,17 @@
   "noDuplicatesFound": "No se encontraron duplicados",
   "qualityAssessment": "Evaluación de Calidad",
   "recommendedActions": "Acciones Recomendadas",
+  "aiAnalysisComments": {
+    "basicRuleAnalysisUnavailable": "Análisis basado en reglas básicas (análisis de IA no disponible)",
+    "coordinateValidityCheck": "Verificación de validez de coordenadas completada",
+    "addressConsistencyAnalysis": "Análisis de consistencia de dirección realizado",
+    "completenessAssessment": "Evaluación de integridad finalizada",
+    "fraudRiskEvaluation": "Evaluación de riesgo de fraude realizada",
+    "lowQualityData": "Datos de baja calidad detectados",
+    "highConfidenceRating": "Calificación de alta confianza asignada",
+    "moderateConfidenceRating": "Calificación de confianza moderada asignada",
+    "lowConfidenceRating": "Calificación de baja confianza asignada"
+  },
   "latitude": "Latitud",
   "longitude": "Longitud",
   "description": "Descripción", 
@@ -605,5 +616,16 @@
     "similarCoordinatesFound": "Se encontraron {{count}} direcciones con coordenadas similares",
     "identicalAddressFound": "Se encontraron {{count}} direcciones con dirección de calle idéntica",
     "photoLocationDistance": "La ubicación de la foto está a {{distance}}m de la ubicación de dirección esperada"
+  },
+  "aiAnalysisComments": {
+    "basicRuleAnalysisUnavailable": "Análisis basado en reglas básicas (análisis de IA no disponible)",
+    "coordinateValidityCheck": "Verificación de validez de coordenadas completada",
+    "addressConsistencyAnalysis": "Análisis de consistencia de dirección realizado",
+    "completenessAssessment": "Evaluación de integridad finalizada",
+    "fraudRiskEvaluation": "Evaluación de riesgo de fraude realizada",
+    "lowQualityData": "Datos de baja calidad detectados",
+    "highConfidenceRating": "Calificación de alta confianza asignada",
+    "moderateConfidenceRating": "Calificación de confianza moderada asignada",
+    "lowConfidenceRating": "Calificación de baja confianza asignada"
   }
 }

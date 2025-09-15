@@ -429,6 +429,17 @@
   "noDuplicatesFound": "Aucun doublon trouvé",
   "qualityAssessment": "Évaluation de la Qualité",
   "recommendedActions": "Actions Recommandées",
+  "aiAnalysisComments": {
+    "basicRuleAnalysisUnavailable": "Analyse basée sur des règles de base (analyse IA indisponible)",
+    "coordinateValidityCheck": "Vérification de la validité des coordonnées terminée",
+    "addressConsistencyAnalysis": "Analyse de cohérence d'adresse effectuée",
+    "completenessAssessment": "Évaluation de complétude terminée",
+    "fraudRiskEvaluation": "Évaluation du risque de fraude effectuée",
+    "lowQualityData": "Données de faible qualité détectées",
+    "highConfidenceRating": "Note de confiance élevée attribuée",
+    "moderateConfidenceRating": "Note de confiance modérée attribuée",
+    "lowConfidenceRating": "Note de confiance faible attribuée"
+  },
   "latitude": "Latitude",
   "longitude": "Longitude",
   "description": "Description",
@@ -455,5 +466,16 @@
     "similarCoordinatesFound": "{{count}} adresses trouvées avec des coordonnées similaires",
     "identicalAddressFound": "{{count}} adresses trouvées avec une adresse de rue identique",
     "photoLocationDistance": "L'emplacement de la photo est à {{distance}}m de l'emplacement d'adresse attendu"
+  },
+  "aiAnalysisComments": {
+    "basicRuleAnalysisUnavailable": "Analyse basée sur des règles de base (analyse IA indisponible)",
+    "coordinateValidityCheck": "Vérification de la validité des coordonnées terminée",
+    "addressConsistencyAnalysis": "Analyse de cohérence d'adresse effectuée",
+    "completenessAssessment": "Évaluation de complétude terminée",
+    "fraudRiskEvaluation": "Évaluation du risque de fraude effectuée",
+    "lowQualityData": "Données de faible qualité détectées",
+    "highConfidenceRating": "Note de confiance élevée attribuée",
+    "moderateConfidenceRating": "Note de confiance modérée attribuée",
+    "lowConfidenceRating": "Note de confiance faible attribuée"
   }
 }
