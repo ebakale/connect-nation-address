@@ -132,7 +132,7 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="pr-10 min-h-[40px] max-h-[40px] resize-none overflow-hidden text-sm"
+            className="pr-10 min-h-[40px] max-h-[40px] resize-none overflow-hidden text-sm placeholder:text-xs"
             rows={1}
           />
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
