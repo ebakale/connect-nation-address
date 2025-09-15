@@ -48,370 +48,308 @@ export const SystemManualPDF: React.FC = () => {
     // Title Page
     pdf.setFontSize(24);
     pdf.setFont('helvetica', 'bold');
-    pdf.text('Connect Nation Unified Platform', pageWidth / 2, 50, { align: 'center' });
+    pdf.text('National Digital Addressing System', pageWidth / 2, 40, { align: 'center' });
     
     pdf.setFontSize(18);
-    pdf.text('Comprehensive Manual', pageWidth / 2, 70, { align: 'center' });
+    pdf.text('Comprehensive User Manual', pageWidth / 2, 55, { align: 'center' });
     
     pdf.setFontSize(12);
     pdf.setFont('helvetica', 'normal');
-    pdf.text('Equatorial Guinea National Digital Address Authority', pageWidth / 2, 90, { align: 'center' });
-    pdf.text('Version 1.0 - December 2024', pageWidth / 2, 110, { align: 'center' });
+    pdf.text('Version 2.0', pageWidth / 2, 70, { align: 'center' });
+    pdf.text(new Date().toLocaleDateString(), pageWidth / 2, 80, { align: 'center' });
 
-    // Add new page for content
+    // Add a new page for content
     pdf.addPage();
     currentY = margin;
 
     // Table of Contents
-    addHeading('Table of Contents', 1);
-    const tocItems = [
-      '1. System Overview',
-      '2. Module Overview',
-      '3. User Roles and Permissions',
-      '4. Core Workflows',
-      '5. Feature Descriptions',
-      '6. Administrator Guide',
-      '7. User Guides by Role',
-      '8. Technical Documentation',
-      '9. Troubleshooting'
-    ];
+    addHeading('Table of Contents');
+    addText('1. Introduction..................................................3');
+    addText('2. System Overview...............................................4');
+    addText('3. User Roles and Permissions...................................5');
+    addText('4. Address Registry Module......................................8');
+    addText('5. Police Operations Module....................................15');
+    addText('6. Integration and Workflow....................................22');
+    addText('7. Technical Guidelines........................................25');
+    addText('8. Troubleshooting.............................................28');
+    addText('9. Security and Best Practices................................30');
+    addText('10. Appendices.................................................32');
+
+    // Start content
+    pdf.addPage();
+    currentY = margin;
+
+    // 1. Introduction
+    addHeading('1. Introduction');
+    addText('The National Digital Addressing System is a comprehensive platform designed to modernize address management and emergency response services in Equatorial Guinea. This system integrates traditional addressing capabilities with advanced police operations management, creating a unified platform for government services.');
     
-    tocItems.forEach(item => {
-      addText(item);
-    });
+    addText('This manual provides complete guidance for all system users, from citizens submitting address requests to administrators managing system-wide operations. The platform serves multiple user roles and facilitates complex workflows while maintaining high security standards.');
 
-    pdf.addPage();
-    currentY = margin;
-
-    // Content
-    addHeading('1. System Overview', 1);
-    addText('The Connect Nation Unified Platform is a comprehensive digital ecosystem for managing both address registration and police operations in Equatorial Guinea. The platform consists of two integrated modules that work together to provide enhanced public services, emergency response, and urban planning capabilities.');
-
-    addHeading('2. Module Overview', 1);
+    // 2. System Overview
+    addHeading('2. System Overview');
+    addText('The platform consists of two primary modules:');
+    addText('• Address Registry Module: Manages the complete lifecycle of address creation, verification, and publication');
+    addText('• Police Operations Module: Handles emergency incident management, unit coordination, and communication systems');
     
-    addHeading('Address Registry Module', 2);
-    addText('The address registry system manages the complete lifecycle of address registration, verification, and distribution. Key features include:');
-    addText('• Address registration and verification workflow');
-    addText('• Geographic information system (GIS) integration');
-    addText('• Unified Address Code (UAC) generation');
-    addText('• Evidence management and photo capture');
-    addText('• Multi-role approval process');
+    addText('These modules work together to provide integrated services, enabling emergency responders to access verified address information during incidents and allowing address data to be used across government services.');
 
-    addHeading('Police Operations Module', 2);
-    addText('The police operations system provides comprehensive incident management, emergency response coordination, and law enforcement support capabilities. Key features include:');
-    addText('• Real-time incident reporting and tracking');
-    addText('• Emergency dispatch and unit coordination');
-    addText('• Officer dashboard and performance monitoring');
-    addText('• Communication systems for field operations');
-    addText('• Analytics and reporting tools');
+    // 3. User Roles and Permissions
+    addHeading('3. User Roles and Permissions');
+    
+    addHeading('3.1 Address Registry Roles', 2);
+    
+    addText('Citizen:', 12, true);
+    addText('• Submit new address requests with location details and documentation');
+    addText('• Track submission status and receive notifications');
+    addText('• Access their own address records and verification status');
+    addText('• Resubmit requests after addressing rejection feedback');
+    
+    addText('Field Agent:', 12, true);
+    addText('• Visit requested locations to capture GPS coordinates');
+    addText('• Take verification photos and document site conditions');
+    addText('• Create detailed address drafts with technical specifications');
+    addText('• Work offline in areas with limited connectivity');
+    
+    addText('Verifier:', 12, true);
+    addText('• Review address drafts for accuracy and completeness');
+    addText('• Check for duplicate addresses in the system');
+    addText('• Resolve conflicts between multiple submissions');
+    addText('• Flag problematic requests for additional review');
+    addText('• Provide recommendations for address improvements');
+    
+    addText('Registrar:', 12, true);
+    addText('• Perform final reviews of verified address drafts');
+    addText('• Publish approved addresses to the official registry');
+    addText('• Generate Unique Address Codes (UACs) for verified locations');
+    addText('• Manage address publication status and visibility');
+    addText('• Handle administrative appeals and complex cases');
 
-    addHeading('Platform Benefits', 2);
-    addText('• Enhanced Service Delivery: Improve emergency response, postal delivery, and public services through accurate addressing');
-    addText('• Economic Acceleration: Enable e-commerce, delivery services, and location-based business growth');
-    addText('• Smart Urban Planning: Support infrastructure development and city planning with precise location data');
-    addText('• Digital Infrastructure: Create a foundation for IoT, smart city initiatives, and digital governance');
-    addText('• Integrated Emergency Response: Seamless coordination between address verification and police operations');
-    addText('• Data-Driven Policing: Evidence-based decision making through comprehensive analytics');
+    addHeading('3.2 Police Operations Roles', 2);
+    
+    addText('Police Operator:', 12, true);
+    addText('• Respond to emergency incidents and update status in real-time');
+    addText('• Request backup support when situations require additional resources');
+    addText('• Communicate with dispatchers and other units through secure channels');
+    addText('• Document incident details and evidence during field operations');
+    
+    addText('Police Dispatcher:', 12, true);
+    addText('• Receive emergency calls and create incident records');
+    addText('• Assign appropriate units based on location and incident type');
+    addText('• Coordinate multi-unit responses and resource allocation');
+    addText('• Monitor active incidents and maintain communication links');
+    addText('• Process backup requests and coordinate additional resources');
+    
+    addText('Police Supervisor:', 12, true);
+    addText('• Monitor unit performance and incident response times');
+    addText('• Approve backup requests and resource allocation decisions');
+    addText('• Oversee operations within assigned geographic areas');
+    addText('• Manage escalations and complex incident situations');
+    addText('• Conduct performance reviews and process improvements');
+    
+    addText('Police Administrator:', 12, true);
+    addText('• Configure system settings and user permissions');
+    addText('• Manage unit assignments and organizational structure');
+    addText('• Analyze performance metrics across the entire force');
+    addText('• Oversee system security and access controls');
+    addText('• Generate reports for command staff and government officials');
 
-    addHeading('System Architecture', 2);
-    addText('• Frontend: React-based web application with responsive design');
-    addText('• Backend: Supabase with PostgreSQL database');
-    addText('• Authentication: Secure role-based access control with module-specific permissions');
-    addText('• Storage: Cloud-based file storage for evidence and documentation');
-    addText('• Real-time Communication: WebSocket support for live updates and dispatch');
-    addText('• APIs: RESTful APIs for integration with external systems');
-    addText('• Security: End-to-end encryption for sensitive police data');
+    // 4. Address Registry Module
+    addHeading('4. Address Registry Module');
+    
+    addHeading('4.1 Address Request Process', 2);
+    addText('The address registration process follows a structured workflow designed to ensure accuracy and prevent duplicates:');
+    
+    addText('Step 1: Citizen Submission', 12, true);
+    addText('Citizens submit requests through the web portal, providing basic location information, justification for the address, and any supporting documentation. The system validates the submission and assigns it a unique tracking number.');
+    
+    addText('Step 2: Field Verification', 12, true);
+    addText('Field agents visit the location to capture precise GPS coordinates, take verification photos, and document the physical characteristics of the site. This creates a comprehensive address draft with technical specifications.');
+    
+    addText('Step 3: Technical Review', 12, true);
+    addText('Verifiers examine the draft for accuracy, check for potential duplicates, and ensure compliance with addressing standards. They may request additional information or flag the request for manual review.');
+    
+    addText('Step 4: Final Publication', 12, true);
+    addText('Registrars perform final quality checks and publish approved addresses to the official registry. This generates a Unique Address Code (UAC) and makes the address available for government services.');
 
-    pdf.addPage();
-    currentY = margin;
+    addHeading('4.2 Address Search and Discovery', 2);
+    addText('The system provides multiple ways to search for addresses:');
+    addText('• UAC Search: Direct lookup using the unique address code returns exact coordinates and full details');
+    addText('• Public Address Search: Browse public addresses by street name, city, or region');
+    addText('• Emergency Services Search: Special access for verified emergency responders');
+    addText('• Administrative Search: Full access for government staff with appropriate permissions');
 
-    addHeading('3. User Roles and Permissions', 1);
-    addText('The unified platform supports two distinct role hierarchies - one for the Address Registry Module and one for the Police Operations Module. Users can have roles in one or both modules based on their responsibilities.');
+    addHeading('4.3 Quality Assurance Features', 2);
+    addText('Multiple safeguards ensure address accuracy:');
+    addText('• Automated duplicate detection using coordinate proximity analysis');
+    addText('• Manual review workflow for flagged or complex submissions');
+    addText('• Photo verification requirements for field verification');
+    addText('• Multi-stage approval process with role separation');
+    addText('• Audit trails tracking all changes and approvals');
 
-    addHeading('Address Registry Module Roles', 2);
+    // 5. Police Operations Module
+    addHeading('5. Police Operations Module');
+    
+    addHeading('5.1 Incident Management Workflow', 2);
+    addText('Emergency incident management follows a structured response protocol:');
+    
+    addText('Incident Reporting:', 12, true);
+    addText('Incidents are reported through emergency calls, online submissions, or direct officer observations. The system creates a unique incident record with location verification and priority classification.');
+    
+    addText('Dispatch Coordination:', 12, true);
+    addText('Dispatchers review incident details, verify location information using the address registry, and assign appropriate units based on proximity, availability, and incident type.');
+    
+    addText('Field Response:', 12, true);
+    addText('Responding officers update incident status in real-time, document evidence, and communicate with command through secure channels. GPS tracking ensures accurate location monitoring.');
+    
+    addText('Supervision and Analysis:', 12, true);
+    addText('Supervisors monitor active incidents, analyze response times, and coordinate additional resources when needed. Performance data supports continuous improvement efforts.');
 
-    addHeading('1. Citizen (Default Role)', 3);
-    addText('Purpose: General public users who can search for verified addresses');
-    addText('Permissions:');
-    addText('✓ Search verified addresses');
-    addText('✓ View redacted evidence/documents');
-    addText('✓ Access status information for their own submissions');
-    addText('✗ Cannot create draft addresses');
-    addText('✗ Cannot upload evidence');
-    addText('✗ Cannot verify or publish addresses');
-    addText('Workflow Stage: Submit Request');
+    addHeading('5.2 Unit Management and Coordination', 2);
+    addText('The system manages police units and personnel:');
+    addText('• Real-time unit status tracking and availability monitoring');
+    addText('• Geographic assignment management with boundary enforcement');
+    addText('• Communication systems for secure inter-unit messaging');
+    addText('• Backup request and approval workflow for resource coordination');
+    addText('• Performance analytics and response time measurement');
 
-    addHeading('2. Property Claimant', 3);
-    addText('Purpose: Property owners who can submit proof of ownership for address registration');
-    addText('Permissions:');
-    addText('✓ Search verified addresses');
-    addText('✓ Upload evidence (own submissions only)');
-    addText('✓ View own evidence and submissions');
-    addText('✓ Access audit logs for own records');
-    addText('✗ Cannot create draft addresses');
-    addText('✗ Cannot verify addresses');
-    addText('Workflow Stage: Submit Request with Evidence');
+    addHeading('5.3 Communication Systems', 2);
+    addText('Secure communication features include:');
+    addText('• Radio code integration for standardized emergency communications');
+    addText('• Unit-to-unit messaging with priority levels and acknowledgment tracking');
+    addText('• Dispatcher broadcast capabilities for wide-area notifications');
+    addText('• Emergency backup communication through SMS fallback systems');
 
-    addHeading('3. Field Agent', 3);
-    addText('Purpose: Data collection specialists who capture address information in the field');
-    addText('Permissions:');
-    addText('✓ Create draft addresses');
-    addText('✓ Upload evidence and photos');
-    addText('✓ View own submissions and evidence');
-    addText('✓ Access audit logs for own work');
-    addText('✓ Geographic scope restrictions apply');
-    addText('✗ Cannot verify or publish addresses');
-    addText('Workflow Stage: Capture Draft');
-    addText('Geographic Scope: Limited to assigned districts/areas');
+    // 6. Integration and Workflow
+    addHeading('6. Integration and Workflow');
+    
+    addHeading('6.1 Cross-Module Operations', 2);
+    addText('The platform enables seamless integration between addressing and police operations:');
+    
+    addText('Emergency Address Verification:', 12, true);
+    addText('During emergency incidents, unverified locations can be fast-tracked through the address verification process, enabling rapid response while maintaining data quality standards.');
+    
+    addText('Intelligence Sharing:', 12, true);
+    addText('Address registry data enhances police operations through accurate location information, while incident data helps identify address verification priorities in high-activity areas.');
+    
+    addText('Unified Analytics:', 12, true);
+    addText('Combined data from both modules provides insights for urban planning, emergency preparedness, and resource allocation decisions.');
 
-    pdf.addPage();
-    currentY = margin;
+    addHeading('6.2 Workflow Automation', 2);
+    addText('Automated processes improve efficiency:');
+    addText('• Duplicate detection algorithms reduce manual review requirements');
+    addText('• Location-based unit assignment optimizes emergency response times');
+    addText('• Status update triggers maintain real-time information accuracy');
+    addText('• Notification systems keep stakeholders informed of process changes');
 
-    addHeading('4. Verifier', 3);
-    addText('Purpose: Quality assurance specialists who verify address accuracy and resolve duplicates');
-    addText('Permissions:');
-    addText('✓ Verify addresses');
-    addText('✓ Create corrective draft addresses');
-    addText('✓ Merge and split records');
-    addText('✓ Access full evidence');
-    addText('✓ Flag addresses for review');
-    addText('✓ Edit district-level metadata');
-    addText('✓ Access district-level audit logs');
-    addText('✗ Cannot publish to public registry');
-    addText('Workflow Stage: Verify');
-    addText('Geographic Scope: District-level access');
+    // 7. Technical Guidelines
+    addHeading('7. Technical Guidelines');
+    
+    addHeading('7.1 System Access and Authentication', 2);
+    addText('All users must authenticate using secure credentials. The system supports:');
+    addText('• Multi-factor authentication for sensitive roles');
+    addText('• Role-based access control with geographic and organizational scoping');
+    addText('• Session management with automatic timeout for inactive users');
+    addText('• Audit logging for all system access and data modifications');
 
-    addHeading('5. Registrar', 3);
-    addText('Purpose: Provincial administrators who publish verified addresses to the official registry');
-    addText('Permissions:');
-    addText('✓ Publish addresses to public registry');
-    addText('✓ Retire/unpublish addresses');
-    addText('✓ All Verifier permissions');
-    addText('✓ Merge and split records');
-    addText('✓ Edit province-level metadata');
-    addText('✓ Access province-level audit logs');
-    addText('✗ Cannot override system decisions');
-    addText('Workflow Stage: Publish');
-    addText('Geographic Scope: Province-level access');
+    addHeading('7.2 Data Security and Privacy', 2);
+    addText('The platform implements comprehensive security measures:');
+    addText('• End-to-end encryption for sensitive data transmission');
+    addText('• Geographic access controls limiting data visibility by jurisdiction');
+    addText('• Privacy settings allowing address owners to control information sharing');
+    addText('• Regular security audits and vulnerability assessments');
 
-    addHeading('6. NDAA Admin (National Digital Address Authority)', 3);
-    addText('Purpose: National-level administrators with full system oversight');
-    addText('Permissions:');
-    addText('✓ Override system decisions');
-    addText('✓ Manage API keys and webhooks');
-    addText('✓ Edit national-level hierarchy');
-    addText('✓ Access all audit logs');
-    addText('✓ All lower-level permissions');
-    addText('✓ System configuration management');
-    addText('Workflow Stage: Override/Supervise');
-    addText('Geographic Scope: National access');
+    addHeading('7.3 Mobile and Offline Capabilities', 2);
+    addText('Field operations are supported through:');
+    addText('• Mobile-responsive web application with touch-optimized interfaces');
+    addText('• Offline data capture with automatic synchronization when connectivity returns');
+    addText('• GPS integration for accurate location capture');
+    addText('• Camera integration for verification photo capture');
 
-    pdf.addPage();
-    currentY = margin;
+    // 8. Troubleshooting
+    addHeading('8. Troubleshooting');
+    
+    addHeading('8.1 Common Issues and Solutions', 2);
+    addText('Login Problems:', 12, true);
+    addText('• Verify username and password accuracy');
+    addText('• Clear browser cache and cookies');
+    addText('• Contact administrator for account status verification');
+    
+    addText('Data Synchronization Issues:', 12, true);
+    addText('• Check internet connectivity');
+    addText('• Verify system status through the status page');
+    addText('• Contact technical support for server-side issues');
+    
+    addText('Permission Errors:', 12, true);
+    addText('• Verify role assignments with system administrator');
+    addText('• Check geographic scope permissions for location-specific data');
+    addText('• Review organization membership for cross-department access');
 
-    addHeading('Police Operations Module Roles', 2);
+    addHeading('8.2 Support Resources', 2);
+    addText('Technical support is available through:');
+    addText('• Online help documentation and FAQ sections');
+    addText('• Email support with 24-hour response time commitment');
+    addText('• Phone support for emergency situations');
+    addText('• Training materials and video tutorials for new users');
 
-    addHeading('1. Police Admin', 3);
-    addText('Purpose: System administrators for police operations with full oversight');
-    addText('Permissions: Manage all police system users and roles, configure system settings, access all incident data and analytics, manage unit structures, override operational decisions, full audit trail access');
-    addText('Scope: System-wide police operations');
+    // 9. Security and Best Practices
+    addHeading('9. Security and Best Practices');
+    
+    addHeading('9.1 User Security Guidelines', 2);
+    addText('• Use strong passwords with regular updates');
+    addText('• Never share login credentials with other users');
+    addText('• Log out completely when finished using the system');
+    addText('• Report suspected security incidents immediately');
+    addText('• Keep personal contact information current for security notifications');
 
-    addHeading('2. Police Supervisor', 3);
-    addText('Purpose: Senior officers responsible for operational oversight and unit management');
-    addText('Permissions: Monitor all incidents within jurisdiction, assign units to incidents, access real-time unit status, review officer performance metrics, approve backup requests, generate operational reports');
-    addText('Scope: Regional or departmental oversight');
+    addHeading('9.2 Data Handling Best Practices', 2);
+    addText('• Verify information accuracy before submission');
+    addText('• Use appropriate privacy settings for sensitive locations');
+    addText('• Follow data retention policies for temporary information');
+    addText('• Report data quality issues through proper channels');
 
-    addHeading('3. Police Dispatcher', 3);
-    addText('Purpose: Emergency response coordinators managing incident dispatch');
-    addText('Permissions: Receive and process emergency calls, create and update incident records, dispatch units to incidents, monitor unit status, coordinate emergency response, communicate with field units');
-    addText('Scope: Dispatch center operations');
+    // 10. Appendices
+    addHeading('10. Appendices');
+    
+    addHeading('10.1 Keyboard Shortcuts and Quick Actions', 2);
+    addText('Common keyboard shortcuts for power users:');
+    addText('• Ctrl+S: Save current form or draft');
+    addText('• Ctrl+F: Open search interface');
+    addText('• Esc: Close current dialog or cancel operation');
+    addText('• Tab: Navigate between form fields');
 
-    addHeading('4. Police Operator', 3);
-    addText('Purpose: Field officers and operational personnel');
-    addText('Permissions: View assigned incidents, update incident status, request backup and resources, submit field reports and evidence, access incident history, communicate with dispatch and units');
-    addText('Scope: Field operations and assigned incidents');
+    addHeading('10.2 System Status Codes', 2);
+    addText('Address Request Status:');
+    addText('• Pending: Awaiting field verification');
+    addText('• Draft: Under technical review');
+    addText('• Flagged: Requires manual attention');
+    addText('• Approved: Published to registry');
+    addText('• Rejected: Not meeting quality standards');
 
-    pdf.addPage();
-    currentY = margin;
+    addText('Incident Status:');
+    addText('• Reported: Initial incident record created');
+    addText('• Dispatched: Units assigned and en route');
+    addText('• Responding: Units on scene');
+    addText('• Resolved: Incident concluded');
+    addText('• Closed: Final documentation complete');
 
-    addHeading('4. Core Workflows', 1);
+    addHeading('10.3 Contact Information', 2);
+    addText('System Administration:');
+    addText('Email: admin@addressing.gov.gq');
+    addText('Phone: +240-XXX-XXXX');
+    addText('Office Hours: Monday-Friday, 8:00 AM - 6:00 PM');
 
-    addHeading('Address Registry Module Workflows', 2);
-
-    addHeading('1. Standard Address Creation Workflow', 2);
-    addText('Participants: Citizen → Field Agent → Verifier → Registrar');
-    addText('');
-    addText('1. Submit Request (Citizen)');
-    addText('   • Submit new address request through web interface');
-    addText('   • Provide basic location and justification information');
-    addText('   • Upload optional supporting documentation');
-    addText('');
-    addText('2. Capture Draft (Field Agent)');
-    addText('   • Visit location and capture precise coordinates');
-    addText('   • Take photographs of the location');
-    addText('   • Create detailed address draft with evidence');
-    addText('   • Verify physical existence and accessibility');
-    addText('');
-    addText('3. Verify (Verifier)');
-    addText('   • Review draft for accuracy and completeness');
-    addText('   • Check for duplicates and conflicts');
-    addText('   • Resolve data quality issues');
-    addText('   • Approve or request corrections');
-    addText('');
-    addText('4. Publish (Registrar)');
-    addText('   • Final review of verified addresses');
-    addText('   • Publish to provincial registry');
-    addText('   • Generate Unified Address Code (UAC)');
-    addText('   • Make address publicly searchable');
-
-    addHeading('2. Partner Bulk Update Workflow', 2);
-    addText('Participants: Partner → Data Steward → Verifier → Registrar');
-    addText('');
-    addText('1. Bulk Upload (Partner/Utility)');
-    addText('   • Upload customer references with coordinates');
-    addText('   • Provide hashed personal data for privacy');
-    addText('   • Submit batch requests via API');
-    addText('');
-    addText('2. QA Review (Data Steward)');
-    addText('   • Run automated quality assurance checks');
-    addText('   • Validate data format and completeness');
-    addText('   • Flag suspicious or duplicate entries');
-    addText('');
-    addText('3. Batch Verify (Verifier)');
-    addText('   • Review QA results');
-    addText('   • Approve subset of clean data');
-    addText('   • Flag problematic entries for manual review');
-    addText('');
-    addText('4. Bulk Publish (Registrar)');
-    addText('   • Publish approved address batches');
-    addText('   • Generate UACs for all new addresses');
-    addText('   • Send confirmation webhooks to partners');
-
-    addHeading('Police Operations Module Workflows', 2);
-
-    addHeading('1. Emergency Incident Response Workflow', 3);
-    addText('Participants: Citizen → Police Dispatcher → Police Operator → Police Supervisor');
-    addText('1. Incident Report: Emergency call received, details captured, location verified, priority assigned');
-    addText('2. Dispatch Coordination: Units identified, optimal unit selected, incident assigned, communication established');
-    addText('3. Field Response: Unit dispatched, status updates provided, on-scene assessment, evidence collected');
-    addText('4. Supervision: Monitor progress, coordinate resources, review resolution, performance evaluation');
-
-    addHeading('2. Backup Request Workflow', 3);
-    addText('Participants: Police Operator → Police Dispatcher → Police Supervisor');
-    addText('1. Backup Request: Assess situation, submit request with justification, provide details');
-    addText('2. Resource Coordination: Evaluate request, identify available units, coordinate deployment');
-    addText('3. Approval and Deployment: Review and approve allocation, monitor coordination, ensure utilization');
-
-    pdf.addPage();
-    currentY = margin;
-
-    addHeading('5. Feature Descriptions', 1);
-
-    addHeading('Address Registry Module Features', 2);
-
-    addHeading('Address Search', 2);
-    addText('• Smart Search: Natural language and coordinate-based search');
-    addText('• Filter Options: By verification status, date, location type');
-    addText('• Map Integration: Visual search with interactive maps');
-    addText('• Export Functions: Data export in multiple formats');
-
-    addHeading('Address Registration', 2);
-    addText('• Multi-Step Form: Guided registration process');
-    addText('• Photo Upload: Evidence capture with automatic compression');
-    addText('• GPS Integration: Automatic coordinate capture');
-    addText('• Duplicate Detection: Real-time duplicate checking');
-
-    addHeading('Verification Tools', 2);
-    addText('• Bulk Verification: Process multiple addresses simultaneously');
-    addText('• Quality Scoring: Automated quality assessment');
-    addText('• Conflict Resolution: Tools for resolving address conflicts');
-    addText('• Evidence Review: Secure evidence viewing and annotation');
-
-    addHeading('Administrative Tools', 2);
-    addText('• Role Management: Assign and modify user roles');
-    addText('• Permission Matrix: Visual permission management');
-    addText('• Workflow Monitoring: Track progress through stages');
-    addText('• Analytics Dashboard: System usage and performance metrics');
-
-    addHeading('UAC Generation', 2);
-    addText('• Unified Address Codes: Standardized address identifiers');
-    addText('• Hierarchical Structure: Country-Region-City-Unique format');
-    addText('• Check Digits: Built-in validation for accuracy');
-    addText('• Batch Generation: Efficient bulk UAC creation');
-
-    addHeading('Police Operations Module Features', 2);
-
-    addHeading('Incident Management', 3);
-    addText('• Real-time incident tracking with live status updates');
-    addText('• Priority classification based on severity and type');
-    addText('• Location integration with address registry');
-    addText('• Evidence management and secure storage');
-
-    addHeading('Dispatch Operations', 3);
-    addText('• Unit tracking with real-time location monitoring');
-    addText('• Optimal assignment based on proximity and availability');
-    addText('• Communication hub for dispatch and field units');
-    addText('• Emergency protocols for high-priority incidents');
-
-    addHeading('Performance Analytics', 3);
-    addText('• Response time tracking and efficiency metrics');
-    addText('• Officer and unit performance monitoring');
-    addText('• Crime pattern analysis and trend identification');
-    addText('• Resource utilization analysis');
-
-    addHeading('Unit Management', 3);
-    addText('• Team organization and hierarchical structure');
-    addText('• Shift scheduling and duty assignment');
-    addText('• Backup coordination and deployment');
-    addText('• Status monitoring and availability tracking');
-
-    pdf.addPage();
-    currentY = margin;
-
-    addHeading('6. Technical Support', 1);
-    addText('For technical assistance:');
-    addText('• Email: tech-support@address-system.gq');
-    addText('• Phone: +240-XXX-XXXX');
-    addText('• Hours: Monday-Friday, 8:00-17:00');
-    addText('');
-    addText('Emergency Support:');
-    addText('• 24/7 Hotline: +240-XXX-XXXX');
-    addText('• Emergency Email: emergency@address-system.gq');
-    addText('• Response Time: Within 2 hours');
-
-    // Footer
-    pdf.setFontSize(8);
-    pdf.setFont('helvetica', 'normal');
-    const totalPages = pdf.internal.pages.length - 1;
-    for (let i = 1; i <= totalPages; i++) {
-      pdf.setPage(i);
-      pdf.text(`Page ${i} of ${totalPages}`, pageWidth - margin, pageHeight - 10, { align: 'right' });
-      pdf.text('Connect Nation Unified Platform - User Manual', margin, pageHeight - 10);
-    }
+    addText('Technical Support:');
+    addText('Email: support@addressing.gov.gq');
+    addText('Emergency: +240-XXX-XXXX (24/7)');
 
     // Save the PDF
-    pdf.save('Connect-Nation-Unified-Platform-Manual.pdf');
+    pdf.save('NDAS-User-Manual.pdf');
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <FileText className="h-5 w-5" />
-          {t('admin:systemDocumentation')}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <p className="text-muted-foreground">
-            {t('admin:comprehensiveManual')}
-          </p>
-          <Button onClick={generatePDF} className="flex items-center gap-2">
-            <Download className="h-4 w-4" />
-            {t('admin:downloadSystemManual')}
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+    <Button onClick={generatePDF} className="flex items-center gap-2">
+      <Download className="h-4 w-4" />
+      {t('admin:downloadSystemManual')}
+    </Button>
   );
 };
