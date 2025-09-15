@@ -426,5 +426,32 @@
     "policeAdminRole": "Configurer les paramètres du système et les permissions d'utilisateur, gérer les affectations d'unités et la structure organisationnelle, analyser les métriques de performance dans toute la force, superviser la sécurité du système et les contrôles d'accès, générer des rapports pour le personnel de commandement et les officiels gouvernementaux.",
     "generatedBy": "Généré par le Système d'Autorité Nationale d'Adressage Numérique",
     "generatedOn": "Généré le :"
+  },
+  "downloadStrategicOverview": "Télécharger le Document de Vision Stratégique",
+  "strategicOverview": {
+    "title": "Système National d'Adressage Numérique Connect Nation",
+    "subtitle": "Vision Stratégique et Bénéfices Nationaux pour la Guinée Équatoriale",
+    "version": "Rapport d'Analyse Stratégique v1.0",
+    "executiveSummary": "Résumé Exécutif",
+    "systemOverview": "Aperçu du Système",
+    "nationalBenefits": "Analyse des Bénéfices Nationaux",
+    "securityBenefits": "Bénéfices de Sécurité et de Sûreté Publique",
+    "economicBenefits": "Bénéfices de Développement Économique",
+    "socialBenefits": "Bénéfices Sociaux et Communautaires",
+    "governmentBenefits": "Bénéfices d'Efficacité Gouvernementale",
+    "implementationStrategy": "Stratégie de Mise en Œuvre",
+    "conclusion": "Conclusion et Recommandations",
+    "content": {
+      "executiveSummaryText": "Le Système National d'Adressage Numérique Connect Nation représente une infrastructure technologique transformatrice pour la Guinée Équatoriale, combinant des capacités avancées de registre d'adresses avec une gestion intégrée des opérations policières. Cette plateforme complète aborde les défis nationaux critiques tout en positionnant le pays comme leader en innovation de gouvernance numérique en Afrique Centrale.",
+      "systemOverviewText": "Le système comprend deux modules intégrés: le Module de Registre d'Adresses pour une gestion complète des emplacements et des services citoyens, et le Module d'Opérations Policières pour une coordination améliorée de l'application de la loi et de la réponse d'urgence. Ensemble, ces modules créent une plateforme unifiée qui sert les citoyens, les agences gouvernementales et les services d'urgence à travers une infrastructure numérique unique et sécurisée.",
+      "addressModuleDescription": "Le Module de Registre d'Adresses permet la catalogation et la vérification systématiques de toutes les adresses nationales, fournissant aux citoyens l'enregistrement officiel d'adresses, des services de vérification et des services gouvernementaux basés sur la localisation. Il supporte les opérations multilingues en espagnol, français et anglais, assurant l'accessibilité à travers tous les segments de population.",
+      "policeModuleDescription": "Le Module d'Opérations Policières révolutionne l'application de la loi grâce à la gestion d'incidents en temps réel, des systèmes de répartition automatisés, l'optimisation des ressources et l'analyse complète. Il permet une coordination rapide de réponse d'urgence et améliore la sécurité publique grâce à la prise de décision basée sur les données.",
+      "securityBenefitsText": "Temps de réponse d'urgence améliorés grâce à l'identification précise de localisation et à la répartition automatisée. Capacités améliorées de prévention et d'investigation du crime grâce au suivi complet des incidents et à l'analyse. Sécurité frontalière et identification nationale renforcées grâce aux enregistrements d'adresses vérifiées. Temps de réponse réduits pour les urgences médicales et les situations de catastrophe.",
+      "economicBenefitsText": "Développement économique accéléré grâce à une infrastructure d'adressage fiable pour le commerce et la logistique. Attraction d'investissement étranger améliorée grâce aux capacités démontrées de gouvernance numérique. Coûts opérationnels réduits pour les services de livraison, les télécommunications et les entreprises de services publics. Collecte d'impôts et génération de revenus améliorées grâce aux enregistrements précis d'emplacement de propriétés et d'entreprises.",
+      "socialBenefitsText": "Accès amélioré aux services gouvernementaux et programmes sociaux grâce à l'enregistrement d'adresses vérifiées. Livraison de soins de santé améliorée grâce aux enregistrements précis d'emplacement des patients. Meilleure planification des services éducatifs grâce aux données démographiques et de localisation. Engagement communautaire renforcé grâce à la réponse d'urgence efficace et aux services de sécurité publique.",
+      "governmentBenefitsText": "Opérations gouvernementales rationalisées grâce à la gestion centralisée des adresses et emplacements. Coordination inter-agences améliorée grâce aux plateformes de données partagées. Planification des politiques et allocation des ressources améliorées grâce à l'analyse complète. Frais administratifs réduits grâce aux processus automatisés de vérification et d'approbation.",
+      "implementationText": "Approche de mise en œuvre par phases commençant par les principaux centres urbains et s'étendant aux zones rurales. Programmes de formation complets pour les fonctionnaires gouvernementaux et le personnel de réponse d'urgence. Intégration avec les systèmes gouvernementaux existants et conformité aux normes internationales. Soutien continu et maintenance grâce au renforcement des capacités locales.",
+      "conclusionText": "Le Système National d'Adressage Numérique Connect Nation positionne la Guinée Équatoriale à l'avant-garde de l'innovation en gouvernance numérique, livrant des améliorations mesurables en sécurité publique, développement économique et services citoyens. L'approche intégrée assure un retour sur investissement maximum tout en établissant une base pour l'avancement technologique futur et le leadership régional."
+    }
   }
 }

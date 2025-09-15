@@ -637,5 +637,32 @@
     "policeAdminRole": "Configurar ajustes del sistema y permisos de usuario, gestionar asignaciones de unidades y estructura organizacional, analizar métricas de rendimiento en toda la fuerza, supervisar seguridad del sistema y controles de acceso, generar informes para personal de comando y funcionarios gubernamentales.",
     "generatedBy": "Generado por el Sistema de Autoridad Nacional de Direcciones Digitales",
     "generatedOn": "Generado el:"
+  },
+  "downloadStrategicOverview": "Descargar Documento de Visión Estratégica",
+  "strategicOverview": {
+    "title": "Sistema Nacional de Direcciones Digitales Connect Nation",
+    "subtitle": "Visión Estratégica y Beneficios Nacionales para Guinea Ecuatorial",
+    "version": "Informe de Análisis Estratégico v1.0",
+    "executiveSummary": "Resumen Ejecutivo",
+    "systemOverview": "Visión General del Sistema",
+    "nationalBenefits": "Análisis de Beneficios Nacionales",
+    "securityBenefits": "Beneficios de Seguridad y Seguridad Pública",
+    "economicBenefits": "Beneficios de Desarrollo Económico",
+    "socialBenefits": "Beneficios Sociales y Comunitarios",
+    "governmentBenefits": "Beneficios de Eficiencia Gubernamental",
+    "implementationStrategy": "Estrategia de Implementación",
+    "conclusion": "Conclusión y Recomendaciones",
+    "content": {
+      "executiveSummaryText": "El Sistema Nacional de Direcciones Digitales Connect Nation representa una infraestructura tecnológica transformadora para Guinea Ecuatorial, combinando capacidades avanzadas de registro de direcciones con gestión integrada de operaciones policiales. Esta plataforma integral aborda desafíos nacionales críticos mientras posiciona al país como líder en innovación de gobernanza digital en África Central.",
+      "systemOverviewText": "El sistema consta de dos módulos integrados: el Módulo de Registro de Direcciones para gestión integral de ubicaciones y servicios ciudadanos, y el Módulo de Operaciones Policiales para coordinación mejorada de aplicación de la ley y respuesta de emergencia. Juntos, estos módulos crean una plataforma unificada que sirve a ciudadanos, agencias gubernamentales y servicios de emergencia a través de una infraestructura digital única y segura.",
+      "addressModuleDescription": "El Módulo de Registro de Direcciones permite la catalogación y verificación sistemática de todas las direcciones nacionales, proporcionando a los ciudadanos registro oficial de direcciones, servicios de verificación y servicios gubernamentales basados en ubicación. Soporta operaciones multilingües en español, francés e inglés, asegurando accesibilidad en todos los segmentos de población.",
+      "policeModuleDescription": "El Módulo de Operaciones Policiales revoluciona la aplicación de la ley a través de gestión de incidentes en tiempo real, sistemas de despacho automatizados, optimización de recursos y análisis integral. Permite coordinación rápida de respuesta de emergencia y mejora la seguridad pública a través de toma de decisiones basada en datos.",
+      "securityBenefitsText": "Tiempos de respuesta de emergencia mejorados a través de identificación precisa de ubicación y despacho automatizado. Capacidades mejoradas de prevención e investigación del crimen a través de seguimiento integral de incidentes y análisis. Seguridad fronteriza y identificación nacional fortalecidas a través de registros de direcciones verificadas. Tiempos de respuesta reducidos para emergencias médicas y situaciones de desastre.",
+      "economicBenefitsText": "Desarrollo económico acelerado a través de infraestructura de direcciones confiable para comercio y logística. Atracción de inversión extranjera mejorada a través de capacidades demostradas de gobernanza digital. Costos operativos reducidos para servicios de entrega, telecomunicaciones y empresas de servicios públicos. Recaudación de impuestos y generación de ingresos mejoradas a través de registros precisos de ubicación de propiedades y negocios.",
+      "socialBenefitsText": "Acceso mejorado a servicios gubernamentales y programas sociales a través de registro de direcciones verificadas. Entrega de atención médica mejorada a través de registros precisos de ubicación de pacientes. Mejor planificación de servicios educativos a través de datos demográficos y de ubicación. Participación comunitaria fortalecida a través de respuesta eficiente de emergencia y servicios de seguridad pública.",
+      "governmentBenefitsText": "Operaciones gubernamentales simplificadas a través de gestión centralizada de direcciones y ubicaciones. Coordinación inter-agencias mejorada a través de plataformas de datos compartidos. Planificación de políticas y asignación de recursos mejoradas a través de análisis integral. Gastos administrativos reducidos a través de procesos automatizados de verificación y aprobación.",
+      "implementationText": "Enfoque de implementación por fases comenzando con los principales centros urbanos y expandiéndose a áreas rurales. Programas de capacitación integral para funcionarios gubernamentales y personal de respuesta de emergencia. Integración con sistemas gubernamentales existentes y cumplimiento de estándares internacionales. Soporte continuo y mantenimiento a través de construcción de capacidad local.",
+      "conclusionText": "El Sistema Nacional de Direcciones Digitales Connect Nation posiciona a Guinea Ecuatorial a la vanguardia de la innovación en gobernanza digital, entregando mejoras medibles en seguridad pública, desarrollo económico y servicios ciudadanos. El enfoque integrado asegura el máximo retorno de inversión mientras establece una base para el avance tecnológico futuro y el liderazgo regional."
+    }
   }
 }
