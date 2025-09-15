@@ -44,17 +44,17 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
       setRejectedAddresses(data || []);
     } catch (error) {
       console.error('Error fetching rejected addresses:', error);
-      toast.error('Failed to load rejected addresses');
+      toast.error(t('failedToLoadRejectedAddresses'));
     }
   };
 
   const handleResubmit = async (originalRequestId: string) => {
     try {
       // For now, just show a message - this would need to be implemented
-      toast.info('Resubmission feature coming soon. Users can create a new request.');
+      toast.info(t('resubmissionComingSoon'));
     } catch (error) {
       console.error('Error resubmitting address:', error);
-      toast.error('Failed to resubmit address');
+      toast.error(t('failedToResubmitAddress'));
     }
   };
 
@@ -80,15 +80,15 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
   }, []);
 
   if (loading) {
-    return <div className="p-4 text-center">Loading rejected addresses...</div>;
+    return <div className="p-4 text-center">{t('loadingRejectedAddresses')}</div>;
   }
 
   if (rejectedAddresses.length === 0) {
     return (
       <div className="p-8 text-center text-muted-foreground">
         <AlertTriangle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-        <h3 className="text-lg font-medium mb-2">No Rejected Addresses</h3>
-        <p>All address requests are currently approved or pending review.</p>
+        <h3 className="text-lg font-medium mb-2">{t('noRejectedAddresses')}</h3>
+        <p>{t('allRequestsApprovedOrPending')}</p>
       </div>
     );
   }
@@ -96,9 +96,9 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium">Rejected Addresses ({rejectedAddresses.length})</h3>
+        <h3 className="text-lg font-medium">{t('rejectedAddressesCount', { count: rejectedAddresses.length })}</h3>
         <Button onClick={fetchRejectedAddresses} variant="outline" size="sm">
-          Refresh
+          {t('refresh')}
         </Button>
       </div>
 
@@ -126,73 +126,73 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
                   
                   {/* Compact view when collapsed */}
                   {!isExpanded && (
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        Rejected: {new Date(address.rejected_at).toLocaleDateString()}
-                      </span>
+                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                       <span className="flex items-center gap-1">
+                         <Calendar className="h-3 w-3" />
+                         {t('rejectedOn', { date: new Date(address.rejected_at).toLocaleDateString() })}
+                       </span>
                     </div>
                   )}
                   
                   {/* Full date info when expanded */}
                   {isExpanded && (
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        Rejected: {new Date(address.rejected_at).toLocaleDateString()}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <User className="h-3 w-3" />
-                        Original: {new Date(address.created_at).toLocaleDateString()}
-                      </span>
-                    </div>
+                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                       <span className="flex items-center gap-1">
+                         <Calendar className="h-3 w-3" />
+                         {t('rejectedOn', { date: new Date(address.rejected_at).toLocaleDateString() })}
+                       </span>
+                       <span className="flex items-center gap-1">
+                         <User className="h-3 w-3" />
+                         {t('originalOn', { date: new Date(address.created_at).toLocaleDateString() })}
+                       </span>
+                     </div>
                   )}
                 </div>
-                <Badge variant="destructive">Rejected</Badge>
+                <Badge variant="destructive">{t('rejectedLabel')}</Badge>
               </div>
             </CardHeader>
             
             {isExpanded && (
               <CardContent className="space-y-4 animate-fade-in">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <strong>Address Type:</strong> {address.address_type}
-                  </div>
-                  <div>
-                    <strong>Building:</strong> {address.building || 'N/A'}
-                  </div>
-                  <div>
-                    <strong>Coordinates:</strong> {address.latitude}, {address.longitude}
-                  </div>
-                  <div>
-                    <strong>Region:</strong> {address.region}, {address.country}
-                  </div>
-                </div>
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                   <div>
+                     <strong>{t('addressTypeLabel')}:</strong> {address.address_type}
+                   </div>
+                   <div>
+                     <strong>{t('buildingLabel')}:</strong> {address.building || t('notApplicable')}
+                   </div>
+                   <div>
+                     <strong>{t('coordinatesLabel')}:</strong> {address.latitude}, {address.longitude}
+                   </div>
+                   <div>
+                     <strong>{t('regionLabel')}:</strong> {address.region}, {address.country}
+                   </div>
+                 </div>
 
-                {address.description && (
-                  <div>
-                    <strong className="text-sm">Description:</strong>
-                    <p className="text-sm text-muted-foreground mt-1">{address.description}</p>
-                  </div>
-                )}
+                 {address.description && (
+                   <div>
+                     <strong className="text-sm">{t('descriptionLabel')}:</strong>
+                     <p className="text-sm text-muted-foreground mt-1">{address.description}</p>
+                   </div>
+                 )}
 
-                <div>
-                  <strong className="text-sm">Original Justification:</strong>
-                  <p className="text-sm text-muted-foreground mt-1">{address.justification}</p>
-                </div>
+                 <div>
+                   <strong className="text-sm">{t('originalJustification')}:</strong>
+                   <p className="text-sm text-muted-foreground mt-1">{address.justification}</p>
+                 </div>
 
                 <div className="bg-destructive/10 p-3 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <AlertTriangle className="h-4 w-4 text-destructive" />
-                    <strong className="text-sm text-destructive">Rejection Reason</strong>
-                  </div>
-                  <p className="text-sm text-destructive">{address.rejection_reason}</p>
-                  {address.rejection_notes && (
-                    <div className="mt-2">
-                      <strong className="text-sm text-destructive">Additional Notes:</strong>
-                      <p className="text-sm text-destructive/80 mt-1">{address.rejection_notes}</p>
-                    </div>
-                  )}
+                   <div className="flex items-center gap-2 mb-2">
+                     <AlertTriangle className="h-4 w-4 text-destructive" />
+                     <strong className="text-sm text-destructive">{t('rejectionReason')}</strong>
+                   </div>
+                   <p className="text-sm text-destructive">{address.rejection_reason}</p>
+                   {address.rejection_notes && (
+                     <div className="mt-2">
+                       <strong className="text-sm text-destructive">{t('additionalNotes')}:</strong>
+                       <p className="text-sm text-destructive/80 mt-1">{address.rejection_notes}</p>
+                     </div>
+                   )}
                 </div>
 
                 <div className="flex justify-end gap-2">
@@ -205,9 +205,9 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
                     }}
                     className="text-xs"
                   >
-                    <FileText className="h-3 w-3 mr-1" />
-                    Guide Resubmission
-                  </Button>
+                     <FileText className="h-3 w-3 mr-1" />
+                     {t('guideResubmission')}
+                   </Button>
                 </div>
               </CardContent>
             )}
