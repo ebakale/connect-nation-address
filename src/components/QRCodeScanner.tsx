@@ -47,94 +47,91 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
       
       // Check if running on native platform
       if (Capacitor.isNativePlatform()) {
-        // Use Capacitor Camera for native platforms
-        const image = await CapacitorCamera.getPhoto({
-          quality: 90,
-          allowEditing: false,
-          resultType: CameraResultType.DataUrl,
-          source: CameraSource.Camera,
-          width: 1920,
-          height: 1920
-        });
-
-        if (image.dataUrl) {
-          // Process the image for QR code detection
-          await processImageForQR(image.dataUrl);
-        }
+        // For native platforms, we'll use web-based scanning but with better camera handling
+        await startWebScanner();
         return;
       }
 
       // Web platform - use existing QR scanner
-      if (!videoRef.current) {
-        setTimeout(startScanner, 120);
-        return;
-      }
-
-      // Check if camera is available (prefer back camera on mobile)
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: { ideal: 'environment' } }
-      });
-      
-      // Stop the test stream
-      stream.getTracks().forEach(track => track.stop());
-
-      const scanner = new QrScanner(
-        videoRef.current,
-        (result) => {
-          console.log('QR code detected:', result.data);
-          
-          // Validate if the scanned content looks like a UAC
-          if (isValidUAC(result.data)) {
-            onScanResult(result.data.trim().toUpperCase());
-            toast({
-              title: "QR Code Scanned",
-              description: `Found address: ${result.data}`,
-            });
-            // Close the scanner after successful scan
-            stopScanner();
-            setIsOpen(false);
-          } else {
-            toast({
-              title: "Invalid QR Code",
-              description: "This doesn't appear to be an address UAC",
-              variant: "destructive",
-            });
-          }
-        },
-        {
-          returnDetailedScanResult: true,
-          highlightScanRegion: true,
-          highlightCodeOutline: true,
-        }
-      );
-
-      await scanner.start();
-      setQrScanner(scanner);
-      console.log('QR Scanner started successfully');
+      await startWebScanner();
     } catch (err: any) {
       console.error('Error starting scanner:', err);
-      let errorMessage = 'Failed to access camera.';
-      
-      if (err.name === 'NotAllowedError') {
-        errorMessage = 'Camera access denied. Please allow camera permissions.';
-      } else if (err.name === 'NotFoundError') {
-        errorMessage = 'No camera found on this device.';
-      } else if (err.name === 'NotSupportedError') {
-        errorMessage = 'Camera not supported in this browser.';
-      } else if (err.name === 'NotReadableError') {
-        errorMessage = 'Camera is being used by another application.';
-      } else if (err.message) {
-        errorMessage = err.message;
-      }
-      
-      setError(errorMessage);
-      setIsScanning(false);
-      toast({
-        title: "Camera Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      handleScannerError(err);
     }
+  };
+
+  const startWebScanner = async () => {
+    if (!videoRef.current) {
+      setTimeout(startScanner, 120);
+      return;
+    }
+
+    // Check if camera is available (prefer back camera on mobile)
+    const stream = await navigator.mediaDevices.getUserMedia({ 
+      video: { facingMode: { ideal: 'environment' } }
+    });
+    
+    // Stop the test stream
+    stream.getTracks().forEach(track => track.stop());
+
+    const scanner = new QrScanner(
+      videoRef.current,
+      (result) => {
+        console.log('QR code detected:', result.data);
+        
+        // Validate if the scanned content looks like a UAC
+        if (isValidUAC(result.data)) {
+          onScanResult(result.data.trim().toUpperCase());
+          toast({
+            title: "QR Code Scanned",
+            description: `Found address: ${result.data}`,
+          });
+          // Close the scanner after successful scan
+          stopScanner();
+          setIsOpen(false);
+        } else {
+          toast({
+            title: "Invalid QR Code",
+            description: "This doesn't appear to be an address UAC",
+            variant: "destructive",
+          });
+        }
+      },
+      {
+        returnDetailedScanResult: true,
+        highlightScanRegion: true,
+        highlightCodeOutline: true,
+      }
+    );
+
+    await scanner.start();
+    setQrScanner(scanner);
+    console.log('QR Scanner started successfully');
+  };
+
+  const handleScannerError = (err: any) => {
+    let errorMessage = 'Failed to access camera.';
+    
+    if (err.name === 'NotAllowedError') {
+      errorMessage = 'Camera access denied. Please allow camera permissions.';
+    } else if (err.name === 'NotFoundError') {
+      errorMessage = 'No camera found on this device.';
+    } else if (err.name === 'NotSupportedError') {
+      errorMessage = 'Camera not supported in this browser.';
+    } else if (err.name === 'NotReadableError') {
+      errorMessage = 'Camera is being used by another application.';
+    } else if (err.message) {
+      errorMessage = err.message;
+    }
+    
+    setError(errorMessage);
+    setIsScanning(false);
+    toast({
+      title: "Camera Error",
+      description: errorMessage,
+      variant: "destructive",
+    });
+  };
   };
 
   const processImageForQR = async (dataUrl: string) => {
