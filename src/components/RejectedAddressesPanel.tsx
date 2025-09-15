@@ -112,9 +112,9 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
             >
               <div>
                 <div className="space-y-2">
-                  <Badge variant="destructive" className="w-fit">{t('rejectedLabel')}</Badge>
+                  <Badge variant="destructive" className="w-fit text-xs">{t('rejectedLabel')}</Badge>
                   
-                  <CardTitle className="text-base flex items-center gap-2">
+                  <CardTitle className="text-sm flex items-center gap-2">
                     <MapPin className="h-4 w-4" />
                     {address.street}, {address.city}
                     <div className="transition-transform duration-200 ml-2">
@@ -128,7 +128,7 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
                   
                   {/* Compact view when collapsed */}
                   {!isExpanded && (
-                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
                        <span className="flex items-center gap-1">
                          <Calendar className="h-3 w-3" />
                          {t('rejectedOn', { date: new Date(address.rejected_at).toLocaleDateString() })}
@@ -138,7 +138,7 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
                   
                   {/* Full date info when expanded */}
                   {isExpanded && (
-                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
                        <span className="flex items-center gap-1">
                          <Calendar className="h-3 w-3" />
                          {t('rejectedOn', { date: new Date(address.rejected_at).toLocaleDateString() })}
@@ -155,7 +155,7 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
             
             {isExpanded && (
               <CardContent className="space-y-4 animate-fade-in">
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                    <div>
                      <strong>{t('addressTypeLabel')}:</strong> {address.address_type}
                    </div>
@@ -172,26 +172,26 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
 
                  {address.description && (
                    <div>
-                     <strong className="text-sm">{t('descriptionLabel')}:</strong>
-                     <p className="text-sm text-muted-foreground mt-1">{address.description}</p>
+                     <strong className="text-xs">{t('descriptionLabel')}:</strong>
+                     <p className="text-xs text-muted-foreground mt-1">{address.description}</p>
                    </div>
                  )}
 
                  <div>
-                   <strong className="text-sm">{t('originalJustification')}:</strong>
-                   <p className="text-sm text-muted-foreground mt-1">{address.justification}</p>
+                   <strong className="text-xs">{t('originalJustification')}:</strong>
+                   <p className="text-xs text-muted-foreground mt-1">{address.justification}</p>
                  </div>
 
                 <div className="bg-destructive/10 p-3 rounded-lg">
                    <div className="flex items-center gap-2 mb-2">
                      <AlertTriangle className="h-4 w-4 text-destructive" />
-                     <strong className="text-sm text-destructive">{t('rejectionReason')}</strong>
+                     <strong className="text-xs text-destructive">{t('rejectionReason')}</strong>
                    </div>
-                   <p className="text-sm text-destructive">{address.rejection_reason}</p>
+                   <p className="text-xs text-destructive">{address.rejection_reason}</p>
                    {address.rejection_notes && (
                      <div className="mt-2">
-                       <strong className="text-sm text-destructive">{t('additionalNotes')}:</strong>
-                       <p className="text-sm text-destructive/80 mt-1">{address.rejection_notes}</p>
+                       <strong className="text-xs text-destructive">{t('additionalNotes')}:</strong>
+                       <p className="text-xs text-destructive/80 mt-1">{address.rejection_notes}</p>
                      </div>
                    )}
                 </div>
