@@ -110,8 +110,8 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
               className="pb-3 cursor-pointer transition-colors duration-200 hover:bg-muted/50"
               onClick={() => toggleCardExpansion(address.id)}
             >
-              <div className="flex items-start justify-between">
-                <div className="space-y-1 flex-1">
+              <div>
+                <div className="space-y-2">
                   <CardTitle className="text-base flex items-center gap-2">
                     <MapPin className="h-4 w-4" />
                     {address.street}, {address.city}
@@ -123,6 +123,8 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
                       )}
                     </div>
                   </CardTitle>
+                  
+                  <Badge variant="destructive" className="w-fit">{t('rejectedLabel')}</Badge>
                   
                   {/* Compact view when collapsed */}
                   {!isExpanded && (
@@ -148,7 +150,6 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
                      </div>
                   )}
                 </div>
-                <Badge variant="destructive">{t('rejectedLabel')}</Badge>
               </div>
             </CardHeader>
             
