@@ -314,7 +314,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                           ? 'bg-yellow-100 text-yellow-800 border-yellow-300' : 
                           'bg-red-100 text-red-800 border-red-300'
                       }`}>
-                        Review Score: {(request.verification_analysis.overallScore * 100).toFixed(1)}%
+                        Review Score: {request.verification_analysis.overallScore.toFixed(1)}%
                       </div>
                     ) : (
                       <div className="px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-600 border-2 border-gray-300">
