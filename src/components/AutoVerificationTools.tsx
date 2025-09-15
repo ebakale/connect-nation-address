@@ -193,7 +193,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
             <Button
               onClick={handleBatchVerification}
               disabled={batchProcessing || (pendingRequests.length === 0)}
-              className="flex items-center gap-2 text-sm"
+              className="flex items-center gap-2 text-xs truncate"
             >
               {batchProcessing ? (
                 <>
