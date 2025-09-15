@@ -244,6 +244,7 @@ export function AutoVerificationTools({ onUpdate }: AutoVerificationToolsProps) 
                 size="sm"
                 onClick={handleSelectAll}
                 disabled={loadingRequests}
+                className="text-xs"
               >
                 {selectedRequests.length === pendingRequests.length ? t('deselectAll') : t('selectAll')}
               </Button>
