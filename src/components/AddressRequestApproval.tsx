@@ -341,30 +341,28 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
               {/* Verification Analysis Section */}
               {(request.flagged || request.requires_manual_review || request.verification_analysis) && (
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <AlertTriangle className="h-4 w-4 text-yellow-600" />
-                      <span className="text-sm font-medium text-yellow-800">
-                        Analysis Results
-                      </span>
-                    </div>
-                    {/* Prominent Review Score Display - Show whenever available */}
-                    {request.verification_analysis?.overallScore !== undefined ? (
-                      <div className={`px-3 py-1 rounded-full text-[10px] font-bold border-2 ${
-                        request.verification_analysis.overallScore >= 0.8 
-                          ? 'bg-green-100 text-green-800 border-green-300' :
-                        request.verification_analysis.overallScore >= 0.6 
-                          ? 'bg-yellow-100 text-yellow-800 border-yellow-300' : 
-                          'bg-red-100 text-red-800 border-red-300'
-                      }`}>
-                        Review Score: {request.verification_analysis.overallScore.toFixed(1)}%
-                      </div>
-                    ) : (
-                      <div className="px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-600 border-2 border-gray-300">
-                        Pending Analysis
-                      </div>
-                    )}
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                    <span className="text-sm font-medium text-yellow-800">
+                      Analysis Results
+                    </span>
                   </div>
+                  {/* Prominent Review Score Display - Show whenever available */}
+                  {request.verification_analysis?.overallScore !== undefined ? (
+                    <div className={`px-3 py-1 rounded-full text-[10px] font-bold border-2 whitespace-nowrap w-fit ${
+                      request.verification_analysis.overallScore >= 0.8 
+                        ? 'bg-green-100 text-green-800 border-green-300' :
+                      request.verification_analysis.overallScore >= 0.6 
+                        ? 'bg-yellow-100 text-yellow-800 border-yellow-300' : 
+                        'bg-red-100 text-red-800 border-red-300'
+                    }`}>
+                      Review Score: {request.verification_analysis.overallScore.toFixed(1)}%
+                    </div>
+                  ) : (
+                    <div className="px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-600 border-2 border-gray-300 whitespace-nowrap w-fit">
+                      Pending Analysis
+                    </div>
+                  )}
                   
                   {/* Show basic status information when detailed analysis isn't available */}
                   {!request.verification_analysis && (
