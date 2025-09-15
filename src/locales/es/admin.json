@@ -597,5 +597,29 @@
   "verifyConsistencyNeighborhood": "Verificar consistencia con el vecindario",
   "currentCoordinates": "Coordenadas Actuales",
   "approveCoordinates": "Aprobar Coordenadas",
-  "addressLocationView": "Vista de Ubicación de Dirección"
+  "addressLocationView": "Vista de Ubicación de Dirección",
+  "pdfTitles": {
+    "nationalDigitalAddressingSystem": "Sistema Nacional de Direcciones Digitales",
+    "comprehensiveUserManual": "Manual de Usuario Completo",
+    "version": "Versión 2.0",
+    "userRolesPermissionsGuide": "Guía de Roles y Permisos de Usuario",
+    "comprehensiveDocumentation": "Documentación Integral"
+  },
+  "pdfSections": {
+    "tableOfContents": "Tabla de Contenidos",
+    "introduction": "Introducción",
+    "systemOverview": "Descripción del Sistema",
+    "userRolesAndPermissions": "Roles de Usuario y Permisos",
+    "addressRegistryModule": "Módulo de Registro de Direcciones",
+    "policeOperationsModule": "Módulo de Operaciones Policiales",
+    "integrationAndWorkflow": "Integración y Flujo de Trabajo",
+    "technicalGuidelines": "Directrices Técnicas",
+    "troubleshooting": "Solución de Problemas",
+    "securityAndBestPractices": "Seguridad y Mejores Prácticas",
+    "appendices": "Apéndices",
+    "administrativeRoles": "Roles Administrativos",
+    "operationalRoles": "Roles Operacionales",
+    "policeRoles": "Roles Policiales",
+    "systemRoles": "Roles del Sistema"
+  }
 }

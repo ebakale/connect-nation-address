@@ -386,5 +386,29 @@
   "errorVerificationFailed": "Échec de la sauvegarde de l'enregistrement de vérification",
   "addressesVerifiedSuccessfully": "adresses vérifiées avec succès",
   "addressesRejectedSuccessfully": "adresses rejetées avec succès",
-  "bulkVerificationFailed": "Échec de la vérification en masse"
+  "bulkVerificationFailed": "Échec de la vérification en masse",
+  "pdfTitles": {
+    "nationalDigitalAddressingSystem": "Système National d'Adressage Numérique",
+    "comprehensiveUserManual": "Manuel d'Utilisateur Complet",
+    "version": "Version 2.0",
+    "userRolesPermissionsGuide": "Guide des Rôles et Permissions d'Utilisateur",
+    "comprehensiveDocumentation": "Documentation Complète"
+  },
+  "pdfSections": {
+    "tableOfContents": "Table des Matières",
+    "introduction": "Introduction",
+    "systemOverview": "Aperçu du Système",
+    "userRolesAndPermissions": "Rôles d'Utilisateur et Permissions",
+    "addressRegistryModule": "Module de Registre d'Adresses",
+    "policeOperationsModule": "Module d'Opérations Policières",
+    "integrationAndWorkflow": "Intégration et Flux de Travail",
+    "technicalGuidelines": "Directives Techniques",
+    "troubleshooting": "Dépannage",
+    "securityAndBestPractices": "Sécurité et Meilleures Pratiques",
+    "appendices": "Annexes",
+    "administrativeRoles": "Rôles Administratifs",
+    "operationalRoles": "Rôles Opérationnels",
+    "policeRoles": "Rôles Policiers",
+    "systemRoles": "Rôles Système"
+  }
 }

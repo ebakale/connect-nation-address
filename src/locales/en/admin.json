@@ -894,5 +894,29 @@
   "verifyConsistencyNeighborhood": "Verify consistency with neighborhood",
   "currentCoordinates": "Current Coordinates",
   "approveCoordinates": "Approve Coordinates",
-  "addressLocationView": "Address Location View"
+  "addressLocationView": "Address Location View",
+  "pdfTitles": {
+    "nationalDigitalAddressingSystem": "National Digital Addressing System",
+    "comprehensiveUserManual": "Comprehensive User Manual",
+    "version": "Version 2.0",
+    "userRolesPermissionsGuide": "User Roles & Permissions Guide",
+    "comprehensiveDocumentation": "Comprehensive Documentation"
+  },
+  "pdfSections": {
+    "tableOfContents": "Table of Contents",
+    "introduction": "Introduction",
+    "systemOverview": "System Overview",
+    "userRolesAndPermissions": "User Roles and Permissions",
+    "addressRegistryModule": "Address Registry Module",
+    "policeOperationsModule": "Police Operations Module",
+    "integrationAndWorkflow": "Integration and Workflow",
+    "technicalGuidelines": "Technical Guidelines",
+    "troubleshooting": "Troubleshooting",
+    "securityAndBestPractices": "Security and Best Practices",
+    "appendices": "Appendices",
+    "administrativeRoles": "Administrative Roles",
+    "operationalRoles": "Operational Roles",
+    "policeRoles": "Police Roles",
+    "systemRoles": "System Roles"
+  }
 }

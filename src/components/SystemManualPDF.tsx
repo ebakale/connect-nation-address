@@ -6,7 +6,7 @@ import { Download, FileText } from 'lucide-react';
 import jsPDF from 'jspdf';
 
 export const SystemManualPDF: React.FC = () => {
-  const { t } = useTranslation(['common', 'admin']);
+  const { t, i18n } = useTranslation(['common', 'admin']);
   
   const generatePDF = () => {
     const pdf = new jsPDF();
@@ -48,40 +48,44 @@ export const SystemManualPDF: React.FC = () => {
     // Title Page
     pdf.setFontSize(24);
     pdf.setFont('helvetica', 'bold');
-    pdf.text('National Digital Addressing System', pageWidth / 2, 40, { align: 'center' });
+    pdf.text(t('admin:pdfTitles.nationalDigitalAddressingSystem'), pageWidth / 2, 40, { align: 'center' });
     
     pdf.setFontSize(18);
-    pdf.text('Comprehensive User Manual', pageWidth / 2, 55, { align: 'center' });
+    pdf.text(t('admin:pdfTitles.comprehensiveUserManual'), pageWidth / 2, 55, { align: 'center' });
     
     pdf.setFontSize(12);
     pdf.setFont('helvetica', 'normal');
-    pdf.text('Version 2.0', pageWidth / 2, 70, { align: 'center' });
-    pdf.text(new Date().toLocaleDateString(), pageWidth / 2, 80, { align: 'center' });
+    pdf.text(t('admin:pdfTitles.version'), pageWidth / 2, 70, { align: 'center' });
+    pdf.text(new Date().toLocaleDateString(i18n.language), pageWidth / 2, 80, { align: 'center' });
 
     // Add a new page for content
     pdf.addPage();
     currentY = margin;
 
     // Table of Contents
-    addHeading('Table of Contents');
-    addText('1. Introduction..................................................3');
-    addText('2. System Overview...............................................4');
-    addText('3. User Roles and Permissions...................................5');
-    addText('4. Address Registry Module......................................8');
-    addText('5. Police Operations Module....................................15');
-    addText('6. Integration and Workflow....................................22');
-    addText('7. Technical Guidelines........................................25');
-    addText('8. Troubleshooting.............................................28');
-    addText('9. Security and Best Practices................................30');
-    addText('10. Appendices.................................................32');
+    addHeading(t('admin:pdfSections.tableOfContents'));
+    addText(`1. ${t('admin:pdfSections.introduction')}..................................................3`);
+    addText(`2. ${t('admin:pdfSections.systemOverview')}...............................................4`);
+    addText(`3. ${t('admin:pdfSections.userRolesAndPermissions')}...................................5`);
+    addText(`4. ${t('admin:pdfSections.addressRegistryModule')}......................................8`);
+    addText(`5. ${t('admin:pdfSections.policeOperationsModule')}....................................15`);
+    addText(`6. ${t('admin:pdfSections.integrationAndWorkflow')}....................................22`);
+    addText(`7. ${t('admin:pdfSections.technicalGuidelines')}........................................25`);
+    addText(`8. ${t('admin:pdfSections.troubleshooting')}.............................................28`);
+    addText(`9. ${t('admin:pdfSections.securityAndBestPractices')}................................30`);
+    addText(`10. ${t('admin:pdfSections.appendices')}.................................................32`);
 
     // Start content
     pdf.addPage();
     currentY = margin;
 
     // 1. Introduction
-    addHeading('1. Introduction');
-    addText('The National Digital Addressing System is a comprehensive platform designed to modernize address management and emergency response services in Equatorial Guinea. This system integrates traditional addressing capabilities with advanced police operations management, creating a unified platform for government services.');
+    addHeading(`1. ${t('admin:pdfSections.introduction')}`);
+    const introText = i18n.language === 'es' ? 
+      'El Sistema Nacional de Direcciones Digitales es una plataforma integral diseñada para modernizar la gestión de direcciones y los servicios de respuesta de emergencia en Guinea Ecuatorial. Este sistema integra capacidades de direccionamiento tradicionales con gestión avanzada de operaciones policiales, creando una plataforma unificada para servicios gubernamentales.' :
+      i18n.language === 'fr' ?
+      'Le Système National d\'Adressage Numérique est une plateforme complète conçue pour moderniser la gestion des adresses et les services de réponse d\'urgence en Guinée équatoriale. Ce système intègre les capacités d\'adressage traditionnelles avec une gestion avancée des opérations policières, créant une plateforme unifiée pour les services gouvernementaux.' :
+      'The National Digital Addressing System is a comprehensive platform designed to modernize address management and emergency response services in Equatorial Guinea. This system integrates traditional addressing capabilities with advanced police operations management, creating a unified platform for government services.';
     
     addText('This manual provides complete guidance for all system users, from citizens submitting address requests to administrators managing system-wide operations. The platform serves multiple user roles and facilitates complex workflows while maintaining high security standards.');
 

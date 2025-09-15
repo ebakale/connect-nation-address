@@ -5,7 +5,7 @@ import { FileText, Download } from 'lucide-react';
 import jsPDF from 'jspdf';
 
 export const RolesDocumentGenerator = () => {
-  const { t } = useTranslation('admin');
+  const { t, i18n } = useTranslation('admin');
   const generateRolesPDF = () => {
     const doc = new jsPDF();
     let yPos = 20;
@@ -33,14 +33,14 @@ export const RolesDocumentGenerator = () => {
     };
 
     // Title
-    addText('National Digital Addressing Authority', 18, true);
-    addText('User Roles & Permissions Guide', 16, true);
-    addText('Comprehensive Documentation', 12);
+    addText(t('pdfTitles.nationalDigitalAddressingSystem'), 18, true);
+    addText(t('pdfTitles.userRolesPermissionsGuide'), 16, true);
+    addText(t('pdfTitles.comprehensiveDocumentation'), 12);
     yPos += 10;
 
     // Table of Contents
-    addText('Table of Contents', 14, true);
-    addText('1. Administrative Roles');
+    addText(t('pdfSections.tableOfContents'), 14, true);
+    addText(`1. ${t('pdfSections.administrativeRoles')}`);
     addText('   • NDAA Admin');
     addText('   • Admin');
     addText('   • Moderator');
