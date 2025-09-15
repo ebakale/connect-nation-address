@@ -646,29 +646,29 @@ const navigationItems = [
                       <CardTitle className="text-lg">{t('common:platform.emergencySystemUserRoles')}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <div className="grid md:grid-cols-2 gap-4">
+                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <h4 className="font-semibold">{t('common:platform.emergencyOperators')}</h4>
+                          <h4 className="font-semibold">Police Operators</h4>
                           <p className="text-sm text-muted-foreground">
-                            {t('common:platform.emergencyOperatorsDescription')}
+                            Front-line responders who handle field incidents, update status in real-time, and request backup when needed.
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">{t('common:platform.dispatchers')}</h4>
+                          <h4 className="font-semibold">Police Dispatchers</h4>
                           <p className="text-sm text-muted-foreground">
-                            {t('common:platform.dispatchersDescription')}
+                            Coordinate incident response, assign units, manage communications, and oversee resource allocation.
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">{t('common:platform.supervisors')}</h4>
+                          <h4 className="font-semibold">Police Supervisors</h4>
                           <p className="text-sm text-muted-foreground">
-                            {t('common:platform.supervisorsDescription')}
+                            Monitor unit performance, approve backup requests, oversee operations within geographic areas, and manage escalations.
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">{t('common:platform.fieldUnits')}</h4>
+                          <h4 className="font-semibold">Police Administrators</h4>
                           <p className="text-sm text-muted-foreground">
-                            {t('common:platform.fieldUnitsDescription')}
+                            Manage system configuration, user roles, unit assignments, and analyze performance metrics across the entire force.
                           </p>
                         </div>
                       </div>
