@@ -22,7 +22,7 @@ interface Notification {
 
 export const ReporterNotifications = () => {
   const { user } = useAuth();
-  const { t } = useTranslation('emergency');
+  const { t, i18n } = useTranslation('emergency');
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedNotifications, setExpandedNotifications] = useState<Set<string>>(new Set());
@@ -252,19 +252,23 @@ export const ReporterNotifications = () => {
                               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                 <MapPin className="h-3 w-3" />
                                 {t('incidentNumber', { number: notification.metadata.incident_number })}
-                                {notification.metadata.emergency_type && (
-                                  <>
-                                    <span>•</span>
-                                    <span className="capitalize">{notification.metadata.emergency_type.replace('_', ' ')}</span>
-                                  </>
-                                )}
+                                 {notification.metadata.emergency_type && (
+                                   <>
+                                     <span>•</span>
+                                     <span className="capitalize">
+                                       {t(`types.${notification.metadata.emergency_type}`, { 
+                                         defaultValue: notification.metadata.emergency_type.replace('_', ' ') 
+                                       })}
+                                     </span>
+                                   </>
+                                 )}
                               </div>
                             )}
                             
-                            <div className="flex items-center justify-between">
-                              <time className="text-xs text-muted-foreground">
-                                {new Date(notification.created_at).toLocaleString()}
-                              </time>
+                             <div className="flex items-center justify-between">
+                               <time className="text-xs text-muted-foreground">
+                                 {new Date(notification.created_at).toLocaleString(i18n.language)}
+                               </time>
                               <ChevronDown className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                             </div>
                           </div>
