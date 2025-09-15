@@ -1455,5 +1455,47 @@
   "selectDispatcherToReassign": "Sélectionner un répartiteur à réassigner",
   "reassignDispatcherHelp": "Seuls les répartiteurs de la même ville peuvent être assignés à cet incident",
   "dispatcherReassignedSuccessfully": "Incident réassigné au répartiteur avec succès",
-  "failedToReassignDispatcher": "Échec de la réassignation du répartiteur"
+  "failedToReassignDispatcher": "Échec de la réassignation du répartiteur",
+  "incidentNotifications": "Notifications d'Incidents",
+  "loadingNotifications": "Chargement des notifications...",
+  "pleaseLogInToView": "Veuillez vous connecter pour voir vos notifications",
+  "markAllAsRead": "Marquer Toutes comme Lues",
+  "noNotificationsYet": "Aucune notification pour le moment",
+  "willReceiveUpdates": "Vous recevrez des mises à jour sur vos incidents signalés ici",
+  "priorityLevel": "Priorité {{level}}",
+  "new": "Nouveau",
+  "messageDetails": "Détails du Message",
+  "additionalInformation": "Informations Supplémentaires",
+  "markAsRead": "Marquer comme Lu",
+  "notificationErrors": {
+    "failedToLoad": "Échec du chargement des notifications",
+    "failedToMarkAsRead": "Échec de marquage de la notification comme lue"
+  },
+  "notificationSuccess": {
+    "allMarkedAsRead": "Toutes les notifications marquées comme lues"
+  },
+  "notificationTitles": {
+    "acknowledgment": "Incident Reconnu",
+    "status_update": "Mise à Jour du Statut",
+    "resolution": "Incident Résolu",
+    "general": "Notification"
+  },
+  "notificationTypes": {
+    "acknowledgment": "Reconnaissance",
+    "status_update": "Mise à Jour du Statut",
+    "resolution": "Résolution", 
+    "general": "Général",
+    "incident_status": "Statut de l'Incident",
+    "emergency_alert": "Alerte d'Urgence"
+  },
+  "metadataFields": {
+    "incident_number": "Numéro d'Incident",
+    "emergency_type": "Type d'Urgence",
+    "notification_type": "Type de Notification",
+    "assigned_unit": "Unité Assignée",
+    "response_time": "Temps de Réponse",
+    "resolution_time": "Temps de Résolution",
+    "location": "Localisation",
+    "priority": "Priorité"
+  }
 }

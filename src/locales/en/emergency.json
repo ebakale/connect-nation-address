@@ -1639,5 +1639,47 @@
   "selectDispatcherToReassign": "Select dispatcher to reassign to",
   "reassignDispatcherHelp": "Only dispatchers in the same city can be assigned to this incident",
   "dispatcherReassignedSuccessfully": "Incident reassigned to dispatcher successfully",
-  "failedToReassignDispatcher": "Failed to reassign dispatcher"
+  "failedToReassignDispatcher": "Failed to reassign dispatcher",
+  "incidentNotifications": "Incident Notifications",
+  "loadingNotifications": "Loading notifications...",
+  "pleaseLogInToView": "Please log in to view your notifications",
+  "markAllAsRead": "Mark All as Read",
+  "noNotificationsYet": "No notifications yet",
+  "willReceiveUpdates": "You'll receive updates about your reported incidents here",
+  "priorityLevel": "Priority {{level}}",
+  "new": "New",
+  "messageDetails": "Message Details",
+  "additionalInformation": "Additional Information",
+  "markAsRead": "Mark as Read",
+  "notificationErrors": {
+    "failedToLoad": "Failed to load notifications",
+    "failedToMarkAsRead": "Failed to mark notification as read"
+  },
+  "notificationSuccess": {
+    "allMarkedAsRead": "All notifications marked as read"
+  },
+  "notificationTitles": {
+    "acknowledgment": "Incident Acknowledged",
+    "status_update": "Status Update",
+    "resolution": "Incident Resolved",
+    "general": "Notification"
+  },
+  "notificationTypes": {
+    "acknowledgment": "Acknowledgment",
+    "status_update": "Status Update", 
+    "resolution": "Resolution",
+    "general": "General",
+    "incident_status": "Incident Status",
+    "emergency_alert": "Emergency Alert"
+  },
+  "metadataFields": {
+    "incident_number": "Incident Number",
+    "emergency_type": "Emergency Type",
+    "notification_type": "Notification Type",
+    "assigned_unit": "Assigned Unit",
+    "response_time": "Response Time",
+    "resolution_time": "Resolution Time",
+    "location": "Location",
+    "priority": "Priority"
+  }
 }

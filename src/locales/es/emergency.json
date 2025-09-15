@@ -1639,5 +1639,47 @@
   "selectDispatcherToReassign": "Seleccionar despachador para reasignar",
   "reassignDispatcherHelp": "Solo los despachadores en la misma ciudad pueden ser asignados a este incidente",
   "dispatcherReassignedSuccessfully": "Incidente reasignado al despachador exitosamente",
-  "failedToReassignDispatcher": "Error al reasignar despachador"
+  "failedToReassignDispatcher": "Error al reasignar despachador",
+  "incidentNotifications": "Notificaciones de Incidentes",
+  "loadingNotifications": "Cargando notificaciones...",
+  "pleaseLogInToView": "Por favor inicie sesión para ver sus notificaciones",
+  "markAllAsRead": "Marcar Todas como Leídas",
+  "noNotificationsYet": "Aún no hay notificaciones",
+  "willReceiveUpdates": "Recibirá actualizaciones sobre sus incidentes reportados aquí",
+  "priorityLevel": "Prioridad {{level}}",
+  "new": "Nuevo",
+  "messageDetails": "Detalles del Mensaje",
+  "additionalInformation": "Información Adicional",
+  "markAsRead": "Marcar como Leído",
+  "notificationErrors": {
+    "failedToLoad": "Error al cargar notificaciones",
+    "failedToMarkAsRead": "Error al marcar notificación como leída"
+  },
+  "notificationSuccess": {
+    "allMarkedAsRead": "Todas las notificaciones marcadas como leídas"
+  },
+  "notificationTitles": {
+    "acknowledgment": "Incidente Reconocido",
+    "status_update": "Actualización de Estado",
+    "resolution": "Incidente Resuelto",
+    "general": "Notificación"
+  },
+  "notificationTypes": {
+    "acknowledgment": "Reconocimiento",
+    "status_update": "Actualización de Estado",
+    "resolution": "Resolución",
+    "general": "General",
+    "incident_status": "Estado del Incidente",
+    "emergency_alert": "Alerta de Emergencia"
+  },
+  "metadataFields": {
+    "incident_number": "Número de Incidente",
+    "emergency_type": "Tipo de Emergencia",
+    "notification_type": "Tipo de Notificación",
+    "assigned_unit": "Unidad Asignada",
+    "response_time": "Tiempo de Respuesta",
+    "resolution_time": "Tiempo de Resolución",
+    "location": "Ubicación",
+    "priority": "Prioridad"
+  }
 }
