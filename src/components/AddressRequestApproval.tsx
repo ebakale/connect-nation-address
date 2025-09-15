@@ -827,10 +827,10 @@ function EditRequestForm({ request, onSave, onCancel }: EditRequestFormProps) {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="residential">Residential</SelectItem>
-              <SelectItem value="commercial">Commercial</SelectItem>
-              <SelectItem value="government">Government</SelectItem>
-              <SelectItem value="landmark">Landmark</SelectItem>
+              <SelectItem value="residential">{t('residential')}</SelectItem>
+              <SelectItem value="commercial">{t('commercial')}</SelectItem>
+              <SelectItem value="government">{t('government')}</SelectItem>
+              <SelectItem value="landmark">{t('landmark')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
