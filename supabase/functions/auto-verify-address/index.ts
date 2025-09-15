@@ -51,7 +51,7 @@ async function processSingleVerification(supabase: any, requestId: string) {
     );
   }
 
-  const analysis = await analyzeAddressRequest(request);
+  const analysis = await analyzeAddressRequest(supabase, request);
   const decision = determineVerificationDecision(analysis);
 
   // Update the request with analysis
@@ -110,7 +110,7 @@ async function processBatchVerification(supabase: any, requestIds?: string[]) {
 
   for (const request of requests || []) {
     try {
-      const analysis = await analyzeAddressRequest(request);
+      const analysis = await analyzeAddressRequest(supabase, request);
       const decision = determineVerificationDecision(analysis);
 
       // Update the request
@@ -158,7 +158,7 @@ async function processBatchVerification(supabase: any, requestIds?: string[]) {
   );
 }
 
-async function analyzeAddressRequest(request: any) {
+async function analyzeAddressRequest(supabase: any, request: any) {
   // First check for duplicates
   const { data: duplicateCheck, error: dupError } = await supabase.rpc('check_address_duplicates', {
     p_latitude: request.latitude,
