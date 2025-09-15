@@ -514,7 +514,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                 </div>
               )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 pt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 pt-4 text-sm">
                 <Button
                   onClick={() => handleApprove(request.id)}
                   disabled={processing === request.id || autoVerifying === request.id}
