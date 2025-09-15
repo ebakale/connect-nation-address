@@ -60,6 +60,7 @@ async function processSingleVerification(supabase: any, requestId: string) {
     .update({
       auto_verification_score: analysis.overallScore,
       auto_verification_analysis: analysis,
+      verification_analysis: analysis, // Also save to the field the UI looks for
       auto_verified_at: new Date().toISOString(),
       requires_manual_review: decision.requiresManualReview
     })
@@ -140,6 +141,7 @@ async function processBatchVerification(supabase: any, requestIds?: string[]) {
         .update({
           auto_verification_score: analysis.overallScore,
           auto_verification_analysis: analysis,
+          verification_analysis: analysis, // Also save to the field the UI looks for
           auto_verified_at: new Date().toISOString(),
           requires_manual_review: decision.requiresManualReview
         })
