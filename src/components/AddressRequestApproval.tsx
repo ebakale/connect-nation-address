@@ -305,8 +305,8 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                         Analysis Results
                       </span>
                     </div>
-                    {/* Prominent Review Score Display */}
-                    {request.verification_analysis?.overallScore !== undefined && (
+                    {/* Prominent Review Score Display - Show whenever available */}
+                    {request.verification_analysis?.overallScore !== undefined ? (
                       <div className={`px-3 py-1 rounded-full text-sm font-bold border-2 ${
                         request.verification_analysis.overallScore >= 0.8 
                           ? 'bg-green-100 text-green-800 border-green-300' :
@@ -316,10 +316,30 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                       }`}>
                         Review Score: {(request.verification_analysis.overallScore * 100).toFixed(1)}%
                       </div>
+                    ) : (
+                      <div className="px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-600 border-2 border-gray-300">
+                        Pending Analysis
+                      </div>
                     )}
                   </div>
                   
-                  {/* Show specific analysis reasons */}
+                  {/* Show basic status information when detailed analysis isn't available */}
+                  {!request.verification_analysis && (
+                    <div className="space-y-2">
+                      {request.flagged && (
+                        <div className="text-sm text-yellow-700">
+                          <span className="font-medium">Manual Flag Reason:</span> {request.flag_reason || 'No specific reason provided'}
+                        </div>
+                      )}
+                      {request.requires_manual_review && (
+                        <div className="text-sm text-yellow-700">
+                          <span className="font-medium">Status:</span> Requires manual review
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Show detailed analysis when available */}
                   {request.verification_analysis && (
                     <div className="space-y-3">
 
