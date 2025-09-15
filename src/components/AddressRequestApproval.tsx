@@ -247,7 +247,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <CardTitle className="text-lg">{t('addressRequest')}</CardTitle>
+                    <CardTitle className="text-sm whitespace-nowrap">{t('addressRequest')}</CardTitle>
                     <div className="transition-transform duration-200">
                       {isExpanded ? (
                         <ChevronUp className="h-4 w-4 text-muted-foreground" />
