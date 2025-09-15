@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AddressRequestApproval } from "./AddressRequestApproval";
 import { AutoVerificationTools } from "./AutoVerificationTools";
+import { RejectedAddressesPanel } from "./RejectedAddressesPanel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckSquare, Zap } from "lucide-react";
+import { CheckSquare, Zap, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from 'react-i18next';
 
@@ -64,7 +65,7 @@ export function AddressRequestApprovalPanel() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="requests" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="requests" className="relative">
                 <CheckSquare className="h-4 w-4 mr-2" />
                 {t('pendingRequests')}
@@ -81,6 +82,10 @@ export function AddressRequestApprovalPanel() {
                 <Zap className="h-4 w-4 mr-2" />
                 {t('autoVerification')}
               </TabsTrigger>
+              <TabsTrigger value="rejected">
+                <XCircle className="h-4 w-4 mr-2" />
+                Rejected
+              </TabsTrigger>
             </TabsList>
             
             <TabsContent value="requests" className="mt-6">
@@ -92,6 +97,10 @@ export function AddressRequestApprovalPanel() {
             
             <TabsContent value="auto-verify" className="mt-6">
               <AutoVerificationTools onUpdate={fetchData} />
+            </TabsContent>
+            
+            <TabsContent value="rejected" className="mt-6">
+              <RejectedAddressesPanel onUpdate={fetchData} />
             </TabsContent>
           </Tabs>
         </CardContent>
