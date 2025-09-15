@@ -99,7 +99,7 @@ export function AddressRequestApprovalPanel() {
               </TabsTrigger>
               <TabsTrigger value="manual-review" className="relative">
                 <AlertTriangle className="h-4 w-4 mr-2" />
-                {t('manualReview')}
+                Manual Review
                 {manualReviewRequests.length > 0 && (
                   <Badge 
                     variant="destructive" 

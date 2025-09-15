@@ -301,13 +301,13 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-yellow-600" />
                     <span className="text-sm font-medium text-yellow-800">
-                      {request.flagged ? t('flaggedForReview') : t('requiresManualReview')}
+                      {request.flagged ? "Flagged for Review" : "Requires Manual Review"}
                     </span>
                   </div>
                   
                   {request.flag_reason && (
                     <div className="space-y-1">
-                      <span className="text-xs font-medium text-yellow-700">{t('flagReason')}</span>
+                      <span className="text-xs font-medium text-yellow-700">Flag Reason</span>
                       <p className="text-xs text-yellow-700 bg-yellow-100 p-2 rounded">
                         {request.flag_reason}
                       </p>
@@ -318,13 +318,13 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <Shield className="h-3 w-3 text-blue-600" />
-                        <span className="text-xs font-medium text-blue-700">{t('verificationAnalysis')}</span>
+                        <span className="text-xs font-medium text-blue-700">Verification Analysis</span>
                       </div>
                       
                       {request.verification_analysis.overallScore && (
                         <div className="bg-blue-50 p-2 rounded">
                           <span className="text-xs text-blue-700">
-                            {t('verificationScore')}: {(request.verification_analysis.overallScore * 100).toFixed(1)}%
+                            Verification Score: {(request.verification_analysis.overallScore * 100).toFixed(1)}%
                           </span>
                         </div>
                       )}
@@ -333,14 +333,14 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                         <div className="bg-orange-50 border border-orange-200 p-2 rounded">
                           <div className="flex items-center gap-1 mb-1">
                             <Info className="h-3 w-3 text-orange-600" />
-                            <span className="text-xs font-medium text-orange-700">{t('duplicatesFound')}</span>
+                            <span className="text-xs font-medium text-orange-700">Potential Duplicates Found</span>
                           </div>
                           <div className="text-xs text-orange-600 space-y-1">
                             {request.verification_analysis.duplicate_check.coordinate_duplicates?.count > 0 && (
-                              <div>{t('coordinateDuplicates')}: {request.verification_analysis.duplicate_check.coordinate_duplicates.count}</div>
+                              <div>Coordinate matches: {request.verification_analysis.duplicate_check.coordinate_duplicates.count}</div>
                             )}
                             {request.verification_analysis.duplicate_check.address_duplicates?.count > 0 && (
-                              <div>{t('addressDuplicates')}: {request.verification_analysis.duplicate_check.address_duplicates.count}</div>
+                              <div>Address matches: {request.verification_analysis.duplicate_check.address_duplicates.count}</div>
                             )}
                           </div>
                         </div>
@@ -348,7 +348,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
 
                       {request.verification_analysis.qualityMetrics && (
                         <div className="bg-gray-50 p-2 rounded">
-                          <span className="text-xs font-medium text-gray-700">{t('qualityMetrics')}</span>
+                          <span className="text-xs font-medium text-gray-700">Quality Assessment</span>
                           <div className="text-xs text-gray-600 mt-1 space-y-1">
                             {Object.entries(request.verification_analysis.qualityMetrics).map(([key, value]) => (
                               <div key={key} className="flex justify-between">
@@ -359,12 +359,30 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                           </div>
                         </div>
                       )}
+
+                      {request.verification_analysis.decision && (
+                        <div className="bg-indigo-50 border border-indigo-200 p-2 rounded">
+                          <div className="flex items-center gap-1 mb-1">
+                            <Shield className="h-3 w-3 text-indigo-600" />
+                            <span className="text-xs font-medium text-indigo-700">AI Recommendation</span>
+                          </div>
+                          <div className="text-xs text-indigo-600">
+                            <div><strong>Action:</strong> {request.verification_analysis.decision.action}</div>
+                            {request.verification_analysis.decision.confidence && (
+                              <div><strong>Confidence:</strong> {(request.verification_analysis.decision.confidence * 100).toFixed(1)}%</div>
+                            )}
+                            {request.verification_analysis.decision.reasoning && (
+                              <div className="mt-1"><strong>Reason:</strong> {request.verification_analysis.decision.reasoning}</div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
 
                   {request.verification_recommendations && request.verification_recommendations.length > 0 && (
                     <div className="space-y-1">
-                      <span className="text-xs font-medium text-blue-700">{t('recommendations')}</span>
+                      <span className="text-xs font-medium text-blue-700">Recommendations</span>
                       <ul className="text-xs text-blue-600 space-y-1">
                         {request.verification_recommendations.map((rec, index) => (
                           <li key={index} className="flex items-start gap-1">
