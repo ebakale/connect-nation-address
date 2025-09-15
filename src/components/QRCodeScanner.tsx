@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import QrScanner from '@/lib/vendor/qr-scanner.min.js';
-import { Camera as CapacitorCamera, CameraResultType, CameraSource } from '@capacitor/camera';
+
 import { Capacitor } from '@capacitor/core';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -66,35 +66,30 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
       return;
     }
 
-    // Check if camera is available (prefer back camera on mobile)
-    const stream = await navigator.mediaDevices.getUserMedia({ 
-      video: { facingMode: { ideal: 'environment' } }
-    });
-    
-    // Stop the test stream
-    stream.getTracks().forEach(track => track.stop());
+    // Ensure optimal playback settings for iOS
+    try {
+      videoRef.current.muted = true;
+      // @ts-ignore - property exists on HTMLVideoElement
+      videoRef.current.setAttribute('muted', '');
+      videoRef.current.playsInline = true;
+      // @ts-ignore - property exists on HTMLVideoElement
+      videoRef.current.setAttribute('playsinline', '');
+      // Autoplay helps WebKit start the stream without extra taps
+      // @ts-ignore - property exists on HTMLVideoElement
+      videoRef.current.autoplay = true;
+    } catch {}
 
     const scanner = new QrScanner(
       videoRef.current,
       (result) => {
         console.log('QR code detected:', result.data);
-        
-        // Validate if the scanned content looks like a UAC
         if (isValidUAC(result.data)) {
           onScanResult(result.data.trim().toUpperCase());
-          toast({
-            title: "QR Code Scanned",
-            description: `Found address: ${result.data}`,
-          });
-          // Close the scanner after successful scan
+          toast({ title: 'QR Code Scanned', description: `Found address: ${result.data}` });
           stopScanner();
           setIsOpen(false);
         } else {
-          toast({
-            title: "Invalid QR Code",
-            description: "This doesn't appear to be an address UAC",
-            variant: "destructive",
-          });
+          toast({ title: 'Invalid QR Code', description: "This doesn't appear to be an address UAC", variant: 'destructive' });
         }
       },
       {
@@ -104,9 +99,25 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
       }
     );
 
-    await scanner.start();
-    setQrScanner(scanner);
-    console.log('QR Scanner started successfully');
+    try {
+      await scanner.start();
+      setQrScanner(scanner);
+      console.log('QR Scanner started successfully');
+
+      // Prefer the back camera on mobile after start (avoids temporary streams)
+      try {
+        const cameras = await QrScanner.listCameras(true);
+        const backCam = cameras.find(c => /back|rear|environment/i.test(c.label)) || cameras[cameras.length - 1];
+        if (backCam) {
+          await scanner.setCamera(backCam.id);
+          console.log('Switched to camera:', backCam.label);
+        }
+      } catch (camErr) {
+        console.warn('Could not enumerate/switch cameras:', camErr);
+      }
+    } catch (err) {
+      handleScannerError(err);
+    }
   };
 
   const handleScannerError = (err: any) => {
@@ -256,6 +267,8 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
                   ref={videoRef}
                   className="w-full h-64 bg-black rounded-lg object-cover"
                   playsInline
+                  muted
+                  autoPlay
                 />
                 {isScanning && (
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
