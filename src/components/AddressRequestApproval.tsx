@@ -526,7 +526,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                   variant="outline"
                   onClick={() => handleEdit(request)}
                   disabled={processing === request.id || autoVerifying === request.id}
-                  className="flex items-center justify-center gap-1 w-full"
+                  className="flex items-center justify-center gap-1 w-full text-xs"
                 >
                   <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="hidden sm:inline">{t('editAndApprove')}</span>
@@ -536,14 +536,14 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                   variant="outline"
                   onClick={() => handleReject(request)}
                   disabled={processing === request.id || autoVerifying === request.id}
-                  className="w-full"
+                  className="w-full text-xs"
                 >
                   {t('reject')}
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => handleViewOnMap(request)}
-                  className="flex items-center justify-center gap-1 w-full"
+                  className="flex items-center justify-center gap-1 w-full text-xs"
                 >
                   <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="hidden sm:inline">{t('viewOnMap')}</span>
