@@ -1,8 +1,6 @@
 import { AddressRequestApprovalPanel } from "./AddressRequestApprovalPanel";
-import { ManualReviewPanel } from "./ManualReviewPanel";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { CheckSquare, Flag, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 
 interface AddressVerificationQueueProps {
@@ -27,32 +25,9 @@ export function AddressVerificationQueue({ onClose }: AddressVerificationQueuePr
         )}
       </div>
       
-      <Tabs defaultValue="requests" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 h-auto">
-          <TabsTrigger value="requests" className="flex items-center gap-1 text-xs sm:text-sm p-2 sm:p-3">
-            <CheckSquare className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-            <span className="hidden xs:inline">{t('addressRequestApproval')}</span>
-            <span className="xs:hidden">{t('requests')}</span>
-          </TabsTrigger>
-          <TabsTrigger value="review" className="flex items-center gap-1 text-xs sm:text-sm p-2 sm:p-3">
-            <Flag className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-            <span className="hidden xs:inline">{t('reviewQueue')}</span>
-            <span className="xs:hidden">{t('review')}</span>
-          </TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="requests" className="mt-4 max-w-full overflow-hidden">
-          <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
-            <AddressRequestApprovalPanel />
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="review" className="mt-4 max-w-full overflow-hidden">
-          <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
-            <ManualReviewPanel />
-          </div>
-        </TabsContent>
-      </Tabs>
+      <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
+        <AddressRequestApprovalPanel />
+      </div>
     </div>
   );
 }
