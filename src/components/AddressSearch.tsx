@@ -125,29 +125,33 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
   };
   return (
     <div className={cn("w-full max-w-2xl", className)}>
-      <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
           <Textarea
             placeholder={t('searchPlaceholder')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="pr-10 min-h-[40px]"
-            autoResize
+            className="pr-10 min-h-[40px] max-h-[40px] resize-none overflow-hidden text-sm"
+            rows={1}
           />
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         </div>
-        <QRCodeScanner 
-          onScanResult={handleQRScanResult}
-          variant="button"
-        />
-        <Button 
-          onClick={handleSearch} 
-          disabled={isSearching || !query.trim()}
-          variant="hero"
-        >
-          {isSearching ? t('searching') : t('search')}
-        </Button>
+        <div className="flex gap-2 sm:flex-shrink-0">
+          <QRCodeScanner 
+            onScanResult={handleQRScanResult}
+            variant="button"
+          />
+          <Button 
+            onClick={handleSearch} 
+            disabled={isSearching || !query.trim()}
+            variant="hero"
+            className="px-3 sm:px-4"
+          >
+            <span className="hidden sm:inline">{isSearching ? t('searching') : t('search')}</span>
+            <Search className="h-4 w-4 sm:hidden" />
+          </Button>
+        </div>
       </div>
 
       {showResults && (
