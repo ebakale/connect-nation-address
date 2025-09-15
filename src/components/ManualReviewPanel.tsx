@@ -35,11 +35,16 @@ export function ManualReviewPanel() {
       const { data, error } = await supabase.rpc('get_review_queue');
       if (error) throw error;
       
-      // Filter to show only flagged requests and those requiring manual review
-      const filteredRequests = (data || []).filter((request: any) => 
-        request.flagged || request.requires_manual_review
-      );
+      console.log('All review queue data:', data);
       
+      // Filter to show only flagged requests and those requiring manual review
+      const filteredRequests = (data || []).filter((request: any) => {
+        const shouldInclude = request.flagged || request.requires_manual_review;
+        console.log(`Request ${request.id}: flagged=${request.flagged}, requires_manual_review=${request.requires_manual_review}, included=${shouldInclude}`);
+        return shouldInclude;
+      });
+      
+      console.log('Filtered manual review requests:', filteredRequests);
       setManualReviewRequests(filteredRequests);
     } catch (error) {
       console.error('Error fetching manual review requests:', error);
