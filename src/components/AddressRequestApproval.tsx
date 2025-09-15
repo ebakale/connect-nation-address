@@ -46,6 +46,111 @@ interface AddressRequestApprovalProps {
   onUpdate: () => void;
 }
 
+// Helper function to translate recommendations
+const translateRecommendation = (recommendation: string, t: any): string => {
+  // Define mapping patterns for common recommendations
+  const patterns = [
+    { 
+      pattern: /Invalid coordinate format/i, 
+      key: 'recommendations.invalidCoordinateFormat' 
+    },
+    { 
+      pattern: /Coordinates appear to be in water/i, 
+      key: 'recommendations.coordinatesInWater' 
+    },
+    { 
+      pattern: /Location may not be accessible/i, 
+      key: 'recommendations.locationNotAccessible' 
+    },
+    { 
+      pattern: /Low coordinate precision/i, 
+      key: 'recommendations.lowCoordinatePrecision' 
+    },
+    { 
+      pattern: /Address information doesn't match coordinate location/i, 
+      key: 'recommendations.addressCoordinateMismatch' 
+    },
+    { 
+      pattern: /Low confidence in reverse geocoding/i, 
+      key: 'recommendations.lowReverseGeocodingConfidence' 
+    },
+    { 
+      pattern: /Coordinates don't match the specified country/i, 
+      key: 'recommendations.coordinatesCountryMismatch' 
+    },
+    { 
+      pattern: /Coordinates appear accurate and consistent/i, 
+      key: 'recommendations.coordinatesAccurate' 
+    },
+    { 
+      pattern: /Consider taking a higher resolution photo/i, 
+      key: 'recommendations.takeHigherResolution' 
+    },
+    { 
+      pattern: /Image appears too dark/i, 
+      key: 'recommendations.imageTooTooDark' 
+    },
+    { 
+      pattern: /Image appears blurry/i, 
+      key: 'recommendations.imageBlurry' 
+    },
+    { 
+      pattern: /Include identifiable features/i, 
+      key: 'recommendations.includeIdentifiableFeatures' 
+    },
+    { 
+      pattern: /Enable location services/i, 
+      key: 'recommendations.enableLocationServices' 
+    },
+    { 
+      pattern: /Photo quality is excellent/i, 
+      key: 'recommendations.photoQualityExcellent' 
+    },
+    { 
+      pattern: /Invalid coordinate range detected/i, 
+      key: 'recommendations.invalidCoordinateRange' 
+    },
+    { 
+      pattern: /Incomplete address information/i, 
+      key: 'recommendations.incompleteAddressInfo' 
+    },
+    { 
+      pattern: /Missing description or justification/i, 
+      key: 'recommendations.missingDescriptionJustification' 
+    },
+    { 
+      pattern: /Found (\d+) addresses with similar coordinates/i, 
+      key: 'recommendations.similarCoordinatesFound',
+      extractData: (match: RegExpMatchArray) => ({ count: match[1] })
+    },
+    { 
+      pattern: /Found (\d+) addresses with identical street address/i, 
+      key: 'recommendations.identicalAddressFound',
+      extractData: (match: RegExpMatchArray) => ({ count: match[1] })
+    },
+    { 
+      pattern: /Photo location is (\d+)m from expected address location/i, 
+      key: 'recommendations.photoLocationDistance',
+      extractData: (match: RegExpMatchArray) => ({ distance: match[1] })
+    }
+  ];
+
+  // Try to match and translate known patterns
+  for (const { pattern, key, extractData } of patterns) {
+    const match = recommendation.match(pattern);
+    if (match) {
+      if (extractData) {
+        const data = extractData(match);
+        return t(key, data);
+      }
+      return t(key);
+    }
+  }
+
+  // Return original recommendation if no pattern matches
+  return recommendation;
+};
+
 export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApprovalProps) {
   const { t } = useTranslation('address');
   const [processing, setProcessing] = useState<string | null>(null);
@@ -449,7 +554,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                             {(request.verification_analysis.recommendations || request.verification_recommendations || []).map((rec, index) => (
                               <li key={index} className="flex items-start gap-2">
                                 <span className="text-blue-500">•</span>
-                                <span>{rec}</span>
+                                <span>{translateRecommendation(rec, t)}</span>
                               </li>
                             ))}
                           </ul>

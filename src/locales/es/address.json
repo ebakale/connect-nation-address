@@ -578,5 +578,27 @@
   "reviewRequiredForDuplicate": "Se requiere revisión para confirmar si esta es una nueva dirección legítima o duplicada.",
   "noDuplicatesFound": "No se encontraron duplicados",
   "qualityAssessment": "Evaluación de Calidad",
-  "recommendedActions": "Acciones Recomendadas"
+  "recommendedActions": "Acciones Recomendadas",
+  "recommendations": {
+    "invalidCoordinateFormat": "Formato de coordenadas inválido - por favor verifique los valores de latitud y longitud",
+    "coordinatesInWater": "Las coordenadas parecen estar en agua - por favor verifique la ubicación",
+    "locationNotAccessible": "La ubicación puede no ser accesible - por favor verifique las coordenadas", 
+    "lowCoordinatePrecision": "Baja precisión de coordenadas - considere usar más decimales para mejor precisión",
+    "addressCoordinateMismatch": "La información de dirección no coincide con la ubicación de coordenadas - por favor verifique ambas",
+    "lowReverseGeocodingConfidence": "Baja confianza en geocodificación inversa - considere verificación manual",
+    "coordinatesCountryMismatch": "Las coordenadas no coinciden con el país especificado",
+    "coordinatesAccurate": "Las coordenadas parecen precisas y consistentes con la información de dirección",
+    "takeHigherResolution": "Considere tomar una foto de mayor resolución para mejor verificación",
+    "imageTooTooDark": "La imagen parece muy oscura - intente tomar la foto con mejor iluminación",
+    "imageBlurry": "La imagen parece borrosa - asegúrese de que la cámara esté estable al tomar la foto",
+    "includeIdentifiableFeatures": "Incluya características identificables como edificios o señales de calle para mejor verificación",
+    "enableLocationServices": "Active los servicios de ubicación en su dispositivo para incluir coordenadas GPS en la foto",
+    "photoQualityExcellent": "La calidad de la foto es excelente para verificación de dirección",
+    "invalidCoordinateRange": "Rango de coordenadas inválido detectado",
+    "incompleteAddressInfo": "Información de dirección incompleta",
+    "missingDescriptionJustification": "Falta descripción o justificación",
+    "similarCoordinatesFound": "Se encontraron {{count}} direcciones con coordenadas similares",
+    "identicalAddressFound": "Se encontraron {{count}} direcciones con dirección de calle idéntica",
+    "photoLocationDistance": "La ubicación de la foto está a {{distance}}m de la ubicación de dirección esperada"
+  }
 }

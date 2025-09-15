@@ -584,5 +584,27 @@
   "reviewRequiredForDuplicate": "Review required to confirm if this is a legitimate new address or duplicate.",
   "noDuplicatesFound": "No duplicates found",
   "qualityAssessment": "Quality Assessment",
-  "recommendedActions": "Recommended Actions"
+  "recommendedActions": "Recommended Actions",
+  "recommendations": {
+    "invalidCoordinateFormat": "Invalid coordinate format - please verify latitude and longitude values",
+    "coordinatesInWater": "Coordinates appear to be in water - please verify the location", 
+    "locationNotAccessible": "Location may not be accessible - please verify the coordinates",
+    "lowCoordinatePrecision": "Low coordinate precision - consider using more decimal places for better accuracy",
+    "addressCoordinateMismatch": "Address information doesn't match coordinate location - please verify both",
+    "lowReverseGeocodingConfidence": "Low confidence in reverse geocoding - consider manual verification",
+    "coordinatesCountryMismatch": "Coordinates don't match the specified country",
+    "coordinatesAccurate": "Coordinates appear accurate and consistent with address information",
+    "takeHigherResolution": "Consider taking a higher resolution photo for better verification",
+    "imageTooTooDark": "Image appears too dark - try taking the photo in better lighting",
+    "imageBlurry": "Image appears blurry - ensure camera is steady when taking the photo", 
+    "includeIdentifiableFeatures": "Include identifiable features like buildings or street signs for better verification",
+    "enableLocationServices": "Enable location services on your device to include GPS coordinates in the photo",
+    "photoQualityExcellent": "Photo quality is excellent for address verification",
+    "invalidCoordinateRange": "Invalid coordinate range detected",
+    "incompleteAddressInfo": "Incomplete address information",
+    "missingDescriptionJustification": "Missing description or justification",
+    "similarCoordinatesFound": "Found {{count}} addresses with similar coordinates",
+    "identicalAddressFound": "Found {{count}} addresses with identical street address",
+    "photoLocationDistance": "Photo location is {{distance}}m from expected address location"
+  }
 }

@@ -428,5 +428,27 @@
   "reviewRequiredForDuplicate": "Révision requise pour confirmer s'il s'agit d'une nouvelle adresse légitime ou d'un doublon.",
   "noDuplicatesFound": "Aucun doublon trouvé",
   "qualityAssessment": "Évaluation de la Qualité",
-  "recommendedActions": "Actions Recommandées"
+  "recommendedActions": "Actions Recommandées",
+  "recommendations": {
+    "invalidCoordinateFormat": "Format de coordonnées invalide - veuillez vérifier les valeurs de latitude et longitude",
+    "coordinatesInWater": "Les coordonnées semblent être dans l'eau - veuillez vérifier l'emplacement",
+    "locationNotAccessible": "L'emplacement peut ne pas être accessible - veuillez vérifier les coordonnées",
+    "lowCoordinatePrecision": "Faible précision des coordonnées - considérez utiliser plus de décimales pour une meilleure précision",
+    "addressCoordinateMismatch": "Les informations d'adresse ne correspondent pas à l'emplacement des coordonnées - veuillez vérifier les deux",
+    "lowReverseGeocodingConfidence": "Faible confiance en géocodage inverse - considérez une vérification manuelle",
+    "coordinatesCountryMismatch": "Les coordonnées ne correspondent pas au pays spécifié",
+    "coordinatesAccurate": "Les coordonnées semblent précises et cohérentes avec les informations d'adresse",
+    "takeHigherResolution": "Considérez prendre une photo de plus haute résolution pour une meilleure vérification",
+    "imageTooTooDark": "L'image semble trop sombre - essayez de prendre la photo avec un meilleur éclairage",
+    "imageBlurry": "L'image semble floue - assurez-vous que l'appareil photo soit stable lors de la prise de photo",
+    "includeIdentifiableFeatures": "Incluez des caractéristiques identifiables comme des bâtiments ou des panneaux de rue pour une meilleure vérification",
+    "enableLocationServices": "Activez les services de localisation sur votre appareil pour inclure les coordonnées GPS dans la photo",
+    "photoQualityExcellent": "La qualité de la photo est excellente pour la vérification d'adresse",
+    "invalidCoordinateRange": "Plage de coordonnées invalide détectée",
+    "incompleteAddressInfo": "Informations d'adresse incomplètes",
+    "missingDescriptionJustification": "Description ou justification manquante",
+    "similarCoordinatesFound": "{{count}} adresses trouvées avec des coordonnées similaires",
+    "identicalAddressFound": "{{count}} adresses trouvées avec une adresse de rue identique",
+    "photoLocationDistance": "L'emplacement de la photo est à {{distance}}m de l'emplacement d'adresse attendu"
+  }
 }
