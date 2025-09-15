@@ -49,6 +49,10 @@
 	<string>This app needs location access to provide address services and directions.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app needs location access to provide address services and directions.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app uses the camera to scan QR codes for addresses.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs photo library access to select or save QR/address images.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>This app needs access to save QR codes and address images to your photo library.</string>
 </dict>
