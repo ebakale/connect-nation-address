@@ -80,7 +80,7 @@ export function AddressRequestApprovalPanel() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>{t('addressRequestApprovalPanel')}</CardTitle>
+          <CardTitle className="text-base">{t('addressRequestApprovalPanel')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="requests" className="w-full">
