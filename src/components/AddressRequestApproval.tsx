@@ -565,7 +565,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                     <>
                       <Zap className="h-3 w-3 sm:h-4 sm:w-4" />
                       <span className="hidden sm:inline">{t('autoVerify')}</span>
-                      <span className="sm:hidden">{t('verifying')}</span>
+                      <span className="sm:hidden text-xs">{t('verifying')}</span>
                     </>
                   )}
                 </Button>
