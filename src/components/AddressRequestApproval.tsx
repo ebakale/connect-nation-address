@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, User, Building, Calendar, CheckCircle, X, Zap, Eye, Edit } from "lucide-react";
+import { MapPin, User, Building, Calendar, CheckCircle, X, Zap, Eye, Edit, AlertTriangle, Info, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AddressRejectionDialog } from "./AddressRejectionDialog";
@@ -30,6 +30,13 @@ interface AddressRequest {
   photo_url?: string;
   justification: string;
   created_at: string;
+  flagged?: boolean;
+  flag_reason?: string;
+  flagged_by?: string;
+  flagged_at?: string;
+  requires_manual_review?: boolean;
+  verification_analysis?: any;
+  verification_recommendations?: string[];
 }
 
 interface EditableRequest extends AddressRequest {}
@@ -285,6 +292,89 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                     alt={t('addressVerificationPhoto')}
                     className="w-full h-48 object-cover rounded-lg border"
                   />
+                </div>
+              )}
+
+              {/* Verification Analysis Section */}
+              {(request.flagged || request.requires_manual_review || request.verification_analysis) && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                    <span className="text-sm font-medium text-yellow-800">
+                      {request.flagged ? t('flaggedForReview') : t('requiresManualReview')}
+                    </span>
+                  </div>
+                  
+                  {request.flag_reason && (
+                    <div className="space-y-1">
+                      <span className="text-xs font-medium text-yellow-700">{t('flagReason')}</span>
+                      <p className="text-xs text-yellow-700 bg-yellow-100 p-2 rounded">
+                        {request.flag_reason}
+                      </p>
+                    </div>
+                  )}
+
+                  {request.verification_analysis && (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-3 w-3 text-blue-600" />
+                        <span className="text-xs font-medium text-blue-700">{t('verificationAnalysis')}</span>
+                      </div>
+                      
+                      {request.verification_analysis.overallScore && (
+                        <div className="bg-blue-50 p-2 rounded">
+                          <span className="text-xs text-blue-700">
+                            {t('verificationScore')}: {(request.verification_analysis.overallScore * 100).toFixed(1)}%
+                          </span>
+                        </div>
+                      )}
+
+                      {request.verification_analysis.duplicate_check?.has_duplicates && (
+                        <div className="bg-orange-50 border border-orange-200 p-2 rounded">
+                          <div className="flex items-center gap-1 mb-1">
+                            <Info className="h-3 w-3 text-orange-600" />
+                            <span className="text-xs font-medium text-orange-700">{t('duplicatesFound')}</span>
+                          </div>
+                          <div className="text-xs text-orange-600 space-y-1">
+                            {request.verification_analysis.duplicate_check.coordinate_duplicates?.count > 0 && (
+                              <div>{t('coordinateDuplicates')}: {request.verification_analysis.duplicate_check.coordinate_duplicates.count}</div>
+                            )}
+                            {request.verification_analysis.duplicate_check.address_duplicates?.count > 0 && (
+                              <div>{t('addressDuplicates')}: {request.verification_analysis.duplicate_check.address_duplicates.count}</div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {request.verification_analysis.qualityMetrics && (
+                        <div className="bg-gray-50 p-2 rounded">
+                          <span className="text-xs font-medium text-gray-700">{t('qualityMetrics')}</span>
+                          <div className="text-xs text-gray-600 mt-1 space-y-1">
+                            {Object.entries(request.verification_analysis.qualityMetrics).map(([key, value]) => (
+                              <div key={key} className="flex justify-between">
+                                <span className="capitalize">{key.replace(/([A-Z])/g, ' $1').toLowerCase()}:</span>
+                                <span>{typeof value === 'number' ? (value * 100).toFixed(1) + '%' : String(value)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {request.verification_recommendations && request.verification_recommendations.length > 0 && (
+                    <div className="space-y-1">
+                      <span className="text-xs font-medium text-blue-700">{t('recommendations')}</span>
+                      <ul className="text-xs text-blue-600 space-y-1">
+                        {request.verification_recommendations.map((rec, index) => (
+                          <li key={index} className="flex items-start gap-1">
+                            <span className="text-blue-400 mt-0.5">•</span>
+                            <span>{rec}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )}
 
