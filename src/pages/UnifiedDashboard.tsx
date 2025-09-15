@@ -393,7 +393,7 @@ const UnifiedDashboard = () => {
             {/* Admin Metrics */}
             {hasAdminAccess && (
               <div>
-                <h3 className="text-xl font-semibold mb-4">{t('dashboard:systemOverview')}</h3>
+                <h3 className="text-xl font-semibold mb-4">Unified Platform Overview</h3>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                   <Card className="hover:shadow-md transition-shadow">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

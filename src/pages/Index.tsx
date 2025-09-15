@@ -193,29 +193,37 @@ const navigationItems = [
                     </div>
                   </div>
                   <CardContent className="relative p-8">
-                    <div className="space-y-4">
-                       <p className="text-muted-foreground leading-relaxed text-lg">
-                         {t('emergency:integratedEmergencyResponse')}
-                       </p>
-                      <div className="space-y-3">
-                         <div className="flex items-center gap-3">
-                           <CheckCircle className="h-5 w-5 text-destructive" />
-                           <span className="text-sm">{t('emergency:realtimeIncidentReporting')}</span>
-                         </div>
-                         <div className="flex items-center gap-3">
-                           <CheckCircle className="h-5 w-5 text-destructive" />
-                           <span className="text-sm">{t('emergency:gpsBasedUnitDispatch')}</span>
-                         </div>
-                         <div className="flex items-center gap-3">
-                           <CheckCircle className="h-5 w-5 text-destructive" />
-                           <span className="text-sm">{t('emergency:multiChannelCommunications')}</span>
-                         </div>
-                         <div className="flex items-center gap-3">
-                           <CheckCircle className="h-5 w-5 text-destructive" />
-                           <span className="text-sm">{t('emergency:analyticsResponseTracking')}</span>
-                         </div>
-                      </div>
-                    </div>
+                     <div className="space-y-4">
+                        <p className="text-muted-foreground leading-relaxed text-lg">
+                          {t('emergency:integratedEmergencyResponse')}
+                        </p>
+                       <div className="space-y-3">
+                          <div className="flex items-center gap-3">
+                            <CheckCircle className="h-5 w-5 text-destructive" />
+                            <span className="text-sm">{t('emergency:realtimeIncidentReporting')}</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <CheckCircle className="h-5 w-5 text-destructive" />
+                            <span className="text-sm">{t('emergency:gpsBasedUnitDispatch')}</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <CheckCircle className="h-5 w-5 text-destructive" />
+                            <span className="text-sm">{t('emergency:multiChannelCommunications')}</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <CheckCircle className="h-5 w-5 text-destructive" />
+                            <span className="text-sm">{t('emergency:analyticsResponseTracking')}</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <CheckCircle className="h-5 w-5 text-destructive" />
+                            <span className="text-sm">Integrated Address Verification</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <CheckCircle className="h-5 w-5 text-destructive" />
+                            <span className="text-sm">Cross-Module Data Intelligence</span>
+                          </div>
+                       </div>
+                     </div>
                   </CardContent>
                 </Card>
               </div>
@@ -231,11 +239,11 @@ const navigationItems = [
                       <CardTitle className="text-lg font-bold">{t('common:platform.roleBasedAccess')}</CardTitle>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                     <p className="text-muted-foreground leading-relaxed text-sm">
-                       {t('common:platform.advancedRoleManagement')}
-                     </p>
-                  </CardContent>
+                   <CardContent>
+                      <p className="text-muted-foreground leading-relaxed text-sm">
+                        Advanced role-based access with geographic scoping and cross-module integration for enhanced security and operational efficiency.
+                      </p>
+                   </CardContent>
                 </Card>
 
                 <Card className="group bg-gradient-to-br from-white to-primary/5 border-2 border-primary/10 hover:border-primary/30 shadow-lg hover:shadow-blue transform hover:scale-105 transition-all duration-300">
@@ -247,11 +255,11 @@ const navigationItems = [
                       <CardTitle className="text-lg font-bold">{t('common:platform.digitalDocumentationFeature')}</CardTitle>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                     <p className="text-muted-foreground leading-relaxed text-sm">
-                       {t('common:platform.automatedDocumentGeneration')}
-                     </p>
-                  </CardContent>
+                   <CardContent>
+                      <p className="text-muted-foreground leading-relaxed text-sm">
+                        Comprehensive digital documentation with evidence management, incident reports, and automated UAC generation for streamlined operations.
+                      </p>
+                   </CardContent>
                 </Card>
 
                 <Card className="group bg-gradient-to-br from-white to-destructive/5 border-2 border-destructive/10 hover:border-destructive/30 shadow-lg hover:shadow-red transform hover:scale-105 transition-all duration-300">
@@ -263,11 +271,11 @@ const navigationItems = [
                       <CardTitle className="text-lg font-bold">{t('common:platform.realtimeAnalyticsFeature')}</CardTitle>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                     <p className="text-muted-foreground leading-relaxed text-sm">
-                       {t('common:platform.comprehensiveReporting')}
-                     </p>
-                  </CardContent>
+                   <CardContent>
+                      <p className="text-muted-foreground leading-relaxed text-sm">
+                        Real-time analytics across both address registry and police operations with performance tracking, response metrics, and data-driven insights.
+                      </p>
+                   </CardContent>
                 </Card>
 
                 <Card className="group bg-gradient-to-br from-white to-accent/5 border-2 border-accent/10 hover:border-accent/30 shadow-lg hover:shadow-yellow transform hover:scale-105 transition-all duration-300">

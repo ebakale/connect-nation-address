@@ -15,46 +15,52 @@
 
 ## System Overview
 
-The Connect Nation Unified Platform is a comprehensive digital ecosystem for managing both address registration and police operations in Equatorial Guinea. The platform consists of two integrated modules that work together to provide enhanced public services, emergency response, and urban planning capabilities.
+The Connect Nation Unified Platform is a comprehensive digital ecosystem designed to modernize and integrate both address registration and police operations in Equatorial Guinea. This unified platform consists of two tightly integrated modules that work synergistically to provide enhanced public services, emergency response coordination, and data-driven urban planning capabilities.
 
 ## Module Overview
 
 ### Address Registry Module
-The address registry system manages the complete lifecycle of address registration, verification, and distribution. It enables efficient location management through a role-based workflow that ensures data quality and security.
+The address registry system manages the complete lifecycle of address registration, verification, and publication through a sophisticated multi-stage workflow. It provides a foundation for accurate location services and enables precise geographic data management across the nation.
 
-**Key Features:**
-- Address registration and verification workflow
-- Geographic information system (GIS) integration
-- Unified Address Code (UAC) generation
-- Evidence management and photo capture
-- Multi-role approval process
+**Core Capabilities:**
+- **Structured Workflow Management**: Submit Request → Capture Draft → Verify → Publish workflow
+- **Geographic Information Integration**: GPS-based location capture with coordinate validation
+- **Unified Address Code (UAC) Generation**: Standardized addressing with hierarchical codes
+- **Evidence Documentation**: Secure photo capture and document management
+- **Quality Assurance Process**: Multi-level verification with duplicate detection
+- **Role-Based Access Control**: Geographic and organizational scope restrictions
+- **API Integration**: Partner access for utilities, delivery services, and emergency systems
 
 ### Police Operations Module
-The police operations system provides comprehensive incident management, emergency response coordination, and law enforcement support capabilities.
+The police operations system provides comprehensive incident management, emergency response coordination, and law enforcement operational support through real-time communication and tracking capabilities.
 
-**Key Features:**
-- Real-time incident reporting and tracking
-- Emergency dispatch and unit coordination
-- Officer dashboard and performance monitoring
-- Communication systems for field operations
-- Analytics and reporting tools
+**Core Capabilities:**
+- **Real-time Incident Management**: End-to-end incident tracking from report to resolution
+- **Emergency Dispatch Coordination**: Intelligent unit assignment and resource optimization
+- **Field Operations Support**: Mobile-friendly tools for officers and supervisors
+- **Communication Hub**: Secure messaging and broadcast systems
+- **Performance Analytics**: Response time tracking and operational metrics
+- **Unit Management**: Hierarchical team organization and status monitoring
+- **Backup Coordination**: Streamlined resource request and deployment process
 
 ### Unified Platform Benefits
-- **Enhanced Service Delivery**: Improve emergency response, postal delivery, and public services through accurate addressing
-- **Economic Acceleration**: Enable e-commerce, delivery services, and location-based business growth
-- **Smart Urban Planning**: Support infrastructure development and city planning with precise location data
-- **Digital Infrastructure**: Create a foundation for IoT, smart city initiatives, and digital governance
-- **Integrated Emergency Response**: Seamless coordination between address verification and police operations
-- **Data-Driven Policing**: Evidence-based decision making through comprehensive analytics
+- **Enhanced Emergency Response**: Seamless integration between verified addresses and police dispatch
+- **Data-Driven Operations**: Comprehensive analytics across both addressing and emergency services
+- **Quality Service Delivery**: Improved postal services, utility connections, and public safety
+- **Economic Development**: Foundation for e-commerce, delivery services, and location-based businesses
+- **Smart Urban Planning**: Evidence-based infrastructure development and city planning
+- **Digital Government Infrastructure**: Platform for IoT integration and smart city initiatives
+- **Cross-Module Intelligence**: Shared data insights for better decision making
 
-### System Architecture
-- **Frontend**: React-based web application with responsive design
-- **Backend**: Supabase with PostgreSQL database
-- **Authentication**: Secure role-based access control with module-specific permissions
-- **Storage**: Cloud-based file storage for evidence and documentation
-- **Real-time Communication**: WebSocket support for live updates and dispatch
-- **APIs**: RESTful APIs for integration with external systems
-- **Security**: End-to-end encryption for sensitive police data
+### Technical Architecture
+- **Frontend**: React-based responsive web application with real-time updates
+- **Backend**: Supabase with PostgreSQL for robust data management
+- **Authentication**: Advanced role-based access control with geographic scoping
+- **Storage**: Secure cloud storage for evidence, documentation, and sensitive data
+- **Real-time Communication**: WebSocket integration for live dispatch and status updates
+- **API Layer**: RESTful APIs for external integrations and partner access
+- **Security**: End-to-end encryption for sensitive police data and evidence
+- **Mobile Support**: Progressive Web App capabilities for field operations
 
 ---
 
@@ -190,59 +196,86 @@ The unified platform supports two distinct role hierarchies - one for the Addres
 ### Police Operations Module Roles
 
 #### 1. **Police Admin**
-**Purpose**: System administrators for police operations with full oversight
+**Purpose**: System administrators for police operations with comprehensive oversight and configuration authority
 **Permissions**:
-- ✅ Manage all police system users and roles
-- ✅ Configure system settings and parameters
-- ✅ Access all incident data and analytics
-- ✅ Manage unit structures and assignments
-- ✅ Override operational decisions
-- ✅ Full audit trail access
+- ✅ Manage all police system users and role assignments
+- ✅ Configure system-wide settings, parameters, and operational policies
+- ✅ Access all incident data, analytics, and performance reports
+- ✅ Manage unit structures, hierarchies, and operational assignments
+- ✅ Override operational decisions and emergency protocols
+- ✅ Full audit trail access and compliance monitoring
+- ✅ Integration management with external systems and APIs
 
-**Scope**: System-wide police operations
+**Scope**: System-wide police operations and strategic oversight
+**Geographic Scope**: National-level access to all police operations
 
 #### 2. **Police Supervisor**
-**Purpose**: Senior officers responsible for operational oversight and unit management
+**Purpose**: Senior officers responsible for tactical oversight, unit management, and operational performance
 **Permissions**:
-- ✅ Monitor all incidents within jurisdiction
-- ✅ Assign and reassign units to incidents
-- ✅ Access real-time unit status and locations
-- ✅ Review officer performance metrics
-- ✅ Approve backup requests and resource allocation
-- ✅ Generate operational reports
+- ✅ Monitor all incidents within assigned jurisdiction and area of responsibility
+- ✅ Assign and reassign units to incidents based on operational needs
+- ✅ Access real-time unit status, locations, and availability tracking
+- ✅ Review officer performance metrics and effectiveness reports
+- ✅ Approve backup requests, resource allocation, and escalation procedures
+- ✅ Generate operational reports and performance analytics
+- ✅ Coordinate multi-unit operations and complex incident responses
+- ✅ Access cross-module data for enhanced situational awareness
 
-**Scope**: Regional or departmental oversight
+**Scope**: Regional, departmental, or jurisdictional oversight
+**Geographic Scope**: Province or region-level access with scope restrictions
 
 #### 3. **Police Dispatcher**
-**Purpose**: Emergency response coordinators managing incident dispatch
+**Purpose**: Emergency response coordinators managing real-time incident dispatch and communication
 **Permissions**:
-- ✅ Receive and process emergency calls
-- ✅ Create and update incident records
-- ✅ Dispatch units to incidents
-- ✅ Monitor unit status and availability
-- ✅ Coordinate emergency response
-- ✅ Communication with field units
+- ✅ Receive, process, and categorize emergency calls and incident reports
+- ✅ Create, update, and manage incident records with priority classification
+- ✅ Dispatch units to incidents using optimal assignment algorithms
+- ✅ Monitor unit status, availability, and real-time location tracking
+- ✅ Coordinate emergency response and multi-agency collaboration
+- ✅ Facilitate communication between field units, supervisors, and command
+- ✅ Access verified address registry for accurate location coordination
+- ✅ Manage emergency broadcast alerts and system-wide notifications
 
-**Scope**: Dispatch center operations
+**Scope**: Dispatch center operations and emergency coordination
+**Geographic Scope**: Dispatch center coverage area with incident management authority
 
 #### 4. **Police Operator**
-**Purpose**: Field officers and operational personnel
+**Purpose**: Field officers and operational personnel responsible for direct incident response and law enforcement
 **Permissions**:
-- ✅ View assigned incidents and details
-- ✅ Update incident status and progress
-- ✅ Request backup and resources
-- ✅ Submit field reports and evidence
-- ✅ Access incident history for patrols
-- ✅ Communicate with dispatch and units
+- ✅ View assigned incidents with detailed briefings and background information
+- ✅ Update incident status, progress reports, and field observations
+- ✅ Request backup, additional resources, and supervisor assistance
+- ✅ Submit field reports, evidence documentation, and case materials
+- ✅ Access incident history for patrol areas and recurring locations
+- ✅ Communicate with dispatch, supervisors, and other units
+- ✅ Utilize mobile tools for field operations and real-time updates
+- ✅ Access verified address information for accurate location responses
 
-**Scope**: Field operations and assigned incidents
+**Scope**: Field operations and assigned incident response
+**Geographic Scope**: Unit patrol area with incident-specific access
 
-### Cross-Module Integration
-Users with roles in both modules benefit from enhanced capabilities:
-- **Emergency Response**: Police can access verified addresses for faster response
-- **Incident Location**: Address verification can be fast-tracked for emergency locations
-- **Data Sharing**: Seamless integration of location and incident data
-- **Unified Analytics**: Cross-module reporting and analysis
+### Cross-Module Integration and Enhanced Capabilities
+The unified platform provides significant advantages for users with roles spanning both modules:
+
+#### **Emergency Response Enhancement**
+- **Real-time Address Verification**: Police dispatchers can access and verify addresses instantly during emergency calls
+- **Priority Address Processing**: Emergency incidents can trigger fast-track address verification workflows
+- **Location Intelligence**: Integration of verified address data enhances response accuracy and efficiency
+
+#### **Operational Data Sharing**
+- **Incident Location Data**: Emergency incidents contribute to address verification and quality improvement
+- **Performance Analytics**: Cross-module reporting provides comprehensive operational insights
+- **Resource Optimization**: Shared data enables better resource allocation and strategic planning
+
+#### **Quality Assurance Integration**
+- **Address Validation through Emergency Response**: Police operations provide real-world validation of address accuracy
+- **Evidence Cross-Reference**: Address evidence and police incident documentation can be correlated
+- **System Reliability**: Cross-module validation improves overall data quality and system reliability
+
+#### **Strategic Intelligence**
+- **Pattern Recognition**: Combined address and incident data reveals operational patterns and trends
+- **Predictive Analytics**: Historical data from both modules supports predictive policing and resource planning
+- **Community Safety**: Enhanced address verification improves emergency response times and community safety outcomes
 
 ---
 
@@ -320,72 +353,138 @@ Users with roles in both modules benefit from enhanced capabilities:
 ### Police Operations Module Workflows
 
 #### 1. Emergency Incident Response Workflow
-**Participants**: Citizen → Police Dispatcher → Police Operator → Police Supervisor
+**Participants**: Citizen/System → Police Dispatcher → Police Operator → Police Supervisor
+**SLA**: Critical incidents within 4 minutes, standard incidents within 15 minutes
 
-1. **Incident Report** (Citizen/System)
-   - Emergency call received through dispatch
-   - Incident details captured and categorized
-   - Location verified using address registry
-   - Initial assessment and priority assignment
+1. **Incident Report and Categorization** (Citizen/System)
+   - Emergency call received through dispatch center
+   - Incident details captured with automated categorization
+   - Location verified using integrated address registry
+   - Priority assessment using algorithm-based classification
+   - Reporter contact information securely encrypted
 
-2. **Dispatch Coordination** (Police Dispatcher)
-   - Available units identified and assessed
-   - Optimal unit selected based on proximity and capability
-   - Incident assignment and initial briefing
-   - Real-time communication established
+2. **Intelligent Dispatch Coordination** (Police Dispatcher)
+   - Available units identified using real-time tracking
+   - Optimal unit selection based on proximity, capability, and workload
+   - Incident assignment with comprehensive briefing
+   - Real-time communication channels established
+   - Address verification confirmation from registry module
 
-3. **Field Response** (Police Operator)
-   - Unit dispatched to incident location
-   - Status updates provided during transit
-   - On-scene assessment and response
-   - Evidence collection and documentation
+3. **Dynamic Field Response** (Police Operator)
+   - Unit dispatched with turn-by-turn navigation to verified address
+   - Continuous status updates during transit and on-scene
+   - Mobile evidence collection and real-time documentation
+   - Field assessment with supervisor communication
+   - Backup request capability with justification workflow
 
-4. **Supervision and Follow-up** (Police Supervisor)
-   - Monitor response progress and effectiveness
-   - Coordinate additional resources if needed
-   - Review incident resolution and outcomes
-   - Performance evaluation and reporting
+4. **Strategic Supervision and Analysis** (Police Supervisor)
+   - Real-time response monitoring with performance metrics
+   - Resource coordination and allocation optimization
+   - Quality assurance and outcome evaluation
+   - Performance analysis and trend identification
+   - Cross-incident pattern recognition and intelligence
 
-#### 2. Backup Request and Resource Allocation Workflow
+#### 2. Advanced Backup Request and Resource Allocation Workflow
 **Participants**: Police Operator → Police Dispatcher → Police Supervisor
+**SLA**: Backup evaluation within 2 minutes, deployment within 8 minutes
 
-1. **Backup Request** (Police Operator)
-   - Assess situation requiring additional support
-   - Submit backup request with justification
-   - Provide incident details and requirements
-   - Maintain situation awareness
+1. **Situational Assessment and Request** (Police Operator)
+   - Real-time situation evaluation with threat assessment
+   - Structured backup request with priority justification
+   - Specific resource requirements and timeline specification
+   - Continuous situation awareness and status reporting
 
-2. **Resource Coordination** (Police Dispatcher)
-   - Evaluate backup request urgency
-   - Identify available units and resources
-   - Coordinate deployment and timing
-   - Facilitate communication between units
+2. **Intelligent Resource Coordination** (Police Dispatcher)
+   - Automated backup request evaluation using priority algorithms
+   - Available resource identification with capability matching
+   - Deployment coordination with optimal routing
+   - Multi-unit communication facilitation and coordination
+   - Real-time status monitoring and adjustment
 
-3. **Approval and Deployment** (Police Supervisor)
-   - Review and approve resource allocation
-   - Monitor multi-unit coordination
-   - Ensure effective resource utilization
-   - Document decision rationale
+3. **Strategic Approval and Deployment Management** (Police Supervisor)
+   - Risk assessment and resource allocation approval
+   - Multi-unit operation coordination and oversight
+   - Resource utilization optimization and effectiveness monitoring
+   - Decision documentation and performance evaluation
+   - Strategic deployment pattern analysis and optimization
+
+#### 3. Unit Performance and Communication Workflow
+**Participants**: Police Operator → Police Dispatcher → Police Supervisor → Police Admin
+
+1. **Operational Performance Tracking** (Police Operator)
+   - Real-time activity logging and status reporting
+   - Performance metrics capture and self-assessment
+   - Communication compliance and protocol adherence
+   - Field feedback and operational insights
+
+2. **Communication Hub Management** (Police Dispatcher)
+   - Central communication coordination and message routing
+   - Performance monitoring and quality assurance
+   - Emergency protocol activation and management
+   - Cross-unit coordination and information sharing
+
+3. **Performance Analysis and Optimization** (Police Supervisor)
+   - Individual and unit performance evaluation
+   - Operational efficiency analysis and improvement identification
+   - Training needs assessment and development planning
+   - Strategic operational planning and resource optimization
+
+4. **Strategic System Management** (Police Admin)
+   - System-wide performance analysis and trend identification
+   - Policy development and operational procedure optimization
+   - Resource allocation planning and strategic decision making
+   - Integration oversight and cross-module optimization
 
 ### Cross-Module Integration Workflows
 
-#### 1. Emergency Address Verification Workflow
-**Participants**: Police Dispatcher → Address Verifier → Address Registrar
+#### 1. Emergency Address Verification and Integration Workflow
+**Participants**: Police Dispatcher → Address Verifier → Address Registrar → Police Operations
+**SLA**: Emergency verification within 30 minutes, standard fast-track within 2 hours
 
-1. **Emergency Location Issue** (Police Dispatcher)
-   - Incident reported at unverified location
-   - Request urgent address verification
-   - Provide incident context and urgency
+1. **Emergency Location Coordination** (Police Dispatcher)
+   - Incident reported at unverified or problematic location
+   - Urgent address verification request with incident context
+   - Priority flag activation with emergency justification
+   - Real-time coordination with address registry team
 
-2. **Priority Verification** (Address Verifier)
-   - Fast-track address verification process
-   - Coordinate with field agents if needed
-   - Expedite quality assurance checks
+2. **Expedited Verification Process** (Address Verifier)
+   - Emergency fast-track verification workflow activation
+   - Field agent coordination for immediate location assessment
+   - Quality assurance procedures with expedited review
+   - Evidence collection and validation with priority processing
 
-3. **Emergency Publication** (Address Registrar)
-   - Immediate address registry update
-   - Generate emergency UAC
-   - Notify police dispatch of completion
+3. **Emergency Publication and Integration** (Address Registrar)
+   - Immediate address registry update with emergency UAC generation
+   - Police dispatch system integration and notification
+   - Cross-module data synchronization and verification
+   - Emergency location services activation and optimization
+
+4. **Operational Integration and Feedback** (Police Operations)
+   - Verified address integration into active incident management
+   - Location accuracy feedback and quality assessment
+   - Response effectiveness evaluation and system optimization
+   - Cross-module performance analysis and improvement identification
+
+#### 2. Intelligence Sharing and Data Integration Workflow
+**Participants**: Cross-module data analysts → System administrators → Operations teams
+
+1. **Data Collection and Analysis**
+   - Cross-module data harvesting and pattern recognition
+   - Address verification patterns and police incident correlation
+   - Performance metrics integration and trend analysis
+   - Quality assurance and data integrity validation
+
+2. **Intelligence Generation and Distribution**
+   - Strategic insights development and actionable intelligence
+   - Performance optimization recommendations and system improvements
+   - Cross-module coordination enhancement and process optimization
+   - Decision support information and strategic planning resources
+
+3. **Operational Optimization and Implementation**
+   - System enhancement implementation and performance monitoring
+   - Cross-module workflow optimization and efficiency improvement
+   - Training and development program enhancement
+   - Strategic planning and resource allocation optimization
 
 ---
 

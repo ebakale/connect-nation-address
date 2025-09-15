@@ -13,26 +13,32 @@ import { useToast } from '@/components/ui/use-toast';
 import { Plus, Trash2 } from 'lucide-react';
 
 const ROLE_DESCRIPTIONS: Record<string, string> = {
-  'admin': 'System Administrator - Technical system management and regional oversight',
-  'citizen': 'Public User - Search, discover, and share official addresses',
-  'property_claimant': 'Property Owner/Manager - Manage metadata for owned places',
-  'field_agent': 'Field Enumerator - Capture new addresses and ground truth',
-  'verifier': 'District/Municipal Verifier - Validate submissions and resolve duplicates',
-  'registrar': 'Provincial Registrar - Final authority for publication',
-  'ndaa_admin': 'NDAA Administrator - Highest authority for national policy, security, API management, and system configuration',
-  'partner': 'API Partner - Machine-to-machine access for services',
-  'auditor': 'Auditor - Compliance and forensics access',
-  'data_steward': 'Data Steward - Data quality and analytics',
-  'support': 'Support/Helpdesk - User support and account provisioning',
-  'police_operator': 'Police Operator - Emergency response and incident management',
-  'police_supervisor': 'Police Supervisor - Oversight of emergency operations',
-  'police_dispatcher': 'Police Dispatcher - Emergency call routing and coordination'
+  // Address Registry Module Roles
+  'admin': 'System Administrator - Technical system management and cross-module oversight',
+  'citizen': 'General Public User - Search verified addresses and view redacted evidence',
+  'property_claimant': 'Property Owner - Submit proof of ownership for address registration',
+  'field_agent': 'Field Data Collector - Capture address information in the field (geographic scope restricted)',
+  'verifier': 'Quality Assurance Specialist - Verify address accuracy and resolve duplicates (district-level access)',
+  'registrar': 'Provincial Administrator - Publish verified addresses to official registry (province-level access)',
+  'ndaa_admin': 'National Digital Address Authority - Full system oversight and policy management',
+  'partner': 'External Organization - API access for specific integration use cases',
+  'auditor': 'Independent Reviewer - Read-only access for compliance and quality assurance',
+  'data_steward': 'Quality Assurance Specialist - Bulk operations and testing support',
+  'support': 'Customer Service - User assistance and technical support',
+  
+  // Police Operations Module Roles
+  'police_admin': 'Police System Administrator - Full oversight of police operations and system configuration',
+  'police_operator': 'Field Officer - Emergency response, incident management, and field operations',
+  'police_supervisor': 'Senior Officer - Operational oversight, unit management, and performance monitoring',
+  'police_dispatcher': 'Emergency Coordinator - Incident dispatch, unit coordination, and emergency communications'
 };
 
 const AVAILABLE_ROLES: UserRole[] = [
+  // Address Registry Module Roles
   'citizen', 'property_claimant', 'field_agent', 'verifier', 
   'registrar', 'ndaa_admin', 'partner', 'auditor', 'data_steward', 'support',
-  'police_operator', 'police_supervisor', 'police_dispatcher'
+  // Police Operations Module Roles
+  'police_admin', 'police_operator', 'police_supervisor', 'police_dispatcher'
 ];
 
 export const RoleManager: React.FC = () => {

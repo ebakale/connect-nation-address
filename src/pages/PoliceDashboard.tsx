@@ -1266,7 +1266,7 @@ const PoliceDashboard = () => {
                           <Shield className="h-5 w-5 text-blue-500" />
                         </div>
                         <div>
-                            <h4 className="font-medium">{t('systemOverview')}</h4>
+                            <h4 className="font-medium">Police Operations Module Overview</h4>
                             <p className="text-sm text-muted-foreground">{t('viewSystemHealthStats')}</p>
                         </div>
                       </div>

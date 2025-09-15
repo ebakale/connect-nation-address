@@ -17,7 +17,7 @@ export const WorkflowManager: React.FC = () => {
   const { t } = useTranslation(['admin']);
   const { role, getWorkflowStage, canAccessLocation } = useUserRole();
 
-  const typicalWorkflows = [
+  const addressWorkflows = [
     {
       name: t('admin:standardAddressCreation'),
       description: t('admin:standardAddressCreationFlow'),
@@ -49,6 +49,39 @@ export const WorkflowManager: React.FC = () => {
       ]
     }
   ];
+
+  const policeWorkflows = [
+    {
+      name: 'Emergency Incident Response',
+      description: 'Standard emergency response workflow from incident report to resolution',
+      steps: [
+        { stage: 'incident_report', role: 'Citizen/System', description: 'Emergency call received and incident created', status: 'completed' as const },
+        { stage: 'dispatch_coordination', role: 'Police Dispatcher', description: 'Unit selection and dispatch coordination', status: 'current' as const },
+        { stage: 'field_response', role: 'Police Operator', description: 'On-scene response and investigation', status: 'pending' as const },
+        { stage: 'supervision_followup', role: 'Police Supervisor', description: 'Oversight and performance evaluation', status: 'pending' as const }
+      ]
+    },
+    {
+      name: 'Backup Request and Resource Allocation',
+      description: 'Process for requesting and coordinating additional resources',
+      steps: [
+        { stage: 'backup_request', role: 'Police Operator', description: 'Field unit requests additional support', status: 'completed' as const },
+        { stage: 'resource_coordination', role: 'Police Dispatcher', description: 'Evaluate request and identify resources', status: 'current' as const },
+        { stage: 'approval_deployment', role: 'Police Supervisor', description: 'Approve allocation and monitor deployment', status: 'pending' as const }
+      ]
+    },
+    {
+      name: 'Cross-Module Emergency Address Verification',
+      description: 'Fast-track address verification for emergency incidents',
+      steps: [
+        { stage: 'emergency_location_issue', role: 'Police Dispatcher', description: 'Unverified location reported during emergency', status: 'completed' as const },
+        { stage: 'priority_verification', role: 'Address Verifier', description: 'Expedited address verification process', status: 'current' as const },
+        { stage: 'emergency_publication', role: 'Address Registrar', description: 'Immediate registry update and UAC generation', status: 'pending' as const }
+      ]
+    }
+  ];
+
+  const allWorkflows = [...addressWorkflows, ...policeWorkflows];
 
   const currentStage = getWorkflowStage();
 
@@ -101,7 +134,7 @@ export const WorkflowManager: React.FC = () => {
       </Card>
 
       <div className="grid gap-6">
-        {typicalWorkflows.map((workflow, index) => (
+        {allWorkflows.map((workflow, index) => (
           <Card key={index}>
             <CardHeader>
               <CardTitle className="text-lg">{workflow.name}</CardTitle>
