@@ -714,7 +714,7 @@ const navigationItems = [
         );
 
       case 'public':
-        return <PublicAccessPortal />;
+        return <PublicAccessPortal onNavigateToEmergency={handleNavigateToEmergency} />;
 
       case 'emergency':
         return (
