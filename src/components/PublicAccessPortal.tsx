@@ -51,6 +51,17 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const { toast } = useToast();
 
+  // Clear state when component unmounts
+  useEffect(() => {
+    return () => {
+      console.log('PublicAccessPortal unmounting - clearing state');
+      setSearchQuery('');
+      setSearchResults([]);
+      setSearchMetadata(null);
+      setLoading(false);
+    };
+  }, []);
+
   // Get user location for proximity search
   useEffect(() => {
     if (navigator.geolocation) {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,6 +43,20 @@ const EmergencyAlertProcessor = ({ onSuccess, prefilledAddress }: EmergencyAlert
     message: '',
     contactInfo: ''
   });
+
+  // Clear form when prefilledAddress changes or component unmounts
+  useEffect(() => {
+    console.log('EmergencyAlertProcessor: prefilledAddress changed or mounted');
+    return () => {
+      console.log('EmergencyAlertProcessor unmounting - clearing form');
+      setFormData({
+        emergencyType: '',
+        message: '',
+        contactInfo: ''
+      });
+      setIsSubmitting(false);
+    };
+  }, [prefilledAddress]);
 
   const processEmergencyAlert = async (alertData: EmergencyAlertData) => {
     try {

@@ -55,11 +55,30 @@ const navigationItems = [
     setActiveSection('emergency');
   };
 
+  const handleSectionChange = (newSection: string) => {
+    // Clear all state when navigating to a new section
+    if (newSection !== activeSection) {
+      console.log(`Navigating from ${activeSection} to ${newSection} - clearing state`);
+      
+      // Clear emergency prefilled data when leaving emergency section
+      if (activeSection === 'emergency' && newSection !== 'emergency') {
+        setEmergencyPrefilledData(null);
+      }
+      
+      // If going to emergency without prefilled data, clear any existing data
+      if (newSection === 'emergency' && activeSection !== 'public') {
+        setEmergencyPrefilledData(null);
+      }
+      
+      setActiveSection(newSection);
+    }
+  };
+
   const getBreadcrumbItems = () => {
     const items = [
       {
         label: t('common:navigation.home'),
-        onClick: () => setActiveSection('overview'),
+        onClick: () => handleSectionChange('overview'),
         isActive: activeSection === 'overview'
       }
     ];
@@ -69,7 +88,7 @@ const navigationItems = [
       if (currentSection) {
         items.push({
           label: currentSection.label,
-          onClick: () => setActiveSection(activeSection),
+          onClick: () => handleSectionChange(activeSection),
           isActive: true
         });
       }
@@ -838,7 +857,7 @@ const navigationItems = [
                 <button
                   key={item.id}
                   onClick={() => {
-                    setActiveSection(item.id);
+                    handleSectionChange(item.id);
                   }}
                   className={`flex items-center gap-1 sm:gap-2 py-3 px-2 sm:px-3 border-b-2 text-xs sm:text-sm transition-all duration-300 animate-fade-in cursor-pointer hover:bg-primary/5 ${
                     activeSection === item.id
