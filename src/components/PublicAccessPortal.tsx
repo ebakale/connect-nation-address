@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { QRCodeScanner } from "@/components/QRCodeScanner";
 
 interface PublicAddress {
   uac: string;
@@ -122,6 +123,57 @@ export function PublicAccessPortal() {
     }
   };
 
+  const handleQRScanResult = async (uac: string) => {
+    setSearchQuery(uac);
+    // Auto-search with the scanned UAC
+    setLoading(true);
+    try {
+      const searchRequest = {
+        query: uac.trim(),
+        limit: 20,
+        includePrivate: false,
+        ...(userLocation && {
+          coordinates: {
+            lat: userLocation.lat,
+            lng: userLocation.lng,
+            radius: 10000
+          }
+        })
+      };
+
+      const { data, error } = await supabase.functions.invoke('address-search-api', {
+        body: searchRequest
+      });
+
+      if (error) throw error;
+
+      const searchResult: SearchResult = data;
+      setSearchResults(searchResult.results || []);
+      setSearchMetadata(searchResult.searchMetadata);
+
+      if (searchResult.results.length === 0) {
+        toast({
+          title: "No Results",
+          description: "No address found for this UAC",
+        });
+      } else {
+        toast({
+          title: "QR Code Scanned",
+          description: `Found address for UAC: ${uac}`,
+        });
+      }
+    } catch (error) {
+      console.error('QR search error:', error);
+      toast({
+        title: "Search Error",
+        description: "Failed to search for the scanned UAC",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleEmergencyCall = () => {
     // In a real implementation, this would connect to emergency services
     toast({
@@ -188,7 +240,11 @@ export function PublicAccessPortal() {
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                 />
               </div>
-              <div className="flex flex-col justify-end">
+              <div className="flex gap-2 items-end">
+                <QRCodeScanner 
+                  onScanResult={handleQRScanResult}
+                  variant="button"
+                />
                 <Button 
                   onClick={handleSearch} 
                   disabled={loading}
