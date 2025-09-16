@@ -84,11 +84,34 @@ serve(async (req) => {
     let searchType = 'text'
     let searchResults: any[] = []
 
-    // Determine search type and execute appropriate search
-    if (coordinates) {
-      searchType = 'proximity'
-      // Proximity search around coordinates
-      const radius = coordinates.radius || 1000 // default 1km radius
+    // Always start with text search for the query
+    const { data: textSearchData, error: textSearchError } = await supabaseClient
+      .rpc('search_addresses_safely', { search_query: query })
+
+    if (textSearchError) {
+      throw textSearchError
+    }
+
+    searchResults = textSearchData || []
+
+    // If we have coordinates and got results, calculate distances and sort by proximity
+    if (coordinates && searchResults.length > 0) {
+      searchType = 'text-with-proximity'
+      
+      searchResults = searchResults
+        .map(address => {
+          const distance = calculateDistance(
+            coordinates.lat, coordinates.lng,
+            address.latitude, address.longitude
+          )
+          return { ...address, distance }
+        })
+        .sort((a, b) => a.distance - b.distance) // Sort by closest first
+        .slice(0, limit)
+
+    } else if (coordinates && searchResults.length === 0) {
+      // If no text matches found, fall back to proximity search
+      searchType = 'proximity-fallback'
       
       let proximityQuery = supabaseClient
         .from('addresses')
@@ -118,6 +141,7 @@ serve(async (req) => {
       }
 
       // Calculate distances and filter by radius
+      const radius = coordinates.radius || 1000 // default 1km radius
       searchResults = (proximityData || [])
         .map(address => {
           const distance = calculateDistance(
@@ -129,17 +153,9 @@ serve(async (req) => {
         .filter(address => address.distance <= radius)
         .sort((a, b) => a.distance - b.distance)
         .slice(0, limit)
-
     } else {
-      // Use the existing safe search function
-      const { data: textSearchData, error: textSearchError } = await supabaseClient
-        .rpc('search_addresses_safely', { search_query: query })
-
-      if (textSearchError) {
-        throw textSearchError
-      }
-
-      searchResults = (textSearchData || []).slice(0, limit)
+      // Text search only, no coordinates
+      searchResults = searchResults.slice(0, limit)
     }
 
     // Apply additional filters
