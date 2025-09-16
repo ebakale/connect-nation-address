@@ -40,6 +40,7 @@ const Index = () => {
 const navigationItems = [
     { id: 'overview', label: t('common:navigation.home'), icon: MapPin },
     { id: 'about', label: t('common:navigation.about'), icon: Users },
+    { id: 'public', label: t('common:platform.searchAddresses'), icon: Search },
     { id: 'emergency', label: t('emergency:title'), icon: Shield },
     { id: 'help', label: t('common:navigation.help'), icon: HelpCircle },
   ];
@@ -799,7 +800,11 @@ const navigationItems = [
                 <button
                   key={item.id}
                   onClick={() => {
-                    setActiveSection(item.id);
+                    if (item.id === 'public') {
+                      navigate('/public');
+                    } else {
+                      setActiveSection(item.id);
+                    }
                   }}
                   className={`flex items-center gap-1 sm:gap-2 py-3 px-2 sm:px-3 border-b-2 text-xs sm:text-sm transition-all duration-300 animate-fade-in cursor-pointer hover:bg-primary/5 ${
                     activeSection === item.id
