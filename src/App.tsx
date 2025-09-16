@@ -16,7 +16,7 @@ import UnifiedDashboard from "./pages/UnifiedDashboard";
 import AddressingDashboard from "./pages/AddressingDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import PoliceDashboard from "./pages/PoliceDashboard";
-import PublicPortal from "./pages/PublicPortal";
+
 import { UnitsAndProfilesPage } from "./pages/UnitsAndProfilesPage";
 
 const queryClient = new QueryClient();
@@ -48,7 +48,7 @@ const App = () => (
                <Route path="/" element={<Index />} />
                <Route path="/auth" element={<UnifiedAuth />} />
                <Route path="/portal" element={<Portal />} />
-               <Route path="/public" element={<PublicPortal />} />
+               
                <Route path="/dashboard" element={<ProtectedRoute><UnifiedDashboard /></ProtectedRoute>} />
                <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
                <Route path="/addressing" element={<ProtectedRoute><AddressingDashboard /></ProtectedRoute>} />

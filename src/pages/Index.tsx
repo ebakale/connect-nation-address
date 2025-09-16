@@ -16,6 +16,7 @@ import featureSearch from '@/assets/feature-address-search.jpg';
 import featureRegistration from '@/assets/feature-address-registration.jpg';
 import featureEmergencyManagement from '@/assets/feature-emergency-management.jpg';
 import EmergencyAlertProcessor from '@/components/EmergencyAlertProcessor';
+import { PublicAccessPortal } from '@/components/PublicAccessPortal';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('overview');
@@ -90,14 +91,14 @@ const navigationItems = [
                    
                    {/* CTA Buttons */}
                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-4 sm:pt-6 mobile-container">
-                       <Button 
-                         onClick={() => navigate('/public')} 
-                         className="touch-target px-6 py-3 text-sm sm:text-base font-semibold bg-gradient-to-r from-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-green transition-all duration-200"
-                         size="lg"
-                       >
-                        <Search className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                        {t('common:platform.searchAddresses')}
-                      </Button>
+                        <Button 
+                          onClick={() => setActiveSection('public')} 
+                          className="touch-target px-6 py-3 text-sm sm:text-base font-semibold bg-gradient-to-r from-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-green transition-all duration-200"
+                          size="lg"
+                        >
+                         <Search className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                         {t('common:platform.searchAddresses')}
+                       </Button>
                        <Button 
                          onClick={() => navigate('/auth')} 
                          className="touch-target px-6 py-3 text-sm sm:text-base font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-blue transition-all duration-200"
@@ -689,6 +690,9 @@ const navigationItems = [
           </div>
         );
 
+      case 'public':
+        return <PublicAccessPortal />;
+
       case 'emergency':
         return (
           <div className="space-y-8">
@@ -800,11 +804,7 @@ const navigationItems = [
                 <button
                   key={item.id}
                   onClick={() => {
-                    if (item.id === 'public') {
-                      navigate('/public');
-                    } else {
-                      setActiveSection(item.id);
-                    }
+                    setActiveSection(item.id);
                   }}
                   className={`flex items-center gap-1 sm:gap-2 py-3 px-2 sm:px-3 border-b-2 text-xs sm:text-sm transition-all duration-300 animate-fade-in cursor-pointer hover:bg-primary/5 ${
                     activeSection === item.id
