@@ -50,6 +50,7 @@ const navigationItems = [
   ];
 
   const handleNavigateToEmergency = (addressData?: any) => {
+    console.log('Navigating to emergency with address data:', addressData);
     setEmergencyPrefilledData(addressData);
     setActiveSection('emergency');
   };
@@ -724,8 +725,18 @@ const navigationItems = [
               <p className="text-lg text-muted-foreground">
                 {t('common:platform.emergencyAlertDescription')}
               </p>
+              {emergencyPrefilledData && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
+                  <p className="text-sm text-blue-800 font-medium">Address Pre-filled:</p>
+                  <p className="text-sm text-blue-600">{emergencyPrefilledData.street}, {emergencyPrefilledData.city}</p>
+                  <p className="text-xs text-blue-500">UAC: {emergencyPrefilledData.uac}</p>
+                </div>
+              )}
             </div>
-            <EmergencyAlertProcessor onSuccess={() => setActiveSection('overview')} />
+            <EmergencyAlertProcessor 
+              onSuccess={() => setActiveSection('overview')}
+              prefilledAddress={emergencyPrefilledData}
+            />
           </div>
         );
         
