@@ -11,6 +11,7 @@ import { UACManager } from './UACManager';
 import { RolesDocumentGenerator } from './RolesDocumentGenerator';
 import { SystemManualPDF } from './SystemManualPDF';
 import { StrategicOverviewPDF } from './StrategicOverviewPDF';
+import { QualityDashboard } from './QualityDashboard';
 import ApiWebhookManager from './ApiWebhookManager';
 import NotificationTester from './NotificationTester';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -50,12 +51,13 @@ const AdminPanel: React.FC = () => {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="roles" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-1">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-8 gap-1">
           <TabsTrigger value="roles" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:roleManagement')}</TabsTrigger>
           <TabsTrigger value="permissions" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:permissions')}</TabsTrigger>
           <TabsTrigger value="workflows" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:workflows')}</TabsTrigger>
           <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:userManagement')}</TabsTrigger>
           <TabsTrigger value="uac" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:uacSystem')}</TabsTrigger>
+          <TabsTrigger value="quality" className="text-xs sm:text-sm px-2 sm:px-3">Quality</TabsTrigger>
           <TabsTrigger value="documentation" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:documentation')}</TabsTrigger>
           {hasNDAAAccess && (
             <TabsTrigger value="api-webhooks" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:apiWebhooks')}</TabsTrigger>
@@ -80,6 +82,10 @@ const AdminPanel: React.FC = () => {
         
         <TabsContent value="uac">
           <UACManager />
+        </TabsContent>
+        
+        <TabsContent value="quality">
+          <QualityDashboard />
         </TabsContent>
         
         <TabsContent value="documentation">

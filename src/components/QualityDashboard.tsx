@@ -1,0 +1,444 @@
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  PieChart, Pie, Cell, LineChart, Line
+} from 'recharts';
+import { 
+  MapPin, CheckCircle, AlertTriangle, TrendingUp, Database,
+  RefreshCw, Download, Eye, Clock
+} from 'lucide-react';
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+
+interface CoverageAnalytics {
+  nationalSummary: {
+    totalRegions: number;
+    totalCities: number;
+    totalAddresses: number;
+    verifiedAddresses: number;
+    publishedAddresses: number;
+    averageCompleteness: number;
+    overallCoverage: number;
+  };
+  regionalBreakdown: Array<{
+    region: string;
+    cities: number;
+    addressesRegistered: number;
+    addressesVerified: number;
+    addressesPublished: number;
+    verificationRate: number;
+    publicationRate: number;
+    coveragePercentage: number;
+    averageCompleteness: number;
+  }>;
+  cityBreakdown: Array<{
+    region: string;
+    city: string;
+    addressesRegistered: number;
+    addressesVerified: number;
+    addressesPublished: number;
+    verificationRate: number;
+    publicationRate: number;
+    coveragePercentage: number;
+    averageCompleteness: number;
+    lastUpdated: string;
+  }>;
+  qualityMetrics: {
+    averageCompleteness: number;
+    lowQualityAddresses: number;
+    duplicateCount: number;
+    pendingVerification: number;
+  };
+}
+
+export function QualityDashboard() {
+  const [analytics, setAnalytics] = useState<CoverageAnalytics | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const { toast } = useToast();
+
+  const fetchAnalytics = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('coverage-analytics-api');
+      
+      if (error) throw error;
+      
+      setAnalytics(data);
+    } catch (error) {
+      console.error('Error fetching analytics:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch coverage analytics",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchAnalytics();
+  };
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {[...Array(4)].map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="animate-pulse">
+                <div className="h-4 bg-muted rounded w-3/4"></div>
+                <div className="h-8 bg-muted rounded w-1/2"></div>
+              </CardHeader>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (!analytics) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <p className="text-center text-muted-foreground">No analytics data available</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const { nationalSummary, regionalBreakdown, cityBreakdown, qualityMetrics } = analytics;
+
+  const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--muted))'];
+
+  const pieData = [
+    { name: 'Verified', value: nationalSummary.verifiedAddresses, color: COLORS[0] },
+    { name: 'Unverified', value: nationalSummary.totalAddresses - nationalSummary.verifiedAddresses, color: COLORS[1] },
+  ];
+
+  const qualityPieData = [
+    { name: 'High Quality (80%+)', value: nationalSummary.totalAddresses - qualityMetrics.lowQualityAddresses, color: COLORS[0] },
+    { name: 'Low Quality (<60%)', value: qualityMetrics.lowQualityAddresses, color: COLORS[3] },
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Quality Dashboard</h1>
+          <p className="text-muted-foreground">Real-time monitoring of address data quality and coverage</p>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            onClick={handleRefresh}
+            disabled={refreshing}
+            variant="outline"
+            size="sm"
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+          <Button variant="outline" size="sm">
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+        </div>
+      </div>
+
+      {/* National Summary Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Addresses</CardTitle>
+            <Database className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{nationalSummary.totalAddresses.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">
+              Across {nationalSummary.totalRegions} regions, {nationalSummary.totalCities} cities
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Verification Rate</CardTitle>
+            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{nationalSummary.overallCoverage}%</div>
+            <Progress value={nationalSummary.overallCoverage} className="mt-2" />
+            <p className="text-xs text-muted-foreground mt-1">
+              {nationalSummary.verifiedAddresses.toLocaleString()} verified
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Data Quality</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{qualityMetrics.averageCompleteness}%</div>
+            <Progress value={qualityMetrics.averageCompleteness} className="mt-2" />
+            <p className="text-xs text-muted-foreground mt-1">
+              Average completeness score
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Pending Review</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{qualityMetrics.pendingVerification}</div>
+            <p className="text-xs text-muted-foreground">
+              Requests awaiting verification
+            </p>
+            {qualityMetrics.pendingVerification > 50 && (
+              <Badge variant="destructive" className="mt-2">High Backlog</Badge>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Detailed Analytics */}
+      <Tabs defaultValue="regional" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="regional">Regional Overview</TabsTrigger>
+          <TabsTrigger value="quality">Quality Metrics</TabsTrigger>
+          <TabsTrigger value="cities">City Breakdown</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="regional" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            {/* Regional Bar Chart */}
+            <Card className="md:col-span-1">
+              <CardHeader>
+                <CardTitle>Addresses by Region</CardTitle>
+                <CardDescription>Total registered addresses per region</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={regionalBreakdown}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="region" angle={-45} textAnchor="end" height={80} />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="addressesRegistered" fill="hsl(var(--primary))" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Verification Status Pie Chart */}
+            <Card className="md:col-span-1">
+              <CardHeader>
+                <CardTitle>Verification Status</CardTitle>
+                <CardDescription>Distribution of verified vs unverified addresses</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {pieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Regional Table */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Regional Performance</CardTitle>
+              <CardDescription>Detailed metrics by region</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left p-2">Region</th>
+                      <th className="text-right p-2">Cities</th>
+                      <th className="text-right p-2">Addresses</th>
+                      <th className="text-right p-2">Verified</th>
+                      <th className="text-right p-2">Published</th>
+                      <th className="text-right p-2">Quality</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {regionalBreakdown.map((region, index) => (
+                      <tr key={index} className="border-b">
+                        <td className="p-2 font-medium">{region.region}</td>
+                        <td className="text-right p-2">{region.cities}</td>
+                        <td className="text-right p-2">{region.addressesRegistered.toLocaleString()}</td>
+                        <td className="text-right p-2">
+                          <Badge variant={region.verificationRate > 80 ? "default" : "secondary"}>
+                            {region.verificationRate}%
+                          </Badge>
+                        </td>
+                        <td className="text-right p-2">
+                          <Badge variant={region.publicationRate > 60 ? "default" : "secondary"}>
+                            {region.publicationRate}%
+                          </Badge>
+                        </td>
+                        <td className="text-right p-2">
+                          <Badge variant={region.averageCompleteness > 80 ? "default" : "destructive"}>
+                            {region.averageCompleteness}%
+                          </Badge>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="quality" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            {/* Quality Distribution */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Data Quality Distribution</CardTitle>
+                <CardDescription>Address completeness scores</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={qualityPieData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {qualityPieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Quality Issues */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Quality Issues</CardTitle>
+                <CardDescription>Items requiring attention</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">Low Quality Addresses</span>
+                  <Badge variant="destructive">{qualityMetrics.lowQualityAddresses}</Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">Pending Verification</span>
+                  <Badge variant="secondary">{qualityMetrics.pendingVerification}</Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">Duplicate Addresses</span>
+                  <Badge variant="outline">{qualityMetrics.duplicateCount}</Badge>
+                </div>
+                <div className="pt-4">
+                  <Button className="w-full" variant="outline">
+                    <Eye className="h-4 w-4 mr-2" />
+                    View Quality Issues
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="cities" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>City Performance</CardTitle>
+              <CardDescription>Detailed metrics by city</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left p-2">City</th>
+                      <th className="text-left p-2">Region</th>
+                      <th className="text-right p-2">Addresses</th>
+                      <th className="text-right p-2">Verified</th>
+                      <th className="text-right p-2">Published</th>
+                      <th className="text-right p-2">Quality</th>
+                      <th className="text-right p-2">Last Updated</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cityBreakdown.slice(0, 20).map((city, index) => (
+                      <tr key={index} className="border-b">
+                        <td className="p-2 font-medium">{city.city}</td>
+                        <td className="p-2 text-muted-foreground">{city.region}</td>
+                        <td className="text-right p-2">{city.addressesRegistered}</td>
+                        <td className="text-right p-2">
+                          <Badge variant={city.verificationRate > 80 ? "default" : "secondary"}>
+                            {city.verificationRate}%
+                          </Badge>
+                        </td>
+                        <td className="text-right p-2">
+                          <Badge variant={city.publicationRate > 60 ? "default" : "secondary"}>
+                            {city.publicationRate}%
+                          </Badge>
+                        </td>
+                        <td className="text-right p-2">
+                          <Badge variant={city.averageCompleteness > 80 ? "default" : "destructive"}>
+                            {city.averageCompleteness.toFixed(1)}%
+                          </Badge>
+                        </td>
+                        <td className="text-right p-2 text-xs text-muted-foreground">
+                          {new Date(city.lastUpdated).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
