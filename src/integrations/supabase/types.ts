@@ -14,6 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      address_audit_log: {
+        Row: {
+          action: string
+          address_id: string | null
+          id: string
+          ip_address: string | null
+          new_values: Json | null
+          old_values: Json | null
+          timestamp: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          address_id?: string | null
+          id?: string
+          ip_address?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          timestamp?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          address_id?: string | null
+          id?: string
+          ip_address?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          timestamp?: string | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "address_audit_log_address_id_fkey"
+            columns: ["address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       address_requests: {
         Row: {
           address_type: string
@@ -147,6 +191,7 @@ export type Database = {
           address_type: string
           building: string | null
           city: string
+          completeness_score: number | null
           country: string
           created_at: string
           description: string | null
@@ -154,7 +199,9 @@ export type Database = {
           flagged: boolean
           flagged_at: string | null
           flagged_by: string | null
+          format_validation: Json | null
           id: string
+          iso_compliance_score: number | null
           latitude: number
           longitude: number
           photo_url: string | null
@@ -176,6 +223,7 @@ export type Database = {
           address_type?: string
           building?: string | null
           city: string
+          completeness_score?: number | null
           country: string
           created_at?: string
           description?: string | null
@@ -183,7 +231,9 @@ export type Database = {
           flagged?: boolean
           flagged_at?: string | null
           flagged_by?: string | null
+          format_validation?: Json | null
           id?: string
+          iso_compliance_score?: number | null
           latitude: number
           longitude: number
           photo_url?: string | null
@@ -205,6 +255,7 @@ export type Database = {
           address_type?: string
           building?: string | null
           city?: string
+          completeness_score?: number | null
           country?: string
           created_at?: string
           description?: string | null
@@ -212,7 +263,9 @@ export type Database = {
           flagged?: boolean
           flagged_at?: string | null
           flagged_by?: string | null
+          format_validation?: Json | null
           id?: string
+          iso_compliance_score?: number | null
           latitude?: number
           longitude?: number
           photo_url?: string | null
@@ -229,6 +282,54 @@ export type Database = {
           verification_analysis?: Json | null
           verification_recommendations?: string[] | null
           verified?: boolean
+        }
+        Relationships: []
+      }
+      coverage_analytics: {
+        Row: {
+          addresses_published: number | null
+          addresses_registered: number | null
+          addresses_verified: number | null
+          city: string
+          coverage_percentage: number | null
+          created_at: string | null
+          id: string
+          last_updated: string | null
+          publication_rate: number | null
+          region: string
+          total_buildings_estimated: number | null
+          updated_at: string | null
+          verification_rate: number | null
+        }
+        Insert: {
+          addresses_published?: number | null
+          addresses_registered?: number | null
+          addresses_verified?: number | null
+          city: string
+          coverage_percentage?: number | null
+          created_at?: string | null
+          id?: string
+          last_updated?: string | null
+          publication_rate?: number | null
+          region: string
+          total_buildings_estimated?: number | null
+          updated_at?: string | null
+          verification_rate?: number | null
+        }
+        Update: {
+          addresses_published?: number | null
+          addresses_registered?: number | null
+          addresses_verified?: number | null
+          city?: string
+          coverage_percentage?: number | null
+          created_at?: string | null
+          id?: string
+          last_updated?: string | null
+          publication_rate?: number | null
+          region?: string
+          total_buildings_estimated?: number | null
+          updated_at?: string | null
+          verification_rate?: number | null
         }
         Relationships: []
       }
@@ -649,6 +750,39 @@ export type Database = {
         }
         Relationships: []
       }
+      quality_metrics: {
+        Row: {
+          city: string | null
+          created_at: string | null
+          id: string
+          measured_at: string | null
+          metric_details: Json | null
+          metric_type: string
+          metric_value: number
+          region: string | null
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string | null
+          id?: string
+          measured_at?: string | null
+          metric_details?: Json | null
+          metric_type: string
+          metric_value: number
+          region?: string | null
+        }
+        Update: {
+          city?: string | null
+          created_at?: string | null
+          id?: string
+          measured_at?: string | null
+          metric_details?: Json | null
+          metric_type?: string
+          metric_value?: number
+          region?: string | null
+        }
+        Relationships: []
+      }
       sms_fallback_queue: {
         Row: {
           attempts: number | null
@@ -858,6 +992,24 @@ export type Database = {
           p_request_id: string
         }
         Returns: Json
+      }
+      calculate_completeness_score: {
+        Args: {
+          p_building: string
+          p_city: string
+          p_country: string
+          p_description: string
+          p_latitude: number
+          p_longitude: number
+          p_photo_url: string
+          p_region: string
+          p_street: string
+        }
+        Returns: number
+      }
+      calculate_coverage_analytics: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       check_address_duplicates: {
         Args: {
