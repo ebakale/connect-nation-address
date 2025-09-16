@@ -194,7 +194,10 @@ const EmergencyAlertProcessor = ({ onSuccess, prefilledAddress }: EmergencyAlert
             <Button 
               type="button" 
               variant="outline" 
-              onClick={getCurrentPosition}
+              onClick={() => {
+                console.log('Get Current Location button clicked');
+                getCurrentPosition();
+              }}
               className="w-full"
             >
               <MapPin className="mr-2 h-4 w-4" />

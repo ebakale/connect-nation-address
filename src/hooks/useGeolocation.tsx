@@ -31,6 +31,7 @@ export const useGeolocation = (options: GeolocationOptions = {}) => {
   } = options;
 
   const getCurrentPosition = async () => {
+    console.log('getCurrentPosition called');
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
@@ -107,6 +108,7 @@ export const useGeolocation = (options: GeolocationOptions = {}) => {
   };
 
   const requestPermission = async () => {
+    console.log('requestPermission called');
     try {
       // Request permissions for Capacitor
       const permissions = await Geolocation.requestPermissions();
