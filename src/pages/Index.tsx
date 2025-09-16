@@ -86,9 +86,17 @@ const navigationItems = [
                      <span className="text-primary font-medium"> {t('common:platform.connectingCitizensServices')} </span>
                      {t('common:platform.innovativeTechnology')}
                    </p>
-                  
+                   
                    {/* CTA Buttons */}
-                   <div className="flex flex-col gap-3 sm:gap-4 justify-center pt-4 sm:pt-6 mobile-container">
+                   <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-4 sm:pt-6 mobile-container">
+                       <Button 
+                         onClick={() => navigate('/public')} 
+                         className="touch-target px-6 py-3 text-sm sm:text-base font-semibold bg-gradient-to-r from-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-green transition-all duration-200"
+                         size="lg"
+                       >
+                        <Search className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                        {t('common:platform.searchAddresses')}
+                      </Button>
                        <Button 
                          onClick={() => navigate('/auth')} 
                          className="touch-target px-6 py-3 text-sm sm:text-base font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-blue transition-all duration-200"
@@ -100,7 +108,7 @@ const navigationItems = [
                      <Button 
                        onClick={() => setActiveSection('about')}
                        variant="outline" 
-                       className="touch-target px-6 py-3 text-sm sm:text-base font-semibold border-2 border-secondary text-secondary hover:bg-secondary hover:text-white shadow-green transition-all duration-200"
+                       className="touch-target px-6 py-3 text-sm sm:text-base font-semibold border-2 border-muted-foreground/30 text-muted-foreground hover:bg-muted hover:text-foreground transition-all duration-200"
                        size="lg"
                      >
                        <Globe className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
