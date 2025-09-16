@@ -408,47 +408,6 @@ export function PublicAccessPortal() {
           </div>
         )}
 
-        {/* Emergency Section */}
-        <Separator className="my-8" />
-        
-        <Card className="border-destructive/20 bg-destructive/5">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-destructive">
-              <Phone className="h-5 w-5" />
-              Emergency Services
-            </CardTitle>
-            <CardDescription>
-              For urgent assistance, contact emergency services immediately
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-3">
-              <Button 
-                variant="destructive" 
-                onClick={handleEmergencyCall}
-                className="h-12"
-              >
-                <Phone className="h-4 w-4 mr-2" />
-                Call Emergency: 112
-              </Button>
-              <Button variant="outline" className="h-12">
-                <MapPin className="h-4 w-4 mr-2" />
-                Police: 113
-              </Button>
-              <Button variant="outline" className="h-12">
-                <AlertTriangle className="h-4 w-4 mr-2" />
-                Fire: 114
-              </Button>
-            </div>
-            <Alert className="mt-4">
-              <Clock className="h-4 w-4" />
-              <AlertDescription>
-                When calling emergency services, provide your exact UAC or coordinates 
-                for faster response. Emergency services can locate you using the address codes.
-              </AlertDescription>
-            </Alert>
-          </CardContent>
-        </Card>
 
         {/* Footer */}
         <div className="text-center mt-8 text-sm text-muted-foreground">
