@@ -36,7 +36,7 @@ interface EmergencyAlertProcessorProps {
 const EmergencyAlertProcessor = ({ onSuccess, prefilledAddress }: EmergencyAlertProcessorProps) => {
   const { t } = useTranslation(['emergency', 'common']);
   const { user } = useAuth();
-  const { latitude, longitude, getCurrentPosition } = useGeolocation();
+  const { latitude, longitude, loading: geoLoading, error: geoError, getCurrentPosition } = useGeolocation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     emergencyType: '',
@@ -191,18 +191,33 @@ const EmergencyAlertProcessor = ({ onSuccess, prefilledAddress }: EmergencyAlert
               </p>
             </div>
           ) : (
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => {
-                console.log('Get Current Location button clicked');
-                getCurrentPosition();
-              }}
-              className="w-full"
-            >
-              <MapPin className="mr-2 h-4 w-4" />
-              {t('emergency:getCurrentLocation')}
-            </Button>
+            <div>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => {
+                  console.log('Get Current Location button clicked');
+                  getCurrentPosition();
+                }}
+                className="w-full"
+                disabled={geoLoading}
+              >
+                {geoLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {t('emergency:gettingLocation')}
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="mr-2 h-4 w-4" />
+                    {t('emergency:getCurrentLocation')}
+                  </>
+                )}
+              </Button>
+              {geoError && (
+                <p className="mt-2 text-sm text-destructive">{geoError}</p>
+              )}
+            </div>
           )}
 
           <Button 
