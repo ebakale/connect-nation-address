@@ -285,6 +285,42 @@ export type Database = {
         }
         Relationships: []
       }
+      backup_metadata: {
+        Row: {
+          backup_id: string
+          created_at: string | null
+          format: string | null
+          id: string
+          record_counts: Json | null
+          size_bytes: number | null
+          status: string | null
+          tables_included: string[]
+          timestamp: string | null
+        }
+        Insert: {
+          backup_id: string
+          created_at?: string | null
+          format?: string | null
+          id?: string
+          record_counts?: Json | null
+          size_bytes?: number | null
+          status?: string | null
+          tables_included: string[]
+          timestamp?: string | null
+        }
+        Update: {
+          backup_id?: string
+          created_at?: string | null
+          format?: string | null
+          id?: string
+          record_counts?: Json | null
+          size_bytes?: number | null
+          status?: string | null
+          tables_included?: string[]
+          timestamp?: string | null
+        }
+        Relationships: []
+      }
       coverage_analytics: {
         Row: {
           addresses_published: number | null
