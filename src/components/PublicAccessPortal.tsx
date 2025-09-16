@@ -39,7 +39,11 @@ interface SearchResult {
   };
 }
 
-export function PublicAccessPortal() {
+interface PublicAccessPortalProps {
+  onNavigateToEmergency?: (addressData?: PublicAddress) => void;
+}
+
+export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortalProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<PublicAddress[]>([]);
   const [loading, setLoading] = useState(false);
@@ -399,6 +403,23 @@ export function PublicAccessPortal() {
                       >
                         <Navigation className="h-4 w-4 mr-2" />
                         Copy Coordinates
+                      </Button>
+
+                      <Button 
+                        variant="destructive" 
+                        size="sm"
+                        onClick={() => {
+                          if (onNavigateToEmergency) {
+                            onNavigateToEmergency(address);
+                            toast({
+                              title: "Navigating to Emergency Report",
+                              description: "Address information will be pre-filled",
+                            });
+                          }
+                        }}
+                      >
+                        <AlertTriangle className="h-4 w-4 mr-2" />
+                        Report Issue Here
                       </Button>
                     </div>
                   </div>

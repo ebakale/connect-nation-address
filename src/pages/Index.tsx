@@ -17,9 +17,12 @@ import featureRegistration from '@/assets/feature-address-registration.jpg';
 import featureEmergencyManagement from '@/assets/feature-emergency-management.jpg';
 import EmergencyAlertProcessor from '@/components/EmergencyAlertProcessor';
 import { PublicAccessPortal } from '@/components/PublicAccessPortal';
+import { BreadcrumbNavigation } from '@/components/BreadcrumbNavigation';
+import { SectionTransition } from '@/components/SectionTransition';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('overview');
+  const [emergencyPrefilledData, setEmergencyPrefilledData] = useState<any>(null);
   const { user, loading } = useAuth();
   const { t } = useTranslation(['common']);
   const navigate = useNavigate();
@@ -45,6 +48,34 @@ const navigationItems = [
     { id: 'emergency', label: t('emergency:title'), icon: Shield },
     { id: 'help', label: t('common:navigation.help'), icon: HelpCircle },
   ];
+
+  const handleNavigateToEmergency = (addressData?: any) => {
+    setEmergencyPrefilledData(addressData);
+    setActiveSection('emergency');
+  };
+
+  const getBreadcrumbItems = () => {
+    const items = [
+      {
+        label: t('common:navigation.home'),
+        onClick: () => setActiveSection('overview'),
+        isActive: activeSection === 'overview'
+      }
+    ];
+
+    if (activeSection !== 'overview') {
+      const currentSection = navigationItems.find(item => item.id === activeSection);
+      if (currentSection) {
+        items.push({
+          label: currentSection.label,
+          onClick: () => setActiveSection(activeSection),
+          isActive: true
+        });
+      }
+    }
+
+    return items;
+  };
 
   const renderContent = () => {
     switch (activeSection) {
@@ -814,9 +845,18 @@ const navigationItems = [
         </div>
       </nav>
 
+      {/* Breadcrumb Navigation */}
+      {activeSection !== 'overview' && (
+        <div className="container mx-auto px-4 py-2 border-b border-muted">
+          <BreadcrumbNavigation items={getBreadcrumbItems()} />
+        </div>
+      )}
+
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12 relative z-10">
-        {renderContent()}
+        <SectionTransition sectionKey={activeSection}>
+          {renderContent()}
+        </SectionTransition>
       </main>
 
       <Footer />

@@ -23,9 +23,17 @@ interface EmergencyAlertData {
 
 interface EmergencyAlertProcessorProps {
   onSuccess?: () => void;
+  prefilledAddress?: {
+    uac: string;
+    street: string;
+    city: string;
+    region: string;
+    latitude: number;
+    longitude: number;
+  };
 }
 
-const EmergencyAlertProcessor = ({ onSuccess }: EmergencyAlertProcessorProps) => {
+const EmergencyAlertProcessor = ({ onSuccess, prefilledAddress }: EmergencyAlertProcessorProps) => {
   const { t } = useTranslation(['emergency', 'common']);
   const { user } = useAuth();
   const { latitude, longitude, getCurrentPosition } = useGeolocation();
@@ -57,7 +65,11 @@ const EmergencyAlertProcessor = ({ onSuccess }: EmergencyAlertProcessorProps) =>
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!latitude || !longitude) {
+    // Use prefilled coordinates if available, otherwise use current location
+    const useLat = prefilledAddress?.latitude || latitude;
+    const useLng = prefilledAddress?.longitude || longitude;
+    
+    if (!useLat || !useLng) {
       toast.error(t('emergency:errors.locationRequired'));
       return;
     }
@@ -72,9 +84,9 @@ const EmergencyAlertProcessor = ({ onSuccess }: EmergencyAlertProcessorProps) =>
     try {
       const alertData: EmergencyAlertData = {
         emergencyType: formData.emergencyType,
-        message: formData.message,
-        latitude: latitude,
-        longitude: longitude,
+        message: `${formData.message}${prefilledAddress ? `\n\nAddress: ${prefilledAddress.street}, ${prefilledAddress.city}\nUAC: ${prefilledAddress.uac}` : ''}`,
+        latitude: useLat,
+        longitude: useLng,
         contactInfo: formData.contactInfo || undefined
       };
 
@@ -155,7 +167,20 @@ const EmergencyAlertProcessor = ({ onSuccess }: EmergencyAlertProcessorProps) =>
             />
           </div>
 
-          {latitude && longitude ? (
+          {prefilledAddress ? (
+            <div className="bg-blue-50 p-3 rounded-lg">
+              <div className="flex items-center gap-2 text-blue-700">
+                <MapPin className="h-4 w-4" />
+                <span className="text-sm font-medium">Using Address from Search</span>
+              </div>
+              <p className="text-xs text-blue-600 mt-1">
+                {prefilledAddress.street}, {prefilledAddress.city}
+              </p>
+              <p className="text-xs text-blue-500">
+                UAC: {prefilledAddress.uac} | Lat: {prefilledAddress.latitude.toFixed(6)}, Lon: {prefilledAddress.longitude.toFixed(6)}
+              </p>
+            </div>
+          ) : latitude && longitude ? (
             <div className="bg-green-50 p-3 rounded-lg">
               <div className="flex items-center gap-2 text-green-700">
                 <MapPin className="h-4 w-4" />
@@ -180,7 +205,7 @@ const EmergencyAlertProcessor = ({ onSuccess }: EmergencyAlertProcessorProps) =>
           <Button 
             type="submit" 
             className="w-full bg-red-600 hover:bg-red-700"
-            disabled={isSubmitting || !latitude || !longitude}
+            disabled={isSubmitting || (!prefilledAddress && (!latitude || !longitude))}
           >
             {isSubmitting ? (
               <>
