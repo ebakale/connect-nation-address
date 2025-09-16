@@ -16,6 +16,7 @@ import UnifiedDashboard from "./pages/UnifiedDashboard";
 import AddressingDashboard from "./pages/AddressingDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import PoliceDashboard from "./pages/PoliceDashboard";
+import PublicPortal from "./pages/PublicPortal";
 import { UnitsAndProfilesPage } from "./pages/UnitsAndProfilesPage";
 
 const queryClient = new QueryClient();
@@ -44,15 +45,16 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<UnifiedAuth />} />
-              <Route path="/portal" element={<Portal />} />
-              <Route path="/dashboard" element={<ProtectedRoute><UnifiedDashboard /></ProtectedRoute>} />
-              <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-              <Route path="/addressing" element={<ProtectedRoute><AddressingDashboard /></ProtectedRoute>} />
-              <Route path="/police" element={<ProtectedRoute><PoliceDashboard /></ProtectedRoute>} />
-              <Route path="/units-profiles" element={<ProtectedRoute><UnitsAndProfilesPage /></ProtectedRoute>} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+               <Route path="/" element={<Index />} />
+               <Route path="/auth" element={<UnifiedAuth />} />
+               <Route path="/portal" element={<Portal />} />
+               <Route path="/public" element={<PublicPortal />} />
+               <Route path="/dashboard" element={<ProtectedRoute><UnifiedDashboard /></ProtectedRoute>} />
+               <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+               <Route path="/addressing" element={<ProtectedRoute><AddressingDashboard /></ProtectedRoute>} />
+               <Route path="/police" element={<ProtectedRoute><PoliceDashboard /></ProtectedRoute>} />
+               <Route path="/units-profiles" element={<ProtectedRoute><UnitsAndProfilesPage /></ProtectedRoute>} />
+               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
