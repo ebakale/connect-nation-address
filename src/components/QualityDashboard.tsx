@@ -432,8 +432,8 @@ export function QualityDashboard() {
                 <CardDescription>Address completeness scores</CardDescription>
               </CardHeader>
               <CardContent className="p-6">
-                <ResponsiveContainer width="100%" height={350}>
-                  <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                <ResponsiveContainer width="100%" height={400}>
+                  <PieChart margin={{ top: 40, right: 40, bottom: 40, left: 40 }}>
                     <Pie
                       data={qualityPieData}
                       cx="50%"
