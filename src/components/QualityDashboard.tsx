@@ -166,14 +166,6 @@ export function QualityDashboard() {
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
-          <Button 
-            onClick={() => setShowQualityFixer(true)}
-            size="sm"
-            className="bg-orange-600 hover:bg-orange-700"
-          >
-            <Settings className="h-4 w-4 mr-2" />
-            Fix Issues
-          </Button>
         </div>
       </div>
 
@@ -403,6 +395,14 @@ export function QualityDashboard() {
                   >
                     <Eye className="h-4 w-4 mr-2" />
                     {showQualityIssues ? 'Hide' : 'View'} Quality Issues
+                  </Button>
+                  <Button 
+                    onClick={() => setShowQualityFixer(true)}
+                    size="sm"
+                    className="w-full mt-2 bg-orange-600 hover:bg-orange-700"
+                  >
+                    <Settings className="h-4 w-4 mr-2" />
+                    Fix Issues
                   </Button>
                 </div>
                 
