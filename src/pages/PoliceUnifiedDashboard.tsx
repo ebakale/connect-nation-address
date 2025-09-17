@@ -952,7 +952,7 @@ const PoliceUnifiedDashboard = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+      <div className="min-h-screen flex w-full bg-gradient-to-br from-primary/5 via-background to-secondary/5 overflow-x-auto">
         <PoliceSidebar activeTab={activeTab} onTabChange={setActiveTab} />
         
         <div className="flex-1 flex flex-col">
@@ -988,7 +988,7 @@ const PoliceUnifiedDashboard = () => {
           </header>
 
           {/* Main content */}
-          <main className="flex-1 p-6 overflow-auto">
+          <main className="flex-1 p-6 overflow-x-auto overflow-y-auto">
             {renderActiveView()}
           </main>
 
