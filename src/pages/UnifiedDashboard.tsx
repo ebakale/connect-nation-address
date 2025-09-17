@@ -107,13 +107,10 @@ const UnifiedDashboard = () => {
     if (!loading) {
       if (isPoliceRole) {
         navigate('/police', { replace: true });
-      } else if (hasNDAAAccess && !hasSystemAdminAccess) {
-        // NDAA admins get dedicated addressing dashboard
-        navigate('/addressing', { replace: true });
       }
-      // System admins and other addressing roles stay on unified dashboard
+      // All addressing-related roles now stay on unified dashboard
     }
-  }, [loading, isPoliceRole, hasNDAAAccess, hasSystemAdminAccess, navigate]);
+  }, [loading, isPoliceRole, navigate]);
 
   // Stats state
   const [stats, setStats] = useState<DashboardStats>({
