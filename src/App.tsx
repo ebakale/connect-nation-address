@@ -13,9 +13,9 @@ import UnifiedAuth from "./pages/UnifiedAuth";
 import NotFound from "./pages/NotFound";
 import Portal from "./pages/Portal";
 import UnifiedDashboard from "./pages/UnifiedDashboard";
-import PoliceDashboard from "./pages/PoliceDashboard";
+import PoliceUnifiedDashboard from "./pages/PoliceUnifiedDashboard";
 
-import { UnitsAndProfilesPage } from "./pages/UnitsAndProfilesPage";
+
 
 const queryClient = new QueryClient();
 
@@ -48,8 +48,7 @@ const App = () => (
                <Route path="/portal" element={<Portal />} />
                
                 <Route path="/dashboard" element={<ProtectedRoute><UnifiedDashboard /></ProtectedRoute>} />
-                <Route path="/police" element={<ProtectedRoute><PoliceDashboard /></ProtectedRoute>} />
-               <Route path="/units-profiles" element={<ProtectedRoute><UnitsAndProfilesPage /></ProtectedRoute>} />
+                <Route path="/police" element={<ProtectedRoute><PoliceUnifiedDashboard /></ProtectedRoute>} />
                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
