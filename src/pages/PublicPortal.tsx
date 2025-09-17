@@ -1,5 +1,5 @@
-import { PublicAccessPortal } from "@/components/PublicAccessPortal";
+import { PublicPortalWithAnalytics } from "@/components/PublicPortalWithAnalytics";
 
 export default function PublicPortal() {
-  return <PublicAccessPortal />;
+  return <PublicPortalWithAnalytics />;
 }

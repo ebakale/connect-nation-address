@@ -15,6 +15,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { QRCodeScanner } from "@/components/QRCodeScanner";
 import { QRCodeGenerator } from "@/components/QRCodeGenerator";
+import { useSearchAnalytics } from "@/hooks/useSearchAnalytics";
+import { useEnhancedGeolocation } from "@/hooks/useEnhancedGeolocation";
 
 interface PublicAddress {
   uac: string;
@@ -50,8 +52,12 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
   const [searchResults, setSearchResults] = useState<PublicAddress[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchMetadata, setSearchMetadata] = useState<any>(null);
-  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const { toast } = useToast();
+  const { trackSearch } = useSearchAnalytics();
+  const { location, getCurrentPosition } = useEnhancedGeolocation({
+    enableHighAccuracy: true,
+    enableCaching: true
+  });
 
   // Clear state when component unmounts
   useEffect(() => {
@@ -64,21 +70,9 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
     };
   }, []);
 
-  // Get user location for proximity search
+  // Initialize location on component mount
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          });
-        },
-        (error) => {
-          console.log('Location access denied:', error);
-        }
-      );
-    }
+    getCurrentPosition(true); // Use cached if available
   }, []);
 
   const handleSearch = async () => {
@@ -92,16 +86,18 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
     }
 
     setLoading(true);
+    const searchStartTime = Date.now();
+    
     try {
       // Use the public search API
       const searchRequest = {
         query: searchQuery.trim(),
         limit: 20,
         includePrivate: false, // Public portal only shows public addresses
-        ...(userLocation && {
+        ...(location && {
           coordinates: {
-            lat: userLocation.lat,
-            lng: userLocation.lng,
+            lat: location.latitude,
+            lng: location.longitude,
             radius: 10000 // 10km radius
           }
         })
@@ -117,6 +113,16 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
       setSearchResults(searchResult.results || []);
       setSearchMetadata(searchResult.searchMetadata);
 
+      // Track search analytics
+      await trackSearch({
+        query: searchQuery.trim(),
+        searchType: 'address',
+        resultCount: searchResult.results.length,
+        successful: true,
+        executionTime: Date.now() - searchStartTime,
+        userLocation: location ? { lat: location.latitude, lng: location.longitude } : undefined
+      });
+
       if (searchResult.results.length === 0) {
         toast({
           title: "No Results",
@@ -130,6 +136,17 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
       }
     } catch (error) {
       console.error('Search error:', error);
+      
+      // Track failed search
+      await trackSearch({
+        query: searchQuery.trim(),
+        searchType: 'address',
+        resultCount: 0,
+        successful: false,
+        executionTime: Date.now() - searchStartTime,
+        userLocation: location ? { lat: location.latitude, lng: location.longitude } : undefined
+      });
+
       toast({
         title: "Search Error",
         description: "Failed to search addresses. Please try again.",
@@ -144,15 +161,17 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
     setSearchQuery(uac);
     // Auto-search with the scanned UAC
     setLoading(true);
+    const qrSearchStartTime = Date.now();
+    
     try {
       const searchRequest = {
         query: uac.trim(),
         limit: 20,
         includePrivate: false,
-        ...(userLocation && {
+        ...(location && {
           coordinates: {
-            lat: userLocation.lat,
-            lng: userLocation.lng,
+            lat: location.latitude,
+            lng: location.longitude,
             radius: 10000
           }
         })
@@ -168,6 +187,16 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
       setSearchResults(searchResult.results || []);
       setSearchMetadata(searchResult.searchMetadata);
 
+      // Track QR search analytics
+      await trackSearch({
+        query: uac,
+        searchType: 'uac',
+        resultCount: searchResult.results.length,
+        successful: true,
+        executionTime: Date.now() - qrSearchStartTime,
+        userLocation: location ? { lat: location.latitude, lng: location.longitude } : undefined
+      });
+
       if (searchResult.results.length === 0) {
         toast({
           title: "No Results",
@@ -181,6 +210,17 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
       }
     } catch (error) {
       console.error('QR search error:', error);
+      
+      // Track failed QR search
+      await trackSearch({
+        query: uac,
+        searchType: 'uac',
+        resultCount: 0,
+        successful: false,
+        executionTime: Date.now() - qrSearchStartTime,
+        userLocation: location ? { lat: location.latitude, lng: location.longitude } : undefined
+      });
+
       toast({
         title: "Search Error",
         description: "Failed to search for the scanned UAC",
@@ -337,7 +377,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                 <div>Search completed in {searchMetadata.executionTime}ms</div>
                 <div>Query: "{searchMetadata.query}"</div>
                 <div>Type: {searchMetadata.searchType}</div>
-                {userLocation && <div>Using your location for proximity</div>}
+                {location && <div>Using your location for proximity</div>}
               </div>
             </AlertDescription>
           </Alert>
