@@ -109,7 +109,7 @@ export const EnhancedSyncStatus = () => {
   const hasErrors = addressSyncErrors.length > 0 || incidentSyncErrors.length > 0;
 
   return (
-    <Card className="w-full">
+    <Card className="w-full max-w-md min-w-0">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-2">
@@ -175,13 +175,13 @@ export const EnhancedSyncStatus = () => {
           </div>
         </div>
 
-        {/* Action Buttons - Horizontal layout */}
-        <div className="flex gap-1.5">
+        {/* Action Buttons - Stacked on small screens */}
+        <div className="grid grid-cols-1 gap-1.5">
           <Button 
             onClick={handleFullSync}
             disabled={isOffline || addressSyncProgress.syncing || incidentSyncProgress.syncing}
             size="sm"
-            className="text-xs h-7 flex-1"
+            className="text-xs h-7"
           >
             <RefreshCw className="h-3 w-3 mr-1 flex-shrink-0" />
             <span className="truncate">Sync All</span>
@@ -191,7 +191,7 @@ export const EnhancedSyncStatus = () => {
             disabled={isOffline}
             variant="outline"
             size="sm"
-            className="text-xs h-7 flex-1"
+            className="text-xs h-7"
           >
             <span className="truncate">Test Speed</span>
           </Button>
@@ -208,7 +208,7 @@ export const EnhancedSyncStatus = () => {
         {/* Expandable Details */}
         <Collapsible open={showDetails} onOpenChange={setShowDetails}>
           <CollapsibleTrigger asChild>
-            <Button variant="ghost" size="sm" className="w-full h-7 text-xs">
+            <Button variant="ghost" size="sm" className="w-full">
               <span>Details</span>
               <ChevronDown className="h-3 w-3 ml-1" />
             </Button>

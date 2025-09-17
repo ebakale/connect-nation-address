@@ -442,21 +442,21 @@ const UserManager: React.FC = () => {
   }
 
   return (
-    <div className="space-y-4 md:space-y-6 w-full min-w-0">
-      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-4 md:mb-6 w-full">
-            <div className="relative flex-1 min-w-0">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder={t('userManagement.searchUsers')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-full"
+                className="pl-10"
               />
             </div>
-            <div className="flex gap-2 sm:gap-4 flex-shrink-0">
+            <div className="flex gap-2 sm:gap-4">
               <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
                 <DialogTrigger asChild>
-                  <Button className="flex items-center gap-2 whitespace-nowrap" size="sm">
+                  <Button className="flex items-center gap-2 flex-1 sm:flex-none">
                     <UserPlus className="h-4 w-4" />
                     <span className="hidden sm:inline">{t('userManagement.createUser')}</span>
                     <span className="sm:hidden">{t('userManagement.createUser')}</span>
@@ -477,16 +477,15 @@ const UserManager: React.FC = () => {
           ) : (
             <div className="space-y-4">
               {/* Desktop Table View */}
-              <div className="hidden lg:block border rounded-lg overflow-hidden">
-                <div className="overflow-x-auto">
-                  <Table>
+              <div className="hidden md:block border rounded-lg">
+                <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="min-w-[200px]">{t('userManagement.user')}</TableHead>
-                      <TableHead className="min-w-[150px]">{t('userManagement.organization')}</TableHead>
-                      <TableHead className="min-w-[120px]">{t('userManagement.contact')}</TableHead>
-                      <TableHead className="min-w-[200px]">{t('userManagement.roles')}</TableHead>
-                      <TableHead className="min-w-[100px]">{t('userManagement.actions')}</TableHead>
+                      <TableHead>{t('userManagement.user')}</TableHead>
+                      <TableHead>{t('userManagement.organization')}</TableHead>
+                      <TableHead>{t('userManagement.contact')}</TableHead>
+                      <TableHead>{t('userManagement.roles')}</TableHead>
+                      <TableHead>{t('userManagement.actions')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -505,7 +504,7 @@ const UserManager: React.FC = () => {
                           <p className="text-sm">{user.phone || t('userManagement.notProvided')}</p>
                         </TableCell>
                         <TableCell>
-                          <div className="flex flex-wrap gap-1 max-w-[200px]">
+                          <div className="flex flex-wrap gap-1">
                             {user.roles.map((roleData, index) => (
                               <Badge 
                                 key={index} 
@@ -574,14 +573,13 @@ const UserManager: React.FC = () => {
                     ))}
                   </TableBody>
                 </Table>
-                </div>
               </div>
 
               {/* Mobile Card View */}
-              <div className="lg:hidden space-y-4 w-full">
+              <div className="md:hidden space-y-4">
                 {paginatedUsers.map((user) => (
-                  <Card key={user.user_id} className="p-3 md:p-4 w-full">
-                    <div className="space-y-3 w-full min-w-0">
+                  <Card key={user.user_id} className="p-4">
+                    <div className="space-y-3">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <p className="font-medium">{user.full_name || t('userManagement.noName')}</p>
@@ -633,7 +631,7 @@ const UserManager: React.FC = () => {
                             setSelectedRole('');
                           }}
                         >
-                          <SelectTrigger className="w-full text-sm">
+                          <SelectTrigger className="w-full">
                             <SelectValue placeholder={t('userManagement.assignRole')} />
                           </SelectTrigger>
                           <SelectContent>

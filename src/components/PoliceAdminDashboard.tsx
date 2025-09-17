@@ -238,7 +238,7 @@ export const PoliceAdminDashboard = () => {
                 {t('emergency:policeAdminDashboard.manageOfficersDescription')}
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-3 md:p-6 w-full min-w-0">
+            <CardContent>
               <UserManager />
             </CardContent>
           </Card>
