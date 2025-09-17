@@ -1276,6 +1276,7 @@ export type Database = {
           address_type: string
           building: string
           city: string
+          completeness_score: number
           country: string
           created_at: string
           description: string
