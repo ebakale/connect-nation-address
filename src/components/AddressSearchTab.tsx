@@ -70,10 +70,8 @@ export function AddressSearchTab() {
               />
             </CardContent>
           </Card>
-        </div>
 
-        <div className="space-y-4">
-
+          {/* Map Features */}
           <Card className="shadow-card">
             <CardHeader>
               <CardTitle>Map Features</CardTitle>
@@ -95,6 +93,9 @@ export function AddressSearchTab() {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        <div className="space-y-4">
         </div>
       </div>
     </div>
