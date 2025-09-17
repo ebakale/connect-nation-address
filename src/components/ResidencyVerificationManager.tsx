@@ -407,7 +407,7 @@ export const ResidencyVerificationManager = () => {
                                         } else {
                                           throw new Error('No signed URL generated');
                                         }
-                                      } catch (error) {
+                                      } catch (error: any) {
                                         console.error('Error viewing document:', error);
                                         toast({
                                           title: 'Error',
@@ -419,6 +419,52 @@ export const ResidencyVerificationManager = () => {
                                   >
                                     <Eye className="w-4 h-4 mr-1" />
                                     View Document
+                                  </Button>
+
+                                  {/* Hidden input for replacing document */}
+                                  <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="application/pdf,image/*"
+                                    className="hidden"
+                                    onChange={async (e) => {
+                                      const file = e.target.files?.[0];
+                                      if (!file || !selectedVerification) return;
+                                      setReplacingDoc(true);
+                                      try {
+                                        const ext = file.name.split('.').pop();
+                                        const fileName = `${selectedVerification.user_id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+                                        const { error: uploadError } = await supabase.storage
+                                          .from('residency-documents')
+                                          .upload(fileName, file);
+                                        if (uploadError) throw uploadError;
+
+                                        const { error: updateError } = await supabase
+                                          .from('residency_ownership_verifications')
+                                          .update({ primary_document_url: fileName })
+                                          .eq('id', selectedVerification.id);
+                                        if (updateError) throw updateError;
+
+                                        toast({ title: 'Document updated', description: 'The document has been replaced successfully.' });
+                                        setSelectedVerification({ ...selectedVerification, primary_document_url: fileName });
+                                        await fetchVerifications();
+                                      } catch (err: any) {
+                                        console.error('Replace document error:', err);
+                                        toast({ title: 'Error', description: err.message || 'Failed to replace document', variant: 'destructive' });
+                                      } finally {
+                                        setReplacingDoc(false);
+                                      }
+                                    }}
+                                  />
+
+                                  <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="ml-2"
+                                    disabled={replacingDoc}
+                                    onClick={() => fileInputRef.current?.click()}
+                                  >
+                                    {replacingDoc ? 'Uploading…' : 'Replace Document'}
                                   </Button>
                                 </div>
                               </div>
