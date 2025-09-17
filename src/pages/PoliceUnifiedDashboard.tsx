@@ -952,34 +952,34 @@ const PoliceUnifiedDashboard = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-primary/5 via-background to-secondary/5 overflow-x-auto">
+      <div className="min-h-screen flex w-full bg-gradient-to-br from-primary/5 via-background to-secondary/5">
         <PoliceSidebar activeTab={activeTab} onTabChange={setActiveTab} />
         
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0">
           {/* Header with sidebar trigger */}
-          <header className="h-16 flex items-center border-b bg-background/80 backdrop-blur-sm sticky top-0 z-10">
-            <div className="flex items-center gap-4 px-6">
+          <header className="h-16 flex items-center border-b bg-background/80 backdrop-blur-sm sticky top-0 z-10 min-w-0">
+            <div className="flex items-center gap-2 md:gap-4 px-3 md:px-6 w-full min-w-0">
               <SidebarTrigger />
-              <div className="flex items-center gap-4">
-                <Shield className="h-8 w-8 text-primary" />
-                <div>
-                  <h1 className="text-xl font-semibold">Police Operations Center</h1>
-                  <p className="text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1">
+                <Shield className="h-6 w-6 md:h-8 md:w-8 text-primary flex-shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-sm md:text-xl font-semibold truncate">Police Operations Center</h1>
+                  <p className="text-xs md:text-sm text-muted-foreground truncate">
                     {userCity ? `Coverage: ${userCity}` : 'National Operations'}
                   </p>
                 </div>
               </div>
               
-              <div className="flex items-center gap-4 ml-auto">
+              <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
                 <OfflineIndicator />
                 
                 {user && (
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline">
+                  <div className="flex items-center gap-1 md:gap-2">
+                    <Badge variant="outline" className="text-xs hidden sm:inline-flex">
                       {role?.replace('police_', '').toUpperCase()}
                     </Badge>
-                    <Button variant="ghost" onClick={handleSignOut}>
-                      <LogOut className="h-4 w-4" />
+                    <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                      <LogOut className="h-3 w-3 md:h-4 md:w-4" />
                     </Button>
                   </div>
                 )}
@@ -988,7 +988,7 @@ const PoliceUnifiedDashboard = () => {
           </header>
 
           {/* Main content */}
-          <main className="flex-1 p-6 overflow-x-auto overflow-y-auto">
+          <main className="flex-1 p-3 md:p-6 overflow-y-auto min-w-0">
             {renderActiveView()}
           </main>
 
