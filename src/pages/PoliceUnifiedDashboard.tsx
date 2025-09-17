@@ -109,19 +109,19 @@ const PoliceUnifiedDashboard = () => {
   // Set default tab based on user role
   useEffect(() => {
     if (!activeTab) {
-      if (isPoliceOperator && !isPoliceSupervisor) {
+      if (isPoliceAdmin || (isAdmin && hasPoliceAdminAccess)) {
+        setActiveTab('admin');
+      } else if (isPoliceOperator && !isPoliceSupervisor) {
         setActiveTab('field');
       } else if (isPoliceDispatcher) {
         setActiveTab('dispatch');
       } else if (isPoliceSupervisor) {
         setActiveTab('coordination');
-      } else if (isPoliceAdmin) {
-        setActiveTab('admin');
       } else {
         setActiveTab('field');
       }
     }
-  }, [isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isPoliceAdmin, activeTab]);
+  }, [isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isPoliceAdmin, isAdmin, hasPoliceAdminAccess, activeTab]);
 
   // Fetch functions (keeping existing logic)
   const fetchIncidents = async () => {
