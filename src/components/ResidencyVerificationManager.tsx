@@ -372,21 +372,27 @@ export const ResidencyVerificationManager = () => {
                                           throw new Error('Could not extract file path from URL');
                                         }
                                         
-                                        // First, check if file exists
-                                        const { data: fileData, error: fileError } = await supabase.storage
+                                        // Try to list all files in the user's folder to debug
+                                        const userId = filePath.split('/')[0];
+                                        console.log('Checking user folder:', userId);
+                                        
+                                        const { data: allFiles, error: listError } = await supabase.storage
                                           .from('residency-documents')
-                                          .list(filePath.split('/')[0], { search: filePath.split('/')[1] });
+                                          .list(userId);
                                         
-                                        console.log('File check result:', { fileData, fileError });
+                                        console.log('All files in user folder:', allFiles);
+                                        console.log('List error:', listError);
                                         
-                                        if (fileError || !fileData || fileData.length === 0) {
-                                          throw new Error('File not found in storage');
+                                        if (listError) {
+                                          console.log('List error details:', listError);
                                         }
 
-                                        // Create signed URL
+                                        // Try to create signed URL anyway
                                         const { data, error } = await supabase.storage
                                           .from('residency-documents')
                                           .createSignedUrl(filePath, 3600);
+                                        
+                                        console.log('Signed URL attempt:', { data, error });
                                         
                                         if (error) {
                                           console.error('Signed URL error:', error);
