@@ -118,17 +118,19 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
           const compareAddress = allAddresses[i];
           if (processed.has(compareAddress.id)) continue;
 
-          // Check for duplicates using same logic as the analytics
+          // Check for duplicates using stricter criteria
           const addressMatch = address.region === compareAddress.region && 
                               address.city === compareAddress.city &&
-                              address.street === compareAddress.street;
+                              address.street === compareAddress.street &&
+                              address.building === compareAddress.building; // Include building in match
           
-          // Also check coordinate proximity (within ~100 meters)
+          // Stricter coordinate proximity (within ~50 meters instead of 111 meters)
           const latDiff = Math.abs(address.latitude - compareAddress.latitude);
           const lngDiff = Math.abs(address.longitude - compareAddress.longitude);
-          const coordinateMatch = latDiff < 0.001 && lngDiff < 0.001;
+          const coordinateMatch = latDiff < 0.0005 && lngDiff < 0.0005;
 
-          if (addressMatch || coordinateMatch) {
+          // Only consider as duplicates if BOTH address AND coordinates match closely
+          if (addressMatch && coordinateMatch) {
             duplicates.push(compareAddress);
             processed.add(compareAddress.id);
           }
