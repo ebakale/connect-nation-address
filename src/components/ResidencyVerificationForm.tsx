@@ -96,16 +96,16 @@ export const ResidencyVerificationForm = ({
 
     try {
       const fileExt = file.name.split('.').pop();
-      const fileName = `${folder}/${user.id}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
       
       const { data, error } = await supabase.storage
-        .from('address-photos')
+        .from('residency-documents')
         .upload(fileName, file);
 
       if (error) throw error;
 
       const { data: { publicUrl } } = supabase.storage
-        .from('address-photos')
+        .from('residency-documents')
         .getPublicUrl(fileName);
 
       return publicUrl;
