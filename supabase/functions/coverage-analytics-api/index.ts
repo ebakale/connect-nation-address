@@ -65,7 +65,8 @@ serve(async (req) => {
       }
     )
 
-    if (req.method !== 'GET') {
+    const allowedMethods = ['GET', 'POST']
+    if (!allowedMethods.includes(req.method)) {
       return new Response(
         JSON.stringify({ error: 'Method not allowed' }),
         { 
