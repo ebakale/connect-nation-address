@@ -16,7 +16,9 @@ import {
   AlertCircle,
   User,
   Phone,
-  FileDown
+  FileDown,
+  FileCheck,
+  UserCheck
 } from 'lucide-react';
 import {
   Sidebar,
@@ -167,6 +169,20 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: true
     },
     {
+      id: 'residency-verification-manager',
+      title: 'Residency Verification Manager',
+      icon: UserCheck,
+      onClick: () => handleItemClick('residency-verification-manager'),
+      visible: canVerifyAddresses || hasAdminAccess
+    },
+    {
+      id: 'residency-verification-dashboard',
+      title: 'My Residency Verifications',
+      icon: FileCheck,
+      onClick: () => handleItemClick('residency-verification-dashboard'),
+      visible: isCitizen || isFieldAgent || isPropertyClaimant
+    },
+    {
       id: 'emergency-contacts',
       title: t('emergencyContacts'),
       icon: Phone,
@@ -187,11 +203,11 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   );
   
   const managementItems = visibleItems.filter(item => 
-    ['address-data', 'analytics', 'province-management', 'verification-tools'].includes(item.id)
+    ['address-data', 'analytics', 'province-management', 'verification-tools', 'residency-verification-manager'].includes(item.id)
   );
   
   const settingsItems = visibleItems.filter(item => 
-    ['profile', 'emergency-contacts'].includes(item.id)
+    ['profile', 'residency-verification-dashboard', 'emergency-contacts'].includes(item.id)
   );
 
   const renderMenuGroup = (items: NavigationItem[], label: string) => {

@@ -43,6 +43,8 @@ import { SystemManualPDF } from "@/components/SystemManualPDF";
 import EmergencyContacts from "@/components/EmergencyContacts";
 import { ReporterNotifications } from "@/components/ReporterNotifications";
 import DashboardLocationMap from "@/components/DashboardLocationMap";
+import { ResidencyVerificationManager } from "@/components/ResidencyVerificationManager";
+import { ResidencyVerificationDashboard } from "@/components/ResidencyVerificationDashboard";
 interface SearchResult {
   uac: string;
   readable: string;
@@ -290,6 +292,8 @@ const UnifiedDashboard = () => {
       case 'analytics': return t('dashboard:analytics');
       case 'province-management': return t('dashboard:provinceManagement');
       case 'verification-tools': return t('dashboard:verificationTools');
+      case 'residency-verification-manager': return 'Residency Verification Manager';
+      case 'residency-verification-dashboard': return 'My Residency Verifications';
       case 'profile': return t('dashboard:title');
       case 'emergency-contacts': return t('dashboard:emergencyContacts');
       default: return t('dashboard:title');
@@ -309,6 +313,8 @@ const UnifiedDashboard = () => {
       case 'analytics': return t('dashboard:analyticsDescription');
       case 'province-management': return t('dashboard:provinceManagementDescription');
       case 'verification-tools': return t('dashboard:verificationToolsDescription');
+      case 'residency-verification-manager': return 'Manage and review residency verification requests from citizens';
+      case 'residency-verification-dashboard': return 'View your residency verification requests and legal framework information';
       case 'profile': return t('dashboard:welcomeMessage');
       case 'emergency-contacts': return t('dashboard:welcomeMessage');
       default: return t('dashboard:welcomeMessage');
@@ -498,6 +504,20 @@ const UnifiedDashboard = () => {
         return (
           <div className="max-w-4xl">
             <ProfileEditor />
+          </div>
+        );
+
+      case 'residency-verification-manager':
+        return (
+          <div className="max-w-6xl">
+            <ResidencyVerificationManager />
+          </div>
+        );
+
+      case 'residency-verification-dashboard':
+        return (
+          <div className="max-w-4xl">
+            <ResidencyVerificationDashboard />
           </div>
         );
 
