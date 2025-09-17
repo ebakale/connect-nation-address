@@ -65,11 +65,7 @@ export const ResidencyVerificationManager = () => {
       let query = supabase
         .from('residency_ownership_verifications')
         .select(`
-          *,
-          profiles:user_id (
-            full_name,
-            email
-          )
+          *
         `)
         .order('created_at', { ascending: false });
 
@@ -80,7 +76,30 @@ export const ResidencyVerificationManager = () => {
       const { data, error } = await query;
 
       if (error) throw error;
-      setVerifications((data || []) as unknown as VerificationRequest[]);
+      
+      // If we have verifications, fetch the associated profiles separately
+      if (data && data.length > 0) {
+        const userIds = data.map(v => v.user_id);
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('user_id, full_name, email')
+          .in('user_id', userIds);
+
+        if (profilesError) throw profilesError;
+
+        // Combine the data
+        const combinedData = data.map(verification => {
+          const profile = profiles?.find(p => p.user_id === verification.user_id);
+          return {
+            ...verification,
+            profiles: profile || { full_name: 'Unknown User', email: 'Unknown Email' }
+          };
+        });
+        
+        setVerifications(combinedData as unknown as VerificationRequest[]);
+      } else {
+        setVerifications([]);
+      }
     } catch (error) {
       console.error('Error fetching verifications:', error);
       toast({
