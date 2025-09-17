@@ -56,7 +56,13 @@ serve(async (req) => {
   try {
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false
+        }
+      }
     )
 
     if (req.method !== 'GET') {
@@ -71,14 +77,11 @@ serve(async (req) => {
 
     console.log('Generating coverage analytics...')
 
-    // Try to refresh coverage analytics (skip if fails due to permissions)
-    try {
-      const { error: refreshError } = await supabaseClient.rpc('calculate_coverage_analytics')
-      if (refreshError) {
-        console.warn('Could not refresh coverage analytics (likely read-only context):', refreshError.message)
-      }
-    } catch (error) {
-      console.warn('Could not refresh coverage analytics:', error.message)
+    // Refresh coverage analytics using service role
+    const { error: refreshError } = await supabaseClient.rpc('calculate_coverage_analytics')
+    if (refreshError) {
+      console.error('Error refreshing coverage analytics:', refreshError)
+      // Continue anyway - we can still return existing data
     }
 
     // Get coverage analytics data
