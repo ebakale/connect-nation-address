@@ -6,13 +6,15 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   Search, MapPin, CheckCircle, AlertTriangle, Info, 
-  Navigation, Phone, Clock, Shield
+  Navigation, Phone, Clock, Shield, Share2, QrCode, Mail, MessageCircle
 } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { QRCodeScanner } from "@/components/QRCodeScanner";
+import { QRCodeGenerator } from "@/components/QRCodeGenerator";
 
 interface PublicAddress {
   uac: string;
@@ -207,6 +209,31 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
     if (score >= 80) return 'default';
     if (score >= 60) return 'secondary';
     return 'destructive';
+  };
+
+  const handleShare = (address: PublicAddress, method: 'whatsapp' | 'email' | 'copy') => {
+    const addressText = `${address.building ? address.building + ', ' : ''}${address.street}, ${address.city}, ${address.region}, ${address.country}`;
+    const shareMessage = `Address: ${addressText}\nUAC: ${address.uac}\nCoordinates: ${address.latitude}, ${address.longitude}\nVerified: ${address.verified ? 'Yes' : 'No'}`;
+    
+    switch (method) {
+      case 'whatsapp':
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareMessage)}`;
+        window.open(whatsappUrl, '_blank');
+        break;
+      case 'email':
+        const emailSubject = `Address Information - ${addressText}`;
+        const emailBody = shareMessage + '\n\nShared from Equatorial Guinea Address Portal';
+        const emailUrl = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+        window.open(emailUrl);
+        break;
+      case 'copy':
+        navigator.clipboard.writeText(shareMessage);
+        toast({
+          title: "Copied",
+          description: "Address information copied to clipboard",
+        });
+        break;
+    }
   };
 
   return (
@@ -415,6 +442,68 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                         <Navigation className="h-4 w-4 mr-2" />
                         Copy Coordinates
                       </Button>
+
+                      {/* Share Options */}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <Share2 className="h-4 w-4 mr-2" />
+                            Share Address
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-md">
+                          <DialogHeader>
+                            <DialogTitle>Share Address</DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            {/* QR Code */}
+                            <div className="flex flex-col items-center space-y-2">
+                              <h4 className="text-sm font-medium">QR Code</h4>
+                              <QRCodeGenerator 
+                                uac={address.uac}
+                                addressText={`${address.building ? address.building + ', ' : ''}${address.street}, ${address.city}, ${address.region}`}
+                                variant="button"
+                                size="md"
+                              />
+                              <p className="text-xs text-muted-foreground text-center">
+                                Click above to generate and download QR code
+                              </p>
+                            </div>
+                            
+                            <Separator />
+                            
+                            {/* Share Options */}
+                            <div className="grid grid-cols-1 gap-2">
+                              <Button
+                                variant="outline"
+                                className="justify-start"
+                                onClick={() => handleShare(address, 'whatsapp')}
+                              >
+                                <MessageCircle className="h-4 w-4 mr-2" />
+                                Share via WhatsApp
+                              </Button>
+                              
+                              <Button
+                                variant="outline"
+                                className="justify-start"
+                                onClick={() => handleShare(address, 'email')}
+                              >
+                                <Mail className="h-4 w-4 mr-2" />
+                                Share via Email
+                              </Button>
+                              
+                              <Button
+                                variant="outline"
+                                className="justify-start"
+                                onClick={() => handleShare(address, 'copy')}
+                              >
+                                <Share2 className="h-4 w-4 mr-2" />
+                                Copy to Clipboard
+                              </Button>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
 
                       <Button 
                         variant="destructive" 
