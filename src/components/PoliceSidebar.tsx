@@ -58,14 +58,14 @@ export function PoliceSidebar({ activeTab, onTabChange }: PoliceSidebarProps) {
       title: t('emergency:field'),
       icon: Radio,
       onClick: () => handleItemClick('field'),
-      visible: true
+      visible: isPoliceOperator || isPoliceSupervisor || isPoliceAdmin || isAdmin
     },
     {
       id: 'dispatch',
       title: t('emergency:dispatch'),
       icon: MapPin,
       onClick: () => handleItemClick('dispatch'),
-      visible: isPoliceDispatcher || isAdmin
+      visible: isPoliceDispatcher || isPoliceAdmin || isAdmin
     },
     {
       id: 'coordination',
