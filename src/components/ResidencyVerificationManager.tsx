@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -54,6 +54,8 @@ export const ResidencyVerificationManager = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [reviewNotes, setReviewNotes] = useState('');
   const [reviewStatus, setReviewStatus] = useState('');
+  const [replacingDoc, setReplacingDoc] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   
   const { canVerifyAddresses, hasAdminAccess } = useUserRole();
   const { toast } = useToast();
