@@ -63,7 +63,87 @@ export function QualityDashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const [showQualityIssues, setShowQualityIssues] = useState(false);
   const [showQualityFixer, setShowQualityFixer] = useState(false);
+  const [realTimeQualityMetrics, setRealTimeQualityMetrics] = useState({
+    lowQualityAddresses: 0,
+    duplicateCount: 0,
+    pendingVerification: 0
+  });
   const { toast } = useToast();
+
+  const fetchQualityMetrics = async () => {
+    try {
+      // Fetch low quality addresses (same logic as QualityIssuesFixer)
+      const { data: lowQualityAddresses, error: lowQualityError } = await supabase
+        .from('addresses')
+        .select('*')
+        .lt('completeness_score', 85);
+
+      if (lowQualityError) throw lowQualityError;
+
+      // Fetch pending verification requests (same logic as QualityIssuesFixer)
+      const { data: pendingRequests, error: pendingError } = await supabase
+        .from('address_requests')
+        .select('*')
+        .eq('status', 'pending');
+
+      if (pendingError) throw pendingError;
+
+      // Fetch all addresses for duplicate detection (same logic as QualityIssuesFixer)
+      const { data: allAddresses, error: allAddressesError } = await supabase
+        .from('addresses')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (allAddressesError) throw allAddressesError;
+
+      // Detect duplicates using same logic as QualityIssuesFixer
+      const processed = new Set();
+      let duplicateGroupCount = 0;
+
+      allAddresses?.forEach((address, index) => {
+        if (processed.has(address.id)) return;
+
+        const duplicates = [];
+        
+        // Check against remaining addresses
+        for (let i = index + 1; i < allAddresses.length; i++) {
+          const compareAddress = allAddresses[i];
+          if (processed.has(compareAddress.id)) continue;
+
+          // Check for duplicates using same criteria as QualityIssuesFixer
+          const addressMatch = address.region === compareAddress.region && 
+                              address.city === compareAddress.city &&
+                              address.street === compareAddress.street &&
+                              address.building === compareAddress.building;
+          
+          // Precise coordinate proximity (within ~22 meters for true duplicates)
+          const latDiff = Math.abs(address.latitude - compareAddress.latitude);
+          const lngDiff = Math.abs(address.longitude - compareAddress.longitude);
+          const coordinateMatch = latDiff < 0.0002 && lngDiff < 0.0002;
+
+          // Only consider as duplicates if BOTH address AND coordinates match closely
+          if (addressMatch && coordinateMatch) {
+            duplicates.push(compareAddress);
+            processed.add(compareAddress.id);
+          }
+        }
+
+        if (duplicates.length > 0) {
+          duplicateGroupCount++;
+          processed.add(address.id);
+        }
+      });
+
+      setRealTimeQualityMetrics({
+        lowQualityAddresses: lowQualityAddresses?.length || 0,
+        duplicateCount: duplicateGroupCount,
+        pendingVerification: pendingRequests?.length || 0
+      });
+
+    } catch (error) {
+      console.error('Error fetching quality metrics:', error);
+    }
+  };
 
   const fetchAnalytics = async () => {
     try {
@@ -72,6 +152,9 @@ export function QualityDashboard() {
       if (error) throw error;
       
       setAnalytics(data);
+      
+      // Also fetch real-time quality metrics
+      await fetchQualityMetrics();
     } catch (error) {
       console.error('Error fetching analytics:', error);
       toast({
@@ -131,8 +214,8 @@ export function QualityDashboard() {
   ];
 
   const qualityPieData = [
-    { name: 'High Quality (80%+)', value: nationalSummary.totalAddresses - qualityMetrics.lowQualityAddresses, color: COLORS[0] },
-    { name: 'Low Quality (<60%)', value: qualityMetrics.lowQualityAddresses, color: COLORS[3] },
+    { name: 'High Quality (80%+)', value: nationalSummary.totalAddresses - realTimeQualityMetrics.lowQualityAddresses, color: COLORS[0] },
+    { name: 'Low Quality (<85%)', value: realTimeQualityMetrics.lowQualityAddresses, color: COLORS[3] },
   ];
   
   // Show Quality Issues Fixer if requested
@@ -140,7 +223,10 @@ export function QualityDashboard() {
     return (
       <QualityIssuesFixer 
         onClose={() => setShowQualityFixer(false)}
-        onIssuesFixed={fetchAnalytics}
+        onIssuesFixed={() => {
+          fetchAnalytics();
+          fetchQualityMetrics();
+        }}
       />
     );
   }
@@ -218,11 +304,11 @@ export function QualityDashboard() {
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{qualityMetrics.pendingVerification}</div>
+            <div className="text-2xl font-bold">{realTimeQualityMetrics.pendingVerification}</div>
             <p className="text-xs text-muted-foreground">
               Requests awaiting verification
             </p>
-            {qualityMetrics.pendingVerification > 50 && (
+            {realTimeQualityMetrics.pendingVerification > 50 && (
               <Badge variant="destructive" className="mt-2">High Backlog</Badge>
             )}
           </CardContent>
@@ -377,15 +463,15 @@ export function QualityDashboard() {
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Low Quality Addresses</span>
-                  <Badge variant="destructive">{qualityMetrics.lowQualityAddresses}</Badge>
+                  <Badge variant="destructive">{realTimeQualityMetrics.lowQualityAddresses}</Badge>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Pending Verification</span>
-                  <Badge variant="secondary">{qualityMetrics.pendingVerification}</Badge>
+                  <Badge variant="secondary">{realTimeQualityMetrics.pendingVerification}</Badge>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Duplicate Addresses</span>
-                  <Badge variant="outline">{qualityMetrics.duplicateCount}</Badge>
+                  <Badge variant="outline">{realTimeQualityMetrics.duplicateCount}</Badge>
                 </div>
                 <div className="pt-4">
                   <Button 
@@ -410,45 +496,45 @@ export function QualityDashboard() {
                   <div className="mt-4 space-y-3 border-t pt-4">
                     <div className="text-sm font-medium text-foreground">Quality Issues Breakdown:</div>
                     
-                    {qualityMetrics.lowQualityAddresses > 0 && (
+                    {realTimeQualityMetrics.lowQualityAddresses > 0 && (
                       <div className="p-3 border rounded-lg bg-destructive/5">
                         <div className="flex items-center gap-2 mb-2">
                           <AlertTriangle className="h-4 w-4 text-destructive" />
                           <span className="font-medium text-sm">Low Quality Addresses</span>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          {qualityMetrics.lowQualityAddresses} addresses with completeness score below 85%
+                          {realTimeQualityMetrics.lowQualityAddresses} addresses with completeness score below 85%
                         </p>
                       </div>
                     )}
                     
-                    {qualityMetrics.duplicateCount > 0 && (
+                    {realTimeQualityMetrics.duplicateCount > 0 && (
                       <div className="p-3 border rounded-lg bg-amber-50 dark:bg-amber-950/20">
                         <div className="flex items-center gap-2 mb-2">
                           <AlertTriangle className="h-4 w-4 text-amber-600" />
                           <span className="font-medium text-sm">Duplicate Addresses</span>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          {qualityMetrics.duplicateCount} addresses identified as potential duplicates
+                          {realTimeQualityMetrics.duplicateCount} duplicate groups identified
                         </p>
                       </div>
                     )}
                     
-                    {qualityMetrics.pendingVerification > 0 && (
+                    {realTimeQualityMetrics.pendingVerification > 0 && (
                       <div className="p-3 border rounded-lg bg-blue-50 dark:bg-blue-950/20">
                         <div className="flex items-center gap-2 mb-2">
                           <Clock className="h-4 w-4 text-blue-600" />
                           <span className="font-medium text-sm">Pending Verification</span>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          {qualityMetrics.pendingVerification} address requests awaiting verification
+                          {realTimeQualityMetrics.pendingVerification} address requests awaiting verification
                         </p>
                       </div>
                     )}
                     
-                    {qualityMetrics.lowQualityAddresses === 0 && 
-                     qualityMetrics.duplicateCount === 0 && 
-                     qualityMetrics.pendingVerification === 0 && (
+                    {realTimeQualityMetrics.lowQualityAddresses === 0 && 
+                     realTimeQualityMetrics.duplicateCount === 0 && 
+                     realTimeQualityMetrics.pendingVerification === 0 && (
                       <div className="p-3 border rounded-lg bg-green-50 dark:bg-green-950/20">
                         <div className="flex items-center gap-2">
                           <CheckCircle className="h-4 w-4 text-green-600" />
