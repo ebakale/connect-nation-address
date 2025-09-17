@@ -350,20 +350,37 @@ export const ResidencyVerificationManager = () => {
                                     size="sm"
                                     onClick={async () => {
                                       try {
-                                        const filePath = selectedVerification.primary_document_url!;
-                                        console.log('Document file path:', filePath);
-                                        
+                                        const raw = selectedVerification.primary_document_url!;
+                                        const noQuery = raw.split('?')[0];
+                                        let filePath = '';
+                                        const markers = [
+                                          '/storage/v1/object/public/residency-documents/',
+                                          '/storage/v1/object/sign/residency-documents/',
+                                          '/storage/v1/object/residency-documents/',
+                                          'residency-documents/'
+                                        ];
+                                        for (const m of markers) {
+                                          const idx = noQuery.indexOf(m);
+                                          if (idx !== -1) {
+                                            filePath = noQuery.substring(idx + m.length);
+                                            break;
+                                          }
+                                        }
+                                        if (!filePath) {
+                                          // If it's already just a path
+                                          if (!/^https?:\/\//i.test(raw)) {
+                                            filePath = raw.replace(/^\/+/, '');
+                                          }
+                                        }
+                                        if (!filePath) throw new Error('Could not resolve file path');
+
                                         const { data, error } = await supabase.storage
                                           .from('residency-documents')
                                           .createSignedUrl(filePath, 3600); // 1 hour expiry
                                         
-                                        if (error) {
-                                          console.error('Signed URL error:', error);
-                                          throw error;
-                                        }
+                                        if (error) throw error;
                                         
                                         if (data?.signedUrl) {
-                                          console.log('Opening signed URL:', data.signedUrl);
                                           window.open(data.signedUrl, '_blank');
                                         } else {
                                           throw new Error('No signed URL generated');
@@ -372,7 +389,7 @@ export const ResidencyVerificationManager = () => {
                                         console.error('Error viewing document:', error);
                                         toast({
                                           title: 'Error',
-                                          description: 'Failed to open document. Please try again.',
+                                          description: 'Document not found or access denied.',
                                           variant: 'destructive'
                                         });
                                       }
