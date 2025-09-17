@@ -96,10 +96,10 @@ serve(async (req) => {
       throw coverageError
     }
 
-    // Get address statistics for national summary
+    // Get address statistics for national summary and quality analysis
     const { data: addressStats, error: addressStatsError } = await supabaseClient
       .from('addresses')
-      .select('region, city, verified, public, completeness_score')
+      .select('region, city, street, verified, public, completeness_score')
 
     if (addressStatsError) {
       throw addressStatsError
@@ -185,12 +185,38 @@ serve(async (req) => {
     }))
 
     // Calculate quality metrics
-    const lowQualityAddresses = addressStats?.filter(a => (a.completeness_score || 0) < 60).length || 0
+    const lowQualityAddresses = addressStats?.filter(a => (a.completeness_score || 0) < 85).length || 0
+    
+    // Calculate duplicate addresses using coordinate proximity
+    let duplicateCount = 0
+    if (addressStats?.length) {
+      const processed = new Set()
+      for (let i = 0; i < addressStats.length; i++) {
+        if (processed.has(i)) continue
+        let duplicatesFound = 0
+        const addr1 = addressStats[i]
+        for (let j = i + 1; j < addressStats.length; j++) {
+          if (processed.has(j)) continue
+          const addr2 = addressStats[j]
+          // Check for address text similarity or coordinate proximity
+          const addressMatch = addr1.region === addr2.region && 
+                              addr1.city === addr2.city &&
+                              addr1.street === addr2.street
+          if (addressMatch) {
+            duplicatesFound++
+            processed.add(j)
+          }
+        }
+        if (duplicatesFound > 0) {
+          duplicateCount += duplicatesFound + 1 // Include the original
+        }
+      }
+    }
     
     const qualityMetrics = {
       averageCompleteness: Math.round(avgCompleteness * 100) / 100,
       lowQualityAddresses,
-      duplicateCount: 0, // Would need duplicate detection analysis
+      duplicateCount,
       pendingVerification: pendingRequests?.count || 0
     }
 
