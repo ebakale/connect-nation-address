@@ -29,27 +29,7 @@ export function AddressSearchTab() {
             </CardContent>
           </Card>
 
-          {/* Nearby Map and Points of Interest */}
-          <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
-                Nearby Map and Points of Interest
-              </CardTitle>
-              <CardDescription>
-                Shows your current location, UAC within 20m, and nearby non-residential places
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-0">
-              <DashboardLocationMap 
-                searchedAddress={selectedAddress}
-                onAddressSearched={setSelectedAddress}
-              />
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="space-y-4">
+          {/* Search Tips */}
           <Card className="shadow-card">
             <CardHeader>
               <CardTitle>Search Tips</CardTitle>
@@ -71,6 +51,28 @@ export function AddressSearchTab() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Nearby Map and Points of Interest */}
+          <Card className="shadow-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MapPin className="h-5 w-5" />
+                Nearby Map and Points of Interest
+              </CardTitle>
+              <CardDescription>
+                Shows your current location, UAC within 20m, and nearby non-residential places
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              <DashboardLocationMap 
+                searchedAddress={selectedAddress}
+                onAddressSearched={setSelectedAddress}
+              />
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="space-y-4">
 
           <Card className="shadow-card">
             <CardHeader>
