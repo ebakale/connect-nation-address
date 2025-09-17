@@ -432,16 +432,15 @@ export function QualityDashboard() {
                 <CardDescription>Address completeness scores</CardDescription>
               </CardHeader>
               <CardContent className="p-6">
-                <ResponsiveContainer width="100%" height={400}>
-                  <PieChart margin={{ top: 40, right: 40, bottom: 40, left: 40 }}>
+                <ResponsiveContainer width="100%" height={350}>
+                  <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                     <Pie
                       data={qualityPieData}
                       cx="50%"
-                      cy="45%"
+                      cy="50%"
                       labelLine={false}
                       label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      outerRadius={90}
-                      innerRadius={30}
+                      outerRadius={100}
                       fill="#8884d8"
                       dataKey="value"
                     >
