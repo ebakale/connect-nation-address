@@ -124,10 +124,10 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
                               address.street === compareAddress.street &&
                               address.building === compareAddress.building; // Include building in match
           
-          // Stricter coordinate proximity (within ~50 meters instead of 111 meters)
+          // Precise coordinate proximity (within ~22 meters for true duplicates)
           const latDiff = Math.abs(address.latitude - compareAddress.latitude);
           const lngDiff = Math.abs(address.longitude - compareAddress.longitude);
-          const coordinateMatch = latDiff < 0.0005 && lngDiff < 0.0005;
+          const coordinateMatch = latDiff < 0.0002 && lngDiff < 0.0002;
 
           // Only consider as duplicates if BOTH address AND coordinates match closely
           if (addressMatch && coordinateMatch) {
