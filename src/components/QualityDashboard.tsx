@@ -10,10 +10,11 @@ import {
 } from 'recharts';
 import { 
   MapPin, CheckCircle, AlertTriangle, TrendingUp, Database,
-  RefreshCw, Download, Eye, Clock
+  RefreshCw, Download, Eye, Clock, Settings
 } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { QualityIssuesFixer } from './QualityIssuesFixer';
 
 interface CoverageAnalytics {
   nationalSummary: {
@@ -61,6 +62,7 @@ export function QualityDashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [showQualityIssues, setShowQualityIssues] = useState(false);
+  const [showQualityFixer, setShowQualityFixer] = useState(false);
   const { toast } = useToast();
 
   const fetchAnalytics = async () => {
@@ -132,7 +134,16 @@ export function QualityDashboard() {
     { name: 'High Quality (80%+)', value: nationalSummary.totalAddresses - qualityMetrics.lowQualityAddresses, color: COLORS[0] },
     { name: 'Low Quality (<60%)', value: qualityMetrics.lowQualityAddresses, color: COLORS[3] },
   ];
-
+  
+  // Show Quality Issues Fixer if requested
+  if (showQualityFixer) {
+    return (
+      <QualityIssuesFixer 
+        onClose={() => setShowQualityFixer(false)}
+        onIssuesFixed={fetchAnalytics}
+      />
+    );
+  }
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -154,6 +165,14 @@ export function QualityDashboard() {
           <Button variant="outline" size="sm">
             <Download className="h-4 w-4 mr-2" />
             Export
+          </Button>
+          <Button 
+            onClick={() => setShowQualityFixer(true)}
+            size="sm"
+            className="bg-orange-600 hover:bg-orange-700"
+          >
+            <Settings className="h-4 w-4 mr-2" />
+            Fix Issues
           </Button>
         </div>
       </div>
