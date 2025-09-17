@@ -350,22 +350,23 @@ export const ResidencyVerificationManager = () => {
                                     size="sm"
                                     onClick={async () => {
                                       try {
-                                        // Extract the file path from the full URL
-                                        const url = selectedVerification.primary_document_url!;
-                                        const pathMatch = url.match(/\/storage\/v1\/object\/public\/residency-documents\/(.+)$/);
-                                        if (pathMatch) {
-                                          const filePath = pathMatch[1];
-                                          const { data, error } = await supabase.storage
-                                            .from('residency-documents')
-                                            .createSignedUrl(filePath, 3600); // 1 hour expiry
-                                          
-                                          if (error) throw error;
-                                          if (data?.signedUrl) {
-                                            window.open(data.signedUrl, '_blank');
-                                          }
+                                        const filePath = selectedVerification.primary_document_url!;
+                                        console.log('Document file path:', filePath);
+                                        
+                                        const { data, error } = await supabase.storage
+                                          .from('residency-documents')
+                                          .createSignedUrl(filePath, 3600); // 1 hour expiry
+                                        
+                                        if (error) {
+                                          console.error('Signed URL error:', error);
+                                          throw error;
+                                        }
+                                        
+                                        if (data?.signedUrl) {
+                                          console.log('Opening signed URL:', data.signedUrl);
+                                          window.open(data.signedUrl, '_blank');
                                         } else {
-                                          // Fallback: try to open the URL directly
-                                          window.open(url, '_blank');
+                                          throw new Error('No signed URL generated');
                                         }
                                       } catch (error) {
                                         console.error('Error viewing document:', error);

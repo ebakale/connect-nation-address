@@ -104,11 +104,8 @@ export const ResidencyVerificationForm = ({
 
       if (error) throw error;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('residency-documents')
-        .getPublicUrl(fileName);
-
-      return publicUrl;
+      // Return just the file path since bucket is private
+      return fileName;
     } catch (error) {
       console.error('Error uploading document:', error);
       return null;
