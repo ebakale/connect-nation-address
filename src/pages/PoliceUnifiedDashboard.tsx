@@ -16,6 +16,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { PoliceSidebar } from "@/components/PoliceSidebar";
 
 // Import all police components
 import IncidentMap from '@/components/IncidentMap';
@@ -78,7 +80,7 @@ const PoliceUnifiedDashboard = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { role, isPoliceOperator, isPoliceDispatcher, isPoliceSupervisor, isPoliceAdmin, isAdmin, loading, hasPoliceAccess, hasPoliceAdminAccess, isUnitLead } = useUserRole();
-  const { t } = useTranslation('emergency');
+  const { t } = useTranslation(['emergency', 'common']);
   
   // Dashboard state
   const [activeTab, setActiveTab] = useState<string>('');
@@ -357,13 +359,13 @@ const PoliceUnifiedDashboard = () => {
       if (error) throw error;
       
       if (data?.success) {
-        toast.success(t('successfullyCreatedPoliceUsers', { count: data.users?.length || 0 }));
+        toast.success(`Successfully created ${data.users?.length || 0} police users`);
       } else {
         throw new Error(data?.error || 'Failed to create users');
       }
     } catch (error) {
       console.error('Error creating police users:', error);
-      toast.error(t('failedToCreatePoliceUsers'));
+      toast.error('Failed to create police users');
     }
   };
 
@@ -392,15 +394,15 @@ const PoliceUnifiedDashboard = () => {
           <CardHeader>
              <CardTitle className="flex items-center gap-2 text-red-600">
                <Shield className="h-5 w-5" />
-               {t('accessDenied')}
+               {t('common:accessDenied')}
             </CardTitle>
           </CardHeader>
           <CardContent>
              <p className="text-muted-foreground mb-4">
-               {t('pleaseLogInToAccess')}
+               Please log in to access the police operations center.
             </p>
             <Button onClick={() => navigate('/auth')} className="w-full">
-              {t('login')}
+              {t('common:login')}
             </Button>
           </CardContent>
         </Card>
@@ -426,106 +428,15 @@ const PoliceUnifiedDashboard = () => {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Shield className="h-8 w-8 text-primary" />
-              <div>
-                <h1 className="text-2xl font-bold">{t('policeOperationsCenter')}</h1>
-                <p className="text-sm text-muted-foreground">
-                  {userCity ? `${t('coverage')}: ${userCity}` : t('nationalOperations')}
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <EnhancedSyncStatus />
-              <OfflineIndicator />
-              
-              {user && (
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline">
-                    {role?.replace('police_', '').toUpperCase()}
-                  </Badge>
-                  <Button variant="ghost" onClick={handleSignOut}>
-                    <LogOut className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8">
-            {/* Field Operations - All roles */}
-            <TabsTrigger value="field" className="flex items-center gap-2">
-              <Radio className="h-4 w-4" />
-              {t('field')}
-            </TabsTrigger>
-
-            {/* Dispatch - Dispatchers and Admins */}
-            {(isPoliceDispatcher || isAdmin) && (
-              <TabsTrigger value="dispatch" className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                {t('dispatch')}
-              </TabsTrigger>
-            )}
-
-            {/* Coordination - Supervisors */}
-            {isPoliceSupervisor && (
-              <TabsTrigger value="coordination" className="flex items-center gap-2">
-                <Activity className="h-4 w-4" />
-                {t('coordination')}
-              </TabsTrigger>
-            )}
-
-            {/* Leadership - Supervisors and Unit Leads */}
-            {(isPoliceSupervisor || isAdmin || isUnitLead) && (
-              <TabsTrigger value="leadership" className="flex items-center gap-2">
-                <Award className="h-4 w-4" />
-                {t('leadership')}
-              </TabsTrigger>
-            )}
-
-            {/* Management - Supervisors and above */}
-            {(isPoliceSupervisor || isAdmin) && (
-              <TabsTrigger value="management" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                {t('management')}
-              </TabsTrigger>
-            )}
-
-            {/* Units & Profiles - Supervisors and above */}
-            {(isPoliceSupervisor || isAdmin) && (
-              <TabsTrigger value="units-profiles" className="flex items-center gap-2">
-                <Shield className="h-4 w-4" />
-                Units & Profiles
-              </TabsTrigger>
-            )}
-
-            {/* Admin - Police Admins only */}
-            {hasPoliceAdminAccess && (
-              <TabsTrigger value="admin" className="flex items-center gap-2">
-                <Settings className="h-4 w-4" />
-                {t('admin')}
-              </TabsTrigger>
-            )}
-          </TabsList>
-
-          {/* Field Operations Tab */}
-          <TabsContent value="field" className="space-y-6">
+  const renderActiveView = () => {
+    switch (activeTab) {
+      case 'field':
+        return (
+          <div className="space-y-6">
             <div className="flex items-center flex-wrap gap-4 mb-4">
               <Badge variant="outline" className="flex items-center gap-2">
                 <Radio className="h-4 w-4" />
-                {t('fieldOperations')}
+                Field Operations
               </Badge>
               {userUnit && (
                 <Badge variant="secondary">
@@ -534,12 +445,10 @@ const PoliceUnifiedDashboard = () => {
               )}
             </div>
 
-            {/* Operator Status Panel */}
             <OperatorStatusPanel 
               operatorSession={operatorSession}
             />
 
-            {/* Field Dashboard for Field Officers */}
             {(isPoliceOperator || isPoliceSupervisor || isAdmin) && userUnit && (
               <UnitFieldDashboard 
                 unitIncidents={unitIncidents}
@@ -547,494 +456,562 @@ const PoliceUnifiedDashboard = () => {
               />
             )}
             
-            {/* Unit Lead Actions Panel */}
             {isUnitLead && !showUnitLeadDashboard && (
               <UnitLeadActions 
                 onOpenUnitDashboard={() => setShowUnitLeadDashboard(true)}
               />
             )}
-          </TabsContent>
+          </div>
+        );
 
-          {/* Dispatch Center Tab */}
-          {(isPoliceDispatcher || isAdmin) && (
-            <TabsContent value="dispatch" className="space-y-4">
-              <div className="flex items-center justify-between">
-                 <p className="text-sm text-muted-foreground">
-                   {userCity ? `${t('coverage')}: ${userCity}` : t('allAreas')}
-                 </p>
-              </div>
+      case 'dispatch':
+        if (!(isPoliceDispatcher || isAdmin)) return null;
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+               <p className="text-sm text-muted-foreground">
+                 {userCity ? `Coverage: ${userCity}` : 'All Areas'}
+               </p>
+            </div>
 
-              {/* Compact Key Metrics */}
-              <div className="grid grid-cols-4 gap-2">
-                <Card className="p-3">
-                  <div className="text-center">
-                    <p className="text-xl font-bold text-red-600">{dashboardStats.activeIncidents}</p>
-                    <p className="text-xs text-muted-foreground">{t('active')}</p>
-                  </div>
-                </Card>
-                <Card className="p-3">
-                  <div className="text-center">
-                    <p className="text-xl font-bold text-green-600">{dashboardStats.availableUnits}</p>
-                    <p className="text-xs text-muted-foreground">{t('units')}</p>
-                  </div>
-                </Card>
-                <Card className="p-3">
-                  <div className="text-center">
-                    <p className="text-xl font-bold text-blue-600">{dashboardStats.avgResponseTime}m</p>
-                    <p className="text-xs text-muted-foreground">{t('response')}</p>
-                  </div>
-                </Card>
-                <Card className="p-3">
-                  <div className="text-center">
-                    <p className="text-xl font-bold text-purple-600">{dashboardStats.operatorsOnline}</p>
-                    <p className="text-xs text-muted-foreground">{t('online')}</p>
-                  </div>
-                </Card>
-              </div>
+            <div className="grid grid-cols-4 gap-2">
+              <Card className="p-3">
+                <div className="text-center">
+                  <p className="text-xl font-bold text-red-600">{dashboardStats.activeIncidents}</p>
+                  <p className="text-xs text-muted-foreground">Active</p>
+                </div>
+              </Card>
+              <Card className="p-3">
+                <div className="text-center">
+                  <p className="text-xl font-bold text-green-600">{dashboardStats.availableUnits}</p>
+                  <p className="text-xs text-muted-foreground">Units</p>
+                </div>
+              </Card>
+              <Card className="p-3">
+                <div className="text-center">
+                  <p className="text-xl font-bold text-blue-600">{dashboardStats.avgResponseTime}m</p>
+                  <p className="text-xs text-muted-foreground">Response</p>
+                </div>
+              </Card>
+              <Card className="p-3">
+                <div className="text-center">
+                  <p className="text-xl font-bold text-purple-600">{dashboardStats.operatorsOnline}</p>
+                  <p className="text-xs text-muted-foreground">Online</p>
+                </div>
+              </Card>
+            </div>
 
-              {/* Main Content Tabs */}
-              <Tabs defaultValue="incidents" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-1">
-                  <TabsTrigger value="incidents" className="flex items-center gap-1">
-                    <AlertTriangle className="h-3 w-3" />
-                     {t('incidents')}
-                  </TabsTrigger>
-                  <TabsTrigger value="map" className="flex items-center gap-1">
-                    <MapPin className="h-3 w-3" />
-                     {t('map')}
-                  </TabsTrigger>
-                  <TabsTrigger value="units" className="flex items-center gap-1">
-                    <Shield className="h-3 w-3" />
-                     {t('units')}
-                  </TabsTrigger>
-                  <TabsTrigger value="communications" className="flex items-center gap-1">
-                    <MessageSquare className="h-3 w-3" />
-                    {t('comms')}
-                  </TabsTrigger>
-                  <TabsTrigger value="metrics" className="flex items-center gap-1">
-                    <TrendingUp className="h-3 w-3" />
-                     {t('metrics')}
-                  </TabsTrigger>
-                  <TabsTrigger value="backup" className="flex items-center gap-1">
-                    <Bell className="h-3 w-3" />
-                     {t('backup')}
-                  </TabsTrigger>
-                </TabsList>
+            <Tabs defaultValue="incidents" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-1">
+                <TabsTrigger value="incidents" className="flex items-center gap-1">
+                  <AlertTriangle className="h-3 w-3" />
+                   Incidents
+                </TabsTrigger>
+                <TabsTrigger value="map" className="flex items-center gap-1">
+                  <MapPin className="h-3 w-3" />
+                   Map
+                </TabsTrigger>
+                <TabsTrigger value="units" className="flex items-center gap-1">
+                  <Shield className="h-3 w-3" />
+                   Units
+                </TabsTrigger>
+                <TabsTrigger value="communications" className="flex items-center gap-1">
+                  <MessageSquare className="h-3 w-3" />
+                  Comms
+                </TabsTrigger>
+                <TabsTrigger value="metrics" className="flex items-center gap-1">
+                  <TrendingUp className="h-3 w-3" />
+                   Metrics
+                </TabsTrigger>
+                <TabsTrigger value="backup" className="flex items-center gap-1">
+                  <Bell className="h-3 w-3" />
+                   Backup
+                </TabsTrigger>
+              </TabsList>
 
-                <TabsContent value="incidents" className="mt-4">
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="flex items-center gap-2">
-                          <AlertTriangle className="h-5 w-5" />
-                          {t('emergencyIncidentsTitle')}
-                        </CardTitle>
-                        <Badge variant="secondary" className="whitespace-nowrap">
-                          {incidents.length} {t('active')} • {resolvedIncidents.length} {t('resolved')}
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <Tabs defaultValue="active" className="w-full">
-                        <TabsList className="grid w-full grid-cols-2">
-                          <TabsTrigger value="active" className="flex items-center gap-2">
-                            <AlertTriangle className="h-4 w-4" />
-                            {t('active')} ({incidents.length})
-                          </TabsTrigger>
-                          <TabsTrigger value="resolved" className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4" />
-                            {t('resolved')} ({resolvedIncidents.length})
-                          </TabsTrigger>
-                        </TabsList>
-                        
-                        <TabsContent value="active" className="mt-4">
-                          <IncidentList 
-                            incidents={incidents}
-                            onUpdate={() => {
-                              fetchIncidents();
-                              fetchResolvedIncidents();
-                            }}
-                            selectedIncident={selectedIncident}
-                            onSelectIncident={(incident) => setSelectedIncident(incident)}
-                            showStatusFilter={true}
-                            showPriorityFilter={true}
-                            isResolvedIncidents={false}
-                          />
-                        </TabsContent>
-                        
-                        <TabsContent value="resolved" className="mt-4">
-                          <IncidentList 
-                            incidents={resolvedIncidents}
-                            onUpdate={() => {
-                              fetchIncidents();
-                              fetchResolvedIncidents();
-                            }}
-                            selectedIncident={selectedIncident}
-                            onSelectIncident={(incident) => setSelectedIncident(incident)}
-                            showStatusFilter={false}
-                            showPriorityFilter={true}
-                            isResolvedIncidents={true}
-                          />
-                        </TabsContent>
-                      </Tabs>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-
-                <TabsContent value="map" className="mt-4">
-                  <Card>
-                    <CardHeader className="pb-3">
+              <TabsContent value="incidents" className="mt-4">
+                <Card>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
                       <CardTitle className="flex items-center gap-2">
-                        <MapPin className="h-5 w-5" />
-                        {t('liveIncidentMap')}
+                        <AlertTriangle className="h-5 w-5" />
+                        Emergency Incidents
                       </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="h-96 rounded-lg overflow-hidden">
-                        <IncidentMap 
-                          incidents={incidents} 
+                      <Badge variant="secondary" className="whitespace-nowrap">
+                        {incidents.length} Active • {resolvedIncidents.length} Resolved
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <Tabs defaultValue="active" className="w-full">
+                      <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="active" className="flex items-center gap-2">
+                          <AlertTriangle className="h-4 w-4" />
+                          Active ({incidents.length})
+                        </TabsTrigger>
+                        <TabsTrigger value="resolved" className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4" />
+                          Resolved ({resolvedIncidents.length})
+                        </TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="active" className="mt-4">
+                        <IncidentList 
+                          incidents={incidents}
+                          onUpdate={() => {
+                            fetchIncidents();
+                            fetchResolvedIncidents();
+                          }}
                           selectedIncident={selectedIncident}
                           onSelectIncident={(incident) => setSelectedIncident(incident)}
+                          showStatusFilter={true}
+                          showPriorityFilter={true}
+                          isResolvedIncidents={false}
                         />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-
-                <TabsContent value="units" className="mt-4">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <Card>
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-base">{t('unitsOverview.title')}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <Button 
-                          onClick={() => setShowUnitsOverview(true)}
-                          variant="outline" 
-                          className="w-full mb-4"
-                        >
-                          <Shield className="h-4 w-4 mr-2" />
-                          {t('viewAllUnits')}
-                        </Button>
-                        {userUnit && (
-                          <div className="space-y-2">
-                            <h4 className="font-medium">{t('myUnit')}</h4>
-                            <p className="text-sm text-muted-foreground">
-                              {String(userUnit.unit_name || 'Unknown Unit')} ({String(userUnit.unit_code || 'Unknown Code')})
-                            </p>
-                            <UnitStatusManager 
-                              unit={userUnit} 
-                              onUpdate={() => fetchUserUnit()} 
-                            />
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="communications" className="mt-4">
-                  <DispatcherCommunications />
-                </TabsContent>
-
-                <TabsContent value="metrics" className="mt-4">
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardTitle className="flex items-center gap-2">
-                        <TrendingUp className="h-5 w-5" />
-                        {t('responseMetrics')}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ResponseTimeTracker />
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-
-                <TabsContent value="backup" className="mt-4">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <Card>
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-base">{t('requestBackup')}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <BackupRequestsSentPanel />
-                      </CardContent>
-                    </Card>
-                    
-                    <Card>
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-base">{t('backupNotifications')}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <BackupNotificationsPanel />
-                      </CardContent>
-                    </Card>
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </TabsContent>
-          )}
-
-          {/* Unit Coordination Tab - Supervisors Only */}
-          {isPoliceSupervisor && (
-            <TabsContent value="coordination" className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-4">
-                <Badge variant="outline" className="flex items-center gap-2 w-fit">
-                  <Activity className="h-4 w-4" />
-                  {t('unitCoordination')}
-                </Badge>
-                {userCity && (
-                  <Badge variant="secondary" className="w-fit">
-                    {t('area')}: {userCity}
-                  </Badge>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Units Overview Card */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Shield className="h-5 w-5" />
-                      {t('unitsOverview.title')}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <Button 
-                      onClick={() => setShowUnitsOverview(true)}
-                      className="w-full mb-4"
-                    >
-                      {t('viewUnitsOverview')}
-                    </Button>
-                    
-                    {userUnits.length > 0 && (
-                      <div className="space-y-3">
-                        <h4 className="font-medium">{t('supervisionScope')}</h4>
-                        {userUnits.slice(0, 3).map((unit, index) => (
-                          <div key={index} className="flex items-center justify-between p-2 bg-muted rounded">
-                            <span className="text-sm font-medium">{unit.unit_name}</span>
-                            <Badge variant="outline" className="text-xs">
-                              {unit.status || 'Available'}
-                            </Badge>
-                          </div>
-                        ))}
-                        {userUnits.length > 3 && (
-                          <p className="text-xs text-muted-foreground">
-                            {t('andMore', { count: userUnits.length - 3 })}
-                          </p>
-                        )}
-                      </div>
-                    )}
+                      </TabsContent>
+                      
+                      <TabsContent value="resolved" className="mt-4">
+                        <IncidentList 
+                          incidents={resolvedIncidents}
+                          onUpdate={() => {
+                            fetchIncidents();
+                            fetchResolvedIncidents();
+                          }}
+                          selectedIncident={selectedIncident}
+                          onSelectIncident={(incident) => setSelectedIncident(incident)}
+                          showStatusFilter={false}
+                          showPriorityFilter={true}
+                          isResolvedIncidents={true}
+                        />
+                      </TabsContent>
+                    </Tabs>
                   </CardContent>
                 </Card>
+              </TabsContent>
 
-                {/* Area Statistics Card */}
+              <TabsContent value="map" className="mt-4">
                 <Card>
-                  <CardHeader>
+                  <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5" />
-                      {t('areaStatistics')}
+                      <MapPin className="h-5 w-5" />
+                      Live Incident Map
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="text-center">
-                          <p className="text-2xl font-bold text-red-600">{areaIncidents.filter(i => ['reported', 'dispatched', 'in_progress'].includes(i.status)).length}</p>
-                          <p className="text-sm text-muted-foreground">{t('activeIncidents')}</p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-2xl font-bold text-green-600">{userUnits.filter(u => u.status === 'available').length}</p>
-                          <p className="text-sm text-muted-foreground">{t('availableUnits')}</p>
-                        </div>
-                      </div>
-                      <div className="border-t pt-3">
-                        <div className="text-center">
-                          <p className="text-lg font-semibold">{areaIncidents.filter(i => ['resolved', 'closed'].includes(i.status)).length}</p>
-                          <p className="text-sm text-muted-foreground">{t('resolvedToday')}</p>
-                        </div>
-                      </div>
+                    <div className="h-96 rounded-lg overflow-hidden">
+                      <IncidentMap 
+                        incidents={incidents} 
+                        selectedIncident={selectedIncident}
+                        onSelectIncident={(incident) => setSelectedIncident(incident)}
+                      />
                     </div>
                   </CardContent>
                 </Card>
-              </div>
+              </TabsContent>
 
-              {/* Recent Area Incidents */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5" />
-                    {t('areaIncidents')}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <IncidentList 
-                    incidents={areaIncidents}
-                    onUpdate={() => {
-                      fetchAreaIncidents();
-                      fetchIncidents();
-                    }}
-                    selectedIncident={selectedIncident}
-                    onSelectIncident={(incident) => setSelectedIncident(incident)}
-                    showStatusFilter={true}
-                    showPriorityFilter={true}
-                    isResolvedIncidents={false}
-                  />
-                </CardContent>
-              </Card>
-            </TabsContent>
-          )}
-
-          {/* Leadership Tab - Supervisors and Unit Leads */}
-          {(isPoliceSupervisor || isAdmin || isUnitLead) && (
-            <TabsContent value="leadership" className="space-y-6">
-              <div className="border-b pb-4">
-                <div className="flex items-center gap-4 mb-2">
-                  <Badge variant="outline" className="flex items-center gap-2">
-                    <Award className="h-4 w-4" />
-                    {t('leadershipDashboard')}
-                  </Badge>
+              <TabsContent value="units" className="mt-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Units Overview</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Button 
+                        onClick={() => setShowUnitsOverview(true)}
+                        variant="outline" 
+                        className="w-full mb-4"
+                      >
+                        <Shield className="h-4 w-4 mr-2" />
+                        View All Units
+                      </Button>
+                      {userUnit && (
+                        <div className="space-y-2">
+                          <h4 className="font-medium">My Unit</h4>
+                          <p className="text-sm text-muted-foreground">
+                            {String(userUnit.unit_name || 'Unknown Unit')} ({String(userUnit.unit_code || 'Unknown Code')})
+                          </p>
+                          <UnitStatusManager 
+                            unit={userUnit} 
+                            onUpdate={() => fetchUserUnit()} 
+                          />
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
                 </div>
-              </div>
+              </TabsContent>
 
-              <Tabs defaultValue="dashboard" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="dashboard">{t('overview')}</TabsTrigger>
-                  <TabsTrigger value="performance">{t('performance')}</TabsTrigger>
-                </TabsList>
+              <TabsContent value="communications" className="mt-4">
+                <DispatcherCommunications />
+              </TabsContent>
 
-                <TabsContent value="dashboard">
-                  <UnitLeadershipDashboard />
-                </TabsContent>
-
-                <TabsContent value="performance">
-                  <UnitPerformanceAnalytics />
-                </TabsContent>
-              </Tabs>
-            </TabsContent>
-          )}
-
-          {/* Management Tab - Supervisors Only */}
-          {(isPoliceSupervisor || isAdmin) && (
-            <TabsContent value="management" className="space-y-8">
-              <div className="border-b pb-4">
-                <div className="flex items-center gap-4 mb-2">
-                  <Badge variant="outline" className="flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    {t('operationalManagement')}
-                  </Badge>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  {t('manageOperationalAspects')}
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <TabsContent value="metrics" className="mt-4">
                 <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <Bell className="h-5 w-5" />
-                      {t('backupManagement')}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <BackupNotificationManager />
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <Clock className="h-5 w-5" />
-                      {t('responseTracking')}
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5" />
+                      Response Metrics
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <ResponseTimeTracker />
                   </CardContent>
                 </Card>
-              </div>
+              </TabsContent>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <MessageSquare className="h-5 w-5" />
-                      {t('communicationsHub')}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <DispatcherCommunications />
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <Eye className="h-5 w-5" />
-                      {t('operatorStatus')}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <OperatorStatusPanel 
-                      operatorSession={operatorSession}
-                    />
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          )}
-
-          {/* Units & Profiles Tab - Consolidated from UnitsAndProfilesPage */}
-          {(isPoliceSupervisor || isAdmin) && (
-            <TabsContent value="units-profiles" className="space-y-6">
-              <div className="border-b pb-4">
-                <div className="flex items-center gap-4 mb-2">
-                  <Badge variant="outline" className="flex items-center gap-2">
-                    <Shield className="h-4 w-4" />
-                    Units & Profiles Management
-                  </Badge>
+              <TabsContent value="backup" className="mt-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Request Backup</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <BackupRequestsSentPanel />
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Backup Notifications</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <BackupNotificationsPanel />
+                    </CardContent>
+                  </Card>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Manage emergency units and officer profiles
-                </p>
+              </TabsContent>
+            </Tabs>
+          </div>
+        );
+
+      case 'coordination':
+        if (!isPoliceSupervisor) return null;
+        return (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-4">
+              <Badge variant="outline" className="flex items-center gap-2 w-fit">
+                <Activity className="h-4 w-4" />
+                Unit Coordination
+              </Badge>
+              {userCity && (
+                <Badge variant="secondary" className="w-fit">
+                  Area: {userCity}
+                </Badge>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="h-5 w-5" />
+                    Units Overview
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Button 
+                    onClick={() => setShowUnitsOverview(true)}
+                    className="w-full mb-4"
+                  >
+                    View Units Overview
+                  </Button>
+                  
+                  {userUnits.length > 0 && (
+                    <div className="space-y-3">
+                      <h4 className="font-medium">Supervision Scope</h4>
+                      {userUnits.slice(0, 3).map((unit, index) => (
+                        <div key={index} className="flex items-center justify-between p-2 bg-muted rounded">
+                          <span className="text-sm font-medium">{unit.unit_name}</span>
+                          <Badge variant="outline" className="text-xs">
+                            {unit.status || 'Available'}
+                          </Badge>
+                        </div>
+                      ))}
+                      {userUnits.length > 3 && (
+                        <p className="text-xs text-muted-foreground">
+                          And {userUnits.length - 3} more units
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5" />
+                    Area Statistics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="text-center">
+                        <p className="text-2xl font-bold text-red-600">{areaIncidents.filter(i => ['reported', 'dispatched', 'in_progress'].includes(i.status)).length}</p>
+                        <p className="text-sm text-muted-foreground">Active Incidents</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-2xl font-bold text-green-600">{userUnits.filter(u => u.status === 'available').length}</p>
+                        <p className="text-sm text-muted-foreground">Available Units</p>
+                      </div>
+                    </div>
+                    <div className="border-t pt-3">
+                      <div className="text-center">
+                        <p className="text-lg font-semibold">{areaIncidents.filter(i => ['resolved', 'closed'].includes(i.status)).length}</p>
+                        <p className="text-sm text-muted-foreground">Resolved Today</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5" />
+                  Area Incidents
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <IncidentList 
+                  incidents={areaIncidents}
+                  onUpdate={() => {
+                    fetchAreaIncidents();
+                    fetchIncidents();
+                  }}
+                  selectedIncident={selectedIncident}
+                  onSelectIncident={(incident) => setSelectedIncident(incident)}
+                  showStatusFilter={true}
+                  showPriorityFilter={true}
+                  isResolvedIncidents={false}
+                />
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 'leadership':
+        if (!(isPoliceSupervisor || isAdmin || isUnitLead)) return null;
+        return (
+          <div className="space-y-6">
+            <div className="border-b pb-4">
+              <div className="flex items-center gap-4 mb-2">
+                <Badge variant="outline" className="flex items-center gap-2">
+                  <Award className="h-4 w-4" />
+                  Leadership Dashboard
+                </Badge>
               </div>
+            </div>
 
-              <Tabs defaultValue="units" className="w-full">
-                <TabsList className="flex w-full">
-                  <TabsTrigger value="units" className="flex items-center gap-2 flex-1">
-                    <Shield className="h-4 w-4" />
-                    Unit Management
-                  </TabsTrigger>
-                  <TabsTrigger value="officers" className="flex items-center gap-2 flex-1">
-                    <Users className="h-4 w-4 flex-shrink-0" />
-                    <span className="whitespace-nowrap">Officer Profiles & Performance</span>
-                  </TabsTrigger>
-                </TabsList>
+            <Tabs defaultValue="dashboard" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="dashboard">Overview</TabsTrigger>
+                <TabsTrigger value="performance">Performance</TabsTrigger>
+              </TabsList>
 
-                <TabsContent value="units" className="mt-6">
-                  <UnitManagementDashboard />
-                </TabsContent>
+              <TabsContent value="dashboard">
+                <UnitLeadershipDashboard />
+              </TabsContent>
 
-                <TabsContent value="officers" className="mt-6">
-                  <OfficerProfileDashboard />
-                </TabsContent>
-              </Tabs>
-            </TabsContent>
-          )}
+              <TabsContent value="performance">
+                <UnitPerformanceAnalytics />
+              </TabsContent>
+            </Tabs>
+          </div>
+        );
 
-          {/* Police Admin Tab - Police Admins Only */}
-          {hasPoliceAdminAccess && (
-            <TabsContent value="admin" className="space-y-6">
-              <PoliceAdminDashboard />
-            </TabsContent>
-          )}
-        </Tabs>
-      </main>
+      case 'management':
+        if (!(isPoliceSupervisor || isAdmin)) return null;
+        return (
+          <div className="space-y-8">
+            <div className="border-b pb-4">
+              <div className="flex items-center gap-4 mb-2">
+                <Badge variant="outline" className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  Operational Management
+                </Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Manage operational aspects of emergency response
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Bell className="h-5 w-5" />
+                    Backup Management
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <BackupNotificationManager />
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Clock className="h-5 w-5" />
+                    Response Tracking
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponseTimeTracker />
+                </CardContent>
+              </Card>
+            </div>
 
-      <Footer />
-    </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <MessageSquare className="h-5 w-5" />
+                    Communications Hub
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <DispatcherCommunications />
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Eye className="h-5 w-5" />
+                    Operator Status
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <OperatorStatusPanel 
+                    operatorSession={operatorSession}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        );
+
+      case 'units-profiles':
+        if (!(isPoliceSupervisor || isAdmin)) return null;
+        return (
+          <div className="space-y-6">
+            <div className="border-b pb-4">
+              <div className="flex items-center gap-4 mb-2">
+                <Badge variant="outline" className="flex items-center gap-2">
+                  <Shield className="h-4 w-4" />
+                  Units & Profiles Management
+                </Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Manage emergency units and officer profiles
+              </p>
+            </div>
+
+            <Tabs defaultValue="units" className="w-full">
+              <TabsList className="flex w-full">
+                <TabsTrigger value="units" className="flex items-center gap-2 flex-1">
+                  <Shield className="h-4 w-4" />
+                  Unit Management
+                </TabsTrigger>
+                <TabsTrigger value="officers" className="flex items-center gap-2 flex-1">
+                  <Users className="h-4 w-4 flex-shrink-0" />
+                  <span className="whitespace-nowrap">Officer Profiles & Performance</span>
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="units" className="mt-6">
+                <UnitManagementDashboard />
+              </TabsContent>
+
+              <TabsContent value="officers" className="mt-6">
+                <OfficerProfileDashboard />
+              </TabsContent>
+            </Tabs>
+          </div>
+        );
+
+      case 'admin':
+        if (!hasPoliceAdminAccess) return null;
+        return (
+          <div className="space-y-6">
+            <PoliceAdminDashboard />
+          </div>
+        );
+
+      default:
+        return (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Select a tab from the sidebar to get started.</p>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+        <PoliceSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+        
+        <div className="flex-1 flex flex-col">
+          {/* Header with sidebar trigger */}
+          <header className="h-16 flex items-center border-b bg-background/80 backdrop-blur-sm sticky top-0 z-10">
+            <div className="flex items-center gap-4 px-6">
+              <SidebarTrigger />
+              <div className="flex items-center gap-4">
+                <Shield className="h-8 w-8 text-primary" />
+                <div>
+                  <h1 className="text-xl font-semibold">Police Operations Center</h1>
+                  <p className="text-sm text-muted-foreground">
+                    {userCity ? `Coverage: ${userCity}` : 'National Operations'}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-4 ml-auto">
+                <EnhancedSyncStatus />
+                <OfflineIndicator />
+                
+                {user && (
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline">
+                      {role?.replace('police_', '').toUpperCase()}
+                    </Badge>
+                    <Button variant="ghost" onClick={handleSignOut}>
+                      <LogOut className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </header>
+
+          {/* Main content */}
+          <main className="flex-1 p-6 overflow-auto">
+            {renderActiveView()}
+          </main>
+
+          {/* Footer */}
+          <footer className="border-t bg-background/50 py-4 px-6 mt-auto">
+            <div className="text-center">
+              <div className="flex justify-center mb-2">
+                <div className="p-2 rounded-lg bg-white shadow-sm">
+                  <Shield className="h-6 w-6 text-primary" />
+                </div>
+              </div>
+              <p className="text-sm font-medium text-foreground">
+                Emergency Services Platform v2.1.0
+              </p>
+              <p className="text-xs text-muted-foreground">
+                © 2025 BIAKAM - Police Operations Center
+              </p>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 };
 
