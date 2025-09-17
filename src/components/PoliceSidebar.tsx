@@ -72,28 +72,28 @@ export function PoliceSidebar({ activeTab, onTabChange }: PoliceSidebarProps) {
       title: t('emergency:coordination'),
       icon: Activity,
       onClick: () => handleItemClick('coordination'),
-      visible: isPoliceSupervisor
+      visible: isPoliceSupervisor && !isAdmin && !isPoliceAdmin
     },
     {
       id: 'leadership',
       title: t('emergency:leadership'),
       icon: Award,
       onClick: () => handleItemClick('leadership'),
-      visible: isPoliceSupervisor || isAdmin || isUnitLead
+      visible: (isPoliceSupervisor || isUnitLead) && !isAdmin && !isPoliceAdmin
     },
     {
       id: 'management',
       title: t('emergency:management'),
       icon: Users,
       onClick: () => handleItemClick('management'),
-      visible: isPoliceSupervisor || isAdmin
+      visible: isPoliceSupervisor && !isAdmin && !isPoliceAdmin
     },
     {
       id: 'units-profiles',
       title: 'Units & Profiles',
       icon: Shield,
       onClick: () => handleItemClick('units-profiles'),
-      visible: isPoliceSupervisor || isAdmin
+      visible: isPoliceSupervisor && !isAdmin && !isPoliceAdmin
     },
     {
       id: 'admin',
