@@ -364,6 +364,14 @@ export const AnalyticsReports = () => {
         </div>
       </div>
 
+      {/* Data Filtering Notice */}
+      <div className="mb-4 p-3 bg-muted/50 rounded-lg border">
+        <p className="text-sm text-muted-foreground">
+          <span className="font-medium">Analytics Scope:</span> Showing data for the selected time period ({selectedPeriod === '7d' ? 'Last 7 days' : selectedPeriod === '30d' ? 'Last 30 days' : selectedPeriod === '90d' ? 'Last 90 days' : 'Last year'}). 
+          Dashboard Overview shows all-time statistics.
+        </p>
+      </div>
+
       {/* Key Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         <Card>

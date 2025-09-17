@@ -232,6 +232,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         </div>
       </div>
 
+      {/* Data Scope Notice */}
+      <div className="mb-4 p-3 bg-muted/50 rounded-lg border">
+        <p className="text-sm text-muted-foreground">
+          <span className="font-medium">Dashboard Scope:</span> Showing all-time statistics. 
+          For time-filtered analysis, visit the Analytics section.
+        </p>
+      </div>
+
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <StatCard
