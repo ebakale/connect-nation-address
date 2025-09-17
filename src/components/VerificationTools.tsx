@@ -52,7 +52,9 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
   const [photoQualityScore, setPhotoQualityScore] = useState<number>(90);
   const [searchResults, setSearchResults] = useState<AddressDetails[]>([]);
   const [pendingAddresses, setPendingAddresses] = useState<AddressDetails[]>([]);
+  const [flaggedAddresses, setFlaggedAddresses] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [flaggedLoading, setFlaggedLoading] = useState(false);
   const [mapDialogOpen, setMapDialogOpen] = useState(false);
   const [verificationMapOpen, setVerificationMapOpen] = useState(false);
   const [coordVerificationResults, setCoordVerificationResults] = useState<{
@@ -70,9 +72,10 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
   const { user } = useAuth();
   const { t } = useTranslation(['admin', 'common']);
 
-  // Load pending addresses on component mount
+  // Load pending addresses and flagged addresses on component mount
   useEffect(() => {
     loadPendingAddresses();
+    loadFlaggedAddresses();
   }, []);
 
   // Load all addresses in the system
@@ -95,6 +98,26 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Load flagged addresses for review
+  const loadFlaggedAddresses = async () => {
+    setFlaggedLoading(true);
+    try {
+      const { data, error } = await supabase.rpc('get_flagged_addresses_queue');
+
+      if (error) throw error;
+      setFlaggedAddresses(data || []);
+    } catch (error) {
+      console.error('Failed to load flagged addresses:', error);
+      toast({
+        title: t('admin:error'),
+        description: t('admin:unableToLoadFlaggedAddresses'),
+        variant: "destructive",
+      });
+    } finally {
+      setFlaggedLoading(false);
     }
   };
 
@@ -973,7 +996,20 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
         </TabsContent>
 
         <TabsContent value="flagged" className="space-y-4">
-          <FlaggedAddressManager addresses={[]} onUpdate={() => {}} />
+          {flaggedLoading ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">{t('admin:loadingFlaggedAddresses')}</p>
+            </div>
+          ) : (
+            <FlaggedAddressManager 
+              addresses={flaggedAddresses} 
+              onUpdate={() => {
+                loadFlaggedAddresses();
+                loadPendingAddresses(); // Also refresh pending addresses
+              }} 
+            />
+          )}
         </TabsContent>
 
         <TabsContent value="quality" className="space-y-4">

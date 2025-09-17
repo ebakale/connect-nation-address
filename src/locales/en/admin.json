@@ -883,6 +883,8 @@
   "searchForAddressesQualityControl": "Search for addresses to access quality control tools",
   "searchAddresses": "Search Addresses",
   "searchByUACStreetCity": "Search by UAC, street, or city...",
+  "loadingFlaggedAddresses": "Loading flagged addresses...",
+  "unableToLoadFlaggedAddresses": "Unable to load flagged addresses",
   "coordinateVerificationMap": "Coordinate Verification Map",
   "interactiveVerificationMap": "Interactive Verification Map",
   "verificationChecklist": "Verification Checklist",
