@@ -109,7 +109,7 @@ export const EnhancedSyncStatus = () => {
   const hasErrors = addressSyncErrors.length > 0 || incidentSyncErrors.length > 0;
 
   return (
-    <Card className="w-full max-w-md min-w-0">
+    <Card className="w-full">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-2">
