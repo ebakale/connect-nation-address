@@ -90,7 +90,7 @@ const AdminPanel: React.FC = () => {
         
         <TabsContent value="documentation">
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div className="flex flex-col h-full">
                   <h3 className="text-lg font-semibold mb-2">{t('admin:systemRolesDocumentation')}</h3>
@@ -113,6 +113,8 @@ const AdminPanel: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </div>
+            <div className="grid grid-cols-1">
               <div className="space-y-4">
                 <div className="flex flex-col h-full">
                   <h3 className="text-lg font-semibold mb-2">Strategic Overview</h3>
