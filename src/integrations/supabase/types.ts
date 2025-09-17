@@ -285,6 +285,54 @@ export type Database = {
         }
         Relationships: []
       }
+      authorized_verifiers: {
+        Row: {
+          authority_name: string
+          authority_type: string
+          authorization_document_url: string | null
+          authorized_at: string | null
+          authorized_by: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          jurisdiction: string
+          license_number: string | null
+          user_id: string
+          verification_scope: string[]
+        }
+        Insert: {
+          authority_name: string
+          authority_type: string
+          authorization_document_url?: string | null
+          authorized_at?: string | null
+          authorized_by?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          jurisdiction?: string
+          license_number?: string | null
+          user_id: string
+          verification_scope?: string[]
+        }
+        Update: {
+          authority_name?: string
+          authority_type?: string
+          authorization_document_url?: string | null
+          authorized_at?: string | null
+          authorized_by?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          jurisdiction?: string
+          license_number?: string | null
+          user_id?: string
+          verification_scope?: string[]
+        }
+        Relationships: []
+      }
       backup_metadata: {
         Row: {
           backup_id: string
@@ -368,6 +416,50 @@ export type Database = {
           verification_rate?: number | null
         }
         Relationships: []
+      }
+      document_verification_audit: {
+        Row: {
+          action: string
+          document_hash: string
+          id: string
+          notes: string | null
+          performed_by: string
+          timestamp: string
+          verification_details: Json | null
+          verification_id: string | null
+          verification_method: string | null
+        }
+        Insert: {
+          action: string
+          document_hash: string
+          id?: string
+          notes?: string | null
+          performed_by: string
+          timestamp?: string
+          verification_details?: Json | null
+          verification_id?: string | null
+          verification_method?: string | null
+        }
+        Update: {
+          action?: string
+          document_hash?: string
+          id?: string
+          notes?: string | null
+          performed_by?: string
+          timestamp?: string
+          verification_details?: Json | null
+          verification_id?: string | null
+          verification_method?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_verification_audit_verification_id_fkey"
+            columns: ["verification_id"]
+            isOneToOne: false
+            referencedRelation: "residency_ownership_verifications"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       emergency_incident_logs: {
         Row: {
@@ -717,6 +809,104 @@ export type Database = {
         }
         Relationships: []
       }
+      legal_compliance_framework: {
+        Row: {
+          applicable_laws: string[]
+          consent_requirements: string[]
+          created_at: string
+          cross_border_restrictions: Json | null
+          data_retention_period: number
+          effective_from: string
+          effective_until: string | null
+          id: string
+          is_active: boolean
+          jurisdiction: string
+          notification_requirements: string[]
+          privacy_regulations: string[]
+          updated_at: string
+        }
+        Insert: {
+          applicable_laws?: string[]
+          consent_requirements?: string[]
+          created_at?: string
+          cross_border_restrictions?: Json | null
+          data_retention_period?: number
+          effective_from?: string
+          effective_until?: string | null
+          id?: string
+          is_active?: boolean
+          jurisdiction?: string
+          notification_requirements?: string[]
+          privacy_regulations?: string[]
+          updated_at?: string
+        }
+        Update: {
+          applicable_laws?: string[]
+          consent_requirements?: string[]
+          created_at?: string
+          cross_border_restrictions?: Json | null
+          data_retention_period?: number
+          effective_from?: string
+          effective_until?: string | null
+          id?: string
+          is_active?: boolean
+          jurisdiction?: string
+          notification_requirements?: string[]
+          privacy_regulations?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      privacy_consent_log: {
+        Row: {
+          consent_details: Json | null
+          consent_given: boolean
+          consent_timestamp: string
+          consent_type: string
+          consent_withdrawn_at: string | null
+          id: string
+          ip_address: string | null
+          legal_basis: string
+          user_agent: string | null
+          user_id: string
+          verification_id: string | null
+        }
+        Insert: {
+          consent_details?: Json | null
+          consent_given: boolean
+          consent_timestamp?: string
+          consent_type: string
+          consent_withdrawn_at?: string | null
+          id?: string
+          ip_address?: string | null
+          legal_basis: string
+          user_agent?: string | null
+          user_id: string
+          verification_id?: string | null
+        }
+        Update: {
+          consent_details?: Json | null
+          consent_given?: boolean
+          consent_timestamp?: string
+          consent_type?: string
+          consent_withdrawn_at?: string | null
+          id?: string
+          ip_address?: string | null
+          legal_basis?: string
+          user_agent?: string | null
+          user_id?: string
+          verification_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "privacy_consent_log_verification_id_fkey"
+            columns: ["verification_id"]
+            isOneToOne: false
+            referencedRelation: "residency_ownership_verifications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -818,6 +1008,107 @@ export type Database = {
           region?: string | null
         }
         Relationships: []
+      }
+      residency_ownership_verifications: {
+        Row: {
+          address_request_id: string | null
+          claimant_relationship: string
+          consent_given: boolean
+          consent_timestamp: string | null
+          created_at: string
+          data_retention_consent: boolean
+          expires_at: string | null
+          field_verification_completed_at: string | null
+          field_verification_notes: string | null
+          field_verification_required: boolean | null
+          field_verification_scheduled_at: string | null
+          id: string
+          legal_basis: string
+          primary_document_hash: string | null
+          primary_document_type: Database["public"]["Enums"]["legal_document_type"]
+          primary_document_url: string | null
+          privacy_level: Database["public"]["Enums"]["privacy_access_level"]
+          processing_purpose: string
+          retention_period: number | null
+          status: Database["public"]["Enums"]["verification_status"]
+          supporting_documents: Json | null
+          updated_at: string
+          user_id: string
+          verification_history: Json | null
+          verification_notes: string | null
+          verification_type: string
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          address_request_id?: string | null
+          claimant_relationship: string
+          consent_given?: boolean
+          consent_timestamp?: string | null
+          created_at?: string
+          data_retention_consent?: boolean
+          expires_at?: string | null
+          field_verification_completed_at?: string | null
+          field_verification_notes?: string | null
+          field_verification_required?: boolean | null
+          field_verification_scheduled_at?: string | null
+          id?: string
+          legal_basis: string
+          primary_document_hash?: string | null
+          primary_document_type: Database["public"]["Enums"]["legal_document_type"]
+          primary_document_url?: string | null
+          privacy_level?: Database["public"]["Enums"]["privacy_access_level"]
+          processing_purpose: string
+          retention_period?: number | null
+          status?: Database["public"]["Enums"]["verification_status"]
+          supporting_documents?: Json | null
+          updated_at?: string
+          user_id: string
+          verification_history?: Json | null
+          verification_notes?: string | null
+          verification_type: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          address_request_id?: string | null
+          claimant_relationship?: string
+          consent_given?: boolean
+          consent_timestamp?: string | null
+          created_at?: string
+          data_retention_consent?: boolean
+          expires_at?: string | null
+          field_verification_completed_at?: string | null
+          field_verification_notes?: string | null
+          field_verification_required?: boolean | null
+          field_verification_scheduled_at?: string | null
+          id?: string
+          legal_basis?: string
+          primary_document_hash?: string | null
+          primary_document_type?: Database["public"]["Enums"]["legal_document_type"]
+          primary_document_url?: string | null
+          privacy_level?: Database["public"]["Enums"]["privacy_access_level"]
+          processing_purpose?: string
+          retention_period?: number | null
+          status?: Database["public"]["Enums"]["verification_status"]
+          supporting_documents?: Json | null
+          updated_at?: string
+          user_id?: string
+          verification_history?: Json | null
+          verification_notes?: string | null
+          verification_type?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "residency_ownership_verifications_address_request_id_fkey"
+            columns: ["address_request_id"]
+            isOneToOne: false
+            referencedRelation: "address_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       sms_fallback_queue: {
         Row: {
@@ -1234,6 +1525,29 @@ export type Database = {
           total_imported: number
         }[]
       }
+      initiate_residency_verification: {
+        Args: {
+          p_address_request_id: string
+          p_claimant_relationship: string
+          p_legal_basis: string
+          p_primary_document_type: Database["public"]["Enums"]["legal_document_type"]
+          p_processing_purpose: string
+          p_user_id: string
+          p_verification_type: string
+        }
+        Returns: string
+      }
+      record_privacy_consent: {
+        Args: {
+          p_consent_details?: Json
+          p_consent_given: boolean
+          p_consent_type: string
+          p_legal_basis?: string
+          p_user_id: string
+          p_verification_id: string
+        }
+        Returns: string
+      }
       reject_address_request_with_feedback: {
         Args: {
           p_rejected_by?: string
@@ -1313,6 +1627,35 @@ export type Database = {
         | "police_supervisor"
         | "police_dispatcher"
         | "police_admin"
+      legal_document_type:
+        | "property_deed"
+        | "land_certificate"
+        | "lease_agreement"
+        | "tenancy_agreement"
+        | "utility_bill"
+        | "bank_statement"
+        | "tax_certificate"
+        | "inheritance_document"
+        | "court_order"
+        | "government_id"
+        | "passport"
+        | "birth_certificate"
+        | "marriage_certificate"
+        | "other_legal_document"
+      privacy_access_level:
+        | "public"
+        | "restricted"
+        | "confidential"
+        | "classified"
+      verification_status:
+        | "pending"
+        | "document_review"
+        | "field_verification"
+        | "legal_review"
+        | "approved"
+        | "rejected"
+        | "requires_additional_documents"
+        | "under_investigation"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1458,6 +1801,38 @@ export const Constants = {
         "police_supervisor",
         "police_dispatcher",
         "police_admin",
+      ],
+      legal_document_type: [
+        "property_deed",
+        "land_certificate",
+        "lease_agreement",
+        "tenancy_agreement",
+        "utility_bill",
+        "bank_statement",
+        "tax_certificate",
+        "inheritance_document",
+        "court_order",
+        "government_id",
+        "passport",
+        "birth_certificate",
+        "marriage_certificate",
+        "other_legal_document",
+      ],
+      privacy_access_level: [
+        "public",
+        "restricted",
+        "confidential",
+        "classified",
+      ],
+      verification_status: [
+        "pending",
+        "document_review",
+        "field_verification",
+        "legal_review",
+        "approved",
+        "rejected",
+        "requires_additional_documents",
+        "under_investigation",
       ],
     },
   },

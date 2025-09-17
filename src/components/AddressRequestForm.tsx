@@ -12,10 +12,17 @@ import { useAuth } from '@/hooks/useAuth';
 import { MapPin, Camera, Upload, X, Image } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import CameraCapture from '@/components/CameraCapture';
+import { ResidencyVerificationForm } from '@/components/ResidencyVerificationForm';
 interface AddressRequestFormProps {
   onCancel?: () => void;
   onSuccess?: () => void;
 }
+
+const VERIFICATION_STEPS = {
+  ADDRESS_REQUEST: 'address_request',
+  RESIDENCY_VERIFICATION: 'residency_verification',
+  COMPLETE: 'complete'
+} as const;
 
 export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormProps) => {
   const { t } = useTranslation('address');
@@ -39,6 +46,8 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
   const [proofPreview, setProofPreview] = useState<string>("");
   const [uploading, setUploading] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
+  const [currentStep, setCurrentStep] = useState<keyof typeof VERIFICATION_STEPS | string>(VERIFICATION_STEPS.ADDRESS_REQUEST);
+  const [submittedRequestId, setSubmittedRequestId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const proofInputRef = useRef<HTMLInputElement>(null);
@@ -302,37 +311,25 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
         proof_of_ownership_url: proofUrl
       };
 
-      const { error } = await supabase
+      const { data: insertedData, error } = await supabase
         .from('address_requests')
-        .insert(requestData);
+        .insert(requestData)
+        .select('id')
+        .single();
 
       if (error) throw error;
 
+      setSubmittedRequestId(insertedData.id);
+      
       toast({
         title: t('success'),
-        description: t('successDesc')
+        description: 'Address request submitted. You can now proceed with residency/ownership verification.'
       });
 
-      // Reset form
-      setFormData({
-        country: 'Equatorial Guinea',
-        region: '',
-        city: '',
-        street: '',
-        building: '',
-        latitude: '',
-        longitude: '',
-        address_type: 'residential',
-        description: '',
-        justification: '',
-        claimant_type: 'owner'
-      });
-      setPhoto(null);
-      setPhotoPreview("");
-      setProofOfOwnership(null);
-      setProofPreview("");
+      // Move to verification step instead of resetting form
+      setCurrentStep(VERIFICATION_STEPS.RESIDENCY_VERIFICATION);
 
-      onSuccess?.();
+      // Don't reset form or call onSuccess yet - wait for verification step
     } catch (error: any) {
       console.error('Error submitting request:', error);
       toast({
@@ -344,6 +341,72 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
       setLoading(false);
     }
   };
+
+  const handleVerificationSuccess = () => {
+    // Reset form and complete the process
+    setFormData({
+      country: 'Equatorial Guinea',
+      region: '',
+      city: '',
+      street: '',
+      building: '',
+      latitude: '',
+      longitude: '',
+      address_type: 'residential',
+      description: '',
+      justification: '',
+      claimant_type: 'owner'
+    });
+    setPhoto(null);
+    setPhotoPreview("");
+    setProofOfOwnership(null);
+    setProofPreview("");
+    setCurrentStep(VERIFICATION_STEPS.ADDRESS_REQUEST);
+    setSubmittedRequestId(null);
+    onSuccess?.();
+  };
+
+  const handleSkipVerification = () => {
+    handleVerificationSuccess();
+  };
+
+  if (currentStep === VERIFICATION_STEPS.RESIDENCY_VERIFICATION && submittedRequestId) {
+    return (
+      <div className="space-y-4">
+        <Card className="w-full max-w-2xl mx-auto">
+          <CardHeader>
+            <CardTitle>Address Request Submitted Successfully</CardTitle>
+            <CardDescription>
+              Your address request has been submitted. You can now optionally verify your residency or ownership to expedite the approval process.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                onClick={handleSkipVerification}
+                className="flex-1"
+              >
+                Skip Verification (Submit Later)
+              </Button>
+              <Button 
+                onClick={() => setCurrentStep(VERIFICATION_STEPS.RESIDENCY_VERIFICATION)}
+                className="flex-1"
+              >
+                Continue with Verification
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <ResidencyVerificationForm
+          addressRequestId={submittedRequestId}
+          onSuccess={handleVerificationSuccess}
+          onCancel={handleSkipVerification}
+        />
+      </div>
+    );
+  }
 
   return (
     <Card className="w-full max-w-2xl mx-auto">

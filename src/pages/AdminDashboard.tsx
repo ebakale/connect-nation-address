@@ -6,6 +6,7 @@ import AdminPanel from "@/components/AdminPanel";
 import { FileText } from "lucide-react";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
 import { AddressDataManager } from "@/components/AddressDataManager";
+import { ResidencyVerificationManager } from "@/components/ResidencyVerificationManager";
 import { useTranslation } from 'react-i18next';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/AdminSidebar";
@@ -39,6 +40,8 @@ const AdminDashboard = () => {
     switch (activeTab) {
       case "address-data":
         return <AddressDataManager />;
+      case "verification":
+        return <ResidencyVerificationManager />;
       case "users":
       case "roles":
       case "permissions":
