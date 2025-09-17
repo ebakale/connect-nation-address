@@ -71,10 +71,14 @@ serve(async (req) => {
 
     console.log('Generating coverage analytics...')
 
-    // Refresh coverage analytics
-    const { error: refreshError } = await supabaseClient.rpc('calculate_coverage_analytics')
-    if (refreshError) {
-      console.error('Error refreshing coverage analytics:', refreshError)
+    // Try to refresh coverage analytics (skip if fails due to permissions)
+    try {
+      const { error: refreshError } = await supabaseClient.rpc('calculate_coverage_analytics')
+      if (refreshError) {
+        console.warn('Could not refresh coverage analytics (likely read-only context):', refreshError.message)
+      }
+    } catch (error) {
+      console.warn('Could not refresh coverage analytics:', error.message)
     }
 
     // Get coverage analytics data
