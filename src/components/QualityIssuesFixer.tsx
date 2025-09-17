@@ -264,13 +264,21 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
           if (error) throw error;
         } else if (issue.type === 'duplicate' && action === 'merge') {
           // Delete all duplicates, keep the primary
+          console.log('Bulk merging duplicates for issue:', issue.id);
+          let deletedCount = 0;
           for (const duplicate of issue.data.duplicates) {
+            console.log('Bulk deleting duplicate:', duplicate.id);
             const { error } = await supabase
               .from('addresses')
               .delete()
               .eq('id', duplicate.id);
-            if (error) throw error;
+            if (error) {
+              console.error('Bulk delete error:', duplicate.id, error);
+              throw error;
+            }
+            deletedCount++;
           }
+          console.log(`Bulk deleted ${deletedCount} duplicates for issue ${issue.id}`);
         }
       }
 
@@ -298,18 +306,34 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
     try {
       setFixingIssues(true);
       
+      console.log('Merging duplicates for issue:', issue);
+      console.log('Primary address:', issue.data.primary);
+      console.log('Duplicates to delete:', issue.data.duplicates);
+      
       // Delete all duplicates except the primary
+      let deletedCount = 0;
       for (const duplicate of issue.data.duplicates) {
-        const { error } = await supabase
+        console.log('Attempting to delete duplicate:', duplicate.id);
+        const { error, data } = await supabase
           .from('addresses')
           .delete()
-          .eq('id', duplicate.id);
-        if (error) throw error;
+          .eq('id', duplicate.id)
+          .select();
+        
+        if (error) {
+          console.error('Error deleting duplicate:', duplicate.id, error);
+          throw error;
+        }
+        
+        console.log('Successfully deleted:', data);
+        deletedCount++;
       }
+
+      console.log(`Successfully deleted ${deletedCount} duplicate addresses`);
 
       toast({
         title: "Success",
-        description: `Merged ${issue.data.duplicates.length} duplicate addresses`,
+        description: `Merged ${deletedCount} duplicate addresses`,
       });
 
       await fetchQualityIssues();
