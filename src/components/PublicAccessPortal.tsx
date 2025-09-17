@@ -346,47 +346,47 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
         {/* Search Results */}
         {searchResults.length > 0 && (
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold">Search Results ({searchResults.length})</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold">Search Results ({searchResults.length})</h2>
             
             {searchResults.map((address, index) => (
               <Card key={index} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="grid gap-4 md:grid-cols-3">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="grid gap-4 lg:grid-cols-3">
                     {/* Address Information */}
-                    <div className="md:col-span-2">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <h3 className="text-lg font-semibold text-foreground">
+                    <div className="lg:col-span-2">
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-base sm:text-lg font-semibold text-foreground break-words">
                             {address.building && `${address.building}, `}
                             {address.street}
                           </h3>
-                          <p className="text-muted-foreground">
+                          <p className="text-sm text-muted-foreground break-words">
                             {address.city}, {address.region}, {address.country}
                           </p>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap gap-2 sm:flex-col sm:items-end">
                           {address.verified && (
-                            <Badge variant="default">
+                            <Badge variant="default" className="text-xs">
                               <CheckCircle className="h-3 w-3 mr-1" />
                               Verified
                             </Badge>
                           )}
-                          <Badge variant={getQualityColor(address.completenessScore)}>
+                          <Badge variant={getQualityColor(address.completenessScore)} className="text-xs">
                             {address.completenessScore}% Complete
                           </Badge>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                        <div className="break-all">
                           <span className="font-medium">UAC:</span> 
-                          <span className="ml-2 font-mono text-primary">{address.uac}</span>
+                          <span className="ml-2 font-mono text-primary text-xs">{address.uac}</span>
                         </div>
                         <div>
                           <span className="font-medium">Type:</span>
                           <span className="ml-2 capitalize">{address.addressType}</span>
                         </div>
-                        <div>
+                        <div className="break-all">
                           <span className="font-medium">Coordinates:</span>
                           <span className="ml-2 font-mono text-xs">
                             {address.latitude.toFixed(5)}, {address.longitude.toFixed(5)}
@@ -402,7 +402,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                     </div>
 
                     {/* Actions */}
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 mt-4 lg:mt-0">
                       <Button 
                         variant="outline" 
                         size="sm"
