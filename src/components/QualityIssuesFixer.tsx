@@ -68,6 +68,14 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
 
       if (pendingError) throw pendingError;
 
+      // Fetch all addresses for duplicate detection
+      const { data: allAddresses, error: allAddressesError } = await supabase
+        .from('addresses')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (allAddressesError) throw allAddressesError;
+
       // Process and format issues
       const allIssues: QualityIssue[] = [];
 
@@ -94,6 +102,59 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
           severity: daysPending > 7 ? 'high' : daysPending > 3 ? 'medium' : 'low',
           data: request
         });
+      });
+
+      // Detect duplicate addresses
+      const processed = new Set();
+      const duplicateGroups: any[] = [];
+
+      allAddresses?.forEach((address, index) => {
+        if (processed.has(address.id)) return;
+
+        const duplicates = [];
+        
+        // Check against remaining addresses
+        for (let i = index + 1; i < allAddresses.length; i++) {
+          const compareAddress = allAddresses[i];
+          if (processed.has(compareAddress.id)) continue;
+
+          // Check for duplicates using same logic as the analytics
+          const addressMatch = address.region === compareAddress.region && 
+                              address.city === compareAddress.city &&
+                              address.street === compareAddress.street;
+          
+          // Also check coordinate proximity (within ~100 meters)
+          const latDiff = Math.abs(address.latitude - compareAddress.latitude);
+          const lngDiff = Math.abs(address.longitude - compareAddress.longitude);
+          const coordinateMatch = latDiff < 0.001 && lngDiff < 0.001;
+
+          if (addressMatch || coordinateMatch) {
+            duplicates.push(compareAddress);
+            processed.add(compareAddress.id);
+          }
+        }
+
+        if (duplicates.length > 0) {
+          duplicateGroups.push({
+            primary: address,
+            duplicates: duplicates
+          });
+          processed.add(address.id);
+
+          // Add duplicate issue for each group
+          allIssues.push({
+            id: `duplicate_${address.id}`,
+            type: 'duplicate',
+            title: `Duplicate Addresses - ${duplicates.length + 1} found`,
+            description: `${address.street}, ${address.city}, ${address.region}`,
+            severity: duplicates.length > 2 ? 'high' : 'medium',
+            data: {
+              primary: address,
+              duplicates: duplicates,
+              count: duplicates.length + 1
+            }
+          });
+        }
       });
 
       setIssues(allIssues);
@@ -175,7 +236,7 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
     }
   };
 
-  const handleBulkAction = async (action: 'approve' | 'reject' | 'delete') => {
+  const handleBulkAction = async (action: 'approve' | 'reject' | 'delete' | 'merge') => {
     try {
       setFixingIssues(true);
       
@@ -201,6 +262,15 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
             .delete()
             .eq('id', issue.data.id);
           if (error) throw error;
+        } else if (issue.type === 'duplicate' && action === 'merge') {
+          // Delete all duplicates, keep the primary
+          for (const duplicate of issue.data.duplicates) {
+            const { error } = await supabase
+              .from('addresses')
+              .delete()
+              .eq('id', duplicate.id);
+            if (error) throw error;
+          }
         }
       }
 
@@ -217,6 +287,38 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
       toast({
         title: "Error",
         description: "Failed to complete bulk action",
+        variant: "destructive",
+      });
+    } finally {
+      setFixingIssues(false);
+    }
+  };
+
+  const handleMergeDuplicates = async (issue: QualityIssue) => {
+    try {
+      setFixingIssues(true);
+      
+      // Delete all duplicates except the primary
+      for (const duplicate of issue.data.duplicates) {
+        const { error } = await supabase
+          .from('addresses')
+          .delete()
+          .eq('id', duplicate.id);
+        if (error) throw error;
+      }
+
+      toast({
+        title: "Success",
+        description: `Merged ${issue.data.duplicates.length} duplicate addresses`,
+      });
+
+      await fetchQualityIssues();
+      onIssuesFixed();
+    } catch (error) {
+      console.error('Error merging duplicates:', error);
+      toast({
+        title: "Error",
+        description: "Failed to merge duplicate addresses",
         variant: "destructive",
       });
     } finally {
@@ -288,6 +390,15 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
                 Reject ({selectedIssues.length})
               </Button>
               <Button
+                onClick={() => handleBulkAction('merge')}
+                disabled={fixingIssues}
+                variant="secondary"
+                size="sm"
+              >
+                <Merge className="h-4 w-4 mr-2" />
+                Merge ({selectedIssues.length})
+              </Button>
+              <Button
                 onClick={() => handleBulkAction('delete')}
                 disabled={fixingIssues}
                 variant="destructive"
@@ -301,7 +412,18 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
           <Button onClick={onClose} variant="outline" size="sm">
             Close
           </Button>
-        </div>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-5 w-5 text-green-600" />
+              <div>
+                <p className="text-sm font-medium">Selected</p>
+                <p className="text-2xl font-bold">{selectedIssues.length}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
       </div>
 
       {/* Summary */}
@@ -331,10 +453,10 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-green-600" />
+              <Merge className="h-5 w-5 text-purple-600" />
               <div>
-                <p className="text-sm font-medium">Selected</p>
-                <p className="text-2xl font-bold">{selectedIssues.length}</p>
+                <p className="text-sm font-medium">Duplicates</p>
+                <p className="text-2xl font-bold">{filterIssuesByType('duplicate').length}</p>
               </div>
             </div>
           </CardContent>
@@ -347,6 +469,7 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
           <TabsTrigger value="all">All Issues ({issues.length})</TabsTrigger>
           <TabsTrigger value="low_quality">Low Quality ({filterIssuesByType('low_quality').length})</TabsTrigger>
           <TabsTrigger value="pending_verification">Pending ({filterIssuesByType('pending_verification').length})</TabsTrigger>
+          <TabsTrigger value="duplicate">Duplicates ({filterIssuesByType('duplicate').length})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all" className="space-y-4">
@@ -390,6 +513,19 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
               selected={selectedIssues.includes(issue.id)}
               onSelect={handleSelectIssue}
               onEdit={handleEditIssue}
+              fixing={fixingIssues}
+            />
+          ))}
+        </TabsContent>
+
+        <TabsContent value="duplicate" className="space-y-4">
+          {filterIssuesByType('duplicate').map((issue) => (
+            <DuplicateIssueCard
+              key={issue.id}
+              issue={issue}
+              selected={selectedIssues.includes(issue.id)}
+              onSelect={handleSelectIssue}
+              onMerge={handleMergeDuplicates}
               fixing={fixingIssues}
             />
           ))}
@@ -548,6 +684,85 @@ function IssueCard({ issue, selected, onSelect, onEdit, fixing }: IssueCardProps
             </Button>
           </div>
         </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+interface DuplicateIssueCardProps {
+  issue: QualityIssue;
+  selected: boolean;
+  onSelect: (id: string, checked: boolean) => void;
+  onMerge: (issue: QualityIssue) => void;
+  fixing: boolean;
+}
+
+function DuplicateIssueCard({ issue, selected, onSelect, onMerge, fixing }: DuplicateIssueCardProps) {
+  const [showDetails, setShowDetails] = useState(false);
+
+  return (
+    <Card className={`transition-colors ${selected ? 'ring-2 ring-primary' : ''}`}>
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-3">
+            <Checkbox
+              checked={selected}
+              onCheckedChange={(checked) => onSelect(issue.id, !!checked)}
+              disabled={fixing}
+            />
+            <div className="flex items-center gap-2">
+              <Merge className="h-4 w-4 text-purple-600" />
+              <div>
+                <h4 className="font-medium">{issue.title}</h4>
+                <p className="text-sm text-muted-foreground">{issue.description}</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <Badge variant="secondary">{issue.severity}</Badge>
+                  <Badge variant="outline">{issue.data.count} addresses</Badge>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowDetails(!showDetails)}
+                  >
+                    {showDetails ? 'Hide' : 'Show'} Details
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => onMerge(issue)}
+              size="sm"
+              variant="outline"
+              disabled={fixing}
+            >
+              <Merge className="h-4 w-4 mr-2" />
+              Merge
+            </Button>
+          </div>
+        </div>
+        
+        {showDetails && (
+          <div className="mt-4 p-3 border rounded-lg bg-muted/50">
+            <h5 className="font-medium text-sm mb-2">Primary Address (will be kept):</h5>
+            <div className="text-sm text-muted-foreground mb-3">
+              <p>📍 {issue.data.primary.street}, {issue.data.primary.city}</p>
+              <p>🆔 UAC: {issue.data.primary.uac}</p>
+              <p>✅ Verified: {issue.data.primary.verified ? 'Yes' : 'No'}</p>
+            </div>
+            
+            <h5 className="font-medium text-sm mb-2">Duplicates (will be removed):</h5>
+            <div className="space-y-2">
+              {issue.data.duplicates.map((duplicate: any, index: number) => (
+                <div key={duplicate.id} className="text-sm text-muted-foreground pl-4 border-l-2 border-red-200">
+                  <p>📍 {duplicate.street}, {duplicate.city}</p>
+                  <p>🆔 UAC: {duplicate.uac}</p>
+                  <p>✅ Verified: {duplicate.verified ? 'Yes' : 'No'}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
