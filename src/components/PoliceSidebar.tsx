@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from 'react-i18next';
+import { EnhancedSyncStatus } from './EnhancedSyncStatus';
 
 interface NavigationItem {
   id: string;
@@ -174,6 +175,11 @@ export function PoliceSidebar({ activeTab, onTabChange }: PoliceSidebarProps) {
 
       <SidebarFooter className="border-t p-4">
         <div className="space-y-2">
+          {/* Sync Status Component */}
+          <div className="mb-4">
+            <EnhancedSyncStatus />
+          </div>
+          
           {state !== "collapsed" && (
             <div className="text-xs text-muted-foreground">
               <p>Emergency Services v2.1.0</p>

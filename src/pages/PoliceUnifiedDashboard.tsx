@@ -967,9 +967,6 @@ const PoliceUnifiedDashboard = () => {
                   <p className="text-sm text-muted-foreground">
                     {userCity ? `Coverage: ${userCity}` : 'National Operations'}
                   </p>
-                  <div className="mt-2">
-                    <EnhancedSyncStatus />
-                  </div>
                 </div>
               </div>
               
