@@ -238,21 +238,21 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-4 sm:py-8 max-w-4xl">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-2">
             Equatorial Guinea Address Portal
           </h1>
-          <p className="text-lg text-muted-foreground mb-4">
+          <p className="text-sm sm:text-lg text-muted-foreground mb-4 px-2">
             Public address lookup and verification system
           </p>
-          <div className="flex justify-center gap-4 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1">
+          <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 text-sm text-muted-foreground">
+            <span className="flex items-center justify-center gap-1">
               <Shield className="h-4 w-4" />
               Verified Addresses Only
             </span>
-            <span className="flex items-center gap-1">
+            <span className="flex items-center justify-center gap-1">
               <MapPin className="h-4 w-4" />
               GPS Coordinates Available
             </span>
@@ -271,8 +271,8 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex gap-2">
-              <div className="flex-1">
+            <div className="space-y-3 sm:space-y-0">
+              <div className="w-full">
                 <Label htmlFor="search">Search Query</Label>
                 <Input
                   id="search"
@@ -280,9 +280,10 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  className="w-full"
                 />
               </div>
-              <div className="flex gap-2 items-end">
+              <div className="flex flex-col sm:flex-row gap-2 w-full">
                 <QRCodeScanner 
                   onScanResult={handleQRScanResult}
                   variant="button"
@@ -290,7 +291,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                 <Button 
                   onClick={handleSearch} 
                   disabled={loading}
-                  className="h-10"
+                  className="w-full sm:w-auto h-10"
                 >
                   {loading ? 'Searching...' : 'Search'}
                 </Button>
@@ -299,25 +300,25 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
 
             {/* Search Examples */}
             <div className="text-sm text-muted-foreground">
-              <p className="mb-1">Example searches:</p>
-              <div className="flex flex-wrap gap-2">
+              <p className="mb-2">Example searches:</p>
+              <div className="flex flex-col sm:flex-row flex-wrap gap-2">
                 <Badge 
                   variant="outline" 
-                  className="cursor-pointer hover:bg-muted"
+                  className="cursor-pointer hover:bg-muted text-center py-1"
                   onClick={() => setSearchQuery('GQ-BN-MAL-')}
                 >
                   UAC: GQ-BN-MAL-*
                 </Badge>
                 <Badge 
                   variant="outline" 
-                  className="cursor-pointer hover:bg-muted"
+                  className="cursor-pointer hover:bg-muted text-center py-1"
                   onClick={() => setSearchQuery('Malabo')}
                 >
                   City: Malabo
                 </Badge>
                 <Badge 
                   variant="outline" 
-                  className="cursor-pointer hover:bg-muted"
+                  className="cursor-pointer hover:bg-muted text-center py-1"
                   onClick={() => setSearchQuery('Independence Avenue')}
                 >
                   Street: Independence Avenue
@@ -330,12 +331,14 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
         {/* Search Metadata */}
         {searchMetadata && (
           <Alert className="mb-4">
-            <Info className="h-4 w-4" />
-            <AlertDescription>
-              Search completed in {searchMetadata.executionTime}ms • 
-              Query: "{searchMetadata.query}" • 
-              Type: {searchMetadata.searchType}
-              {userLocation && ' • Using your location for proximity'}
+            <Info className="h-4 w-4 flex-shrink-0" />
+            <AlertDescription className="text-sm">
+              <div className="space-y-1 sm:space-y-0">
+                <div>Search completed in {searchMetadata.executionTime}ms</div>
+                <div>Query: "{searchMetadata.query}"</div>
+                <div>Type: {searchMetadata.searchType}</div>
+                {userLocation && <div>Using your location for proximity</div>}
+              </div>
             </AlertDescription>
           </Alert>
         )}
@@ -403,6 +406,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                       <Button 
                         variant="outline" 
                         size="sm"
+                        className="w-full justify-start"
                         onClick={() => {
                           const url = `https://www.google.com/maps?q=${address.latitude},${address.longitude}`;
                           window.open(url, '_blank');
@@ -415,6 +419,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                       <Button 
                         variant="outline" 
                         size="sm"
+                        className="w-full justify-start"
                         onClick={() => {
                           navigator.clipboard.writeText(address.uac);
                           toast({
@@ -430,6 +435,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                       <Button 
                         variant="outline" 
                         size="sm"
+                        className="w-full justify-start"
                         onClick={() => {
                           const coords = `${address.latitude},${address.longitude}`;
                           navigator.clipboard.writeText(coords);
@@ -446,12 +452,12 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                       {/* Share Options */}
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" className="w-full justify-start">
                             <Share2 className="h-4 w-4 mr-2" />
                             Share Address
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-md">
+                        <DialogContent className="sm:max-w-md mx-4 max-h-[90vh] overflow-y-auto">
                           <DialogHeader>
                             <DialogTitle>Share Address</DialogTitle>
                           </DialogHeader>
@@ -465,7 +471,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                                 variant="button"
                                 size="md"
                               />
-                              <p className="text-xs text-muted-foreground text-center">
+                              <p className="text-xs text-muted-foreground text-center px-2">
                                 Click above to generate and download QR code
                               </p>
                             </div>
@@ -476,7 +482,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                             <div className="grid grid-cols-1 gap-2">
                               <Button
                                 variant="outline"
-                                className="justify-start"
+                                className="justify-start w-full"
                                 onClick={() => handleShare(address, 'whatsapp')}
                               >
                                 <MessageCircle className="h-4 w-4 mr-2" />
@@ -485,7 +491,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                               
                               <Button
                                 variant="outline"
-                                className="justify-start"
+                                className="justify-start w-full"
                                 onClick={() => handleShare(address, 'email')}
                               >
                                 <Mail className="h-4 w-4 mr-2" />
@@ -494,7 +500,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                               
                               <Button
                                 variant="outline"
-                                className="justify-start"
+                                className="justify-start w-full"
                                 onClick={() => handleShare(address, 'copy')}
                               >
                                 <Share2 className="h-4 w-4 mr-2" />
@@ -508,6 +514,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                       <Button 
                         variant="destructive" 
                         size="sm"
+                        className="w-full justify-start"
                         onClick={() => {
                           if (onNavigateToEmergency) {
                             onNavigateToEmergency(address);
@@ -531,8 +538,8 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
 
 
         {/* Footer */}
-        <div className="text-center mt-8 text-sm text-muted-foreground">
-          <p>Equatorial Guinea National Digital Address Agency</p>
+        <div className="text-center mt-8 text-sm text-muted-foreground px-4">
+          <p className="mb-1">Equatorial Guinea National Digital Address Agency</p>
           <p>Serving citizens with reliable address information since 2024</p>
         </div>
       </div>
