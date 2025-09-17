@@ -238,6 +238,58 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
     }
   };
 
+  const handleSingleAction = async (issue: QualityIssue, action: 'approve' | 'reject' | 'delete') => {
+    try {
+      setFixingIssues(true);
+      
+      if (issue.type === 'pending_verification') {
+        if (action === 'approve') {
+          const { error } = await supabase.rpc('approve_address_request', {
+            p_request_id: issue.data.id
+          });
+          if (error) throw error;
+        } else if (action === 'reject') {
+          const { error } = await supabase.rpc('reject_address_request_with_feedback', {
+            p_request_id: issue.data.id,
+            p_rejection_reason: 'Manual rejection - quality review'
+          });
+          if (error) throw error;
+        }
+      } else if (issue.type === 'low_quality') {
+        if (action === 'reject') {
+          const { error } = await supabase
+            .from('addresses')
+            .update({ flagged: true, flag_reason: 'Quality issues flagged for review' })
+            .eq('id', issue.data.id);
+          if (error) throw error;
+        } else if (action === 'delete') {
+          const { error } = await supabase
+            .from('addresses')
+            .delete()
+            .eq('id', issue.data.id);
+          if (error) throw error;
+        }
+      }
+
+      toast({
+        title: "Success",
+        description: `Issue ${action}ed successfully`,
+      });
+
+      await fetchQualityIssues();
+      onIssuesFixed();
+    } catch (error) {
+      console.error('Error in single action:', error);
+      toast({
+        title: "Error",
+        description: "Failed to complete action",
+        variant: "destructive",
+      });
+    } finally {
+      setFixingIssues(false);
+    }
+  };
+
   const handleBulkAction = async (action: 'approve' | 'reject' | 'delete' | 'merge') => {
     try {
       setFixingIssues(true);
@@ -398,58 +450,56 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
         <div className="flex gap-2">
           {selectedIssues.length > 0 && (
             <>
-              <Button
-                onClick={() => handleBulkAction('approve')}
-                disabled={fixingIssues}
-                size="sm"
-              >
-                <Check className="h-4 w-4 mr-2" />
-                Approve ({selectedIssues.length})
-              </Button>
-              <Button
-                onClick={() => handleBulkAction('reject')}
-                disabled={fixingIssues}
-                variant="outline"
-                size="sm"
-              >
-                <X className="h-4 w-4 mr-2" />
-                Reject ({selectedIssues.length})
-              </Button>
-              <Button
-                onClick={() => handleBulkAction('merge')}
-                disabled={fixingIssues}
-                variant="secondary"
-                size="sm"
-              >
-                <Merge className="h-4 w-4 mr-2" />
-                Merge ({selectedIssues.length})
-              </Button>
-              <Button
-                onClick={() => handleBulkAction('delete')}
-                disabled={fixingIssues}
-                variant="destructive"
-                size="sm"
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete ({selectedIssues.length})
-              </Button>
+              {/* Show relevant bulk actions based on selected issue types */}
+              {selectedIssues.some(id => issues.find(i => i.id === id)?.type === 'pending_verification') && (
+                <>
+                  <Button
+                    onClick={() => handleBulkAction('approve')}
+                    disabled={fixingIssues}
+                    size="sm"
+                  >
+                    <Check className="h-4 w-4 mr-2" />
+                    Approve ({selectedIssues.filter(id => issues.find(i => i.id === id)?.type === 'pending_verification').length})
+                  </Button>
+                  <Button
+                    onClick={() => handleBulkAction('reject')}
+                    disabled={fixingIssues}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <X className="h-4 w-4 mr-2" />
+                    Reject ({selectedIssues.filter(id => issues.find(i => i.id === id)?.type === 'pending_verification').length})
+                  </Button>
+                </>
+              )}
+              {selectedIssues.some(id => issues.find(i => i.id === id)?.type === 'duplicate') && (
+                <Button
+                  onClick={() => handleBulkAction('merge')}
+                  disabled={fixingIssues}
+                  variant="secondary"
+                  size="sm"
+                >
+                  <Merge className="h-4 w-4 mr-2" />
+                  Merge ({selectedIssues.filter(id => issues.find(i => i.id === id)?.type === 'duplicate').length})
+                </Button>
+              )}
+              {selectedIssues.some(id => issues.find(i => i.id === id)?.type === 'low_quality') && (
+                <Button
+                  onClick={() => handleBulkAction('delete')}
+                  disabled={fixingIssues}
+                  variant="destructive"
+                  size="sm"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete ({selectedIssues.filter(id => issues.find(i => i.id === id)?.type === 'low_quality').length})
+                </Button>
+              )}
             </>
           )}
           <Button onClick={onClose} variant="outline" size="sm">
             Close
           </Button>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-green-600" />
-              <div>
-                <p className="text-sm font-medium">Selected</p>
-                <p className="text-2xl font-bold">{selectedIssues.length}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+        </div>
       </div>
 
       {/* Summary */}
@@ -513,6 +563,7 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
               selected={selectedIssues.includes(issue.id)}
               onSelect={handleSelectIssue}
               onEdit={handleEditIssue}
+              onSingleAction={handleSingleAction}
               fixing={fixingIssues}
             />
           ))}
@@ -526,6 +577,7 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
               selected={selectedIssues.includes(issue.id)}
               onSelect={handleSelectIssue}
               onEdit={handleEditIssue}
+              onSingleAction={handleSingleAction}
               fixing={fixingIssues}
             />
           ))}
@@ -539,6 +591,7 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
               selected={selectedIssues.includes(issue.id)}
               onSelect={handleSelectIssue}
               onEdit={handleEditIssue}
+              onSingleAction={handleSingleAction}
               fixing={fixingIssues}
             />
           ))}
@@ -653,10 +706,11 @@ interface IssueCardProps {
   selected: boolean;
   onSelect: (id: string, checked: boolean) => void;
   onEdit: (issue: QualityIssue) => void;
+  onSingleAction: (issue: QualityIssue, action: 'approve' | 'reject' | 'delete') => void;
   fixing: boolean;
 }
 
-function IssueCard({ issue, selected, onSelect, onEdit, fixing }: IssueCardProps) {
+function IssueCard({ issue, selected, onSelect, onEdit, onSingleAction, fixing }: IssueCardProps) {
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case 'high': return 'destructive';
@@ -700,10 +754,55 @@ function IssueCard({ issue, selected, onSelect, onEdit, fixing }: IssueCardProps
             </div>
           </div>
           <div className="flex gap-2">
+            {/* Contextual action buttons based on issue type */}
+            {issue.type === 'pending_verification' && (
+              <>
+                <Button
+                  onClick={() => onSingleAction(issue, 'approve')}
+                  size="sm"
+                  variant="default"
+                  disabled={fixing}
+                >
+                  <Check className="h-4 w-4 mr-1" />
+                  Approve
+                </Button>
+                <Button
+                  onClick={() => onSingleAction(issue, 'reject')}
+                  size="sm"
+                  variant="outline"
+                  disabled={fixing}
+                >
+                  <X className="h-4 w-4 mr-1" />
+                  Reject
+                </Button>
+              </>
+            )}
+            {issue.type === 'low_quality' && (
+              <>
+                <Button
+                  onClick={() => onSingleAction(issue, 'reject')}
+                  size="sm"
+                  variant="outline"
+                  disabled={fixing}
+                >
+                  <X className="h-4 w-4 mr-1" />
+                  Flag
+                </Button>
+                <Button
+                  onClick={() => onSingleAction(issue, 'delete')}
+                  size="sm"
+                  variant="destructive"
+                  disabled={fixing}
+                >
+                  <Trash2 className="h-4 w-4 mr-1" />
+                  Delete
+                </Button>
+              </>
+            )}
             <Button
               onClick={() => onEdit(issue)}
               size="sm"
-              variant="outline"
+              variant="ghost"
               disabled={fixing}
             >
               <Edit className="h-4 w-4" />
