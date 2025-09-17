@@ -32,6 +32,7 @@ interface VerificationRequest {
   verification_type: string;
   claimant_relationship: string;
   primary_document_type: string;
+  primary_document_url?: string;
   status: string;
   consent_given: boolean;
   privacy_level: string;
@@ -333,6 +334,28 @@ export const ResidencyVerificationManager = () => {
                                 <p className="text-sm">{selectedVerification.consent_given ? 'Yes' : 'No'}</p>
                               </div>
                             </div>
+
+                            {selectedVerification.primary_document_url && (
+                              <div>
+                                <Label>Submitted Document</Label>
+                                <div className="border rounded-lg p-4 bg-muted/50">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <FileText className="w-4 h-4" />
+                                    <span className="text-sm font-medium">
+                                      {formatStatus(selectedVerification.primary_document_type)}
+                                    </span>
+                                  </div>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => window.open(selectedVerification.primary_document_url, '_blank')}
+                                  >
+                                    <Eye className="w-4 h-4 mr-1" />
+                                    View Document
+                                  </Button>
+                                </div>
+                              </div>
+                            )}
 
                             {selectedVerification.verification_notes && (
                               <div>
