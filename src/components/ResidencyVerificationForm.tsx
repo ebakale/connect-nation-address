@@ -4,61 +4,58 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Shield, FileText, CheckCircle, AlertTriangle, Upload, X } from 'lucide-react';
-import { useResidencyVerification } from '@/hooks/useResidencyVerification';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { Shield, Upload, FileText, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useResidencyVerification } from '@/hooks/useResidencyVerification';
 import { useToast } from '@/hooks/use-toast';
 
 interface ResidencyVerificationFormProps {
   addressRequestId: string;
+  editingVerification?: any; // Optional: for editing existing requests
   onSuccess?: () => void;
   onCancel?: () => void;
 }
 
 export const ResidencyVerificationForm = ({ 
   addressRequestId, 
+  editingVerification, 
   onSuccess, 
   onCancel 
 }: ResidencyVerificationFormProps) => {
   const { 
     createVerificationRequest, 
     recordPrivacyConsent, 
-    getRequiredDocuments, 
-    documentTypes,
-    legalFramework
+    legalFramework, 
+    documentTypes, 
+    getRequiredDocuments 
   } = useResidencyVerification();
   
   const { user } = useAuth();
   const { toast } = useToast();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
+  
   const [formData, setFormData] = useState({
-    verificationType: 'both',
-    claimantRelationship: 'owner',
-    primaryDocumentType: '',
-    privacyLevel: 'restricted',
-    notes: ''
+    verificationType: editingVerification?.verification_type || 'residency',
+    claimantRelationship: editingVerification?.claimant_relationship || 'resident', 
+    primaryDocumentType: editingVerification?.primary_document_type || 'utility_bill',
+    additionalNotes: ''
   });
-
   const [consents, setConsents] = useState({
-    dataProcessing: false,
-    dataRetention: false,
-    documentVerification: false,
-    fieldVerification: false
+    dataProcessing: editingVerification ? true : false,
+    dataRetention: editingVerification ? true : false,
+    dataSharing: false,
+    qualityAssurance: false
   });
-
   const [primaryDocument, setPrimaryDocument] = useState<File | null>(null);
   const [supportingDocuments, setSupportingDocuments] = useState<File[]>([]);
-  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const requiredDocuments = getRequiredDocuments(formData.verificationType, formData.claimantRelationship);
-  const allConsentsGiven = Object.values(consents).every(consent => consent);
+  const [uploading, setUploading] = useState(false);
+  
+  const primaryFileRef = useRef<HTMLInputElement>(null);
+  const supportingFileRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>, type: 'primary' | 'supporting') => {
     const files = event.target.files;
@@ -114,6 +111,9 @@ export const ResidencyVerificationForm = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const requiredConsents = ['dataProcessing', 'dataRetention'];
+    const allConsentsGiven = requiredConsents.every(consent => consents[consent as keyof typeof consents]);
 
     if (!allConsentsGiven) {
       toast({
@@ -124,7 +124,7 @@ export const ResidencyVerificationForm = ({
       return;
     }
 
-    if (!primaryDocument) {
+    if (!primaryDocument && !editingVerification?.primary_document_url) {
       toast({
         title: 'Document Required',
         description: 'Please upload the primary verification document',
@@ -136,41 +136,67 @@ export const ResidencyVerificationForm = ({
     setLoading(true);
     setUploading(true);
 
+    let verificationId: string | undefined;
     try {
-      // Upload primary document
-      const primaryDocumentUrl = await uploadDocument(primaryDocument, 'verification-documents');
-      if (!primaryDocumentUrl) {
-        throw new Error('Failed to upload primary document');
+      let primaryDocumentUrl = editingVerification?.primary_document_url;
+      
+      // Upload primary document if a new one is provided
+      if (primaryDocument) {
+        primaryDocumentUrl = await uploadDocument(primaryDocument, 'verification-documents');
+        if (!primaryDocumentUrl) {
+          throw new Error('Failed to upload primary document');
+        }
       }
 
-      // Create verification request
-      const verificationId = await createVerificationRequest(
-        addressRequestId,
-        formData.verificationType,
-        formData.claimantRelationship,
-        formData.primaryDocumentType,
-        primaryDocumentUrl
-      );
+      if (editingVerification) {
+        // Update existing verification request
+        const { error } = await supabase
+          .from('residency_ownership_verifications')
+          .update({
+            verification_type: formData.verificationType as any,
+            claimant_relationship: formData.claimantRelationship as any,
+            primary_document_type: formData.primaryDocumentType as any,
+            primary_document_url: primaryDocumentUrl,
+            status: 'pending' // Reset to pending when edited
+          })
+          .eq('id', editingVerification.id);
 
-      // Record consents
-      for (const [consentType, consentGiven] of Object.entries(consents)) {
-        if (consentGiven) {
-          await recordPrivacyConsent(
-            verificationId,
-            consentType,
-            true,
-            {
-              timestamp: new Date().toISOString(),
-              ipAddress: 'user_provided',
-              userAgent: navigator.userAgent
-            }
-          );
+        if (error) throw error;
+        verificationId = editingVerification.id;
+      } else {
+        // Create verification request
+        verificationId = await createVerificationRequest(
+          addressRequestId,
+          formData.verificationType,
+          formData.claimantRelationship,
+          formData.primaryDocumentType,
+          primaryDocumentUrl!
+        );
+      }
+
+      // Record consents (only for new requests)
+      if (!editingVerification && verificationId) {
+        for (const [consentType, consentGiven] of Object.entries(consents)) {
+          if (consentGiven) {
+            await recordPrivacyConsent(
+              verificationId,
+              consentType,
+              true,
+              {
+                timestamp: new Date().toISOString(),
+                ipAddress: 'user_provided',
+                userAgent: navigator.userAgent
+              }
+            );
+          }
         }
       }
 
       toast({
-        title: 'Verification Request Submitted',
-        description: 'Your residency/ownership verification request has been submitted for review. You will be notified of any updates.',
+        title: editingVerification ? 'Verification Request Updated' : 'Verification Request Submitted',
+        description: editingVerification 
+          ? 'Your verification request has been updated and is under review.'
+          : 'Your residency/ownership verification request has been submitted for review. You will be notified of any updates.',
       });
 
       onSuccess?.();
@@ -194,23 +220,28 @@ export const ResidencyVerificationForm = ({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Shield className="w-5 h-5" />
-          Residency/Ownership Verification
+          {editingVerification ? 'Edit Verification Request' : 'Residency/Ownership Verification'}
         </CardTitle>
         <CardDescription>
-          Submit legal documents to verify your residency or ownership of this address. All information is processed securely according to legal requirements.
+          {editingVerification 
+            ? 'Update your verification request with corrected information or new documents.'
+            : 'Submit legal documents to verify your residency or ownership of this address. All information is processed securely according to legal requirements.'
+          }
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Legal Framework Information */}
           {legalFramework && (
-            <Alert>
-              <AlertTriangle className="w-4 h-4" />
-              <AlertDescription>
-                <strong>Legal Framework:</strong> This verification process is governed by {legalFramework.applicable_laws.join(', ')}. 
-                Data retention period: {Math.floor(legalFramework.data_retention_period / 365)} years.
-              </AlertDescription>
-            </Alert>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h3 className="font-medium text-blue-900 mb-2">Legal Framework</h3>
+              <p className="text-sm text-blue-700 mb-2">
+                Jurisdiction: {legalFramework.jurisdiction}
+              </p>
+              <p className="text-sm text-blue-700">
+                Data Retention Period: {legalFramework.data_retention_period} days
+              </p>
+            </div>
           )}
 
           {/* Verification Type */}
@@ -218,9 +249,7 @@ export const ResidencyVerificationForm = ({
             <Label htmlFor="verificationType">Verification Type *</Label>
             <Select 
               value={formData.verificationType} 
-              onValueChange={(value) => 
-                setFormData(prev => ({ ...prev, verificationType: value, primaryDocumentType: '' }))
-              }
+              onValueChange={(value) => setFormData(prev => ({ ...prev, verificationType: value }))}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -228,213 +257,204 @@ export const ResidencyVerificationForm = ({
               <SelectContent>
                 <SelectItem value="residency">Residency Verification</SelectItem>
                 <SelectItem value="ownership">Ownership Verification</SelectItem>
-                <SelectItem value="both">Both Residency & Ownership</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Claimant Relationship */}
           <div className="space-y-2">
-            <Label htmlFor="claimantRelationship">Your Relationship to Property *</Label>
+            <Label htmlFor="claimantRelationship">Your Relationship to this Address *</Label>
             <Select 
               value={formData.claimantRelationship} 
-              onValueChange={(value) => 
-                setFormData(prev => ({ ...prev, claimantRelationship: value, primaryDocumentType: '' }))
-              }
+              onValueChange={(value) => setFormData(prev => ({ ...prev, claimantRelationship: value }))}
             >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="resident">Resident</SelectItem>
                 <SelectItem value="owner">Property Owner</SelectItem>
-                <SelectItem value="tenant">Tenant/Renter</SelectItem>
+                <SelectItem value="tenant">Tenant</SelectItem>
                 <SelectItem value="family_member">Family Member</SelectItem>
+                <SelectItem value="business_operator">Business Operator</SelectItem>
                 <SelectItem value="authorized_representative">Authorized Representative</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {/* Required Documents Information */}
-          <div className="p-4 bg-muted rounded-lg">
-            <h4 className="font-medium mb-2">Required Documents for Your Case:</h4>
-            <div className="flex flex-wrap gap-2">
-              {requiredDocuments.map(docType => {
-                const doc = documentTypes.find(d => d.value === docType);
-                return (
-                  <Badge key={docType} variant="secondary">
-                    {doc?.label}
-                  </Badge>
-                );
-              })}
-            </div>
-          </div>
-
           {/* Primary Document Type */}
           <div className="space-y-2">
-            <Label htmlFor="primaryDocumentType">Primary Verification Document *</Label>
+            <Label htmlFor="primaryDocumentType">Primary Document Type *</Label>
             <Select 
               value={formData.primaryDocumentType} 
               onValueChange={(value) => setFormData(prev => ({ ...prev, primaryDocumentType: value }))}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select the main document you'll provide" />
-              </SelectTrigger>
-              <SelectContent>
-                {documentTypes
-                  .filter(doc => requiredDocuments.includes(doc.value))
-                  .map(doc => (
-                    <SelectItem key={doc.value} value={doc.value}>
-                      <div className="flex flex-col">
-                        <span>{doc.label}</span>
-                        <span className="text-xs text-muted-foreground">{doc.description}</span>
-                      </div>
-                    </SelectItem>
-                  ))
-                }
-              </SelectContent>
-            </Select>
-            {selectedDocumentType && (
-              <p className="text-sm text-muted-foreground">{selectedDocumentType.description}</p>
-            )}
-          </div>
-
-          {/* Primary Document Upload */}
-          <div className="space-y-2">
-            <Label>Primary Document Upload *</Label>
-            <div className="border-2 border-dashed border-border rounded-lg p-6">
-              {primaryDocument ? (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4" />
-                    <span className="text-sm">{primaryDocument.name}</span>
-                    <Badge variant="outline">{(primaryDocument.size / 1024 / 1024).toFixed(1)} MB</Badge>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setPrimaryDocument(null)}
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                </div>
-              ) : (
-                <div className="text-center">
-                  <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Upload your primary verification document (PDF or image, max 10MB)
-                  </p>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    Choose File
-                  </Button>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept=".pdf,.jpg,.jpeg,.png,.webp"
-                    onChange={(e) => handleFileSelect(e, 'primary')}
-                    className="hidden"
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Privacy Level */}
-          <div className="space-y-2">
-            <Label htmlFor="privacyLevel">Privacy Level</Label>
-            <Select 
-              value={formData.privacyLevel} 
-              onValueChange={(value) => setFormData(prev => ({ ...prev, privacyLevel: value }))}
-            >
-              <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="restricted">Restricted (Staff only)</SelectItem>
-                <SelectItem value="confidential">Confidential (Authorized verifiers only)</SelectItem>
+                {documentTypes.map((docType) => (
+                  <SelectItem key={docType.value} value={docType.value}>
+                    {docType.label} {docType.required && '*'}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
+            {selectedDocumentType && (
+              <p className="text-sm text-muted-foreground">
+                {selectedDocumentType.description}
+              </p>
+            )}
           </div>
+
+          {/* Required Documents */}
+          <div className="space-y-2">
+            <Label>Required Documents</Label>
+            <div className="bg-gray-50 border rounded-lg p-4">
+              <h4 className="font-medium mb-2">For your selection, you must provide:</h4>
+              <ul className="space-y-1">
+                {getRequiredDocuments(formData.verificationType, formData.claimantRelationship).map((docType, index) => (
+                  <li key={index} className="flex items-center gap-2 text-sm">
+                    <AlertCircle className="w-4 h-4 text-orange-500" />
+                    {documentTypes.find(d => d.value === docType)?.label || docType}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Primary Document Upload */}
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="primaryDocument">Primary Document *</Label>
+              <p className="text-sm text-muted-foreground mb-2">
+                Upload your {selectedDocumentType?.label.toLowerCase()} (PDF or image, max 10MB)
+              </p>
+              <div className="flex items-center gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => primaryFileRef.current?.click()}
+                >
+                  <Upload className="w-4 h-4 mr-2" />
+                  Choose File
+                </Button>
+                <input
+                  ref={primaryFileRef}
+                  type="file"
+                  accept="application/pdf,image/*"
+                  onChange={(e) => handleFileSelect(e, 'primary')}
+                  className="hidden"
+                />
+                {primaryDocument && (
+                  <span className="text-sm text-green-600">
+                    ✓ {primaryDocument.name}
+                  </span>
+                )}
+                {editingVerification?.primary_document_url && !primaryDocument && (
+                  <span className="text-sm text-blue-600">
+                    ✓ Document already uploaded
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <Separator />
 
           {/* Privacy Consents */}
           <div className="space-y-4">
-            <h4 className="font-medium">Required Consents</h4>
+            <Label>Privacy and Data Processing Consents *</Label>
             
             <div className="space-y-3">
-              {[
-                {
-                  key: 'dataProcessing',
-                  label: 'Data Processing Consent',
-                  description: 'I consent to the processing of my personal data for address verification purposes'
-                },
-                {
-                  key: 'dataRetention',
-                  label: 'Data Retention Consent',
-                  description: `I consent to the retention of my data for ${legalFramework?.data_retention_period ? Math.floor(legalFramework.data_retention_period / 365) : 7} years as required by law`
-                },
-                {
-                  key: 'documentVerification',
-                  label: 'Document Verification Consent',
-                  description: 'I consent to the verification of submitted documents with relevant authorities'
-                },
-                {
-                  key: 'fieldVerification',
-                  label: 'Field Verification Consent',
-                  description: 'I consent to field verification visits if required for this verification process'
-                }
-              ].map(consent => (
-                <div key={consent.key} className="flex items-start space-x-2">
-                  <Checkbox
-                    id={consent.key}
-                    checked={consents[consent.key as keyof typeof consents]}
-                    onCheckedChange={(checked) => 
-                      setConsents(prev => ({ ...prev, [consent.key]: checked === true }))
-                    }
-                  />
-                  <div className="grid gap-1.5 leading-none">
-                    <label
-                      htmlFor={consent.key}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      {consent.label} *
-                    </label>
-                    <p className="text-xs text-muted-foreground">
-                      {consent.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
+              <div className="flex items-start space-x-2">
+                <Checkbox 
+                  id="dataProcessing"
+                  checked={consents.dataProcessing}
+                  onCheckedChange={(checked) => 
+                    setConsents(prev => ({ ...prev, dataProcessing: !!checked }))
+                  }
+                />
+                <Label htmlFor="dataProcessing" className="text-sm leading-5">
+                  <span className="font-medium">Data Processing Consent *</span><br />
+                  I consent to the processing of my personal data and submitted documents for the purpose of address verification in accordance with applicable data protection laws.
+                </Label>
+              </div>
+
+              <div className="flex items-start space-x-2">
+                <Checkbox 
+                  id="dataRetention"
+                  checked={consents.dataRetention}
+                  onCheckedChange={(checked) => 
+                    setConsents(prev => ({ ...prev, dataRetention: !!checked }))
+                  }
+                />
+                <Label htmlFor="dataRetention" className="text-sm leading-5">
+                  <span className="font-medium">Data Retention Consent *</span><br />
+                  I understand and consent to my data being retained for {legalFramework?.data_retention_period || 2555} days for legal compliance and verification purposes.
+                </Label>
+              </div>
+
+              <div className="flex items-start space-x-2">
+                <Checkbox 
+                  id="dataSharing"
+                  checked={consents.dataSharing}
+                  onCheckedChange={(checked) => 
+                    setConsents(prev => ({ ...prev, dataSharing: !!checked }))
+                  }
+                />
+                <Label htmlFor="dataSharing" className="text-sm leading-5">
+                  <span className="font-medium">Authorized Data Sharing</span><br />
+                  I consent to sharing of verified address information with authorized government agencies and emergency services for public safety purposes.
+                </Label>
+              </div>
+
+              <div className="flex items-start space-x-2">
+                <Checkbox 
+                  id="qualityAssurance"
+                  checked={consents.qualityAssurance}
+                  onCheckedChange={(checked) => 
+                    setConsents(prev => ({ ...prev, qualityAssurance: !!checked }))
+                  }
+                />
+                <Label htmlFor="qualityAssurance" className="text-sm leading-5">
+                  <span className="font-medium">Quality Assurance</span><br />
+                  I consent to my data being used for system improvement and quality assurance purposes (anonymized data only).
+                </Label>
+              </div>
             </div>
           </div>
 
           {/* Additional Notes */}
           <div className="space-y-2">
-            <Label htmlFor="notes">Additional Notes</Label>
+            <Label htmlFor="additionalNotes">Additional Notes</Label>
             <Textarea
-              id="notes"
-              value={formData.notes}
-              onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-              placeholder="Any additional information that might help with the verification process..."
+              id="additionalNotes"
+              value={formData.additionalNotes}
+              onChange={(e) => setFormData(prev => ({ ...prev, additionalNotes: e.target.value }))}
+              placeholder="Any additional information that might help with verification..."
               rows={3}
             />
           </div>
 
           {/* Submit Buttons */}
-          <div className="flex gap-2">
-            <Button
-              type="submit"
-              disabled={!allConsentsGiven || !primaryDocument || loading}
+          <div className="flex gap-3 pt-4">
+            <Button 
+              type="submit" 
+              disabled={loading || uploading}
               className="flex-1"
             >
-              {uploading ? 'Uploading...' : loading ? 'Submitting...' : 'Submit Verification Request'}
+              {uploading ? 'Uploading...' : loading ? 'Processing...' : editingVerification ? 'Update Request' : 'Submit Request'}
             </Button>
             {onCancel && (
-              <Button type="button" variant="outline" onClick={onCancel}>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={onCancel}
+                disabled={loading || uploading}
+              >
                 Cancel
               </Button>
             )}

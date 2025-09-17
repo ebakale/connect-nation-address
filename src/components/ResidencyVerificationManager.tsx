@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -54,8 +54,6 @@ export const ResidencyVerificationManager = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [reviewNotes, setReviewNotes] = useState('');
   const [reviewStatus, setReviewStatus] = useState('');
-  const [replacingDoc, setReplacingDoc] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   
   const { canVerifyAddresses, hasAdminAccess } = useUserRole();
   const { toast } = useToast();
@@ -421,51 +419,6 @@ export const ResidencyVerificationManager = () => {
                                     View Document
                                   </Button>
 
-                                  {/* Hidden input for replacing document */}
-                                  <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept="application/pdf,image/*"
-                                    className="hidden"
-                                    onChange={async (e) => {
-                                      const file = e.target.files?.[0];
-                                      if (!file || !selectedVerification) return;
-                                      setReplacingDoc(true);
-                                      try {
-                                        const ext = file.name.split('.').pop();
-                                        const fileName = `${selectedVerification.user_id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-                                        const { error: uploadError } = await supabase.storage
-                                          .from('residency-documents')
-                                          .upload(fileName, file);
-                                        if (uploadError) throw uploadError;
-
-                                        const { error: updateError } = await supabase
-                                          .from('residency_ownership_verifications')
-                                          .update({ primary_document_url: fileName })
-                                          .eq('id', selectedVerification.id);
-                                        if (updateError) throw updateError;
-
-                                        toast({ title: 'Document updated', description: 'The document has been replaced successfully.' });
-                                        setSelectedVerification({ ...selectedVerification, primary_document_url: fileName });
-                                        await fetchVerifications();
-                                      } catch (err: any) {
-                                        console.error('Replace document error:', err);
-                                        toast({ title: 'Error', description: err.message || 'Failed to replace document', variant: 'destructive' });
-                                      } finally {
-                                        setReplacingDoc(false);
-                                      }
-                                    }}
-                                  />
-
-                                  <Button
-                                    variant="secondary"
-                                    size="sm"
-                                    className="ml-2"
-                                    disabled={replacingDoc}
-                                    onClick={() => fileInputRef.current?.click()}
-                                  >
-                                    {replacingDoc ? 'Uploading…' : 'Replace Document'}
-                                  </Button>
                                 </div>
                               </div>
                             )}
@@ -491,7 +444,57 @@ export const ResidencyVerificationManager = () => {
                                   <SelectItem value="legal_review">Legal Review</SelectItem>
                                   <SelectItem value="approved">Approved</SelectItem>
                                   <SelectItem value="rejected">Rejected</SelectItem>
-                                  <SelectItem value="requires_additional_documents">Requires Additional Documents</SelectItem>
+                                  <SelectItem value="requires_additional_documents">Request Changes</SelectItem>
+                                  <SelectItem value="under_investigation">Under Investigation</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label htmlFor="reviewNotes">Review Notes</Label>
+                              <Textarea
+                                id="reviewNotes"
+                                value={reviewNotes}
+                                onChange={(e) => setReviewNotes(e.target.value)}
+                                placeholder="Add notes about this review..."
+                                rows={3}
+                              />
+                            </div>
+
+                            <div className="flex gap-2">
+                              <Button
+                                onClick={() => updateVerificationStatus(selectedVerification.id, reviewStatus, reviewNotes)}
+                                disabled={!reviewStatus}
+                                className="flex-1"
+                              >
+                                Update Status
+                              </Button>
+                            </div>
+                              </div>
+                            )}
+
+                            {selectedVerification.verification_notes && (
+                              <div>
+                                <Label>Current Notes</Label>
+                                <p className="text-sm bg-muted p-2 rounded">
+                                  {selectedVerification.verification_notes}
+                                </p>
+                              </div>
+                            )}
+
+                            <div className="space-y-2">
+                              <Label htmlFor="reviewStatus">Update Status</Label>
+                              <Select value={reviewStatus} onValueChange={setReviewStatus}>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select new status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="document_review">Document Review</SelectItem>
+                                  <SelectItem value="field_verification">Field Verification</SelectItem>
+                                  <SelectItem value="legal_review">Legal Review</SelectItem>
+                                  <SelectItem value="approved">Approved</SelectItem>
+                                  <SelectItem value="rejected">Rejected</SelectItem>
+                                  <SelectItem value="requires_additional_documents">Request Changes</SelectItem>
                                   <SelectItem value="under_investigation">Under Investigation</SelectItem>
                                 </SelectContent>
                               </Select>
