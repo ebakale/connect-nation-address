@@ -96,11 +96,39 @@ export function PoliceSidebar({ activeTab, onTabChange }: PoliceSidebarProps) {
       visible: isPoliceSupervisor || isAdmin
     },
     {
+      id: 'admin-users',
+      title: t('emergency:policeAdminDashboard.userManagement'),
+      icon: Users,
+      onClick: () => handleItemClick('admin-users'),
+      visible: isAdmin
+    },
+    {
+      id: 'admin-units',
+      title: t('emergency:policeAdminDashboard.unitManagement'),
+      icon: Shield,
+      onClick: () => handleItemClick('admin-units'),
+      visible: isAdmin
+    },
+    {
+      id: 'admin-system',
+      title: t('emergency:policeAdminDashboard.systemConfig'),
+      icon: Settings,
+      onClick: () => handleItemClick('admin-system'),
+      visible: isAdmin
+    },
+    {
+      id: 'admin-analytics',
+      title: t('emergency:policeAdminDashboard.analytics'),
+      icon: TrendingUp,
+      onClick: () => handleItemClick('admin-analytics'),
+      visible: isAdmin
+    },
+    {
       id: 'admin',
       title: t('emergency:admin'),
       icon: Settings,
       onClick: () => handleItemClick('admin'),
-      visible: hasPoliceAdminAccess
+      visible: hasPoliceAdminAccess && !isAdmin
     }
   ];
 
@@ -120,7 +148,7 @@ export function PoliceSidebar({ activeTab, onTabChange }: PoliceSidebarProps) {
   );
 
   const adminItems = visibleItems.filter(item => 
-    ['admin'].includes(item.id)
+    ['admin', 'admin-users', 'admin-units', 'admin-system', 'admin-analytics'].includes(item.id)
   );
 
   const renderMenuGroup = (items: NavigationItem[], label: string) => {

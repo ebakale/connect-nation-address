@@ -43,6 +43,12 @@ import { UnitPerformanceAnalytics } from '@/components/UnitPerformanceAnalytics'
 import { UnitManagementDashboard } from '@/components/UnitManagementDashboard';
 import { OfficerProfileDashboard } from '@/components/OfficerProfileDashboard';
 
+// Import admin components
+import UserManager from '@/components/UserManager';
+import UnitManagement from '@/components/UnitManagement';
+import SystemConfiguration from '@/components/SystemConfiguration';
+import PoliceAnalytics from '@/components/PoliceAnalytics';
+
 import { toast } from "sonner";
 
 interface EmergencyIncident {
@@ -933,8 +939,72 @@ const PoliceUnifiedDashboard = () => {
           </div>
         );
 
+      case 'admin-users':
+        if (!isAdmin) return null;
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('emergency:policeAdminDashboard.policeUserManagement')}</CardTitle>
+              <CardDescription>
+                {t('emergency:policeAdminDashboard.manageOfficersDescription')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 md:p-6 w-full min-w-0">
+              <UserManager />
+            </CardContent>
+          </Card>
+        );
+
+      case 'admin-units':
+        if (!isAdmin) return null;
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('emergency:policeAdminDashboard.policeUnitManagement')}</CardTitle>
+              <CardDescription>
+                {t('emergency:policeAdminDashboard.manageUnitsDescription')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <UnitManagement />
+            </CardContent>
+          </Card>
+        );
+
+      case 'admin-system':
+        if (!isAdmin) return null;
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('emergency:policeAdminDashboard.systemConfiguration')}</CardTitle>
+              <CardDescription>
+                {t('emergency:policeAdminDashboard.configureSystemDescription')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <SystemConfiguration />
+            </CardContent>
+          </Card>
+        );
+
+      case 'admin-analytics':
+        if (!isAdmin) return null;
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('emergency:policeAdminDashboard.policeAnalytics')}</CardTitle>
+              <CardDescription>
+                {t('emergency:policeAdminDashboard.viewMetricsDescription')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <PoliceAnalytics />
+            </CardContent>
+          </Card>
+        );
+
       case 'admin':
-        if (!hasPoliceAdminAccess) return null;
+        if (!hasPoliceAdminAccess || isAdmin) return null;
         return (
           <div className="space-y-6">
             <PoliceAdminDashboard />
