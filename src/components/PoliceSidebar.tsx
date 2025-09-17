@@ -100,35 +100,28 @@ export function PoliceSidebar({ activeTab, onTabChange }: PoliceSidebarProps) {
       title: t('emergency:policeAdminDashboard.userManagement'),
       icon: Users,
       onClick: () => handleItemClick('admin-users'),
-      visible: isAdmin
+      visible: hasPoliceAdminAccess || isAdmin
     },
     {
       id: 'admin-units',
       title: t('emergency:policeAdminDashboard.unitManagement'),
       icon: Shield,
       onClick: () => handleItemClick('admin-units'),
-      visible: isAdmin
+      visible: hasPoliceAdminAccess || isAdmin
     },
     {
       id: 'admin-system',
       title: t('emergency:policeAdminDashboard.systemConfig'),
       icon: Settings,
       onClick: () => handleItemClick('admin-system'),
-      visible: isAdmin
+      visible: hasPoliceAdminAccess || isAdmin
     },
     {
       id: 'admin-analytics',
       title: t('emergency:policeAdminDashboard.analytics'),
       icon: TrendingUp,
       onClick: () => handleItemClick('admin-analytics'),
-      visible: isAdmin
-    },
-    {
-      id: 'admin',
-      title: t('emergency:admin'),
-      icon: Settings,
-      onClick: () => handleItemClick('admin'),
-      visible: hasPoliceAdminAccess && !isAdmin
+      visible: hasPoliceAdminAccess || isAdmin
     }
   ];
 
