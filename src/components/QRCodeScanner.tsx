@@ -3,7 +3,7 @@ import QrScanner from '@/lib/vendor/qr-scanner.min.js';
 
 import { Capacitor } from '@capacitor/core';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Card, CardContent } from '@/components/ui/card';
 import { QrCode, Camera, X, ScanLine } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -45,6 +45,11 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
       setError('');
       setIsScanning(true);
       
+      // Check if we have camera permissions first
+      if (!await checkCameraPermissions()) {
+        return;
+      }
+      
       // Check if running on native platform
       if (Capacitor.isNativePlatform()) {
         // For native platforms, we'll use web-based scanning but with better camera handling
@@ -57,6 +62,40 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
     } catch (err: any) {
       console.error('Error starting scanner:', err);
       handleScannerError(err);
+    }
+  };
+
+  const checkCameraPermissions = async (): Promise<boolean> => {
+    try {
+      // Check if we're on HTTPS or localhost
+      const isSecure = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+      
+      if (!isSecure) {
+        setError('Camera access requires HTTPS. Please use a secure connection.');
+        setIsScanning(false);
+        return false;
+      }
+
+      // Check if navigator.mediaDevices is available
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setError('Camera API not supported in this browser.');
+        setIsScanning(false);
+        return false;
+      }
+
+      // Request camera permission
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      });
+      
+      // Stop the test stream immediately
+      stream.getTracks().forEach(track => track.stop());
+      
+      return true;
+    } catch (err: any) {
+      console.error('Camera permission check failed:', err);
+      handleScannerError(err);
+      return false;
     }
   };
 
@@ -122,20 +161,25 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
 
   const handleScannerError = (err: any) => {
     let errorMessage = 'Failed to access camera.';
+    let helpMessage = '';
     
     if (err.name === 'NotAllowedError') {
-      errorMessage = 'Camera access denied. Please allow camera permissions.';
+      errorMessage = 'Camera access denied.';
+      helpMessage = 'Please allow camera permissions in your browser settings and try again.';
     } else if (err.name === 'NotFoundError') {
       errorMessage = 'No camera found on this device.';
+      helpMessage = 'Make sure your device has a camera and try again.';
     } else if (err.name === 'NotSupportedError') {
       errorMessage = 'Camera not supported in this browser.';
+      helpMessage = 'Try using Chrome, Firefox, or Safari for better camera support.';
     } else if (err.name === 'NotReadableError') {
       errorMessage = 'Camera is being used by another application.';
+      helpMessage = 'Close other apps using the camera and try again.';
     } else if (err.message) {
       errorMessage = err.message;
     }
     
-    setError(errorMessage);
+    setError(`${errorMessage} ${helpMessage}`);
     setIsScanning(false);
     toast({
       title: "Camera Error",
@@ -246,6 +290,9 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
             <Camera className="h-5 w-5" />
             Scan Address QR Code
           </DialogTitle>
+          <DialogDescription>
+            Point your camera at a QR code containing an address UAC to scan it automatically.
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4">
