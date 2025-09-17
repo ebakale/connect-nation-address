@@ -420,9 +420,7 @@ const PoliceUnifiedDashboard = () => {
   if (showUnitLeadDashboard) {
     return (
       <div className="min-h-screen bg-background">
-        <UnitLeadDashboard 
-          unit={userUnit}
-        />
+        <UnitLeadDashboard userUnit={userUnit} />
         <Footer />
       </div>
     );
@@ -539,19 +537,12 @@ const PoliceUnifiedDashboard = () => {
             {/* Operator Status Panel */}
             <OperatorStatusPanel 
               operatorSession={operatorSession}
-              userUnit={userUnit}
             />
 
             {/* Field Dashboard for Field Officers */}
             {(isPoliceOperator || isPoliceSupervisor || isAdmin) && userUnit && (
               <UnitFieldDashboard 
                 unitIncidents={unitIncidents}
-                areaIncidents={areaIncidents}
-                onUpdate={() => {
-                  fetchIncidents();
-                  fetchAreaIncidents();
-                  fetchUnitIncidents();
-                }}
                 isFieldOperatorMode={isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher}
               />
             )}
@@ -988,8 +979,6 @@ const PoliceUnifiedDashboard = () => {
                   <CardContent>
                     <OperatorStatusPanel 
                       operatorSession={operatorSession}
-                      onSessionUpdate={fetchOperatorSession}
-                      userUnit={userUnit}
                     />
                   </CardContent>
                 </Card>
