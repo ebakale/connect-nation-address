@@ -988,6 +988,28 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Search Section */}
+              <div className="space-y-2">
+                <Label htmlFor="search-addresses">{t('admin:searchAddresses')}</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="search-addresses"
+                    placeholder={t('admin:searchByUACStreetCity')}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && searchAddresses()}
+                    className="flex-1"
+                  />
+                  <Button 
+                    onClick={searchAddresses} 
+                    disabled={!searchQuery.trim() || loading}
+                  >
+                    <Search className="h-4 w-4 mr-2" />
+                    {t('admin:search')}
+                  </Button>
+                </div>
+              </div>
+
               {searchResults.length > 0 ? (
                 <>
                   <div className="flex gap-2">

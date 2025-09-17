@@ -881,6 +881,8 @@
   "verificationRate": "Verification Rate",
   "publicAddresses": "Public Addresses",
   "searchForAddressesQualityControl": "Search for addresses to access quality control tools",
+  "searchAddresses": "Search Addresses",
+  "searchByUACStreetCity": "Search by UAC, street, or city...",
   "coordinateVerificationMap": "Coordinate Verification Map",
   "interactiveVerificationMap": "Interactive Verification Map",
   "verificationChecklist": "Verification Checklist",
