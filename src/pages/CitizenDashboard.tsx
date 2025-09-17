@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, FileText, AlertCircle, Clock, LogOut, Phone } from "lucide-react";
+import { MapPin, Search, FileText, AlertCircle, Clock, LogOut, Phone, FileCheck } from "lucide-react";
 import EmergencyContacts from "@/components/EmergencyContacts";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
@@ -12,6 +12,7 @@ import AddressMapViewer from "@/components/AddressMapViewer";
 import { AddressRequestForm } from "@/components/AddressRequestForm";
 import { AddressRequestStatus } from "@/components/AddressRequestStatus";
 import { ReporterNotifications } from "@/components/ReporterNotifications";
+import { UserVerificationRequests } from "@/components/UserVerificationRequests";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -35,6 +36,7 @@ const CitizenDashboard = () => {
   const [showMapView, setShowMapView] = useState(false);
   const [submitRequestOpen, setSubmitRequestOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
+  const [verificationRequestsOpen, setVerificationRequestsOpen] = useState(false);
 
   if (loading) {
     return (
@@ -155,6 +157,26 @@ const CitizenDashboard = () => {
           </Card>
         </div>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3 mt-6">
+          <Card className="min-w-0">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <FileCheck className="h-4 w-4 text-primary flex-shrink-0" />
+                <span className="truncate">My Verification Requests</span>
+              </CardTitle>
+              <CardDescription className="text-xs">
+                View and manage your residency verification requests
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <Button className="w-full text-xs py-2" onClick={() => setVerificationRequestsOpen(true)}>
+                <FileCheck className="mr-1 h-3 w-3" />
+                View Requests
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Incident Notifications Section */}
         <div className="mt-8">
           <ReporterNotifications />
@@ -192,7 +214,16 @@ const CitizenDashboard = () => {
               </ul>
             </CardContent>
           </Card>
-        </div>
+        {/* Verification Requests Dialog */}
+        <Dialog open={verificationRequestsOpen} onOpenChange={setVerificationRequestsOpen}>
+          <DialogContent className="max-w-6xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>My Verification Requests</DialogTitle>
+            </DialogHeader>
+            <UserVerificationRequests />
+          </DialogContent>
+        </Dialog>
+      </div>
 
         {/* Submit Request Dialog */}
         <Dialog open={submitRequestOpen} onOpenChange={setSubmitRequestOpen}>

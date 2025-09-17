@@ -45,6 +45,7 @@ import { ReporterNotifications } from "@/components/ReporterNotifications";
 import DashboardLocationMap from "@/components/DashboardLocationMap";
 import { ResidencyVerificationManager } from "@/components/ResidencyVerificationManager";
 import { ResidencyVerificationDashboard } from "@/components/ResidencyVerificationDashboard";
+import { UserVerificationRequests } from "@/components/UserVerificationRequests";
 interface SearchResult {
   uac: string;
   readable: string;
@@ -293,7 +294,7 @@ const UnifiedDashboard = () => {
       case 'province-management': return t('dashboard:provinceManagement');
       case 'verification-tools': return t('dashboard:verificationTools');
       case 'residency-verification-manager': return 'Residency Verification Manager';
-      case 'residency-verification-dashboard': return 'My Residency Verifications';
+      case 'residency-verification-dashboard': return 'My Verification Requests';
       case 'profile': return t('dashboard:title');
       case 'emergency-contacts': return t('dashboard:emergencyContacts');
       default: return t('dashboard:title');
@@ -314,7 +315,7 @@ const UnifiedDashboard = () => {
       case 'province-management': return t('dashboard:provinceManagementDescription');
       case 'verification-tools': return t('dashboard:verificationToolsDescription');
       case 'residency-verification-manager': return 'Manage and review residency verification requests from citizens';
-      case 'residency-verification-dashboard': return 'View your residency verification requests and legal framework information';
+      case 'residency-verification-dashboard': return 'View and edit your residency verification requests. Upload new documents and track status changes.';
       case 'profile': return t('dashboard:welcomeMessage');
       case 'emergency-contacts': return t('dashboard:welcomeMessage');
       default: return t('dashboard:welcomeMessage');
@@ -516,8 +517,8 @@ const UnifiedDashboard = () => {
 
       case 'residency-verification-dashboard':
         return (
-          <div className="max-w-4xl">
-            <ResidencyVerificationDashboard />
+          <div className="max-w-6xl">
+            <UserVerificationRequests />
           </div>
         );
 

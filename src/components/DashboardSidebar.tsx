@@ -177,7 +177,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     },
     {
       id: 'residency-verification-dashboard',
-      title: 'My Residency Verifications',
+      title: 'My Verification Requests',
       icon: FileCheck,
       onClick: () => handleItemClick('residency-verification-dashboard'),
       visible: isCitizen || isFieldAgent || isPropertyClaimant
