@@ -60,6 +60,7 @@ export function QualityDashboard() {
   const [analytics, setAnalytics] = useState<CoverageAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [showQualityIssues, setShowQualityIssues] = useState(false);
   const { toast } = useToast();
 
   const fetchAnalytics = async () => {
@@ -376,11 +377,71 @@ export function QualityDashboard() {
                   <Badge variant="outline">{qualityMetrics.duplicateCount}</Badge>
                 </div>
                 <div className="pt-4">
-                  <Button className="w-full" variant="outline">
+                  <Button 
+                    className="w-full" 
+                    variant="outline"
+                    onClick={() => setShowQualityIssues(!showQualityIssues)}
+                  >
                     <Eye className="h-4 w-4 mr-2" />
-                    View Quality Issues
+                    {showQualityIssues ? 'Hide' : 'View'} Quality Issues
                   </Button>
                 </div>
+                
+                {showQualityIssues && (
+                  <div className="mt-4 space-y-3 border-t pt-4">
+                    <div className="text-sm font-medium text-foreground">Quality Issues Breakdown:</div>
+                    
+                    {qualityMetrics.lowQualityAddresses > 0 && (
+                      <div className="p-3 border rounded-lg bg-destructive/5">
+                        <div className="flex items-center gap-2 mb-2">
+                          <AlertTriangle className="h-4 w-4 text-destructive" />
+                          <span className="font-medium text-sm">Low Quality Addresses</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {qualityMetrics.lowQualityAddresses} addresses with completeness score below 85%
+                        </p>
+                      </div>
+                    )}
+                    
+                    {qualityMetrics.duplicateCount > 0 && (
+                      <div className="p-3 border rounded-lg bg-amber-50 dark:bg-amber-950/20">
+                        <div className="flex items-center gap-2 mb-2">
+                          <AlertTriangle className="h-4 w-4 text-amber-600" />
+                          <span className="font-medium text-sm">Duplicate Addresses</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {qualityMetrics.duplicateCount} addresses identified as potential duplicates
+                        </p>
+                      </div>
+                    )}
+                    
+                    {qualityMetrics.pendingVerification > 0 && (
+                      <div className="p-3 border rounded-lg bg-blue-50 dark:bg-blue-950/20">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Clock className="h-4 w-4 text-blue-600" />
+                          <span className="font-medium text-sm">Pending Verification</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {qualityMetrics.pendingVerification} address requests awaiting verification
+                        </p>
+                      </div>
+                    )}
+                    
+                    {qualityMetrics.lowQualityAddresses === 0 && 
+                     qualityMetrics.duplicateCount === 0 && 
+                     qualityMetrics.pendingVerification === 0 && (
+                      <div className="p-3 border rounded-lg bg-green-50 dark:bg-green-950/20">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600" />
+                          <span className="font-medium text-sm">No Quality Issues Found</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          All addresses meet quality standards
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
