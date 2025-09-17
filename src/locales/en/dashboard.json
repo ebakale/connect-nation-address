@@ -153,6 +153,7 @@
   "nearbyPOI": "Nearby Map and Points of Interest",
   "locationDescription": "Shows your current location, UAC within 20m, and nearby non-residential places.",
   "searchAddresses": "Search Addresses",
+  "addressSearch": "Address Search",
   "searchDescription": "Find verified addresses in the national database",
   "searchDescriptionMap": "Find verified addresses and view them on the map below",
   "totalAddresses": "Total Addresses",

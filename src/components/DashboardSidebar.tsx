@@ -83,6 +83,13 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: true
     },
     {
+      id: 'address-search',
+      title: t('addressSearch'),
+      icon: Search,
+      onClick: () => handleItemClick('address-search'),
+      visible: true
+    },
+    {
       id: 'submit-request',
       title: t('submitRequest'),
       icon: FileText,
@@ -172,7 +179,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
 
   // Group items by category
   const mainItems = visibleItems.filter(item => 
-    ['overview', 'submit-request', 'request-status'].includes(item.id)
+    ['overview', 'address-search', 'submit-request', 'request-status'].includes(item.id)
   );
   
   const workflowItems = visibleItems.filter(item => 

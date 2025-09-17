@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import AdminPanel from "@/components/AdminPanel";
 import { GoogleMapsImporter } from "@/components/GoogleMapsImporter";
 import { AddressDataManager } from "@/components/AddressDataManager";
+import { AddressSearchTab } from "@/components/AddressSearchTab";
 import AddressSearch from "@/components/AddressSearch";
 import AddressMapViewer from "@/components/AddressMapViewer";
 import { AddressRequestForm } from "@/components/AddressRequestForm";
@@ -282,6 +283,7 @@ const UnifiedDashboard = () => {
   const getViewTitle = () => {
     switch (activeView) {
       case 'address-data': return t('dashboard:addressData');
+      case 'address-search': return t('dashboard:addressSearch');
       case 'submit-request': return t('dashboard:submitRequest');
       case 'request-status': return t('dashboard:requestStatus');
       case 'capture-address': return t('dashboard:captureAddress');
@@ -300,6 +302,7 @@ const UnifiedDashboard = () => {
   const getViewDescription = () => {
     switch (activeView) {
       case 'address-data': return t('dashboard:addressDataDescription');
+      case 'address-search': return t('dashboard:searchDescription');
       case 'submit-request': return t('dashboard:submitRequestDescription');
       case 'request-status': return t('dashboard:requestStatusDescription');
       case 'capture-address': return t('dashboard:captureAddressDescription');
@@ -349,46 +352,6 @@ const UnifiedDashboard = () => {
                 )}
               </div>
             )}
-
-            {/* Address Search */}
-            <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Search className="h-5 w-5" />
-                  {t('dashboard:searchAddresses')}
-                </CardTitle>
-                <CardDescription>
-                  {t('dashboard:searchDescription')}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <AddressSearch 
-                  onSelectAddress={(address) => {
-                    setSelectedAddress(address);
-                    setShowMapView(true);
-                  }}
-                />
-              </CardContent>
-            </Card>
-
-            {/* Current Location Map */}
-            <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5" />
-                  {t('dashboard:nearbyPOI')}
-                </CardTitle>
-                <CardDescription>
-                  {t('dashboard:locationDescription')}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-0">
-                <DashboardLocationMap 
-                  searchedAddress={selectedAddress}
-                  onAddressSearched={setSelectedAddress}
-                />
-              </CardContent>
-            </Card>
 
             {/* Admin Metrics */}
             {hasAdminAccess && (
@@ -455,6 +418,13 @@ const UnifiedDashboard = () => {
         return (
           <div className="max-w-6xl">
             <AddressDataManager />
+          </div>
+        );
+
+      case 'address-search':
+        return (
+          <div className="max-w-6xl">
+            <AddressSearchTab />
           </div>
         );
 
