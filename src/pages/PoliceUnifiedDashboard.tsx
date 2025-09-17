@@ -971,7 +971,6 @@ const PoliceUnifiedDashboard = () => {
               </div>
               
               <div className="flex items-center gap-4 ml-auto">
-                <EnhancedSyncStatus />
                 <OfflineIndicator />
                 
                 {user && (
@@ -992,6 +991,11 @@ const PoliceUnifiedDashboard = () => {
           <main className="flex-1 p-6 overflow-auto">
             {renderActiveView()}
           </main>
+
+          {/* Sync Status - Fixed position to avoid overlap */}
+          <div className="fixed bottom-6 right-6 z-50">
+            <EnhancedSyncStatus />
+          </div>
 
           {/* Footer */}
           <footer className="border-t bg-background/50 py-4 px-6 mt-auto">
