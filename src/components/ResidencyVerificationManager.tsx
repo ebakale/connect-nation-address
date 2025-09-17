@@ -418,58 +418,7 @@ export const ResidencyVerificationManager = () => {
                                     <Eye className="w-4 h-4 mr-1" />
                                     View Document
                                   </Button>
-
                                 </div>
-                              </div>
-                            )}
-
-                            {selectedVerification.verification_notes && (
-                              <div>
-                                <Label>Current Notes</Label>
-                                <p className="text-sm bg-muted p-2 rounded">
-                                  {selectedVerification.verification_notes}
-                                </p>
-                              </div>
-                            )}
-
-                            <div className="space-y-2">
-                              <Label htmlFor="reviewStatus">Update Status</Label>
-                              <Select value={reviewStatus} onValueChange={setReviewStatus}>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select new status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="document_review">Document Review</SelectItem>
-                                  <SelectItem value="field_verification">Field Verification</SelectItem>
-                                  <SelectItem value="legal_review">Legal Review</SelectItem>
-                                  <SelectItem value="approved">Approved</SelectItem>
-                                  <SelectItem value="rejected">Rejected</SelectItem>
-                                  <SelectItem value="requires_additional_documents">Request Changes</SelectItem>
-                                  <SelectItem value="under_investigation">Under Investigation</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label htmlFor="reviewNotes">Review Notes</Label>
-                              <Textarea
-                                id="reviewNotes"
-                                value={reviewNotes}
-                                onChange={(e) => setReviewNotes(e.target.value)}
-                                placeholder="Add notes about this review..."
-                                rows={3}
-                              />
-                            </div>
-
-                            <div className="flex gap-2">
-                              <Button
-                                onClick={() => updateVerificationStatus(selectedVerification.id, reviewStatus, reviewNotes)}
-                                disabled={!reviewStatus}
-                                className="flex-1"
-                              >
-                                Update Status
-                              </Button>
-                            </div>
                               </div>
                             )}
 
