@@ -42,6 +42,7 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
 
   const startScanner = async () => {
     try {
+      if (isScanning || qrScanner) return; // prevent duplicate starts
       setError('');
       setIsScanning(true);
       
@@ -67,6 +68,16 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
 
   const checkCameraPermissions = async (): Promise<boolean> => {
     try {
+      // Detect if inside an iframe (preview environments can block camera)
+      const inIframe = (() => {
+        try { return window.top !== window.self; } catch { return true; }
+      })();
+      if (inIframe) {
+        setError('Camera use may be blocked in embedded previews. Open the app in a new tab and allow camera.');
+        setIsScanning(false);
+        return false;
+      }
+
       // Check if we're on HTTPS or localhost
       const isSecure = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
       
@@ -263,11 +274,11 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
   };
 
   const TriggerButton = variant === 'icon' ? (
-    <Button variant="ghost" size="icon" className="h-8 w-8">
+    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setIsOpen(true); startScanner(); }}>
       <QrCode className="h-4 w-4" />
     </Button>
   ) : (
-    <Button variant="outline" size="sm">
+    <Button variant="outline" size="sm" onClick={() => { setIsOpen(true); startScanner(); }}>
       <QrCode className="h-4 w-4 mr-2" />
       {t('scanQRCode')}
     </Button>
