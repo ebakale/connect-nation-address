@@ -7,6 +7,7 @@ import { FileText } from "lucide-react";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
 import { AddressDataManager } from "@/components/AddressDataManager";
 import { ResidencyVerificationManager } from "@/components/ResidencyVerificationManager";
+import { AddressSearchTab } from "@/components/AddressSearchTab";
 import { useTranslation } from 'react-i18next';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/AdminSidebar";
@@ -40,6 +41,8 @@ const AdminDashboard = () => {
     switch (activeTab) {
       case "address-data":
         return <AddressDataManager />;
+      case "address-search":
+        return <AddressSearchTab />;
       case "verification":
         return <ResidencyVerificationManager />;
       case "users":

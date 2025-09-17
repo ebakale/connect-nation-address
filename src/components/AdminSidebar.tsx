@@ -9,7 +9,8 @@ import {
   Workflow, 
   LogOut,
   Crown,
-  Hash
+  Hash,
+  Search
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -32,6 +33,7 @@ import { Button } from "@/components/ui/button";
 
 const adminItems = [
   { title: "Address Data", id: "address-data", icon: FileText },
+  { title: "Address Search", id: "address-search", icon: Search },
   { title: "Users", id: "users", icon: Users },
   { title: "Roles", id: "roles", icon: Shield },
   { title: "Permissions", id: "permissions", icon: Key },
