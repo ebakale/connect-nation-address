@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -253,9 +253,12 @@ export function NARAuthorityManager() {
                 Add Authority
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent aria-describedby="nar-authority-desc">
               <DialogHeader>
                 <DialogTitle>Create New NAR Authority</DialogTitle>
+                <DialogDescription id="nar-authority-desc">
+                  Assign NAR authority permissions to a user to allow them to create and verify official addresses
+                </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
