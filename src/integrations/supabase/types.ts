@@ -1429,6 +1429,10 @@ export type Database = {
           verified: boolean
         }[]
       }
+      get_pending_verifications_count: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       get_rejected_addresses_queue: {
         Args: Record<PropertyKey, never>
         Returns: {
