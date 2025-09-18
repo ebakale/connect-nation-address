@@ -184,25 +184,66 @@ export default function CitizenPortal() {
                   </CardHeader>
                   <CardContent>
                     {primaryAddress ? (
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">UAC:</span>
-                          <Badge variant="secondary">{primaryAddress.uac}</Badge>
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium">UAC:</span>
+                            <Badge variant="secondary" className="font-mono text-xs">
+                              {primaryAddress.uac}
+                            </Badge>
+                          </div>
+                          
+                          {primaryAddress.unit_uac && (
+                            <div className="flex items-center justify-between">
+                              <span className="font-medium">Unit UAC:</span>
+                              <Badge variant="secondary" className="font-mono text-xs">
+                                {primaryAddress.unit_uac}
+                              </Badge>
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium">{t('address:scope')}:</span>
+                            <Badge variant="outline">{primaryAddress.scope}</Badge>
+                          </div>
+                          
+                          {primaryAddress.occupant && (
+                            <div className="flex items-center justify-between">
+                              <span className="font-medium">Occupant Type:</span>
+                              <Badge variant="outline">{primaryAddress.occupant}</Badge>
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium">{t('address:status')}:</span>
+                            <Badge 
+                              variant={primaryAddress.status === 'CONFIRMED' ? 'default' : 'secondary'}
+                            >
+                              {primaryAddress.status}
+                            </Badge>
+                          </div>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">{t('address:scope')}:</span>
-                          <Badge variant="outline">{primaryAddress.scope}</Badge>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">{t('address:status')}:</span>
-                          <Badge 
-                            variant={primaryAddress.status === 'CONFIRMED' ? 'default' : 'secondary'}
-                          >
-                            {primaryAddress.status}
-                          </Badge>
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {t('address:effectiveFrom')}: {new Date(primaryAddress.effective_from).toLocaleDateString()}
+                        
+                        <div className="pt-2 border-t space-y-1">
+                          <div className="text-sm text-muted-foreground">
+                            <span className="font-medium">Address Kind:</span> {primaryAddress.address_kind}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            <span className="font-medium">{t('address:effectiveFrom')}:</span> {new Date(primaryAddress.effective_from).toLocaleDateString()}
+                          </div>
+                          {primaryAddress.effective_to && (
+                            <div className="text-sm text-muted-foreground">
+                              <span className="font-medium">Effective To:</span> {new Date(primaryAddress.effective_to).toLocaleDateString()}
+                            </div>
+                          )}
+                          <div className="text-sm text-muted-foreground">
+                            <span className="font-medium">Source:</span> {primaryAddress.source || 'N/A'}
+                          </div>
+                          {primaryAddress.notes && (
+                            <div className="text-sm text-muted-foreground">
+                              <span className="font-medium">Notes:</span> {primaryAddress.notes}
+                            </div>
+                          )}
                         </div>
                       </div>
                     ) : (
