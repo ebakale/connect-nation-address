@@ -6,7 +6,6 @@ import { useToast } from './use-toast';
 import type { 
   Person, 
   CitizenAddress, 
-  CitizenAddressEvent,
   AddressInput,
   AddressKind,
   AddressScope,
@@ -210,48 +209,8 @@ export const useCitizenAddresses = () => {
   };
 };
 
-export const useAddressEvents = () => {
-  const [events, setEvents] = useState<CitizenAddressEvent[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { person } = usePerson();
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      if (!person) {
-        setEvents([]);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from('citizen_address_event')
-          .select('*')
-          .eq('person_id', person.id)
-          .order('at', { ascending: false });
-
-        if (error) throw error;
-
-        setEvents(data || []);
-      } catch (error: any) {
-        console.error('Error fetching address events:', error);
-        toast({
-          title: 'Error',
-          description: 'Failed to load address history',
-          variant: 'destructive'
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEvents();
-  }, [person, toast]);
-
-  return { events, loading };
-};
+// TODO: Add address events functionality later
+// export const useAddressEvents = () => { ... };
 
 // Admin hooks for verifiers/registrars
 export const useAddressReviewQueue = () => {
