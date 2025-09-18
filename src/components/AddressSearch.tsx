@@ -7,6 +7,7 @@ import { Search, MapPin, Navigation } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAddresses } from '@/hooks/useAddresses';
 import { QRCodeScanner } from '@/components/QRCodeScanner';
+import { EnhancedAddressDetailModal } from '@/components/EnhancedAddressDetailModal';
 
 interface SearchResult {
   uac: string;
@@ -17,6 +18,21 @@ interface SearchResult {
   };
   type: string;
   verified: boolean;
+}
+
+interface AddressData {
+  uac: string;
+  street: string;
+  city: string;
+  region: string;
+  country: string;
+  building?: string;
+  latitude: number;
+  longitude: number;
+  addressType: string;
+  verified: boolean;
+  completenessScore: number;
+  distance?: number;
 }
 
 interface AddressSearchProps {
@@ -30,6 +46,8 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState<AddressData | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { searchAddresses } = useAddresses();
 
   // Convert search result to SearchResult format
@@ -44,6 +62,22 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
     verified: searchResult.verified || false,
   });
 
+  // Convert search result to AddressData format for the modal
+  const convertToAddressData = (searchResult: any): AddressData => ({
+    uac: searchResult.uac || '',
+    street: searchResult.street || '',
+    city: searchResult.city || '',
+    region: searchResult.region || '',
+    country: searchResult.country || '',
+    building: searchResult.building || undefined,
+    latitude: searchResult.latitude || 0,
+    longitude: searchResult.longitude || 0,
+    addressType: searchResult.address_type || 'unknown',
+    verified: searchResult.verified || false,
+    completenessScore: searchResult.completeness_score || 0,
+    distance: searchResult.distance || undefined,
+  });
+
   const handleSearch = async () => {
     if (!query.trim()) return;
 
@@ -54,9 +88,15 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
       // Search addresses from database using the RPC function
       const searchResults = await searchAddresses(query);
       
-      // Convert the results to the SearchResult format
+      // Convert the results to the SearchResult format and store raw results
       const formattedResults = searchResults.map(convertToSearchResult);
       setResults(formattedResults);
+      
+      // Store raw results for detailed modal
+      setResults(formattedResults.map((result, index) => ({
+        ...result,
+        rawData: searchResults[index]
+      })));
     } catch (error) {
       console.error('Search error:', error);
       setResults([]);
@@ -91,10 +131,18 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
     window.open(url, '_blank');
   };
 
-  const handleSelectResult = (result: SearchResult) => {
+  const handleSelectResult = (result: SearchResult, rawResult?: any) => {
     console.log('AddressSearch: Address selected:', result);
     setShowResults(false);
     setQuery(result.readable);
+    
+    // Open the enhanced modal with detailed address information
+    if (rawResult) {
+      const addressData = convertToAddressData(rawResult);
+      setSelectedAddress(addressData);
+      setIsModalOpen(true);
+    }
+    
     console.log('AddressSearch: Calling onSelectAddress with:', result);
     onSelectAddress?.(result);
   };
@@ -110,11 +158,15 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
     try {
       const searchResults = await searchAddresses(uac);
       const formattedResults = searchResults.map(convertToSearchResult);
-      setResults(formattedResults);
+      const resultsWithRawData = formattedResults.map((result, index) => ({
+        ...result,
+        rawData: searchResults[index]
+      }));
+      setResults(resultsWithRawData);
       
       // If exactly one result found, auto-select it
       if (formattedResults.length === 1) {
-        handleSelectResult(formattedResults[0]);
+        handleSelectResult(formattedResults[0], searchResults[0]);
       }
     } catch (error) {
       console.error('QR search error:', error);
@@ -165,7 +217,7 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
                       "p-3 hover:bg-accent cursor-pointer transition-colors",
                       index !== results.length - 1 && "border-b"
                     )}
-                    onClick={() => handleSelectResult(result)}
+                    onClick={() => handleSelectResult(result, (result as any).rawData)}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
@@ -195,7 +247,7 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={(e) => { e.stopPropagation(); handleSelectResult(result); }}
+                        onClick={(e) => { e.stopPropagation(); handleSelectResult(result, (result as any).rawData); }}
                         aria-label={t('viewOnMap')}
                         title={t('viewOnMap')}
                         className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10"
@@ -216,6 +268,13 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
           </CardContent>
         </Card>
       )}
+
+      {/* Enhanced Address Detail Modal */}
+      <EnhancedAddressDetailModal
+        address={selectedAddress}
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+      />
     </div>
   );
 };
