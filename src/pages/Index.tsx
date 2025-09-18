@@ -143,26 +143,14 @@ const navigationItems = [
                    {/* CTA Buttons */}
                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-4 sm:pt-6 mobile-container">
                         <Button 
-                          onClick={() => navigate('/citizen')} 
+                          onClick={() => navigate('/auth')} 
                           className="touch-target px-8 py-4 text-base sm:text-lg font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-blue transition-all duration-200"
                           size="lg"
                         >
-                         <Users className="h-5 w-5 sm:h-6 sm:w-6 mr-3" />
-                         <div className="flex flex-col items-start">
-                           <span>Citizen Services</span>
-                           <span className="text-xs text-white/80 font-normal">Public access • Address search • Personal management</span>
-                         </div>
-                       </Button>
-                       <Button 
-                         onClick={() => navigate('/auth')}
-                         variant="outline" 
-                         className="touch-target px-6 py-4 text-base sm:text-lg font-semibold border-2 border-primary/30 text-primary hover:bg-primary hover:text-white transition-all duration-200"
-                         size="lg"
-                       >
                          <Shield className="h-5 w-5 sm:h-6 sm:w-6 mr-3" />
                          <div className="flex flex-col items-start">
-                           <span>Professional Access</span>
-                           <span className="text-xs text-muted-foreground font-normal">Staff • Verifiers • Administrators</span>
+                           <span>Access Platform</span>
+                           <span className="text-xs text-white/80 font-normal">Staff • Citizens • All registered users</span>
                          </div>
                        </Button>
                        <Button 
