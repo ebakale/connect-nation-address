@@ -143,8 +143,17 @@ const navigationItems = [
                    {/* CTA Buttons */}
                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-4 sm:pt-6 mobile-container">
                         <Button 
-                          onClick={() => navigate('/auth')} 
+                          onClick={() => navigate('/citizen')} 
                           className="touch-target px-6 py-3 text-sm sm:text-base font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-blue transition-all duration-200"
+                          size="lg"
+                        >
+                         <Users className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                         {t('address:citizenPortal')}
+                       </Button>
+                        <Button 
+                          onClick={() => navigate('/auth')} 
+                          variant="outline"
+                          className="touch-target px-6 py-3 text-sm sm:text-base font-semibold border-2 border-primary/30 text-primary hover:bg-primary hover:text-white transition-all duration-200"
                           size="lg"
                         >
                          <LogIn className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />

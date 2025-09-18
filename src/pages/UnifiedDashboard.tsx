@@ -411,6 +411,41 @@ const UnifiedDashboard = () => {
                   </Card>
                 </div>
 
+                {/* Quick Actions */}
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold mb-4">{t('dashboard:quickActions')}</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <Button 
+                      onClick={() => navigate('/citizen')}
+                      variant="outline"
+                      className="p-4 h-auto flex flex-col items-center gap-2"
+                    >
+                      <User className="h-6 w-6" />
+                      <span>{t('address:citizenPortal')}</span>
+                      <span className="text-xs text-muted-foreground">{t('address:manageYourAddresses')}</span>
+                    </Button>
+                    
+                    <Button 
+                      onClick={() => setActiveView('submit-request')}
+                      variant="outline"
+                      className="p-4 h-auto flex flex-col items-center gap-2"
+                    >
+                      <MapPin className="h-6 w-6" />
+                      <span>{t('dashboard:submitRequest')}</span>
+                      <span className="text-xs text-muted-foreground">{t('dashboard:newAddressRequest')}</span>
+                    </Button>
+                    
+                    <Button 
+                      onClick={() => setActiveView('address-search')}
+                      variant="outline"
+                      className="p-4 h-auto flex flex-col items-center gap-2"
+                    >
+                      <Search className="h-6 w-6" />
+                      <span>{t('dashboard:addressSearch')}</span>
+                      <span className="text-xs text-muted-foreground">{t('dashboard:findAddresses')}</span>
+                    </Button>
+                  </div>
+                </div>
 
                 {/* Admin Panel */}
                 <AdminPanel />
