@@ -105,7 +105,29 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
   const loadFlaggedAddresses = async () => {
     setFlaggedLoading(true);
     try {
-      const { data, error } = await supabase.rpc('get_flagged_addresses_queue');
+      const { data, error } = await supabase
+        .from('address_requests')
+        .select(`
+          id,
+          street,
+          city,
+          region,
+          country,
+          latitude,
+          longitude,
+          photo_url,
+          description,
+          address_type,
+          status,
+          justification,
+          flag_reason,
+          flagged,
+          flagged_at,
+          verification_analysis,
+          verification_recommendations
+        `)
+        .eq('flagged', true)
+        .order('flagged_at', { ascending: false });
 
       if (error) throw error;
       setFlaggedAddresses(data || []);
