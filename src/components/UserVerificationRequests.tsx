@@ -38,7 +38,7 @@ interface VerificationRequest {
 export const UserVerificationRequests = () => {
   const [verifications, setVerifications] = useState<VerificationRequest[]>([]);
   const [selectedVerification, setSelectedVerification] = useState<VerificationRequest | null>(null);
-  const [editingVerification, setEditingVerification] = useState<VerificationRequest | null>(null);
+  const [editingVerificationId, setEditingVerificationId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   
   const { user } = useAuth();
@@ -165,12 +165,19 @@ export const UserVerificationRequests = () => {
                       {formatStatus(verification.status)}
                     </Badge>
                     {canEdit(verification) && (
-                      <Dialog>
+                      <Dialog 
+                        open={editingVerificationId === verification.id}
+                        onOpenChange={(open) => {
+                          if (!open) {
+                            setEditingVerificationId(null);
+                          }
+                        }}
+                      >
                         <DialogTrigger asChild>
                           <Button 
                             size="sm" 
                             variant="outline"
-                            onClick={() => setEditingVerification(verification)}
+                            onClick={() => setEditingVerificationId(verification.id)}
                           >
                             <Edit className="w-4 h-4 mr-1" />
                             Edit
@@ -180,39 +187,35 @@ export const UserVerificationRequests = () => {
                           <DialogHeader>
                             <DialogTitle>Edit Verification Request</DialogTitle>
                           </DialogHeader>
-                          {editingVerification && (
-                            <>
-                              {editingVerification.citizen_address_id ? (
-                                <ResidencyVerificationForm
-                                  citizenAddressId={editingVerification.citizen_address_id}
-                                  editingVerification={editingVerification}
-                                  onSuccess={() => {
-                                    setEditingVerification(null);
-                                    fetchUserVerifications();
-                                  }}
-                                  onCancel={() => setEditingVerification(null)}
-                                />
-                              ) : (
-                                <div className="p-6 space-y-4">
-                                  <div className="text-center">
-                                    <h3 className="text-lg font-medium mb-2">Legacy Verification Request</h3>
-                                    <p className="text-sm text-muted-foreground mb-4">
-                                      This verification request was created with the old system. To edit it, you'll need to:
-                                    </p>
-                                    <ol className="text-sm text-left space-y-2 max-w-md mx-auto">
-                                      <li>1. First add this address to your Citizen Address Repository</li>
-                                      <li>2. Then create a new verification request for that address</li>
-                                      <li>3. The old request will remain for reference</li>
-                                    </ol>
-                                  </div>
-                                  <div className="flex justify-center gap-2 pt-4">
-                                    <Button onClick={() => setEditingVerification(null)}>
-                                      Close
-                                    </Button>
-                                  </div>
-                                </div>
-                              )}
-                            </>
+                          {verification.citizen_address_id ? (
+                            <ResidencyVerificationForm
+                              citizenAddressId={verification.citizen_address_id}
+                              editingVerification={verification}
+                              onSuccess={() => {
+                                setEditingVerificationId(null);
+                                fetchUserVerifications();
+                              }}
+                              onCancel={() => setEditingVerificationId(null)}
+                            />
+                          ) : (
+                            <div className="p-6 space-y-4">
+                              <div className="text-center">
+                                <h3 className="text-lg font-medium mb-2">Legacy Verification Request</h3>
+                                <p className="text-sm text-muted-foreground mb-4">
+                                  This verification request was created with the old system. To edit it, you'll need to:
+                                </p>
+                                <ol className="text-sm text-left space-y-2 max-w-md mx-auto">
+                                  <li>1. First add this address to your Citizen Address Repository</li>
+                                  <li>2. Then create a new verification request for that address</li>
+                                  <li>3. The old request will remain for reference</li>
+                                </ol>
+                              </div>
+                              <div className="flex justify-center gap-2 pt-4">
+                                <Button onClick={() => setEditingVerificationId(null)}>
+                                  Close
+                                </Button>
+                              </div>
+                            </div>
                           )}
                         </DialogContent>
                       </Dialog>
