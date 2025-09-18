@@ -111,12 +111,6 @@ export function CurrentAddressesPanel({
             </div>
           )}
 
-          {(address.latitude && address.longitude) && (
-            <div className="text-sm">
-              <span className="text-muted-foreground">Coordinates: </span>
-              <span className="font-mono">{address.latitude.toFixed(6)}, {address.longitude.toFixed(6)}</span>
-            </div>
-          )}
 
           <div className="flex items-center justify-between pt-2 border-t">
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
