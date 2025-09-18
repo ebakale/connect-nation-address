@@ -9,12 +9,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   MapPin, Navigation, Share2, QrCode, Copy, Check, 
   Phone, Mail, MessageCircle, ExternalLink, Route,
-  Clock, Shield, Target, Calculator
+  Clock, Shield, Target, Calculator, Loader2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
 import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 import { useEnhancedGeolocation } from '@/hooks/useEnhancedGeolocation';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AddressData {
   uac: string;
@@ -45,6 +46,11 @@ export const EnhancedAddressDetailModal: React.FC<EnhancedAddressDetailModalProp
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [customFromUAC, setCustomFromUAC] = useState('');
   const [calculatedDistance, setCalculatedDistance] = useState<number | null>(null);
+  const [distanceEstimates, setDistanceEstimates] = useState<{
+    driving?: { distance: string; duration: string };
+    walking?: { distance: string; duration: string };
+  }>({});
+  const [loadingEstimates, setLoadingEstimates] = useState(false);
   const { toast } = useToast();
   const { t } = useTranslation(['common', 'dashboard']);
   const { location, getCurrentPosition } = useEnhancedGeolocation({
@@ -54,7 +60,7 @@ export const EnhancedAddressDetailModal: React.FC<EnhancedAddressDetailModalProp
 
   useEffect(() => {
     if (open && address && location) {
-      // Calculate distance from current location
+      // Calculate basic distance from current location
       const distance = calculateDistance(
         location.latitude,
         location.longitude,
@@ -62,6 +68,9 @@ export const EnhancedAddressDetailModal: React.FC<EnhancedAddressDetailModalProp
         address.longitude
       );
       setCalculatedDistance(distance);
+      
+      // Get Google Maps estimates
+      getGoogleMapsEstimates();
     }
   }, [open, address, location]);
 
@@ -75,6 +84,53 @@ export const EnhancedAddressDetailModal: React.FC<EnhancedAddressDetailModalProp
       Math.sin(dLon/2) * Math.sin(dLon/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     return R * c * 1000; // Distance in meters
+  };
+
+  const getGoogleMapsEstimates = async () => {
+    if (!address || !location) return;
+    
+    setLoadingEstimates(true);
+    try {
+      // Get both driving and walking estimates
+      const [drivingResponse, walkingResponse] = await Promise.all([
+        supabase.functions.invoke('get-distance-estimates', {
+          body: {
+            origin: { lat: location.latitude, lng: location.longitude },
+            destination: { lat: address.latitude, lng: address.longitude },
+            mode: 'driving'
+          }
+        }),
+        supabase.functions.invoke('get-distance-estimates', {
+          body: {
+            origin: { lat: location.latitude, lng: location.longitude },
+            destination: { lat: address.latitude, lng: address.longitude },
+            mode: 'walking'
+          }
+        })
+      ]);
+
+      const estimates: any = {};
+      
+      if (drivingResponse.data && !drivingResponse.error) {
+        estimates.driving = {
+          distance: drivingResponse.data.distance.text,
+          duration: drivingResponse.data.duration.text
+        };
+      }
+      
+      if (walkingResponse.data && !walkingResponse.error) {
+        estimates.walking = {
+          distance: walkingResponse.data.distance.text,
+          duration: walkingResponse.data.duration.text
+        };
+      }
+      
+      setDistanceEstimates(estimates);
+    } catch (error) {
+      console.error('Error getting Google Maps estimates:', error);
+    } finally {
+      setLoadingEstimates(false);
+    }
   };
 
   const copyToClipboard = (text: string, label: string) => {
@@ -399,20 +455,66 @@ Shared from Equatorial Guinea Address Portal`;
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {location && calculatedDistance && (
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>From your location:</span>
-                      <span className="font-mono">{formatDistance(calculatedDistance)}</span>
-                    </div>
-                    <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>Estimated walking time:</span>
-                      <span>{Math.ceil(calculatedDistance / 83)} minutes</span>
-                    </div>
-                    <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>Estimated driving time:</span>
-                      <span>{Math.ceil(calculatedDistance / 833)} minutes</span>
-                    </div>
+                {loadingEstimates && (
+                  <div className="flex items-center justify-center text-sm text-muted-foreground">
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Getting accurate estimates from Google Maps...
+                  </div>
+                )}
+                
+                {location && !loadingEstimates && (
+                  <div className="space-y-3">
+                    {/* Google Maps Estimates */}
+                    {(distanceEstimates.driving || distanceEstimates.walking) && (
+                      <div className="space-y-2">
+                        <div className="text-sm font-medium text-primary">Google Maps Estimates:</div>
+                        
+                        {distanceEstimates.driving && (
+                          <div className="space-y-1">
+                            <div className="flex justify-between text-sm">
+                              <span>🚗 Driving distance:</span>
+                              <span className="font-mono">{distanceEstimates.driving.distance}</span>
+                            </div>
+                            <div className="flex justify-between text-sm text-muted-foreground">
+                              <span>Driving time:</span>
+                              <span>{distanceEstimates.driving.duration}</span>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {distanceEstimates.walking && (
+                          <div className="space-y-1">
+                            <div className="flex justify-between text-sm">
+                              <span>🚶 Walking distance:</span>
+                              <span className="font-mono">{distanceEstimates.walking.distance}</span>
+                            </div>
+                            <div className="flex justify-between text-sm text-muted-foreground">
+                              <span>Walking time:</span>
+                              <span>{distanceEstimates.walking.duration}</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    {/* Fallback to basic calculation if Google Maps fails */}
+                    {!distanceEstimates.driving && !distanceEstimates.walking && calculatedDistance && (
+                      <div className="space-y-2">
+                        <div className="text-sm font-medium">Basic Estimates:</div>
+                        <div className="flex justify-between text-sm">
+                          <span>Straight-line distance:</span>
+                          <span className="font-mono">{formatDistance(calculatedDistance)}</span>
+                        </div>
+                        <div className="flex justify-between text-sm text-muted-foreground">
+                          <span>Est. walking time:</span>
+                          <span>{Math.ceil(calculatedDistance / 83)} minutes</span>
+                        </div>
+                        <div className="flex justify-between text-sm text-muted-foreground">
+                          <span>Est. driving time:</span>
+                          <span>{Math.ceil(calculatedDistance / 833)} minutes</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
                 
