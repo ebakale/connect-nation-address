@@ -185,6 +185,21 @@ export default function CitizenPortal() {
                   <CardContent>
                     {primaryAddress ? (
                       <div className="space-y-4">
+                        {/* Address Location Info */}
+                        {primaryAddress.street && (
+                          <div className="bg-muted/30 p-3 rounded-lg">
+                            <div className="space-y-1">
+                              <div className="font-medium text-sm">📍 Address Location</div>
+                              <div className="text-sm">
+                                <div>{primaryAddress.street}</div>
+                                {primaryAddress.building && <div>{primaryAddress.building}</div>}
+                                <div>{primaryAddress.city}, {primaryAddress.region}</div>
+                                <div>{primaryAddress.country}</div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
                             <span className="font-medium">UAC:</span>
@@ -222,6 +237,15 @@ export default function CitizenPortal() {
                               {primaryAddress.status}
                             </Badge>
                           </div>
+                          
+                          {primaryAddress.nar_verified !== undefined && (
+                            <div className="flex items-center justify-between">
+                              <span className="font-medium">NAR Verified:</span>
+                              <Badge variant={primaryAddress.nar_verified ? 'default' : 'destructive'}>
+                                {primaryAddress.nar_verified ? 'Yes' : 'No'}
+                              </Badge>
+                            </div>
+                          )}
                         </div>
                         
                         <div className="pt-2 border-t space-y-1">
@@ -239,6 +263,11 @@ export default function CitizenPortal() {
                           <div className="text-sm text-muted-foreground">
                             <span className="font-medium">Source:</span> {primaryAddress.source || 'N/A'}
                           </div>
+                          {primaryAddress.address_description && (
+                            <div className="text-sm text-muted-foreground">
+                              <span className="font-medium">Description:</span> {primaryAddress.address_description}
+                            </div>
+                          )}
                           {primaryAddress.notes && (
                             <div className="text-sm text-muted-foreground">
                               <span className="font-medium">Notes:</span> {primaryAddress.notes}

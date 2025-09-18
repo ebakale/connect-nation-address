@@ -34,9 +34,18 @@ export interface CitizenAddress {
   flag_reason?: string | null;
   flagged_at?: string | null;
   flagged_by?: string | null;
+  // NAR integration fields (from citizen_address_with_details view)
   street?: string;
   city?: string;
   region?: string;
+  country?: string;
+  building?: string;
+  address_type?: string;
+  address_description?: string;
+  latitude?: number;
+  longitude?: number;
+  nar_verified?: boolean;
+  nar_public?: boolean;
 }
 
 export interface AddressInput {
