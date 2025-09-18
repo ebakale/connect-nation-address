@@ -120,60 +120,74 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
       case 'overview':
         return (
           <div className="space-y-6">
-            {/* Unified System Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">NAR Addresses</CardTitle>
-                  <Database className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.totalNARAddresses}</div>
-                  <p className="text-xs text-muted-foreground">National registry</p>
-                </CardContent>
-              </Card>
+            {/* System Overview - Only for Admins/Verifiers */}
+            {(hasAdminAccess || isVerifier || isRegistrar) && (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">NAR Addresses</CardTitle>
+                      <Database className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{stats.totalNARAddresses}</div>
+                      <p className="text-xs text-muted-foreground">National registry</p>
+                    </CardContent>
+                  </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">CAR Addresses</CardTitle>
-                  <Home className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.totalCARAddresses}</div>
-                  <p className="text-xs text-muted-foreground">Citizen addresses</p>
-                </CardContent>
-              </Card>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">CAR Addresses</CardTitle>
+                      <Home className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{stats.totalCARAddresses}</div>
+                      <p className="text-xs text-muted-foreground">Citizen addresses</p>
+                    </CardContent>
+                  </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Pending Verifications</CardTitle>
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.pendingVerifications}</div>
-                  <p className="text-xs text-muted-foreground">Requires review</p>
-                </CardContent>
-              </Card>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Pending Verifications</CardTitle>
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{stats.pendingVerifications}</div>
+                      <p className="text-xs text-muted-foreground">Requires review</p>
+                    </CardContent>
+                  </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Integration Status</CardTitle>
-                  <Network className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-green-600">Active</div>
-                  <p className="text-xs text-muted-foreground">NAR-CAR sync</p>
-                </CardContent>
-              </Card>
-            </div>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Integration Status</CardTitle>
+                      <Network className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-green-600">Active</div>
+                      <p className="text-xs text-muted-foreground">NAR-CAR sync</p>
+                    </CardContent>
+                  </Card>
+                </div>
 
-            {/* Integration Status Alert */}
-            <Alert>
-              <Network className="h-4 w-4" />
-              <AlertDescription>
-                NAR and CAR systems are fully integrated. Citizens can register addresses that link to the National Address Registry for verification.
-              </AlertDescription>
-            </Alert>
+                {/* Integration Status Alert */}
+                <Alert>
+                  <Network className="h-4 w-4" />
+                  <AlertDescription>
+                    NAR and CAR systems are fully integrated. Citizens can register addresses that link to the National Address Registry for verification.
+                  </AlertDescription>
+                </Alert>
+              </>
+            )}
+
+            {/* Citizen Welcome Message */}
+            {isCitizen && !hasAdminAccess && !isVerifier && !isRegistrar && (
+              <Alert>
+                <Home className="h-4 w-4" />
+                <AlertDescription>
+                  Welcome to the unified address system! You can search for addresses in the National Address Registry and manage your personal addresses in the Citizen Address Repository.
+                </AlertDescription>
+              </Alert>
+            )}
 
             {/* Quick Actions Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
