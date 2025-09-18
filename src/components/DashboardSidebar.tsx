@@ -85,6 +85,13 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: true
     },
     {
+      id: 'unified-address-dashboard',
+      title: 'Address Management',
+      icon: MapPin,
+      onClick: () => handleItemClick('unified-address-dashboard'),
+      visible: true
+    },
+    {
       id: 'address-search',
       title: t('addressSearch'),
       icon: Search,
@@ -98,46 +105,12 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       onClick: () => handleItemClick('submit-request'),
       visible: isCitizen || isFieldAgent || isPropertyClaimant
     },
+     // Admin and management items
     {
-      id: 'request-status',
-      title: t('requestStatus'),
-      icon: Clock,
-      onClick: () => handleItemClick('request-status'),
-      visible: isCitizen || isFieldAgent || isPropertyClaimant
-    },
-    {
-      id: 'capture-address',
-      title: t('captureAddress'),
-      icon: Camera,
-      onClick: () => handleItemClick('capture-address'),
-      visible: canCreateDraftAddress
-    },
-    {
-      id: 'verification-queue',
-      title: t('verificationQueue'),
-      icon: CheckCircle,
-      onClick: () => handleItemClick('verification-queue'),
-      visible: canVerifyAddresses
-    },
-    {
-      id: 'publishing-queue',
-      title: t('publishingQueue'),
-      icon: MapPin,
-      onClick: () => handleItemClick('publishing-queue'),
-      visible: canPublishAddresses
-    },
-    {
-      id: 'unpublishing-queue',
-      title: t('unpublishingQueue'),
-      icon: AlertCircle,
-      onClick: () => handleItemClick('unpublishing-queue'),
-      visible: canPublishAddresses
-    },
-    {
-      id: 'address-data',
-      title: t('addressData'),
-      icon: FileDown,
-      onClick: () => handleItemClick('address-data'),
+      id: 'admin-panel',
+      title: t('adminPanel'),
+      icon: Settings,
+      onClick: () => handleItemClick('admin-panel'),
       visible: hasAdminAccess
     },
     {
@@ -148,46 +121,11 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: hasAdminAccess
     },
     {
-      id: 'province-management',
-      title: t('provinceManagement'),
-      icon: Settings,
-      onClick: () => handleItemClick('province-management'),
-      visible: hasAdminAccess
-    },
-    {
-      id: 'verification-tools',
-      title: t('verificationTools'),
-      icon: Shield,
-      onClick: () => handleItemClick('verification-tools'),
-      visible: isVerifier || hasAdminAccess
-    },
-    {
       id: 'profile',
       title: t('profileSettings'),
       icon: User,
       onClick: () => handleItemClick('profile'),
       visible: true
-    },
-    {
-      id: 'residency-verification-manager',
-      title: 'Residency Verification Manager',
-      icon: UserCheck,
-      onClick: () => handleItemClick('residency-verification-manager'),
-      visible: canVerifyAddresses || hasAdminAccess
-    },
-    {
-      id: 'residency-verification-dashboard',
-      title: 'My Verification Requests',
-      icon: FileCheck,
-      onClick: () => handleItemClick('residency-verification-dashboard'),
-      visible: isCitizen || isFieldAgent || isPropertyClaimant
-    },
-    {
-      id: 'citizen-address-portal',
-      title: 'My Addresses (CAR)',
-      icon: MapPin,
-      onClick: () => handleItemClick('citizen-address-portal'),
-      visible: isCitizen
     },
     {
       id: 'emergency-contacts',
@@ -202,11 +140,11 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
 
   // Group items by category
   const mainItems = visibleItems.filter(item => 
-    ['overview', 'address-search', 'submit-request', 'request-status'].includes(item.id)
+    ['overview', 'unified-address-dashboard', 'address-search'].includes(item.id)
   );
   
-  const workflowItems = visibleItems.filter(item => 
-    ['capture-address', 'verification-queue', 'publishing-queue', 'unpublishing-queue'].includes(item.id)
+  const adminItems = visibleItems.filter(item => 
+    ['analytics', 'admin-panel'].includes(item.id)
   );
   
   const managementItems = visibleItems.filter(item => 
@@ -277,7 +215,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
 
         {/* Navigation Groups */}
         {renderMenuGroup(mainItems, t('main'))}
-        {renderMenuGroup(workflowItems, t('workflow'))}
+        {renderMenuGroup(adminItems, t('administration'))}
         {renderMenuGroup(managementItems, t('management'))}
         {renderMenuGroup(settingsItems, t('settings'))}
       </SidebarContent>

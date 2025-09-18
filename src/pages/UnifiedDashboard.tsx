@@ -48,6 +48,7 @@ import { ResidencyVerificationDashboard } from "@/components/ResidencyVerificati
 import { UserVerificationRequests } from "@/components/UserVerificationRequests";
 import { CitizenAddressPortal } from "@/components/CitizenAddressPortal";
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
+import { UnifiedAddressDashboard } from "@/components/UnifiedAddressDashboard";
 interface SearchResult {
   uac: string;
   readable: string;
@@ -572,6 +573,13 @@ const UnifiedDashboard = () => {
         return (
           <div className="max-w-6xl">
             <CitizenAddressPortal />
+          </div>
+        );
+
+      case 'unified-address-dashboard':
+        return (
+          <div className="max-w-7xl">
+            <UnifiedAddressDashboard />
           </div>
         );
 
