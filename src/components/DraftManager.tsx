@@ -44,8 +44,8 @@ const DraftManager = ({ onClose }: DraftManagerProps) => {
     try {
       const { data, error } = await supabase
         .from('addresses')
-        .select('*')
-        .eq('user_id', user.id)
+        .select('id, uac, country, region, city, street, building, latitude, longitude, address_type, description, verified, public, photo_url, created_at, updated_at')
+        .eq('created_by_authority', user.id)
         .or('verified.is.false,public.is.false')
         .order('created_at', { ascending: false });
 

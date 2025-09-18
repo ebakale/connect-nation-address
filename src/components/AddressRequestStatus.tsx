@@ -9,7 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { CalendarDays, MapPin, MessageSquare, RefreshCw, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { format } from 'date-fns';
 
-interface AddressRequest {
+interface SimpleAddressRequest {
   id: string;
   country: string;
   region: string;
@@ -27,7 +27,7 @@ interface AddressRequest {
   updated_at: string;
 }
 
-const statusConfig = {
+const statusConfig: Record<string, { color: string; key: string }> = {
   pending: { color: 'bg-yellow-500', key: 'pending' },
   under_review: { color: 'bg-blue-500', key: 'underReview' },
   approved: { color: 'bg-green-500', key: 'approved' },
@@ -37,7 +37,7 @@ const statusConfig = {
 
 export const AddressRequestStatus = () => {
   const { t } = useTranslation('address');
-  const [requests, setRequests] = useState<AddressRequest[]>([]);
+  const [requests, setRequests] = useState<SimpleAddressRequest[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const requestsPerPage = 5;
@@ -50,19 +50,22 @@ export const AddressRequestStatus = () => {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // Simple direct query to avoid type recursion
+      const query = supabase
         .from('address_requests')
         .select('id, country, region, city, street, building, latitude, longitude, address_type, description, justification, status, reviewer_notes, created_at, updated_at')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setRequests((data || []) as AddressRequest[]);
+      
+      const result = await query;
+      
+      if (result.error) throw result.error;
+      setRequests(result.data || []);
     } catch (error) {
       console.error('Error fetching address requests:', error);
       toast({
-        title: t('error'),
-        description: t('errorFetchingRequests'),
+        title: 'Error',
+        description: 'Failed to fetch address requests',
         variant: "destructive",
       });
     } finally {
@@ -75,7 +78,7 @@ export const AddressRequestStatus = () => {
   }, [user]);
 
   const getStatusBadge = (status: string) => {
-    const config = statusConfig[status as keyof typeof statusConfig] || { color: 'bg-gray-500', key: 'unknown' };
+    const config = statusConfig[status] || { color: 'bg-gray-500', key: 'unknown' };
     return (
       <Badge className={`${config.color} text-white`}>
         {t(config.key)}
@@ -83,7 +86,7 @@ export const AddressRequestStatus = () => {
     );
   };
 
-  const formatAddress = (request: AddressRequest) => {
+  const formatAddress = (request: SimpleAddressRequest) => {
     const parts = [
       request.building,
       request.street,
@@ -114,7 +117,7 @@ export const AddressRequestStatus = () => {
       <Card>
         <CardHeader className="text-center">
           <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-2" />
-          <CardTitle>{t('loadingRequests')}</CardTitle>
+          <CardTitle>Loading requests...</CardTitle>
         </CardHeader>
       </Card>
     );
@@ -127,10 +130,10 @@ export const AddressRequestStatus = () => {
           <div>
             <CardTitle className="flex items-center gap-2">
               <MessageSquare className="h-5 w-5" />
-              {t('addressRequestStatus')}
+              Address Request Status
             </CardTitle>
             <CardDescription>
-              {t('trackYourSubmissions')}
+              Track your address submissions
             </CardDescription>
           </div>
           <Button
@@ -140,7 +143,7 @@ export const AddressRequestStatus = () => {
             disabled={loading}
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            {t('refresh')}
+            Refresh
           </Button>
         </div>
       </CardHeader>
@@ -148,7 +151,7 @@ export const AddressRequestStatus = () => {
         {requests.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>{t('noRequestsFound')}</p>
+            <p>No requests found</p>
           </div>
         ) : (
           <>
@@ -167,7 +170,7 @@ export const AddressRequestStatus = () => {
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <div className="flex items-center gap-1">
                             <CalendarDays className="h-3 w-3" />
-                            <span>{t('submitted')}: {format(new Date(request.created_at), 'MMM dd, yyyy')}</span>
+                            <span>Submitted: {format(new Date(request.created_at), 'MMM dd, yyyy')}</span>
                           </div>
                           <Badge variant="outline" className="text-xs">
                             {request.address_type}
@@ -192,26 +195,26 @@ export const AddressRequestStatus = () => {
                       <div className="space-y-3 pt-3 border-t">
                         {request.description && (
                           <div>
-                            <span className="text-sm font-medium">{t('description')}:</span>
+                            <span className="text-sm font-medium">Description:</span>
                             <p className="text-sm text-muted-foreground mt-1">{request.description}</p>
                           </div>
                         )}
                         
                         <div>
-                          <span className="text-sm font-medium">{t('justification')}:</span>
+                          <span className="text-sm font-medium">Justification:</span>
                           <p className="text-sm text-muted-foreground mt-1">{request.justification}</p>
                         </div>
 
                         {request.reviewer_notes && (
                           <div>
-                            <span className="text-sm font-medium">{t('reviewerNotes')}:</span>
+                            <span className="text-sm font-medium">Reviewer Notes:</span>
                             <p className="text-sm text-muted-foreground mt-1">{request.reviewer_notes}</p>
                           </div>
                         )}
 
                         {request.latitude && request.longitude && (
                           <div>
-                            <span className="text-sm font-medium">{t('coordinates')}:</span>
+                            <span className="text-sm font-medium">Coordinates:</span>
                             <p className="text-sm text-muted-foreground mt-1">
                               {request.latitude.toFixed(6)}, {request.longitude.toFixed(6)}
                             </p>
@@ -219,7 +222,7 @@ export const AddressRequestStatus = () => {
                         )}
 
                         <div className="text-xs text-muted-foreground">
-                          <span>{t('lastUpdated')}: {format(new Date(request.updated_at), 'MMM dd, yyyy HH:mm')}</span>
+                          <span>Last Updated: {format(new Date(request.updated_at), 'MMM dd, yyyy HH:mm')}</span>
                         </div>
                       </div>
                     )}
@@ -238,11 +241,11 @@ export const AddressRequestStatus = () => {
                   disabled={currentPage === 1}
                 >
                   <ChevronLeft className="h-4 w-4 mr-2" />
-                  {t('previous')}
+                  Previous
                 </Button>
                 
                 <span className="text-sm text-muted-foreground">
-                  {t('pageInfo', { current: currentPage, total: totalPages })}
+                  Page {currentPage} of {totalPages}
                 </span>
                 
                 <Button
@@ -251,7 +254,7 @@ export const AddressRequestStatus = () => {
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
                 >
-                  {t('next')}
+                  Next
                   <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
               </div>

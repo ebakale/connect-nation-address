@@ -71,6 +71,43 @@ export const useAddresses = () => {
     }
   };
 
+  const createAddress = async (addressData: CreateAddressData): Promise<boolean> => {
+    if (!hasVerifierAccess && !hasAdminAccess) {
+      toast({
+        title: 'Access Denied',
+        description: 'You do not have permission to create addresses directly. Please submit an address request.',
+        variant: 'destructive',
+      });
+      return false;
+    }
+
+    try {
+      // For NAR addresses, they are created through the approval process
+      // This is for direct NAR authority creation
+      const { error } = await supabase.functions.invoke('request_nar_address_creation', {
+        body: addressData
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success',
+        description: 'Address creation request submitted',
+      });
+
+      await fetchAddresses();
+      return true;
+    } catch (error) {
+      console.error('Error creating address:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to create address',
+        variant: 'destructive',
+      });
+      return false;
+    }
+  };
+
   const searchAddresses = async (query: string) => {
     try {
       const { data, error } = await supabase
@@ -161,6 +198,7 @@ export const useAddresses = () => {
   return {
     addresses,
     loading,
+    createAddress,
     searchAddresses,
     updateAddressStatus,
     deleteAddress,
