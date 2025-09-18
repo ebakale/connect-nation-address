@@ -369,6 +369,134 @@ export type Database = {
         }
         Relationships: []
       }
+      citizen_address: {
+        Row: {
+          address_kind: Database["public"]["Enums"]["address_kind"]
+          created_at: string | null
+          created_by: string | null
+          effective_from: string
+          effective_to: string | null
+          id: string
+          notes: string | null
+          occupant: Database["public"]["Enums"]["occupant_type"] | null
+          person_id: string
+          scope: Database["public"]["Enums"]["address_scope"]
+          source: string | null
+          status: Database["public"]["Enums"]["address_status"] | null
+          uac: string
+          unit_uac: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address_kind?: Database["public"]["Enums"]["address_kind"]
+          created_at?: string | null
+          created_by?: string | null
+          effective_from?: string
+          effective_to?: string | null
+          id?: string
+          notes?: string | null
+          occupant?: Database["public"]["Enums"]["occupant_type"] | null
+          person_id: string
+          scope: Database["public"]["Enums"]["address_scope"]
+          source?: string | null
+          status?: Database["public"]["Enums"]["address_status"] | null
+          uac: string
+          unit_uac?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address_kind?: Database["public"]["Enums"]["address_kind"]
+          created_at?: string | null
+          created_by?: string | null
+          effective_from?: string
+          effective_to?: string | null
+          id?: string
+          notes?: string | null
+          occupant?: Database["public"]["Enums"]["occupant_type"] | null
+          person_id?: string
+          scope?: Database["public"]["Enums"]["address_scope"]
+          source?: string | null
+          status?: Database["public"]["Enums"]["address_status"] | null
+          uac?: string
+          unit_uac?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "citizen_address_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "my_person"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "citizen_address_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "person"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      citizen_address_event: {
+        Row: {
+          actor_id: string | null
+          at: string | null
+          citizen_address_id: string | null
+          event_type: string
+          id: string
+          payload: Json | null
+          person_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          at?: string | null
+          citizen_address_id?: string | null
+          event_type: string
+          id?: string
+          payload?: Json | null
+          person_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          at?: string | null
+          citizen_address_id?: string | null
+          event_type?: string
+          id?: string
+          payload?: Json | null
+          person_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "citizen_address_event_citizen_address_id_fkey"
+            columns: ["citizen_address_id"]
+            isOneToOne: false
+            referencedRelation: "citizen_address"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "citizen_address_event_citizen_address_id_fkey"
+            columns: ["citizen_address_id"]
+            isOneToOne: false
+            referencedRelation: "current_citizen_addresses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "citizen_address_event_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "my_person"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "citizen_address_event_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "person"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coverage_analytics: {
         Row: {
           addresses_published: number | null
@@ -857,6 +985,30 @@ export type Database = {
         }
         Relationships: []
       }
+      person: {
+        Row: {
+          auth_user_id: string | null
+          created_at: string | null
+          id: string
+          national_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          auth_user_id?: string | null
+          created_at?: string | null
+          id?: string
+          national_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          auth_user_id?: string | null
+          created_at?: string | null
+          id?: string
+          national_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       privacy_consent_log: {
         Row: {
           consent_details: Json | null
@@ -1303,9 +1455,143 @@ export type Database = {
           },
         ]
       }
+      webhook_delivery: {
+        Row: {
+          attempts: number | null
+          created_at: string | null
+          delivered_at: string | null
+          event_type: string
+          id: string
+          last_error: string | null
+          max_attempts: number | null
+          next_retry_at: string | null
+          payload: Json
+          status: string | null
+          url: string
+        }
+        Insert: {
+          attempts?: number | null
+          created_at?: string | null
+          delivered_at?: string | null
+          event_type: string
+          id?: string
+          last_error?: string | null
+          max_attempts?: number | null
+          next_retry_at?: string | null
+          payload: Json
+          status?: string | null
+          url: string
+        }
+        Update: {
+          attempts?: number | null
+          created_at?: string | null
+          delivered_at?: string | null
+          event_type?: string
+          id?: string
+          last_error?: string | null
+          max_attempts?: number | null
+          next_retry_at?: string | null
+          payload?: Json
+          status?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      current_citizen_addresses: {
+        Row: {
+          address_kind: Database["public"]["Enums"]["address_kind"] | null
+          created_at: string | null
+          created_by: string | null
+          effective_from: string | null
+          effective_to: string | null
+          id: string | null
+          notes: string | null
+          occupant: Database["public"]["Enums"]["occupant_type"] | null
+          person_id: string | null
+          scope: Database["public"]["Enums"]["address_scope"] | null
+          source: string | null
+          status: Database["public"]["Enums"]["address_status"] | null
+          uac: string | null
+          unit_uac: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address_kind?: Database["public"]["Enums"]["address_kind"] | null
+          created_at?: string | null
+          created_by?: string | null
+          effective_from?: string | null
+          effective_to?: string | null
+          id?: string | null
+          notes?: string | null
+          occupant?: Database["public"]["Enums"]["occupant_type"] | null
+          person_id?: string | null
+          scope?: Database["public"]["Enums"]["address_scope"] | null
+          source?: string | null
+          status?: Database["public"]["Enums"]["address_status"] | null
+          uac?: string | null
+          unit_uac?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address_kind?: Database["public"]["Enums"]["address_kind"] | null
+          created_at?: string | null
+          created_by?: string | null
+          effective_from?: string | null
+          effective_to?: string | null
+          id?: string | null
+          notes?: string | null
+          occupant?: Database["public"]["Enums"]["occupant_type"] | null
+          person_id?: string | null
+          scope?: Database["public"]["Enums"]["address_scope"] | null
+          source?: string | null
+          status?: Database["public"]["Enums"]["address_status"] | null
+          uac?: string | null
+          unit_uac?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "citizen_address_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "my_person"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "citizen_address_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "person"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      my_person: {
+        Row: {
+          auth_user_id: string | null
+          created_at: string | null
+          id: string | null
+          national_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          auth_user_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          national_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          auth_user_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          national_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       approve_address_request: {
@@ -1617,6 +1903,9 @@ export type Database = {
       }
     }
     Enums: {
+      address_kind: "PRIMARY" | "SECONDARY" | "OTHER"
+      address_scope: "BUILDING" | "UNIT"
+      address_status: "SELF_DECLARED" | "CONFIRMED" | "REJECTED"
       app_role:
         | "admin"
         | "moderator"
@@ -1650,6 +1939,7 @@ export type Database = {
         | "birth_certificate"
         | "marriage_certificate"
         | "other_legal_document"
+      occupant_type: "OWNER" | "TENANT" | "FAMILY" | "OTHER"
       privacy_access_level:
         | "public"
         | "restricted"
@@ -1791,6 +2081,9 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      address_kind: ["PRIMARY", "SECONDARY", "OTHER"],
+      address_scope: ["BUILDING", "UNIT"],
+      address_status: ["SELF_DECLARED", "CONFIRMED", "REJECTED"],
       app_role: [
         "admin",
         "moderator",
@@ -1826,6 +2119,7 @@ export const Constants = {
         "marriage_certificate",
         "other_legal_document",
       ],
+      occupant_type: ["OWNER", "TENANT", "FAMILY", "OTHER"],
       privacy_access_level: [
         "public",
         "restricted",
