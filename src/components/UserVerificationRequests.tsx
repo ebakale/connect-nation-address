@@ -197,7 +197,10 @@ export const UserVerificationRequests = () => {
                                     setEditingVerificationId(null);
                                     fetchUserVerifications();
                                   }}
-                                  onCancel={() => setEditingVerificationId(null)}
+                                  onCancel={() => {
+                                    console.log('UserVerificationRequests onCancel called, setting editingVerificationId to null');
+                                    setEditingVerificationId(null);
+                                  }}
                                 />
                               ) : (
                                 <div className="p-6 space-y-4">
