@@ -319,10 +319,12 @@ Shared from Equatorial Guinea Address Portal`;
                   </Badge>
                 </div>
 
-                {calculatedDistance && (
+                {(distanceEstimates.driving || distanceEstimates.walking || calculatedDistance) && (
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Target className="h-3 w-3 text-primary" />
-                    <span>Distance: <strong>{formatDistance(calculatedDistance)}</strong></span>
+                    <span>Distance: <strong>
+                      {distanceEstimates.driving?.distance || distanceEstimates.walking?.distance || formatDistance(calculatedDistance!)}
+                    </strong></span>
                   </div>
                 )}
               </CardContent>
