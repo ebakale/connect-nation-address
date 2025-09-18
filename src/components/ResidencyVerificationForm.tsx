@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { DialogClose } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -473,24 +474,26 @@ export const ResidencyVerificationForm = ({
               {uploading ? 'Uploading...' : loading ? 'Processing...' : editingVerification ? 'Update Request' : 'Submit Request'}
             </Button>
             {onCancel && (
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={() => {
-                  console.log('Cancel button clicked, loading:', loading, 'uploading:', uploading);
-                  console.log('onCancel prop exists:', !!onCancel);
-                  if (onCancel) {
-                    console.log('Calling onCancel function');
-                    onCancel();
-                  } else {
-                    console.log('onCancel prop is missing!');
-                  }
-                }}
-                disabled={loading || uploading}
-                className={loading || uploading ? 'opacity-50 cursor-not-allowed' : ''}
-              >
-                Cancel
-              </Button>
+              <DialogClose asChild>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => {
+                    console.log('Cancel button clicked, loading:', loading, 'uploading:', uploading);
+                    console.log('onCancel prop exists:', !!onCancel);
+                    if (onCancel) {
+                      console.log('Calling onCancel function');
+                      onCancel();
+                    } else {
+                      console.log('onCancel prop is missing!');
+                    }
+                  }}
+                  disabled={loading || uploading}
+                  className={loading || uploading ? 'opacity-50 cursor-not-allowed' : ''}
+                >
+                  Cancel
+                </Button>
+              </DialogClose>
             )}
           </div>
         </form>
