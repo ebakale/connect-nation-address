@@ -18,7 +18,6 @@ const formSchema = z.object({
   scope: z.enum(['BUILDING', 'UNIT'] as const),
   uac: z.string().min(1, 'UAC is required'),
   unit_uac: z.string().optional(),
-  occupant: z.enum(['OWNER', 'TENANT', 'FAMILY', 'OTHER'] as const).optional(),
   effective_from: z.date().optional(),
 });
 
@@ -36,7 +35,6 @@ export function SetPrimaryAddressForm({ onSuccess }: SetPrimaryAddressFormProps)
     resolver: zodResolver(formSchema),
     defaultValues: {
       scope: 'BUILDING',
-      occupant: 'OWNER',
       effective_from: new Date(),
     },
   });
@@ -51,7 +49,6 @@ export function SetPrimaryAddressForm({ onSuccess }: SetPrimaryAddressFormProps)
         scope: data.scope,
         uac: data.uac,
         unit_uac: data.scope === 'UNIT' ? data.unit_uac : undefined,
-        occupant: data.occupant,
         effective_from: data.effective_from?.toISOString().split('T')[0],
       });
 
@@ -136,32 +133,6 @@ export function SetPrimaryAddressForm({ onSuccess }: SetPrimaryAddressFormProps)
           />
         )}
 
-        <FormField
-          control={form.control}
-          name="occupant"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Occupant Type</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select occupant type" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="OWNER">Owner</SelectItem>
-                  <SelectItem value="TENANT">Tenant</SelectItem>
-                  <SelectItem value="FAMILY">Family Member</SelectItem>
-                  <SelectItem value="OTHER">Other</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                Specify your relationship to this address.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <FormField
           control={form.control}

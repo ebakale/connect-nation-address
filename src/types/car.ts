@@ -43,6 +43,5 @@ export interface AddressInput {
   scope: AddressScope;
   uac: string;
   unit_uac?: string;
-  occupant?: OccupantType;
   effective_from?: string;
 }
