@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Shield, UserPlus, X, Search } from "lucide-react";
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import { Shield, UserPlus, Settings, Eye, Trash2 } from 'lucide-react';
 
 interface NARAuthority {
   id: string;
@@ -22,10 +22,15 @@ interface NARAuthority {
   can_update_addresses: boolean;
   is_active: boolean;
   created_at: string;
-  profiles?: {
-    full_name: string;
-    email: string;
-  };
+  // Profile data from join
+  full_name?: string;
+  email?: string;
+}
+
+interface UserProfile {
+  user_id: string;
+  full_name: string;
+  email: string;
 }
 
 export function NARAuthorityManager() {
@@ -33,9 +38,15 @@ export function NARAuthorityManager() {
   const { toast } = useToast();
   const [authorities, setAuthorities] = useState<NARAuthority[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  
+  // User search state
+  const [userSearch, setUserSearch] = useState('');
+  const [searchResults, setSearchResults] = useState<UserProfile[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
+  const [searching, setSearching] = useState(false);
+  
   const [newAuthority, setNewAuthority] = useState({
-    user_id: '',
     authority_level: '',
     jurisdiction_region: '',
     jurisdiction_city: '',
@@ -44,20 +55,67 @@ export function NARAuthorityManager() {
     can_update_addresses: false
   });
 
-  const fetchAuthorities = async () => {
+  // Search for users by email or name
+  const searchUsers = async (searchTerm: string) => {
+    if (!searchTerm || searchTerm.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    setSearching(true);
     try {
-      setLoading(true);
-      const { data: authorities, error } = await supabase
-        .from('nar_authorities')
-        .select('*')
-        .eq('is_active', true);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('user_id, full_name, email')
+        .or(`email.ilike.%${searchTerm}%,full_name.ilike.%${searchTerm}%`)
+        .limit(10);
 
       if (error) throw error;
+      setSearchResults(data || []);
+    } catch (error) {
+      console.error('Error searching users:', error);
+      setSearchResults([]);
+    } finally {
+      setSearching(false);
+    }
+  };
 
-      // Get user profiles separately
-      if (authorities && authorities.length > 0) {
-        const userIds = authorities.map(auth => auth.user_id);
-        const { data: profiles, error: profilesError } = await supabase
+  // Reset form when dialog closes
+  const resetForm = () => {
+    setNewAuthority({
+      authority_level: '',
+      jurisdiction_region: '',
+      jurisdiction_city: '',
+      can_create_addresses: true,
+      can_verify_addresses: true,
+      can_update_addresses: false
+    });
+    setUserSearch('');
+    setSearchResults([]);
+    setSelectedUser(null);
+  };
+
+  useEffect(() => {
+    fetchAuthorities();
+  }, []);
+
+  const fetchAuthorities = async () => {
+    try {
+      // First get the authorities
+      const { data: authoritiesData, error: authoritiesError } = await supabase
+        .from('nar_authorities')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+
+      if (authoritiesError) throw authoritiesError;
+
+      if (authoritiesData && authoritiesData.length > 0) {
+        // Get user IDs
+        const userIds = authoritiesData.map(auth => auth.user_id);
+        
+        // Get profiles for these users
+        const { data: profilesData, error: profilesError } = await supabase
           .from('profiles')
           .select('user_id, full_name, email')
           .in('user_id', userIds);
@@ -65,18 +123,16 @@ export function NARAuthorityManager() {
         if (profilesError) throw profilesError;
 
         // Combine the data
-        const authoritiesWithProfiles = authorities.map(auth => {
-          const profile = profiles?.find(p => p.user_id === auth.user_id);
+        const formattedData = authoritiesData.map(authority => {
+          const profile = profilesData?.find(p => p.user_id === authority.user_id);
           return {
-            ...auth,
-            profiles: {
-              full_name: profile?.full_name || 'Unknown User',
-              email: profile?.email || 'Unknown Email'
-            }
+            ...authority,
+            full_name: profile?.full_name,
+            email: profile?.email
           };
         });
-
-        setAuthorities(authoritiesWithProfiles);
+        
+        setAuthorities(formattedData);
       } else {
         setAuthorities([]);
       }
@@ -94,10 +150,10 @@ export function NARAuthorityManager() {
 
   const createAuthority = async () => {
     try {
-      if (!newAuthority.user_id || !newAuthority.authority_level) {
+      if (!selectedUser || !newAuthority.authority_level) {
         toast({
           title: t('common:error'),
-          description: 'Please fill in all required fields',
+          description: 'Please select a user and authority level',
           variant: 'destructive'
         });
         return;
@@ -106,7 +162,7 @@ export function NARAuthorityManager() {
       const { error } = await supabase
         .from('nar_authorities')
         .insert([{
-          user_id: newAuthority.user_id,
+          user_id: selectedUser.user_id, // Use the selected user's UUID
           authority_level: newAuthority.authority_level,
           jurisdiction_region: newAuthority.jurisdiction_region || null,
           jurisdiction_city: newAuthority.jurisdiction_city || null,
@@ -122,17 +178,9 @@ export function NARAuthorityManager() {
         description: 'NAR authority created successfully'
       });
 
-      setShowCreateDialog(false);
-      setNewAuthority({
-        user_id: '',
-        authority_level: '',
-        jurisdiction_region: '',
-        jurisdiction_city: '',
-        can_create_addresses: true,
-        can_verify_addresses: true,
-        can_update_addresses: false
-      });
-      fetchAuthorities();
+      await fetchAuthorities();
+      setDialogOpen(false);
+      resetForm();
     } catch (error) {
       console.error('Error creating NAR authority:', error);
       toast({
@@ -157,7 +205,7 @@ export function NARAuthorityManager() {
         description: 'NAR authority deactivated successfully'
       });
 
-      fetchAuthorities();
+      await fetchAuthorities();
     } catch (error) {
       console.error('Error deactivating NAR authority:', error);
       toast({
@@ -168,17 +216,13 @@ export function NARAuthorityManager() {
     }
   };
 
-  useEffect(() => {
-    fetchAuthorities();
-  }, []);
-
   const getAuthorityLevelColor = (level: string) => {
     switch (level) {
-      case 'national': return 'bg-red-500 text-white';
-      case 'regional': return 'bg-blue-500 text-white';
-      case 'municipal': return 'bg-green-500 text-white';
-      case 'local': return 'bg-yellow-500 text-white';
-      default: return 'bg-gray-500 text-white';
+      case 'national': return 'bg-red-100 text-red-800';
+      case 'regional': return 'bg-orange-100 text-orange-800';
+      case 'municipal': return 'bg-blue-100 text-blue-800';
+      case 'local': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -195,8 +239,14 @@ export function NARAuthorityManager() {
               <Shield className="h-5 w-5" />
               NAR Authority Management
             </CardTitle>
+            <CardDescription>
+              Manage National Address Registry authorities and their permissions
+            </CardDescription>
           </div>
-          <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+          <Dialog open={dialogOpen} onOpenChange={(open) => {
+            setDialogOpen(open);
+            if (!open) resetForm();
+          }}>
             <DialogTrigger asChild>
               <Button>
                 <UserPlus className="h-4 w-4 mr-2" />
@@ -209,13 +259,63 @@ export function NARAuthorityManager() {
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="user_id">User ID</Label>
-                  <Input
-                    id="user_id"
-                    value={newAuthority.user_id}
-                    onChange={(e) => setNewAuthority({ ...newAuthority, user_id: e.target.value })}
-                    placeholder="Enter user ID"
-                  />
+                  <Label htmlFor="user_search">Search User</Label>
+                  <div className="space-y-2">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="user_search"
+                        className="pl-10"
+                        value={userSearch}
+                        onChange={(e) => {
+                          setUserSearch(e.target.value);
+                          searchUsers(e.target.value);
+                        }}
+                        placeholder="Search by email or name..."
+                      />
+                    </div>
+                    
+                    {/* Selected User Display */}
+                    {selectedUser && (
+                      <div className="p-3 bg-muted rounded-lg flex items-center justify-between">
+                        <div>
+                          <p className="font-medium">{selectedUser.full_name}</p>
+                          <p className="text-sm text-muted-foreground">{selectedUser.email}</p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSelectedUser(null)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                    
+                    {/* Search Results */}
+                    {userSearch && !selectedUser && searchResults.length > 0 && (
+                      <div className="border rounded-lg max-h-48 overflow-y-auto">
+                        {searchResults.map((user) => (
+                          <div
+                            key={user.user_id}
+                            className="p-3 hover:bg-muted cursor-pointer border-b last:border-b-0"
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setUserSearch('');
+                              setSearchResults([]);
+                            }}
+                          >
+                            <p className="font-medium">{user.full_name}</p>
+                            <p className="text-sm text-muted-foreground">{user.email}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {userSearch && !selectedUser && searchResults.length === 0 && !searching && (
+                      <p className="text-sm text-muted-foreground">No users found</p>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <Label htmlFor="authority_level">Authority Level</Label>
@@ -252,7 +352,11 @@ export function NARAuthorityManager() {
                     placeholder="Optional: specific city"
                   />
                 </div>
-                <Button onClick={createAuthority} className="w-full">
+                <Button 
+                  onClick={createAuthority} 
+                  className="w-full"
+                  disabled={!selectedUser || !newAuthority.authority_level}
+                >
                   Create Authority
                 </Button>
               </div>
@@ -278,25 +382,23 @@ export function NARAuthorityManager() {
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       {getAuthorityIcon(authority.authority_level)}
-                      <span className="font-medium">
-                        {authority.profiles?.full_name || authority.profiles?.email}
-                      </span>
+                      <span className="font-medium">{authority.full_name || 'Unknown User'}</span>
                       <Badge className={getAuthorityLevelColor(authority.authority_level)}>
                         {authority.authority_level}
                       </Badge>
-                      <Badge variant={authority.is_active ? "default" : "secondary"}>
-                        {authority.is_active ? "Active" : "Inactive"}
-                      </Badge>
                     </div>
-                    
-                    {(authority.jurisdiction_region || authority.jurisdiction_city) && (
-                      <div className="text-sm text-muted-foreground">
-                        Jurisdiction: {[authority.jurisdiction_region, authority.jurisdiction_city]
-                          .filter(Boolean).join(', ')}
-                      </div>
+                    <p className="text-sm text-muted-foreground">{authority.email}</p>
+                    {authority.jurisdiction_region && (
+                      <p className="text-xs text-muted-foreground">
+                        Region: {authority.jurisdiction_region}
+                      </p>
                     )}
-                    
-                    <div className="flex gap-2 text-sm">
+                    {authority.jurisdiction_city && (
+                      <p className="text-xs text-muted-foreground">
+                        City: {authority.jurisdiction_city}
+                      </p>
+                    )}
+                    <div className="flex gap-2 mt-2">
                       {authority.can_create_addresses && (
                         <Badge variant="outline">Can Create</Badge>
                       )}
@@ -308,16 +410,13 @@ export function NARAuthorityManager() {
                       )}
                     </div>
                   </div>
-                  
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => deactivateAuthority(authority.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => deactivateAuthority(authority.id)}
+                  >
+                    Deactivate
+                  </Button>
                 </div>
               </div>
             ))}
