@@ -1759,7 +1759,9 @@ export type Database = {
         Returns: Json
       }
       close_current_primary: {
-        Args: { p_person_id: string; p_until: string }
+        Args:
+          | { p_person_id: string; p_until: string }
+          | { p_person_id: string; p_until: string }
         Returns: undefined
       }
       debug_verification_access: {
