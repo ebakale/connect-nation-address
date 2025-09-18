@@ -1858,30 +1858,17 @@ export type Database = {
           country: string
           created_at: string
           description: string
-          flag_reason: string
-          flagged: boolean
-          flagged_at: string
-          flagged_by: string
           id: string
           justification: string
           latitude: number
           longitude: number
-          photo_url: string
-          public: boolean
           region: string
           rejected_at: string
           rejected_by: string
           rejection_notes: string
           rejection_reason: string
-          source_type: string
-          status: string
           street: string
-          uac: string
-          updated_at: string
           user_id: string
-          verification_analysis: Json
-          verification_recommendations: string[]
-          verified: boolean
         }[]
       }
       get_residents_by_uac: {
