@@ -137,7 +137,6 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
   const handleSelectResult = (result: SearchResult, rawResult?: any) => {
     console.log('AddressSearch: Address selected:', result);
     setShowResults(false);
-    setQuery(result.readable);
     
     // Open the enhanced modal with detailed address information
     if (rawResult) {
