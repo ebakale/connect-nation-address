@@ -142,23 +142,32 @@ export const ResidencyVerificationForm = ({
       
       // Upload primary document if a new one is provided
       if (primaryDocument) {
+        console.log('Uploading new document for user:', user?.id);
         primaryDocumentUrl = await uploadDocument(primaryDocument, 'verification-documents');
         if (!primaryDocumentUrl) {
           throw new Error('Failed to upload primary document');
         }
+        console.log('Document uploaded successfully:', primaryDocumentUrl);
       }
 
       if (editingVerification) {
         // Update existing verification request
+        const updateData: any = {
+          verification_type: formData.verificationType,
+          claimant_relationship: formData.claimantRelationship,
+          primary_document_type: formData.primaryDocumentType,
+          status: 'pending', // Reset to pending when edited
+          updated_at: new Date().toISOString()
+        };
+
+        // Only update document URL if a new document was uploaded
+        if (primaryDocumentUrl) {
+          updateData.primary_document_url = primaryDocumentUrl;
+        }
+
         const { error } = await supabase
           .from('residency_ownership_verifications')
-          .update({
-            verification_type: formData.verificationType as any,
-            claimant_relationship: formData.claimantRelationship as any,
-            primary_document_type: formData.primaryDocumentType as any,
-            primary_document_url: primaryDocumentUrl,
-            status: 'pending' // Reset to pending when edited
-          })
+          .update(updateData)
           .eq('id', editingVerification.id);
 
         if (error) throw error;
@@ -202,9 +211,24 @@ export const ResidencyVerificationForm = ({
       onSuccess?.();
     } catch (error: any) {
       console.error('Error submitting verification:', error);
+      
+      let errorMessage = 'Failed to submit verification request';
+      if (editingVerification) {
+        errorMessage = 'Failed to update verification request';
+      }
+      
+      // Provide more specific error messages
+      if (error.message?.includes('storage')) {
+        errorMessage = 'Failed to upload document. Please try again.';
+      } else if (error.message?.includes('database')) {
+        errorMessage = 'Database error occurred. Please contact support.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
         title: 'Error',
-        description: error.message || 'Failed to submit verification request',
+        description: errorMessage,
         variant: 'destructive'
       });
     } finally {
