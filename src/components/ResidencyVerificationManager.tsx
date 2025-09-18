@@ -353,7 +353,7 @@ export const ResidencyVerificationManager = () => {
                                         const rawUrl = selectedVerification.primary_document_url!;
                                         console.log('Raw document URL:', rawUrl);
                                         
-                                        // Extract file path from URL
+                                        // Extract file path from URL - handle different URL formats
                                         let filePath = '';
                                         if (rawUrl.includes('/storage/v1/object/public/residency-documents/')) {
                                           filePath = rawUrl.split('/storage/v1/object/public/residency-documents/')[1];
@@ -372,7 +372,7 @@ export const ResidencyVerificationManager = () => {
                                           throw new Error('Could not extract file path from URL');
                                         }
                                         
-                                        // Try to list all files in the user's folder to debug
+                                        // First, try to find the actual file in the user's folder
                                         const userId = filePath.split('/')[0];
                                         console.log('Checking user folder:', userId);
                                         
@@ -381,22 +381,39 @@ export const ResidencyVerificationManager = () => {
                                           .list(userId);
                                         
                                         console.log('All files in user folder:', allFiles);
-                                        console.log('List error:', listError);
                                         
                                         if (listError) {
-                                          console.log('List error details:', listError);
+                                          console.error('Error listing files:', listError);
+                                          throw new Error('Could not access document folder');
+                                        }
+                                        
+                                        if (!allFiles || allFiles.length === 0) {
+                                          throw new Error('No documents found in user folder. The document may have been deleted or not uploaded properly.');
+                                        }
+                                        
+                                        // Find the correct file - try exact match first, then most recent
+                                        const fileName = filePath.split('/')[1];
+                                        let targetFile = allFiles.find(file => file.name === fileName);
+                                        
+                                        if (!targetFile) {
+                                          // If exact match not found, get the most recent file
+                                          targetFile = allFiles.sort((a, b) => 
+                                            new Date(b.updated_at || b.created_at || 0).getTime() - 
+                                            new Date(a.updated_at || a.created_at || 0).getTime()
+                                          )[0];
+                                          
+                                          console.log('Using most recent file:', targetFile.name);
+                                          filePath = `${userId}/${targetFile.name}`;
                                         }
 
-                                        // Try to create signed URL anyway
+                                        // Create signed URL for the file
                                         const { data, error } = await supabase.storage
                                           .from('residency-documents')
                                           .createSignedUrl(filePath, 3600);
                                         
-                                        console.log('Signed URL attempt:', { data, error });
-                                        
                                         if (error) {
                                           console.error('Signed URL error:', error);
-                                          throw error;
+                                          throw new Error(`Document access failed: ${error.message}`);
                                         }
                                         
                                         if (data?.signedUrl) {
@@ -408,8 +425,8 @@ export const ResidencyVerificationManager = () => {
                                       } catch (error: any) {
                                         console.error('Error viewing document:', error);
                                         toast({
-                                          title: 'Error',
-                                          description: `Document viewing failed: ${error.message}`,
+                                          title: 'Document Access Error',
+                                          description: error.message || 'Could not access the document. Please ask the applicant to re-upload.',
                                           variant: 'destructive'
                                         });
                                       }
