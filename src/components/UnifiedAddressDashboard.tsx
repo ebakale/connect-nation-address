@@ -24,6 +24,7 @@ import { NARAuthorityManager } from './NARAuthorityManager';
 
 // Import CAR components  
 import { CitizenAddressPortal } from './CitizenAddressPortal';
+import { CitizenAddressVerificationManager } from './CitizenAddressVerificationManager';
 import { ResidencyVerificationManager } from './ResidencyVerificationManager';
 import { UserVerificationRequests } from './UserVerificationRequests';
 
@@ -287,11 +288,22 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold">My Verification Requests</h2>
-                <p className="text-muted-foreground">Track your residency verification requests</p>
+                <p className="text-muted-foreground">Manage your residency verification requests</p>
               </div>
               <Badge variant="outline">CAR Verification</Badge>
             </div>
-            <UserVerificationRequests />
+            <Tabs defaultValue="manage" className="space-y-4">
+              <TabsList>
+                <TabsTrigger value="manage">Manage Verifications</TabsTrigger>
+                <TabsTrigger value="history">Request History</TabsTrigger>
+              </TabsList>
+              <TabsContent value="manage">
+                <CitizenAddressVerificationManager />
+              </TabsContent>
+              <TabsContent value="history">
+                <UserVerificationRequests />
+              </TabsContent>
+            </Tabs>
           </div>
         );
 
