@@ -183,6 +183,13 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: isCitizen || isFieldAgent || isPropertyClaimant
     },
     {
+      id: 'citizen-address-portal',
+      title: 'My Addresses (CAR)',
+      icon: MapPin,
+      onClick: () => handleItemClick('citizen-address-portal'),
+      visible: isCitizen
+    },
+    {
       id: 'emergency-contacts',
       title: t('emergencyContacts'),
       icon: Phone,
@@ -207,7 +214,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   );
   
   const settingsItems = visibleItems.filter(item => 
-    ['profile', 'residency-verification-dashboard', 'emergency-contacts'].includes(item.id)
+    ['profile', 'residency-verification-dashboard', 'citizen-address-portal', 'emergency-contacts'].includes(item.id)
   );
 
   const renderMenuGroup = (items: NavigationItem[], label: string) => {

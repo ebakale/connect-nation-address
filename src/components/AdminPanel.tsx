@@ -16,6 +16,7 @@ import ApiWebhookManager from './ApiWebhookManager';
 import NotificationTester from './NotificationTester';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Shield, Hash } from 'lucide-react';
+import { NARAuthorityManager } from './NARAuthorityManager';
 
 const AdminPanel: React.FC = () => {
   const { t } = useTranslation(['admin']);
@@ -51,11 +52,12 @@ const AdminPanel: React.FC = () => {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="roles" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 grid-rows-2 gap-1">
+        <TabsList className="grid w-full grid-cols-5 grid-rows-2 gap-1">
           <TabsTrigger value="roles" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:roleManagement')}</TabsTrigger>
           <TabsTrigger value="permissions" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:permissions')}</TabsTrigger>
           <TabsTrigger value="workflows" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:workflows')}</TabsTrigger>
           <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:userManagement')}</TabsTrigger>
+          <TabsTrigger value="nar-authorities" className="text-xs sm:text-sm px-2 sm:px-3">NAR Authorities</TabsTrigger>
           <TabsTrigger value="uac" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:uacSystem')}</TabsTrigger>
           <TabsTrigger value="quality" className="text-xs sm:text-sm px-2 sm:px-3">Quality</TabsTrigger>
           <TabsTrigger value="documentation" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:documentation')}</TabsTrigger>
@@ -78,6 +80,10 @@ const AdminPanel: React.FC = () => {
         
         <TabsContent value="users">
           <UserManager />
+        </TabsContent>
+        
+        <TabsContent value="nar-authorities">
+          <NARAuthorityManager />
         </TabsContent>
         
         <TabsContent value="uac">

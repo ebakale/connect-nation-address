@@ -46,6 +46,8 @@ import DashboardLocationMap from "@/components/DashboardLocationMap";
 import { ResidencyVerificationManager } from "@/components/ResidencyVerificationManager";
 import { ResidencyVerificationDashboard } from "@/components/ResidencyVerificationDashboard";
 import { UserVerificationRequests } from "@/components/UserVerificationRequests";
+import { CitizenAddressPortal } from "@/components/CitizenAddressPortal";
+import { NARCARTestPanel } from "@/components/NARCARTestPanel";
 interface SearchResult {
   uac: string;
   readable: string;
@@ -295,6 +297,7 @@ const UnifiedDashboard = () => {
       case 'verification-tools': return t('dashboard:verificationTools');
       case 'residency-verification-manager': return 'Residency Verification Manager';
       case 'residency-verification-dashboard': return 'My Verification Requests';
+      case 'citizen-address-portal': return 'My Addresses (CAR)';
       case 'profile': return t('dashboard:title');
       case 'emergency-contacts': return t('dashboard:emergencyContacts');
       default: return t('dashboard:title');
@@ -316,6 +319,7 @@ const UnifiedDashboard = () => {
       case 'verification-tools': return t('dashboard:verificationToolsDescription');
       case 'residency-verification-manager': return 'Manage and review residency verification requests from citizens';
       case 'residency-verification-dashboard': return 'View and edit your residency verification requests. Upload new documents and track status changes.';
+      case 'citizen-address-portal': return 'Manage your citizen addresses in the Citizen Address Repository (CAR). Set primary and secondary addresses.';
       case 'profile': return t('dashboard:welcomeMessage');
       case 'emergency-contacts': return t('dashboard:welcomeMessage');
       default: return t('dashboard:welcomeMessage');
@@ -529,10 +533,18 @@ const UnifiedDashboard = () => {
           </div>
         );
 
+      case 'citizen-address-portal':
+        return (
+          <div className="max-w-6xl">
+            <CitizenAddressPortal />
+          </div>
+        );
+
       case 'admin-panel':
         return (
           <div className="max-w-6xl space-y-6">
             {hasSystemAdminAccess && <GoogleMapsImporter />}
+            <NARCARTestPanel />
             <AdminPanel />
           </div>
         );
