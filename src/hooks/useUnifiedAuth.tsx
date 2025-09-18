@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { useAuth } from './useAuth';
 import { useLocalAuth } from './useLocalAuth';
 import { useOffline } from './useOffline';
