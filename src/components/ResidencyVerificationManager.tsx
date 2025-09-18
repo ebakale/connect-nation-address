@@ -68,7 +68,7 @@ export const ResidencyVerificationManager = () => {
         .select(`
           *
         `)
-        .order('created_at', { ascending: false });
+        .order('updated_at', { ascending: false });
 
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter as any);
@@ -193,6 +193,17 @@ export const ResidencyVerificationManager = () => {
 
   useEffect(() => {
     fetchVerifications();
+  }, [canVerifyAddresses, hasAdminAccess, statusFilter]);
+
+  // Auto-refresh verifications every 10 seconds to catch updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (canVerifyAddresses || hasAdminAccess) {
+        fetchVerifications();
+      }
+    }, 10000);
+
+    return () => clearInterval(interval);
   }, [canVerifyAddresses, hasAdminAccess, statusFilter]);
 
   if (!canVerifyAddresses && !hasAdminAccess) {
