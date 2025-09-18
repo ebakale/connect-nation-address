@@ -14,14 +14,14 @@ import { useResidencyVerification } from '@/hooks/useResidencyVerification';
 import { useToast } from '@/hooks/use-toast';
 
 interface ResidencyVerificationFormProps {
-  addressRequestId: string;
+  citizenAddressId: string;
   editingVerification?: any; // Optional: for editing existing requests
   onSuccess?: () => void;
   onCancel?: () => void;
 }
 
 export const ResidencyVerificationForm = ({ 
-  addressRequestId, 
+  citizenAddressId, 
   editingVerification, 
   onSuccess, 
   onCancel 
@@ -175,7 +175,7 @@ export const ResidencyVerificationForm = ({
       } else {
         // Create verification request
         verificationId = await createVerificationRequest(
-          addressRequestId,
+          citizenAddressId,
           formData.verificationType,
           formData.claimantRelationship,
           formData.primaryDocumentType,

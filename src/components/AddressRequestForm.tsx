@@ -399,11 +399,22 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
           </CardContent>
         </Card>
         
-        <ResidencyVerificationForm
-          addressRequestId={submittedRequestId}
-          onSuccess={handleVerificationSuccess}
-          onCancel={handleSkipVerification}
-        />
+        {/* Note: Address verification now requires CAR address setup first */}
+        <div className="text-center p-6 border-2 border-dashed border-muted rounded-lg">
+          <h3 className="text-lg font-semibold mb-2">Address Request Submitted</h3>
+          <p className="text-muted-foreground mb-4">
+            Your address request has been submitted for review. To verify ownership/residency, 
+            you'll need to first set this address in your Citizen Address Repository.
+          </p>
+          <div className="flex gap-2 justify-center">
+            <Button onClick={handleVerificationSuccess}>
+              Continue to Dashboard
+            </Button>
+            <Button variant="outline" onClick={handleSkipVerification}>
+              Skip for Now
+            </Button>
+          </div>
+        </div>
       </div>
     );
   }

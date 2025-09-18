@@ -1283,6 +1283,7 @@ export type Database = {
       residency_ownership_verifications: {
         Row: {
           address_request_id: string | null
+          citizen_address_id: string | null
           claimant_relationship: string
           consent_given: boolean
           consent_timestamp: string | null
@@ -1313,6 +1314,7 @@ export type Database = {
         }
         Insert: {
           address_request_id?: string | null
+          citizen_address_id?: string | null
           claimant_relationship: string
           consent_given?: boolean
           consent_timestamp?: string | null
@@ -1343,6 +1345,7 @@ export type Database = {
         }
         Update: {
           address_request_id?: string | null
+          citizen_address_id?: string | null
           claimant_relationship?: string
           consent_given?: boolean
           consent_timestamp?: string | null
@@ -1377,6 +1380,27 @@ export type Database = {
             columns: ["address_request_id"]
             isOneToOne: false
             referencedRelation: "address_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "residency_ownership_verifications_citizen_address_id_fkey"
+            columns: ["citizen_address_id"]
+            isOneToOne: false
+            referencedRelation: "citizen_address"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "residency_ownership_verifications_citizen_address_id_fkey"
+            columns: ["citizen_address_id"]
+            isOneToOne: false
+            referencedRelation: "citizen_address_with_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "residency_ownership_verifications_citizen_address_id_fkey"
+            columns: ["citizen_address_id"]
+            isOneToOne: false
+            referencedRelation: "current_citizen_addresses"
             referencedColumns: ["id"]
           },
         ]
@@ -2003,7 +2027,7 @@ export type Database = {
       }
       initiate_residency_verification: {
         Args: {
-          p_address_request_id: string
+          p_citizen_address_id: string
           p_claimant_relationship: string
           p_legal_basis: string
           p_primary_document_type: Database["public"]["Enums"]["legal_document_type"]

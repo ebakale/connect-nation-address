@@ -22,7 +22,8 @@ import { ResidencyVerificationForm } from './ResidencyVerificationForm';
 
 interface VerificationRequest {
   id: string;
-  address_request_id: string;
+  citizen_address_id: string;
+  address_request_id: string | null; // For backward compatibility
   verification_type: string;
   claimant_relationship: string;
   primary_document_type: string;
@@ -179,9 +180,9 @@ export const UserVerificationRequests = () => {
                           <DialogHeader>
                             <DialogTitle>Edit Verification Request</DialogTitle>
                           </DialogHeader>
-                          {editingVerification && (
+                          {editingVerification && editingVerification.citizen_address_id && (
                             <ResidencyVerificationForm
-                              addressRequestId={editingVerification.address_request_id}
+                              citizenAddressId={editingVerification.citizen_address_id}
                               editingVerification={editingVerification}
                               onSuccess={() => {
                                 setEditingVerification(null);

@@ -13,7 +13,8 @@ export interface LegalDocumentType {
 export interface VerificationRequest {
   id: string;
   user_id: string;
-  address_request_id: string;
+  citizen_address_id: string;
+  address_request_id: string | null; // Keep for backward compatibility
   verification_type: string;
   claimant_relationship: string;
   primary_document_type: string;
@@ -86,7 +87,7 @@ export const useResidencyVerification = () => {
   };
 
   const createVerificationRequest = async (
-    addressRequestId: string,
+    citizenAddressId: string,
     verificationType: string,
     claimantRelationship: string,
     primaryDocumentType: string,
@@ -101,7 +102,7 @@ export const useResidencyVerification = () => {
       const { data: verificationId, error: functionError } = await supabase
         .rpc('initiate_residency_verification', {
           p_user_id: user.id,
-          p_address_request_id: addressRequestId,
+          p_citizen_address_id: citizenAddressId,
           p_verification_type: verificationType,
           p_claimant_relationship: claimantRelationship,
           p_primary_document_type: primaryDocumentType as any,

@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Home, MapPin, History, Plus } from 'lucide-react';
+import { Home, MapPin, History, Plus, Shield } from 'lucide-react';
 import { useCitizenAddresses } from '@/hooks/useCAR';
 import { SetPrimaryAddressForm } from './SetPrimaryAddressForm';
 import { AddSecondaryAddressForm } from './AddSecondaryAddressForm';
 import { CurrentAddressesPanel } from './CurrentAddressesPanel';
 import { AddressHistoryPanel } from './AddressHistoryPanel';
+import { CitizenAddressVerificationManager } from './CitizenAddressVerificationManager';
 import { useTranslation } from 'react-i18next';
 
 export function CitizenAddressPortal() {
@@ -51,7 +52,7 @@ export function CitizenAddressPortal() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="current" className="flex items-center gap-2">
             <Home className="h-4 w-4" />
             Current
@@ -63,6 +64,10 @@ export function CitizenAddressPortal() {
           <TabsTrigger value="add-secondary" className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             Add Secondary
+          </TabsTrigger>
+          <TabsTrigger value="verify" className="flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            Verify
           </TabsTrigger>
           <TabsTrigger value="history" className="flex items-center gap-2">
             <History className="h-4 w-4" />
@@ -111,6 +116,14 @@ export function CitizenAddressPortal() {
               <AddSecondaryAddressForm onSuccess={() => setActiveTab('current')} />
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="verify" className="space-y-4">
+          <CitizenAddressVerificationManager 
+            onSuccess={() => {
+              setActiveTab('current');
+            }}
+          />
         </TabsContent>
 
         <TabsContent value="history" className="space-y-4">
