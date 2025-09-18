@@ -393,17 +393,19 @@ export const ResidencyVerificationManager = () => {
                                         
                                         // Find the correct file - try exact match first, then most recent
                                         const fileName = filePath.split('/')[1];
-                                        let targetFile = allFiles.find(file => file.name === fileName);
+                                        let targetFile = allFiles.find((file: any) => file.name === fileName);
                                         
                                         if (!targetFile) {
                                           // If exact match not found, get the most recent file
-                                          targetFile = allFiles.sort((a, b) => 
-                                            new Date(b.updated_at || b.created_at || 0).getTime() - 
-                                            new Date(a.updated_at || a.created_at || 0).getTime()
-                                          )[0];
-                                          
-                                          console.log('Using most recent file:', targetFile.name);
-                                          filePath = `${userId}/${targetFile.name}`;
+                                          const sortedFiles = allFiles.sort((a: any, b: any) => {
+                                            const dateA = new Date(b.updated_at || b.created_at || '1970-01-01').getTime();
+                                            const dateB = new Date(a.updated_at || a.created_at || '1970-01-01').getTime();
+                                            return dateA - dateB;
+                                          });
+                                          targetFile = sortedFiles[0];
+                                           
+                                          console.log('Using most recent file:', targetFile?.name);
+                                          filePath = `${userId}/${targetFile?.name}`;
                                         }
 
                                         // Create signed URL for the file
