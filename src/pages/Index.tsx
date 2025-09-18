@@ -148,7 +148,22 @@ const navigationItems = [
                           size="lg"
                         >
                          <Users className="h-5 w-5 sm:h-6 sm:w-6 mr-3" />
-                         {t('address:citizenPortal')}
+                         <div className="flex flex-col items-start">
+                           <span>Citizen Services</span>
+                           <span className="text-xs text-white/80 font-normal">Public access • Address search • Personal management</span>
+                         </div>
+                       </Button>
+                       <Button 
+                         onClick={() => navigate('/auth')}
+                         variant="outline" 
+                         className="touch-target px-6 py-4 text-base sm:text-lg font-semibold border-2 border-primary/30 text-primary hover:bg-primary hover:text-white transition-all duration-200"
+                         size="lg"
+                       >
+                         <Shield className="h-5 w-5 sm:h-6 sm:w-6 mr-3" />
+                         <div className="flex flex-col items-start">
+                           <span>Professional Access</span>
+                           <span className="text-xs text-muted-foreground font-normal">Staff • Verifiers • Administrators</span>
+                         </div>
                        </Button>
                        <Button 
                          onClick={() => setActiveSection('about')}
