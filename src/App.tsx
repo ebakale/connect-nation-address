@@ -19,7 +19,25 @@ import { UnitsAndProfilesPage } from "./pages/UnitsAndProfilesPage";
 
 const queryClient = new QueryClient();
 
-// Protected Route wrapper
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <UnifiedAuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AppRoutes />
+            </BrowserRouter>
+          </TooltipProvider>
+        </UnifiedAuthProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  );
+};
+
+// Protected Route wrapper - now defined as a separate component that uses hooks properly
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, loading } = useUnifiedAuth();
   
@@ -34,30 +52,21 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-        <UnifiedAuthProvider>
-          <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-               <Route path="/" element={<Index />} />
-               <Route path="/auth" element={<UnifiedAuth />} />
-               <Route path="/portal" element={<Portal />} />
-               
-                <Route path="/dashboard" element={<ProtectedRoute><UnifiedDashboard /></ProtectedRoute>} />
-                <Route path="/police" element={<ProtectedRoute><PoliceDashboard /></ProtectedRoute>} />
-               <Route path="/units-profiles" element={<ProtectedRoute><UnitsAndProfilesPage /></ProtectedRoute>} />
-               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-          </TooltipProvider>
-        </UnifiedAuthProvider>
-      </AuthProvider>
-  </QueryClientProvider>
-);
+// Routes component that can use hooks safely
+const AppRoutes = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="/auth" element={<UnifiedAuth />} />
+      <Route path="/portal" element={<Portal />} />
+      
+      <Route path="/dashboard" element={<ProtectedRoute><UnifiedDashboard /></ProtectedRoute>} />
+      <Route path="/police" element={<ProtectedRoute><PoliceDashboard /></ProtectedRoute>} />
+      <Route path="/units-profiles" element={<ProtectedRoute><UnitsAndProfilesPage /></ProtectedRoute>} />
+      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
 
 export default App;
