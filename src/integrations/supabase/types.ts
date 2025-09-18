@@ -1594,6 +1594,16 @@ export type Database = {
       }
     }
     Functions: {
+      add_secondary_address: {
+        Args: {
+          p_person_id: string
+          p_scope: Database["public"]["Enums"]["address_scope"]
+          p_source?: string
+          p_uac: string
+          p_unit_uac?: string
+        }
+        Returns: string
+      }
       approve_address_request: {
         Args: { p_approved_by?: string; p_request_id: string }
         Returns: string
@@ -1635,6 +1645,10 @@ export type Database = {
           p_street: string
         }
         Returns: Json
+      }
+      close_current_primary: {
+        Args: { p_person_id: string; p_until: string }
+        Returns: undefined
       }
       debug_verification_access: {
         Args: Record<PropertyKey, never>
@@ -1758,6 +1772,20 @@ export type Database = {
           verified: boolean
         }[]
       }
+      get_residents_by_uac: {
+        Args: { p_current_only?: boolean; p_uac: string }
+        Returns: {
+          address_id: string
+          address_kind: Database["public"]["Enums"]["address_kind"]
+          effective_from: string
+          effective_to: string
+          occupant: Database["public"]["Enums"]["occupant_type"]
+          person_id: string
+          scope: Database["public"]["Enums"]["address_scope"]
+          status: Database["public"]["Enums"]["address_status"]
+          unit_uac: string
+        }[]
+      }
       get_review_queue: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -1878,6 +1906,10 @@ export type Database = {
         }
         Returns: string
       }
+      retire_address: {
+        Args: { p_address_id: string; p_reason?: string; p_when?: string }
+        Returns: undefined
+      }
       search_addresses_safely: {
         Args: { search_query: string }
         Returns: {
@@ -1896,6 +1928,25 @@ export type Database = {
           uac: string
           verified: boolean
         }[]
+      }
+      set_citizen_address_status: {
+        Args: {
+          p_actor_id?: string
+          p_address_id: string
+          p_status: Database["public"]["Enums"]["address_status"]
+        }
+        Returns: undefined
+      }
+      set_primary_address: {
+        Args: {
+          p_effective_from?: string
+          p_person_id: string
+          p_scope: Database["public"]["Enums"]["address_scope"]
+          p_source?: string
+          p_uac: string
+          p_unit_uac?: string
+        }
+        Returns: string
       }
       unflag_address: {
         Args: { p_address_id: string; p_unflagged_by?: string }
