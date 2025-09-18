@@ -180,15 +180,6 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
               </>
             )}
 
-            {/* Citizen Welcome Message */}
-            {isCitizen && !hasAdminAccess && !isVerifier && !isRegistrar && (
-              <Alert>
-                <Home className="h-4 w-4" />
-                <AlertDescription>
-                  Welcome to the unified address system! You can search for addresses in the National Address Registry and manage your personal addresses in the Citizen Address Repository.
-                </AlertDescription>
-              </Alert>
-            )}
 
             {/* Quick Actions Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -484,6 +475,16 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           </Button>
         )}
       </div>
+
+      {/* Citizen Welcome Message */}
+      {isCitizen && !hasAdminAccess && !isVerifier && !isRegistrar && (
+        <Alert>
+          <Home className="h-4 w-4" />
+          <AlertDescription>
+            Welcome to the unified address system! You can search for addresses in the National Address Registry and manage your personal addresses in the Citizen Address Repository.
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Navigation Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
