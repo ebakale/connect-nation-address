@@ -53,7 +53,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     isPoliceRole 
   } = useUserRole();
 
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState(isCitizen ? 'search' : 'overview');
   const [stats, setStats] = useState({
     totalNARAddresses: 0,
     totalCARAddresses: 0,
@@ -80,7 +80,6 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
 
     if (isCitizen) {
       return [
-        ...baseTabs,
         { id: 'search', label: t('address:searchAddresses'), icon: Search },
         { id: 'my-addresses', label: 'My Addresses (CAR)', icon: Home },
         { id: 'requests', label: t('dashboard:requestStatus'), icon: FileText },
