@@ -1,0 +1,20 @@
+{
+  "name": "connectnation-address-tests",
+  "version": "1.0.0",
+  "description": "Test suite for ConnectNation Address Management System",
+  "scripts": {
+    "test:unit": "supabase test db",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:all": "npm run test:unit && npm run test:e2e",
+    "test:setup": "playwright install"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^20.0.0"
+  },
+  "dependencies": {
+    "supabase": "^1.100.0"
+  }
+}
