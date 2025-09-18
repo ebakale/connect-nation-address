@@ -29,6 +29,14 @@ export interface CitizenAddress {
   created_at: string;
   updated_at: string;
   created_by: string | null;
+  // Additional fields for admin review
+  flagged?: boolean;
+  flag_reason?: string | null;
+  flagged_at?: string | null;
+  flagged_by?: string | null;
+  street?: string;
+  city?: string;
+  region?: string;
 }
 
 export interface AddressInput {
