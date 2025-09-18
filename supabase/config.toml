@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.process-backup-request]
 verify_jwt = true
+
+[functions.external-api]
+verify_jwt = false
