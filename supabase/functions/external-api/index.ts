@@ -275,14 +275,14 @@ async function handleAddressCreate(req: Request, supabase: any): Promise<Respons
       }, 500);
     }
 
-    return createResponse({
-      success: true,
-      data: {
-        request_id: data.id,
-        status: 'pending',
-        message: 'Address request created successfully. It will be reviewed by administrators.'
-      }
-    }, 201);
+      return createResponse({
+        success: true,
+        data: {
+          request_id: data,
+          status: 'pending',
+          message: 'NAR address creation request submitted successfully. It will be reviewed by authorities.'
+        }
+      }, 201);
 
   } catch (error) {
     console.error('Address create error:', error);
@@ -413,7 +413,7 @@ async function handleAddressVerify(req: Request, supabase: any): Promise<Respons
     }
 
     if (action === 'approve') {
-      const { data, error } = await supabase.rpc('approve_address_request', {
+      const { data, error } = await supabase.rpc('approve_nar_address_creation', {
         p_request_id: request_id,
         p_approved_by: '00000000-0000-0000-0000-000000000000' // System user
       });
@@ -422,16 +422,24 @@ async function handleAddressVerify(req: Request, supabase: any): Promise<Respons
         console.error('Approval error:', error);
         return createResponse({
           success: false,
-          error: 'Failed to approve address request'
+          error: 'Failed to approve NAR address creation request'
         }, 500);
+      }
+
+      if (!data?.success) {
+        return createResponse({
+          success: false,
+          error: data?.error || 'Approval failed'
+        }, 400);
       }
 
       return createResponse({
         success: true,
         data: {
           action: 'approved',
-          address_id: data,
-          message: 'Address request approved successfully'
+          address_id: data.address_id,
+          uac: data.uac,
+          message: 'NAR address creation approved successfully'
         }
       });
     } else {
