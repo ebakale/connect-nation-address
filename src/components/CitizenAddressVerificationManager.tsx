@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { AlertCircle, Shield, Plus, CheckCircle, Edit, Clock, XCircle, AlertTriangle, FileText } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useCitizenAddresses } from '@/hooks/useCAR';
 import { useResidencyVerification } from '@/hooks/useResidencyVerification';
 import { ResidencyVerificationForm } from './ResidencyVerificationForm';
@@ -99,7 +100,6 @@ export const CitizenAddressVerificationManager = ({
 
   const handleVerificationSuccess = () => {
     setSelectedAddressId(null);
-    setEditingVerification(null);
     setStep('select_address');
     onSuccess?.();
   };
@@ -158,24 +158,17 @@ export const CitizenAddressVerificationManager = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            {editingVerification ? 'Edit Address Verification' : 'Verify Address Ownership/Residency'}
+            Verify Address Ownership/Residency
           </CardTitle>
           <CardDescription>
-            {editingVerification 
-              ? 'Update your verification request with additional information or documents.'
-              : 'Submit legal documents to verify your ownership or residency for this address.'
-            }
+            Submit legal documents to verify your ownership or residency for this address.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <ResidencyVerificationForm
             citizenAddressId={selectedAddressId}
-            editingVerification={editingVerification}
             onSuccess={handleVerificationSuccess}
-            onCancel={() => {
-              setStep('select_address');
-              setEditingVerification(null);
-            }}
+            onCancel={() => setStep('select_address')}
           />
         </CardContent>
       </Card>
@@ -246,18 +239,33 @@ export const CitizenAddressVerificationManager = ({
                       <div className="flex items-center gap-2 ml-4">
                         {verification ? (
                           canEdit(verification) && (
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              onClick={() => {
-                                setEditingVerification(verification);
-                                setSelectedAddressId(address.id);
-                                setStep('verify_address');
-                              }}
-                            >
-                              <Edit className="h-3 w-3 mr-1" />
-                              Edit Request
-                            </Button>
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => setEditingVerification(verification)}
+                                >
+                                  <Edit className="h-3 w-3 mr-1" />
+                                  Edit Request
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                                <DialogHeader>
+                                  <DialogTitle>Edit Verification Request</DialogTitle>
+                                </DialogHeader>
+                                <ResidencyVerificationForm
+                                  citizenAddressId={address.id}
+                                  editingVerification={verification}
+                                  onSuccess={() => {
+                                    setEditingVerification(null);
+                                    // Refresh data by calling the parent's success handler
+                                    onSuccess?.();
+                                  }}
+                                  onCancel={() => setEditingVerification(null)}
+                                />
+                              </DialogContent>
+                            </Dialog>
                           )
                         ) : (
                           <Button 
