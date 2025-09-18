@@ -478,7 +478,13 @@ export const ResidencyVerificationForm = ({
                 variant="outline" 
                 onClick={() => {
                   console.log('Cancel button clicked, loading:', loading, 'uploading:', uploading);
-                  onCancel();
+                  console.log('onCancel prop exists:', !!onCancel);
+                  if (onCancel) {
+                    console.log('Calling onCancel function');
+                    onCancel();
+                  } else {
+                    console.log('onCancel prop is missing!');
+                  }
                 }}
                 disabled={loading || uploading}
                 className={loading || uploading ? 'opacity-50 cursor-not-allowed' : ''}
