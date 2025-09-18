@@ -24,6 +24,16 @@ export default defineConfig(({ mode }) => ({
     },
     dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime"],
   },
+  optimizeDeps: {
+    // Prevent multiple React copies in dev pre-bundle and ensure single React instance
+    exclude: [
+      'react',
+      'react-dom',
+      'react/jsx-runtime',
+      'react/jsx-dev-runtime',
+      '@tanstack/react-query'
+    ],
+  },
   build: {
     rollupOptions: {
       output: {
