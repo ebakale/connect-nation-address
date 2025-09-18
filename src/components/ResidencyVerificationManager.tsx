@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -58,12 +58,15 @@ export const ResidencyVerificationManager = () => {
   const { canVerifyAddresses, hasAdminAccess } = useUserRole();
   const { toast } = useToast();
 
-  const fetchVerifications = async () => {
-    if (!canVerifyAddresses && !hasAdminAccess) return;
+  const fetchVerifications = useCallback(async () => {
+    if (!canVerifyAddresses && !hasAdminAccess) {
+      setVerifications([]);
+      return;
+    }
     
     setLoading(true);
     try {
-      console.log('Fetching verifications with permissions:', { canVerifyAddresses, hasAdminAccess });
+      console.log('Fetching verifications with permissions:', { canVerifyAddresses, hasAdminAccess, statusFilter });
       
       let query = supabase
         .from('residency_ownership_verifications')
@@ -80,7 +83,10 @@ export const ResidencyVerificationManager = () => {
       
       console.log('Verification fetch result:', { data, error, count: data?.length });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
       
       // If we have verifications, fetch the associated profiles separately
       if (data && data.length > 0) {
@@ -90,7 +96,10 @@ export const ResidencyVerificationManager = () => {
           .select('user_id, full_name, email')
           .in('user_id', userIds);
 
-        if (profilesError) throw profilesError;
+        if (profilesError) {
+          console.error('Profiles fetch error:', profilesError);
+          // Still proceed with verification data even if profiles fail
+        }
 
         // Combine the data
         const combinedData = data.map(verification => {
@@ -112,10 +121,11 @@ export const ResidencyVerificationManager = () => {
         description: 'Failed to fetch verification requests',
         variant: 'destructive'
       });
+      setVerifications([]); // Ensure we clear the list on error
     } finally {
       setLoading(false);
     }
-  };
+  }, [canVerifyAddresses, hasAdminAccess, statusFilter, toast]);
 
   const updateVerificationStatus = async (verificationId: string, newStatus: string, notes?: string) => {
     try {
@@ -195,20 +205,23 @@ export const ResidencyVerificationManager = () => {
     return matchesSearch;
   });
 
+  // Initial fetch and when permissions or filter change
   useEffect(() => {
-    fetchVerifications();
+    if (canVerifyAddresses || hasAdminAccess) {
+      fetchVerifications();
+    }
   }, [canVerifyAddresses, hasAdminAccess, statusFilter]);
 
-  // Auto-refresh verifications every 10 seconds to catch updates
+  // Auto-refresh verifications every 10 seconds - fixed to avoid stale closure
   useEffect(() => {
+    if (!canVerifyAddresses && !hasAdminAccess) return;
+    
     const interval = setInterval(() => {
-      if (canVerifyAddresses || hasAdminAccess) {
-        fetchVerifications();
-      }
+      fetchVerifications();
     }, 10000);
 
     return () => clearInterval(interval);
-  }, [canVerifyAddresses, hasAdminAccess, statusFilter]);
+  }, [canVerifyAddresses, hasAdminAccess]);
 
   if (!canVerifyAddresses && !hasAdminAccess) {
     return (
@@ -268,6 +281,18 @@ export const ResidencyVerificationManager = () => {
               <SelectItem value="under_investigation">Under Investigation</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label>Actions</Label>
+          <Button 
+            onClick={fetchVerifications} 
+            disabled={loading}
+            variant="outline"
+            size="sm"
+            className="w-24"
+          >
+            {loading ? 'Loading...' : 'Refresh'}
+          </Button>
         </div>
       </div>
 
