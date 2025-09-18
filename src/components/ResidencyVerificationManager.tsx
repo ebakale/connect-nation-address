@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
   Shield, 
   FileText, 
@@ -60,7 +60,7 @@ export const ResidencyVerificationManager = () => {
 
   const fetchVerifications = useCallback(async () => {
     if (!canVerifyAddresses && !hasAdminAccess) {
-      setVerifications([]);
+      // Keep current list to avoid flicker when permissions are still loading
       return;
     }
     
@@ -330,7 +330,7 @@ export const ResidencyVerificationManager = () => {
                     >
                       {formatStatus(verification.status)}
                     </Badge>
-                    <Dialog>
+                    <Dialog onOpenChange={(open) => { if (!open) { fetchVerifications(); setSelectedVerification(null); setReviewNotes(''); setReviewStatus(''); } }}>
                       <DialogTrigger asChild>
                         <Button 
                           size="sm" 
@@ -344,6 +344,7 @@ export const ResidencyVerificationManager = () => {
                       <DialogContent className="max-w-2xl">
                         <DialogHeader>
                           <DialogTitle>Verification Request Review</DialogTitle>
+                          <DialogDescription>Review verification details and take action.</DialogDescription>
                         </DialogHeader>
                         {selectedVerification && (
                           <div className="space-y-4">
