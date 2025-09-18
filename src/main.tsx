@@ -4,8 +4,8 @@ import App from './App.tsx'
 import './index.css'
 import './i18n/config'
 
-// Register service worker for offline functionality
-if ('serviceWorker' in navigator) {
+// Register service worker in production only
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then((registration) => {
@@ -14,6 +14,11 @@ if ('serviceWorker' in navigator) {
       .catch((registrationError) => {
         console.log('SW registration failed: ', registrationError);
       });
+  });
+} else if ('serviceWorker' in navigator) {
+  // Ensure no service worker interferes during development
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    for (const reg of registrations) reg.unregister();
   });
 }
 
