@@ -97,6 +97,9 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
         ...result,
         rawData: searchResults[index]
       })));
+      
+      // Clear the search field after successful search
+      setQuery('');
     } catch (error) {
       console.error('Search error:', error);
       setResults([]);
