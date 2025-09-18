@@ -18,7 +18,6 @@ import { useTranslation } from 'react-i18next';
 
 interface FlaggedAddress {
   id: string;
-  user_id: string;
   latitude: number;
   longitude: number;
   street: string;
@@ -427,8 +426,8 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                   <span>{t('flaggedOn', { date: address.flagged_at ? new Date(address.flagged_at).toLocaleDateString() : t('unknown') })}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <User className="h-3 w-3" />
-                  <span>{t('userId', { id: address.user_id.slice(0, 8) })}</span>
+                  <Building className="h-3 w-3" />
+                  <span>{address.building || t('noBuilding')}</span>
                 </div>
               </div>
 

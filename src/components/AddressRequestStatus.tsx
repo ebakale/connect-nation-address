@@ -21,7 +21,7 @@ interface AddressRequest {
   address_type: string;
   description?: string;
   justification: string;
-  status: 'pending' | 'under_review' | 'approved' | 'rejected' | 'completed';
+  status: string;
   reviewer_notes?: string;
   created_at: string;
   updated_at: string;
@@ -52,18 +52,18 @@ export const AddressRequestStatus = () => {
     try {
       const { data, error } = await supabase
         .from('address_requests')
-        .select('*')
+        .select('id, country, region, city, street, building, latitude, longitude, address_type, description, justification, status, reviewer_notes, created_at, updated_at')
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false }) as { data: AddressRequest[] | null, error: any };
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setRequests(data || []);
-    } catch (error: any) {
-      console.error('Error fetching requests:', error);
+      setRequests((data || []) as AddressRequest[]);
+    } catch (error) {
+      console.error('Error fetching address requests:', error);
       toast({
         title: t('error'),
         description: t('errorFetchingRequests'),
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -74,67 +74,72 @@ export const AddressRequestStatus = () => {
     fetchRequests();
   }, [user]);
 
-  // Reset pagination when requests change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [requests]);
-
-  // Calculate pagination
-  const totalPages = Math.ceil(requests.length / requestsPerPage);
-  const startIndex = (currentPage - 1) * requestsPerPage;
-  const paginatedRequests = requests.slice(startIndex, startIndex + requestsPerPage);
-
-  const getStatusBadge = (status: AddressRequest['status']) => {
-    const config = statusConfig[status];
+  const getStatusBadge = (status: string) => {
+    const config = statusConfig[status as keyof typeof statusConfig] || { color: 'bg-gray-500', key: 'unknown' };
     return (
-      <Badge variant="secondary" className="text-white" style={{ backgroundColor: config.color }}>
+      <Badge className={`${config.color} text-white`}>
         {t(config.key)}
       </Badge>
     );
   };
 
   const formatAddress = (request: AddressRequest) => {
-    const parts = [request.street];
-    if (request.building) parts.push(request.building);
-    parts.push(request.city, request.region, request.country);
+    const parts = [
+      request.building,
+      request.street,
+      request.city,
+      request.region,
+      request.country
+    ].filter(Boolean);
     return parts.join(', ');
   };
 
   const toggleCardExpansion = (requestId: string) => {
-    setExpandedCards(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(requestId)) {
-        newSet.delete(requestId);
-      } else {
-        newSet.add(requestId);
-      }
-      return newSet;
-    });
+    const newExpanded = new Set(expandedCards);
+    if (newExpanded.has(requestId)) {
+      newExpanded.delete(requestId);
+    } else {
+      newExpanded.add(requestId);
+    }
+    setExpandedCards(newExpanded);
   };
+
+  const totalPages = Math.ceil(requests.length / requestsPerPage);
+  const startIndex = (currentPage - 1) * requestsPerPage;
+  const endIndex = startIndex + requestsPerPage;
+  const currentRequests = requests.slice(startIndex, endIndex);
 
   if (loading) {
     return (
-      <Card className="w-full max-w-4xl mx-auto">
-        <CardContent className="flex items-center justify-center py-8">
-          <RefreshCw className="w-6 h-6 animate-spin mr-2" />
-          {t('loadingRequests')}
-        </CardContent>
+      <Card>
+        <CardHeader className="text-center">
+          <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-2" />
+          <CardTitle>{t('loadingRequests')}</CardTitle>
+        </CardHeader>
       </Card>
     );
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>{t('requestStatusTitle')}</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <MessageSquare className="h-5 w-5" />
+              {t('addressRequestStatus')}
+            </CardTitle>
             <CardDescription>
-              {t('requestStatusDescription')}
+              {t('trackYourSubmissions')}
             </CardDescription>
           </div>
-          <Button onClick={fetchRequests} variant="outline" size="sm">
-            <RefreshCw className="w-4 h-4 mr-2" />
+          <Button
+            onClick={fetchRequests}
+            variant="outline"
+            size="sm"
+            disabled={loading}
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
             {t('refresh')}
           </Button>
         </div>
@@ -142,163 +147,112 @@ export const AddressRequestStatus = () => {
       <CardContent>
         {requests.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
-            <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
+            <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p>{t('noRequestsFound')}</p>
-            <p className="text-sm">{t('noRequestsDesc')}</p>
           </div>
         ) : (
           <>
-            {/* Results count and pagination info */}
-            <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
-              <span>
-                {t('showingResults', { 
-                  start: startIndex + 1, 
-                  end: Math.min(startIndex + requestsPerPage, requests.length), 
-                  total: requests.length 
-                })}
-              </span>
-              {totalPages > 1 && (
-                <span>
-                  {t('pageOf', { current: currentPage, total: totalPages })}
-                </span>
-              )}
-            </div>
-
             <div className="space-y-4">
-              {paginatedRequests.map((request) => {
+              {currentRequests.map((request) => {
                 const isExpanded = expandedCards.has(request.id);
                 return (
-                  <Card key={request.id} className="border-l-4 border-l-primary transition-all duration-200 hover:shadow-md">
-                    <CardContent className="pt-6">
-                      <div 
-                        className="cursor-pointer transition-colors duration-200 hover:bg-muted/50 p-2 -m-2 rounded"
-                        onClick={() => toggleCardExpansion(request.id)}
-                      >
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <MapPin className="w-4 h-4 text-muted-foreground" />
-                              <h3 className="font-semibold">{formatAddress(request)}</h3>
-                              <div className="transition-transform duration-200 ml-2">
-                                {isExpanded ? (
-                                  <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                                ) : (
-                                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                                )}
-                              </div>
-                            </div>
-                            
-                            {/* Compact view when collapsed */}
-                            {!isExpanded && (
-                              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                                <div className="flex items-center gap-1">
-                                  <CalendarDays className="w-4 h-4" />
-                                  <span>{t('submittedDate', { date: format(new Date(request.created_at), 'MMM dd, yyyy') })}</span>
-                                </div>
-                              </div>
-                            )}
-                            
-                            {/* Full info when expanded */}
-                            {isExpanded && (
-                              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                                <div className="flex items-center gap-1">
-                                  <CalendarDays className="w-4 h-4" />
-                                  <span>{t('submittedDate', { date: format(new Date(request.created_at), 'MMM dd, yyyy') })}</span>
-                                </div>
-                                <span>{t('type', { type: (() => {
-                                  const v = request.address_type as string | undefined;
-                                  const hasBraces = v ? v.includes('{{') || v.includes('}}') : false;
-                                  const cleaned = v ? v.replace(/[{}]/g, '').trim() : '';
-                                  const safe = !v || hasBraces || cleaned.toLowerCase() === 'type' || cleaned === '' ? 'unknown' : cleaned;
-                                  return safe;
-                                })() })}</span>
-                              </div>
-                            )}
+                  <div key={request.id} className="border rounded-lg p-4 transition-all duration-200 hover:shadow-md">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <MapPin className="h-4 w-4 text-muted-foreground" />
+                          <span className="font-medium">{formatAddress(request)}</span>
+                          {getStatusBadge(request.status)}
+                        </div>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <CalendarDays className="h-3 w-3" />
+                            <span>{t('submitted')}: {format(new Date(request.created_at), 'MMM dd, yyyy')}</span>
                           </div>
-                          <div className="ml-4">
-                            {getStatusBadge(request.status)}
-                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            {request.address_type}
+                          </Badge>
                         </div>
                       </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleCardExpansion(request.id)}
+                        className="ml-2"
+                      >
+                        {isExpanded ? (
+                          <ChevronUp className="h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
 
-                      {isExpanded && (
-                        <div className="space-y-3 animate-fade-in">
+                    {isExpanded && (
+                      <div className="space-y-3 pt-3 border-t">
+                        {request.description && (
                           <div>
-                            <h4 className="font-medium mb-1">{t('justificationLabel')}</h4>
-                            <p className="text-sm text-muted-foreground">{request.justification}</p>
+                            <span className="text-sm font-medium">{t('description')}:</span>
+                            <p className="text-sm text-muted-foreground mt-1">{request.description}</p>
                           </div>
-
-                          {request.description && (
-                            <div>
-                              <h4 className="font-medium mb-1">{t('descriptionLabel')}</h4>
-                              <p className="text-sm text-muted-foreground">{request.description}</p>
-                            </div>
-                          )}
-
-                          {request.reviewer_notes && (
-                            <div>
-                              <h4 className="font-medium mb-1">{t('reviewerNotes')}</h4>
-                              <p className="text-sm text-muted-foreground">{request.reviewer_notes}</p>
-                            </div>
-                          )}
-
-                          {request.latitude && request.longitude && (
-                            <div>
-                              <h4 className="font-medium mb-1">{t('coordinates')}</h4>
-                              <p className="text-sm text-muted-foreground">
-                                {request.latitude}, {request.longitude}
-                              </p>
-                            </div>
-                          )}
-
-                          <div className="pt-2 border-t">
-                              <p className="text-xs text-muted-foreground">
-                                {t('lastUpdated', { date: format(new Date(request.updated_at), 'MMM dd, yyyy HH:mm') })}
-                              </p>
-                          </div>
+                        )}
+                        
+                        <div>
+                          <span className="text-sm font-medium">{t('justification')}:</span>
+                          <p className="text-sm text-muted-foreground mt-1">{request.justification}</p>
                         </div>
-                      )}
-                    </CardContent>
-                  </Card>
+
+                        {request.reviewer_notes && (
+                          <div>
+                            <span className="text-sm font-medium">{t('reviewerNotes')}:</span>
+                            <p className="text-sm text-muted-foreground mt-1">{request.reviewer_notes}</p>
+                          </div>
+                        )}
+
+                        {request.latitude && request.longitude && (
+                          <div>
+                            <span className="text-sm font-medium">{t('coordinates')}:</span>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {request.latitude.toFixed(6)}, {request.longitude.toFixed(6)}
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="text-xs text-muted-foreground">
+                          <span>{t('lastUpdated')}: {format(new Date(request.updated_at), 'MMM dd, yyyy HH:mm')}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </div>
 
-            {/* Pagination controls */}
+            {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center gap-2 mt-6">
+              <div className="flex items-center justify-between mt-6">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
                 >
-                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  <ChevronLeft className="h-4 w-4 mr-2" />
                   {t('previous')}
                 </Button>
                 
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                    <Button
-                      key={page}
-                      variant={currentPage === page ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setCurrentPage(page)}
-                      className="min-w-[36px]"
-                    >
-                      {page}
-                    </Button>
-                  ))}
-                </div>
+                <span className="text-sm text-muted-foreground">
+                  {t('pageInfo', { current: currentPage, total: totalPages })}
+                </span>
                 
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
                 >
                   {t('next')}
-                  <ChevronRight className="h-4 w-4 ml-1" />
+                  <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
               </div>
             )}

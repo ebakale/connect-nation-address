@@ -189,7 +189,7 @@ const UnifiedDashboard = () => {
         }
 
         // Get user IDs from requests
-        const userIds = requests.map(r => r.user_id);
+        const userIds = requests.map(r => (r as any).user_id).filter(Boolean);
 
         // Get profiles for these users
         const { data: profiles, error: profilesError } = await supabase
@@ -201,7 +201,7 @@ const UnifiedDashboard = () => {
 
         // Combine the data
         const combinedData = requests.map(request => {
-          const profile = profiles?.find(p => p.user_id === request.user_id);
+          const profile = profiles?.find(p => p.user_id === (request as any).user_id);
           return {
             ...request,
             profiles: {

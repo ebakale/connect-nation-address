@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 
 interface FlaggedAddress {
   id: string;
-  user_id: string;
   latitude: number;
   longitude: number;
   street: string;
@@ -30,6 +29,9 @@ interface FlaggedAddress {
   reviewer_notes?: string;
   rejection_reason?: string;
   rejection_notes?: string;
+  created_by_authority?: string;
+  authority_type?: string;
+  creation_source?: string;
 }
 
 export function ReviewQueuePanel() {
