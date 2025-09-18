@@ -27,6 +27,7 @@ export const usePerson = () => {
       }
 
       try {
+        // Fetch person record; create one if missing
         const { data, error } = await supabase
           .from('person')
           .select('*')
@@ -35,12 +36,23 @@ export const usePerson = () => {
 
         if (error) throw error;
 
-        setPerson(data);
+        if (!data) {
+          const { data: inserted, error: insertError } = await supabase
+            .from('person')
+            .insert({ auth_user_id: user.id })
+            .select('*')
+            .single();
+
+          if (insertError) throw insertError;
+          setPerson(inserted as any);
+        } else {
+          setPerson(data);
+        }
       } catch (error: any) {
-        console.error('Error fetching person:', error);
+        console.error('Error ensuring person record:', error);
         toast({
           title: 'Error',
-          description: 'Failed to load profile information',
+          description: 'Could not initialize your profile. Please try again.',
           variant: 'destructive'
         });
       } finally {
