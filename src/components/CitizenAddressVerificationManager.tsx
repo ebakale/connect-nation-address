@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, Shield, Plus, CheckCircle } from 'lucide-react';
+import { AlertCircle, Shield, Plus, CheckCircle, Edit, Clock, XCircle, AlertTriangle, FileText } from 'lucide-react';
 import { useCitizenAddresses } from '@/hooks/useCAR';
 import { useResidencyVerification } from '@/hooks/useResidencyVerification';
 import { ResidencyVerificationForm } from './ResidencyVerificationForm';
@@ -27,6 +27,7 @@ export const CitizenAddressVerificationManager = ({
   const [step, setStep] = useState<'select_address' | 'add_address' | 'verify_address'>('select_address');
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [addingAddressType, setAddingAddressType] = useState<'primary' | 'secondary' | null>(null);
+  const [editingVerification, setEditingVerification] = useState<any>(null);
 
   if (addressesLoading || verificationsLoading) {
     return (
@@ -41,8 +42,55 @@ export const CitizenAddressVerificationManager = ({
   }
 
   const currentAddresses = addresses.filter(addr => !addr.effective_to);
-  const hasVerification = (addressId: string) => 
-    verifications.some(v => v.citizen_address_id === addressId);
+  
+  const getVerificationForAddress = (addressId: string) => 
+    verifications.find(v => v.citizen_address_id === addressId);
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return <CheckCircle className="w-4 h-4 text-green-500" />;
+      case 'rejected':
+        return <XCircle className="w-4 h-4 text-red-500" />;
+      case 'pending':
+      case 'document_review':
+      case 'field_verification':
+      case 'legal_review':
+        return <Clock className="w-4 h-4 text-yellow-500" />;
+      case 'requires_additional_documents':
+        return <AlertTriangle className="w-4 h-4 text-orange-500" />;
+      default:
+        return <FileText className="w-4 h-4 text-blue-500" />;
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'rejected':
+        return 'bg-red-100 text-red-800 border-red-200';
+      case 'pending':
+      case 'document_review':
+      case 'field_verification':
+      case 'legal_review':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'requires_additional_documents':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
+      default:
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+    }
+  };
+
+  const formatStatus = (status: string) => {
+    return status.split('_').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
+  };
+
+  const canEdit = (verification: any) => {
+    return ['pending', 'requires_additional_documents', 'rejected'].includes(verification.status);
+  };
 
   const handleAddressAdded = () => {
     setAddingAddressType(null);
@@ -51,6 +99,7 @@ export const CitizenAddressVerificationManager = ({
 
   const handleVerificationSuccess = () => {
     setSelectedAddressId(null);
+    setEditingVerification(null);
     setStep('select_address');
     onSuccess?.();
   };
@@ -68,9 +117,7 @@ export const CitizenAddressVerificationManager = ({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <SetPrimaryAddressForm 
-            onSuccess={handleAddressAdded}
-          />
+          <SetPrimaryAddressForm onSuccess={handleAddressAdded} />
           <div className="flex gap-2 mt-4">
             <Button variant="outline" onClick={() => setStep('select_address')}>
               Back
@@ -94,9 +141,7 @@ export const CitizenAddressVerificationManager = ({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <AddSecondaryAddressForm 
-            onSuccess={handleAddressAdded}
-          />
+          <AddSecondaryAddressForm onSuccess={handleAddressAdded} />
           <div className="flex gap-2 mt-4">
             <Button variant="outline" onClick={() => setStep('select_address')}>
               Back
@@ -113,17 +158,24 @@ export const CitizenAddressVerificationManager = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            Verify Address Ownership/Residency
+            {editingVerification ? 'Edit Address Verification' : 'Verify Address Ownership/Residency'}
           </CardTitle>
           <CardDescription>
-            Submit legal documents to verify your ownership or residency for this address.
+            {editingVerification 
+              ? 'Update your verification request with additional information or documents.'
+              : 'Submit legal documents to verify your ownership or residency for this address.'
+            }
           </CardDescription>
         </CardHeader>
         <CardContent>
           <ResidencyVerificationForm
             citizenAddressId={selectedAddressId}
+            editingVerification={editingVerification}
             onSuccess={handleVerificationSuccess}
-            onCancel={() => setStep('select_address')}
+            onCancel={() => {
+              setStep('select_address');
+              setEditingVerification(null);
+            }}
           />
         </CardContent>
       </Card>
@@ -152,54 +204,94 @@ export const CitizenAddressVerificationManager = ({
         ) : (
           <div className="space-y-3">
             <h4 className="font-medium">Your Current Addresses</h4>
-            {currentAddresses.map((address) => (
-              <Card key={address.id} className="border-l-4 border-l-primary">
-                <CardContent className="pt-4">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <Badge variant={address.address_kind === 'PRIMARY' ? 'default' : 'secondary'}>
-                          {address.address_kind}
-                        </Badge>
-                        <Badge variant="outline">
-                          {address.scope}
-                        </Badge>
-                        <Badge variant={address.status === 'CONFIRMED' ? 'default' : 'secondary'}>
-                          {address.status}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        UAC: {address.uac}
-                        {address.unit_uac && ` | Unit: ${address.unit_uac}`}
-                      </p>
-                      {address.street && (
-                        <p className="text-sm">
-                          {address.street}, {address.city}, {address.region}
+            {currentAddresses.map((address) => {
+              const verification = getVerificationForAddress(address.id);
+              
+              return (
+                <Card key={address.id} className="border-l-4 border-l-primary">
+                  <CardContent className="pt-4">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Badge variant={address.address_kind === 'PRIMARY' ? 'default' : 'secondary'}>
+                            {address.address_kind}
+                          </Badge>
+                          <Badge variant="outline">
+                            {address.scope}
+                          </Badge>
+                          <Badge variant={address.status === 'CONFIRMED' ? 'default' : 'secondary'}>
+                            {address.status}
+                          </Badge>
+                          {verification && (
+                            <Badge 
+                              variant="outline" 
+                              className={getStatusColor(verification.status)}
+                            >
+                              {getStatusIcon(verification.status)}
+                              <span className="ml-1">{formatStatus(verification.status)}</span>
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          UAC: {address.uac}
+                          {address.unit_uac && ` | Unit: ${address.unit_uac}`}
                         </p>
-                      )}
+                        {address.street && (
+                          <p className="text-sm">
+                            {address.street}, {address.city}, {address.region}
+                          </p>
+                        )}
+                      </div>
+                      
+                      <div className="flex items-center gap-2 ml-4">
+                        {verification ? (
+                          canEdit(verification) && (
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => {
+                                setEditingVerification(verification);
+                                setSelectedAddressId(address.id);
+                                setStep('verify_address');
+                              }}
+                            >
+                              <Edit className="h-3 w-3 mr-1" />
+                              Edit Request
+                            </Button>
+                          )
+                        ) : (
+                          <Button 
+                            size="sm"
+                            onClick={() => {
+                              setSelectedAddressId(address.id);
+                              setStep('verify_address');
+                            }}
+                          >
+                            Request Verification
+                          </Button>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {hasVerification(address.id) ? (
-                        <Badge variant="default" className="bg-green-100 text-green-800">
-                          <CheckCircle className="h-3 w-3 mr-1" />
-                          Verification Submitted
-                        </Badge>
-                      ) : (
-                        <Button 
-                          size="sm"
-                          onClick={() => {
-                            setSelectedAddressId(address.id);
-                            setStep('verify_address');
-                          }}
-                        >
-                          Request Verification
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+
+                    {verification && verification.verification_notes && (
+                      <div className="mt-3 p-3 bg-muted rounded-lg">
+                        <p className="text-sm font-medium mb-1">Reviewer Notes:</p>
+                        <p className="text-sm">{verification.verification_notes}</p>
+                      </div>
+                    )}
+
+                    {verification && verification.status === 'requires_additional_documents' && (
+                      <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                        <p className="text-sm font-medium text-orange-800 mb-1">Action Required:</p>
+                        <p className="text-sm text-orange-700">
+                          Please review the notes above and update your verification request with the requested changes.
+                        </p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         )}
 
