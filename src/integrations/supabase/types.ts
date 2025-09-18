@@ -75,6 +75,7 @@ export type Database = {
           flagged_at: string | null
           flagged_by: string | null
           id: string
+          intended_occupant_id: string | null
           justification: string
           latitude: number | null
           longitude: number | null
@@ -85,6 +86,8 @@ export type Database = {
           rejected_by: string | null
           rejection_notes: string | null
           rejection_reason: string | null
+          request_type: string | null
+          requester_id: string | null
           requires_manual_review: boolean | null
           resubmission_count: number | null
           resubmission_of: string | null
@@ -94,7 +97,6 @@ export type Database = {
           status: string
           street: string
           updated_at: string
-          user_id: string
           verification_analysis: Json | null
           verification_recommendations: string[] | null
         }
@@ -114,6 +116,7 @@ export type Database = {
           flagged_at?: string | null
           flagged_by?: string | null
           id?: string
+          intended_occupant_id?: string | null
           justification: string
           latitude?: number | null
           longitude?: number | null
@@ -124,6 +127,8 @@ export type Database = {
           rejected_by?: string | null
           rejection_notes?: string | null
           rejection_reason?: string | null
+          request_type?: string | null
+          requester_id?: string | null
           requires_manual_review?: boolean | null
           resubmission_count?: number | null
           resubmission_of?: string | null
@@ -133,7 +138,6 @@ export type Database = {
           status?: string
           street: string
           updated_at?: string
-          user_id: string
           verification_analysis?: Json | null
           verification_recommendations?: string[] | null
         }
@@ -153,6 +157,7 @@ export type Database = {
           flagged_at?: string | null
           flagged_by?: string | null
           id?: string
+          intended_occupant_id?: string | null
           justification?: string
           latitude?: number | null
           longitude?: number | null
@@ -163,6 +168,8 @@ export type Database = {
           rejected_by?: string | null
           rejection_notes?: string | null
           rejection_reason?: string | null
+          request_type?: string | null
+          requester_id?: string | null
           requires_manual_review?: boolean | null
           resubmission_count?: number | null
           resubmission_of?: string | null
@@ -172,11 +179,24 @@ export type Database = {
           status?: string
           street?: string
           updated_at?: string
-          user_id?: string
           verification_analysis?: Json | null
           verification_recommendations?: string[] | null
         }
         Relationships: [
+          {
+            foreignKeyName: "address_requests_intended_occupant_id_fkey"
+            columns: ["intended_occupant_id"]
+            isOneToOne: false
+            referencedRelation: "my_person"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "address_requests_intended_occupant_id_fkey"
+            columns: ["intended_occupant_id"]
+            isOneToOne: false
+            referencedRelation: "person"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "address_requests_resubmission_of_fkey"
             columns: ["resubmission_of"]
@@ -189,11 +209,14 @@ export type Database = {
       addresses: {
         Row: {
           address_type: string
+          authority_type: string | null
           building: string | null
           city: string
           completeness_score: number | null
           country: string
           created_at: string
+          created_by_authority: string | null
+          creation_source: string | null
           description: string | null
           flag_reason: string | null
           flagged: boolean
@@ -214,18 +237,20 @@ export type Database = {
           street: string
           uac: string
           updated_at: string
-          user_id: string
           verification_analysis: Json | null
           verification_recommendations: string[] | null
           verified: boolean
         }
         Insert: {
           address_type?: string
+          authority_type?: string | null
           building?: string | null
           city: string
           completeness_score?: number | null
           country: string
           created_at?: string
+          created_by_authority?: string | null
+          creation_source?: string | null
           description?: string | null
           flag_reason?: string | null
           flagged?: boolean
@@ -246,18 +271,20 @@ export type Database = {
           street: string
           uac: string
           updated_at?: string
-          user_id: string
           verification_analysis?: Json | null
           verification_recommendations?: string[] | null
           verified?: boolean
         }
         Update: {
           address_type?: string
+          authority_type?: string | null
           building?: string | null
           city?: string
           completeness_score?: number | null
           country?: string
           created_at?: string
+          created_by_authority?: string | null
+          creation_source?: string | null
           description?: string | null
           flag_reason?: string | null
           flagged?: boolean
@@ -278,7 +305,6 @@ export type Database = {
           street?: string
           uac?: string
           updated_at?: string
-          user_id?: string
           verification_analysis?: Json | null
           verification_recommendations?: string[] | null
           verified?: boolean
