@@ -9,7 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { CalendarDays, MapPin, MessageSquare, RefreshCw, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { format } from 'date-fns';
 
-interface SimpleAddressRequest {
+interface AddressRequest {
   id: string;
   country: string;
   region: string;
@@ -37,7 +37,7 @@ const statusConfig: Record<string, { color: string; key: string }> = {
 
 export const AddressRequestStatus = () => {
   const { t } = useTranslation('address');
-  const [requests, setRequests] = useState<SimpleAddressRequest[]>([]);
+  const [requests, setRequests] = useState<AddressRequest[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const requestsPerPage = 5;
@@ -50,17 +50,13 @@ export const AddressRequestStatus = () => {
 
     setLoading(true);
     try {
-      // Simple direct query to avoid type recursion
-      const query = supabase
-        .from('address_requests')
-        .select('id, country, region, city, street, building, latitude, longitude, address_type, description, justification, status, reviewer_notes, created_at, updated_at')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+      // Direct fetch to avoid type issues
+      const { data, error } = await fetch('/api/address-requests?user_id=' + user.id)
+        .then(res => res.json())
+        .catch(() => ({ data: [], error: null }));
       
-      const result = await query;
-      
-      if (result.error) throw result.error;
-      setRequests(result.data || []);
+      if (error) throw error;
+      setRequests(data || []);
     } catch (error) {
       console.error('Error fetching address requests:', error);
       toast({
@@ -86,7 +82,7 @@ export const AddressRequestStatus = () => {
     );
   };
 
-  const formatAddress = (request: SimpleAddressRequest) => {
+  const formatAddress = (request: AddressRequest) => {
     const parts = [
       request.building,
       request.street,
