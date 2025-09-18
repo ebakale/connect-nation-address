@@ -476,8 +476,12 @@ export const ResidencyVerificationForm = ({
               <Button 
                 type="button" 
                 variant="outline" 
-                onClick={onCancel}
+                onClick={() => {
+                  console.log('Cancel button clicked, loading:', loading, 'uploading:', uploading);
+                  onCancel();
+                }}
                 disabled={loading || uploading}
+                className={loading || uploading ? 'opacity-50 cursor-not-allowed' : ''}
               >
                 Cancel
               </Button>
