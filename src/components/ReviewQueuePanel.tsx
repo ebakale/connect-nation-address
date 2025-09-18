@@ -41,17 +41,25 @@ export function ReviewQueuePanel() {
 
   const fetchFlaggedAddresses = async () => {
     try {
-      // Get flagged requests with all verification data
+      // Get flagged requests with basic data only
       const { data, error } = await supabase
         .from('address_requests')
         .select(`
-          *,
-          verification_analysis,
-          verification_recommendations,
-          auto_verification_analysis,
-          reviewer_notes,
-          rejection_reason,
-          rejection_notes
+          id,
+          latitude,
+          longitude,
+          street,
+          city,
+          region,
+          country,
+          building,
+          address_type,
+          description,
+          photo_url,
+          flag_reason,
+          flagged_at,
+          status,
+          justification
         `)
         .eq('flagged', true)
         .order('flagged_at', { ascending: false });
