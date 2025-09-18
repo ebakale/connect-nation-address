@@ -17,7 +17,7 @@ import UnifiedDashboard from "./pages/UnifiedDashboard";
 import PoliceDashboard from "./pages/PoliceDashboard";
 
 import { UnitsAndProfilesPage } from "./pages/UnitsAndProfilesPage";
-import CitizenPortal from "./pages/CitizenPortal";
+import CitizenPortalUnified from "./pages/CitizenPortalUnified";
 
 const queryClient = new QueryClient();
 
@@ -61,7 +61,7 @@ const AppRoutes = () => {
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<UnifiedAuth />} />
       <Route path="/portal" element={<Portal />} />
-      <Route path="/citizen" element={<CitizenPortal />} />
+      <Route path="/citizen" element={<CitizenPortalUnified />} />
       
       <Route path="/dashboard" element={<ProtectedRoute><UnifiedDashboard /></ProtectedRoute>} />
       <Route path="/police" element={<ProtectedRoute><PoliceDashboard /></ProtectedRoute>} />

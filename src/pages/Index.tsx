@@ -148,7 +148,7 @@ const navigationItems = [
                           size="lg"
                         >
                          <Users className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                         {t('address:citizenPortal')}
+                          {t('address:citizenPortal')}
                        </Button>
                         <Button 
                           onClick={() => navigate('/auth')} 
