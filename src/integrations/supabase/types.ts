@@ -1011,6 +1011,92 @@ export type Database = {
         }
         Relationships: []
       }
+      nar_authorities: {
+        Row: {
+          authority_level: string
+          authorized_at: string | null
+          authorized_by: string | null
+          can_create_addresses: boolean | null
+          can_update_addresses: boolean | null
+          can_verify_addresses: boolean | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          jurisdiction_city: string | null
+          jurisdiction_region: string | null
+          user_id: string
+        }
+        Insert: {
+          authority_level: string
+          authorized_at?: string | null
+          authorized_by?: string | null
+          can_create_addresses?: boolean | null
+          can_update_addresses?: boolean | null
+          can_verify_addresses?: boolean | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          jurisdiction_city?: string | null
+          jurisdiction_region?: string | null
+          user_id: string
+        }
+        Update: {
+          authority_level?: string
+          authorized_at?: string | null
+          authorized_by?: string | null
+          can_create_addresses?: boolean | null
+          can_update_addresses?: boolean | null
+          can_verify_addresses?: boolean | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          jurisdiction_city?: string | null
+          jurisdiction_region?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      nar_creation_log: {
+        Row: {
+          address_id: string
+          approved_by: string | null
+          created_at: string | null
+          created_by: string
+          creation_method: string
+          id: string
+          source_data: Json | null
+          validation_results: Json | null
+        }
+        Insert: {
+          address_id: string
+          approved_by?: string | null
+          created_at?: string | null
+          created_by: string
+          creation_method: string
+          id?: string
+          source_data?: Json | null
+          validation_results?: Json | null
+        }
+        Update: {
+          address_id?: string
+          approved_by?: string | null
+          created_at?: string | null
+          created_by?: string
+          creation_method?: string
+          id?: string
+          source_data?: Json | null
+          validation_results?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nar_creation_log_address_id_fkey"
+            columns: ["address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       person: {
         Row: {
           auth_user_id: string | null
