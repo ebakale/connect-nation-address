@@ -63,6 +63,8 @@ export const ResidencyVerificationManager = () => {
     
     setLoading(true);
     try {
+      console.log('Fetching verifications with permissions:', { canVerifyAddresses, hasAdminAccess });
+      
       let query = supabase
         .from('residency_ownership_verifications')
         .select(`
@@ -75,6 +77,8 @@ export const ResidencyVerificationManager = () => {
       }
 
       const { data, error } = await query;
+      
+      console.log('Verification fetch result:', { data, error, count: data?.length });
 
       if (error) throw error;
       
@@ -364,16 +368,25 @@ export const ResidencyVerificationManager = () => {
                                         const rawUrl = selectedVerification.primary_document_url!;
                                         console.log('Raw document URL:', rawUrl);
                                         
+                                        // For direct file paths (most common case)
+                                        let filePath = rawUrl;
+                                        
                                         // Extract file path from URL - handle different URL formats
-                                        let filePath = '';
                                         if (rawUrl.includes('/storage/v1/object/public/residency-documents/')) {
                                           filePath = rawUrl.split('/storage/v1/object/public/residency-documents/')[1];
                                         } else if (rawUrl.includes('/storage/v1/object/residency-documents/')) {
                                           filePath = rawUrl.split('/storage/v1/object/residency-documents/')[1];
                                         } else if (rawUrl.includes('residency-documents/')) {
                                           filePath = rawUrl.split('residency-documents/')[1];
-                                        } else if (!rawUrl.startsWith('http')) {
-                                          // Already a file path
+                                        } else if (rawUrl.startsWith('http')) {
+                                          // Try to extract the file path from full URL
+                                          const urlParts = rawUrl.split('/');
+                                          const residencyIndex = urlParts.findIndex(part => part === 'residency-documents');
+                                          if (residencyIndex !== -1 && residencyIndex < urlParts.length - 1) {
+                                            filePath = urlParts.slice(residencyIndex + 1).join('/');
+                                          }
+                                        } else {
+                                          // Already a file path, just clean it
                                           filePath = rawUrl.replace(/^\/+/, '');
                                         }
                                         

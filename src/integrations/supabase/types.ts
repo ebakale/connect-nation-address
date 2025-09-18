@@ -1350,6 +1350,10 @@ export type Database = {
         }
         Returns: Json
       }
+      debug_verification_access: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       flag_address_for_review: {
         Args:
           | {
