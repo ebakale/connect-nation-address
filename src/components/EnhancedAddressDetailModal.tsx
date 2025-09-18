@@ -237,109 +237,112 @@ Shared from Equatorial Guinea Address Portal`;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
+      <DialogContent className="max-w-6xl w-[95vw] h-[90vh] p-4">
+        <DialogHeader className="pb-2">
+          <DialogTitle className="flex items-center gap-2 text-lg">
+            <MapPin className="h-4 w-4" />
             Address Details
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-3 lg:grid-cols-2 h-full overflow-hidden">
           {/* Address Information */}
-          <div className="space-y-4">
+          <div className="space-y-3 overflow-y-auto">
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Address Information</CardTitle>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">Address Information</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 pt-2">
                 <div>
-                  <Label className="text-sm font-medium">Full Address</Label>
-                  <div className="flex items-center gap-2 mt-1">
-                    <p className="text-sm text-foreground flex-1">{addressText}</p>
+                  <Label className="text-xs font-medium">Full Address</Label>
+                  <div className="flex items-center gap-1 mt-1">
+                    <p className="text-xs text-foreground flex-1 leading-tight">{addressText}</p>
                     <Button
                       variant="ghost"
                       size="sm"
+                      className="h-6 w-6 p-0"
                       onClick={() => copyToClipboard(addressText, 'Address')}
                     >
-                      {copiedField === 'Address' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                      {copiedField === 'Address' ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                     </Button>
                   </div>
                 </div>
 
-                <Separator />
+                <Separator className="my-2" />
 
                 <div>
-                  <Label className="text-sm font-medium">Unique Address Code (UAC)</Label>
-                  <div className="flex items-center gap-2 mt-1">
-                    <code className="text-sm font-mono bg-muted px-2 py-1 rounded flex-1">
+                  <Label className="text-xs font-medium">UAC</Label>
+                  <div className="flex items-center gap-1 mt-1">
+                    <code className="text-xs font-mono bg-muted px-1.5 py-1 rounded flex-1">
                       {address.uac}
                     </code>
                     <Button
                       variant="ghost"
                       size="sm"
+                      className="h-6 w-6 p-0"
                       onClick={() => copyToClipboard(address.uac, 'UAC')}
                     >
-                      {copiedField === 'UAC' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                      {copiedField === 'UAC' ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                     </Button>
                   </div>
                 </div>
 
                 <div>
-                  <Label className="text-sm font-medium">GPS Coordinates</Label>
-                  <div className="flex items-center gap-2 mt-1">
-                    <code className="text-sm font-mono bg-muted px-2 py-1 rounded flex-1">
-                      {address.latitude.toFixed(6)}, {address.longitude.toFixed(6)}
+                  <Label className="text-xs font-medium">GPS Coordinates</Label>
+                  <div className="flex items-center gap-1 mt-1">
+                    <code className="text-xs font-mono bg-muted px-1.5 py-1 rounded flex-1">
+                      {address.latitude.toFixed(4)}, {address.longitude.toFixed(4)}
                     </code>
                     <Button
                       variant="ghost"
                       size="sm"
+                      className="h-6 w-6 p-0"
                       onClick={() => copyToClipboard(`${address.latitude}, ${address.longitude}`, 'Coordinates')}
                     >
-                      {copiedField === 'Coordinates' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                      {copiedField === 'Coordinates' ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                     </Button>
                   </div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-1">
                   {address.verified && (
-                    <Badge variant="default">
-                      <Shield className="h-3 w-3 mr-1" />
+                    <Badge variant="default" className="text-xs px-1 py-0">
+                      <Shield className="h-2 w-2 mr-1" />
                       Verified
                     </Badge>
                   )}
-                  <Badge variant={getQualityColor(address.completenessScore)}>
-                    {address.completenessScore}% Complete
+                  <Badge variant={getQualityColor(address.completenessScore)} className="text-xs px-1 py-0">
+                    {address.completenessScore}%
                   </Badge>
-                  <Badge variant="outline" className="capitalize">
+                  <Badge variant="outline" className="capitalize text-xs px-1 py-0">
                     {address.addressType}
                   </Badge>
                 </div>
 
                 {calculatedDistance && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Target className="h-4 w-4 text-primary" />
-                    <span>Distance from your location: <strong>{formatDistance(calculatedDistance)}</strong></span>
+                  <div className="flex items-center gap-1 text-xs">
+                    <Target className="h-3 w-3 text-primary" />
+                    <span>Distance: <strong>{formatDistance(calculatedDistance)}</strong></span>
                   </div>
                 )}
               </CardContent>
             </Card>
 
             {/* QR Code Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <QrCode className="h-5 w-5" />
+            <Card className="lg:hidden">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <QrCode className="h-4 w-4" />
                   QR Code
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-0">
                 <div className="flex justify-center">
                   <QRCodeGenerator 
                     uac={address.uac}
                     addressText={addressText}
                     variant="button"
-                    size="md"
+                    size="sm"
                   />
                 </div>
               </CardContent>
@@ -347,41 +350,44 @@ Shared from Equatorial Guinea Address Portal`;
           </div>
 
           {/* Actions Panel */}
-          <div className="space-y-4">
+          <div className="space-y-3 overflow-y-auto">
             {/* Navigation Actions */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Navigation className="h-5 w-5" />
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Navigation className="h-4 w-4" />
                   Navigation
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-2 pt-2">
                 <Button 
                   onClick={() => getDirections(true)}
-                  className="w-full justify-start"
+                  className="w-full justify-start h-8 text-xs"
                   variant="default"
+                  size="sm"
                 >
-                  <Route className="h-4 w-4 mr-2" />
+                  <Route className="h-3 w-3 mr-2" />
                   Directions from Current Location
                 </Button>
 
-                <div className="space-y-2">
-                  <Label htmlFor="from-uac" className="text-sm">Get directions from another UAC:</Label>
-                  <div className="flex gap-2">
+                <div className="space-y-1">
+                  <Label htmlFor="from-uac" className="text-xs">From another UAC:</Label>
+                  <div className="flex gap-1">
                     <Input
                       id="from-uac"
                       placeholder="Enter UAC..."
                       value={customFromUAC}
                       onChange={(e) => setCustomFromUAC(e.target.value)}
-                      className="flex-1"
+                      className="flex-1 h-7 text-xs"
                     />
                     <Button 
                       onClick={() => getDirections(false, customFromUAC)}
                       variant="outline"
+                      size="sm"
+                      className="h-7 w-7 p-0"
                       disabled={!customFromUAC.trim()}
                     >
-                      <Navigation className="h-4 w-4" />
+                      <Navigation className="h-3 w-3" />
                     </Button>
                   </div>
                 </div>
@@ -392,104 +398,119 @@ Shared from Equatorial Guinea Address Portal`;
                     window.open(url, '_blank');
                   }}
                   variant="outline"
-                  className="w-full justify-start"
+                  className="w-full justify-start h-8 text-xs"
+                  size="sm"
                 >
-                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <ExternalLink className="h-3 w-3 mr-2" />
                   View on Google Maps
                 </Button>
               </CardContent>
             </Card>
 
-            {/* Sharing Actions */}
+            {/* Sharing Actions & QR Code */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Share2 className="h-5 w-5" />
-                  Share Address
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Share2 className="h-4 w-4" />
+                  Share & QR
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="grid grid-cols-2 gap-2">
+              <CardContent className="space-y-2 pt-2">
+                <div className="grid grid-cols-2 gap-1">
                   <Button 
                     onClick={() => shareAddress('whatsapp')}
                     variant="outline"
-                    className="justify-start"
+                    className="justify-start h-8 text-xs"
+                    size="sm"
                   >
-                    <MessageCircle className="h-4 w-4 mr-2" />
+                    <MessageCircle className="h-3 w-3 mr-1" />
                     WhatsApp
                   </Button>
                   <Button 
                     onClick={() => shareAddress('email')}
                     variant="outline"
-                    className="justify-start"
+                    className="justify-start h-8 text-xs"
+                    size="sm"
                   >
-                    <Mail className="h-4 w-4 mr-2" />
+                    <Mail className="h-3 w-3 mr-1" />
                     Email
                   </Button>
                   <Button 
                     onClick={() => shareAddress('sms')}
                     variant="outline"
-                    className="justify-start"
+                    className="justify-start h-8 text-xs"
+                    size="sm"
                   >
-                    <Phone className="h-4 w-4 mr-2" />
+                    <Phone className="h-3 w-3 mr-1" />
                     SMS
                   </Button>
                   <Button 
                     onClick={() => shareAddress('copy')}
                     variant="outline"
-                    className="justify-start"
+                    className="justify-start h-8 text-xs"
+                    size="sm"
                   >
-                    <Copy className="h-4 w-4 mr-2" />
+                    <Copy className="h-3 w-3 mr-1" />
                     Copy All
                   </Button>
+                </div>
+                
+                {/* QR Code for desktop */}
+                <div className="hidden lg:flex justify-center pt-2">
+                  <QRCodeGenerator 
+                    uac={address.uac}
+                    addressText={addressText}
+                    variant="button"
+                    size="sm"
+                  />
                 </div>
               </CardContent>
             </Card>
 
             {/* Distance Calculator */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Calculator className="h-5 w-5" />
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Calculator className="h-4 w-4" />
                   Distance Information
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-2 pt-2">
                 {loadingEstimates && (
-                  <div className="flex items-center justify-center text-sm text-muted-foreground">
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Getting accurate estimates from Google Maps...
+                  <div className="flex items-center justify-center text-xs text-muted-foreground">
+                    <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                    Getting estimates...
                   </div>
                 )}
                 
                 {location && !loadingEstimates && (
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {/* Google Maps Estimates */}
                     {(distanceEstimates.driving || distanceEstimates.walking) && (
-                      <div className="space-y-2">
-                        <div className="text-sm font-medium text-primary">Google Maps Estimates:</div>
+                      <div className="space-y-1">
+                        <div className="text-xs font-medium text-primary">Google Maps:</div>
                         
                         {distanceEstimates.driving && (
-                          <div className="space-y-1">
-                            <div className="flex justify-between text-sm">
-                              <span>🚗 Driving distance:</span>
+                          <div className="space-y-0.5">
+                            <div className="flex justify-between text-xs">
+                              <span>🚗 Drive:</span>
                               <span className="font-mono">{distanceEstimates.driving.distance}</span>
                             </div>
-                            <div className="flex justify-between text-sm text-muted-foreground">
-                              <span>Driving time:</span>
+                            <div className="flex justify-between text-xs text-muted-foreground">
+                              <span>Time:</span>
                               <span>{distanceEstimates.driving.duration}</span>
                             </div>
                           </div>
                         )}
                         
                         {distanceEstimates.walking && (
-                          <div className="space-y-1">
-                            <div className="flex justify-between text-sm">
-                              <span>🚶 Walking distance:</span>
+                          <div className="space-y-0.5">
+                            <div className="flex justify-between text-xs">
+                              <span>🚶 Walk:</span>
                               <span className="font-mono">{distanceEstimates.walking.distance}</span>
                             </div>
-                            <div className="flex justify-between text-sm text-muted-foreground">
-                              <span>Walking time:</span>
+                            <div className="flex justify-between text-xs text-muted-foreground">
+                              <span>Time:</span>
                               <span>{distanceEstimates.walking.duration}</span>
                             </div>
                           </div>
@@ -499,19 +520,19 @@ Shared from Equatorial Guinea Address Portal`;
                     
                     {/* Fallback to basic calculation if Google Maps fails */}
                     {!distanceEstimates.driving && !distanceEstimates.walking && calculatedDistance && (
-                      <div className="space-y-2">
-                        <div className="text-sm font-medium">Basic Estimates:</div>
-                        <div className="flex justify-between text-sm">
-                          <span>Straight-line distance:</span>
+                      <div className="space-y-1">
+                        <div className="text-xs font-medium">Basic Estimates:</div>
+                        <div className="flex justify-between text-xs">
+                          <span>Distance:</span>
                           <span className="font-mono">{formatDistance(calculatedDistance)}</span>
                         </div>
-                        <div className="flex justify-between text-sm text-muted-foreground">
-                          <span>Est. walking time:</span>
-                          <span>{Math.ceil(calculatedDistance / 83)} minutes</span>
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>Walk:</span>
+                          <span>{Math.ceil(calculatedDistance / 83)} min</span>
                         </div>
-                        <div className="flex justify-between text-sm text-muted-foreground">
-                          <span>Est. driving time:</span>
-                          <span>{Math.ceil(calculatedDistance / 833)} minutes</span>
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>Drive:</span>
+                          <span>{Math.ceil(calculatedDistance / 833)} min</span>
                         </div>
                       </div>
                     )}
@@ -519,14 +540,14 @@ Shared from Equatorial Guinea Address Portal`;
                 )}
                 
                 {!location && (
-                  <div className="text-sm text-muted-foreground text-center">
-                    <Clock className="h-4 w-4 mx-auto mb-1" />
-                    Enable location access to see distance information
+                  <div className="text-xs text-muted-foreground text-center">
+                    <Clock className="h-3 w-3 mx-auto mb-1" />
+                    Enable location for distance info
                     <Button 
                       onClick={() => getCurrentPosition(false)}
                       variant="outline"
                       size="sm"
-                      className="mt-2 w-full"
+                      className="mt-1 w-full h-7 text-xs"
                     >
                       Enable Location
                     </Button>
