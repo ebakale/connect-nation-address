@@ -124,7 +124,6 @@ export const useUserRole = () => {
   const isCARAdmin = role === 'car_admin';
   const isCARVerifier = role === 'car_verifier';
   const isResidencyVerifier = role === 'residency_verifier';
-  const hasCARAccess = isCARAdmin || isCARVerifier || isResidencyVerifier;
   
   // Police role checks
   const isPoliceOperator = role === 'police_operator';
@@ -152,6 +151,7 @@ export const useUserRole = () => {
   const hasPoliceAdminAccess = isPoliceAdmin;
   
   // CAR access checks  
+  const hasCARAccess = isCARAdmin || isCARVerifier || isResidencyVerifier || isAdmin || hasSystemAdminAccess;
   const hasCARManagementAccess = isCARAdmin || hasSystemAdminAccess;
   const hasCARVerificationAccess = hasCARAccess || hasVerifierAccess;
   
