@@ -285,5 +285,22 @@
   "user": "Utilisateur",
   "assignedRoles": "Rôles assignés",
   "usersInSystem": "Utilisateurs dans le système",
-  "total": "total"
+  "total": "total",
+  "findVerifiedAddresses": "Trouvez des adresses vérifiées et visualisez-les sur la carte ci-dessous",
+  "searchTips": "Conseils de Recherche",
+  "searchByUac": "Rechercher par Code UAC",
+  "searchByUacDesc": "Entrez le code UAC complet (ex., EG-BN-MAL-001-001)",
+  "searchByAddress": "Rechercher par Adresse",
+  "searchByAddressDesc": "Entrez nom de rue, nom de bâtiment ou point de repère",
+  "searchByCity": "Rechercher par Ville",
+  "searchByCityDesc": "Entrez nom de ville ou de district",
+  "nearbyMapPoi": "Carte Proche et Points d'Intérêt",
+  "nearbyMapDesc": "Affiche votre emplacement actuel, UAC dans un rayon de 20m, et lieux non résidentiels proches",
+  "mapFeatures": "Fonctionnalités de la Carte",
+  "currentLocation": "Emplacement Actuel",
+  "currentLocationDesc": "Votre emplacement GPS est affiché avec un marqueur bleu",
+  "nearbyAddresses": "Adresses Proches",
+  "nearbyAddressesDesc": "Adresses vérifiées dans un rayon de 20m",
+  "pointsOfInterest": "Points d'Intérêt",
+  "pointsOfInterestDesc": "Écoles, hôpitaux, bâtiments gouvernementaux et entreprises"
 }

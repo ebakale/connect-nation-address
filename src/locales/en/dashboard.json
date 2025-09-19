@@ -323,5 +323,22 @@
   "user": "User",
   "assignedRoles": "Assigned roles",
   "usersInSystem": "Users in system",
-  "total": "total"
+  "total": "total",
+  "findVerifiedAddresses": "Find verified addresses and view them on the map below",
+  "searchTips": "Search Tips",
+  "searchByUac": "Search by UAC Code",
+  "searchByUacDesc": "Enter the full UAC code (e.g., EG-BN-MAL-001-001)",
+  "searchByAddress": "Search by Address",
+  "searchByAddressDesc": "Enter street name, building name, or landmark",
+  "searchByCity": "Search by City",
+  "searchByCityDesc": "Enter city or district name",
+  "nearbyMapPoi": "Nearby Map and Points of Interest",
+  "nearbyMapDesc": "Shows your current location, UAC within 20m, and nearby non-residential places",
+  "mapFeatures": "Map Features",
+  "currentLocation": "Current Location",
+  "currentLocationDesc": "Your GPS location is shown with a blue marker",
+  "nearbyAddresses": "Nearby Addresses",
+  "nearbyAddressesDesc": "Verified addresses within 20m radius",
+  "pointsOfInterest": "Points of Interest",
+  "pointsOfInterestDesc": "Schools, hospitals, government buildings, and businesses"
 }

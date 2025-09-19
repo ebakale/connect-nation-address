@@ -321,5 +321,22 @@
   "user": "Usuario",
   "assignedRoles": "Roles asignados",
   "usersInSystem": "Usuarios en sistema",
-  "total": "total"
+  "total": "total",
+  "findVerifiedAddresses": "Encuentra direcciones verificadas y visualízalas en el mapa a continuación",
+  "searchTips": "Consejos de Búsqueda",
+  "searchByUac": "Buscar por Código UAC",
+  "searchByUacDesc": "Ingresa el código UAC completo (ej., EG-BN-MAL-001-001)",
+  "searchByAddress": "Buscar por Dirección",
+  "searchByAddressDesc": "Ingresa nombre de calle, nombre de edificio o punto de referencia",
+  "searchByCity": "Buscar por Ciudad",
+  "searchByCityDesc": "Ingresa nombre de ciudad o distrito",
+  "nearbyMapPoi": "Mapa Cercano y Puntos de Interés",
+  "nearbyMapDesc": "Muestra tu ubicación actual, UAC dentro de 20m, y lugares no residenciales cercanos",
+  "mapFeatures": "Características del Mapa",
+  "currentLocation": "Ubicación Actual",
+  "currentLocationDesc": "Tu ubicación GPS se muestra con un marcador azul",
+  "nearbyAddresses": "Direcciones Cercanas",
+  "nearbyAddressesDesc": "Direcciones verificadas dentro de un radio de 20m",
+  "pointsOfInterest": "Puntos de Interés",
+  "pointsOfInterestDesc": "Escuelas, hospitales, edificios gubernamentales y negocios"
 }

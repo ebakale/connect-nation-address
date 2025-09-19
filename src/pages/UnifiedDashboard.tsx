@@ -373,7 +373,7 @@ const UnifiedDashboard = () => {
                       {t('dashboard:searchAddresses')}
                     </CardTitle>
                     <CardDescription className="text-sm">
-                      Find verified addresses and view them on the map below
+                      {t('dashboard:findVerifiedAddresses')}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="pt-0">
@@ -386,21 +386,21 @@ const UnifiedDashboard = () => {
                 {/* Search Tips */}
                 <Card className="shadow-card w-full">
                   <CardHeader className="pb-4">
-                    <CardTitle className="text-lg">Search Tips</CardTitle>
+                    <CardTitle className="text-lg">{t('dashboard:searchTips')}</CardTitle>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2">
-                        <p className="font-medium text-sm">Search by UAC Code</p>
-                        <p className="text-muted-foreground text-xs leading-relaxed">Enter the full UAC code (e.g., EG-BN-MAL-001-001)</p>
+                        <p className="font-medium text-sm">{t('dashboard:searchByUac')}</p>
+                        <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:searchByUacDesc')}</p>
                       </div>
                       <div className="space-y-2">
-                        <p className="font-medium text-sm">Search by Address</p>
-                        <p className="text-muted-foreground text-xs leading-relaxed">Enter street name, building name, or landmark</p>
+                        <p className="font-medium text-sm">{t('dashboard:searchByAddress')}</p>
+                        <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:searchByAddressDesc')}</p>
                       </div>
                       <div className="space-y-2">
-                        <p className="font-medium text-sm">Search by City</p>
-                        <p className="text-muted-foreground text-xs leading-relaxed">Enter city or district name</p>
+                        <p className="font-medium text-sm">{t('dashboard:searchByCity')}</p>
+                        <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:searchByCityDesc')}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -411,10 +411,10 @@ const UnifiedDashboard = () => {
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-2 text-lg">
                       <MapPin className="h-5 w-5" />
-                      Nearby Map and Points of Interest
+                      {t('dashboard:nearbyMapPoi')}
                     </CardTitle>
                     <CardDescription className="text-sm">
-                      Shows your current location, UAC within 20m, and nearby non-residential places
+                      {t('dashboard:nearbyMapDesc')}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="p-0">
@@ -430,21 +430,21 @@ const UnifiedDashboard = () => {
                 {/* Map Features */}
                 <Card className="shadow-card w-full">
                   <CardHeader className="pb-4">
-                    <CardTitle className="text-lg">Map Features</CardTitle>
+                    <CardTitle className="text-lg">{t('dashboard:mapFeatures')}</CardTitle>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2">
-                        <p className="font-medium text-sm">Current Location</p>
-                        <p className="text-muted-foreground text-xs leading-relaxed">Your GPS location is shown with a blue marker</p>
+                        <p className="font-medium text-sm">{t('dashboard:currentLocation')}</p>
+                        <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:currentLocationDesc')}</p>
                       </div>
                       <div className="space-y-2">
-                        <p className="font-medium text-sm">Nearby Addresses</p>
-                        <p className="text-muted-foreground text-xs leading-relaxed">Verified addresses within 20m radius</p>
+                        <p className="font-medium text-sm">{t('dashboard:nearbyAddresses')}</p>
+                        <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:nearbyAddressesDesc')}</p>
                       </div>
                       <div className="space-y-2">
-                        <p className="font-medium text-sm">Points of Interest</p>
-                        <p className="text-muted-foreground text-xs leading-relaxed">Schools, hospitals, government buildings, and businesses</p>
+                        <p className="font-medium text-sm">{t('dashboard:pointsOfInterest')}</p>
+                        <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:pointsOfInterestDesc')}</p>
                       </div>
                     </div>
                   </CardContent>
