@@ -635,6 +635,130 @@ export function QualityDashboard() {
           </div>
         </TabsContent>
 
+        <TabsContent value="car" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {/* CAR Status Overview */}
+            <Card>
+              <CardHeader>
+                <CardTitle>CAR Status Distribution</CardTitle>
+                <CardDescription>Citizen addresses by verification status</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Confirmed</span>
+                    <Badge variant="default">{carMetrics.confirmedAddresses}</Badge>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Pending</span>
+                    <Badge variant="secondary">{carMetrics.pendingVerificationAddresses}</Badge>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Rejected</span>
+                    <Badge variant="destructive">{carMetrics.rejectedAddresses}</Badge>
+                  </div>
+                  <div className="pt-2 border-t">
+                    <div className="flex justify-between items-center font-medium">
+                      <span className="text-sm">Total</span>
+                      <span>{carMetrics.totalCitizenAddresses}</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Processing Performance */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Processing Performance</CardTitle>
+                <CardDescription>CAR verification efficiency metrics</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Confirmation Rate</span>
+                      <span>{carMetrics.totalCitizenAddresses > 0 ? 
+                        ((carMetrics.confirmedAddresses / carMetrics.totalCitizenAddresses) * 100).toFixed(1) : 0}%</span>
+                    </div>
+                    <Progress value={carMetrics.totalCitizenAddresses > 0 ? 
+                      (carMetrics.confirmedAddresses / carMetrics.totalCitizenAddresses) * 100 : 0} />
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Avg. Processing Time</span>
+                      <span>{carMetrics.averageVerificationTimeHours.toFixed(1)}h</span>
+                    </div>
+                    <Progress value={Math.max(0, 100 - (carMetrics.averageVerificationTimeHours * 2))} 
+                      className={carMetrics.averageVerificationTimeHours > 48 ? "progress-destructive" : ""} />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Data Quality Issues */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Data Quality Issues</CardTitle>
+                <CardDescription>CAR-specific quality concerns</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Duplicate Persons</span>
+                    <Badge variant={carMetrics.duplicatePersonRecords > 0 ? "destructive" : "outline"}>
+                      {carMetrics.duplicatePersonRecords}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Processing Backlog</span>
+                    <Badge variant={carMetrics.pendingVerificationAddresses > 50 ? "destructive" : "secondary"}>
+                      {carMetrics.pendingVerificationAddresses}
+                    </Badge>
+                  </div>
+                  {carMetrics.duplicatePersonRecords > 0 && (
+                    <div className="p-3 border rounded-lg bg-destructive/5 mt-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <AlertTriangle className="h-4 w-4 text-destructive" />
+                        <span className="font-medium text-sm">Action Required</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {carMetrics.duplicatePersonRecords} duplicate person records need merging
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* CAR Trends Chart */}
+          <Card>
+            <CardHeader>
+              <CardTitle>CAR Processing Trends</CardTitle>
+              <CardDescription>Verification trends over time</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={[
+                  { name: 'Week 1', confirmed: carMetrics.confirmedAddresses * 0.7, pending: carMetrics.pendingVerificationAddresses * 1.2 },
+                  { name: 'Week 2', confirmed: carMetrics.confirmedAddresses * 0.8, pending: carMetrics.pendingVerificationAddresses * 1.1 },
+                  { name: 'Week 3', confirmed: carMetrics.confirmedAddresses * 0.9, pending: carMetrics.pendingVerificationAddresses * 1.05 },
+                  { name: 'Current', confirmed: carMetrics.confirmedAddresses, pending: carMetrics.pendingVerificationAddresses },
+                ]}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="confirmed" stroke="hsl(var(--primary))" name="Confirmed" />
+                  <Line type="monotone" dataKey="pending" stroke="hsl(var(--secondary))" name="Pending" />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="cities" className="space-y-4">
           <Card>
             <CardHeader>

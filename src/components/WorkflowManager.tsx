@@ -15,7 +15,7 @@ interface WorkflowStep {
 
 export const WorkflowManager: React.FC = () => {
   const { t } = useTranslation(['admin']);
-  const { role, getWorkflowStage, canAccessLocation } = useUserRole();
+  const { role, getWorkflowStage, canAccessLocation, hasCARAccess } = useUserRole();
 
   const addressWorkflows = [
     {
@@ -81,7 +81,34 @@ export const WorkflowManager: React.FC = () => {
     }
   ];
 
-  const allWorkflows = [...addressWorkflows, ...policeWorkflows];
+  const carWorkflows = [
+    {
+      name: 'Citizen Address Registration',
+      description: 'Complete CAR workflow from citizen self-declaration to address confirmation',
+      steps: [
+        { stage: 'self_declaration', role: 'Citizen', description: 'Citizen declares primary/secondary address', status: 'completed' as const },
+        { stage: 'review_submission', role: 'CAR Verifier', description: 'Review submitted address information', status: 'current' as const },
+        { stage: 'verify_residency', role: 'CAR Verifier', description: 'Verify residency/ownership documentation', status: 'pending' as const },
+        { stage: 'confirm_address', role: 'CAR Verifier', description: 'Confirm address in citizen registry', status: 'pending' as const }
+      ]
+    },
+    {
+      name: 'Duplicate Person Resolution',
+      description: 'Process for identifying and merging duplicate person records',
+      steps: [
+        { stage: 'detect_duplicate', role: 'System', description: 'Automated detection of potential duplicate person records', status: 'completed' as const },
+        { stage: 'manual_review', role: 'CAR Administrator', description: 'Manual review of flagged duplicate records', status: 'current' as const },
+        { stage: 'merge_records', role: 'CAR Administrator', description: 'Merge confirmed duplicate person records', status: 'pending' as const },
+        { stage: 'update_addresses', role: 'System', description: 'Update associated address records', status: 'pending' as const }
+      ]
+    }
+  ];
+
+  const allWorkflows = [
+    ...addressWorkflows, 
+    ...policeWorkflows,
+    ...(hasCARAccess ? carWorkflows : [])
+  ];
 
   const currentStage = getWorkflowStage();
 

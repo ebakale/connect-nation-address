@@ -19,6 +19,8 @@ import { NARCARTestPanel } from './NARCARTestPanel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Shield, Hash } from 'lucide-react';
 import { NARAuthorityManager } from './NARAuthorityManager';
+import { CARPermissionsManager } from './CARPermissionsManager';
+import { CARVerificationWorkflow } from './CARVerificationWorkflow';
 
 const AdminPanel: React.FC = () => {
   const { t } = useTranslation(['admin']);
@@ -60,6 +62,8 @@ const AdminPanel: React.FC = () => {
           <TabsTrigger value="workflows" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:workflows')}</TabsTrigger>
           <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:userManagement')}</TabsTrigger>
           <TabsTrigger value="nar-authorities" className="text-xs sm:text-sm px-2 sm:px-3">NAR Authorities</TabsTrigger>
+          <TabsTrigger value="car-permissions" className="text-xs sm:text-sm px-2 sm:px-3">CAR Permissions</TabsTrigger>
+          <TabsTrigger value="car-workflow" className="text-xs sm:text-sm px-2 sm:px-3">CAR Workflow</TabsTrigger>
           <TabsTrigger value="uac" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:uacSystem')}</TabsTrigger>
           <TabsTrigger value="quality" className="text-xs sm:text-sm px-2 sm:px-3">Quality</TabsTrigger>
           <TabsTrigger value="system-tools" className="text-xs sm:text-sm px-2 sm:px-3">System Tools</TabsTrigger>
@@ -87,6 +91,14 @@ const AdminPanel: React.FC = () => {
         
         <TabsContent value="nar-authorities">
           <NARAuthorityManager />
+        </TabsContent>
+        
+        <TabsContent value="car-permissions">
+          <CARPermissionsManager />
+        </TabsContent>
+        
+        <TabsContent value="car-workflow">
+          <CARVerificationWorkflow />
         </TabsContent>
         
         <TabsContent value="uac">
