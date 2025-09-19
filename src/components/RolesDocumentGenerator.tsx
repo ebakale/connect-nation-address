@@ -113,10 +113,10 @@ export const RolesDocumentGenerator = () => {
   };
 
   return (
-    <Button onClick={generateRolesPDF} className="flex items-center gap-2">
-      <FileText className="h-4 w-4" />
-      <Download className="h-4 w-4" />
-      {t('generateRolesPdfGuide')}
+    <Button onClick={generateRolesPDF} className="w-full flex items-center gap-2 text-xs px-3 py-2 h-auto min-h-8">
+      <FileText className="h-3 w-3 shrink-0" />
+      <Download className="h-3 w-3 shrink-0" />
+      <span className="text-wrap break-words">{t('generateRolesPdfGuide')}</span>
     </Button>
   );
 };
