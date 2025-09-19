@@ -86,7 +86,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     },
     {
       id: 'unified-address-dashboard',
-      title: t('addressData'),
+      title: t('addressManagement'),
       icon: MapPin,
       onClick: () => handleItemClick('unified-address-dashboard'),
       visible: true
