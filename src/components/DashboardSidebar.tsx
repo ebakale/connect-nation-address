@@ -141,7 +141,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   );
   
   const managementItems = visibleItems.filter(item => 
-    ['address-data', 'analytics', 'province-management', 'verification-tools', 'residency-verification-manager'].includes(item.id)
+    ['address-data', 'province-management', 'verification-tools', 'residency-verification-manager'].includes(item.id)
   );
   
   const settingsItems = visibleItems.filter(item => 
