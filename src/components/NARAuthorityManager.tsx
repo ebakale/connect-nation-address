@@ -33,6 +33,20 @@ interface UserProfile {
   email: string;
 }
 
+// Equatorial Guinea provinces and cities data
+const EQUATORIAL_GUINEA_DATA = {
+  'Annobón': ['San Antonio de Palé'],
+  'Bioko Norte': ['Malabo', 'Rebola', 'Baney'],
+  'Bioko Sur': ['Luba', 'Riaba', 'Moca'],
+  'Centro Sur': ['Evinayong', 'Acurenam'],
+  'Djibloho': ['Ciudad de la Paz'],
+  'Kié-Ntem': ['Ebebiyín', 'Mikomeseng', 'Ncue', 'Nsork Nsomo'],
+  'Litoral': ['Bata', 'Mbini', 'Kogo', 'Acalayong'],
+  'Wele-Nzas': ['Mongomo', 'Añisoc', 'Aconibe', 'Nsok']
+};
+
+const PROVINCES = Object.keys(EQUATORIAL_GUINEA_DATA);
+
 export function NARAuthorityManager() {
   const { t } = useTranslation(['common', 'admin']);
   const { toast } = useToast();
@@ -54,6 +68,11 @@ export function NARAuthorityManager() {
     can_verify_addresses: true,
     can_update_addresses: false
   });
+
+  // Get cities for selected province
+  const getCitiesForProvince = (province: string) => {
+    return EQUATORIAL_GUINEA_DATA[province as keyof typeof EQUATORIAL_GUINEA_DATA] || [];
+  };
 
   // Search for users by email or name
   const searchUsers = async (searchTerm: string) => {
@@ -338,22 +357,49 @@ export function NARAuthorityManager() {
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="jurisdiction_region">Jurisdiction Region</Label>
-                  <Input
-                    id="jurisdiction_region"
+                  <Label htmlFor="jurisdiction_region">Jurisdiction (Province)</Label>
+                  <Select
                     value={newAuthority.jurisdiction_region}
-                    onChange={(e) => setNewAuthority({ ...newAuthority, jurisdiction_region: e.target.value })}
-                    placeholder="Optional: specific region"
-                  />
+                    onValueChange={(value) => setNewAuthority({ 
+                      ...newAuthority, 
+                      jurisdiction_region: value,
+                      jurisdiction_city: '' // Reset city when province changes
+                    })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select province (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PROVINCES.map((province) => (
+                        <SelectItem key={province} value={province}>
+                          {province}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <Label htmlFor="jurisdiction_city">Jurisdiction City</Label>
-                  <Input
-                    id="jurisdiction_city"
+                  <Select
                     value={newAuthority.jurisdiction_city}
-                    onChange={(e) => setNewAuthority({ ...newAuthority, jurisdiction_city: e.target.value })}
-                    placeholder="Optional: specific city"
-                  />
+                    onValueChange={(value) => setNewAuthority({ ...newAuthority, jurisdiction_city: value })}
+                    disabled={!newAuthority.jurisdiction_region}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={
+                        newAuthority.jurisdiction_region 
+                          ? "Select city (optional)" 
+                          : "Select province first"
+                      } />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {newAuthority.jurisdiction_region && getCitiesForProvince(newAuthority.jurisdiction_region).map((city) => (
+                        <SelectItem key={city} value={city}>
+                          {city}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <Button 
                   onClick={createAuthority} 
