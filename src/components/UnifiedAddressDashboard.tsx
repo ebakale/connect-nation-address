@@ -140,45 +140,45 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">NAR Addresses</CardTitle>
+                      <CardTitle className="text-sm font-medium">{t('dashboard:narAddresses')}</CardTitle>
                       <Database className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{stats.totalNARAddresses}</div>
-                      <p className="text-xs text-muted-foreground">National registry</p>
+                      <p className="text-xs text-muted-foreground">{t('dashboard:nationalRegistry')}</p>
                     </CardContent>
                   </Card>
 
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">CAR Addresses</CardTitle>
+                      <CardTitle className="text-sm font-medium">{t('dashboard:carAddresses')}</CardTitle>
                       <Home className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{stats.totalCARAddresses}</div>
-                      <p className="text-xs text-muted-foreground">Citizen addresses</p>
+                      <p className="text-xs text-muted-foreground">{t('dashboard:citizenAddresses')}</p>
                     </CardContent>
                   </Card>
 
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Pending Verifications</CardTitle>
+                      <CardTitle className="text-sm font-medium">{t('dashboard:pendingVerifications')}</CardTitle>
                       <Clock className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{stats.pendingVerifications}</div>
-                      <p className="text-xs text-muted-foreground">Requires review</p>
+                      <p className="text-xs text-muted-foreground">{t('dashboard:requiresReview')}</p>
                     </CardContent>
                   </Card>
 
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Integration Status</CardTitle>
+                      <CardTitle className="text-sm font-medium">{t('dashboard:integrationStatus')}</CardTitle>
                       <Network className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-green-600">Active</div>
-                      <p className="text-xs text-muted-foreground">NAR-CAR sync</p>
+                      <div className="text-2xl font-bold text-green-600">{t('dashboard:active')}</div>
+                      <p className="text-xs text-muted-foreground">{t('dashboard:narCarSync')}</p>
                     </CardContent>
                   </Card>
                 </div>
@@ -187,7 +187,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
                 <Alert>
                   <Network className="h-4 w-4" />
                   <AlertDescription>
-                    NAR and CAR systems are fully integrated. Citizens can register addresses that link to the National Address Registry for verification.
+                    {t('dashboard:integrationDescription')}
                   </AlertDescription>
                 </Alert>
               </>
@@ -202,8 +202,8 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
                 onClick={() => setActiveTab('address-management')}
               >
                 <Search className="h-6 w-6" />
-                <span>Address Management</span>
-                <span className="text-xs text-muted-foreground">Search & manage addresses</span>
+                <span>{t('dashboard:addressManagement')}</span>
+                <span className="text-xs text-muted-foreground">{t('dashboard:searchManageAddresses')}</span>
               </Button>
 
 
@@ -214,8 +214,8 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
                   onClick={() => setActiveTab('verification')}
                 >
                   <CheckCircle className="h-6 w-6" />
-                  <span>Verification</span>
-                  <span className="text-xs text-muted-foreground">Review queue</span>
+                  <span>{t('dashboard:verification')}</span>
+                  <span className="text-xs text-muted-foreground">{t('dashboard:reviewQueue')}</span>
                 </Button>
               )}
             </div>

@@ -353,5 +353,18 @@
   "adminFunctionsDesc": "Access comprehensive admin tools including user management, roles, workflows, and system configuration",
   "useAdminPanel": "Use Admin Panel",
   "useAdminPanelDesc": "Access all administrative functions from the sidebar Admin Panel",
-  "openAdminPanel": "Open Admin Panel"
+  "openAdminPanel": "Open Admin Panel",
+  "narAddresses": "NAR Addresses",
+  "nationalRegistry": "National registry",
+  "carAddresses": "CAR Addresses",
+  "citizenAddresses": "Citizen addresses",
+  "pendingVerifications": "Pending Verifications",
+  "requiresReview": "Requires review",
+  "integrationStatus": "Integration Status",
+  "active": "Active",
+  "narCarSync": "NAR-CAR sync",
+  "integrationDescription": "NAR and CAR systems are fully integrated. Citizens can register addresses that link to the National Address Registry for verification.",
+  "searchManageAddresses": "Search & manage addresses",
+  "verification": "Verification",
+  "reviewQueue": "Review queue"
 }

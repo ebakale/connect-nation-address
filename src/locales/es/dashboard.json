@@ -351,5 +351,18 @@
   "adminFunctionsDesc": "Accede a herramientas administrativas integrales incluyendo gestión de usuarios, roles, flujos de trabajo y configuración del sistema",
   "useAdminPanel": "Usar Panel de Administrador",
   "useAdminPanelDesc": "Accede a todas las funciones administrativas desde el Panel de Administrador en la barra lateral",
-  "openAdminPanel": "Abrir Panel de Administrador"
+  "openAdminPanel": "Abrir Panel de Administrador",
+  "narAddresses": "Direcciones NAR",
+  "nationalRegistry": "Registro nacional",
+  "carAddresses": "Direcciones CAR",
+  "citizenAddresses": "Direcciones de ciudadanos",
+  "pendingVerifications": "Verificaciones Pendientes",
+  "requiresReview": "Requiere revisión",
+  "integrationStatus": "Estado de Integración",
+  "active": "Activo",
+  "narCarSync": "Sincronización NAR-CAR",
+  "integrationDescription": "Los sistemas NAR y CAR están completamente integrados. Los ciudadanos pueden registrar direcciones que se vinculan al Registro Nacional de Direcciones para verificación.",
+  "searchManageAddresses": "Buscar y gestionar direcciones",
+  "verification": "Verificación",
+  "reviewQueue": "Cola de revisión"
 }
