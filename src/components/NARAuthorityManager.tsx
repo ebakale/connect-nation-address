@@ -346,9 +346,9 @@ export function NARAuthorityManager() {
                     onValueChange={(value) => setNewAuthority({ 
                       ...newAuthority, 
                       authority_level: value,
-                      // Clear jurisdiction fields when selecting national
-                      jurisdiction_region: value === 'national' ? '' : newAuthority.jurisdiction_region,
-                      jurisdiction_city: value === 'national' ? '' : newAuthority.jurisdiction_city
+                      // Clear jurisdiction fields when selecting national or regional
+                      jurisdiction_region: (value === 'national') ? '' : newAuthority.jurisdiction_region,
+                      jurisdiction_city: (value === 'national' || value === 'regional') ? '' : newAuthority.jurisdiction_city
                     })}
                   >
                     <SelectTrigger>
@@ -376,7 +376,9 @@ export function NARAuthorityManager() {
                     <SelectTrigger>
                       <SelectValue placeholder={
                         newAuthority.authority_level === 'national' 
-                          ? "National authority - no specific province" 
+                          ? "National authority - covers all provinces" 
+                          : newAuthority.authority_level === 'regional'
+                          ? "Select province (required for regional authority)"
                           : "Select province (optional)"
                       } />
                     </SelectTrigger>
@@ -394,12 +396,18 @@ export function NARAuthorityManager() {
                   <Select
                     value={newAuthority.jurisdiction_city}
                     onValueChange={(value) => setNewAuthority({ ...newAuthority, jurisdiction_city: value })}
-                    disabled={newAuthority.authority_level === 'national' || !newAuthority.jurisdiction_region}
+                    disabled={
+                      newAuthority.authority_level === 'national' || 
+                      newAuthority.authority_level === 'regional' ||
+                      !newAuthority.jurisdiction_region
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder={
                         newAuthority.authority_level === 'national'
-                          ? "National authority - no specific city"
+                          ? "National authority - covers all cities"
+                          : newAuthority.authority_level === 'regional'
+                          ? "Regional authority - covers all cities in province"
                           : !newAuthority.jurisdiction_region 
                             ? "Select province first"
                             : "Select city (optional)"
