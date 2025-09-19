@@ -65,12 +65,19 @@ export function CARAdministrativeOverview() {
 
   const fetchCARStatistics = async () => {
     try {
-      // Get total addresses and status breakdown
+      // Get total addresses and status breakdown from citizen_address
       const { data: addressStats, error: addressError } = await supabase
         .from('citizen_address')
         .select('status, address_kind, effective_to, created_at');
 
       if (addressError) throw addressError;
+
+      // Get verification statuses from residency_ownership_verifications
+      const { data: verificationStats, error: verificationError } = await supabase
+        .from('residency_ownership_verifications')
+        .select('status, created_at');
+
+      if (verificationError) throw verificationError;
 
       // Get total persons
       const { data: personStats, error: personError } = await supabase
@@ -90,8 +97,11 @@ export function CARAdministrativeOverview() {
       const totalAddresses = addressStats?.length || 0;
       const activeAddresses = addressStats?.filter(addr => !addr.effective_to).length || 0;
       const pendingVerifications = addressStats?.filter(addr => addr.status === 'SELF_DECLARED').length || 0;
-      const confirmedAddresses = addressStats?.filter(addr => addr.status === 'CONFIRMED').length || 0;
-      const rejectedAddresses = addressStats?.filter(addr => addr.status === 'REJECTED').length || 0;
+      
+      // Calculate verification stats from residency_ownership_verifications table
+      const confirmedAddresses = verificationStats?.filter(v => v.status === 'approved').length || 0;
+      const rejectedAddresses = verificationStats?.filter(v => v.status === 'rejected').length || 0;
+      
       const primaryAddresses = addressStats?.filter(addr => addr.address_kind === 'PRIMARY').length || 0;
       const secondaryAddresses = addressStats?.filter(addr => addr.address_kind === 'SECONDARY').length || 0;
 
@@ -107,12 +117,16 @@ export function CARAdministrativeOverview() {
         count
       }));
 
-      // Calculate recent activity (last 7 days)
+      // Calculate recent activity (last 7 days) - include both address creation and verification activity
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      const recentActivity = addressStats?.filter(addr => 
+      const recentAddressActivity = addressStats?.filter(addr => 
         new Date(addr.created_at) > sevenDaysAgo
       ).length || 0;
+      const recentVerificationActivity = verificationStats?.filter(v => 
+        new Date(v.created_at) > sevenDaysAgo
+      ).length || 0;
+      const recentActivity = recentAddressActivity + recentVerificationActivity;
 
       // Calculate verification rate
       const verifiedCount = detailedAddresses?.filter(addr => addr.nar_verified).length || 0;
@@ -281,21 +295,21 @@ export function CARAdministrativeOverview() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="text-sm">Confirmed</span>
+                      <span className="text-sm">Verified (Approved)</span>
                     </div>
                     <Badge variant="outline">{stats.confirmedAddresses}</Badge>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                      <span className="text-sm">Self-Declared</span>
+                      <span className="text-sm">Unverified (Self-Declared)</span>
                     </div>
                     <Badge variant="outline">{stats.pendingVerifications}</Badge>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                      <span className="text-sm">Rejected</span>
+                      <span className="text-sm">Verification Rejected</span>
                     </div>
                     <Badge variant="outline">{stats.rejectedAddresses}</Badge>
                   </div>
