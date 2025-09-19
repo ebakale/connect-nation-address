@@ -30,6 +30,8 @@
     "print": "Imprimir",
     "open": "Abrir",
     "loading": "Cargando...",
+    "yes": "Sí",
+    "no": "No",
     "retry": "Reintentar",
     "tryAgain": "Intentar de nuevo",
     "call": "Llamar",

@@ -25,6 +25,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 interface VerificationRequest {
   id: string;
@@ -47,6 +48,7 @@ interface VerificationRequest {
 }
 
 export const ResidencyVerificationManager = () => {
+  const { t } = useTranslation(['admin', 'common']);
   const [verifications, setVerifications] = useState<VerificationRequest[]>([]);
   const [selectedVerification, setSelectedVerification] = useState<VerificationRequest | null>(null);
   const [loading, setLoading] = useState(false);
@@ -117,8 +119,8 @@ export const ResidencyVerificationManager = () => {
     } catch (error) {
       console.error('Error fetching verifications:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to fetch verification requests',
+        title: t('common:error'),
+        description: t('admin:failedToFetchVerificationRequests'),
         variant: 'destructive'
       });
       setVerifications([]); // Ensure we clear the list on error
@@ -142,8 +144,8 @@ export const ResidencyVerificationManager = () => {
       if (error) throw error;
 
       toast({
-        title: 'Status Updated',
-        description: `Verification status updated to ${newStatus}`,
+        title: t('admin:statusUpdated'),
+        description: t('admin:verificationStatusUpdated', { status: newStatus }),
       });
 
       await fetchVerifications();
@@ -218,9 +220,9 @@ export const ResidencyVerificationManager = () => {
       <Card>
         <CardContent className="text-center py-8">
           <Shield className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-          <h3 className="text-lg font-medium mb-2">Access Denied</h3>
+          <h3 className="text-lg font-medium mb-2">{t('admin:accessDenied')}</h3>
           <p className="text-muted-foreground">
-            You don't have permission to manage verification requests.
+            {t('admin:noPermissionManageVerificationRequests')}
           </p>
         </CardContent>
       </Card>
@@ -231,18 +233,18 @@ export const ResidencyVerificationManager = () => {
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <Shield className="w-6 h-6" />
-        <h2 className="text-2xl font-bold">Verification Management</h2>
+        <h2 className="text-2xl font-bold">{t('admin:verificationManagement')}</h2>
       </div>
 
       {/* Filters */}
       <div className="flex gap-4">
         <div className="flex-1">
-          <Label htmlFor="search">Search</Label>
+          <Label htmlFor="search">{t('common:search')}</Label>
           <div className="relative">
             <Search className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
             <Input
               id="search"
-              placeholder="Search by name, email, or document type..."
+              placeholder={t('admin:searchByNameEmailDocumentType')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -250,32 +252,32 @@ export const ResidencyVerificationManager = () => {
           </div>
         </div>
         <div>
-          <Label htmlFor="statusFilter">Status Filter</Label>
+          <Label htmlFor="statusFilter">{t('admin:statusFilter')}</Label>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-48">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="document_review">Document Review</SelectItem>
-              <SelectItem value="field_verification">Field Verification</SelectItem>
-              <SelectItem value="legal_review">Legal Review</SelectItem>
-              <SelectItem value="approved">Approved</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
-              <SelectItem value="under_investigation">Under Investigation</SelectItem>
+              <SelectItem value="all">{t('admin:allStatuses')}</SelectItem>
+              <SelectItem value="pending">{t('admin:pending')}</SelectItem>
+              <SelectItem value="document_review">{t('admin:documentReview')}</SelectItem>
+              <SelectItem value="field_verification">{t('admin:fieldVerification')}</SelectItem>
+              <SelectItem value="legal_review">{t('admin:legalReview')}</SelectItem>
+              <SelectItem value="approved">{t('admin:approved')}</SelectItem>
+              <SelectItem value="rejected">{t('admin:rejected')}</SelectItem>
+              <SelectItem value="under_investigation">{t('admin:underInvestigation')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div className="flex flex-col gap-2">
-          <Label>Actions</Label>
+          <Label>{t('admin:actions')}</Label>
           <Button 
             onClick={fetchVerifications} 
             disabled={loading}
             variant="outline"
             size="default"
           >
-            {loading ? 'Loading...' : 'Refresh'}
+            {loading ? t('common:loading') : t('common:refresh')}
           </Button>
         </div>
       </div>
@@ -286,9 +288,9 @@ export const ResidencyVerificationManager = () => {
           <Card>
             <CardContent className="text-center py-8">
               <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-medium mb-2">No Verification Requests</h3>
+              <h3 className="text-lg font-medium mb-2">{t('admin:noVerificationRequests')}</h3>
               <p className="text-muted-foreground">
-                No verification requests match your current filters.
+                {t('admin:noVerificationRequestsMatchFilters')}
               </p>
             </CardContent>
           </Card>
@@ -300,12 +302,12 @@ export const ResidencyVerificationManager = () => {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       {getStatusIcon(verification.status)}
-                      {formatStatus(verification.verification_type)} Verification
-                    </CardTitle>
-                    <CardDescription>
-                      Submitted by {verification.profiles?.full_name} ({verification.profiles?.email}) 
-                      on {format(new Date(verification.created_at), 'PPP')}
-                    </CardDescription>
+                       {formatStatus(verification.verification_type)} {t('admin:verification')}
+                     </CardTitle>
+                     <CardDescription>
+                       {t('admin:submittedBy')} {verification.profiles?.full_name} ({verification.profiles?.email}) 
+                       {t('admin:onDate')} {format(new Date(verification.created_at), 'PPP')}
+                     </CardDescription>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge 
@@ -321,48 +323,48 @@ export const ResidencyVerificationManager = () => {
                           variant="outline"
                           onClick={() => setSelectedVerification(verification)}
                         >
-                          <Eye className="w-4 h-4 mr-1" />
-                          Review
-                        </Button>
+                           <Eye className="w-4 h-4 mr-1" />
+                           {t('admin:review')}
+                         </Button>
                       </DialogTrigger>
                       <DialogContent className="max-w-2xl">
-                        <DialogHeader>
-                          <DialogTitle>Verification Request Review</DialogTitle>
-                          <DialogDescription>Review verification details and take action.</DialogDescription>
-                        </DialogHeader>
+                         <DialogHeader>
+                           <DialogTitle>{t('admin:verificationRequestReview')}</DialogTitle>
+                           <DialogDescription>{t('admin:reviewVerificationDetailsAndTakeAction')}</DialogDescription>
+                         </DialogHeader>
                         {selectedVerification && (
                           <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                              <div>
-                                <Label>Applicant</Label>
-                                <p className="text-sm">{selectedVerification.profiles?.full_name}</p>
-                                <p className="text-xs text-muted-foreground">{selectedVerification.profiles?.email}</p>
-                              </div>
-                              <div>
-                                <Label>Verification Type</Label>
-                                <p className="text-sm">{formatStatus(selectedVerification.verification_type)}</p>
-                              </div>
-                              <div>
-                                <Label>Claimant Relationship</Label>
-                                <p className="text-sm">{formatStatus(selectedVerification.claimant_relationship)}</p>
-                              </div>
-                              <div>
-                                <Label>Document Type</Label>
-                                <p className="text-sm">{formatStatus(selectedVerification.primary_document_type)}</p>
-                              </div>
-                              <div>
-                                <Label>Privacy Level</Label>
-                                <p className="text-sm">{formatStatus(selectedVerification.privacy_level)}</p>
-                              </div>
-                              <div>
-                                <Label>Consent Given</Label>
-                                <p className="text-sm">{selectedVerification.consent_given ? 'Yes' : 'No'}</p>
-                              </div>
-                            </div>
+                             <div className="grid grid-cols-2 gap-4">
+                               <div>
+                                 <Label>{t('admin:applicant')}</Label>
+                                 <p className="text-sm">{selectedVerification.profiles?.full_name}</p>
+                                 <p className="text-xs text-muted-foreground">{selectedVerification.profiles?.email}</p>
+                               </div>
+                               <div>
+                                 <Label>{t('admin:verificationType')}</Label>
+                                 <p className="text-sm">{formatStatus(selectedVerification.verification_type)}</p>
+                               </div>
+                               <div>
+                                 <Label>{t('admin:claimantRelationship')}</Label>
+                                 <p className="text-sm">{formatStatus(selectedVerification.claimant_relationship)}</p>
+                               </div>
+                               <div>
+                                 <Label>{t('admin:documentType')}</Label>
+                                 <p className="text-sm">{formatStatus(selectedVerification.primary_document_type)}</p>
+                               </div>
+                               <div>
+                                 <Label>{t('admin:privacyLevel')}</Label>
+                                 <p className="text-sm">{formatStatus(selectedVerification.privacy_level)}</p>
+                               </div>
+                               <div>
+                                 <Label>{t('admin:consentGiven')}</Label>
+                                 <p className="text-sm">{selectedVerification.consent_given ? t('common:yes') : t('common:no')}</p>
+                               </div>
+                             </div>
 
                             {selectedVerification.primary_document_url && (
                               <div>
-                                <Label>Submitted Document</Label>
+                                <Label>{t('admin:submittedDocument')}</Label>
                                 <div className="border rounded-lg p-4 bg-muted/50">
                                   <div className="flex items-center gap-2 mb-2">
                                     <FileText className="w-4 h-4" />
@@ -460,24 +462,24 @@ export const ResidencyVerificationManager = () => {
                                         }
                                       } catch (error: any) {
                                         console.error('Error viewing document:', error);
-                                        toast({
-                                          title: 'Document Access Error',
-                                          description: error.message || 'Could not access the document. Please ask the applicant to re-upload.',
-                                          variant: 'destructive'
-                                        });
+                                         toast({
+                                           title: t('admin:documentAccessError'),
+                                           description: error.message || t('admin:couldNotAccessDocumentReupload'),
+                                           variant: 'destructive'
+                                         });
                                       }
                                     }}
                                   >
-                                    <Eye className="w-4 h-4 mr-1" />
-                                    View Document
-                                  </Button>
+                                     <Eye className="w-4 h-4 mr-1" />
+                                     {t('admin:viewDocument')}
+                                   </Button>
                                 </div>
                               </div>
                             )}
 
                             {selectedVerification.verification_notes && (
                               <div>
-                                <Label>Current Notes</Label>
+                                <Label>{t('admin:currentNotes')}</Label>
                                 <p className="text-sm bg-muted p-2 rounded">
                                   {selectedVerification.verification_notes}
                                 </p>
@@ -485,32 +487,32 @@ export const ResidencyVerificationManager = () => {
                             )}
 
                             <div className="space-y-2">
-                              <Label htmlFor="reviewStatus">Update Status</Label>
-                              <Select value={reviewStatus} onValueChange={setReviewStatus}>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select new status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="document_review">Document Review</SelectItem>
-                                  <SelectItem value="field_verification">Field Verification</SelectItem>
-                                  <SelectItem value="legal_review">Legal Review</SelectItem>
-                                  <SelectItem value="approved">Approved</SelectItem>
-                                  <SelectItem value="rejected">Rejected</SelectItem>
-                                  <SelectItem value="requires_additional_documents">Request Changes</SelectItem>
-                                  <SelectItem value="under_investigation">Under Investigation</SelectItem>
-                                </SelectContent>
-                              </Select>
+                               <Label htmlFor="reviewStatus">{t('admin:updateStatus')}</Label>
+                               <Select value={reviewStatus} onValueChange={setReviewStatus}>
+                                 <SelectTrigger>
+                                   <SelectValue placeholder={t('admin:selectNewStatus')} />
+                                 </SelectTrigger>
+                                 <SelectContent>
+                                   <SelectItem value="document_review">{t('admin:documentReview')}</SelectItem>
+                                   <SelectItem value="field_verification">{t('admin:fieldVerification')}</SelectItem>
+                                   <SelectItem value="legal_review">{t('admin:legalReview')}</SelectItem>
+                                   <SelectItem value="approved">{t('admin:approved')}</SelectItem>
+                                   <SelectItem value="rejected">{t('admin:rejected')}</SelectItem>
+                                   <SelectItem value="requires_additional_documents">{t('admin:requestChanges')}</SelectItem>
+                                   <SelectItem value="under_investigation">{t('admin:underInvestigation')}</SelectItem>
+                                 </SelectContent>
+                               </Select>
                             </div>
 
                             <div className="space-y-2">
-                              <Label htmlFor="reviewNotes">Review Notes</Label>
-                              <Textarea
-                                id="reviewNotes"
-                                value={reviewNotes}
-                                onChange={(e) => setReviewNotes(e.target.value)}
-                                placeholder="Add notes about this review..."
-                                rows={3}
-                              />
+                               <Label htmlFor="reviewNotes">{t('admin:reviewNotes')}</Label>
+                               <Textarea
+                                 id="reviewNotes"
+                                 value={reviewNotes}
+                                 onChange={(e) => setReviewNotes(e.target.value)}
+                                 placeholder={t('admin:addNotesAboutReview')}
+                                 rows={3}
+                               />
                             </div>
 
                             <div className="flex gap-2">
@@ -519,7 +521,7 @@ export const ResidencyVerificationManager = () => {
                                 disabled={!reviewStatus}
                                 className="flex-1"
                               >
-                                Update Status
+                                {t('admin:updateStatus')}
                               </Button>
                             </div>
                           </div>
@@ -534,16 +536,16 @@ export const ResidencyVerificationManager = () => {
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4 text-muted-foreground" />
                     <div>
-                      <p className="text-sm font-medium">Claimant Type</p>
-                      <p className="text-sm text-muted-foreground">
-                        {formatStatus(verification.claimant_relationship)}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm font-medium">Document Type</p>
+                       <p className="text-sm font-medium">{t('admin:claimantType')}</p>
+                       <p className="text-sm text-muted-foreground">
+                         {formatStatus(verification.claimant_relationship)}
+                       </p>
+                     </div>
+                   </div>
+                   <div className="flex items-center gap-2">
+                     <FileText className="w-4 h-4 text-muted-foreground" />
+                     <div>
+                       <p className="text-sm font-medium">{t('admin:documentType')}</p>
                       <p className="text-sm text-muted-foreground">
                         {formatStatus(verification.primary_document_type)}
                       </p>
@@ -552,7 +554,7 @@ export const ResidencyVerificationManager = () => {
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-muted-foreground" />
                     <div>
-                      <p className="text-sm font-medium">Submitted</p>
+                      <p className="text-sm font-medium">{t('admin:submitted')}</p>
                       <p className="text-sm text-muted-foreground">
                         {format(new Date(verification.created_at), 'MMM d, yyyy')}
                       </p>

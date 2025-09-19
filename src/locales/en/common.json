@@ -30,6 +30,8 @@
     "print": "Print",
     "open": "Open",
     "loading": "Loading...",
+    "yes": "Yes",
+    "no": "No",
     "retry": "Retry",
     "tryAgain": "Try Again",
     "call": "Call",
