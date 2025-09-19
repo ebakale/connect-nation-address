@@ -27,6 +27,7 @@ import { CitizenAddressPortal } from './CitizenAddressPortal';
 import { CitizenAddressVerificationManager } from './CitizenAddressVerificationManager';
 import { ResidencyVerificationManager } from './ResidencyVerificationManager';
 import { UserVerificationRequests } from './UserVerificationRequests';
+import { CARAdministrativeOverview } from './CARAdministrativeOverview';
 
 // Import shared components
 import AddressSearch from './AddressSearch';
@@ -368,20 +369,13 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
             <Tabs defaultValue="verification" className="space-y-4">
               <TabsList>
                 <TabsTrigger value="verification">Residency Verification</TabsTrigger>
-                <TabsTrigger value="addresses">Address Overview</TabsTrigger>
+                <TabsTrigger value="addresses">Administrative Overview</TabsTrigger>
               </TabsList>
               <TabsContent value="verification">
                 <ResidencyVerificationManager />
               </TabsContent>
               <TabsContent value="addresses">
-                <div className="space-y-4">
-                  <div className="text-center py-8">
-                    <p className="text-muted-foreground">Administrative oversight of citizen addresses</p>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Use the Residency Verification tab to manage citizen verification requests
-                    </p>
-                  </div>
-                </div>
+                <CARAdministrativeOverview />
               </TabsContent>
             </Tabs>
           </div>
