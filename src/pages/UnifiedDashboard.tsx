@@ -640,8 +640,6 @@ const UnifiedDashboard = () => {
         return (
           <div className="max-w-6xl space-y-6">
             <AdminPanel />
-            {hasSystemAdminAccess && <GoogleMapsImporter />}
-            <NARCARTestPanel />
           </div>
         );
 

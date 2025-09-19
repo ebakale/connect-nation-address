@@ -14,6 +14,8 @@ import { StrategicOverviewPDF } from './StrategicOverviewPDF';
 import { QualityDashboard } from './QualityDashboard';
 import ApiWebhookManager from './ApiWebhookManager';
 import NotificationTester from './NotificationTester';
+import { GoogleMapsImporter } from './GoogleMapsImporter';
+import { NARCARTestPanel } from './NARCARTestPanel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Shield, Hash } from 'lucide-react';
 import { NARAuthorityManager } from './NARAuthorityManager';
@@ -60,6 +62,7 @@ const AdminPanel: React.FC = () => {
           <TabsTrigger value="nar-authorities" className="text-xs sm:text-sm px-2 sm:px-3">NAR Authorities</TabsTrigger>
           <TabsTrigger value="uac" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:uacSystem')}</TabsTrigger>
           <TabsTrigger value="quality" className="text-xs sm:text-sm px-2 sm:px-3">Quality</TabsTrigger>
+          <TabsTrigger value="system-tools" className="text-xs sm:text-sm px-2 sm:px-3">System Tools</TabsTrigger>
           <TabsTrigger value="documentation" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:documentation')}</TabsTrigger>
           {hasNDAAAccess && (
             <TabsTrigger value="api-webhooks" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:apiWebhooks')}</TabsTrigger>
@@ -88,6 +91,20 @@ const AdminPanel: React.FC = () => {
         
         <TabsContent value="uac">
           <UACManager />
+        </TabsContent>
+        
+        
+        <TabsContent value="system-tools">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">System Tools</h2>
+                <p className="text-muted-foreground">Import addresses and test system integration</p>
+              </div>
+            </div>
+            {hasSystemAdminAccess && <GoogleMapsImporter />}
+            <NARCARTestPanel />
+          </div>
         </TabsContent>
         
         <TabsContent value="quality">
