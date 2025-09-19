@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Search, User, MapPin, Calendar, CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from 'react-i18next';
 
 interface CitizenSearchResult {
   person: {
@@ -47,6 +48,7 @@ interface CitizenSearchResult {
 
 export const CitizenAddressSearch = () => {
   const { toast } = useToast();
+  const { t } = useTranslation(['address', 'common']);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<CitizenSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -55,8 +57,8 @@ export const CitizenAddressSearch = () => {
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
       toast({
-        title: "Error",
-        description: "Please enter a citizen name or government ID number",
+        title: t('common:status.error'),
+        description: t('address:searchError'),
         variant: "destructive"
       });
       return;
@@ -155,8 +157,8 @@ export const CitizenAddressSearch = () => {
     } catch (error) {
       console.error('Error searching citizens:', error);
       toast({
-        title: "Error",
-        description: "Failed to search citizens. Please try again.",
+        title: t('common:status.error'),
+        description: t('common:messages.loadingError'),
         variant: "destructive"
       });
     } finally {
@@ -199,7 +201,7 @@ export const CitizenAddressSearch = () => {
       address.country
     ].filter(Boolean);
     
-    return parts.length > 0 ? parts.join(', ') : 'Address details not available';
+    return parts.length > 0 ? parts.join(', ') : t('address:addressDetailsNotAvailable');
   };
 
   return (
@@ -208,16 +210,16 @@ export const CitizenAddressSearch = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Search className="h-5 w-5" />
-            Search Citizen Addresses
+            {t('address:searchCitizenAddresses')}
           </CardTitle>
           <CardDescription>
-            Search for citizens by their full name or government ID number to view their registered addresses
+            {t('address:searchCitizenDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex gap-2">
             <Input
-              placeholder="Enter citizen name or government ID number..."
+              placeholder={t('address:searchCitizenPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
@@ -229,7 +231,7 @@ export const CitizenAddressSearch = () => {
               ) : (
                 <Search className="h-4 w-4" />
               )}
-              {loading ? 'Searching...' : 'Search'}
+              {loading ? t('address:searchingCitizens') : t('common:buttons.search')}
             </Button>
           </div>
         </CardContent>
@@ -249,7 +251,7 @@ export const CitizenAddressSearch = () => {
             <Alert>
               <Search className="h-4 w-4" />
               <AlertDescription>
-                No citizens found matching "{searchQuery}". Try searching with a different name or ID number.
+                {t('address:noMatchingCitizens', { query: searchQuery })}
               </AlertDescription>
             </Alert>
           ) : (
@@ -257,7 +259,10 @@ export const CitizenAddressSearch = () => {
               <div className="flex items-center gap-2">
                 <User className="h-5 w-5" />
                 <h3 className="text-lg font-semibold">
-                  Search Results ({searchResults.length} citizen{searchResults.length !== 1 ? 's' : ''} found)
+                  {t('address:searchResultsCount', { 
+                    count: searchResults.length,
+                    plural: searchResults.length !== 1 ? t('address:citizensPlural') : t('address:citizensSingular')
+                  })}
                 </h3>
               </div>
 
@@ -267,22 +272,25 @@ export const CitizenAddressSearch = () => {
                     <div className="flex items-start justify-between">
                       <div className="space-y-1">
                         <CardTitle className="text-lg">
-                          {result.profile?.full_name || 'Name not available'}
+                          {result.profile?.full_name || t('address:nameNotAvailable')}
                         </CardTitle>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           {result.person.national_id && (
-                            <span>ID: {result.person.national_id}</span>
+                            <span>{t('address:citizenId', { id: result.person.national_id })}</span>
                           )}
                           {result.profile?.email && (
-                            <span>Email: {result.profile.email}</span>
+                            <span>{t('address:citizenEmail', { email: result.profile.email })}</span>
                           )}
                           {result.profile?.phone && (
-                            <span>Phone: {result.profile.phone}</span>
+                            <span>{t('address:citizenPhone', { phone: result.profile.phone })}</span>
                           )}
                         </div>
                       </div>
                       <Badge variant="outline" className="shrink-0">
-                        {result.addresses.length} address{result.addresses.length !== 1 ? 'es' : ''}
+                        {t('address:addressCountLabel', { 
+                          count: result.addresses.length,
+                          plural: result.addresses.length !== 1 ? t('address:addressesPlural') : t('address:addressesSingular')
+                        })}
                       </Badge>
                     </div>
                   </CardHeader>
@@ -292,14 +300,14 @@ export const CitizenAddressSearch = () => {
                       <Alert>
                         <MapPin className="h-4 w-4" />
                         <AlertDescription>
-                          No addresses registered for this citizen.
+                          {t('address:noAddressesForCitizen')}
                         </AlertDescription>
                       </Alert>
                     ) : (
                       <div className="space-y-3">
                         <h4 className="font-medium flex items-center gap-2">
                           <MapPin className="h-4 w-4" />
-                          Registered Addresses
+                          {t('address:registeredAddresses')}
                         </h4>
                         
                         {result.addresses.map((address, addrIndex) => (
@@ -308,7 +316,7 @@ export const CitizenAddressSearch = () => {
                               <div className="space-y-2 flex-1">
                                 <div className="flex items-center gap-2 flex-wrap">
                                   <Badge variant={address.address_kind === 'PRIMARY' ? 'default' : 'secondary'}>
-                                    {address.address_kind}
+                                    {t(`address:${address.address_kind === 'PRIMARY' ? 'primaryAddress' : 'secondaryAddress'}`)}
                                   </Badge>
                                   <Badge variant="outline">
                                     {address.scope}
@@ -318,23 +326,23 @@ export const CitizenAddressSearch = () => {
                                     className={getStatusColor(address.status)}
                                   >
                                     {getStatusIcon(address.status)}
-                                    <span className="ml-1">{address.status}</span>
+                                    <span className="ml-1">{t(`address:${address.status.toLowerCase()}Status`)}</span>
                                   </Badge>
                                   {address.nar_verified && (
                                     <Badge variant="default" className="bg-blue-100 text-blue-800 border-blue-200">
-                                      NAR Verified
+                                      {t('address:narVerifiedBadge')}
                                     </Badge>
                                   )}
                                   {address.nar_public && (
                                     <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
-                                      Public
+                                      {t('address:publicBadge')}
                                     </Badge>
                                   )}
                                 </div>
 
                                 <div className="space-y-1">
                                   <p className="font-mono text-sm text-primary">
-                                    UAC: {address.uac}
+                                    {t('address:uac')}: {address.uac}
                                     {address.unit_uac && ` | Unit: ${address.unit_uac}`}
                                   </p>
                                   <p className="text-sm">
@@ -342,7 +350,7 @@ export const CitizenAddressSearch = () => {
                                   </p>
                                   {address.latitude && address.longitude && (
                                     <p className="text-xs text-muted-foreground">
-                                      Coordinates: {address.latitude.toFixed(6)}, {address.longitude.toFixed(6)}
+                                      {t('address:coordinates')}: {address.latitude.toFixed(6)}, {address.longitude.toFixed(6)}
                                     </p>
                                   )}
                                 </div>
@@ -350,24 +358,24 @@ export const CitizenAddressSearch = () => {
                                 <div className="flex items-center gap-4 text-xs text-muted-foreground">
                                   <span className="flex items-center gap-1">
                                     <Calendar className="h-3 w-3" />
-                                    Added: {new Date(address.created_at).toLocaleDateString()}
+                                    {t('address:addedOn', { date: new Date(address.created_at).toLocaleDateString() })}
                                   </span>
                                   <span>
-                                    Valid from: {new Date(address.effective_from).toLocaleDateString()}
+                                    {t('address:validFromDate', { date: new Date(address.effective_from).toLocaleDateString() })}
                                   </span>
                                   {address.effective_to && (
                                     <span>
-                                      Until: {new Date(address.effective_to).toLocaleDateString()}
+                                      {t('address:validUntilDate', { date: new Date(address.effective_to).toLocaleDateString() })}
                                     </span>
                                   )}
                                   {address.source && (
-                                    <span>Source: {address.source}</span>
+                                    <span>{t('address:sourceLabel', { source: address.source })}</span>
                                   )}
                                 </div>
 
                                 {address.notes && (
                                   <div className="text-xs bg-muted p-2 rounded">
-                                    <span className="font-medium">Notes:</span> {address.notes}
+                                    <span className="font-medium">{t('address:addressNotes')}</span> {address.notes}
                                   </div>
                                 )}
                               </div>
