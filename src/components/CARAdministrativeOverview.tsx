@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { CitizenAddressSearch } from "./CitizenAddressSearch";
 
 interface CARStats {
   totalAddresses: number;
@@ -223,6 +224,7 @@ export function CARAdministrativeOverview() {
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
           <TabsTrigger value="overview">System Overview</TabsTrigger>
+          <TabsTrigger value="search">Citizen Search</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="health">System Health</TabsTrigger>
           <TabsTrigger value="management">Management Tools</TabsTrigger>
@@ -339,6 +341,10 @@ export function CARAdministrativeOverview() {
               </Card>
             </div>
           </div>
+        </TabsContent>
+
+        <TabsContent value="search">
+          <CitizenAddressSearch />
         </TabsContent>
 
         <TabsContent value="analytics">
