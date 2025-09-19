@@ -101,7 +101,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     if (hasAdminAccess) {
       return [
         ...baseTabs,
-        { id: 'search', label: t('address:searchAddresses'), icon: Search },
+        { id: 'address-management', label: 'Address Management', icon: Database },
         { id: 'nar-admin', label: 'NAR Administration', icon: Database },
         { id: 'car-admin', label: 'CAR Administration', icon: Users },
         { id: 'integration', label: 'NAR-CAR Integration', icon: Network },
@@ -185,11 +185,11 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
               <Button 
                 variant="outline" 
                 className="h-auto p-4 flex flex-col items-center gap-2"
-                onClick={() => setActiveTab('search')}
+                onClick={() => setActiveTab('address-management')}
               >
                 <Search className="h-6 w-6" />
-                <span>Search Addresses</span>
-                <span className="text-xs text-muted-foreground">Public NAR search</span>
+                <span>Address Management</span>
+                <span className="text-xs text-muted-foreground">Search & manage addresses</span>
               </Button>
 
               {isCitizen && (
@@ -216,6 +216,73 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
                 </Button>
               )}
             </div>
+          </div>
+        );
+
+      case 'address-management':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">Address Management</h2>
+                <p className="text-muted-foreground">Search and manage addresses across NAR and CAR systems</p>
+              </div>
+              <Badge variant="outline">Address Management</Badge>
+            </div>
+            <Tabs defaultValue="search" className="space-y-4">
+              <TabsList>
+                <TabsTrigger value="search">Search Addresses</TabsTrigger>
+                <TabsTrigger value="requests">Address Requests</TabsTrigger>
+                <TabsTrigger value="verification">Verification Queue</TabsTrigger>
+              </TabsList>
+              <TabsContent value="search">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold">Address Search</h3>
+                      <p className="text-sm text-muted-foreground">Search the National Address Registry</p>
+                    </div>
+                    <Badge variant="outline">NAR Public Access</Badge>
+                  </div>
+                  <AddressSearch />
+                </div>
+              </TabsContent>
+              <TabsContent value="requests">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold">Address Requests</h3>
+                      <p className="text-sm text-muted-foreground">Submit and track address registration requests</p>
+                    </div>
+                    <Badge variant="outline">NAR Requests</Badge>
+                  </div>
+                  <Tabs defaultValue="status" className="space-y-4">
+                    <TabsList>
+                      <TabsTrigger value="status">Request Status</TabsTrigger>
+                      <TabsTrigger value="submit">Submit Request</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="status">
+                      <AddressRequestStatus />
+                    </TabsContent>
+                    <TabsContent value="submit">
+                      <AddressRequestForm />
+                    </TabsContent>
+                  </Tabs>
+                </div>
+              </TabsContent>
+              <TabsContent value="verification">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold">Verification Queue</h3>
+                      <p className="text-sm text-muted-foreground">Review and verify address submissions</p>
+                    </div>
+                    <Badge variant="outline">NAR Verification</Badge>
+                  </div>
+                  <AddressVerificationQueue />
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
         );
 
