@@ -24,7 +24,7 @@ serve(async (req) => {
       }
     )
 
-    const { operation, userId, data } = await req.json()
+    const { operation, userId, data, userData } = await req.json()
 
     // Verify the requesting user has admin access
     const authHeader = req.headers.get('Authorization')!
@@ -57,6 +57,61 @@ serve(async (req) => {
 
     let result
     switch (operation) {
+      case 'createUser':
+        // Create user in auth
+        const { data: newUser, error: signUpError } = await supabaseAdmin.auth.admin.createUser({
+          email: userData.email,
+          password: userData.password,
+          email_confirm: true // Auto-confirm email
+        })
+
+        if (signUpError) throw signUpError
+
+        // Create profile
+        const { error: profileInsertError } = await supabaseAdmin
+          .from('profiles')
+          .insert({
+            user_id: newUser.user.id,
+            full_name: userData.full_name,
+            email: userData.email,
+            organization: userData.organization,
+            phone: userData.phone
+          })
+
+        if (profileInsertError) throw profileInsertError
+
+        // Assign role
+        const { data: roleData, error: roleError } = await supabaseAdmin
+          .from('user_roles')
+          .insert({
+            user_id: newUser.user.id,
+            role: userData.role
+          })
+          .select('id')
+          .single()
+
+        if (roleError) throw roleError
+
+        // Add scope if provided
+        if (roleData && userData.scope_type && userData.scope_value) {
+          const { error: scopeError } = await supabaseAdmin
+            .from('user_role_metadata')
+            .insert({
+              user_role_id: roleData.id,
+              scope_type: userData.scope_type,
+              scope_value: userData.scope_value
+            })
+
+          if (scopeError) throw scopeError
+        }
+
+        result = { 
+          success: true, 
+          message: 'User created successfully',
+          user_id: newUser.user.id
+        }
+        break
+
       case 'updateUser':
         // Update user in auth
         if (data.password) {

@@ -14,6 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { supabase } from '@/integrations/supabase/client';
 import { useUserRole } from '@/hooks/useUserRole';
 import { Users, Search, UserCog, MapPin, Edit, Trash2, UserPlus, RefreshCw } from 'lucide-react';
+import { BulkUserImport } from './BulkUserImport';
 
 interface UserProfile {
   id: string;
@@ -465,6 +466,8 @@ const UserManager: React.FC = () => {
                   </Button>
                 </DialogTrigger>
               </Dialog>
+              
+              <BulkUserImport />
               <Button onClick={fetchUsers} variant="outline" className="flex items-center gap-2 flex-1 sm:flex-none">
                 <RefreshCw className="h-4 w-4" />
                 <span className="hidden sm:inline">{t('userManagement.refresh')}</span>
