@@ -98,9 +98,9 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     if (isCitizen) {
       return [
         { id: 'search', label: t('address:searchAddresses'), icon: Search },
-        { id: 'my-addresses', label: 'My Addresses (CAR)', icon: Home },
-        { id: 'requests', label: 'Address Requests', icon: FileText },
-        { id: 'verification-requests', label: 'My Verifications', icon: UserCheck }
+        { id: 'my-addresses', label: t('dashboard:myAddressesCAR'), icon: Home },
+        { id: 'requests', label: t('dashboard:addressRequests'), icon: FileText },
+        { id: 'verification-requests', label: t('dashboard:myVerifications'), icon: UserCheck }
       ];
     }
 
@@ -108,19 +108,19 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
       return [
         ...baseTabs,
         { id: 'search', label: t('address:searchAddresses'), icon: Search },
-        { id: 'verification', label: 'Address Verification', icon: CheckCircle },
-        { id: 'car-verification', label: 'Citizen Verification', icon: UserCheck },
-        { id: 'queue-management', label: 'Queue Management', icon: Clock }
+        { id: 'verification', label: t('dashboard:addressVerification'), icon: CheckCircle },
+        { id: 'car-verification', label: t('dashboard:citizenVerification'), icon: UserCheck },
+        { id: 'queue-management', label: t('dashboard:queueManagement'), icon: Clock }
       ];
     }
 
     if (hasAdminAccess) {
       return [
         ...baseTabs,
-        { id: 'address-management', label: 'Address Management', icon: Search },
-        { id: 'nar-admin', label: 'NAR Administration', icon: Database },
-        { id: 'car-admin', label: 'CAR Administration', icon: Users },
-        { id: 'integration', label: 'NAR-CAR Integration', icon: Network }
+        { id: 'address-management', label: t('dashboard:addressManagement'), icon: Search },
+        { id: 'nar-admin', label: t('dashboard:narAdministration'), icon: Database },
+        { id: 'car-admin', label: t('dashboard:carAdministration'), icon: Users },
+        { id: 'integration', label: t('dashboard:narCarIntegration'), icon: Network }
       ];
     }
 
@@ -227,24 +227,24 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold">Address Management</h2>
-                <p className="text-muted-foreground">Search addresses and manage requests</p>
+                <h2 className="text-2xl font-bold">{t('dashboard:addressManagement')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:searchAddressesManageRequests')}</p>
               </div>
-              <Badge variant="outline">Address Management</Badge>
+              <Badge variant="outline">{t('dashboard:addressManagement')}</Badge>
             </div>
             <Tabs defaultValue="search" className="space-y-4">
               <TabsList>
                 <TabsTrigger value="search">{t('address:searchAddresses')}</TabsTrigger>
-                <TabsTrigger value="requests">Review Requests</TabsTrigger>
+                <TabsTrigger value="requests">{t('dashboard:reviewRequests')}</TabsTrigger>
               </TabsList>
               <TabsContent value="search">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-lg font-semibold">Address Search</h3>
-                      <p className="text-sm text-muted-foreground">Search the National Address Registry</p>
+                      <h3 className="text-lg font-semibold">{t('dashboard:addressSearch')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('dashboard:searchNationalRegistry')}</p>
                     </div>
-                    <Badge variant="outline">NAR Public Access</Badge>
+                    <Badge variant="outline">{t('dashboard:narPublicAccess')}</Badge>
                   </div>
                   <AddressSearch />
                 </div>
@@ -253,10 +253,10 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-lg font-semibold">Address Requests Review</h3>
-                      <p className="text-sm text-muted-foreground">Review and manage citizen address requests</p>
+                      <h3 className="text-lg font-semibold">{t('dashboard:addressRequestsReview')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('dashboard:reviewManageCitizenRequests')}</p>
                     </div>
-                    <Badge variant="outline">Admin Review</Badge>
+                    <Badge variant="outline">{t('dashboard:adminReview')}</Badge>
                   </div>
                   <AddressRequestStatus />
                 </div>
@@ -270,10 +270,10 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold">Address Search</h2>
-                <p className="text-muted-foreground">Search the National Address Registry</p>
+                <h2 className="text-2xl font-bold">{t('dashboard:addressSearch')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:searchNationalRegistry')}</p>
               </div>
-              <Badge variant="outline">NAR Public Access</Badge>
+              <Badge variant="outline">{t('dashboard:narPublicAccess')}</Badge>
             </div>
             <AddressSearch />
           </div>
@@ -285,10 +285,10 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold">Address Verification</h2>
-                <p className="text-muted-foreground">Review and verify NAR address submissions</p>
+                <h2 className="text-2xl font-bold">{t('dashboard:addressVerification')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:reviewVerifyNARSubmissions')}</p>
               </div>
-              <Badge variant="outline">NAR Verification</Badge>
+              <Badge variant="outline">{t('dashboard:narVerification')}</Badge>
             </div>
             <VerificationTools />
           </div>
@@ -299,10 +299,10 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold">Citizen Verification</h2>
-                <p className="text-muted-foreground">Review citizen residency verification requests</p>
+                <h2 className="text-2xl font-bold">{t('dashboard:citizenVerification')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:reviewCitizenResidencyRequests')}</p>
               </div>
-              <Badge variant="outline">CAR Verification</Badge>
+              <Badge variant="outline">{t('dashboard:carVerification')}</Badge>
             </div>
             <ResidencyVerificationManager />
           </div>
@@ -313,16 +313,16 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold">Queue Management</h2>
-                <p className="text-muted-foreground">Manage verification and publishing queues</p>
+                <h2 className="text-2xl font-bold">{t('dashboard:queueManagement')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:manageVerificationPublishingQueues')}</p>
               </div>
-              <Badge variant="outline">NAR Queues</Badge>
+              <Badge variant="outline">{t('dashboard:narQueues')}</Badge>
             </div>
             <Tabs defaultValue="verification" className="space-y-4">
               <TabsList>
-                <TabsTrigger value="verification">Verification Queue</TabsTrigger>
-                <TabsTrigger value="publishing">Publishing Queue</TabsTrigger>
-                <TabsTrigger value="unpublishing">Unpublishing Queue</TabsTrigger>
+                <TabsTrigger value="verification">{t('dashboard:verificationQueue')}</TabsTrigger>
+                <TabsTrigger value="publishing">{t('dashboard:publishingQueue')}</TabsTrigger>
+                <TabsTrigger value="unpublishing">{t('dashboard:unpublishingQueue')}</TabsTrigger>
               </TabsList>
               <TabsContent value="verification">
                 <AddressVerificationQueue />
@@ -342,16 +342,16 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold">NAR Administration</h2>
-                <p className="text-muted-foreground">Manage National Address Registry</p>
+                <h2 className="text-2xl font-bold">{t('dashboard:narAdministration')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:manageNationalAddressRegistry')}</p>
               </div>
-              <Badge variant="outline">NAR Admin</Badge>
+              <Badge variant="outline">{t('dashboard:narAdmin')}</Badge>
             </div>
             <Tabs defaultValue="authorities" className="space-y-4">
               <TabsList>
-                <TabsTrigger value="authorities">NAR Authorities</TabsTrigger>
-                <TabsTrigger value="verification">Verification Tools</TabsTrigger>
-                <TabsTrigger value="queues">Queue Management</TabsTrigger>
+                <TabsTrigger value="authorities">{t('dashboard:narAuthorities')}</TabsTrigger>
+                <TabsTrigger value="verification">{t('dashboard:verificationTools')}</TabsTrigger>
+                <TabsTrigger value="queues">{t('dashboard:queueManagement')}</TabsTrigger>
               </TabsList>
               <TabsContent value="authorities">
                 <NARAuthorityManager />
@@ -374,15 +374,15 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold">CAR Administration</h2>
-                <p className="text-muted-foreground">Manage Citizen Address Repository</p>
+                <h2 className="text-2xl font-bold">{t('dashboard:carAdministration')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:manageCitizenAddressRepository')}</p>
               </div>
-              <Badge variant="outline">CAR Admin</Badge>
+              <Badge variant="outline">{t('dashboard:carAdmin')}</Badge>
             </div>
             <Tabs defaultValue="verification" className="space-y-4">
               <TabsList>
-                <TabsTrigger value="verification">Residency Verification</TabsTrigger>
-                <TabsTrigger value="addresses">Administrative Overview</TabsTrigger>
+                <TabsTrigger value="verification">{t('dashboard:residencyVerification')}</TabsTrigger>
+                <TabsTrigger value="addresses">{t('dashboard:administrativeOverview')}</TabsTrigger>
               </TabsList>
               <TabsContent value="verification">
                 <ResidencyVerificationManager />
@@ -399,10 +399,10 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold">NAR-CAR Integration</h2>
-                <p className="text-muted-foreground">Monitor and manage system integration</p>
+                <h2 className="text-2xl font-bold">{t('dashboard:narCarIntegration')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:monitorManageSystemIntegration')}</p>
               </div>
-              <Badge variant="outline">System Integration</Badge>
+              <Badge variant="outline">{t('dashboard:systemIntegration')}</Badge>
             </div>
             <NARCARTestPanel />
           </div>
@@ -410,7 +410,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
 
 
       default:
-        return <div>Select a tab to view content</div>;
+        return <div>{t('dashboard:selectTabViewContent')}</div>;
     }
   };
 
@@ -419,14 +419,14 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Unified Address Dashboard</h1>
+          <h1 className="text-3xl font-bold text-foreground">{t('dashboard:unifiedAddressDashboard')}</h1>
           <p className="text-muted-foreground">
-            Integrated National Address Registry (NAR) and Citizen Address Repository (CAR)
+            {t('dashboard:integratedNARCARDescription')}
           </p>
         </div>
         {onClose && (
           <Button variant="outline" onClick={onClose}>
-            Close
+            {t('dashboard:close')}
           </Button>
         )}
       </div>
@@ -436,7 +436,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
         <Alert>
           <Home className="h-4 w-4" />
           <AlertDescription>
-            Welcome to the unified address system! You can search for addresses in the National Address Registry and manage your personal addresses in the Citizen Address Repository.
+            {t('dashboard:citizenWelcomeMessage')}
           </AlertDescription>
         </Alert>
       )}
