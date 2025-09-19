@@ -192,17 +192,6 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
                 <span className="text-xs text-muted-foreground">Search & manage addresses</span>
               </Button>
 
-              {isCitizen && (
-                <Button 
-                  variant="outline" 
-                  className="h-auto p-4 flex flex-col items-center gap-2"
-                  onClick={() => setActiveTab('my-addresses')}
-                >
-                  <Home className="h-6 w-6" />
-                  <span>My Addresses</span>
-                  <span className="text-xs text-muted-foreground">CAR management</span>
-                </Button>
-              )}
 
               {(isVerifier || isRegistrar) && (
                 <Button 
@@ -232,7 +221,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
             <Tabs defaultValue="search" className="space-y-4">
               <TabsList>
                 <TabsTrigger value="search">Search Addresses</TabsTrigger>
-                <TabsTrigger value="requests">Address Requests</TabsTrigger>
+                <TabsTrigger value="requests">Review Requests</TabsTrigger>
               </TabsList>
               <TabsContent value="search">
                 <div className="space-y-4">
@@ -250,23 +239,12 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-lg font-semibold">Address Requests</h3>
-                      <p className="text-sm text-muted-foreground">Submit and track address registration requests</p>
+                      <h3 className="text-lg font-semibold">Address Requests Review</h3>
+                      <p className="text-sm text-muted-foreground">Review and manage citizen address requests</p>
                     </div>
-                    <Badge variant="outline">NAR Requests</Badge>
+                    <Badge variant="outline">Admin Review</Badge>
                   </div>
-                  <Tabs defaultValue="status" className="space-y-4">
-                    <TabsList>
-                      <TabsTrigger value="status">Request Status</TabsTrigger>
-                      <TabsTrigger value="submit">Submit Request</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="status">
-                      <AddressRequestStatus />
-                    </TabsContent>
-                    <TabsContent value="submit">
-                      <AddressRequestForm />
-                    </TabsContent>
-                  </Tabs>
+                  <AddressRequestStatus />
                 </div>
               </TabsContent>
             </Tabs>
@@ -287,69 +265,6 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           </div>
         );
 
-      case 'my-addresses':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">My Addresses</h2>
-                <p className="text-muted-foreground">Manage your citizen addresses (CAR)</p>
-              </div>
-              <Badge variant="outline">CAR Personal</Badge>
-            </div>
-            <CitizenAddressPortal />
-          </div>
-        );
-
-      case 'requests':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">Address Requests</h2>
-                <p className="text-muted-foreground">Submit and track address registration requests</p>
-              </div>
-              <Badge variant="outline">NAR Requests</Badge>
-            </div>
-            <Tabs defaultValue="status" className="space-y-4">
-              <TabsList>
-                <TabsTrigger value="status">Request Status</TabsTrigger>
-                <TabsTrigger value="submit">Submit Request</TabsTrigger>
-              </TabsList>
-              <TabsContent value="status">
-                <AddressRequestStatus />
-              </TabsContent>
-              <TabsContent value="submit">
-                <AddressRequestForm />
-              </TabsContent>
-            </Tabs>
-          </div>
-        );
-
-      case 'verification-requests':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">My Verification Requests</h2>
-                <p className="text-muted-foreground">Manage your residency verification requests</p>
-              </div>
-              <Badge variant="outline">CAR Verification</Badge>
-            </div>
-            <Tabs defaultValue="manage" className="space-y-4">
-              <TabsList>
-                <TabsTrigger value="manage">Manage Verifications</TabsTrigger>
-                <TabsTrigger value="history">Request History</TabsTrigger>
-              </TabsList>
-              <TabsContent value="manage">
-                <CitizenAddressVerificationManager />
-              </TabsContent>
-              <TabsContent value="history">
-                <UserVerificationRequests />
-              </TabsContent>
-            </Tabs>
-          </div>
-        );
 
       case 'verification':
         return (
@@ -453,13 +368,20 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
             <Tabs defaultValue="verification" className="space-y-4">
               <TabsList>
                 <TabsTrigger value="verification">Residency Verification</TabsTrigger>
-                <TabsTrigger value="addresses">Citizen Addresses</TabsTrigger>
+                <TabsTrigger value="addresses">Address Overview</TabsTrigger>
               </TabsList>
               <TabsContent value="verification">
                 <ResidencyVerificationManager />
               </TabsContent>
               <TabsContent value="addresses">
-                <CitizenAddressPortal />
+                <div className="space-y-4">
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">Administrative oversight of citizen addresses</p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Use the Residency Verification tab to manage citizen verification requests
+                    </p>
+                  </div>
+                </div>
               </TabsContent>
             </Tabs>
           </div>
