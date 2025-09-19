@@ -17,6 +17,7 @@ import { QRCodeScanner } from "@/components/QRCodeScanner";
 import { QRCodeGenerator } from "@/components/QRCodeGenerator";
 import { useSearchAnalytics } from "@/hooks/useSearchAnalytics";
 import { useEnhancedGeolocation } from "@/hooks/useEnhancedGeolocation";
+import { useTranslation } from "react-i18next";
 
 interface PublicAddress {
   uac: string;
@@ -59,6 +60,8 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
     enableCaching: true
   });
 
+  const { t } = useTranslation(["common","address"]);
+
   // Clear state when component unmounts
   useEffect(() => {
     return () => {
@@ -78,8 +81,8 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
       toast({
-        title: "Search Required",
-        description: "Please enter an address, UAC, or location to search",
+        title: t('address:publicPortal.searchRequiredTitle'),
+        description: t('address:publicPortal.searchRequiredDescription'),
         variant: "destructive",
       });
       return;
@@ -125,13 +128,13 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
 
       if (searchResult.results.length === 0) {
         toast({
-          title: "No Results",
-          description: "No public addresses found matching your search",
+          title: t('common:messages.noResults'),
+          description: t('address:publicPortal.noResultsDescription'),
         });
       } else {
         toast({
-          title: "Search Complete",
-          description: `Found ${searchResult.results.length} address(es)`,
+          title: t('address:publicPortal.searchCompleteTitle'),
+          description: t('address:publicPortal.foundAddressesCount', { count: searchResult.results.length }),
         });
       }
     } catch (error) {
@@ -148,8 +151,8 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
       });
 
       toast({
-        title: "Search Error",
-        description: "Failed to search addresses. Please try again.",
+        title: t('address:publicPortal.searchErrorTitle'),
+        description: t('address:publicPortal.searchErrorDescription'),
         variant: "destructive",
       });
     } finally {
@@ -199,13 +202,13 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
 
       if (searchResult.results.length === 0) {
         toast({
-          title: "No Results",
-          description: "No address found for this UAC",
+          title: t('common:messages.noResults'),
+          description: t('address:publicPortal.noAddressForUac'),
         });
       } else {
         toast({
-          title: "QR Code Scanned",
-          description: `Found address for UAC: ${uac}`,
+          title: t('address:publicPortal.qrScannedTitle'),
+          description: t('address:publicPortal.qrFoundAddressForUac', { uac }),
         });
       }
     } catch (error) {
@@ -222,9 +225,9 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
       });
 
       toast({
-        title: "Search Error",
-        description: "Failed to search for the scanned UAC",
-        variant: "destructive",
+      title: t('address:publicPortal.qrSearchErrorTitle'),
+      description: t('address:publicPortal.qrSearchErrorDescription'),
+      variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -240,9 +243,9 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
   };
 
   const formatDistance = (distance?: number) => {
-    if (!distance) return '';
-    if (distance < 1000) return `${Math.round(distance)}m away`;
-    return `${(distance / 1000).toFixed(1)}km away`;
+  if (!distance) return '';
+  if (distance < 1000) return `${Math.round(distance)}${t('common:units.m')} ${t('address:publicPortal.awaySuffix')}`;
+  return `${(distance / 1000).toFixed(1)}${t('common:units.km')} ${t('address:publicPortal.awaySuffix')}`;
   };
 
   const getQualityColor = (score: number) => {
@@ -269,8 +272,8 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
       case 'copy':
         navigator.clipboard.writeText(shareMessage);
         toast({
-          title: "Copied",
-          description: "Address information copied to clipboard",
+          title: t('address:publicPortal.copiedTitle'),
+          description: t('address:publicPortal.addressInfoCopied'),
         });
         break;
     }
@@ -282,19 +285,19 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-2">
-            Equatorial Guinea Address Portal
+            {t('address:publicPortal.title')}
           </h1>
           <p className="text-sm sm:text-lg text-muted-foreground mb-4 px-2">
-            Public address lookup and verification system
+            {t('address:publicPortal.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 text-sm text-muted-foreground">
             <span className="flex items-center justify-center gap-1">
               <Shield className="h-4 w-4" />
-              Verified Addresses Only
+              {t('address:publicPortal.verifiedOnly')}
             </span>
             <span className="flex items-center justify-center gap-1">
               <MapPin className="h-4 w-4" />
-              GPS Coordinates Available
+              {t('address:publicPortal.gpsAvailable')}
             </span>
           </div>
         </div>
@@ -304,19 +307,19 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Search className="h-5 w-5" />
-              Address Search
+              {t('address:publicPortal.addressSearch')}
             </CardTitle>
             <CardDescription>
-              Search by street name, UAC (Unique Address Code), city, or building name
+              {t('address:publicPortal.searchDescription')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-3 sm:space-y-0">
               <div className="w-full">
-                <Label htmlFor="search">Search Query</Label>
+                <Label htmlFor="search">{t('address:publicPortal.searchQueryLabel')}</Label>
                 <Input
                   id="search"
-                  placeholder="Enter UAC, street name, or location..."
+                  placeholder={t('address:publicPortal.searchPlaceholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
@@ -333,35 +336,35 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                   disabled={loading}
                   className="w-full sm:w-auto h-10"
                 >
-                  {loading ? 'Searching...' : 'Search'}
+                  {loading ? t('address:publicPortal.searching') : t('common:buttons.search')}
                 </Button>
               </div>
             </div>
 
             {/* Search Examples */}
             <div className="text-sm text-muted-foreground">
-              <p className="mb-2">Example searches:</p>
+              <p className="mb-2">{t('address:publicPortal.exampleSearches')}</p>
               <div className="flex flex-col sm:flex-row flex-wrap gap-2">
                 <Badge 
                   variant="outline" 
                   className="cursor-pointer hover:bg-muted text-center py-1"
                   onClick={() => setSearchQuery('GQ-BN-MAL-')}
                 >
-                  UAC: GQ-BN-MAL-*
+                  {t('address:publicPortal.exampleUac')}
                 </Badge>
                 <Badge 
                   variant="outline" 
                   className="cursor-pointer hover:bg-muted text-center py-1"
                   onClick={() => setSearchQuery('Malabo')}
                 >
-                  City: Malabo
+                  {t('address:publicPortal.exampleCity')}
                 </Badge>
                 <Badge 
                   variant="outline" 
                   className="cursor-pointer hover:bg-muted text-center py-1"
                   onClick={() => setSearchQuery('Independence Avenue')}
                 >
-                  Street: Independence Avenue
+                  {t('address:publicPortal.exampleStreet')}
                 </Badge>
               </div>
             </div>
@@ -374,10 +377,10 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
             <Info className="h-4 w-4 flex-shrink-0" />
             <AlertDescription className="text-sm">
               <div className="space-y-1 sm:space-y-0">
-                <div>Search completed in {searchMetadata.executionTime}ms</div>
-                <div>Query: "{searchMetadata.query}"</div>
-                <div>Type: {searchMetadata.searchType}</div>
-                {location && <div>Using your location for proximity</div>}
+                <div>{t('address:publicPortal.searchCompletedIn', { ms: searchMetadata.executionTime })}</div>
+                <div>{t('address:publicPortal.queryLabel', { query: searchMetadata.query })}</div>
+                <div>{t('address:publicPortal.typeLabel', { type: searchMetadata.searchType })}</div>
+                {location && <div>{t('address:publicPortal.usingYourLocation')}</div>}
               </div>
             </AlertDescription>
           </Alert>
@@ -386,7 +389,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
         {/* Search Results */}
         {searchResults.length > 0 && (
           <div className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-semibold">Search Results ({searchResults.length})</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold">{`${t('address:searchResults')} (${searchResults.length})`}</h2>
             
             {searchResults.map((address, index) => (
               <Card key={index} className="hover:shadow-md transition-shadow">
@@ -408,33 +411,33 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                           {address.verified && (
                             <Badge variant="default" className="text-xs">
                               <CheckCircle className="h-3 w-3 mr-1" />
-                              Verified
+                              {t('address:verified')}
                             </Badge>
                           )}
                           <Badge variant={getQualityColor(address.completenessScore)} className="text-xs">
-                            {address.completenessScore}% Complete
+                            {t('address:publicPortal.percentComplete', { percent: address.completenessScore })}
                           </Badge>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                         <div className="break-all">
-                          <span className="font-medium">UAC:</span> 
+                          <span className="font-medium">{`${t('address:uac')}:`}</span> 
                           <span className="ml-2 font-mono text-primary text-xs">{address.uac}</span>
                         </div>
                         <div>
-                          <span className="font-medium">Type:</span>
+                          <span className="font-medium">{`${t('address:type')}:`}</span>
                           <span className="ml-2 capitalize">{address.addressType}</span>
                         </div>
                         <div className="break-all">
-                          <span className="font-medium">Coordinates:</span>
+                          <span className="font-medium">{`${t('address:coordinates')}:`}</span>
                           <span className="ml-2 font-mono text-xs">
                             {address.latitude.toFixed(5)}, {address.longitude.toFixed(5)}
                           </span>
                         </div>
                         {address.distance && (
                           <div>
-                            <span className="font-medium">Distance:</span>
+                            <span className="font-medium">{t('address:publicPortal.distanceLabel')}</span>
                             <span className="ml-2">{formatDistance(address.distance)}</span>
                           </div>
                         )}
@@ -453,7 +456,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                         }}
                       >
                         <Navigation className="h-4 w-4 mr-2" />
-                        Get Directions
+                        {t('address:getDirections')}
                       </Button>
                       
                       <Button 
@@ -463,13 +466,13 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                         onClick={() => {
                           navigator.clipboard.writeText(address.uac);
                           toast({
-                            title: "Copied",
-                            description: "UAC copied to clipboard",
+                            title: t('address:publicPortal.copiedTitle'),
+                            description: t('address:publicPortal.uacCopied'),
                           });
                         }}
                       >
                         <MapPin className="h-4 w-4 mr-2" />
-                        Copy UAC
+                        {t('address:copyUac')}
                       </Button>
 
                       <Button 
@@ -480,74 +483,74 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                           const coords = `${address.latitude},${address.longitude}`;
                           navigator.clipboard.writeText(coords);
                           toast({
-                            title: "Copied",
-                            description: "Coordinates copied to clipboard",
+            title: t('address:publicPortal.copiedTitle'),
+            description: t('address:publicPortal.coordinatesCopied'),
                           });
                         }}
                       >
                         <Navigation className="h-4 w-4 mr-2" />
-                        Copy Coordinates
+                        {t('address:copyCoordinates')}
                       </Button>
 
                       {/* Share Options */}
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button variant="outline" size="sm" className="w-full justify-start">
-                            <Share2 className="h-4 w-4 mr-2" />
-                            Share Address
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-md mx-4 max-h-[90vh] overflow-y-auto">
-                          <DialogHeader>
-                            <DialogTitle>Share Address</DialogTitle>
-                          </DialogHeader>
-                          <div className="space-y-4">
-                            {/* QR Code */}
-                            <div className="flex flex-col items-center space-y-2">
-                              <h4 className="text-sm font-medium">QR Code</h4>
-                              <QRCodeGenerator 
-                                uac={address.uac}
-                                addressText={`${address.building ? address.building + ', ' : ''}${address.street}, ${address.city}, ${address.region}`}
-                                variant="button"
-                                size="md"
-                              />
-                              <p className="text-xs text-muted-foreground text-center px-2">
-                                Click above to generate and download QR code
-                              </p>
-                            </div>
-                            
-                            <Separator />
-                            
-                            {/* Share Options */}
-                            <div className="grid grid-cols-1 gap-2">
-                              <Button
-                                variant="outline"
-                                className="justify-start w-full"
-                                onClick={() => handleShare(address, 'whatsapp')}
-                              >
-                                <MessageCircle className="h-4 w-4 mr-2" />
-                                Share via WhatsApp
-                              </Button>
-                              
-                              <Button
-                                variant="outline"
-                                className="justify-start w-full"
-                                onClick={() => handleShare(address, 'email')}
-                              >
-                                <Mail className="h-4 w-4 mr-2" />
-                                Share via Email
-                              </Button>
-                              
-                              <Button
-                                variant="outline"
-                                className="justify-start w-full"
-                                onClick={() => handleShare(address, 'copy')}
-                              >
-                                <Share2 className="h-4 w-4 mr-2" />
-                                Copy to Clipboard
-                              </Button>
-                            </div>
-                          </div>
+            <Button variant="outline" size="sm" className="w-full justify-start">
+              <Share2 className="h-4 w-4 mr-2" />
+              {t('address:publicPortal.shareAddress')}
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{t('address:publicPortal.shareAddress')}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              {/* QR Code */}
+              <div className="flex flex-col items-center space-y-2">
+                <h4 className="text-sm font-medium">{t('common:qrCode')}</h4>
+                <QRCodeGenerator 
+                  uac={address.uac}
+                  addressText={`${address.building ? address.building + ', ' : ''}${address.street}, ${address.city}, ${address.region}`}
+                  variant="button"
+                  size="md"
+                />
+                <p className="text-xs text-muted-foreground text-center px-2">
+                  {t('address:publicPortal.qrClickHint')}
+                </p>
+              </div>
+              
+              <Separator />
+              
+              {/* Share Options */}
+              <div className="grid grid-cols-1 gap-2">
+                <Button
+                  variant="outline"
+                  className="justify-start w-full"
+                  onClick={() => handleShare(address, 'whatsapp')}
+                >
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  {t('address:publicPortal.shareViaWhatsApp')}
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  className="justify-start w-full"
+                  onClick={() => handleShare(address, 'email')}
+                >
+                  <Mail className="h-4 w-4 mr-2" />
+                  {t('address:publicPortal.shareViaEmail')}
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  className="justify-start w-full"
+                  onClick={() => handleShare(address, 'copy')}
+                >
+                  <Share2 className="h-4 w-4 mr-2" />
+                  {t('address:publicPortal.copyToClipboard')}
+                </Button>
+              </div>
+            </div>
                         </DialogContent>
                       </Dialog>
 
@@ -559,14 +562,14 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                           if (onNavigateToEmergency) {
                             onNavigateToEmergency(address);
                             toast({
-                              title: "Navigating to Emergency Report",
-                              description: "Address information will be pre-filled",
-                            });
-                          }
-                        }}
-                      >
-                        <AlertTriangle className="h-4 w-4 mr-2" />
-                        Report Issue Here
+                            title: t('address:publicPortal.navigatingToEmergencyTitle'),
+                            description: t('address:publicPortal.navigatingToEmergencyDesc'),
+                          });
+                        }
+                      }}
+                    >
+                      <AlertTriangle className="h-4 w-4 mr-2" />
+                      {t('address:publicPortal.reportIssueHere')}
                       </Button>
                     </div>
                   </div>
@@ -579,8 +582,8 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
 
         {/* Footer */}
         <div className="text-center mt-8 text-sm text-muted-foreground px-4">
-          <p className="mb-1">Equatorial Guinea National Digital Address Agency</p>
-          <p>Serving citizens with reliable address information since 2024</p>
+          <p className="mb-1">{t('address:publicPortal.footerAgencyName')}</p>
+          <p>{t('address:publicPortal.footerTagline')}</p>
         </div>
       </div>
     </div>
