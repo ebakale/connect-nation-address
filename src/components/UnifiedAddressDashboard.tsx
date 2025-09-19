@@ -14,6 +14,7 @@ import {
 import { useUserRole } from "@/hooks/useUserRole";
 import { useUnifiedAuth } from "@/hooks/useUnifiedAuth";
 import { useTranslation } from 'react-i18next';
+import { supabase } from "@/integrations/supabase/client";
 
 // Import NAR components
 import { VerificationTools } from './VerificationTools';
@@ -69,8 +70,24 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
   }, []);
 
   const fetchUnifiedStats = async () => {
-    // Implementation to fetch combined NAR/CAR statistics
-    // This would be a new edge function that aggregates data from both systems
+    try {
+      const { data, error } = await supabase.functions.invoke('unified-address-statistics')
+      
+      if (error) {
+        console.error('Error fetching statistics:', error)
+        return
+      }
+      
+      setStats({
+        totalNARAddresses: data.totalNARAddresses || 0,
+        totalCARAddresses: data.totalCARAddresses || 0,
+        pendingVerifications: data.pendingVerifications || 0,
+        publishedAddresses: data.publishedAddresses || 0,
+        activeUsers: data.activeUsers || 0
+      })
+    } catch (error) {
+      console.error('Failed to fetch unified statistics:', error)
+    }
   };
 
   // Define tabs based on user role
