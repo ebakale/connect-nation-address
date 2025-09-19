@@ -229,10 +229,10 @@ export const SystemManualPDF: React.FC = () => {
   };
 
   return (
-    <Button onClick={generatePDF} className="flex items-center gap-2">
-      <FileText className="h-4 w-4" />
-      <Download className="h-4 w-4" />
-      {t('admin:downloadSystemManual')}
+    <Button onClick={generatePDF} className="w-full flex items-center gap-2 text-xs px-3 py-2 h-auto min-h-8">
+      <FileText className="h-3 w-3 shrink-0" />
+      <Download className="h-3 w-3 shrink-0" />
+      <span className="text-wrap break-words">{t('admin:downloadSystemManual')}</span>
     </Button>
   );
 };
