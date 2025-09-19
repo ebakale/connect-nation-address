@@ -639,9 +639,9 @@ const UnifiedDashboard = () => {
       case 'admin-panel':
         return (
           <div className="max-w-6xl space-y-6">
+            <AdminPanel />
             {hasSystemAdminAccess && <GoogleMapsImporter />}
             <NARCARTestPanel />
-            <AdminPanel />
           </div>
         );
 
