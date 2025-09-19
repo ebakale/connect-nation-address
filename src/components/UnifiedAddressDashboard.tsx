@@ -97,7 +97,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
 
     if (isCitizen) {
       return [
-        { id: 'search', label: t('address:searchAddresses'), icon: Search },
+        { id: 'search', label: 'Search Address', icon: Search },
         { id: 'my-addresses', label: 'My Addresses (CAR)', icon: Home },
         { id: 'requests', label: 'Address Requests', icon: FileText },
         { id: 'verification-requests', label: 'My Verifications', icon: UserCheck }
