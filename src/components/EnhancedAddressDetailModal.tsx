@@ -464,14 +464,14 @@ Shared from Equatorial Guinea Address Portal`;
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <Calculator className="h-4 w-4" />
-                  Distance Information
+                  {t('common:distanceInformation')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 pt-2">
                 {loadingEstimates && (
                   <div className="flex items-center justify-center text-xs text-muted-foreground">
                     <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                    Getting estimates...
+                    {t('common:gettingEstimates')}
                   </div>
                 )}
                 
@@ -480,16 +480,16 @@ Shared from Equatorial Guinea Address Portal`;
                     {/* Google Maps Estimates */}
                     {(distanceEstimates.driving || distanceEstimates.walking) && (
                       <div className="space-y-1">
-                        <div className="text-xs font-medium text-primary">Google Maps:</div>
+                        <div className="text-xs font-medium text-primary">{t('common:googleMaps')}:</div>
                         
                         {distanceEstimates.driving && (
                           <div className="space-y-0.5">
                             <div className="flex justify-between text-xs">
-                              <span>🚗 Drive:</span>
+                              <span>🚗 {t('common:drive')}:</span>
                               <span className="font-mono">{distanceEstimates.driving.distance}</span>
                             </div>
                             <div className="flex justify-between text-xs text-muted-foreground">
-                              <span>Time:</span>
+                              <span>{t('common:time')}:</span>
                               <span>{distanceEstimates.driving.duration}</span>
                             </div>
                           </div>
@@ -498,11 +498,11 @@ Shared from Equatorial Guinea Address Portal`;
                         {distanceEstimates.walking && (
                           <div className="space-y-0.5">
                             <div className="flex justify-between text-xs">
-                              <span>🚶 Walk:</span>
+                              <span>🚶 {t('common:walk')}:</span>
                               <span className="font-mono">{distanceEstimates.walking.distance}</span>
                             </div>
                             <div className="flex justify-between text-xs text-muted-foreground">
-                              <span>Time:</span>
+                              <span>{t('common:time')}:</span>
                               <span>{distanceEstimates.walking.duration}</span>
                             </div>
                           </div>
@@ -513,17 +513,17 @@ Shared from Equatorial Guinea Address Portal`;
                     {/* Fallback to basic calculation if Google Maps fails */}
                     {!distanceEstimates.driving && !distanceEstimates.walking && calculatedDistance && (
                       <div className="space-y-1">
-                        <div className="text-xs font-medium">Basic Estimates:</div>
+                        <div className="text-xs font-medium">{t('common:basicEstimates')}:</div>
                         <div className="flex justify-between text-xs">
-                          <span>Distance:</span>
+                          <span>{t('common:distance')}:</span>
                           <span className="font-mono">{formatDistance(calculatedDistance)}</span>
                         </div>
                         <div className="flex justify-between text-xs text-muted-foreground">
-                          <span>Walk (~5km/h):</span>
+                          <span>{t('common:walkSpeed')}:</span>
                           <span>{Math.ceil(calculatedDistance / 83)} min</span>
                         </div>
                         <div className="flex justify-between text-xs text-muted-foreground">
-                          <span>Drive (~50km/h):</span>
+                          <span>{t('common:driveSpeed')}:</span>
                           <span>{Math.ceil(calculatedDistance / 833)} min</span>
                         </div>
                       </div>
@@ -534,14 +534,14 @@ Shared from Equatorial Guinea Address Portal`;
                 {!location && (
                   <div className="text-xs text-muted-foreground text-center">
                     <Clock className="h-3 w-3 mx-auto mb-1" />
-                    Enable location for distance info
+                    {t('common:enableLocationForDistance')}
                     <Button 
                       onClick={() => getCurrentPosition(false)}
                       variant="outline"
                       size="sm"
                       className="mt-1 w-full h-6 text-xs"
                     >
-                      Enable Location
+                      {t('common:enableLocation')}
                     </Button>
                   </div>
                 )}
