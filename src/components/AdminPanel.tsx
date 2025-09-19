@@ -96,40 +96,26 @@ const AdminPanel: React.FC = () => {
         
         <TabsContent value="documentation">
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div className="flex flex-col h-full">
-                  <h3 className="text-lg font-semibold mb-2">{t('admin:systemRolesDocumentation')}</h3>
-                  <p className="text-sm text-muted-foreground mb-4 flex-grow">
-                    {t('admin:generateComprehensiveDocumentation')}
-                  </p>
-                  <div className="mt-auto">
-                    <RolesDocumentGenerator />
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div className="flex flex-col h-full">
-                  <h3 className="text-lg font-semibold mb-2">{t('admin:userManual')}</h3>
-                  <p className="text-sm text-muted-foreground mb-4 flex-grow">
-                    {t('admin:generateUserManualDescription')}
-                  </p>
-                  <div className="mt-auto">
-                    <SystemManualPDF />
-                  </div>
-                </div>
-              </div>
+            {/* Main content area - can be expanded with other documentation features */}
+            <div className="min-h-[200px] flex items-center justify-center border-2 border-dashed border-muted rounded-lg">
+              <p className="text-muted-foreground">Additional documentation features can be added here</p>
             </div>
-            <div className="grid grid-cols-1">
-              <div className="space-y-4">
-                <div className="flex flex-col h-full">
-                  <h3 className="text-lg font-semibold mb-2">Strategic Overview</h3>
-                  <p className="text-sm text-muted-foreground mb-4 flex-grow">
-                    Strategic analysis and national benefits documentation for Equatorial Guinea
-                  </p>
-                  <div className="mt-auto">
-                    <StrategicOverviewPDF />
-                  </div>
+            
+            {/* Document Generators - Compact section at bottom */}
+            <div className="border-t pt-6">
+              <h3 className="text-lg font-semibold mb-4">Document Generators</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <h4 className="font-medium text-sm">{t('admin:systemRolesDocumentation')}</h4>
+                  <RolesDocumentGenerator />
+                </div>
+                <div className="space-y-2">
+                  <h4 className="font-medium text-sm">{t('admin:userManual')}</h4>
+                  <SystemManualPDF />
+                </div>
+                <div className="space-y-2">
+                  <h4 className="font-medium text-sm">Strategic Overview</h4>
+                  <StrategicOverviewPDF />
                 </div>
               </div>
             </div>
