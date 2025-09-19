@@ -101,7 +101,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
      // Admin and management items
     {
       id: 'admin-panel',
-      title: t('adminPanel'),
+      title: t('admin'),
       icon: Settings,
       onClick: () => handleItemClick('admin-panel'),
       visible: hasAdminAccess
