@@ -212,16 +212,6 @@ export const ResidencyVerificationManager = () => {
     }
   }, [canVerifyAddresses, hasAdminAccess, statusFilter]);
 
-  // Auto-refresh verifications every 10 seconds - fixed to avoid stale closure
-  useEffect(() => {
-    if (!canVerifyAddresses && !hasAdminAccess) return;
-    
-    const interval = setInterval(() => {
-      fetchVerifications();
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, [canVerifyAddresses, hasAdminAccess]);
 
   if (!canVerifyAddresses && !hasAdminAccess) {
     return (
@@ -239,14 +229,9 @@ export const ResidencyVerificationManager = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Shield className="w-6 h-6" />
-          <h2 className="text-2xl font-bold">Verification Management</h2>
-        </div>
-        <Button onClick={fetchVerifications} disabled={loading}>
-          {loading ? 'Loading...' : 'Refresh'}
-        </Button>
+      <div className="flex items-center gap-2">
+        <Shield className="w-6 h-6" />
+        <h2 className="text-2xl font-bold">Verification Management</h2>
       </div>
 
       {/* Filters */}
@@ -288,8 +273,7 @@ export const ResidencyVerificationManager = () => {
             onClick={fetchVerifications} 
             disabled={loading}
             variant="outline"
-            size="sm"
-            className="w-24"
+            size="default"
           >
             {loading ? 'Loading...' : 'Refresh'}
           </Button>
