@@ -163,10 +163,11 @@
 
     "roleBasedAccess": "Control de Acceso Basado en Roles",
     "advancedRoleManagement": "Gestión avanzada de roles para permisos seguros y granulares.",
-    "digitalDocumentationFeature": "Documentación Digital",
-    "automatedDocumentGeneration": "Generación automatizada de documentos con códigos QR.",
-    "realtimeAnalyticsFeature": "Analíticas en Tiempo Real",
-    "comprehensiveReporting": "Reportes comprensivos e insights.",
+     "digitalDocumentationFeature": "Documentación Digital",
+     "automatedDocumentGeneration": "Generación automatizada de documentos con códigos QR.",
+     "digitalDocumentationDescription": "Documentación digital integral con gestión de evidencias, informes de incidentes y generación automatizada de UAC para operaciones eficientes.",
+     "realtimeAnalyticsFeature": "Analíticas en Tiempo Real",
+     "comprehensiveReporting": "Reportes comprensivos e insights.",
     "multiLanguageFeature": "Soporte Multiidioma",
     "fullPlatformLocalization": "Localización completa de la plataforma.",
 

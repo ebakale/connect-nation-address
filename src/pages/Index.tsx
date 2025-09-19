@@ -24,7 +24,7 @@ const Index = () => {
   const [activeSection, setActiveSection] = useState('overview');
   const [emergencyPrefilledData, setEmergencyPrefilledData] = useState<any>(null);
   const { user, loading } = useAuth();
-  const { t } = useTranslation(['common']);
+  const { t } = useTranslation(['common','address','emergency']);
   const navigate = useNavigate();
   const { isPoliceRole } = useUserRole();
 
@@ -313,7 +313,7 @@ const navigationItems = [
                   </CardHeader>
                    <CardContent>
                       <p className="text-muted-foreground leading-relaxed text-sm">
-                        Comprehensive digital documentation with evidence management, incident reports, and automated UAC generation for streamlined operations.
+                        {t('common:platform.digitalDocumentationDescription')}
                       </p>
                    </CardContent>
                 </Card>
