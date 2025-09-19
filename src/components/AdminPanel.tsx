@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useUnifiedAuth } from '@/hooks/useUnifiedAuth';
 import { useUserRole } from '@/hooks/useUserRole';
-import { RoleManager } from './RoleManager';
 import { PermissionMatrix } from './PermissionMatrix';
 import { WorkflowManager } from './WorkflowManager';
 import UserManager from './UserManager';
@@ -55,12 +54,11 @@ const AdminPanel: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="roles" className="space-y-6">
+      <Tabs defaultValue="users" className="space-y-6">
         <TabsList className="grid w-full grid-cols-5 grid-rows-2 gap-1">
-          <TabsTrigger value="roles" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:roleManagement')}</TabsTrigger>
+          <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:userManagement')}</TabsTrigger>
           <TabsTrigger value="permissions" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:permissions')}</TabsTrigger>
           <TabsTrigger value="workflows" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:workflows')}</TabsTrigger>
-          <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:userManagement')}</TabsTrigger>
           <TabsTrigger value="nar-authorities" className="text-xs sm:text-sm px-2 sm:px-3">NAR Authorities</TabsTrigger>
           <TabsTrigger value="car-permissions" className="text-xs sm:text-sm px-2 sm:px-3">CAR Permissions</TabsTrigger>
           <TabsTrigger value="car-workflow" className="text-xs sm:text-sm px-2 sm:px-3">CAR Workflow</TabsTrigger>
@@ -73,8 +71,8 @@ const AdminPanel: React.FC = () => {
           )}
         </TabsList>
         
-        <TabsContent value="roles">
-          <RoleManager />
+        <TabsContent value="users">
+          <UserManager />
         </TabsContent>
         
         <TabsContent value="permissions">
@@ -83,10 +81,6 @@ const AdminPanel: React.FC = () => {
         
         <TabsContent value="workflows">
           <WorkflowManager />
-        </TabsContent>
-        
-        <TabsContent value="users">
-          <UserManager />
         </TabsContent>
         
         <TabsContent value="nar-authorities">
