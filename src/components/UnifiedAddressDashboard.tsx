@@ -106,7 +106,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
         { id: 'nar-admin', label: 'NAR Administration', icon: Database },
         { id: 'car-admin', label: 'CAR Administration', icon: Users },
         { id: 'integration', label: 'NAR-CAR Integration', icon: Network },
-        { id: 'system-admin', label: 'System Administration', icon: Settings },
+        
         { id: 'analytics', label: t('dashboard:analytics'), icon: BarChart3 }
       ];
     }
@@ -395,19 +395,6 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           </div>
         );
 
-      case 'system-admin':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">System Administration</h2>
-                <p className="text-muted-foreground">Manage users, roles, and system configuration</p>
-              </div>
-              <Badge variant="outline">System Admin</Badge>
-            </div>
-            <AdminPanel />
-          </div>
-        );
 
       case 'analytics':
         return (

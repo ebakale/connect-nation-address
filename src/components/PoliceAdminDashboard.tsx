@@ -235,11 +235,24 @@ export const PoliceAdminDashboard = () => {
             <CardHeader>
               <CardTitle>{t('emergency:policeAdminDashboard.policeUserManagement')}</CardTitle>
               <CardDescription>
-                {t('emergency:policeAdminDashboard.manageOfficersDescription')}
+                Police-specific user management. For comprehensive user and role management, use the main Admin Panel.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <UserManager />
+              <div className="space-y-4">
+                <div className="p-4 border border-border rounded-lg bg-muted/20">
+                  <div className="flex items-center gap-3">
+                    <Shield className="h-8 w-8 text-muted-foreground" />
+                    <div>
+                      <h4 className="font-medium">Comprehensive Admin Functions</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Full user management, role assignment, and system administration are available in the main Admin Panel.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <UserManager />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
