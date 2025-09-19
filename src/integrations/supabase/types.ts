@@ -2153,6 +2153,9 @@ export type Database = {
         | "police_supervisor"
         | "police_dispatcher"
         | "police_admin"
+        | "car_admin"
+        | "car_verifier"
+        | "residency_verifier"
       legal_document_type:
         | "property_deed"
         | "land_certificate"
@@ -2331,6 +2334,9 @@ export const Constants = {
         "police_supervisor",
         "police_dispatcher",
         "police_admin",
+        "car_admin",
+        "car_verifier",
+        "residency_verifier",
       ],
       legal_document_type: [
         "property_deed",
