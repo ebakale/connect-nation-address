@@ -144,7 +144,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       title: t('searchAddresses'),
       description: t('findAndVerifyExisting'),
       icon: Search,
-      action: () => onNavigate?.('search'),
+      action: () => onNavigate?.('unified-address-dashboard'),
       variant: "default" as const,
       image: addressVerificationIcon
     },
@@ -152,7 +152,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       title: t('addNewAddress'),
       description: t('registerNewLocation'),
       icon: Plus,
-      action: () => onNavigate?.('add'),
+      action: () => onNavigate?.('submit-request'),
       variant: "hero" as const,
       image: fieldAgentImage
     },
@@ -160,17 +160,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       title: t('viewMap'),
       description: t('interactiveAddressMapping'),
       icon: MapPin,
-      action: () => onNavigate?.('map'),
+      action: () => onNavigate?.('unified-address-dashboard'),
       variant: "default" as const,
       image: malaboStreetsImage
-    },
-    {
-      title: t('analytics'),
-      description: t('coverageAndUsageStatistics'),
-      icon: BarChart3,
-      action: () => onNavigate?.('analytics'),
-      variant: "default" as const,
-      image: analyticsDashboardImage
     }
   ];
 

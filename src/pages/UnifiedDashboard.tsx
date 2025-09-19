@@ -480,95 +480,38 @@ const UnifiedDashboard = () => {
               </div>
             </div>
 
-            {/* Admin Metrics */}
+            {/* Admin Quick Access Notice */}
             {hasAdminAccess && (
-              <div>
-                <h3 className="text-xl font-semibold mb-4">Unified Platform Overview</h3>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-                  <Card className="hover:shadow-md transition-shadow">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{t('dashboard:totalUsers')}</CardTitle>
-                      <Users className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{stats.totalUsers}</div>
-                      <p className="text-xs text-muted-foreground">{t('dashboard:usersInSystem')}</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="hover:shadow-md transition-shadow">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{t('dashboard:activeRoles')}</CardTitle>
-                      <Shield className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{stats.activeRoles}</div>
-                      <p className="text-xs text-muted-foreground">{t('dashboard:assignedRoles')}</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setActiveView('admin-panel')}>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{t('dashboard:pendingApprovals')}</CardTitle>
-                      <Settings className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{stats.pendingApprovals}</div>
-                      <p className="text-xs text-muted-foreground">{t('dashboard:clickToApproveRequests')}</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="hover:shadow-md transition-shadow">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{t('dashboard:publicAddresses')}</CardTitle>
-                      <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{stats.publicAddresses}</div>
-                      <p className="text-xs text-muted-foreground">{stats.totalAddresses} {t('dashboard:total')}</p>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Quick Actions */}
-                <div className="mb-8">
-                  <h3 className="text-lg font-semibold mb-4">{t('dashboard:quickActions')}</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Card className="shadow-card border-primary/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="h-5 w-5" />
+                    Admin Functions
+                  </CardTitle>
+                  <CardDescription>
+                    Access comprehensive admin tools including user management, roles, workflows, and system configuration
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between p-4 bg-muted/20 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <Settings className="h-8 w-8 text-primary" />
+                      <div>
+                        <p className="font-medium">Use Admin Panel</p>
+                        <p className="text-sm text-muted-foreground">
+                          Access all administrative functions from the sidebar Admin Panel
+                        </p>
+                      </div>
+                    </div>
                     <Button 
-                      onClick={() => navigate('/citizen')}
+                      onClick={() => setActiveView('admin-panel')}
                       variant="outline"
-                      className="p-4 h-auto flex flex-col items-center gap-2"
                     >
-                      <User className="h-6 w-6" />
-                      <span>{t('address:citizenPortal')}</span>
-                      <span className="text-xs text-muted-foreground">{t('address:manageYourAddresses')}</span>
-                    </Button>
-                    
-                    <Button 
-                      onClick={() => setActiveView('submit-request')}
-                      variant="outline"
-                      className="p-4 h-auto flex flex-col items-center gap-2"
-                    >
-                      <MapPin className="h-6 w-6" />
-                      <span>{t('dashboard:submitRequest')}</span>
-                      <span className="text-xs text-muted-foreground">{t('dashboard:newAddressRequest')}</span>
-                    </Button>
-                    
-                    <Button 
-                      onClick={() => setActiveView('address-search')}
-                      variant="outline"
-                      className="p-4 h-auto flex flex-col items-center gap-2"
-                    >
-                      <Search className="h-6 w-6" />
-                      <span>{t('dashboard:addressSearch')}</span>
-                      <span className="text-xs text-muted-foreground">{t('dashboard:findAddresses')}</span>
+                      Open Admin Panel
                     </Button>
                   </div>
-                </div>
-
-                {/* Admin Panel */}
-                <AdminPanel />
-              </div>
+                </CardContent>
+              </Card>
             )}
 
           </div>
