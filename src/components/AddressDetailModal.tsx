@@ -50,8 +50,8 @@ const AddressDetailModal: React.FC<AddressDetailModalProps> = ({
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text).then(() => {
       toast({
-        title: "Copied!",
-        description: `${label} copied to clipboard`,
+        title: t('copied'),
+        description: t('copiedToClipboard', { item: label }),
       });
     });
   };
@@ -125,24 +125,24 @@ const AddressDetailModal: React.FC<AddressDetailModalProps> = ({
             {address.verified ? (
               <Badge variant="outline" className="border-green-500 text-green-700">
                 <CheckCircle className="h-3 w-3 mr-1" />
-                Verified
+                {t('verified')}
               </Badge>
             ) : (
               <Badge variant="outline" className="border-yellow-500 text-yellow-700">
                 <XCircle className="h-3 w-3 mr-1" />
-                Unverified
+                {t('unverified')}
               </Badge>
             )}
 
             {address.public ? (
               <Badge variant="outline" className="border-blue-500 text-blue-700">
                 <Globe className="h-3 w-3 mr-1" />
-                Public
+                {t('public')}
               </Badge>
             ) : (
               <Badge variant="outline">
                 <Lock className="h-3 w-3 mr-1" />
-                Private
+                {t('private')}
               </Badge>
             )}
           </div>
@@ -153,20 +153,20 @@ const AddressDetailModal: React.FC<AddressDetailModalProps> = ({
               <div>
                 <h4 className="font-semibold mb-2 flex items-center gap-2">
                   <Building className="h-4 w-4" />
-                  Location
+                  {t('location')}
                 </h4>
                 <div className="space-y-1 text-sm">
-                  <p><strong>Street:</strong> {address.street}</p>
-                  {address.building && <p><strong>Building:</strong> {address.building}</p>}
-                  <p><strong>City:</strong> {address.city}</p>
-                  <p><strong>Region:</strong> {address.region}</p>
-                  <p><strong>Country:</strong> {address.country}</p>
+                  <p><strong>{t('street')}:</strong> {address.street}</p>
+                  {address.building && <p><strong>{t('building')}:</strong> {address.building}</p>}
+                  <p><strong>{t('city')}:</strong> {address.city}</p>
+                  <p><strong>{t('region')}:</strong> {address.region}</p>
+                  <p><strong>{t('country')}:</strong> {address.country}</p>
                 </div>
               </div>
 
               {address.description && (
                 <div>
-                  <h4 className="font-semibold mb-2">Description</h4>
+                  <h4 className="font-semibold mb-2">{t('description')}</h4>
                   <p className="text-sm text-muted-foreground italic">
                     {address.description}
                   </p>
@@ -178,25 +178,25 @@ const AddressDetailModal: React.FC<AddressDetailModalProps> = ({
               <div>
                 <h4 className="font-semibold mb-2 flex items-center gap-2">
                   <LocationIcon className="h-4 w-4" />
-                  Coordinates
+                  {t('coordinates')}
                 </h4>
                 <div className="space-y-1 text-sm">
                   <div className="flex items-center justify-between">
-                    <span><strong>Latitude:</strong> {address.latitude.toFixed(6)}°</span>
+                    <span><strong>{t('latitude')}:</strong> {address.latitude.toFixed(6)}°</span>
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => copyToClipboard(address.latitude.toString(), 'Latitude')}
+                      onClick={() => copyToClipboard(address.latitude.toString(), t('latitude'))}
                     >
                       <Copy className="h-3 w-3" />
                     </Button>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span><strong>Longitude:</strong> {address.longitude.toFixed(6)}°</span>
+                    <span><strong>{t('longitude')}:</strong> {address.longitude.toFixed(6)}°</span>
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => copyToClipboard(address.longitude.toString(), 'Longitude')}
+                      onClick={() => copyToClipboard(address.longitude.toString(), t('longitude'))}
                     >
                       <Copy className="h-3 w-3" />
                     </Button>
@@ -207,11 +207,11 @@ const AddressDetailModal: React.FC<AddressDetailModalProps> = ({
               <div>
                 <h4 className="font-semibold mb-2 flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
-                  Record Information
+                  {t('recordInformation')}
                 </h4>
                 <div className="space-y-1 text-sm text-muted-foreground">
-                  <p>Created: {new Date(address.created_at).toLocaleString()}</p>
-                  <p>Updated: {new Date(address.updated_at).toLocaleString()}</p>
+                  <p>{t('created')}: {new Date(address.created_at).toLocaleString()}</p>
+                  <p>{t('updated')}: {new Date(address.updated_at).toLocaleString()}</p>
                 </div>
               </div>
             </div>
@@ -221,7 +221,7 @@ const AddressDetailModal: React.FC<AddressDetailModalProps> = ({
           <div className="flex flex-wrap gap-2 pt-4 border-t">
             <Button 
               variant="outline" 
-              onClick={() => copyToClipboard(address.uac, 'UAC')}
+              onClick={() => copyToClipboard(address.uac, t('uac'))}
               className="flex items-center gap-2"
             >
               <Copy className="h-4 w-4" />
@@ -230,7 +230,7 @@ const AddressDetailModal: React.FC<AddressDetailModalProps> = ({
             
             <Button 
               variant="outline" 
-              onClick={() => copyToClipboard(`${address.latitude}, ${address.longitude}`, 'Coordinates')}
+              onClick={() => copyToClipboard(`${address.latitude}, ${address.longitude}`, t('coordinates'))}
               className="flex items-center gap-2"
             >
               <Copy className="h-4 w-4" />

@@ -138,8 +138,8 @@ export const EnhancedAddressDetailModal: React.FC<EnhancedAddressDetailModalProp
     setCopiedField(label);
     setTimeout(() => setCopiedField(null), 2000);
     toast({
-      title: "Copied",
-      description: `${label} copied to clipboard`,
+      title: t('common:copied'),
+      description: t('common:copiedToClipboard', { item: label }),
     });
   };
 
@@ -172,8 +172,8 @@ export const EnhancedAddressDetailModal: React.FC<EnhancedAddressDetailModalProp
     } else if (fromUAC) {
       // Directions from another UAC (would need to resolve UAC to coordinates first)
       toast({
-        title: "Feature Coming Soon",
-        description: "Directions from UAC will be available in a future update",
+        title: t('common:featureComingSoon'),
+        description: t('common:directionsFromUACComingSoon'),
       });
       return;
     }
@@ -215,7 +215,7 @@ Shared from Equatorial Guinea Address Portal`;
         window.open(smsUrl);
         break;
       case 'copy':
-        copyToClipboard(shareMessage, 'Address information');
+        copyToClipboard(shareMessage, t('common:addressInformation'));
         break;
     }
   };
@@ -241,7 +241,7 @@ Shared from Equatorial Guinea Address Portal`;
         <DialogHeader className="pb-2">
           <DialogTitle className="flex items-center gap-2 text-base">
             <MapPin className="h-4 w-4" />
-            Address Details
+            {t('common:addressDetails')}
           </DialogTitle>
         </DialogHeader>
 
@@ -250,20 +250,20 @@ Shared from Equatorial Guinea Address Portal`;
           <div className="space-y-3">
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Address Information</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('common:addressInformation')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3 pt-2">
                 <div>
-                  <Label className="text-xs font-medium text-muted-foreground">Full Address</Label>
+                  <Label className="text-xs font-medium text-muted-foreground">{t('common:fullAddress')}</Label>
                   <div className="flex items-center gap-1 mt-1">
                     <p className="text-xs text-foreground flex-1">{addressText}</p>
                     <Button
                       variant="ghost"
                       size="sm"
                       className="h-6 w-6 p-0"
-                      onClick={() => copyToClipboard(addressText, 'Address')}
+                      onClick={() => copyToClipboard(addressText, t('common:address'))}
                     >
-                      {copiedField === 'Address' ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                      {copiedField === t('common:address') ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                     </Button>
                   </div>
                 </div>
@@ -271,7 +271,7 @@ Shared from Equatorial Guinea Address Portal`;
                 <Separator />
 
                 <div>
-                  <Label className="text-xs font-medium text-muted-foreground">Unique Address Code (UAC)</Label>
+                  <Label className="text-xs font-medium text-muted-foreground">{t('common:uniqueAddressCode')}</Label>
                   <div className="flex items-center gap-1 mt-1">
                     <code className="text-xs font-mono bg-muted px-1.5 py-0.5 rounded flex-1">
                       {address.uac}
@@ -280,15 +280,15 @@ Shared from Equatorial Guinea Address Portal`;
                       variant="ghost"
                       size="sm"
                       className="h-6 w-6 p-0"
-                      onClick={() => copyToClipboard(address.uac, 'UAC')}
+                      onClick={() => copyToClipboard(address.uac, t('common:uac'))}
                     >
-                      {copiedField === 'UAC' ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                      {copiedField === t('common:uac') ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                     </Button>
                   </div>
                 </div>
 
                 <div>
-                  <Label className="text-xs font-medium text-muted-foreground">GPS Coordinates</Label>
+                  <Label className="text-xs font-medium text-muted-foreground">{t('common:gpsCoordinates')}</Label>
                   <div className="flex items-center gap-1 mt-1">
                     <code className="text-xs font-mono bg-muted px-1.5 py-0.5 rounded flex-1">
                       {address.latitude.toFixed(4)}, {address.longitude.toFixed(4)}
@@ -297,9 +297,9 @@ Shared from Equatorial Guinea Address Portal`;
                       variant="ghost"
                       size="sm"
                       className="h-6 w-6 p-0"
-                      onClick={() => copyToClipboard(`${address.latitude}, ${address.longitude}`, 'Coordinates')}
+                      onClick={() => copyToClipboard(`${address.latitude}, ${address.longitude}`, t('common:coordinates'))}
                     >
-                      {copiedField === 'Coordinates' ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                      {copiedField === t('common:coordinates') ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                     </Button>
                   </div>
                 </div>
@@ -308,7 +308,7 @@ Shared from Equatorial Guinea Address Portal`;
                   {address.verified && (
                     <Badge variant="default" className="text-xs px-1.5 py-0.5">
                       <Shield className="h-2 w-2 mr-1" />
-                      Verified
+                      {t('common:verified')}
                     </Badge>
                   )}
                   <Badge variant={getQualityColor(address.completenessScore)} className="text-xs px-1.5 py-0.5">
@@ -322,7 +322,7 @@ Shared from Equatorial Guinea Address Portal`;
                 {(distanceEstimates.driving || distanceEstimates.walking || calculatedDistance) && (
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Target className="h-3 w-3 text-primary" />
-                    <span>Distance: <strong>
+                    <span>{t('common:distance')}: <strong>
                       {distanceEstimates.driving?.distance || distanceEstimates.walking?.distance || formatDistance(calculatedDistance!)}
                     </strong></span>
                   </div>
@@ -335,7 +335,7 @@ Shared from Equatorial Guinea Address Portal`;
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <QrCode className="h-4 w-4" />
-                  QR Code
+                  {t('common:qrCode')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-2">
@@ -358,7 +358,7 @@ Shared from Equatorial Guinea Address Portal`;
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <Navigation className="h-4 w-4" />
-                  Navigation
+                  {t('common:navigation')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 pt-2">
@@ -369,15 +369,15 @@ Shared from Equatorial Guinea Address Portal`;
                   size="sm"
                 >
                   <Route className="h-3 w-3 mr-1" />
-                  Directions from Current Location
+                  {t('common:directionsFromCurrentLocation')}
                 </Button>
 
                 <div className="space-y-1">
-                  <Label htmlFor="from-uac" className="text-xs text-muted-foreground">Get directions from another UAC:</Label>
+                  <Label htmlFor="from-uac" className="text-xs text-muted-foreground">{t('common:getDirectionsFromUAC')}:</Label>
                   <div className="flex gap-1">
                     <Input
                       id="from-uac"
-                      placeholder="Enter UAC..."
+                      placeholder={t('common:enterUAC')}
                       value={customFromUAC}
                       onChange={(e) => setCustomFromUAC(e.target.value)}
                       className="flex-1 h-7 text-xs"
@@ -404,7 +404,7 @@ Shared from Equatorial Guinea Address Portal`;
                   size="sm"
                 >
                   <ExternalLink className="h-3 w-3 mr-1" />
-                  View on Google Maps
+                  {t('common:viewOnGoogleMaps')}
                 </Button>
               </CardContent>
             </Card>
@@ -414,7 +414,7 @@ Shared from Equatorial Guinea Address Portal`;
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <Share2 className="h-4 w-4" />
-                  Share Address
+                  {t('common:shareAddress')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 pt-2">
@@ -453,7 +453,7 @@ Shared from Equatorial Guinea Address Portal`;
                     size="sm"
                   >
                     <Copy className="h-3 w-3 mr-1" />
-                    Copy All
+                    {t('common:copyAll')}
                   </Button>
                 </div>
               </CardContent>
