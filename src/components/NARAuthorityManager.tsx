@@ -335,12 +335,12 @@ export function NARAuthorityManager() {
                     )}
                     
                     {userSearch && !selectedUser && searchResults.length === 0 && !searching && (
-                      <p className="text-sm text-muted-foreground">No users found</p>
+                      <p className="text-sm text-muted-foreground">{t('admin:noUsersFound')}</p>
                     )}
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="authority_level">Authority Level</Label>
+                  <Label htmlFor="authority_level">{t('admin:authorityLevel')}</Label>
                   <Select
                     value={newAuthority.authority_level}
                     onValueChange={(value) => setNewAuthority({ 
@@ -352,18 +352,18 @@ export function NARAuthorityManager() {
                     })}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select authority level" />
+                      <SelectValue placeholder={t('admin:selectAuthorityLevel')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="national">National</SelectItem>
-                      <SelectItem value="regional">Regional</SelectItem>
-                      <SelectItem value="municipal">Municipal</SelectItem>
-                      <SelectItem value="local">Local</SelectItem>
+                      <SelectItem value="national">{t('admin:national')}</SelectItem>
+                      <SelectItem value="regional">{t('admin:regional')}</SelectItem>
+                      <SelectItem value="municipal">{t('admin:municipal')}</SelectItem>
+                      <SelectItem value="local">{t('admin:local')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="jurisdiction_region">Jurisdiction (Province)</Label>
+                  <Label htmlFor="jurisdiction_region">{t('admin:jurisdictionProvince')}</Label>
                   <Select
                     value={newAuthority.jurisdiction_region}
                     onValueChange={(value) => setNewAuthority({ 
@@ -376,10 +376,10 @@ export function NARAuthorityManager() {
                     <SelectTrigger>
                       <SelectValue placeholder={
                         newAuthority.authority_level === 'national' 
-                          ? "National authority - covers all provinces" 
+                          ? t('admin:nationalAuthorityCoversAllProvinces')
                           : newAuthority.authority_level === 'regional'
-                          ? "Select province (required for regional authority)"
-                          : "Select province (optional)"
+                          ? t('admin:selectProvinceRequiredRegional')
+                          : t('admin:selectProvinceOptional')
                       } />
                     </SelectTrigger>
                     <SelectContent>
@@ -392,7 +392,7 @@ export function NARAuthorityManager() {
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="jurisdiction_city">Jurisdiction City</Label>
+                  <Label htmlFor="jurisdiction_city">{t('admin:jurisdictionCity')}</Label>
                   <Select
                     value={newAuthority.jurisdiction_city}
                     onValueChange={(value) => setNewAuthority({ ...newAuthority, jurisdiction_city: value })}
@@ -405,12 +405,12 @@ export function NARAuthorityManager() {
                     <SelectTrigger>
                       <SelectValue placeholder={
                         newAuthority.authority_level === 'national'
-                          ? "National authority - covers all cities"
+                          ? t('admin:nationalAuthorityCoversAllCities')
                           : newAuthority.authority_level === 'regional'
-                          ? "Regional authority - covers all cities in province"
+                          ? t('admin:regionalAuthorityCoversAllCities')
                           : !newAuthority.jurisdiction_region 
-                            ? "Select province first"
-                            : "Select city (optional)"
+                            ? t('admin:selectProvinceFirst')
+                            : t('admin:selectCityOptional')
                       } />
                     </SelectTrigger>
                     <SelectContent>
@@ -427,7 +427,7 @@ export function NARAuthorityManager() {
                   className="w-full"
                   disabled={!selectedUser || !newAuthority.authority_level}
                 >
-                  Create Authority
+                  {t('admin:createAuthority')}
                 </Button>
               </div>
             </DialogContent>
@@ -442,7 +442,7 @@ export function NARAuthorityManager() {
         ) : authorities?.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>No NAR authorities configured</p>
+            <p>{t('admin:noNARAuthoritiesConfigured')}</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -452,7 +452,7 @@ export function NARAuthorityManager() {
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       {getAuthorityIcon(authority.authority_level)}
-                      <span className="font-medium">{authority.full_name || 'Unknown User'}</span>
+                      <span className="font-medium">{authority.full_name || t('admin:unknownUser')}</span>
                       <Badge className={getAuthorityLevelColor(authority.authority_level)}>
                         {authority.authority_level}
                       </Badge>
@@ -460,23 +460,23 @@ export function NARAuthorityManager() {
                     <p className="text-sm text-muted-foreground">{authority.email}</p>
                     {authority.jurisdiction_region && (
                       <p className="text-xs text-muted-foreground">
-                        Region: {authority.jurisdiction_region}
+                        {t('admin:region')}: {authority.jurisdiction_region}
                       </p>
                     )}
                     {authority.jurisdiction_city && (
                       <p className="text-xs text-muted-foreground">
-                        City: {authority.jurisdiction_city}
+                        {t('admin:city')}: {authority.jurisdiction_city}
                       </p>
                     )}
                     <div className="flex gap-2 mt-2">
                       {authority.can_create_addresses && (
-                        <Badge variant="outline">Can Create</Badge>
+                        <Badge variant="outline">{t('admin:canCreate')}</Badge>
                       )}
                       {authority.can_verify_addresses && (
-                        <Badge variant="outline">Can Verify</Badge>
+                        <Badge variant="outline">{t('admin:canVerify')}</Badge>
                       )}
                       {authority.can_update_addresses && (
-                        <Badge variant="outline">Can Update</Badge>
+                        <Badge variant="outline">{t('admin:canUpdate')}</Badge>
                       )}
                     </div>
                   </div>
@@ -485,7 +485,7 @@ export function NARAuthorityManager() {
                     size="sm"
                     onClick={() => deactivateAuthority(authority.id)}
                   >
-                    Deactivate
+                    {t('admin:deactivate')}
                   </Button>
                 </div>
               </div>
