@@ -202,41 +202,43 @@ export const CitizenAddressVerificationManager = ({
               
               return (
                 <Card key={address.id} className="border-l-4 border-l-primary">
-                  <CardContent className="pt-4">
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1 flex-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <Badge variant={address.address_kind === 'PRIMARY' ? 'default' : 'secondary'}>
+                  <CardContent className="p-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="space-y-2 flex-1 min-w-0">
+                        <div className="flex items-center gap-1 flex-wrap">
+                          <Badge variant={address.address_kind === 'PRIMARY' ? 'default' : 'secondary'} className="text-xs px-2 py-0.5">
                             {address.address_kind}
                           </Badge>
-                          <Badge variant="outline">
+                          <Badge variant="outline" className="text-xs px-2 py-0.5">
                             {address.scope}
                           </Badge>
-                          <Badge variant={address.status === 'CONFIRMED' ? 'default' : 'secondary'}>
+                          <Badge variant={address.status === 'CONFIRMED' ? 'default' : 'secondary'} className="text-xs px-2 py-0.5">
                             {address.status}
                           </Badge>
                           {verification && (
                             <Badge 
                               variant="outline" 
-                              className={getStatusColor(verification.status)}
+                              className={`text-xs px-2 py-0.5 ${getStatusColor(verification.status)}`}
                             >
                               {getStatusIcon(verification.status)}
                               <span className="ml-1">{formatStatus(verification.status)}</span>
                             </Badge>
                           )}
                         </div>
-                        <p className="text-sm text-muted-foreground">
-                          UAC: {address.uac}
-                          {address.unit_uac && ` | Unit: ${address.unit_uac}`}
-                        </p>
-                        {address.street && (
-                          <p className="text-sm">
-                            {address.street}, {address.city}, {address.region}
+                        <div className="space-y-1">
+                          <p className="text-xs text-muted-foreground font-mono">
+                            UAC: {address.uac}
+                            {address.unit_uac && ` | Unit: ${address.unit_uac}`}
                           </p>
-                        )}
+                          {address.street && (
+                            <p className="text-sm leading-tight">
+                              {address.street}, {address.city}, {address.region}
+                            </p>
+                          )}
+                        </div>
                       </div>
                       
-                      <div className="flex items-center gap-2 ml-4">
+                      <div className="flex items-center shrink-0">
                         {verification ? (
                           canEdit(verification) && (
                             <Dialog>
@@ -244,10 +246,11 @@ export const CitizenAddressVerificationManager = ({
                                 <Button 
                                   size="sm" 
                                   variant="outline"
+                                  className="h-7 px-2 text-xs"
                                   onClick={() => setEditingVerification(verification)}
                                 >
                                   <Edit className="h-3 w-3 mr-1" />
-                                  Edit Request
+                                  Edit
                                 </Button>
                               </DialogTrigger>
                               <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -270,6 +273,7 @@ export const CitizenAddressVerificationManager = ({
                         ) : (
                           <Button 
                             size="sm"
+                            className="h-7 px-2 text-xs"
                             onClick={() => {
                               setSelectedAddressId(address.id);
                               setStep('verify_address');
@@ -282,9 +286,9 @@ export const CitizenAddressVerificationManager = ({
                     </div>
 
                     {verification && verification.verification_notes && (
-                      <div className="mt-3 p-3 bg-muted rounded-lg">
-                        <p className="text-sm font-medium mb-1">Reviewer Notes:</p>
-                        <p className="text-sm">{verification.verification_notes}</p>
+                      <div className="mt-2 p-2 bg-muted rounded-md">
+                        <p className="text-xs font-medium mb-1">Reviewer Notes:</p>
+                        <p className="text-xs leading-relaxed">{verification.verification_notes}</p>
                       </div>
                     )}
 
