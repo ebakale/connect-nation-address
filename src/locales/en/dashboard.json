@@ -340,5 +340,13 @@
   "nearbyAddresses": "Nearby Addresses",
   "nearbyAddressesDesc": "Verified addresses within 20m radius",
   "pointsOfInterest": "Points of Interest",
-  "pointsOfInterestDesc": "Schools, hospitals, government buildings, and businesses"
+  "pointsOfInterestDesc": "Schools, hospitals, government buildings, and businesses",
+  "quickActions": "Quick Actions",
+  "additionalToolsShortcuts": "Additional tools and shortcuts",
+  "recentSearches": "Recent Searches",
+  "recentSearchesDesc": "Your recent address searches will appear here",
+  "savedLocations": "Saved Locations",
+  "savedLocationsDesc": "Bookmark frequently accessed addresses",
+  "exportData": "Export Data",
+  "exportDataDesc": "Download search results and location data"
 }

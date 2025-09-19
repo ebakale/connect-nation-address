@@ -455,25 +455,25 @@ const UnifiedDashboard = () => {
               <div className="xl:col-span-1 space-y-6">
                 <Card className="shadow-card w-full sticky top-6">
                   <CardHeader className="pb-4">
-                    <CardTitle className="text-lg">Quick Actions</CardTitle>
+                    <CardTitle className="text-lg">{t('dashboard:quickActions')}</CardTitle>
                     <CardDescription className="text-sm">
-                      Additional tools and shortcuts
+                      {t('dashboard:additionalToolsShortcuts')}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <div className="space-y-4">
-                      <div className="p-3 bg-muted/50 rounded-lg">
-                        <p className="font-medium text-sm mb-1">Recent Searches</p>
-                        <p className="text-muted-foreground text-xs">Your recent address searches will appear here</p>
-                      </div>
-                      <div className="p-3 bg-muted/50 rounded-lg">
-                        <p className="font-medium text-sm mb-1">Saved Locations</p>
-                        <p className="text-muted-foreground text-xs">Bookmark frequently accessed addresses</p>
-                      </div>
-                      <div className="p-3 bg-muted/50 rounded-lg">
-                        <p className="font-medium text-sm mb-1">Export Data</p>
-                        <p className="text-muted-foreground text-xs">Download search results and location data</p>
-                      </div>
+                       <div className="p-3 bg-muted/50 rounded-lg">
+                         <p className="font-medium text-sm mb-1">{t('dashboard:recentSearches')}</p>
+                         <p className="text-muted-foreground text-xs">{t('dashboard:recentSearchesDesc')}</p>
+                       </div>
+                       <div className="p-3 bg-muted/50 rounded-lg">
+                         <p className="font-medium text-sm mb-1">{t('dashboard:savedLocations')}</p>
+                         <p className="text-muted-foreground text-xs">{t('dashboard:savedLocationsDesc')}</p>
+                       </div>
+                       <div className="p-3 bg-muted/50 rounded-lg">
+                         <p className="font-medium text-sm mb-1">{t('dashboard:exportData')}</p>
+                         <p className="text-muted-foreground text-xs">{t('dashboard:exportDataDesc')}</p>
+                       </div>
                     </div>
                   </CardContent>
                 </Card>

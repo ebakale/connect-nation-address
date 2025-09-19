@@ -338,5 +338,13 @@
   "nearbyAddresses": "Direcciones Cercanas",
   "nearbyAddressesDesc": "Direcciones verificadas dentro de un radio de 20m",
   "pointsOfInterest": "Puntos de Interés",
-  "pointsOfInterestDesc": "Escuelas, hospitales, edificios gubernamentales y negocios"
+  "pointsOfInterestDesc": "Escuelas, hospitales, edificios gubernamentales y negocios",
+  "quickActions": "Acciones Rápidas",
+  "additionalToolsShortcuts": "Herramientas adicionales y accesos directos",
+  "recentSearches": "Búsquedas Recientes",
+  "recentSearchesDesc": "Tus búsquedas de direcciones recientes aparecerán aquí",
+  "savedLocations": "Ubicaciones Guardadas",
+  "savedLocationsDesc": "Marca como favoritas las direcciones de acceso frecuente",
+  "exportData": "Exportar Datos",
+  "exportDataDesc": "Descarga resultados de búsqueda y datos de ubicación"
 }

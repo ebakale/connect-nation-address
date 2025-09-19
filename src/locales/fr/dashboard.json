@@ -302,5 +302,13 @@
   "nearbyAddresses": "Adresses Proches",
   "nearbyAddressesDesc": "Adresses vérifiées dans un rayon de 20m",
   "pointsOfInterest": "Points d'Intérêt",
-  "pointsOfInterestDesc": "Écoles, hôpitaux, bâtiments gouvernementaux et entreprises"
+  "pointsOfInterestDesc": "Écoles, hôpitaux, bâtiments gouvernementaux et entreprises",
+  "quickActions": "Actions Rapides",
+  "additionalToolsShortcuts": "Outils supplémentaires et raccourcis",
+  "recentSearches": "Recherches Récentes",
+  "recentSearchesDesc": "Vos recherches d'adresses récentes apparaîtront ici",
+  "savedLocations": "Emplacements Sauvegardés",
+  "savedLocationsDesc": "Marquez les adresses fréquemment consultées",
+  "exportData": "Exporter les Données",
+  "exportDataDesc": "Téléchargez les résultats de recherche et les données de localisation"
 }
