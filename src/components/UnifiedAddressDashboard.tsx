@@ -101,7 +101,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     if (hasAdminAccess) {
       return [
         ...baseTabs,
-        { id: 'address-management', label: 'Address Management', icon: Database },
+        { id: 'address-management', label: 'Address Management', icon: Search },
         { id: 'nar-admin', label: 'NAR Administration', icon: Database },
         { id: 'car-admin', label: 'CAR Administration', icon: Users },
         { id: 'integration', label: 'NAR-CAR Integration', icon: Network },
@@ -225,7 +225,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold">Address Management</h2>
-                <p className="text-muted-foreground">Search and manage addresses across NAR and CAR systems</p>
+                <p className="text-muted-foreground">Search addresses and manage requests</p>
               </div>
               <Badge variant="outline">Address Management</Badge>
             </div>
@@ -233,7 +233,6 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
               <TabsList>
                 <TabsTrigger value="search">Search Addresses</TabsTrigger>
                 <TabsTrigger value="requests">Address Requests</TabsTrigger>
-                <TabsTrigger value="verification">Verification Queue</TabsTrigger>
               </TabsList>
               <TabsContent value="search">
                 <div className="space-y-4">
@@ -268,18 +267,6 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
                       <AddressRequestForm />
                     </TabsContent>
                   </Tabs>
-                </div>
-              </TabsContent>
-              <TabsContent value="verification">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-lg font-semibold">Verification Queue</h3>
-                      <p className="text-sm text-muted-foreground">Review and verify address submissions</p>
-                    </div>
-                    <Badge variant="outline">NAR Verification</Badge>
-                  </div>
-                  <AddressVerificationQueue />
                 </div>
               </TabsContent>
             </Tabs>
