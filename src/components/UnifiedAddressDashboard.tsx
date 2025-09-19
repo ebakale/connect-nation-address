@@ -82,7 +82,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
       return [
         { id: 'search', label: t('address:searchAddresses'), icon: Search },
         { id: 'my-addresses', label: 'My Addresses (CAR)', icon: Home },
-        { id: 'requests', label: t('dashboard:requestStatus'), icon: FileText },
+        { id: 'requests', label: 'Address Requests', icon: FileText },
         { id: 'verification-requests', label: 'My Verifications', icon: UserCheck }
       ];
     }
