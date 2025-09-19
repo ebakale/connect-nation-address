@@ -395,6 +395,96 @@ export type Database = {
         }
         Relationships: []
       }
+      car_permissions: {
+        Row: {
+          can_access_address_history: boolean | null
+          can_manage_person_records: boolean | null
+          can_merge_duplicate_persons: boolean | null
+          can_review_citizen_addresses: boolean | null
+          can_update_address_status: boolean | null
+          can_verify_residency: boolean | null
+          created_at: string | null
+          created_by: string | null
+          geographic_scope: string[] | null
+          id: string
+          jurisdiction_scope: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          can_access_address_history?: boolean | null
+          can_manage_person_records?: boolean | null
+          can_merge_duplicate_persons?: boolean | null
+          can_review_citizen_addresses?: boolean | null
+          can_update_address_status?: boolean | null
+          can_verify_residency?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          geographic_scope?: string[] | null
+          id?: string
+          jurisdiction_scope?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          can_access_address_history?: boolean | null
+          can_manage_person_records?: boolean | null
+          can_merge_duplicate_persons?: boolean | null
+          can_review_citizen_addresses?: boolean | null
+          can_update_address_status?: boolean | null
+          can_verify_residency?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          geographic_scope?: string[] | null
+          id?: string
+          jurisdiction_scope?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      car_quality_metrics: {
+        Row: {
+          address_coverage_by_region: Json | null
+          average_verification_time_hours: number | null
+          confirmed_addresses: number | null
+          created_at: string | null
+          date_measured: string | null
+          duplicate_person_records: number | null
+          id: string
+          pending_verification_addresses: number | null
+          quality_score_distribution: Json | null
+          rejected_addresses: number | null
+          total_citizen_addresses: number | null
+        }
+        Insert: {
+          address_coverage_by_region?: Json | null
+          average_verification_time_hours?: number | null
+          confirmed_addresses?: number | null
+          created_at?: string | null
+          date_measured?: string | null
+          duplicate_person_records?: number | null
+          id?: string
+          pending_verification_addresses?: number | null
+          quality_score_distribution?: Json | null
+          rejected_addresses?: number | null
+          total_citizen_addresses?: number | null
+        }
+        Update: {
+          address_coverage_by_region?: Json | null
+          average_verification_time_hours?: number | null
+          confirmed_addresses?: number | null
+          created_at?: string | null
+          date_measured?: string | null
+          duplicate_person_records?: number | null
+          id?: string
+          pending_verification_addresses?: number | null
+          quality_score_distribution?: Json | null
+          rejected_addresses?: number | null
+          total_citizen_addresses?: number | null
+        }
+        Relationships: []
+      }
       citizen_address: {
         Row: {
           address_kind: Database["public"]["Enums"]["address_kind"]
@@ -2000,6 +2090,10 @@ export type Database = {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
       }
+      has_car_permission: {
+        Args: { _permission: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2129,6 +2223,10 @@ export type Database = {
       unflag_address: {
         Args: { p_address_id: string; p_unflagged_by?: string }
         Returns: boolean
+      }
+      update_car_quality_metrics: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
     }
     Enums: {

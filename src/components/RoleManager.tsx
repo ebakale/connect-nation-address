@@ -26,6 +26,11 @@ const ROLE_DESCRIPTIONS: Record<string, string> = {
   'data_steward': 'Quality Assurance Specialist - Bulk operations and testing support',
   'support': 'Customer Service - User assistance and technical support',
   
+  // CAR (Citizen Address Repository) Module Roles
+  'car_admin': 'CAR Administrator - Full oversight of citizen address management and person records',
+  'car_verifier': 'CAR Verifier - Review and verify citizen address claims and residency status',
+  'residency_verifier': 'Residency Verifier - Specialized role for verifying residency documentation and claims',
+  
   // Police Operations Module Roles
   'police_admin': 'Police System Administrator - Full oversight of police operations and system configuration',
   'police_operator': 'Field Officer - Emergency response, incident management, and field operations',
@@ -37,6 +42,8 @@ const AVAILABLE_ROLES: UserRole[] = [
   // Address Registry Module Roles
   'citizen', 'property_claimant', 'field_agent', 'verifier', 
   'registrar', 'ndaa_admin', 'partner', 'auditor', 'data_steward', 'support',
+  // CAR (Citizen Address Repository) Module Roles
+  'car_admin', 'car_verifier', 'residency_verifier',
   // Police Operations Module Roles
   'police_admin', 'police_operator', 'police_supervisor', 'police_dispatcher'
 ];

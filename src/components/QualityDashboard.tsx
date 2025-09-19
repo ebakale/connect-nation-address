@@ -10,7 +10,7 @@ import {
 } from 'recharts';
 import { 
   MapPin, CheckCircle, AlertTriangle, TrendingUp, Database,
-  RefreshCw, Download, Eye, Clock, Settings
+  RefreshCw, Download, Eye, Clock, Settings, Users
 } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -55,6 +55,14 @@ interface CoverageAnalytics {
     duplicateCount: number;
     pendingVerification: number;
   };
+  carMetrics?: {
+    totalCitizenAddresses: number;
+    pendingVerificationAddresses: number;
+    confirmedAddresses: number;
+    rejectedAddresses: number;
+    duplicatePersonRecords: number;
+    averageVerificationTimeHours: number;
+  };
 }
 
 export function QualityDashboard() {
@@ -67,6 +75,14 @@ export function QualityDashboard() {
     lowQualityAddresses: 0,
     duplicateCount: 0,
     pendingVerification: 0
+  });
+  const [carMetrics, setCARMetrics] = useState({
+    totalCitizenAddresses: 0,
+    pendingVerificationAddresses: 0,
+    confirmedAddresses: 0,
+    rejectedAddresses: 0,
+    duplicatePersonRecords: 0,
+    averageVerificationTimeHours: 0
   });
   const { toast } = useToast();
 
@@ -145,6 +161,36 @@ export function QualityDashboard() {
     }
   };
 
+  const fetchCARMetrics = async () => {
+    try {
+      // Call the function to update CAR quality metrics
+      await supabase.rpc('update_car_quality_metrics');
+      
+      // Fetch the latest CAR metrics
+      const { data, error } = await supabase
+        .from('car_quality_metrics')
+        .select('*')
+        .order('date_measured', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setCARMetrics({
+          totalCitizenAddresses: data.total_citizen_addresses,
+          pendingVerificationAddresses: data.pending_verification_addresses,
+          confirmedAddresses: data.confirmed_addresses,
+          rejectedAddresses: data.rejected_addresses,
+          duplicatePersonRecords: data.duplicate_person_records,
+          averageVerificationTimeHours: data.average_verification_time_hours
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching CAR metrics:', error);
+    }
+  };
+
   const fetchAnalytics = async () => {
     try {
       const { data, error } = await supabase.functions.invoke('coverage-analytics-api');
@@ -153,8 +199,9 @@ export function QualityDashboard() {
       
       setAnalytics(data);
       
-      // Also fetch real-time quality metrics
+      // Also fetch real-time quality metrics and CAR metrics
       await fetchQualityMetrics();
+      await fetchCARMetrics();
     } catch (error) {
       console.error('Error fetching analytics:', error);
       toast({
@@ -269,6 +316,41 @@ export function QualityDashboard() {
             </p>
           </CardContent>
         </Card>
+        
+        {/* CAR-specific metrics */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Citizen Addresses</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{carMetrics.totalCitizenAddresses.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">
+              {carMetrics.confirmedAddresses} confirmed, {carMetrics.pendingVerificationAddresses} pending
+            </p>
+            {carMetrics.duplicatePersonRecords > 0 && (
+              <Badge variant="destructive" className="mt-2">
+                {carMetrics.duplicatePersonRecords} duplicate persons
+              </Badge>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">CAR Processing Time</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{carMetrics.averageVerificationTimeHours.toFixed(1)}h</div>
+            <p className="text-xs text-muted-foreground">
+              Average verification time
+            </p>
+            {carMetrics.averageVerificationTimeHours > 48 && (
+              <Badge variant="destructive" className="mt-2">Slow Processing</Badge>
+            )}
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -320,6 +402,7 @@ export function QualityDashboard() {
         <TabsList>
           <TabsTrigger value="regional">Regional Overview</TabsTrigger>
           <TabsTrigger value="quality">Quality Metrics</TabsTrigger>
+          <TabsTrigger value="car">CAR Analytics</TabsTrigger>
           <TabsTrigger value="cities">City Breakdown</TabsTrigger>
         </TabsList>
 

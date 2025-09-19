@@ -7,6 +7,7 @@ export type UserRole =
   | 'citizen' | 'property_claimant' | 'field_agent' 
   | 'verifier' | 'registrar' | 'ndaa_admin' 
   | 'partner' | 'auditor' | 'data_steward' | 'support'
+  | 'car_admin' | 'car_verifier' | 'residency_verifier'
   | 'police_operator' | 'police_supervisor' | 'police_dispatcher' | 'police_admin'
   | null;
 
@@ -118,6 +119,13 @@ export const useUserRole = () => {
   const isDataSteward = role === 'data_steward';
   const isSupport = role === 'support';
   const isUser = role === 'user';
+  
+  // CAR role checks
+  const isCARAdmin = role === 'car_admin';
+  const isCARVerifier = role === 'car_verifier';
+  const isResidencyVerifier = role === 'residency_verifier';
+  const hasCARAccess = isCARAdmin || isCARVerifier || isResidencyVerifier;
+  
   // Police role checks
   const isPoliceOperator = role === 'police_operator';
   const isPoliceSupervisor = role === 'police_supervisor';
@@ -142,6 +150,10 @@ export const useUserRole = () => {
   const hasPoliceAccess = isPoliceOperator || isPoliceSupervisor || isPoliceDispatcher || isPoliceAdmin;
   const hasPoliceManagementAccess = isPoliceSupervisor || isPoliceAdmin;
   const hasPoliceAdminAccess = isPoliceAdmin;
+  
+  // CAR access checks  
+  const hasCARManagementAccess = isCARAdmin || hasSystemAdminAccess;
+  const hasCARVerificationAccess = hasCARAccess || hasVerifierAccess;
   
   // Unit lead detection - check if user is a unit lead
   const [isUnitLead, setIsUnitLead] = useState(false);
@@ -314,6 +326,11 @@ export const useUserRole = () => {
     isDataSteward,
     isSupport,
     isUser,
+    // CAR role checks
+    isCARAdmin,
+    isCARVerifier,
+    isResidencyVerifier,
+    hasCARAccess,
     // Police role checks
     isPoliceOperator,
     isPoliceSupervisor,
@@ -335,6 +352,9 @@ export const useUserRole = () => {
     hasPoliceAccess,
     hasPoliceManagementAccess,
     hasPoliceAdminAccess,
+    // CAR access checks
+    hasCARManagementAccess,
+    hasCARVerificationAccess,
     isUnitLead,
     // Operational permissions
     canSearchVerifiedAddresses,
