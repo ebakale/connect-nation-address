@@ -256,10 +256,10 @@ export function NARAuthorityManager() {
           <div>
             <CardTitle className="flex items-center gap-2">
               <Shield className="h-5 w-5" />
-              NAR Authority Management
+              {t('admin:narAuthorityManagement')}
             </CardTitle>
             <CardDescription>
-              Manage National Address Registry authorities and their permissions
+              {t('admin:manageNARAuthoritiesPermissions')}
             </CardDescription>
           </div>
           <Dialog open={dialogOpen} onOpenChange={(open) => {
@@ -269,19 +269,19 @@ export function NARAuthorityManager() {
             <DialogTrigger asChild>
               <Button>
                 <UserPlus className="h-4 w-4 mr-2" />
-                Add Authority
+                {t('admin:addAuthority')}
               </Button>
             </DialogTrigger>
             <DialogContent aria-describedby="nar-authority-desc">
               <DialogHeader>
-                <DialogTitle>Create New NAR Authority</DialogTitle>
+                <DialogTitle>{t('admin:createNewNARAuthority')}</DialogTitle>
                 <DialogDescription id="nar-authority-desc">
-                  Assign NAR authority permissions to a user to allow them to create and verify official addresses
+                  {t('admin:assignNARAuthorityPermissionsDesc')}
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="user_search">Search User</Label>
+                  <Label htmlFor="user_search">{t('admin:searchUser')}</Label>
                   <div className="space-y-2">
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -293,7 +293,7 @@ export function NARAuthorityManager() {
                           setUserSearch(e.target.value);
                           searchUsers(e.target.value);
                         }}
-                        placeholder="Search by email or name..."
+                        placeholder={t('admin:searchByEmailOrName')}
                       />
                     </div>
                     

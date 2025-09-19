@@ -397,6 +397,13 @@
   "searchForAddressesQualityControl": "Rechercher des adresses pour accéder aux outils de contrôle de qualité",
   "searchAddresses": "Rechercher des Adresses",
   "searchByUACStreetCity": "Rechercher par UAC, rue ou ville...",
+  "narAuthorityManagement": "Gestion des Autorités NAR",
+  "manageNARAuthoritiesPermissions": "Gérer les autorités du Registre National des Adresses et leurs permissions",
+  "addAuthority": "Ajouter une Autorité",
+  "createNewNARAuthority": "Créer une Nouvelle Autorité NAR",
+  "assignNARAuthorityPermissionsDesc": "Assigner des permissions d'autorité NAR à un utilisateur pour lui permettre de créer et vérifier des adresses officielles",
+  "searchUser": "Rechercher un Utilisateur",
+  "searchByEmailOrName": "Rechercher par email ou nom...",
   "pdfTitles": {
     "nationalDigitalAddressingSystem": "Système National d'Adressage Numérique",
     "comprehensiveUserManual": "Manuel d'Utilisateur Complet",
