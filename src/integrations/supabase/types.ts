@@ -594,6 +594,13 @@ export type Database = {
             foreignKeyName: "citizen_address_event_citizen_address_id_fkey"
             columns: ["citizen_address_id"]
             isOneToOne: false
+            referencedRelation: "citizen_address_manual_review_queue"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "citizen_address_event_citizen_address_id_fkey"
+            columns: ["citizen_address_id"]
+            isOneToOne: false
             referencedRelation: "citizen_address_with_details"
             referencedColumns: ["id"]
           },
@@ -1483,6 +1490,13 @@ export type Database = {
             foreignKeyName: "residency_ownership_verifications_citizen_address_id_fkey"
             columns: ["citizen_address_id"]
             isOneToOne: false
+            referencedRelation: "citizen_address_manual_review_queue"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "residency_ownership_verifications_citizen_address_id_fkey"
+            columns: ["citizen_address_id"]
+            isOneToOne: false
             referencedRelation: "citizen_address_with_details"
             referencedColumns: ["id"]
           },
@@ -1732,6 +1746,53 @@ export type Database = {
       }
     }
     Views: {
+      citizen_address_manual_review_queue: {
+        Row: {
+          address_description: string | null
+          address_kind: Database["public"]["Enums"]["address_kind"] | null
+          address_type: string | null
+          building: string | null
+          city: string | null
+          country: string | null
+          created_at: string | null
+          created_by: string | null
+          effective_from: string | null
+          effective_to: string | null
+          id: string | null
+          latitude: number | null
+          longitude: number | null
+          nar_public: boolean | null
+          nar_verified: boolean | null
+          notes: string | null
+          occupant: Database["public"]["Enums"]["occupant_type"] | null
+          person_id: string | null
+          region: string | null
+          scope: Database["public"]["Enums"]["address_scope"] | null
+          source: string | null
+          status: Database["public"]["Enums"]["address_status"] | null
+          street: string | null
+          uac: string | null
+          unit_uac: string | null
+          updated_at: string | null
+          verification_status: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "citizen_address_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "my_person"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "citizen_address_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "person"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       citizen_address_with_details: {
         Row: {
           address_description: string | null
@@ -1894,6 +1955,10 @@ export type Database = {
           p_request_id: string
         }
         Returns: Json
+      }
+      auto_approve_verified_citizen_addresses: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       calculate_completeness_score: {
         Args: {

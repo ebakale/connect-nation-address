@@ -46,6 +46,8 @@ export interface CitizenAddress {
   longitude?: number;
   nar_verified?: boolean;
   nar_public?: boolean;
+  // Manual review queue fields
+  verification_status?: 'UAC_NOT_FOUND' | 'UAC_UNVERIFIED' | 'UAC_VERIFIED';
 }
 
 export interface AddressInput {
