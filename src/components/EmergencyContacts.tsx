@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { ReporterNotifications } from "@/components/ReporterNotifications";
 
 // Import images
 import policeOfficerImage from "@/assets/police-officer-eg.jpg";
@@ -256,13 +257,18 @@ const EmergencyContacts = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {emergencyContacts.map((contact) => (
-        <EmergencyContact
-          key={contact.type}
-          {...contact}
-        />
-      ))}
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {emergencyContacts.map((contact) => (
+          <EmergencyContact
+            key={contact.type}
+            {...contact}
+          />
+        ))}
+      </div>
+      
+      {/* Incident Notifications */}
+      <ReporterNotifications />
     </div>
   );
 };

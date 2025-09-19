@@ -453,8 +453,6 @@ const UnifiedDashboard = () => {
               </div>
             )}
 
-            {/* Incident Notifications */}
-            <ReporterNotifications />
           </div>
         );
 
