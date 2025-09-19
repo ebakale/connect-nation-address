@@ -311,7 +311,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Search className="h-5 w-5" />
-                Search Addresses
+                {t('dashboard:searchAddresses')}
               </CardTitle>
               <CardDescription>
                 Find verified addresses and view them on the map below

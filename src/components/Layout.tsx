@@ -19,6 +19,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
+import { useTranslation } from 'react-i18next';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -29,10 +30,11 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children, currentPage = 'dashboard', onNavigate }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, signOut } = useAuth();
+  const { t } = useTranslation(['common']);
 
   const navigation = [
     { name: 'Dashboard', id: 'dashboard', icon: Home },
-    { name: 'Search Addresses', id: 'search', icon: Search },
+    { name: t('common:platform.searchAddresses'), id: 'search', icon: Search },
     { name: 'Add Address', id: 'add', icon: Plus },
     { name: 'Manage Addresses', id: 'manage', icon: List },
     { name: 'Map View', id: 'map', icon: MapPin },

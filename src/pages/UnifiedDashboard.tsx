@@ -370,7 +370,7 @@ const UnifiedDashboard = () => {
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-2 text-lg">
                       <Search className="h-5 w-5" />
-                      Search Addresses
+                      {t('dashboard:searchAddresses')}
                     </CardTitle>
                     <CardDescription className="text-sm">
                       Find verified addresses and view them on the map below

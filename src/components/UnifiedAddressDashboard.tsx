@@ -234,7 +234,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
             </div>
             <Tabs defaultValue="search" className="space-y-4">
               <TabsList>
-                <TabsTrigger value="search">Search Addresses</TabsTrigger>
+                <TabsTrigger value="search">{t('address:searchAddresses')}</TabsTrigger>
                 <TabsTrigger value="requests">Review Requests</TabsTrigger>
               </TabsList>
               <TabsContent value="search">
