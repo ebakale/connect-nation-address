@@ -486,10 +486,10 @@ const UnifiedDashboard = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Shield className="h-5 w-5" />
-                    Admin Functions
+                    {t('dashboard:adminFunctions')}
                   </CardTitle>
                   <CardDescription>
-                    Access comprehensive admin tools including user management, roles, workflows, and system configuration
+                    {t('dashboard:adminFunctionsDesc')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -497,9 +497,9 @@ const UnifiedDashboard = () => {
                     <div className="flex items-center gap-3">
                       <Settings className="h-8 w-8 text-primary" />
                       <div>
-                        <p className="font-medium">Use Admin Panel</p>
+                        <p className="font-medium">{t('dashboard:useAdminPanel')}</p>
                         <p className="text-sm text-muted-foreground">
-                          Access all administrative functions from the sidebar Admin Panel
+                          {t('dashboard:useAdminPanelDesc')}
                         </p>
                       </div>
                     </div>
@@ -507,7 +507,7 @@ const UnifiedDashboard = () => {
                       onClick={() => setActiveView('admin-panel')}
                       variant="outline"
                     >
-                      Open Admin Panel
+                      {t('dashboard:openAdminPanel')}
                     </Button>
                   </div>
                 </CardContent>

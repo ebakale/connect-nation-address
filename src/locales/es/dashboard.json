@@ -346,5 +346,10 @@
   "savedLocations": "Ubicaciones Guardadas",
   "savedLocationsDesc": "Marca como favoritas las direcciones de acceso frecuente",
   "exportData": "Exportar Datos",
-  "exportDataDesc": "Descarga resultados de búsqueda y datos de ubicación"
+  "exportDataDesc": "Descarga resultados de búsqueda y datos de ubicación",
+  "adminFunctions": "Funciones de Administrador",
+  "adminFunctionsDesc": "Accede a herramientas administrativas integrales incluyendo gestión de usuarios, roles, flujos de trabajo y configuración del sistema",
+  "useAdminPanel": "Usar Panel de Administrador",
+  "useAdminPanelDesc": "Accede a todas las funciones administrativas desde el Panel de Administrador en la barra lateral",
+  "openAdminPanel": "Abrir Panel de Administrador"
 }

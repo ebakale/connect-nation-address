@@ -348,5 +348,10 @@
   "savedLocations": "Saved Locations",
   "savedLocationsDesc": "Bookmark frequently accessed addresses",
   "exportData": "Export Data",
-  "exportDataDesc": "Download search results and location data"
+  "exportDataDesc": "Download search results and location data",
+  "adminFunctions": "Admin Functions",
+  "adminFunctionsDesc": "Access comprehensive admin tools including user management, roles, workflows, and system configuration",
+  "useAdminPanel": "Use Admin Panel",
+  "useAdminPanelDesc": "Access all administrative functions from the sidebar Admin Panel",
+  "openAdminPanel": "Open Admin Panel"
 }
