@@ -260,7 +260,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
             <Tabs defaultValue="status" className="space-y-4">
               <TabsList>
                 <TabsTrigger value="status">Request Status</TabsTrigger>
-                <TabsTrigger value="submit">Submit New</TabsTrigger>
+                <TabsTrigger value="submit">Submit Request</TabsTrigger>
               </TabsList>
               <TabsContent value="status">
                 <AddressRequestStatus />
