@@ -34,7 +34,6 @@ import { CARAdministrativeOverview } from './CARAdministrativeOverview';
 import AddressSearch from './AddressSearch';
 import { AddressRequestForm } from './AddressRequestForm';
 import { AddressRequestStatus } from './AddressRequestStatus';
-import { AnalyticsReports } from './AnalyticsReports';
 import { NARCARTestPanel } from './NARCARTestPanel';
 import AdminPanel from './AdminPanel';
 
@@ -111,8 +110,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
         { id: 'search', label: t('address:searchAddresses'), icon: Search },
         { id: 'verification', label: 'Address Verification', icon: CheckCircle },
         { id: 'car-verification', label: 'Citizen Verification', icon: UserCheck },
-        { id: 'queue-management', label: 'Queue Management', icon: Clock },
-        { id: 'analytics', label: t('dashboard:analytics'), icon: BarChart3 }
+        { id: 'queue-management', label: 'Queue Management', icon: Clock }
       ];
     }
 
@@ -122,9 +120,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
         { id: 'address-management', label: 'Address Management', icon: Search },
         { id: 'nar-admin', label: 'NAR Administration', icon: Database },
         { id: 'car-admin', label: 'CAR Administration', icon: Users },
-        { id: 'integration', label: 'NAR-CAR Integration', icon: Network },
-        
-        { id: 'analytics', label: t('dashboard:analytics'), icon: BarChart3 }
+        { id: 'integration', label: 'NAR-CAR Integration', icon: Network }
       ];
     }
 
@@ -412,20 +408,6 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           </div>
         );
 
-
-      case 'analytics':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">Unified Analytics</h2>
-                <p className="text-muted-foreground">Combined NAR and CAR analytics and reporting</p>
-              </div>
-              <Badge variant="outline">Analytics</Badge>
-            </div>
-            <AnalyticsReports />
-          </div>
-        );
 
       default:
         return <div>Select a tab to view content</div>;
