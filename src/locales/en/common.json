@@ -217,7 +217,12 @@
     "supervisors": "Supervisors",
     "supervisorsDescription": "Oversee operations, assign operators to incidents, and ensure proper response protocols.",
     "fieldUnits": "Field Units",
-    "fieldUnitsDescription": "Respond to incidents, update status in real-time, and communicate with dispatch for coordination."
+    "fieldUnitsDescription": "Respond to incidents, update status in real-time, and communicate with dispatch for coordination.",
+    "integratedAddressVerification": "Integrated Address Verification",
+    "crossModuleDataIntelligence": "Cross-Module Data Intelligence",
+    "realtimeAnalyticsDescription": "Real-time analytics across both address registry and police operations with performance tracking, response metrics, and data-driven insights.",
+    "accessSubtitle": "Staff • Citizens • All registered users",
+    "addressPrefilled": "Address Pre-filled"
   },
   "help": {
     "verificationTimeQuestion": "How long does address verification take?",
@@ -421,5 +426,18 @@
   "refreshPage": "Refresh Page",
   "loadingGoogleMaps": "Loading Google Maps...",
   "clickMarkerForFullDetails": "Click marker for full details",
-  "coordinates": "Coordinates"
+  "coordinates": "Coordinates",
+  "loginRequired": "Login Required",
+  "goToDashboard": "Go to Dashboard",
+  "goToLoginPage": "Go to Login Page",
+  "auth": {
+    "accessYourAccount": "Access Your Account",
+    "signInDescription": "Sign in to submit address requests, track your submissions, and access the registry.",
+    "newUser": "New User?",
+    "registrationIntro": "Don't have an account yet? The registration process is quick and secure.",
+    "bulletFreeRegistration": "Free account registration",
+    "bulletSecureVerification": "Secure email verification",
+    "bulletImmediateSearch": "Immediate access to search features",
+    "bulletSubmitRequests": "Submit address registration requests"
+  }
 }

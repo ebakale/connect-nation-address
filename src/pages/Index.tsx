@@ -149,8 +149,8 @@ const navigationItems = [
                         >
                          <Shield className="h-5 w-5 sm:h-6 sm:w-6 mr-3" />
                          <div className="flex flex-col items-start">
-                           <span>Access Platform</span>
-                           <span className="text-xs text-white/80 font-normal">Staff • Citizens • All registered users</span>
+                           <span>{t('common:platform.accessPlatform')}</span>
+                           <span className="text-xs text-white/80 font-normal">{t('common:platform.accessSubtitle')}</span>
                          </div>
                        </Button>
                        <Button 
@@ -272,11 +272,11 @@ const navigationItems = [
                           </div>
                           <div className="flex items-center gap-3">
                             <CheckCircle className="h-5 w-5 text-destructive" />
-                            <span className="text-sm">Integrated Address Verification</span>
+                            <span className="text-sm">{t('common:platform.integratedAddressVerification')}</span>
                           </div>
                           <div className="flex items-center gap-3">
                             <CheckCircle className="h-5 w-5 text-destructive" />
-                            <span className="text-sm">Cross-Module Data Intelligence</span>
+                            <span className="text-sm">{t('common:platform.crossModuleDataIntelligence')}</span>
                           </div>
                        </div>
                      </div>
@@ -297,7 +297,7 @@ const navigationItems = [
                   </CardHeader>
                    <CardContent>
                       <p className="text-muted-foreground leading-relaxed text-sm">
-                        Advanced role-based access with geographic scoping and cross-module integration for enhanced security and operational efficiency.
+                        {t('common:platform.advancedRoleManagement')}
                       </p>
                    </CardContent>
                 </Card>
@@ -329,7 +329,7 @@ const navigationItems = [
                   </CardHeader>
                    <CardContent>
                       <p className="text-muted-foreground leading-relaxed text-sm">
-                        Real-time analytics across both address registry and police operations with performance tracking, response metrics, and data-driven insights.
+                        {t('common:platform.realtimeAnalyticsDescription')}
                       </p>
                    </CardContent>
                 </Card>
@@ -644,27 +644,27 @@ const navigationItems = [
                     <CardContent className="space-y-4">
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <h4 className="font-semibold">Citizens</h4>
+                          <h4 className="font-semibold">{t('common:help.citizens')}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Submit address requests with location details and documentation, track submission status, and access verified addresses.
+                            {t('common:help.citizensDescription')}
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">Field Agents</h4>
+                          <h4 className="font-semibold">{t('common:help.fieldAgents')}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Visit locations to capture GPS coordinates, take verification photos, and create detailed address drafts for review.
+                            {t('common:help.fieldAgentsDescription')}
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">Verifiers</h4>
+                          <h4 className="font-semibold">{t('common:help.verifiers')}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Review address drafts for accuracy, check for duplicates, resolve conflicts, and ensure quality standards before publication.
+                            {t('common:help.verifiersDescription')}
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">Registrars</h4>
+                          <h4 className="font-semibold">{t('common:help.registrars')}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Perform final reviews, publish verified addresses to the registry, generate UACs, and manage address lifecycle.
+                            {t('common:help.registrarsDescription')}
                           </p>
                         </div>
                       </div>
@@ -704,27 +704,27 @@ const navigationItems = [
                     <CardContent className="space-y-4">
                        <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <h4 className="font-semibold">Police Operators</h4>
+                          <h4 className="font-semibold">{t('common:platform.emergencyOperators')}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Front-line responders who handle field incidents, update status in real-time, and request backup when needed.
+                            {t('common:platform.emergencyOperatorsDescription')}
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">Police Dispatchers</h4>
+                          <h4 className="font-semibold">{t('common:platform.dispatchers')}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Coordinate incident response, assign units, manage communications, and oversee resource allocation.
+                            {t('common:platform.dispatchersDescription')}
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">Police Supervisors</h4>
+                          <h4 className="font-semibold">{t('common:platform.supervisors')}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Monitor unit performance, approve backup requests, oversee operations within geographic areas, and manage escalations.
+                            {t('common:platform.supervisorsDescription')}
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold">Police Administrators</h4>
+                          <h4 className="font-semibold">{t('common:platform.fieldUnits')}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Manage system configuration, user roles, unit assignments, and analyze performance metrics across the entire force.
+                            {t('common:platform.fieldUnitsDescription')}
                           </p>
                         </div>
                       </div>
@@ -749,7 +749,7 @@ const navigationItems = [
               </p>
               {emergencyPrefilledData && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
-                  <p className="text-sm text-blue-800 font-medium">Address Pre-filled:</p>
+                  <p className="text-sm text-blue-800 font-medium">{t('common:platform.addressPrefilled')}:</p>
                   <p className="text-sm text-blue-600">{emergencyPrefilledData.street}, {emergencyPrefilledData.city}</p>
                   <p className="text-xs text-blue-500">UAC: {emergencyPrefilledData.uac}</p>
                 </div>
@@ -766,9 +766,9 @@ const navigationItems = [
         return (
           <div className="max-w-md mx-auto space-y-8">
             <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold">Access Your Account</h2>
+              <h2 className="text-3xl font-bold">{t('common:auth.accessYourAccount')}</h2>
               <p className="text-muted-foreground">
-                Sign in to submit address requests, track your submissions, and access the registry.
+                {t('common:auth.signInDescription')}
               </p>
             </div>
 
@@ -800,20 +800,20 @@ const navigationItems = [
             </Card>
 
             <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle className="text-center">New User?</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-center text-muted-foreground mb-4">
-                  Don't have an account yet? The registration process is quick and secure.
-                </p>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• Free account registration</li>
-                  <li>• Secure email verification</li>
-                  <li>• Immediate access to search features</li>
-                  <li>• Submit address registration requests</li>
-                </ul>
-              </CardContent>
+                <CardHeader>
+                  <CardTitle className="text-center">{t('common:auth.newUser')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-center text-muted-foreground mb-4">
+                    {t('common:auth.registrationIntro')}
+                  </p>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• {t('common:auth.bulletFreeRegistration')}</li>
+                    <li>• {t('common:auth.bulletSecureVerification')}</li>
+                    <li>• {t('common:auth.bulletImmediateSearch')}</li>
+                    <li>• {t('common:auth.bulletSubmitRequests')}</li>
+                  </ul>
+                </CardContent>
             </Card>
           </div>
         );

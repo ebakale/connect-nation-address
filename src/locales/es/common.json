@@ -217,7 +217,12 @@
     "supervisors": "Supervisores",
     "supervisorsDescription": "Supervisan operaciones, asignan operadores a incidentes y aseguran protocolos de respuesta adecuados.",
     "fieldUnits": "Unidades de Campo",
-    "fieldUnitsDescription": "Responden a incidentes, actualizan estado en tiempo real y se comunican con despacho para coordinación."
+    "fieldUnitsDescription": "Responden a incidentes, actualizan el estado en tiempo real y se comunican con el despacho para la coordinación.",
+    "integratedAddressVerification": "Verificación de Direcciones Integrada",
+    "crossModuleDataIntelligence": "Inteligencia de Datos entre Módulos",
+    "realtimeAnalyticsDescription": "Analíticas en tiempo real en el registro de direcciones y operaciones policiales con seguimiento de desempeño, métricas de respuesta e insights basados en datos.",
+    "accessSubtitle": "Personal • Ciudadanos • Todos los usuarios registrados",
+    "addressPrefilled": "Dirección Precompletada"
   },
   "help": {
     "verificationTimeQuestion": "¿Cuánto tiempo toma la verificación de direcciones?",
@@ -421,5 +426,18 @@
   "refreshPage": "Actualizar Página",
   "loadingGoogleMaps": "Cargando Google Maps...",
   "clickMarkerForFullDetails": "Hacer clic en el marcador para detalles completos",
-  "coordinates": "Coordenadas"
+  "coordinates": "Coordenadas",
+  "loginRequired": "Inicio de sesión requerido",
+  "goToDashboard": "Ir al Panel",
+  "goToLoginPage": "Ir a Iniciar Sesión",
+  "auth": {
+    "accessYourAccount": "Accede a tu Cuenta",
+    "signInDescription": "Inicia sesión para enviar solicitudes de direcciones, seguir tus envíos y acceder al registro.",
+    "newUser": "¿Nuevo usuario?",
+    "registrationIntro": "¿Aún no tienes cuenta? El registro es rápido y seguro.",
+    "bulletFreeRegistration": "Registro de cuenta gratuito",
+    "bulletSecureVerification": "Verificación de correo segura",
+    "bulletImmediateSearch": "Acceso inmediato a funciones de búsqueda",
+    "bulletSubmitRequests": "Enviar solicitudes de registro de direcciones"
+  }
 }

@@ -216,7 +216,12 @@
     "supervisors": "Superviseurs",
     "supervisorsDescription": "Supervisent les opérations, assignent les opérateurs aux incidents et assurent les protocoles de réponse appropriés.",
     "fieldUnits": "Unités de Terrain",
-    "fieldUnitsDescription": "Répondent aux incidents, mettent à jour le statut en temps réel et communiquent avec la répartition pour la coordination."
+    "fieldUnitsDescription": "Répondent aux incidents, mettent à jour le statut en temps réel et communiquent avec la répartition pour la coordination.",
+    "integratedAddressVerification": "Vérification d'Adresse Intégrée",
+    "crossModuleDataIntelligence": "Intelligence de Données Inter-modules",
+    "realtimeAnalyticsDescription": "Analyses en temps réel pour le registre d’adresses et les opérations policières avec suivi des performances, métriques de réponse et insights basés sur les données.",
+    "accessSubtitle": "Personnel • Citoyens • Tous les utilisateurs inscrits",
+    "addressPrefilled": "Adresse Préremplie"
   },
   "help": {
     "verificationTimeQuestion": "Combien de temps prend la vérification d'adresse ?",
@@ -420,5 +425,18 @@
   "refreshPage": "Actualiser la Page",
   "loadingGoogleMaps": "Chargement de Google Maps...",
   "clickMarkerForFullDetails": "Cliquer sur le marqueur pour les détails complets",
-  "coordinates": "Coordonnées"
+  "coordinates": "Coordonnées",
+  "loginRequired": "Connexion requise",
+  "goToDashboard": "Aller au Tableau de Bord",
+  "goToLoginPage": "Aller à la Page de Connexion",
+  "auth": {
+    "accessYourAccount": "Accédez à Votre Compte",
+    "signInDescription": "Connectez-vous pour soumettre des demandes d’adresses, suivre vos soumissions et accéder au registre.",
+    "newUser": "Nouvel Utilisateur ?",
+    "registrationIntro": "Vous n’avez pas encore de compte ? L’inscription est rapide et sécurisée.",
+    "bulletFreeRegistration": "Inscription gratuite",
+    "bulletSecureVerification": "Vérification e-mail sécurisée",
+    "bulletImmediateSearch": "Accès immédiat aux fonctions de recherche",
+    "bulletSubmitRequests": "Soumettre des demandes d’enregistrement d’adresse"
+  }
 }
