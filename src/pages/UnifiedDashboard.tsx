@@ -105,7 +105,8 @@ const UnifiedDashboard = () => {
     hasSystemAdminAccess
   } = useUserRole();
   const { user, signOut } = useAuth();
-  const { t } = useTranslation(['common', 'dashboard']);
+  const { t } = useTranslation(['dashboard']);
+  const { t: tCommon } = useTranslation('common');
   const navigate = useNavigate();
 
   // Route users to appropriate dashboard based on their primary role
@@ -688,11 +689,11 @@ const UnifiedDashboard = () => {
                   size="sm"
                   onClick={signOut} 
                   className="flex items-center gap-2"
-                  aria-label={t('common:navigation.logout', { defaultValue: 'Logout' })}
-                  title={t('common:navigation.logout', { defaultValue: 'Logout' })}
+                  aria-label={tCommon('navigation.logout')}
+                  title={tCommon('navigation.logout')}
                 >
                   <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline">{t('common:navigation.logout', { defaultValue: 'Logout' })}</span>
+                  <span className="hidden sm:inline">{tCommon('navigation.logout')}</span>
                 </Button>
               </div>
             </div>
