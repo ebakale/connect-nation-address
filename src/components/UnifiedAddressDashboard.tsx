@@ -265,6 +265,34 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           </div>
         );
 
+      case 'my-addresses':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:myAddressesCAR')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:manageYourCitizenAddresses')}</p>
+              </div>
+              <Badge variant="outline">{t('dashboard:citizenAddresses')}</Badge>
+            </div>
+            <CitizenAddressPortal />
+          </div>
+        );
+
+      case 'verification-requests':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:myVerifications')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:viewManageYourVerifications')}</p>
+              </div>
+              <Badge variant="outline">{t('dashboard:carVerification')}</Badge>
+            </div>
+            <UserVerificationRequests />
+          </div>
+        );
+
       case 'search':
         return (
           <div className="space-y-6">
