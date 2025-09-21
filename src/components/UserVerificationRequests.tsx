@@ -255,9 +255,9 @@ export const UserVerificationRequests = () => {
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-muted-foreground" />
                     <div>
-                      <p className="text-sm font-medium">Status</p>
+                      <p className="text-sm font-medium">{t('common:status.status')}</p>
                       <p className="text-sm text-muted-foreground">
-                        {formatStatus(verification.status)}
+                        {t(`address:verificationStatus.${verification.status}`)}
                       </p>
                     </div>
                   </div>
