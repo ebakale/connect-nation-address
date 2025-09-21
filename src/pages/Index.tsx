@@ -7,6 +7,7 @@ import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, Check
 import { ValuePropositionPDF } from '@/components/ValuePropositionPDF';
 import StoryboardsPDF from '@/components/StoryboardsPDF';
 import BusinessModelCanvasPDF from '@/components/BusinessModelCanvasPDF';
+import BusinessModelCanvasPDFEnglish from '@/components/BusinessModelCanvasPDFEnglish';
 import { useAuth } from '@/hooks/useAuth';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
@@ -786,7 +787,8 @@ const Index = () => {
                 </div>
               <ValuePropositionPDF />
               <StoryboardsPDF />
-              <BusinessModelCanvasPDF />
+            <BusinessModelCanvasPDF />
+            <BusinessModelCanvasPDFEnglish />
               </div>
             </div>
           </div>
