@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Home, MapPin, Calendar, User, Trash2, Plus } from 'lucide-react';
 import { format } from "date-fns";
+import { es, enUS, fr } from 'date-fns/locale';
 import { useCitizenAddresses } from '@/hooks/useCAR';
 import type { CitizenAddress } from '@/types/car';
 import { useTranslation } from 'react-i18next';
@@ -21,8 +22,17 @@ export function CurrentAddressesPanel({
   onAddSecondary, 
   onSetPrimary 
 }: CurrentAddressesPanelProps) {
-  const { t } = useTranslation(['address', 'common']);
+  const { t, i18n } = useTranslation(['address', 'common']);
   const { retireAddress } = useCitizenAddresses();
+
+  // Get the appropriate locale for date formatting
+  const getDateLocale = () => {
+    switch (i18n.language) {
+      case 'es': return es;
+      case 'fr': return fr;
+      default: return enUS;
+    }
+  };
 
   const handleRetireAddress = async (addressId: string) => {
     try {
@@ -118,11 +128,11 @@ export function CurrentAddressesPanel({
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
-                {isPrimary ? `${t('address:effectiveFrom')} ${format(new Date(address.effective_from), 'MMM d, yyyy')}` : `${t('address:added')} ${format(new Date(address.created_at), 'MMM d, yyyy')}`}
+                {isPrimary ? `${t('address:effectiveFrom')} ${format(new Date(address.effective_from), 'MMM d, yyyy', { locale: getDateLocale() })}` : `${t('address:added')} ${format(new Date(address.created_at), 'MMM d, yyyy', { locale: getDateLocale() })}`}
               </div>
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
-                {address.scope}
+                {t(`address:scopeType.${address.scope.toLowerCase()}`)}
               </div>
             </div>
             <div className="flex gap-2">
