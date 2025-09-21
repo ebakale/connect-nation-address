@@ -8,6 +8,8 @@ import { ValuePropositionPDF } from '@/components/ValuePropositionPDF';
 import StoryboardsPDF from '@/components/StoryboardsPDF';
 import BusinessModelCanvasPDF from '@/components/BusinessModelCanvasPDF';
 import BusinessModelCanvasPDFEnglish from '@/components/BusinessModelCanvasPDFEnglish';
+import FinancialAnalysisPDF from '@/components/FinancialAnalysisPDF';
+import FinancialAnalysisPDFEnglish from '@/components/FinancialAnalysisPDFEnglish';
 import { useAuth } from '@/hooks/useAuth';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
@@ -789,6 +791,8 @@ const Index = () => {
               <StoryboardsPDF />
             <BusinessModelCanvasPDF />
             <BusinessModelCanvasPDFEnglish />
+            <FinancialAnalysisPDF />
+            <FinancialAnalysisPDFEnglish />
               </div>
             </div>
           </div>
