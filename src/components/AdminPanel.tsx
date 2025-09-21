@@ -59,12 +59,12 @@ const AdminPanel: React.FC = () => {
           <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:userManagement')}</TabsTrigger>
           <TabsTrigger value="permissions" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:permissions')}</TabsTrigger>
           <TabsTrigger value="workflows" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:workflows')}</TabsTrigger>
-          <TabsTrigger value="nar-authorities" className="text-xs sm:text-sm px-2 sm:px-3">NAR Authorities</TabsTrigger>
-          <TabsTrigger value="car-permissions" className="text-xs sm:text-sm px-2 sm:px-3">CAR Permissions</TabsTrigger>
-          <TabsTrigger value="car-workflow" className="text-xs sm:text-sm px-2 sm:px-3">CAR Workflow</TabsTrigger>
+          <TabsTrigger value="nar-authorities" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:narAuthorities')}</TabsTrigger>
+          <TabsTrigger value="car-permissions" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:carPermissions')}</TabsTrigger>
+          <TabsTrigger value="car-workflow" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:carWorkflow')}</TabsTrigger>
           <TabsTrigger value="uac" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:uacSystem')}</TabsTrigger>
-          <TabsTrigger value="quality" className="text-xs sm:text-sm px-2 sm:px-3">Quality</TabsTrigger>
-          <TabsTrigger value="system-tools" className="text-xs sm:text-sm px-2 sm:px-3">System Tools</TabsTrigger>
+          <TabsTrigger value="quality" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:quality')}</TabsTrigger>
+          <TabsTrigger value="system-tools" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:systemTools')}</TabsTrigger>
           <TabsTrigger value="documentation" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:documentation')}</TabsTrigger>
           {hasNDAAAccess && (
             <TabsTrigger value="api-webhooks" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:apiWebhooks')}</TabsTrigger>
@@ -104,8 +104,8 @@ const AdminPanel: React.FC = () => {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold">System Tools</h2>
-                <p className="text-muted-foreground">Import addresses and test system integration</p>
+                <h2 className="text-2xl font-bold">{t('admin:systemTools')}</h2>
+                <p className="text-muted-foreground">{t('admin:systemToolsDescription')}</p>
               </div>
             </div>
             {hasSystemAdminAccess && <GoogleMapsImporter />}
@@ -123,8 +123,8 @@ const AdminPanel: React.FC = () => {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-bold">Document Generators</h2>
-                  <p className="text-sm text-muted-foreground">Generate system documentation and reports</p>
+                  <h2 className="text-xl font-bold">{t('admin:documentGenerators')}</h2>
+                  <p className="text-sm text-muted-foreground">{t('admin:documentGeneratorsDescription')}</p>
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -148,9 +148,9 @@ const AdminPanel: React.FC = () => {
                 </Card>
                 <Card className="p-4">
                   <div className="space-y-3">
-                    <h3 className="font-semibold text-sm">Strategic Overview</h3>
+                    <h3 className="font-semibold text-sm">{t('admin:strategicOverview')}</h3>
                     <p className="text-xs text-muted-foreground">
-                      Strategic analysis and national benefits documentation
+                      {t('admin:strategicOverviewDescription')}
                     </p>
                     <StrategicOverviewPDF />
                   </div>
@@ -161,7 +161,7 @@ const AdminPanel: React.FC = () => {
             {/* Additional documentation features */}
             <div className="border-t pt-6">
               <div className="min-h-[200px] flex items-center justify-center border-2 border-dashed border-muted rounded-lg">
-                <p className="text-muted-foreground">Additional documentation features can be added here</p>
+                <p className="text-muted-foreground">{t('admin:additionalDocumentationFeatures')}</p>
               </div>
             </div>
           </div>
