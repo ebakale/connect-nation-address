@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3 } from 'lucide-react';
+import { ValuePropositionPDF } from '@/components/ValuePropositionPDF';
 import { useAuth } from '@/hooks/useAuth';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
@@ -772,6 +773,17 @@ const Index = () => {
                   </Card>
                 </CardContent>
               </Card>
+              
+              {/* Value Proposition PDF Section */}
+              <div className="mt-16 space-y-8">
+                <div className="text-center space-y-4">
+                  <h2 className="text-3xl font-bold">Business Value Proposition</h2>
+                  <p className="text-lg text-muted-foreground">
+                    Download our comprehensive value proposition document with detailed analysis and infographics
+                  </p>
+                </div>
+                <ValuePropositionPDF />
+              </div>
             </div>
           </div>
         );
