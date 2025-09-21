@@ -184,6 +184,7 @@
     "bank_statement": "Bank Statement",
     "employment_letter": "Employment Letter",
     "government_issued_id": "Government Issued ID",
+    "government_id": "Government ID",
     "other": "Other"
   }
 }

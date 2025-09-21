@@ -129,7 +129,7 @@ export const UserVerificationRequests = () => {
           <h2 className="text-2xl font-bold">{t('address:myVerificationRequests')}</h2>
         </div>
         <Button onClick={fetchUserVerifications} disabled={loading}>
-          {loading ? t('common:loading') : t('common:refresh')}
+          {loading ? t('common:buttons.loading') : t('common:buttons.refresh')}
         </Button>
       </div>
 
@@ -182,7 +182,7 @@ export const UserVerificationRequests = () => {
                             onClick={() => setEditingVerificationId(verification.id)}
                           >
                             <Edit className="w-4 h-4 mr-1" />
-                            {t('common:edit')}
+                            {t('common:buttons.edit')}
                           </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -219,7 +219,7 @@ export const UserVerificationRequests = () => {
                                   </div>
                                   <div className="flex justify-center gap-2 pt-4">
                                     <Button onClick={() => setEditingVerificationId(null)}>
-                                      {t('common:close')}
+                                      {t('common:buttons.close')}
                                     </Button>
                                   </div>
                                 </div>

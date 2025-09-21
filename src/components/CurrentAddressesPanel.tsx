@@ -151,7 +151,7 @@ export function CurrentAddressesPanel({
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>{t('common:cancel')}</AlertDialogCancel>
+                    <AlertDialogCancel>{t('common:buttons.cancel')}</AlertDialogCancel>
                     <AlertDialogAction onClick={() => handleRetireAddress(address.id)}>
                       {isPrimary ? t('address:retireAddress') : t('address:removeAddress')}
                     </AlertDialogAction>

@@ -120,7 +120,7 @@ export const CitizenAddressVerificationManager = ({
           <SetPrimaryAddressForm onSuccess={handleAddressAdded} />
           <div className="flex gap-2 mt-4">
             <Button variant="outline" onClick={() => setStep('select_address')}>
-              {t('common:back')}
+              {t('common:buttons.back')}
             </Button>
           </div>
         </CardContent>
@@ -144,7 +144,7 @@ export const CitizenAddressVerificationManager = ({
           <AddSecondaryAddressForm onSuccess={handleAddressAdded} />
           <div className="flex gap-2 mt-4">
             <Button variant="outline" onClick={() => setStep('select_address')}>
-              {t('common:back')}
+              {t('common:buttons.back')}
             </Button>
           </div>
         </CardContent>
@@ -250,7 +250,7 @@ export const CitizenAddressVerificationManager = ({
                                   onClick={() => setEditingVerification(verification)}
                                 >
                                   <Edit className="h-3 w-3 mr-1" />
-                                  {t('common:edit')}
+                                  {t('common:buttons.edit')}
                                 </Button>
                               </DialogTrigger>
                               <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -336,7 +336,7 @@ export const CitizenAddressVerificationManager = ({
         {onCancel && (
           <div className="flex justify-end pt-4 border-t">
             <Button variant="outline" onClick={onCancel}>
-              {t('common:cancel')}
+              {t('common:buttons.cancel')}
             </Button>
           </div>
         )}

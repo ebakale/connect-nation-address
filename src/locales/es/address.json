@@ -849,6 +849,7 @@
     "bank_statement": "Estado de Cuenta Bancario",
     "employment_letter": "Carta de Trabajo",
     "government_issued_id": "Identificación Gubernamental",
+    "government_id": "ID Gubernamental",
     "other": "Otro"
   }
 }

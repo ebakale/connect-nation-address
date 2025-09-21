@@ -699,6 +699,7 @@
     "bank_statement": "Relevé Bancaire",
     "employment_letter": "Lettre d'Emploi",
     "government_issued_id": "Pièce d'Identité Gouvernementale",
+    "government_id": "ID Gouvernementale",
     "other": "Autre"
   }
 }
