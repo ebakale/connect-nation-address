@@ -7,10 +7,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { CheckCircle, XCircle, AlertTriangle, Info } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 export function NARCARTestPanel() {
   const { user } = useAuth();
   const { hasAdminAccess } = useUserRole();
+  const { t } = useTranslation(['admin']);
   const [testResults, setTestResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -28,9 +30,9 @@ export function NARCARTestPanel() {
         .limit(5);
       
       results.push({
-        test: 'NAR Authorities Table',
+        test: t('admin:narCarIntegration.testNames.narAuthoritiesTable'),
         status: narError ? 'error' : 'success',
-        message: narError ? narError.message : `Found ${narAuthorities?.length || 0} NAR authorities`,
+        message: narError ? narError.message : t('admin:narCarIntegration.testMessages.foundNarAuthorities', { count: narAuthorities?.length || 0 }),
         data: narAuthorities
       });
 
@@ -41,9 +43,9 @@ export function NARCARTestPanel() {
         .limit(5);
       
       results.push({
-        test: 'Citizen Address (CAR) Table',
+        test: t('admin:narCarIntegration.testNames.citizenAddressCar'),
         status: carError ? 'error' : 'success',
-        message: carError ? carError.message : `Found ${citizenAddresses?.length || 0} citizen addresses`,
+        message: carError ? carError.message : t('admin:narCarIntegration.testMessages.foundCitizenAddresses', { count: citizenAddresses?.length || 0 }),
         data: citizenAddresses
       });
 
@@ -55,9 +57,9 @@ export function NARCARTestPanel() {
         .limit(5);
       
       results.push({
-        test: 'Address Requests (Pending)',
+        test: t('admin:narCarIntegration.testNames.addressRequestsPending'),
         status: requestsError ? 'error' : 'success',
-        message: requestsError ? requestsError.message : `Found ${addressRequests?.length || 0} pending requests`,
+        message: requestsError ? requestsError.message : t('admin:narCarIntegration.testMessages.foundPendingRequests', { count: addressRequests?.length || 0 }),
         data: addressRequests
       });
 
@@ -69,9 +71,9 @@ export function NARCARTestPanel() {
         .limit(5);
       
       results.push({
-        test: 'NAR Addresses (Verified)',
+        test: t('admin:narCarIntegration.testNames.narAddressesVerified'),
         status: addressesError ? 'error' : 'success',
-        message: addressesError ? addressesError.message : `Found ${addresses?.length || 0} verified addresses in NAR`,
+        message: addressesError ? addressesError.message : t('admin:narCarIntegration.testMessages.foundVerifiedAddresses', { count: addresses?.length || 0 }),
         data: addresses
       });
 
@@ -82,17 +84,17 @@ export function NARCARTestPanel() {
         .eq('user_id', user.id);
       
       results.push({
-        test: 'User Roles & RLS',
+        test: t('admin:narCarIntegration.testNames.userRolesRls'),
         status: rolesError ? 'error' : 'success',
-        message: rolesError ? rolesError.message : `User has ${userRoles?.length || 0} roles`,
+        message: rolesError ? rolesError.message : t('admin:narCarIntegration.testMessages.userHasRoles', { count: userRoles?.length || 0 }),
         data: userRoles
       });
 
     } catch (error) {
       results.push({
-        test: 'General Test Error',
+        test: t('admin:narCarIntegration.testNames.generalTestError'),
         status: 'error',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message : t('admin:narCarIntegration.testMessages.unknownError'),
         data: null
       });
     }
@@ -115,7 +117,7 @@ export function NARCARTestPanel() {
       <Alert>
         <AlertTriangle className="h-4 w-4" />
         <AlertDescription>
-          Admin access required to run NAR/CAR tests.
+          {t('admin:narCarIntegration.adminAccessRequired')}
         </AlertDescription>
       </Alert>
     );
@@ -124,19 +126,19 @@ export function NARCARTestPanel() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>NAR/CAR System Test Panel</CardTitle>
+        <CardTitle>{t('admin:narCarIntegration.systemTestPanel')}</CardTitle>
         <CardDescription>
-          Test the separation and integration between National Address Registry (NAR) and Citizen Address Repository (CAR)
+          {t('admin:narCarIntegration.testPanelDescription')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <Button onClick={runTests} disabled={loading}>
-          {loading ? 'Running Tests...' : 'Run System Tests'}
+          {loading ? t('admin:narCarIntegration.runningTests') : t('admin:narCarIntegration.runSystemTests')}
         </Button>
 
         {testResults.length > 0 && (
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold">Test Results</h3>
+            <h3 className="text-lg font-semibold">{t('admin:narCarIntegration.testResults')}</h3>
             {testResults.map((result, index) => (
               <div key={index} className="flex items-start gap-3 p-3 border rounded-lg">
                 {getStatusIcon(result.status)}
@@ -144,13 +146,13 @@ export function NARCARTestPanel() {
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-medium">{result.test}</span>
                     <Badge variant={result.status === 'success' ? 'default' : 'destructive'}>
-                      {result.status}
+                      {t(`admin:narCarIntegration.statusLabels.${result.status}`)}
                     </Badge>
                   </div>
                   <p className="text-sm text-muted-foreground">{result.message}</p>
                   {result.data && (
                     <details className="mt-2">
-                      <summary className="text-xs cursor-pointer">View Data</summary>
+                      <summary className="text-xs cursor-pointer">{t('admin:narCarIntegration.viewData')}</summary>
                       <pre className="text-xs bg-muted p-2 rounded mt-1 overflow-auto">
                         {JSON.stringify(result.data, null, 2)}
                       </pre>
@@ -165,11 +167,11 @@ export function NARCARTestPanel() {
         <Alert>
           <Info className="h-4 w-4" />
           <AlertDescription>
-            <strong>System Architecture:</strong>
-            <br />• NAR (National Address Registry): Authoritative addresses created by authorities
-            <br />• CAR (Citizen Address Repository): Personal address associations for citizens  
-            <br />• Address Requests: Citizen requests for new address verification
-            <br />• NAR Authorities: Users with permission to create official addresses
+            <strong>{t('admin:narCarIntegration.systemArchitecture')}</strong>
+            <br />• {t('admin:narCarIntegration.narDescription')}
+            <br />• {t('admin:narCarIntegration.carDescription')}
+            <br />• {t('admin:narCarIntegration.addressRequestsDescription')}
+            <br />• {t('admin:narCarIntegration.narAuthoritiesDescription')}
           </AlertDescription>
         </Alert>
       </CardContent>

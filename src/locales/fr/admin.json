@@ -247,6 +247,41 @@
     "errorTitle": "Erreur",
     "failedToLoadStatistics": "Échec du chargement des statistiques CAR"
   },
+  "narCarIntegration": {
+    "adminAccessRequired": "Accès administrateur requis pour exécuter les tests NAR/CAR.",
+    "systemTestPanel": "Panneau de Tests du Système NAR/CAR",
+    "testPanelDescription": "Tester la séparation et l'intégration entre le Registre National d'Adresses (NAR) et le Référentiel d'Adresses de Citoyens (CAR)",
+    "runSystemTests": "Exécuter les Tests du Système",
+    "runningTests": "Exécution des Tests...",
+    "testResults": "Résultats des Tests",
+    "viewData": "Voir les Données",
+    "systemArchitecture": "Architecture du Système:",
+    "narDescription": "NAR (Registre National d'Adresses): Adresses officielles créées par les autorités",
+    "carDescription": "CAR (Référentiel d'Adresses de Citoyens): Associations d'adresses personnelles pour les citoyens",
+    "addressRequestsDescription": "Demandes d'Adresses: Demandes de citoyens pour la vérification de nouvelles adresses",
+    "narAuthoritiesDescription": "Autorités NAR: Utilisateurs avec permission de créer des adresses officielles",
+    "testNames": {
+      "narAuthoritiesTable": "Table des Autorités NAR",
+      "citizenAddressCar": "Table des Adresses de Citoyens (CAR)",
+      "addressRequestsPending": "Demandes d'Adresses (En Attente)",
+      "narAddressesVerified": "Adresses NAR (Vérifiées)",
+      "userRolesRls": "Rôles d'Utilisateur et RLS",
+      "generalTestError": "Erreur Générale de Test"
+    },
+    "testMessages": {
+      "foundNarAuthorities": "{{count}} autorités NAR trouvées",
+      "foundCitizenAddresses": "{{count}} adresses de citoyens trouvées",
+      "foundPendingRequests": "{{count}} demandes en attente trouvées",
+      "foundVerifiedAddresses": "{{count}} adresses vérifiées trouvées dans NAR",
+      "userHasRoles": "L'utilisateur a {{count}} rôles",
+      "unknownError": "Erreur inconnue"
+    },
+    "statusLabels": {
+      "success": "succès",
+      "error": "erreur",
+      "warning": "avertissement"
+    }
+  },
   "uacGenerated": "UAC Généré",
   "newUacGenerated": "Nouveau UAC : {{uac}}",
   "failedToGenerateUac": "Échec de la génération UAC",

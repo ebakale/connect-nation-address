@@ -255,6 +255,41 @@
     "errorTitle": "Error",
     "failedToLoadStatistics": "Failed to load CAR statistics"
   },
+  "narCarIntegration": {
+    "adminAccessRequired": "Admin access required to run NAR/CAR tests.",
+    "systemTestPanel": "NAR/CAR System Test Panel",
+    "testPanelDescription": "Test the separation and integration between National Address Registry (NAR) and Citizen Address Repository (CAR)",
+    "runSystemTests": "Run System Tests",
+    "runningTests": "Running Tests...",
+    "testResults": "Test Results",
+    "viewData": "View Data",
+    "systemArchitecture": "System Architecture:",
+    "narDescription": "NAR (National Address Registry): Authoritative addresses created by authorities",
+    "carDescription": "CAR (Citizen Address Repository): Personal address associations for citizens",
+    "addressRequestsDescription": "Address Requests: Citizen requests for new address verification",
+    "narAuthoritiesDescription": "NAR Authorities: Users with permission to create official addresses",
+    "testNames": {
+      "narAuthoritiesTable": "NAR Authorities Table",
+      "citizenAddressCar": "Citizen Address (CAR) Table",
+      "addressRequestsPending": "Address Requests (Pending)",
+      "narAddressesVerified": "NAR Addresses (Verified)",
+      "userRolesRls": "User Roles & RLS",
+      "generalTestError": "General Test Error"
+    },
+    "testMessages": {
+      "foundNarAuthorities": "Found {{count}} NAR authorities",
+      "foundCitizenAddresses": "Found {{count}} citizen addresses",
+      "foundPendingRequests": "Found {{count}} pending requests",
+      "foundVerifiedAddresses": "Found {{count}} verified addresses in NAR",
+      "userHasRoles": "User has {{count}} roles",
+      "unknownError": "Unknown error"
+    },
+    "statusLabels": {
+      "success": "success",
+      "error": "error",
+      "warning": "warning"
+    }
+  },
   "uacGenerated": "UAC Generated",
   "newUacGenerated": "New UAC: {{uac}}",
   "failedToGenerateUac": "Failed to generate UAC",
