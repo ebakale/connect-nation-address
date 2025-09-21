@@ -52,7 +52,9 @@
     "logout": "Cerrar sesión",
     "login": "Iniciar sesión",
     "register": "Registrarse",
-    "address": "Dirección"
+    "address": "Dirección",
+    "goToDashboard": "Ir al Panel de Control",
+    "goToLoginPage": "Ir a la Página de Inicio de Sesión"
   },
   "status": {
     "active": "Activo",

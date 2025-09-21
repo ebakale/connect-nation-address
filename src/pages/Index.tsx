@@ -801,7 +801,7 @@ const Index = () => {
                     variant="hero"
                   >
                     <LogIn className="h-4 w-4 mr-2" />
-                    {t('goToDashboard')}
+                    {t('common:goToDashboard')}
                   </Button>
                 ) : (
                   <Button 
@@ -810,7 +810,7 @@ const Index = () => {
                     variant="hero"
                   >
                     <LogIn className="h-4 w-4 mr-2" />
-                    {t('goToLoginPage')}
+                    {t('common:goToLoginPage')}
                   </Button>
                 )}
               </CardContent>

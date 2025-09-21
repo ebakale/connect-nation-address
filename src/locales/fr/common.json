@@ -51,7 +51,10 @@
     "terms": "Conditions d'utilisation",
     "logout": "Se déconnecter",
     "login": "Se connecter",
-    "register": "S'inscrire"
+    "register": "S'inscrire",
+    "address": "Adresse",
+    "goToDashboard": "Aller au Tableau de Bord",
+    "goToLoginPage": "Aller à la Page de Connexion"
   },
   "status": {
     "active": "Actif",

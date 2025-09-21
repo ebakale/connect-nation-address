@@ -52,7 +52,9 @@
     "logout": "Logout",
     "login": "Login",
     "register": "Register",
-    "address": "Address"
+    "address": "Address",
+    "goToDashboard": "Go to Dashboard",
+    "goToLoginPage": "Go to Login Page"
   },
   "status": {
     "active": "Active",
