@@ -16,8 +16,9 @@
   "userRequestedRemoval": "Suppression demandée par l'utilisateur",
   "status": {
     "self_declared": "Auto Déclaré",
-    "confirmed": "Confirmé",
-    "rejected": "Rejeté"
+    "confirmed": "Confirmé", 
+    "rejected": "Rejeté",
+    "pending": "En Attente"
   },
   "occupant": {
     "owner": "Propriétaire",

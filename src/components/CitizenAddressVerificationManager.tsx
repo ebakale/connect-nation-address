@@ -213,7 +213,7 @@ export const CitizenAddressVerificationManager = ({
                              {t(`address:scope.${address.scope.toLowerCase()}`)}
                            </Badge>
                            <Badge variant={address.status === 'CONFIRMED' ? 'default' : 'secondary'} className="text-xs px-2 py-0.5">
-                             {t(`address:status.${address.status.toLowerCase()}`)}
+                             {t(`address:status.${address.status.toLowerCase().replace('_', '_')}`)}
                            </Badge>
                           {verification && (
                             <Badge 

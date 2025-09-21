@@ -17,7 +17,8 @@
   "status": {
     "self_declared": "Self Declared",
     "confirmed": "Confirmed", 
-    "rejected": "Rejected"
+    "rejected": "Rejected",
+    "pending": "Pending"
   },
   "occupant": {
     "owner": "Owner",
