@@ -1050,6 +1050,32 @@
     "business_owner": "Business Owner",
     "employee": "Employee",
     "other": "Other"
+  },
+  "verificationType": {
+    "residency": "Residency",
+    "ownership": "Ownership",
+    "business": "Business",
+    "property": "Property"
+  },
+  "documentType": {
+    "national_id": "National ID",
+    "passport": "Passport",
+    "driver_license": "Driver's License",
+    "utility_bill": "Utility Bill",
+    "bank_statement": "Bank Statement",
+    "tax_document": "Tax Document",
+    "lease_agreement": "Lease Agreement",
+    "property_deed": "Property Deed",
+    "business_license": "Business License",
+    "birth_certificate": "Birth Certificate",
+    "marriage_certificate": "Marriage Certificate",
+    "other": "Other"
+  },
+  "privacyLevel": {
+    "public": "Public",
+    "private": "Private",
+    "confidential": "Confidential",
+    "restricted": "Restricted"
   }
   }
 }

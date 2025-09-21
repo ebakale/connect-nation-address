@@ -549,5 +549,31 @@
     "business_owner": "Propriétaire d'Entreprise",
     "employee": "Employé",
     "other": "Autre"
+  },
+  "verificationType": {
+    "residency": "Résidence",
+    "ownership": "Propriété",
+    "business": "Entreprise",
+    "property": "Propriété"
+  },
+  "documentType": {
+    "national_id": "Carte d'Identité Nationale",
+    "passport": "Passeport",
+    "driver_license": "Permis de Conduire",
+    "utility_bill": "Facture de Services",
+    "bank_statement": "Relevé Bancaire",
+    "tax_document": "Document Fiscal",
+    "lease_agreement": "Contrat de Location",
+    "property_deed": "Acte de Propriété",
+    "business_license": "Licence d'Entreprise",
+    "birth_certificate": "Certificat de Naissance",
+    "marriage_certificate": "Certificat de Mariage",
+    "other": "Autre"
+  },
+  "privacyLevel": {
+    "public": "Public",
+    "private": "Privé",
+    "confidential": "Confidentiel",
+    "restricted": "Restreint"
   }
 }

@@ -302,7 +302,7 @@ export const ResidencyVerificationManager = () => {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       {getStatusIcon(verification.status)}
-                       {formatStatus(verification.verification_type)} {t('admin:verification')}
+                       {t(`admin:verificationType.${verification.verification_type}`, { defaultValue: formatStatus(verification.verification_type) })} {t('admin:verification')}
                      </CardTitle>
                      <CardDescription>
                        {t('admin:submittedBy')} {verification.profiles?.full_name} ({verification.profiles?.email}) 
@@ -342,19 +342,19 @@ export const ResidencyVerificationManager = () => {
                                </div>
                                <div>
                                  <Label>{t('admin:verificationType')}</Label>
-                                 <p className="text-sm">{formatStatus(selectedVerification.verification_type)}</p>
+                                 <p className="text-sm">{t(`admin:verificationType.${selectedVerification.verification_type}`, { defaultValue: formatStatus(selectedVerification.verification_type) })}</p>
                                </div>
                                <div>
                                  <Label>{t('admin:claimantRelationship')}</Label>
-                                 <p className="text-sm">{formatStatus(selectedVerification.claimant_relationship)}</p>
+                                 <p className="text-sm">{t(`admin:claimantRelationship.${selectedVerification.claimant_relationship}`, { defaultValue: formatStatus(selectedVerification.claimant_relationship) })}</p>
                                </div>
                                <div>
                                  <Label>{t('admin:documentType')}</Label>
-                                 <p className="text-sm">{formatStatus(selectedVerification.primary_document_type)}</p>
+                                 <p className="text-sm">{t(`admin:documentType.${selectedVerification.primary_document_type}`, { defaultValue: formatStatus(selectedVerification.primary_document_type) })}</p>
                                </div>
                                <div>
                                  <Label>{t('admin:privacyLevel')}</Label>
-                                 <p className="text-sm">{formatStatus(selectedVerification.privacy_level)}</p>
+                                 <p className="text-sm">{t(`admin:privacyLevel.${selectedVerification.privacy_level}`, { defaultValue: formatStatus(selectedVerification.privacy_level) })}</p>
                                </div>
                                <div>
                                  <Label>{t('admin:consentGiven')}</Label>
@@ -369,7 +369,7 @@ export const ResidencyVerificationManager = () => {
                                   <div className="flex items-center gap-2 mb-2">
                                     <FileText className="w-4 h-4" />
                                     <span className="text-sm font-medium">
-                                      {formatStatus(selectedVerification.primary_document_type)}
+                                      {t(`admin:documentType.${selectedVerification.primary_document_type}`, { defaultValue: formatStatus(selectedVerification.primary_document_type) })}
                                     </span>
                                   </div>
                                   <Button
@@ -547,7 +547,7 @@ export const ResidencyVerificationManager = () => {
                      <div>
                        <p className="text-sm font-medium">{t('admin:documentType')}</p>
                       <p className="text-sm text-muted-foreground">
-                        {formatStatus(verification.primary_document_type)}
+                        {t(`admin:documentType.${verification.primary_document_type}`, { defaultValue: formatStatus(verification.primary_document_type) })}
                       </p>
                     </div>
                   </div>
