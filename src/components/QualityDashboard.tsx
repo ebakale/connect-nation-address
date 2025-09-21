@@ -764,21 +764,21 @@ export function QualityDashboard() {
         <TabsContent value="cities" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>City Performance</CardTitle>
-              <CardDescription>Detailed metrics by city</CardDescription>
+              <CardTitle>{t('admin:quality.cityPerformanceTitle')}</CardTitle>
+              <CardDescription>{t('admin:quality.cityPerformanceDescription')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left p-2">City</th>
-                      <th className="text-left p-2">Region</th>
-                      <th className="text-right p-2">Addresses</th>
-                      <th className="text-right p-2">Verified</th>
-                      <th className="text-right p-2">Published</th>
-                      <th className="text-right p-2">Quality</th>
-                      <th className="text-right p-2">Last Updated</th>
+                      <th className="text-left p-2">{t('admin:quality.city')}</th>
+                      <th className="text-left p-2">{t('admin:quality.region')}</th>
+                      <th className="text-right p-2">{t('admin:quality.addresses')}</th>
+                      <th className="text-right p-2">{t('admin:quality.verified')}</th>
+                      <th className="text-right p-2">{t('admin:quality.published')}</th>
+                      <th className="text-right p-2">{t('admin:quality.quality')}</th>
+                      <th className="text-right p-2">{t('admin:quality.lastUpdated')}</th>
                     </tr>
                   </thead>
                   <tbody>

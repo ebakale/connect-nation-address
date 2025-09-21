@@ -1453,6 +1453,11 @@
     "carProcessingTime": "CAR Processing Time",
     "averageVerificationTime": "Average verification time",
     "slowProcessing": "Slow Processing",
-    "highBacklog": "High Backlog"
+    "highBacklog": "High Backlog",
+    "cityPerformanceTitle": "City Performance",
+    "cityPerformanceDescription": "Detailed metrics by city",
+    "addresses": "Addresses",
+    "quality": "Quality",
+    "published": "Published"
   }
 }

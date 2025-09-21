@@ -951,6 +951,11 @@
     "carProcessingTime": "Temps de Traitement CAR",
     "averageVerificationTime": "Temps de vérification moyen",
     "slowProcessing": "Traitement Lent",
-    "highBacklog": "Arriéré Élevé"
+    "highBacklog": "Arriéré Élevé",
+    "cityPerformanceTitle": "Performance des Villes",
+    "cityPerformanceDescription": "Métriques détaillées par ville",
+    "addresses": "Adresses",
+    "quality": "Qualité",
+    "published": "Publié"
   }
 }
