@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -41,13 +41,13 @@ const Index = () => {
 
   // Main page is always accessible regardless of authentication status
 
-  const navigationItems = [
+  const navigationItems = useMemo(() => [
     { id: 'overview', label: t('common:navigation.home'), icon: MapPin },
     { id: 'about', label: t('common:navigation.about'), icon: Users },
     { id: 'public', label: t('common:platform.searchAddresses'), icon: Search },
     { id: 'emergency', label: t('emergency:title'), icon: Shield },
     { id: 'help', label: t('common:navigation.help'), icon: HelpCircle },
-  ];
+  ], [t]);
 
   const handleNavigateToEmergency = (addressData?: any) => {
     console.log('Navigating to emergency with address data:', addressData);
