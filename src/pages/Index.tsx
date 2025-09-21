@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3 } from 'lucide-react';
 import { ValuePropositionPDF } from '@/components/ValuePropositionPDF';
 import StoryboardsPDF from '@/components/StoryboardsPDF';
+import BusinessModelCanvasPDF from '@/components/BusinessModelCanvasPDF';
 import { useAuth } from '@/hooks/useAuth';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
@@ -783,8 +784,9 @@ const Index = () => {
                     Download our comprehensive value proposition document with detailed analysis and infographics
                   </p>
                 </div>
-          <ValuePropositionPDF />
-          <StoryboardsPDF />
+              <ValuePropositionPDF />
+              <StoryboardsPDF />
+              <BusinessModelCanvasPDF />
               </div>
             </div>
           </div>
