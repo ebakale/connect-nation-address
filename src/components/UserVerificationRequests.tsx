@@ -18,6 +18,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
+import { es, enUS, fr } from 'date-fns/locale';
 import { ResidencyVerificationForm } from './ResidencyVerificationForm';
 import { useTranslation } from 'react-i18next';
 
@@ -37,7 +38,7 @@ interface VerificationRequest {
 }
 
 export const UserVerificationRequests = () => {
-  const { t } = useTranslation(['address', 'common']);
+  const { t, i18n } = useTranslation(['address', 'common']);
   const [verifications, setVerifications] = useState<VerificationRequest[]>([]);
   const [selectedVerification, setSelectedVerification] = useState<VerificationRequest | null>(null);
   const [editingVerificationId, setEditingVerificationId] = useState<string | null>(null);
@@ -45,6 +46,15 @@ export const UserVerificationRequests = () => {
   
   const { user } = useAuth();
   const { toast } = useToast();
+
+  // Get the appropriate locale for date formatting
+  const getDateLocale = () => {
+    switch (i18n.language) {
+      case 'es': return es;
+      case 'fr': return fr;
+      default: return enUS;
+    }
+  };
 
   const fetchUserVerifications = async () => {
     if (!user) return;
@@ -156,7 +166,7 @@ export const UserVerificationRequests = () => {
                       {t(`address:verificationType.${verification.verification_type}`)} {t('address:verification')}
                     </CardTitle>
                     <CardDescription>
-                      {t('address:submittedOn')} {format(new Date(verification.created_at), 'PPP')}
+                      {t('address:submittedOn')} {format(new Date(verification.created_at), 'PPP', { locale: getDateLocale() })}
                     </CardDescription>
                   </div>
                   <div className="flex items-center gap-2">
