@@ -284,7 +284,7 @@ export function QualityDashboard() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">{t('admin:quality.title')}</h1>
+          <h1 className="text-2xl font-bold text-foreground">{t('admin:quality.title')}</h1>
           <p className="text-muted-foreground">{t('admin:quality.description')}</p>
         </div>
         <div className="flex gap-2">
