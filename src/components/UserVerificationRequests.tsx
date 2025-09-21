@@ -19,6 +19,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { ResidencyVerificationForm } from './ResidencyVerificationForm';
+import { useTranslation } from 'react-i18next';
 
 interface VerificationRequest {
   id: string;
@@ -36,6 +37,7 @@ interface VerificationRequest {
 }
 
 export const UserVerificationRequests = () => {
+  const { t } = useTranslation(['address', 'common']);
   const [verifications, setVerifications] = useState<VerificationRequest[]>([]);
   const [selectedVerification, setSelectedVerification] = useState<VerificationRequest | null>(null);
   const [editingVerificationId, setEditingVerificationId] = useState<string | null>(null);
@@ -124,10 +126,10 @@ export const UserVerificationRequests = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Shield className="w-6 h-6" />
-          <h2 className="text-2xl font-bold">My Verification Requests</h2>
+          <h2 className="text-2xl font-bold">{t('address:myVerificationRequests')}</h2>
         </div>
         <Button onClick={fetchUserVerifications} disabled={loading}>
-          {loading ? 'Loading...' : 'Refresh'}
+          {loading ? t('common:loading') : t('common:refresh')}
         </Button>
       </div>
 
@@ -137,9 +139,9 @@ export const UserVerificationRequests = () => {
           <Card>
             <CardContent className="text-center py-8">
               <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-medium mb-2">No Verification Requests</h3>
+              <h3 className="text-lg font-medium mb-2">{t('address:noVerificationRequests')}</h3>
               <p className="text-muted-foreground">
-                You haven't submitted any verification requests yet.
+                {t('address:noVerificationRequestsMessage')}
               </p>
             </CardContent>
           </Card>
@@ -151,10 +153,10 @@ export const UserVerificationRequests = () => {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       {getStatusIcon(verification.status)}
-                      {formatStatus(verification.verification_type)} Verification
+                      {t(`address:verificationType.${verification.verification_type}`)} {t('address:verification')}
                     </CardTitle>
                     <CardDescription>
-                      Submitted on {format(new Date(verification.created_at), 'PPP')}
+                      {t('address:submittedOn')} {format(new Date(verification.created_at), 'PPP')}
                     </CardDescription>
                   </div>
                   <div className="flex items-center gap-2">
@@ -162,7 +164,7 @@ export const UserVerificationRequests = () => {
                       variant="outline" 
                       className={getStatusColor(verification.status)}
                     >
-                      {formatStatus(verification.status)}
+                      {t(`address:verificationStatus.${verification.status}`)}
                     </Badge>
                     {canEdit(verification) && (
                       <Dialog 
@@ -180,12 +182,12 @@ export const UserVerificationRequests = () => {
                             onClick={() => setEditingVerificationId(verification.id)}
                           >
                             <Edit className="w-4 h-4 mr-1" />
-                            Edit
+                            {t('common:edit')}
                           </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                           <DialogHeader>
-                            <DialogTitle>Edit Verification Request</DialogTitle>
+                            <DialogTitle>{t('address:editVerificationRequest')}</DialogTitle>
                           </DialogHeader>
                           {editingVerificationId === verification.id && (
                             <>
@@ -205,19 +207,19 @@ export const UserVerificationRequests = () => {
                               ) : (
                                 <div className="p-6 space-y-4">
                                   <div className="text-center">
-                                    <h3 className="text-lg font-medium mb-2">Legacy Verification Request</h3>
+                                    <h3 className="text-lg font-medium mb-2">{t('address:legacyVerificationRequest')}</h3>
                                     <p className="text-sm text-muted-foreground mb-4">
-                                      This verification request was created with the old system. To edit it, you'll need to:
+                                      {t('address:legacyVerificationMessage')}
                                     </p>
                                     <ol className="text-sm text-left space-y-2 max-w-md mx-auto">
-                                      <li>1. First add this address to your Citizen Address Repository</li>
-                                      <li>2. Then create a new verification request for that address</li>
-                                      <li>3. The old request will remain for reference</li>
+                                      <li>{t('address:legacyStep1')}</li>
+                                      <li>{t('address:legacyStep2')}</li>
+                                      <li>{t('address:legacyStep3')}</li>
                                     </ol>
                                   </div>
                                   <div className="flex justify-center gap-2 pt-4">
                                     <Button onClick={() => setEditingVerificationId(null)}>
-                                      Close
+                                      {t('common:close')}
                                     </Button>
                                   </div>
                                 </div>
@@ -235,18 +237,18 @@ export const UserVerificationRequests = () => {
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4 text-muted-foreground" />
                     <div>
-                      <p className="text-sm font-medium">Claimant Type</p>
+                      <p className="text-sm font-medium">{t('address:claimantType')}</p>
                       <p className="text-sm text-muted-foreground">
-                        {formatStatus(verification.claimant_relationship)}
+                        {t(`address:claimantRelationship.${verification.claimant_relationship}`)}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <FileText className="w-4 h-4 text-muted-foreground" />
                     <div>
-                      <p className="text-sm font-medium">Document Type</p>
+                      <p className="text-sm font-medium">{t('address:documentType')}</p>
                       <p className="text-sm text-muted-foreground">
-                        {formatStatus(verification.primary_document_type)}
+                        {t(`address:documentTypes.${verification.primary_document_type}`)}
                       </p>
                     </div>
                   </div>

@@ -141,7 +141,7 @@
     "primary": "Primary",
     "secondary": "Secondary"
   },
-  "scope": {
+  "scopeType": {
     "building": "Building",
     "unit": "Unit"
   },
@@ -153,5 +153,37 @@
     "field_verification": "Field Verification",
     "legal_review": "Legal Review",
     "requires_additional_documents": "Requires Additional Documents"
+  },
+  "myVerificationRequests": "My Verification Requests",
+  "noVerificationRequests": "No Verification Requests",
+  "noVerificationRequestsMessage": "You haven't submitted any verification requests yet.",
+  "verification": "Verification",
+  "verificationType": {
+    "residency": "Residency",
+    "ownership": "Ownership"
+  },
+  "submittedOn": "Submitted on",
+  "legacyVerificationRequest": "Legacy Verification Request",
+  "legacyVerificationMessage": "This verification request was created with the old system. To edit it, you'll need to:",
+  "legacyStep1": "1. First add this address to your Citizen Address Repository",
+  "legacyStep2": "2. Then create a new verification request for that address", 
+  "legacyStep3": "3. The old request will remain for reference",
+  "claimantType": "Claimant Type",
+  "claimantRelationship": {
+    "owner": "Owner",
+    "tenant": "Tenant",
+    "family_member": "Family Member",
+    "legal_representative": "Legal Representative",
+    "other": "Other"
+  },
+  "documentType": "Document Type",
+  "documentTypes": {
+    "lease_agreement": "Lease Agreement",
+    "property_deed": "Property Deed",
+    "utility_bill": "Utility Bill",
+    "bank_statement": "Bank Statement",
+    "employment_letter": "Employment Letter",
+    "government_issued_id": "Government Issued ID",
+    "other": "Other"
   }
 }

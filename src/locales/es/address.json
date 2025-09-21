@@ -806,7 +806,7 @@
     "primary": "Principal",
     "secondary": "Secundaria"
   },
-  "scope": {
+  "scopeType": {
     "building": "Edificio",
     "unit": "Unidad"
   },
@@ -818,5 +818,37 @@
     "field_verification": "Verificación de Campo",
     "legal_review": "Revisión Legal",
     "requires_additional_documents": "Requiere Documentos Adicionales"
+  },
+  "myVerificationRequests": "Mis Solicitudes de Verificación",
+  "noVerificationRequests": "Sin Solicitudes de Verificación",
+  "noVerificationRequestsMessage": "Aún no has enviado ninguna solicitud de verificación.",
+  "verification": "Verificación",
+  "verificationType": {
+    "residency": "Residencia",
+    "ownership": "Propiedad"
+  },
+  "submittedOn": "Enviado el",
+  "legacyVerificationRequest": "Solicitud de Verificación Heredada",
+  "legacyVerificationMessage": "Esta solicitud de verificación fue creada con el sistema anterior. Para editarla, necesitarás:",
+  "legacyStep1": "1. Primero agrega esta dirección a tu Repositorio de Direcciones Ciudadanas",
+  "legacyStep2": "2. Luego crea una nueva solicitud de verificación para esa dirección",
+  "legacyStep3": "3. La solicitud anterior permanecerá como referencia",
+  "claimantType": "Tipo de Solicitante",
+  "claimantRelationship": {
+    "owner": "Propietario",
+    "tenant": "Inquilino",
+    "family_member": "Miembro de la Familia",
+    "legal_representative": "Representante Legal",
+    "other": "Otro"
+  },
+  "documentType": "Tipo de Documento",
+  "documentTypes": {
+    "lease_agreement": "Contrato de Arrendamiento",
+    "property_deed": "Escritura de Propiedad",
+    "utility_bill": "Factura de Servicios",
+    "bank_statement": "Estado de Cuenta Bancario",
+    "employment_letter": "Carta de Trabajo",
+    "government_issued_id": "Identificación Gubernamental",
+    "other": "Otro"
   }
 }

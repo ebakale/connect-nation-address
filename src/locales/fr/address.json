@@ -656,7 +656,7 @@
     "primary": "Principale",
     "secondary": "Secondaire"
   },
-  "scope": {
+  "scopeType": {
     "building": "Bâtiment",
     "unit": "Unité"
   },
@@ -668,5 +668,37 @@
     "field_verification": "Vérification de Terrain",
     "legal_review": "Révision Légale",
     "requires_additional_documents": "Nécessite des Documents Supplémentaires"
+  },
+  "myVerificationRequests": "Mes Demandes de Vérification",
+  "noVerificationRequests": "Aucune Demande de Vérification",
+  "noVerificationRequestsMessage": "Vous n'avez encore soumis aucune demande de vérification.",
+  "verification": "Vérification",
+  "verificationType": {
+    "residency": "Résidence",
+    "ownership": "Propriété"
+  },
+  "submittedOn": "Soumis le",
+  "legacyVerificationRequest": "Demande de Vérification Héritée",
+  "legacyVerificationMessage": "Cette demande de vérification a été créée avec l'ancien système. Pour la modifier, vous devrez:",
+  "legacyStep1": "1. D'abord ajouter cette adresse à votre Référentiel d'Adresses Citoyennes",
+  "legacyStep2": "2. Ensuite créer une nouvelle demande de vérification pour cette adresse",
+  "legacyStep3": "3. L'ancienne demande restera pour référence",
+  "claimantType": "Type de Demandeur",
+  "claimantRelationship": {
+    "owner": "Propriétaire",
+    "tenant": "Locataire",
+    "family_member": "Membre de la Famille",
+    "legal_representative": "Représentant Légal",
+    "other": "Autre"
+  },
+  "documentType": "Type de Document",
+  "documentTypes": {
+    "lease_agreement": "Contrat de Location",
+    "property_deed": "Acte de Propriété",
+    "utility_bill": "Facture de Services",
+    "bank_statement": "Relevé Bancaire",
+    "employment_letter": "Lettre d'Emploi",
+    "government_issued_id": "Pièce d'Identité Gouvernementale",
+    "other": "Autre"
   }
 }
