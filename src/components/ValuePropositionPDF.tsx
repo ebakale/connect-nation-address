@@ -76,165 +76,277 @@ export const ValuePropositionPDF: React.FC = () => {
       pdf.setFontSize(10);
       pdf.text(`Generated on ${new Date().toLocaleDateString()}`, pageWidth / 2, 260, { align: 'center' });
 
-      // Page 2: Executive Summary
+      // Page 2: Value Proposition Canvas Overview
       pdf.addPage();
       pdf.setTextColor(0, 0, 0);
       pdf.setFontSize(20);
-      pdf.text('Executive Summary', margin, 30);
+      pdf.text('Customer Value Proposition Canvas', margin, 30);
       
       pdf.setFontSize(12);
-      const summaryText = `ConnectNation Digital Addressing System revolutionizes how governments manage addresses and emergency services. Our comprehensive platform combines a National Digital Address Registry (NAR), Citizen Address Repository (CAR), and Emergency Response Management into one unified solution.
+      const canvasText = `ConnectNation's Digital Addressing System follows a proven Customer Value Proposition framework that directly addresses government challenges while delivering measurable benefits.
 
-Key Benefits:
-• 90% faster address registration
-• 40% reduction in emergency response times  
-• 60% decrease in administrative overhead
-• 99.9% system uptime guarantee
-• Multi-language support (English, Spanish, French)
-• Offline-first design for remote areas
+This document outlines:
+• Products & Services we offer
+• Gain Generators that create value
+• Pain Relievers that solve problems
+• Customer Gains you'll achieve
+• Customer Pains we eliminate
+• Customer Jobs we help you accomplish
 
-Our solution addresses critical pain points including address management chaos, emergency response delays, and citizen service barriers while delivering significant gains in operational efficiency, citizen empowerment, and government credibility.`;
+Our systematic approach ensures every feature delivers tangible value to your organization and citizens.`;
 
-      const lines = pdf.splitTextToSize(summaryText, pageWidth - 2 * margin);
+      const lines = pdf.splitTextToSize(canvasText, pageWidth - 2 * margin);
       pdf.text(lines, margin, 50);
 
-      // Page 3: Customer Segments Chart
+      // Page 3: Products & Services
       pdf.addPage();
       pdf.setFontSize(20);
-      pdf.text('Customer Segments', margin, 30);
+      pdf.text('Products & Services', margin, 30);
 
-      // Create a simple pie chart representation
-      pdf.setFontSize(12);
-      pdf.text('Target Customer Distribution:', margin, 50);
+      pdf.setFontSize(14);
+      pdf.text('Core Platform Components:', margin, 50);
+      
+      const products = [
+        '1. National Digital Address Registry (NAR)',
+        '   • Centralized address database with unique codes',
+        '   • Real-time address validation and verification',
+        '   • Multi-language support and standardization',
+        '',
+        '2. Citizen Address Repository (CAR)',
+        '   • Self-service address registration portal',
+        '   • Digital address cards and QR codes',
+        '   • Mobile-first citizen experience',
+        '',
+        '3. Emergency Response Management',
+        '   • Real-time incident tracking and dispatch',
+        '   • GPS-enabled unit coordination',
+        '   • Automated backup request system',
+        '',
+        '4. Professional Services',
+        '   • 90-day deployment program',
+        '   • Staff training and change management',
+        '   • Ongoing technical support and maintenance'
+      ];
       
       let yPos = 70;
-      customerSegmentData.forEach((segment, index) => {
-        pdf.setFillColor(...hexToRgb(segment.color));
-        pdf.circle(margin + 5, yPos, 3, 'F');
-        pdf.text(`${segment.name}: ${segment.value}%`, margin + 15, yPos + 2);
-        yPos += 15;
+      products.forEach(product => {
+        pdf.setFontSize(product.startsWith('   ') ? 10 : product.match(/^\d+\./) ? 12 : 11);
+        pdf.text(product, margin, yPos);
+        yPos += product === '' ? 5 : 8;
       });
 
-      // Page 4: Pain Points & Solutions
+      // Page 4: Gain Generators
       pdf.addPage();
       pdf.setFontSize(20);
-      pdf.text('Pain Points & Solutions', margin, 30);
+      pdf.text('Gain Generators', margin, 30);
+      
+      pdf.setFontSize(14);
+      pdf.text('How We Create Value for You:', margin, 50);
+      
+      const gainGenerators = [
+        'Operational Excellence:',
+        '• 99.9% system uptime with enterprise infrastructure',
+        '• Automated workflows reduce manual processing by 90%',
+        '• Real-time data synchronization across all modules',
+        '',
+        'Citizen Empowerment:',
+        '• Self-service registration reduces counter visits by 80%',
+        '• Mobile-first design increases accessibility',
+        '• Multi-language support serves diverse populations',
+        '',
+        'Emergency Efficiency:',
+        '• GPS integration enables precise location tracking',
+        '• Automated dispatch reduces response coordination time',
+        '• Real-time unit status prevents resource conflicts',
+        '',
+        'Future-Ready Technology:',
+        '• API-first architecture enables unlimited integrations',
+        '• Offline-first design works in remote areas',
+        '• Cloud-native scaling handles growing demands'
+      ];
+      
+      yPos = 70;
+      gainGenerators.forEach(item => {
+        const isBold = !item.startsWith('•') && !item.startsWith(' ') && item !== '';
+        pdf.setFontSize(isBold ? 12 : 10);
+        if (isBold && item.endsWith(':')) {
+          pdf.setFont('helvetica', 'bold');
+        } else {
+          pdf.setFont('helvetica', 'normal');
+        }
+        pdf.text(item, margin, yPos);
+        yPos += item === '' ? 5 : 8;
+      });
+
+      // Page 5: Pain Relievers
+      pdf.addPage();
+      pdf.setFontSize(20);
+      pdf.text('Pain Relievers', margin, 30);
       
       pdf.setFontSize(14);
       pdf.text('Critical Problems We Solve:', margin, 50);
       
-      const painPoints = [
-        'Address Management Chaos → Unified Digital Registry',
-        'Emergency Response Delays → Real-time Coordination',
-        'Citizen Service Barriers → Self-service Portal',
-        'Bureaucratic Inefficiencies → Automated Workflows',
-        'Data Fragmentation → Centralized Database'
+      const painRelievers = [
+        'Address Management Chaos:',
+        '• Unified registry eliminates duplicate and conflicting addresses',
+        '• Standardized formats ensure consistency across departments',
+        '• Real-time validation prevents data quality issues',
+        '',
+        'Emergency Response Delays:',
+        '• GPS coordinates enable instant location identification',
+        '• Automated dispatch eliminates manual coordination delays',
+        '• Real-time status updates prevent resource conflicts',
+        '',
+        'Citizen Service Barriers:',
+        '• Self-service portal eliminates office visit requirements',
+        '• Mobile-first design serves citizens anywhere, anytime',
+        '• Multi-language support removes language barriers',
+        '',
+        'Bureaucratic Inefficiencies:',
+        '• Automated workflows eliminate manual paper processing',
+        '• Digital approvals reduce processing from weeks to hours',
+        '• Integrated systems eliminate departmental silos'
       ];
       
       yPos = 70;
-      painPoints.forEach(point => {
-        pdf.setFontSize(12);
-        pdf.text(`• ${point}`, margin, yPos);
-        yPos += 10;
-      });
-
-      // Page 5: Value Metrics
-      pdf.addPage();
-      pdf.setFontSize(20);
-      pdf.text('Value Metrics & ROI', margin, 30);
-      
-      pdf.setFontSize(14);
-      pdf.text('Quantified Benefits:', margin, 50);
-      
-      const metrics = [
-        'Process Efficiency: 80% reduction in manual work',
-        'Time Savings: 90% faster registration process',
-        'Emergency Response: 40% faster response times',
-        'Cost Reduction: 60% lower administrative overhead',
-        'System Reliability: 99.9% uptime guarantee',
-        'Deployment Speed: Fully operational in 90 days'
-      ];
-      
-      yPos = 70;
-      metrics.forEach(metric => {
-        pdf.setFontSize(12);
-        pdf.text(`• ${metric}`, margin, yPos);
-        yPos += 12;
-      });
-
-      // Page 6: Implementation Timeline
-      pdf.addPage();
-      pdf.setFontSize(20);
-      pdf.text('Implementation Timeline', margin, 30);
-      
-      pdf.setFontSize(12);
-      pdf.text('90-Day Deployment Schedule:', margin, 50);
-      
-      const timeline = [
-        'Month 1: System Setup & Data Migration (25% complete)',
-        'Month 2: Staff Training & Pilot Testing (60% complete)', 
-        'Month 3: Full Deployment & Go-Live (100% complete)',
-        'Month 6: Full User Adoption Achieved (95% adoption)'
-      ];
-      
-      yPos = 70;
-      timeline.forEach(phase => {
-        pdf.text(`• ${phase}`, margin, yPos);
-        yPos += 15;
-      });
-
-      // Page 7: Technical Architecture
-      pdf.addPage();
-      pdf.setFontSize(20);
-      pdf.text('Technical Architecture', margin, 30);
-      
-      const techSpecs = [
-        'Platform: Enterprise-grade Supabase infrastructure',
-        'Deployment: Cloud-native with edge computing',
-        'Security: SOC 2, GDPR, ISO 27001 compliant',
-        'Scalability: Handles millions of addresses',
-        'Integration: API-first design for seamless connectivity',
-        'Mobile: Native iOS/Android applications',
-        'Offline: Full functionality without internet',
-        'Languages: Multi-language support built-in'
-      ];
-      
-      yPos = 50;
-      techSpecs.forEach(spec => {
-        pdf.setFontSize(12);
-        pdf.text(`• ${spec}`, margin, yPos);
-        yPos += 12;
-      });
-
-      // Page 8: Competitive Advantage
-      pdf.addPage();
-      pdf.setFontSize(20);
-      pdf.text('Competitive Advantage', margin, 30);
-      
-      pdf.setFontSize(14);
-      pdf.text('Why Choose ConnectNation?', margin, 50);
-      
-      const advantages = [
-        'Complete Solution: Address management + emergency response in one platform',
-        'Rapid Deployment: 90-day implementation vs 12+ months for custom builds',
-        'Proven Technology: Built on enterprise-grade, battle-tested infrastructure',
-        'Government-Focused: Designed specifically for public sector requirements',
-        'Future-Ready: API-first architecture enables unlimited integrations',
-        'Cost-Effective: 70% lower total cost of ownership vs custom development',
-        'Support Included: Comprehensive training and ongoing technical support'
-      ];
-      
-      yPos = 70;
-      advantages.forEach(advantage => {
-        pdf.setFontSize(11);
-        const lines = pdf.splitTextToSize(advantage, pageWidth - 2 * margin - 10);
-        pdf.text(`• ${lines[0]}`, margin, yPos);
-        if (lines.length > 1) {
-          for (let i = 1; i < lines.length; i++) {
-            pdf.text(`  ${lines[i]}`, margin + 5, yPos + (i * 6));
-          }
+      painRelievers.forEach(item => {
+        const isBold = !item.startsWith('•') && !item.startsWith(' ') && item !== '';
+        pdf.setFontSize(isBold ? 12 : 10);
+        if (isBold && item.endsWith(':')) {
+          pdf.setFont('helvetica', 'bold');
+        } else {
+          pdf.setFont('helvetica', 'normal');
         }
-        yPos += Math.max(12, lines.length * 6 + 2);
+        pdf.text(item, margin, yPos);
+        yPos += item === '' ? 5 : 8;
+      });
+
+      // Page 6: Customer Gains
+      pdf.addPage();
+      pdf.setFontSize(20);
+      pdf.text('Customer Gains', margin, 30);
+      
+      pdf.setFontSize(14);
+      pdf.text('Benefits You Will Achieve:', margin, 50);
+      
+      const customerGains = [
+        'For Government Officials:',
+        '• Increased operational efficiency and cost savings',
+        '• Enhanced citizen satisfaction and trust',
+        '• Improved inter-agency collaboration and data sharing',
+        '• Measurable performance metrics and accountability',
+        '',
+        'For Citizens:',
+        '• Faster, more convenient government services',
+        '• Improved emergency response and personal safety',
+        '• Reduced bureaucratic hassles and wait times',
+        '• Digital empowerment and accessibility',
+        '',
+        'For Emergency Services:',
+        '• Life-saving response time improvements',
+        '• Better resource allocation and coordination',
+        '• Enhanced situational awareness and decision-making',
+        '• Reduced operational stress and improved outcomes'
+      ];
+      
+      yPos = 70;
+      customerGains.forEach(item => {
+        const isBold = !item.startsWith('•') && !item.startsWith(' ') && item !== '';
+        pdf.setFontSize(isBold ? 12 : 10);
+        if (isBold && item.endsWith(':')) {
+          pdf.setFont('helvetica', 'bold');
+        } else {
+          pdf.setFont('helvetica', 'normal');
+        }
+        pdf.text(item, margin, yPos);
+        yPos += item === '' ? 5 : 8;
+      });
+
+      // Page 7: Customer Pains
+      pdf.addPage();
+      pdf.setFontSize(20);
+      pdf.text('Customer Pains', margin, 30);
+      
+      pdf.setFontSize(14);
+      pdf.text('Current Challenges You Face:', margin, 50);
+      
+      const customerPains = [
+        'For Government Officials:',
+        '• Legacy systems create operational chaos and inefficiency',
+        '• Manual processes consume excessive time and resources',
+        '• Lack of inter-agency coordination hampers service delivery',
+        '• Poor data quality undermines decision-making',
+        '',
+        'For Citizens:',
+        '• Bureaucratic barriers limit access to essential services',
+        '• Long wait times and complex procedures cause frustration',
+        '• Inconsistent service quality across departments',
+        '• Language barriers exclude many from government services',
+        '',
+        'For Emergency Services:',
+        '• Location uncertainty delays critical response times',
+        '• Poor coordination leads to resource conflicts',
+        '• Manual dispatch processes waste precious minutes',
+        '• Lack of real-time information hampers decision-making'
+      ];
+      
+      yPos = 70;
+      customerPains.forEach(item => {
+        const isBold = !item.startsWith('•') && !item.startsWith(' ') && item !== '';
+        pdf.setFontSize(isBold ? 12 : 10);
+        if (isBold && item.endsWith(':')) {
+          pdf.setFont('helvetica', 'bold');
+        } else {
+          pdf.setFont('helvetica', 'normal');
+        }
+        pdf.text(item, margin, yPos);
+        yPos += item === '' ? 5 : 8;
+      });
+
+      // Page 8: Customer Jobs
+      pdf.addPage();
+      pdf.setFontSize(20);
+      pdf.text('Customer Jobs', margin, 30);
+      
+      pdf.setFontSize(14);
+      pdf.text('Jobs You Need to Get Done:', margin, 50);
+      
+      const customerJobs = [
+        'Functional Jobs (Government Officials):',
+        '• Modernize national address infrastructure',
+        '• Improve inter-agency coordination and data sharing',
+        '• Enhance emergency response capabilities',
+        '• Increase operational efficiency and reduce costs',
+        '',
+        'Emotional Jobs (Citizens):',
+        '• Feel safe and protected in emergencies',
+        '• Experience efficient, respectful government services',
+        '• Maintain dignity when accessing public services',
+        '• Feel empowered through digital access',
+        '',
+        'Social Jobs (Emergency Services):',
+        '• Save lives through faster response times',
+        '• Protect communities with better coordination',
+        '• Serve the public with pride and effectiveness',
+        '• Build trust through reliable emergency services',
+        '',
+        'Survival Jobs (All):',
+        '• Ensure critical services function during crises',
+        '• Maintain government continuity and legitimacy',
+        '• Protect public safety and national security'
+      ];
+      
+      yPos = 70;
+      customerJobs.forEach(item => {
+        const isBold = !item.startsWith('•') && !item.startsWith(' ') && item !== '';
+        pdf.setFontSize(isBold ? 12 : 10);
+        if (isBold && item.endsWith(':')) {
+          pdf.setFont('helvetica', 'bold');
+        } else {
+          pdf.setFont('helvetica', 'normal');
+        }
+        pdf.text(item, margin, yPos);
+        yPos += item === '' ? 5 : 8;
       });
 
       // Page 9: Contact & Next Steps
