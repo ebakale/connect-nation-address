@@ -690,7 +690,7 @@ const UnifiedDashboard = () => {
                   className="flex items-center gap-2"
                 >
                   <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline">{t('common:navigation.logout')}</span>
+                  <span className="hidden sm:inline">{t('common:navigation.logout', { defaultValue: 'Logout' })}</span>
                 </Button>
               </div>
             </div>
