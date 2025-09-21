@@ -82,12 +82,15 @@ export const useCitizenAddresses = () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('citizen_address_with_details')
+        .from('citizen_address')
         .select('*')
         .eq('person_id', person.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database error:', error);
+        throw error;
+      }
 
       setAddresses(data || []);
     } catch (error: any) {
