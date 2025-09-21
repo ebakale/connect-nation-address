@@ -44,115 +44,151 @@ Fin
 - **Publicada**: Activa en el sistema
 - **Rechazada**: Requiere correcciones
 
-## 2. Proceso CAR (Registro de Direcciones del Ciudadano)
+## 2. Proceso CAR (Repositorio de Direcciones del Ciudadano)
 
-### Flujo de Declaración/Verificación por Ciudadanos
+### Flujo de Declaración/Verificación de Direcciones por Ciudadanos
 
 ```
 Inicio
   ↓
-Ciudadano accede al Portal Público
+Ciudadano accede al Gestor de Verificación de Direcciones del Ciudadano
   ↓
-Busca su dirección existente
-  ├── ¿Dirección encontrada?
-  │   ├── SÍ → Solicita verificación de residencia
-  │   └── NO → Solicita nueva dirección
+Sistema verifica registro de persona existente
+  ├── ¿Registro de persona existe?
+  │   ├── NO → Crea nuevo registro de persona vinculado al usuario auth
+  │   └── SÍ → Carga direcciones existentes
   ↓
-Completa formulario de solicitud
-  ├── Información personal
-  ├── Documentos de identificación
-  ├── Comprobante de residencia
-  └── Fotografías adicionales
+Ciudadano ve direcciones actuales
+  ├── Dirección primaria mostrada
+  ├── Direcciones secundarias listadas
+  └── Historial de direcciones mostrado
   ↓
-Envía solicitud
+Ciudadano selecciona acción
+  ├── Establecer Dirección Primaria → Abre SetPrimaryAddressForm
+  ├── Agregar Dirección Secundaria → Abre AddSecondaryAddressForm
+  └── Solicitar Verificación de Residencia → Abre ResidencyVerificationForm
   ↓
-Sistema valida documentación
-  ├── ¿Documentos válidos?
-  │   ├── SÍ → Continúa proceso
-  │   └── NO → Solicita correcciones
+Completar Formulario de Dirección
+  ├── Dirección Primaria: entrada UAC, selección de alcance, fecha efectiva
+  ├── Dirección Secundaria: entrada UAC, selección de alcance
+  └── Verificación de Residencia: subida de documentos, prueba de residencia
   ↓
-Verificador revisa solicitud
-  ├── ¿Requiere visita de campo?
-  │   ├── SÍ → Asigna a agente de campo
-  │   └── NO → Aprueba directamente
+Sistema procesa solicitud via funciones RPC
+  ├── set_primary_address() → Actualiza tabla citizen_address
+  ├── add_secondary_address() → Crea nuevo registro citizen_address
+  └── Verificación de residencia → Crea registro residency_verification
   ↓
-Agente de campo verifica (si aplica)
+Cola de Revisión de Direcciones (para verificadores/registradores)
+  ├── Verificadores revisan direcciones ciudadanas pendientes
+  ├── Verifican documentación y pruebas proporcionadas
+  └── Actualizan estado de dirección via set_citizen_address_status()
   ↓
-Actualización de dirección
+Actualización de Estado
+  ├── APROBADO → Dirección se vuelve activa
+  ├── RECHAZADO → Regresa al ciudadano con razón
+  └── REQUIERE_DOCUMENTOS → Ciudadano debe proporcionar prueba adicional
   ↓
-Notificación al ciudadano
+Dirección se vuelve activa en perfil del ciudadano
+  ├── Dirección primaria usada para correspondencia oficial
+  ├── Direcciones secundarias vinculadas al registro de persona
+  └── Direcciones históricas preservadas con fechas efectivas
+  ↓
+Ciudadano recibe notificación de cambio de estado
   ↓
 Fin
 ```
 
-### Tipos de Solicitudes CAR
-- **Verificación de Residencia**: Confirmar ocupación actual
-- **Cambio de Propietario**: Transferencia de propiedad
-- **Corrección de Datos**: Actualizar información incorrecta
-- **Dirección Secundaria**: Registrar dirección adicional
+### Tipos de Direcciones CAR en Sistema Actual
+- **Dirección Primaria**: Dirección residencial principal (una por persona)
+- **Dirección Secundaria**: Direcciones adicionales (trabajo, vacaciones, etc.)
+- **Direcciones Históricas**: Direcciones previas con fechas de retiro
+- **Alcances de Dirección**: DWELLING (propiedad completa) o UNIT (unidad específica)
 
 ## 3. Proceso de Gestión de Emergencias
 
-### Flujo de Reporte y Manejo de Emergencias
+### Flujo de Reporte y Manejo de Incidentes de Emergencia
 
 ```
 Inicio - Emergencia Reportada
   ↓
-Recepción del Reporte
-  ├── Portal Web
-  ├── Aplicación Móvil
-  ├── Llamada Telefónica
-  └── Sistema Automático
+Recepción de Reporte via EmergencyDispatchDialog
+  ├── Selección de tipo de emergencia (médica, fuego, robo, asalto, etc.)
+  ├── Nivel de prioridad (baja=1, media=2, alta=3, crítica=4)
+  ├── Entrada de ubicación (dirección o coordenadas)
+  ├── Descripción del incidente
+  └── Información de contacto del reportante
   ↓
-Operador de Policía recibe alerta
+Sistema crea registro emergency_incident
+  ├── Genera incident_number único (INC-timestamp)
+  ├── Encripta información sensible usando edge function
+  ├── Establece estado inicial como "reported"
+  └── Almacena detalles de contacto del reportante
   ↓
-Clasifica el Incidente
-  ├── Prioridad (Alta/Media/Baja)
-  ├── Tipo (Seguridad/Médica/Fuego/Otro)
-  └── Ubicación (UAC o coordenadas)
+Se activa edge function notify-emergency-operators
+  ├── Notifica a operadores de policía disponibles
+  ├── Envía información de prioridad y tipo de emergencia
+  └── Incluye número de incidente para seguimiento
   ↓
-¿Dirección UAC válida?
-  ├── SÍ → Continúa con despacho
-  └── NO → Verificación de dirección rápida
+Operador de Policía recibe alerta via IncidentList
+  ├── Ve detalles del incidente en dashboard
+  ├── Ve ubicación y descripción desencriptada
+  └── Revisa nivel de prioridad y tipo de emergencia
   ↓
-Dispatcher asigna unidad disponible
-  ├── Verifica disponibilidad de unidades
-  ├── Calcula tiempo de respuesta
-  └── Asigna unidad más cercana
+Dispatcher asigna incidente a unidad disponible
+  ├── Actualiza campo assigned_units en base de datos
+  ├── Establece timestamp dispatched_at
+  └── Cambia estado a "assigned"
   ↓
-Unidad recibe notificación
+Unidad recibe notificación via notify-unit-assignment
+  ├── Miembros de unidad ven incidente en su dashboard
+  ├── Líder de unidad puede aceptar o solicitar respaldo
+  └── Estado de incidente se actualiza a "responding"
   ↓
-Oficial confirma recepción
+Unidad en camino a ubicación
+  ├── Actualizaciones de estado en tiempo real via UnitStatusManager
+  ├── Rastreo GPS de ubicación de unidad
+  └── Cálculos de tiempo estimado de llegada
   ↓
-Estado: "Respondiendo"
+Unidad llega a la escena
+  ├── Estado actualizado a "on_scene"
+  ├── Timestamp responded_at registrado
+  └── Oficial comienza manejo del incidente
   ↓
-Oficial llega al lugar
+Proceso de solicitud de respaldo (si es necesario)
+  ├── RequestBackupDialog abierto por líder de unidad
+  ├── Solicitud de respaldo enviada via process-backup-request
+  ├── Notificaciones de emergencia creadas para otras unidades
+  └── BackupNotificationManager maneja coordinación de respaldo
   ↓
-Estado: "En Escena"
+Resolución del incidente
+  ├── Oficial completa reporte del incidente
+  ├── Estado actualizado a "resolved"
+  ├── Timestamp resolved_at registrado
+  └── Documentación del incidente finalizada
   ↓
-¿Requiere respaldo?
-  ├── SÍ → Solicita unidades adicionales
-  └── NO → Continúa con intervención
-  ↓
-Oficial maneja la situación
-  ↓
-Completa reporte del incidente
-  ↓
-Estado: "Resuelto"
-  ↓
-Cierre del incidente
+Cierre del incidente y reportes
+  ├── Reporte final del incidente generado
+  ├── Datos de analíticas actualizados para seguimiento de rendimiento
+  └── Reportante notificado de resolución (si aplica)
   ↓
 Fin
 ```
 
-### Estados del Incidente
-- **Reportado**: Recién recibido por el sistema
-- **Asignado**: Unidad asignada para respuesta
-- **Respondiendo**: Unidad en camino al lugar
-- **En Escena**: Oficial presente en el lugar
-- **Requiere Respaldo**: Solicitud de unidades adicionales
-- **Resuelto**: Situación manejada exitosamente
-- **Cerrado**: Documentación completada
+### Estados de Incidente en Sistema Actual
+- **reported**: Recién recibido por el sistema
+- **assigned**: Unidad asignada para respuesta
+- **responding**: Unidad en camino a ubicación
+- **on_scene**: Oficial presente en ubicación
+- **backup_requested**: Unidades adicionales solicitadas
+- **resolved**: Situación manejada exitosamente
+- **closed**: Toda documentación completada
+
+### Componentes del Sistema de Emergencias
+- **EmergencyDispatchDialog**: Interfaz de envío de reporte inicial
+- **IncidentList**: Dashboard para ver y gestionar incidentes
+- **UnitManagement**: Asignación de unidades y seguimiento de estado
+- **BackupNotificationManager**: Comunicación inter-unidad para solicitudes de respaldo
+- **Emergency Edge Functions**: Procesamiento seguro y notificaciones
 
 ## 4. Integración entre Sistemas
 

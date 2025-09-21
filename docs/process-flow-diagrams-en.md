@@ -44,115 +44,151 @@ End
 - **Published**: Active in system
 - **Rejected**: Requires corrections
 
-## 2. CAR Process (Citizen Address Registry)
+## 2. CAR Process (Citizen Address Repository)
 
-### Citizen Declaration/Verification Workflow
+### Citizen Address Declaration/Verification Workflow
 
 ```
 Start
   ↓
-Citizen accesses Public Portal
+Citizen accesses Citizen Address Verification Manager
   ↓
-Searches for existing address
-  ├── Address found?
-  │   ├── YES → Requests residency verification
-  │   └── NO → Requests new address
+System checks for existing person record
+  ├── Person record exists?
+  │   ├── NO → Creates new person record linked to auth user
+  │   └── YES → Loads existing addresses
   ↓
-Completes application form
-  ├── Personal information
-  ├── Identification documents
-  ├── Proof of residence
-  └── Additional photographs
+Citizen views current addresses
+  ├── Primary address displayed
+  ├── Secondary addresses listed
+  └── Address history shown
   ↓
-Submits application
+Citizen selects action
+  ├── Set Primary Address → Opens SetPrimaryAddressForm
+  ├── Add Secondary Address → Opens AddSecondaryAddressForm
+  └── Request Residency Verification → Opens ResidencyVerificationForm
   ↓
-System validates documentation
-  ├── Valid documents?
-  │   ├── YES → Continues process
-  │   └── NO → Requests corrections
+Address Form Completion
+  ├── Primary Address: UAC input, scope selection, effective date
+  ├── Secondary Address: UAC input, scope selection
+  └── Residency Verification: Documents upload, residency proof
   ↓
-Verifier reviews application
-  ├── Requires field visit?
-  │   ├── YES → Assigns to field agent
-  │   └── NO → Approves directly
+System processes request via RPC functions
+  ├── set_primary_address() → Updates citizen_address table
+  ├── add_secondary_address() → Creates new citizen_address record
+  └── Residency verification → Creates residency_verification record
   ↓
-Field agent verifies (if applicable)
+Address Review Queue (for verifiers/registrars)
+  ├── Verifiers review pending citizen addresses
+  ├── Check documentation and proofs provided
+  └── Update address status via set_citizen_address_status()
   ↓
-Address update
+Status Update
+  ├── APPROVED → Address becomes active
+  ├── REJECTED → Returns to citizen with reason
+  └── REQUIRES_DOCUMENTS → Citizen must provide additional proof
   ↓
-Citizen notification
+Address becomes active in citizen's profile
+  ├── Primary address used for official correspondence
+  ├── Secondary addresses linked to person record
+  └── Historical addresses preserved with effective dates
+  ↓
+Citizen receives notification of status change
   ↓
 End
 ```
 
-### CAR Application Types
-- **Residency Verification**: Confirm current occupancy
-- **Owner Change**: Property transfer
-- **Data Correction**: Update incorrect information
-- **Secondary Address**: Register additional address
+### CAR Address Types in Current System
+- **Primary Address**: Main residential address (one per person)
+- **Secondary Address**: Additional addresses (work, vacation, etc.)
+- **Historical Addresses**: Previous addresses with retirement dates
+- **Address Scopes**: DWELLING (entire property) or UNIT (specific unit)
 
 ## 3. Emergency Management Process
 
-### Emergency Reporting and Response Workflow
+### Emergency Incident Reporting and Response Workflow
 
 ```
 Start - Emergency Reported
   ↓
-Report Reception
-  ├── Web Portal
-  ├── Mobile Application
-  ├── Phone Call
-  └── Automatic System
+Report Reception via EmergencyDispatchDialog
+  ├── Emergency type selection (medical, fire, robbery, assault, etc.)
+  ├── Priority level (low=1, medium=2, high=3, critical=4)
+  ├── Location input (address or coordinates)
+  ├── Incident description
+  └── Reporter contact information
   ↓
-Police Operator receives alert
+System creates emergency_incident record
+  ├── Generates unique incident_number (INC-timestamp)
+  ├── Encrypts sensitive information using edge function
+  ├── Sets initial status as "reported"
+  └── Stores reporter contact details
   ↓
-Classifies Incident
-  ├── Priority (High/Medium/Low)
-  ├── Type (Security/Medical/Fire/Other)
-  └── Location (UAC or coordinates)
+notify-emergency-operators edge function triggered
+  ├── Notifies available police operators
+  ├── Sends priority and emergency type information
+  └── Includes incident number for tracking
   ↓
-Valid UAC address?
-  ├── YES → Continues with dispatch
-  └── NO → Quick address verification
+Police Operator receives alert via IncidentList
+  ├── Views incident details in dashboard
+  ├── Sees decrypted location and description
+  └── Reviews priority level and emergency type
   ↓
-Dispatcher assigns available unit
-  ├── Checks unit availability
-  ├── Calculates response time
-  └── Assigns closest unit
+Dispatcher assigns incident to available unit
+  ├── Updates assigned_units field in database
+  ├── Sets dispatched_at timestamp
+  └── Changes status to "assigned"
   ↓
-Unit receives notification
+Unit receives notification via notify-unit-assignment
+  ├── Unit members see incident on their dashboard
+  ├── Unit lead can accept or request backup
+  └── Incident status updates to "responding"
   ↓
-Officer confirms receipt
+Unit en route to location
+  ├── Real-time status updates via UnitStatusManager
+  ├── GPS tracking of unit location
+  └── Estimated arrival time calculations
   ↓
-Status: "Responding"
+Unit arrives at scene
+  ├── Status updated to "on_scene"
+  ├── responded_at timestamp recorded
+  └── Officer begins incident handling
   ↓
-Officer arrives at location
+Backup request process (if needed)
+  ├── RequestBackupDialog opened by unit lead
+  ├── Backup request sent via process-backup-request
+  ├── Emergency notifications created for other units
+  └── BackupNotificationManager handles backup coordination
   ↓
-Status: "On Scene"
+Incident resolution
+  ├── Officer completes incident report
+  ├── Status updated to "resolved"
+  ├── resolved_at timestamp recorded
+  └── Incident documentation finalized
   ↓
-Requires backup?
-  ├── YES → Requests additional units
-  └── NO → Continues with intervention
-  ↓
-Officer handles situation
-  ↓
-Completes incident report
-  ↓
-Status: "Resolved"
-  ↓
-Incident closure
+Incident closure and reporting
+  ├── Final incident report generated
+  ├── Analytics data updated for performance tracking
+  └── Reporter notified of resolution (if applicable)
   ↓
 End
 ```
 
-### Incident States
-- **Reported**: Newly received by system
-- **Assigned**: Unit assigned for response
-- **Responding**: Unit en route to location
-- **On Scene**: Officer present at location
-- **Requires Backup**: Request for additional units
-- **Resolved**: Situation handled successfully
-- **Closed**: Documentation completed
+### Incident States in Current System
+- **reported**: Newly received by system
+- **assigned**: Unit assigned for response
+- **responding**: Unit en route to location
+- **on_scene**: Officer present at location
+- **backup_requested**: Additional units requested
+- **resolved**: Situation handled successfully
+- **closed**: All documentation completed
+
+### Emergency System Components
+- **EmergencyDispatchDialog**: Initial report submission interface
+- **IncidentList**: Dashboard for viewing and managing incidents
+- **UnitManagement**: Unit assignment and status tracking
+- **BackupNotificationManager**: Inter-unit communication for backup requests
+- **Emergency Edge Functions**: Secure processing and notifications
 
 ## 4. System Integration
 
