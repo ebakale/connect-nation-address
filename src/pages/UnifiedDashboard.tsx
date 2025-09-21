@@ -106,6 +106,7 @@ const UnifiedDashboard = () => {
   } = useUserRole();
   const { user, signOut } = useAuth();
   const { t } = useTranslation(['dashboard', 'common']);
+  const { t: tCommon } = useTranslation('common');
   const navigate = useNavigate();
 
   // Route users to appropriate dashboard based on their primary role
@@ -690,7 +691,7 @@ const UnifiedDashboard = () => {
                   className="flex items-center gap-2"
                 >
                   <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline">{t('common:navigation.logout')}</span>
+                  <span className="hidden sm:inline">{tCommon('navigation.logout')}</span>
                 </Button>
               </div>
             </div>
