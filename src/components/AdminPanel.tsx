@@ -61,7 +61,7 @@ const AdminPanel: React.FC = () => {
           <TabsTrigger value="workflows" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:workflows')}</TabsTrigger>
           <TabsTrigger value="nar-authorities" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:narAuthorities')}</TabsTrigger>
           <TabsTrigger value="car-permissions" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:carPermissions')}</TabsTrigger>
-          <TabsTrigger value="car-workflow" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:carWorkflow')}</TabsTrigger>
+          <TabsTrigger value="car-workflow" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:carWorkflow.title')}</TabsTrigger>
           <TabsTrigger value="uac" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:uacSystem')}</TabsTrigger>
           <TabsTrigger value="quality" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:quality')}</TabsTrigger>
           <TabsTrigger value="system-tools" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:systemTools')}</TabsTrigger>
