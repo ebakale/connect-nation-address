@@ -22,7 +22,7 @@ import { CARPermissionsManager } from './CARPermissionsManager';
 import { CARVerificationWorkflow } from './CARVerificationWorkflow';
 
 const AdminPanel: React.FC = () => {
-  const { t } = useTranslation(['admin']);
+  const { t } = useTranslation('admin');
   const { user } = useUnifiedAuth();
   const { loading, hasAdminAccess, hasNDAAAccess, hasSystemAdminAccess } = useUserRole();
 
