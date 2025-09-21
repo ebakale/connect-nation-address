@@ -28,6 +28,15 @@ const Index = () => {
   const navigate = useNavigate();
   const { isPoliceRole } = useUserRole();
 
+  // All hooks must be called before any conditional returns
+  const navigationItems = useMemo(() => [
+    { id: 'overview', labelKey: 'common:navigation.home', icon: MapPin },
+    { id: 'about', labelKey: 'common:navigation.about', icon: Users },
+    { id: 'public', labelKey: 'common:platform.searchAddresses', icon: Search },
+    { id: 'emergency', labelKey: 'emergency:title', icon: Shield },
+    { id: 'help', labelKey: 'common:navigation.help', icon: HelpCircle },
+  ], []);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -40,14 +49,6 @@ const Index = () => {
   }
 
   // Main page is always accessible regardless of authentication status
-
-  const navigationItems = useMemo(() => [
-    { id: 'overview', labelKey: 'common:navigation.home', icon: MapPin },
-    { id: 'about', labelKey: 'common:navigation.about', icon: Users },
-    { id: 'public', labelKey: 'common:platform.searchAddresses', icon: Search },
-    { id: 'emergency', labelKey: 'emergency:title', icon: Shield },
-    { id: 'help', labelKey: 'common:navigation.help', icon: HelpCircle },
-  ], []);
 
   const handleNavigateToEmergency = (addressData?: any) => {
     console.log('Navigating to emergency with address data:', addressData);
