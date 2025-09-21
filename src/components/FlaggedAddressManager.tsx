@@ -48,7 +48,7 @@ interface FlaggedAddressManagerProps {
 }
 
 export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressManagerProps) {
-  const { t } = useTranslation('address');
+  const { t, i18n } = useTranslation('address');
   const [processing, setProcessing] = useState<string | null>(null);
   const [rejectionDialogOpen, setRejectionDialogOpen] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
@@ -59,6 +59,17 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
   const [editingAddress, setEditingAddress] = useState<EditableFlaggedAddress | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const addressesPerPage = 5;
+
+  const getStatusLabel = (status?: string) => {
+    if (!status) return '';
+    const keyDirect = status;
+    const keyVs = `verificationStatus.${status}`;
+    const keySt = `status.${status}`;
+    if (i18n.exists(`address:${keyDirect}`)) return t(keyDirect as any);
+    if (i18n.exists(`address:${keyVs}`)) return t(keyVs as any);
+    if (i18n.exists(`address:${keySt}`)) return t(keySt as any);
+    return status.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  };
 
   // Reset pagination when addresses change
   useState(() => {
@@ -189,7 +200,7 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
                     <Flag className="h-3 w-3 mr-1" />
                     {t('flagged')}
                   </Badge>
-                  <Badge variant="outline">{address.status}</Badge>
+                  <Badge variant="outline">{getStatusLabel(address.status)}</Badge>
                 </div>
               </div>
             </CardHeader>
