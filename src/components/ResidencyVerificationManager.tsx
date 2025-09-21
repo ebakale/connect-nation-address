@@ -310,12 +310,12 @@ export const ResidencyVerificationManager = () => {
                      </CardDescription>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge 
-                      variant="outline" 
-                      className={getStatusColor(verification.status)}
-                    >
-                      {formatStatus(verification.status)}
-                    </Badge>
+                     <Badge 
+                       variant="outline" 
+                       className={getStatusColor(verification.status)}
+                     >
+                       {t(`admin:${verification.status}`)}
+                     </Badge>
                     <Dialog onOpenChange={(open) => { if (!open) { fetchVerifications(); setSelectedVerification(null); setReviewNotes(''); setReviewStatus(''); } }}>
                       <DialogTrigger asChild>
                         <Button 
