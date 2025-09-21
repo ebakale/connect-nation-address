@@ -42,12 +42,12 @@ const Index = () => {
   // Main page is always accessible regardless of authentication status
 
   const navigationItems = useMemo(() => [
-    { id: 'overview', label: t('common:navigation.home'), icon: MapPin },
-    { id: 'about', label: t('common:navigation.about'), icon: Users },
-    { id: 'public', label: t('common:platform.searchAddresses'), icon: Search },
-    { id: 'emergency', label: t('emergency:title'), icon: Shield },
-    { id: 'help', label: t('common:navigation.help'), icon: HelpCircle },
-  ], [t]);
+    { id: 'overview', labelKey: 'common:navigation.home', icon: MapPin },
+    { id: 'about', labelKey: 'common:navigation.about', icon: Users },
+    { id: 'public', labelKey: 'common:platform.searchAddresses', icon: Search },
+    { id: 'emergency', labelKey: 'emergency:title', icon: Shield },
+    { id: 'help', labelKey: 'common:navigation.help', icon: HelpCircle },
+  ], []);
 
   const handleNavigateToEmergency = (addressData?: any) => {
     console.log('Navigating to emergency with address data:', addressData);
@@ -87,7 +87,7 @@ const Index = () => {
       const currentSection = navigationItems.find(item => item.id === activeSection);
       if (currentSection) {
         items.push({
-          label: currentSection.label,
+          label: t(currentSection.labelKey),
           onClick: () => handleSectionChange(activeSection),
           isActive: true
         });
@@ -870,7 +870,7 @@ const Index = () => {
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <Icon className={`h-3 w-3 sm:h-4 sm:w-4 ${activeSection === item.id ? 'glow-pulse' : ''}`} />
-                  <span className="text-xs sm:text-sm whitespace-nowrap">{item.label}</span>
+                  <span className="text-xs sm:text-sm whitespace-nowrap">{t(item.labelKey)}</span>
                 </button>
               );
             })}
