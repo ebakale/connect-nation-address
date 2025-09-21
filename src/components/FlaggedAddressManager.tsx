@@ -71,6 +71,21 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
     return status.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
   };
 
+  const tMaybe = (text?: string) => {
+    if (!text) return '';
+    const candidates = [
+      text,
+      text.toLowerCase(),
+      text.replace(/\s+/g, '_'),
+      text.replace(/\s+/g, ''),
+      text.toLowerCase().replace(/\s+/g, '_'),
+    ];
+    for (const c of candidates) {
+      if (i18n.exists(`address:${c}`)) return t(c as any);
+    }
+    return text;
+  };
+
   // Reset pagination when addresses change
   useState(() => {
     setCurrentPage(1);
@@ -243,7 +258,7 @@ export function FlaggedAddressManager({ addresses, onUpdate }: FlaggedAddressMan
               {address.justification && (
                 <div className="space-y-2">
                   <span className="text-sm font-medium">{t('justification')}</span>
-                  <p className="text-sm text-muted-foreground bg-muted p-3 rounded">{address.justification}</p>
+                  <p className="text-sm text-muted-foreground bg-muted p-3 rounded">{tMaybe(address.justification)}</p>
                 </div>
               )}
 
