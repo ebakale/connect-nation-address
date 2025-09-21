@@ -48,13 +48,13 @@ export function CurrentAddressesPanel({
   const getOccupantIcon = (occupant: string) => {
     switch (occupant) {
       case 'OWNER':
-        return '🏠';
+        return t('address:occupantIcon.owner');
       case 'TENANT':
-        return '🔑';
+        return t('address:occupantIcon.tenant');
       case 'FAMILY':
-        return '👨‍👩‍👧‍👦';
+        return t('address:occupantIcon.family');
       default:
-        return '📍';
+        return t('address:occupantIcon.other');
     }
   };
 

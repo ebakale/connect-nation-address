@@ -129,5 +129,11 @@
   "reviewerNotes": "Reviewer Notes",
   "actionRequired": "Action Required",
   "actionRequiredDescription": "Please review the notes above and update your verification request with the requested changes.",
-  "addNewAddress": "Add New Address"
+  "addNewAddress": "Add New Address",
+  "occupantIcon": {
+    "owner": "🏠",
+    "tenant": "🔑", 
+    "family": "👨‍👩‍👧‍👦",
+    "other": "📍"
+  }
 }

@@ -794,5 +794,11 @@
   "reviewerNotes": "Notas del Revisor",
   "actionRequired": "Acción Requerida",
   "actionRequiredDescription": "Por favor revise las notas anteriores y actualice su solicitud de verificación con los cambios solicitados.",
-  "addNewAddress": "Agregar Nueva Dirección"
+  "addNewAddress": "Agregar Nueva Dirección",
+  "occupantIcon": {
+    "owner": "🏠",
+    "tenant": "🔑",
+    "family": "👨‍👩‍👧‍👦", 
+    "other": "📍"
+  }
 }

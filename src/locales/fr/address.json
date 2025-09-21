@@ -644,5 +644,11 @@
   "reviewerNotes": "Notes du Réviseur",
   "actionRequired": "Action Requise",
   "actionRequiredDescription": "Veuillez réviser les notes ci-dessus et mettre à jour votre demande de vérification avec les changements demandés.",
-  "addNewAddress": "Ajouter une Nouvelle Adresse"
+  "addNewAddress": "Ajouter une Nouvelle Adresse",
+  "occupantIcon": {
+    "owner": "🏠",
+    "tenant": "🔑",
+    "family": "👨‍👩‍👧‍👦",
+    "other": "📍"
+  }
 }
