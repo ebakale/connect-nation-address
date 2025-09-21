@@ -41,7 +41,7 @@ const Index = () => {
 
   // Main page is always accessible regardless of authentication status
 
-const navigationItems = [
+  const navigationItems = [
     { id: 'overview', label: t('common:navigation.home'), icon: MapPin },
     { id: 'about', label: t('common:navigation.about'), icon: Users },
     { id: 'public', label: t('common:platform.searchAddresses'), icon: Search },
