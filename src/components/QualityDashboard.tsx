@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -66,6 +67,7 @@ interface CoverageAnalytics {
 }
 
 export function QualityDashboard() {
+  const { t } = useTranslation(['admin']);
   const [analytics, setAnalytics] = useState<CoverageAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -282,8 +284,8 @@ export function QualityDashboard() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Quality Dashboard</h1>
-          <p className="text-muted-foreground">Real-time monitoring of address data quality and coverage</p>
+          <h1 className="text-3xl font-bold text-foreground">{t('admin:quality.title')}</h1>
+          <p className="text-muted-foreground">{t('admin:quality.description')}</p>
         </div>
         <div className="flex gap-2">
           <Button
@@ -293,11 +295,11 @@ export function QualityDashboard() {
             size="sm"
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            Refresh
+            {t('admin:quality.refreshData')}
           </Button>
           <Button variant="outline" size="sm">
             <Download className="h-4 w-4 mr-2" />
-            Export
+            {t('admin:quality.exportQualityReport')}
           </Button>
         </div>
       </div>
@@ -306,7 +308,7 @@ export function QualityDashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Addresses</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:quality.totalAddresses')}</CardTitle>
             <Database className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -320,7 +322,7 @@ export function QualityDashboard() {
         {/* CAR-specific metrics */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Citizen Addresses</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:quality.verifiedAddresses')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -354,7 +356,7 @@ export function QualityDashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Verification Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:quality.qualityScore')}</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -368,7 +370,7 @@ export function QualityDashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Data Quality</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:quality.completenessRate')}</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -382,7 +384,7 @@ export function QualityDashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Review</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:quality.pendingVerification')}</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
