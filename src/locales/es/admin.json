@@ -187,6 +187,57 @@
   "strategicOverview": "Resumen Estratégico",
   "strategicOverviewDescription": "Análisis estratégico y documentación de beneficios nacionales",
   "additionalDocumentationFeatures": "Se pueden agregar características adicionales de documentación aquí",
+  "carPermissionsManager": {
+    "title": "Gestión de Permisos CAR",
+    "description": "Gestionar permisos del Repositorio de Direcciones de Ciudadanos para usuarios",
+    "accessDenied": "Acceso denegado. Necesitas privilegios de administrador CAR para gestionar permisos.",
+    "managePermissions": "Gestionar Permisos",
+    "dialogTitle": "Permisos CAR",
+    "dialogDescription": "Asignar permisos específicos de CAR a usuarios para gestionar direcciones de ciudadanos y registros de personas",
+    "searchUser": "Buscar Usuario",
+    "searchPlaceholder": "Buscar por email o nombre...",
+    "corePermissions": "Permisos Básicos",
+    "advancedPermissions": "Permisos Avanzados",
+    "jurisdictionScope": "Ámbito de Jurisdicción",
+    "geographicScope": "Ámbito Geográfico (Opcional)",
+    "selectProvinces": "Seleccionar provincias...",
+    "savePermissions": "Guardar Permisos",
+    "noPermissionsConfigured": "No hay permisos CAR configurados",
+    "unknownUser": "Usuario Desconocido",
+    "permissions": "permisos",
+    "remove": "Remover",
+    "scope": "Ámbito",
+    "permissionLabels": {
+      "reviewCitizenAddresses": "Revisar Direcciones de Ciudadanos",
+      "verifyResidency": "Verificar Residencia",
+      "managePersonRecords": "Gestionar Registros de Personas",
+      "accessAddressHistory": "Acceder al Historial de Direcciones",
+      "updateAddressStatus": "Actualizar Estado de Dirección",
+      "mergeDuplicatePersons": "Fusionar Personas Duplicadas"
+    },
+    "permissionBadges": {
+      "reviewAddresses": "Revisar Direcciones",
+      "verifyResidency": "Verificar Residencia",
+      "managePersons": "Gestionar Personas",
+      "accessHistory": "Acceder Historial",
+      "updateStatus": "Actualizar Estado",
+      "mergeDuplicates": "Fusionar Duplicados"
+    },
+    "jurisdictionOptions": {
+      "national": "Nacional",
+      "regional": "Regional",
+      "municipal": "Municipal",
+      "local": "Local"
+    },
+    "toastMessages": {
+      "pleaseSelectUser": "Por favor selecciona un usuario",
+      "permissionsUpdatedSuccess": "Permisos CAR actualizados exitosamente",
+      "permissionsUpdateFailed": "Error al actualizar permisos CAR",
+      "permissionsRemovedSuccess": "Permisos CAR removidos exitosamente",
+      "permissionsRemoveFailed": "Error al remover permisos CAR",
+      "fetchPermissionsFailed": "Error al obtener permisos CAR"
+    }
+  },
   "workflowStatus": "Estado del Flujo de Trabajo",
   "currentRolePosition": "Su rol actual y posición en el flujo de trabajo de gestión de direcciones",
   "currentRole": "Rol Actual",

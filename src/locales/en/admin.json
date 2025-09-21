@@ -648,6 +648,57 @@
   "strategicOverview": "Strategic Overview", 
   "strategicOverviewDescription": "Strategic analysis and national benefits documentation",
   "additionalDocumentationFeatures": "Additional documentation features can be added here",
+  "carPermissionsManager": {
+    "title": "CAR Permissions Management",
+    "description": "Manage Citizen Address Repository permissions for users",
+    "accessDenied": "Access denied. You need CAR admin privileges to manage permissions.",
+    "managePermissions": "Manage Permissions",
+    "dialogTitle": "CAR Permissions",
+    "dialogDescription": "Assign specific CAR permissions to users for managing citizen addresses and person records",
+    "searchUser": "Search User",
+    "searchPlaceholder": "Search by email or name...",
+    "corePermissions": "Core Permissions",
+    "advancedPermissions": "Advanced Permissions",
+    "jurisdictionScope": "Jurisdiction Scope",
+    "geographicScope": "Geographic Scope (Optional)",
+    "selectProvinces": "Select provinces...",
+    "savePermissions": "Save Permissions",
+    "noPermissionsConfigured": "No CAR permissions configured",
+    "unknownUser": "Unknown User",
+    "permissions": "permissions",
+    "remove": "Remove",
+    "scope": "Scope",
+    "permissionLabels": {
+      "reviewCitizenAddresses": "Review Citizen Addresses",
+      "verifyResidency": "Verify Residency",
+      "managePersonRecords": "Manage Person Records",
+      "accessAddressHistory": "Access Address History",
+      "updateAddressStatus": "Update Address Status",
+      "mergeDuplicatePersons": "Merge Duplicate Persons"
+    },
+    "permissionBadges": {
+      "reviewAddresses": "Review Addresses",
+      "verifyResidency": "Verify Residency",
+      "managePersons": "Manage Persons",
+      "accessHistory": "Access History",
+      "updateStatus": "Update Status",
+      "mergeDuplicates": "Merge Duplicates"
+    },
+    "jurisdictionOptions": {
+      "national": "National",
+      "regional": "Regional",
+      "municipal": "Municipal",
+      "local": "Local"
+    },
+    "toastMessages": {
+      "pleaseSelectUser": "Please select a user",
+      "permissionsUpdatedSuccess": "CAR permissions updated successfully",
+      "permissionsUpdateFailed": "Failed to update CAR permissions",
+      "permissionsRemovedSuccess": "CAR permissions removed successfully",
+      "permissionsRemoveFailed": "Failed to remove CAR permissions",
+      "fetchPermissionsFailed": "Failed to fetch CAR permissions"
+    }
+  },
   "workflowStatus": "Workflow Status",
   "currentRolePosition": "Your current role and position in the address management workflow",
   "currentRole": "Current Role",

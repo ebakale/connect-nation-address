@@ -135,7 +135,7 @@ export function CARPermissionsManager() {
       console.error('Error fetching CAR permissions:', error);
       toast({
         title: t('common:error'),
-        description: 'Failed to fetch CAR permissions',
+        description: t('admin:carPermissionsManager.toastMessages.fetchPermissionsFailed'),
         variant: 'destructive'
       });
     } finally {
@@ -148,7 +148,7 @@ export function CARPermissionsManager() {
       if (!selectedUser) {
         toast({
           title: t('common:error'),
-          description: 'Please select a user',
+          description: t('admin:carPermissionsManager.toastMessages.pleaseSelectUser'),
           variant: 'destructive'
         });
         return;
@@ -166,7 +166,7 @@ export function CARPermissionsManager() {
 
       toast({
         title: t('common:success'),
-        description: 'CAR permissions updated successfully'
+        description: t('admin:carPermissionsManager.toastMessages.permissionsUpdatedSuccess')
       });
 
       await fetchPermissions();
@@ -176,7 +176,7 @@ export function CARPermissionsManager() {
       console.error('Error creating CAR permission:', error);
       toast({
         title: t('common:error'),
-        description: 'Failed to update CAR permissions',
+        description: t('admin:carPermissionsManager.toastMessages.permissionsUpdateFailed'),
         variant: 'destructive'
       });
     }
@@ -193,7 +193,7 @@ export function CARPermissionsManager() {
 
       toast({
         title: t('common:success'),
-        description: 'CAR permissions removed successfully'
+        description: t('admin:carPermissionsManager.toastMessages.permissionsRemovedSuccess')
       });
 
       await fetchPermissions();
@@ -201,7 +201,7 @@ export function CARPermissionsManager() {
       console.error('Error removing CAR permission:', error);
       toast({
         title: t('common:error'),
-        description: 'Failed to remove CAR permissions',
+        description: t('admin:carPermissionsManager.toastMessages.permissionsRemoveFailed'),
         variant: 'destructive'
       });
     }
@@ -240,10 +240,10 @@ export function CARPermissionsManager() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            CAR Permissions Management
+            {t('admin:carPermissionsManager.title')}
           </CardTitle>
           <CardDescription>
-            Access denied. You need CAR admin privileges to manage permissions.
+            {t('admin:carPermissionsManager.accessDenied')}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -257,10 +257,10 @@ export function CARPermissionsManager() {
           <div>
             <CardTitle className="flex items-center gap-2">
               <Shield className="h-5 w-5" />
-              CAR Permissions Management
+              {t('admin:carPermissionsManager.title')}
             </CardTitle>
             <CardDescription>
-              Manage Citizen Address Repository permissions for users
+              {t('admin:carPermissionsManager.description')}
             </CardDescription>
           </div>
           <Dialog open={dialogOpen} onOpenChange={(open) => {
@@ -270,20 +270,20 @@ export function CARPermissionsManager() {
             <DialogTrigger asChild>
               <Button>
                 <UserCog className="h-4 w-4 mr-2" />
-                Manage Permissions
+                {t('admin:carPermissionsManager.managePermissions')}
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl" aria-describedby="car-permissions-desc">
               <DialogHeader>
-                <DialogTitle>CAR Permissions</DialogTitle>
+                <DialogTitle>{t('admin:carPermissionsManager.dialogTitle')}</DialogTitle>
                 <DialogDescription id="car-permissions-desc">
-                  Assign specific CAR permissions to users for managing citizen addresses and person records
+                  {t('admin:carPermissionsManager.dialogDescription')}
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-6">
                 {/* User Search */}
                 <div>
-                  <Label htmlFor="user_search">Search User</Label>
+                  <Label htmlFor="user_search">{t('admin:carPermissionsManager.searchUser')}</Label>
                   <div className="space-y-2">
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -295,7 +295,7 @@ export function CARPermissionsManager() {
                           setUserSearch(e.target.value);
                           searchUsers(e.target.value);
                         }}
-                        placeholder="Search by email or name..."
+                        placeholder={t('admin:carPermissionsManager.searchPlaceholder')}
                       />
                     </div>
                     
@@ -339,12 +339,12 @@ export function CARPermissionsManager() {
                 {/* Permissions */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-4">
-                    <h4 className="font-medium">Core Permissions</h4>
+                    <h4 className="font-medium">{t('admin:carPermissionsManager.corePermissions')}</h4>
                     
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Eye className="h-4 w-4" />
-                        <Label>Review Citizen Addresses</Label>
+                        <Label>{t('admin:carPermissionsManager.permissionLabels.reviewCitizenAddresses')}</Label>
                       </div>
                       <Switch
                         checked={newPermission.can_review_citizen_addresses}
@@ -357,7 +357,7 @@ export function CARPermissionsManager() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Home className="h-4 w-4" />
-                        <Label>Verify Residency</Label>
+                        <Label>{t('admin:carPermissionsManager.permissionLabels.verifyResidency')}</Label>
                       </div>
                       <Switch
                         checked={newPermission.can_verify_residency}
@@ -370,7 +370,7 @@ export function CARPermissionsManager() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Users className="h-4 w-4" />
-                        <Label>Manage Person Records</Label>
+                        <Label>{t('admin:carPermissionsManager.permissionLabels.managePersonRecords')}</Label>
                       </div>
                       <Switch
                         checked={newPermission.can_manage_person_records}
@@ -382,12 +382,12 @@ export function CARPermissionsManager() {
                   </div>
 
                   <div className="space-y-4">
-                    <h4 className="font-medium">Advanced Permissions</h4>
+                    <h4 className="font-medium">{t('admin:carPermissionsManager.advancedPermissions')}</h4>
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4" />
-                        <Label>Access Address History</Label>
+                        <Label>{t('admin:carPermissionsManager.permissionLabels.accessAddressHistory')}</Label>
                       </div>
                       <Switch
                         checked={newPermission.can_access_address_history}
@@ -400,7 +400,7 @@ export function CARPermissionsManager() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <FileEdit className="h-4 w-4" />
-                        <Label>Update Address Status</Label>
+                        <Label>{t('admin:carPermissionsManager.permissionLabels.updateAddressStatus')}</Label>
                       </div>
                       <Switch
                         checked={newPermission.can_update_address_status}
@@ -413,7 +413,7 @@ export function CARPermissionsManager() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Merge className="h-4 w-4" />
-                        <Label>Merge Duplicate Persons</Label>
+                        <Label>{t('admin:carPermissionsManager.permissionLabels.mergeDuplicatePersons')}</Label>
                       </div>
                       <Switch
                         checked={newPermission.can_merge_duplicate_persons}
@@ -428,7 +428,7 @@ export function CARPermissionsManager() {
                 {/* Jurisdiction */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label>Jurisdiction Scope</Label>
+                    <Label>{t('admin:carPermissionsManager.jurisdictionScope')}</Label>
                     <Select 
                       value={newPermission.jurisdiction_scope} 
                       onValueChange={(value) => setNewPermission({...newPermission, jurisdiction_scope: value})}
@@ -437,19 +437,19 @@ export function CARPermissionsManager() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="national">National</SelectItem>
-                        <SelectItem value="regional">Regional</SelectItem>
-                        <SelectItem value="municipal">Municipal</SelectItem>
-                        <SelectItem value="local">Local</SelectItem>
+                        <SelectItem value="national">{t('admin:carPermissionsManager.jurisdictionOptions.national')}</SelectItem>
+                        <SelectItem value="regional">{t('admin:carPermissionsManager.jurisdictionOptions.regional')}</SelectItem>
+                        <SelectItem value="municipal">{t('admin:carPermissionsManager.jurisdictionOptions.municipal')}</SelectItem>
+                        <SelectItem value="local">{t('admin:carPermissionsManager.jurisdictionOptions.local')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div>
-                    <Label>Geographic Scope (Optional)</Label>
+                    <Label>{t('admin:carPermissionsManager.geographicScope')}</Label>
                     <Select>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select provinces..." />
+                        <SelectValue placeholder={t('admin:carPermissionsManager.selectProvinces')} />
                       </SelectTrigger>
                       <SelectContent>
                         {provinces.map(province => (
@@ -467,7 +467,7 @@ export function CARPermissionsManager() {
                   className="w-full"
                   disabled={!selectedUser}
                 >
-                  Save Permissions
+                  {t('admin:carPermissionsManager.savePermissions')}
                 </Button>
               </div>
             </DialogContent>
@@ -482,7 +482,7 @@ export function CARPermissionsManager() {
         ) : permissions?.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>No CAR permissions configured</p>
+            <p>{t('admin:carPermissionsManager.noPermissionsConfigured')}</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -492,35 +492,35 @@ export function CARPermissionsManager() {
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <Shield className="h-4 w-4" />
-                      <span className="font-medium">{permission.full_name || 'Unknown User'}</span>
+                      <span className="font-medium">{permission.full_name || t('admin:carPermissionsManager.unknownUser')}</span>
                       <Badge variant="outline">
-                        {getPermissionCount(permission)} permissions
+                        {getPermissionCount(permission)} {t('admin:carPermissionsManager.permissions')}
                       </Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">{permission.email}</p>
                     <div className="flex gap-2 mt-2 flex-wrap">
                       {permission.can_review_citizen_addresses && (
-                        <Badge variant="secondary">Review Addresses</Badge>
+                        <Badge variant="secondary">{t('admin:carPermissionsManager.permissionBadges.reviewAddresses')}</Badge>
                       )}
                       {permission.can_verify_residency && (
-                        <Badge variant="secondary">Verify Residency</Badge>
+                        <Badge variant="secondary">{t('admin:carPermissionsManager.permissionBadges.verifyResidency')}</Badge>
                       )}
                       {permission.can_manage_person_records && (
-                        <Badge variant="secondary">Manage Persons</Badge>
+                        <Badge variant="secondary">{t('admin:carPermissionsManager.permissionBadges.managePersons')}</Badge>
                       )}
                       {permission.can_access_address_history && (
-                        <Badge variant="secondary">Access History</Badge>
+                        <Badge variant="secondary">{t('admin:carPermissionsManager.permissionBadges.accessHistory')}</Badge>
                       )}
                       {permission.can_update_address_status && (
-                        <Badge variant="secondary">Update Status</Badge>
+                        <Badge variant="secondary">{t('admin:carPermissionsManager.permissionBadges.updateStatus')}</Badge>
                       )}
                       {permission.can_merge_duplicate_persons && (
-                        <Badge variant="secondary">Merge Duplicates</Badge>
+                        <Badge variant="secondary">{t('admin:carPermissionsManager.permissionBadges.mergeDuplicates')}</Badge>
                       )}
                     </div>
                     {permission.jurisdiction_scope && (
                       <p className="text-xs text-muted-foreground">
-                        Scope: {permission.jurisdiction_scope}
+                        {t('admin:carPermissionsManager.scope')}: {permission.jurisdiction_scope}
                       </p>
                     )}
                   </div>
@@ -529,7 +529,7 @@ export function CARPermissionsManager() {
                     size="sm"
                     onClick={() => removePermission(permission.id)}
                   >
-                    Remove
+                    {t('admin:carPermissionsManager.remove')}
                   </Button>
                 </div>
               </div>

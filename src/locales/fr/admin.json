@@ -34,6 +34,57 @@
   "strategicOverview": "Aperçu Stratégique",
   "strategicOverviewDescription": "Analyse stratégique et documentation des avantages nationaux", 
   "additionalDocumentationFeatures": "Des fonctionnalités de documentation supplémentaires peuvent être ajoutées ici",
+  "carPermissionsManager": {
+    "title": "Gestion des Permissions CAR",
+    "description": "Gérer les permissions du Référentiel d'Adresses de Citoyens pour les utilisateurs",
+    "accessDenied": "Accès refusé. Vous avez besoin des privilèges d'administrateur CAR pour gérer les permissions.",
+    "managePermissions": "Gérer les Permissions",
+    "dialogTitle": "Permissions CAR",
+    "dialogDescription": "Attribuer des permissions CAR spécifiques aux utilisateurs pour gérer les adresses de citoyens et les dossiers de personnes",
+    "searchUser": "Rechercher un Utilisateur",
+    "searchPlaceholder": "Rechercher par email ou nom...",
+    "corePermissions": "Permissions de Base",
+    "advancedPermissions": "Permissions Avancées",
+    "jurisdictionScope": "Portée de Juridiction",
+    "geographicScope": "Portée Géographique (Optionnel)",
+    "selectProvinces": "Sélectionner les provinces...",
+    "savePermissions": "Sauvegarder les Permissions",
+    "noPermissionsConfigured": "Aucune permission CAR configurée",
+    "unknownUser": "Utilisateur Inconnu",
+    "permissions": "permissions",
+    "remove": "Supprimer",
+    "scope": "Portée",
+    "permissionLabels": {
+      "reviewCitizenAddresses": "Réviser les Adresses de Citoyens",
+      "verifyResidency": "Vérifier la Résidence",
+      "managePersonRecords": "Gérer les Dossiers de Personnes",
+      "accessAddressHistory": "Accéder à l'Historique des Adresses",
+      "updateAddressStatus": "Mettre à Jour le Statut d'Adresse",
+      "mergeDuplicatePersons": "Fusionner les Personnes Dupliquées"
+    },
+    "permissionBadges": {
+      "reviewAddresses": "Réviser Adresses",
+      "verifyResidency": "Vérifier Résidence",
+      "managePersons": "Gérer Personnes",
+      "accessHistory": "Accéder Historique",
+      "updateStatus": "Mettre à Jour Statut",
+      "mergeDuplicates": "Fusionner Duplicatas"
+    },
+    "jurisdictionOptions": {
+      "national": "National",
+      "regional": "Régional",
+      "municipal": "Municipal",
+      "local": "Local"
+    },
+    "toastMessages": {
+      "pleaseSelectUser": "Veuillez sélectionner un utilisateur",
+      "permissionsUpdatedSuccess": "Permissions CAR mises à jour avec succès",
+      "permissionsUpdateFailed": "Échec de la mise à jour des permissions CAR",
+      "permissionsRemovedSuccess": "Permissions CAR supprimées avec succès",
+      "permissionsRemoveFailed": "Échec de la suppression des permissions CAR",
+      "fetchPermissionsFailed": "Échec de la récupération des permissions CAR"
+    }
+  },
   "workflowStatus": "État du flux de travail",
   "currentRolePosition": "Votre rôle actuel et position dans le flux de travail de gestion des adresses",
   "currentRole": "Rôle actuel",
