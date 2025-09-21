@@ -12,6 +12,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { CitizenAddressSearch } from "./CitizenAddressSearch";
+import { useTranslation } from 'react-i18next';
 
 interface CARStats {
   totalAddresses: number;
@@ -36,6 +37,7 @@ interface SystemHealth {
 
 export function CARAdministrativeOverview() {
   const { toast } = useToast();
+  const { t } = useTranslation(['admin']);
   const [stats, setStats] = useState<CARStats>({
     totalAddresses: 0,
     activeAddresses: 0,
@@ -150,8 +152,8 @@ export function CARAdministrativeOverview() {
     } catch (error) {
       console.error('Error fetching CAR statistics:', error);
       toast({
-        title: "Error",
-        description: "Failed to load CAR statistics",
+        title: t('admin:carAdministrativeOverview.errorTitle'),
+        description: t('admin:carAdministrativeOverview.failedToLoadStatistics'),
         variant: "destructive"
       });
     } finally {
@@ -195,9 +197,9 @@ export function CARAdministrativeOverview() {
   };
 
   const getHealthStatus = (percentage: number) => {
-    if (percentage >= 95) return "Excellent";
-    if (percentage >= 85) return "Good";
-    return "Needs Attention";
+    if (percentage >= 95) return t('admin:carAdministrativeOverview.excellent');
+    if (percentage >= 85) return t('admin:carAdministrativeOverview.good');
+    return t('admin:carAdministrativeOverview.needsAttention');
   };
 
   if (loading) {
@@ -223,11 +225,11 @@ export function CARAdministrativeOverview() {
     <div className="space-y-6">
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="overview">System Overview</TabsTrigger>
-          <TabsTrigger value="search">Citizen Search</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="health">System Health</TabsTrigger>
-          <TabsTrigger value="management">Management Tools</TabsTrigger>
+          <TabsTrigger value="overview">{t('admin:carAdministrativeOverview.systemOverview')}</TabsTrigger>
+          <TabsTrigger value="search">{t('admin:carAdministrativeOverview.citizenSearch')}</TabsTrigger>
+          <TabsTrigger value="analytics">{t('admin:carAdministrativeOverview.analytics')}</TabsTrigger>
+          <TabsTrigger value="health">{t('admin:carAdministrativeOverview.systemHealth')}</TabsTrigger>
+          <TabsTrigger value="management">{t('admin:carAdministrativeOverview.managementTools')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
@@ -236,52 +238,52 @@ export function CARAdministrativeOverview() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Citizen Addresses</CardTitle>
+                  <CardTitle className="text-sm font-medium">{t('admin:carAdministrativeOverview.totalCitizenAddresses')}</CardTitle>
                   <Database className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats.totalAddresses}</div>
                   <p className="text-xs text-muted-foreground">
-                    {stats.activeAddresses} currently active
+                    {stats.activeAddresses} {t('admin:carAdministrativeOverview.currentlyActive')}
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Registered Persons</CardTitle>
+                  <CardTitle className="text-sm font-medium">{t('admin:carAdministrativeOverview.registeredPersons')}</CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats.totalPersons}</div>
                   <p className="text-xs text-muted-foreground">
-                    In CAR system
+                    {t('admin:carAdministrativeOverview.inCarSystem')}
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Pending Verifications</CardTitle>
+                  <CardTitle className="text-sm font-medium">{t('admin:carAdministrativeOverview.pendingVerifications')}</CardTitle>
                   <Clock className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats.pendingVerifications}</div>
                   <p className="text-xs text-muted-foreground">
-                    Awaiting verification
+                    {t('admin:carAdministrativeOverview.awaitingVerification')}
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">NAR Verification Rate</CardTitle>
+                  <CardTitle className="text-sm font-medium">{t('admin:carAdministrativeOverview.narVerificationRate')}</CardTitle>
                   <CheckCircle className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats.verificationRate}%</div>
                   <p className="text-xs text-muted-foreground">
-                    Linked to NAR
+                    {t('admin:carAdministrativeOverview.linkedToNar')}
                   </p>
                 </CardContent>
               </Card>
@@ -291,27 +293,27 @@ export function CARAdministrativeOverview() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Address Status Distribution</CardTitle>
+                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.addressStatusDistribution')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="text-sm">Verified (Approved)</span>
+                      <span className="text-sm">{t('admin:carAdministrativeOverview.verifiedApproved')}</span>
                     </div>
                     <Badge variant="outline">{stats.confirmedAddresses}</Badge>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                      <span className="text-sm">Unverified (Self-Declared)</span>
+                      <span className="text-sm">{t('admin:carAdministrativeOverview.unverifiedSelfDeclared')}</span>
                     </div>
                     <Badge variant="outline">{stats.pendingVerifications}</Badge>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                      <span className="text-sm">Verification Rejected</span>
+                      <span className="text-sm">{t('admin:carAdministrativeOverview.verificationRejected')}</span>
                     </div>
                     <Badge variant="outline">{stats.rejectedAddresses}</Badge>
                   </div>
@@ -320,20 +322,20 @@ export function CARAdministrativeOverview() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Address Types</CardTitle>
+                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.addressTypes')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Building2 className="h-4 w-4 text-blue-500" />
-                      <span className="text-sm">Primary Addresses</span>
+                      <span className="text-sm">{t('admin:carAdministrativeOverview.primaryAddresses')}</span>
                     </div>
                     <Badge variant="outline">{stats.primaryAddresses}</Badge>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <MapPin className="h-4 w-4 text-purple-500" />
-                      <span className="text-sm">Secondary Addresses</span>
+                      <span className="text-sm">{t('admin:carAdministrativeOverview.secondaryAddresses')}</span>
                     </div>
                     <Badge variant="outline">{stats.secondaryAddresses}</Badge>
                   </div>
@@ -351,8 +353,8 @@ export function CARAdministrativeOverview() {
           <div className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Regional Distribution</CardTitle>
-                <CardDescription>Top 5 regions by citizen address count</CardDescription>
+                <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.regionalDistribution')}</CardTitle>
+                <CardDescription>{t('admin:carAdministrativeOverview.topRegionsByAddressCount')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -380,19 +382,19 @@ export function CARAdministrativeOverview() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Recent Activity</CardTitle>
-                  <CardDescription>Last 7 days</CardDescription>
+                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.recentActivity')}</CardTitle>
+                  <CardDescription>{t('admin:carAdministrativeOverview.lastSevenDays')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-green-600">{stats.recentActivity}</div>
-                  <p className="text-sm text-muted-foreground">New addresses added</p>
+                  <p className="text-sm text-muted-foreground">{t('admin:carAdministrativeOverview.newAddressesAdded')}</p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Verification Rate</CardTitle>
-                  <CardDescription>NAR linkage success</CardDescription>
+                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.verificationRate')}</CardTitle>
+                  <CardDescription>{t('admin:carAdministrativeOverview.narLinkageSuccess')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-blue-600">{stats.verificationRate}%</div>
@@ -402,8 +404,8 @@ export function CARAdministrativeOverview() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Active Ratio</CardTitle>
-                  <CardDescription>Active vs total addresses</CardDescription>
+                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.activeRatio')}</CardTitle>
+                  <CardDescription>{t('admin:carAdministrativeOverview.activeVsTotalAddresses')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-purple-600">
@@ -424,23 +426,23 @@ export function CARAdministrativeOverview() {
             <Alert>
               <Activity className="h-4 w-4" />
               <AlertDescription>
-                System health monitoring provides insights into CAR system performance and data integrity.
+                {t('admin:carAdministrativeOverview.systemHealthMonitoring')}
               </AlertDescription>
             </Alert>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">System Performance</CardTitle>
+                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.systemPerformance')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm">Average Processing Time</span>
-                    <Badge variant="outline">{systemHealth.averageProcessingTime} days</Badge>
+                    <span className="text-sm">{t('admin:carAdministrativeOverview.averageProcessingTime')}</span>
+                    <Badge variant="outline">{systemHealth.averageProcessingTime} {t('admin:carAdministrativeOverview.days')}</Badge>
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">System Load</span>
+                      <span className="text-sm">{t('admin:carAdministrativeOverview.systemLoad')}</span>
                       <span className={`text-sm font-medium ${getHealthColor(100 - systemHealth.systemLoad)}`}>
                         {getHealthStatus(100 - systemHealth.systemLoad)}
                       </span>
@@ -452,12 +454,12 @@ export function CARAdministrativeOverview() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Data Integrity</CardTitle>
+                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.dataIntegrity')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">Data Integrity</span>
+                      <span className="text-sm">{t('admin:carAdministrativeOverview.dataIntegrity')}</span>
                       <span className={`text-sm font-medium ${getHealthColor(systemHealth.dataIntegrity)}`}>
                         {systemHealth.dataIntegrity}%
                       </span>
@@ -466,7 +468,7 @@ export function CARAdministrativeOverview() {
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">NAR Linkage Health</span>
+                      <span className="text-sm">{t('admin:carAdministrativeOverview.narLinkageHealth')}</span>
                       <span className={`text-sm font-medium ${getHealthColor(systemHealth.narLinkage)}`}>
                         {systemHealth.narLinkage}%
                       </span>
@@ -484,58 +486,58 @@ export function CARAdministrativeOverview() {
             <Alert>
               <Shield className="h-4 w-4" />
               <AlertDescription>
-                Administrative tools for managing the CAR system. Use these tools with caution as they affect system-wide operations.
+                {t('admin:carAdministrativeOverview.administrativeTools')}
               </AlertDescription>
             </Alert>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Data Management</CardTitle>
-                  <CardDescription>Bulk operations and data management</CardDescription>
+                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.dataManagement')}</CardTitle>
+                  <CardDescription>{t('admin:carAdministrativeOverview.bulkOperationsDataManagement')}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <Button variant="outline" className="w-full" onClick={() => fetchCARStatistics()}>
                     <BarChart3 className="h-4 w-4 mr-2" />
-                    Refresh Statistics
+                    {t('admin:carAdministrativeOverview.refreshStatistics')}
                   </Button>
                   <Button variant="outline" className="w-full" disabled>
                     <Database className="h-4 w-4 mr-2" />
-                    Export CAR Data
+                    {t('admin:carAdministrativeOverview.exportCarData')}
                   </Button>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">System Maintenance</CardTitle>
-                  <CardDescription>System maintenance and optimization</CardDescription>
+                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.systemMaintenance')}</CardTitle>
+                  <CardDescription>{t('admin:carAdministrativeOverview.systemMaintenanceOptimization')}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <Button variant="outline" className="w-full" disabled>
                     <Activity className="h-4 w-4 mr-2" />
-                    Run Integrity Check
+                    {t('admin:carAdministrativeOverview.runIntegrityCheck')}
                   </Button>
                   <Button variant="outline" className="w-full" disabled>
                     <TrendingUp className="h-4 w-4 mr-2" />
-                    Optimize Performance
+                    {t('admin:carAdministrativeOverview.optimizePerformance')}
                   </Button>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Verification Tools</CardTitle>
-                  <CardDescription>Address verification management</CardDescription>
+                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.verificationTools')}</CardTitle>
+                  <CardDescription>{t('admin:carAdministrativeOverview.addressVerificationManagement')}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <Button variant="outline" className="w-full" disabled>
                     <CheckCircle className="h-4 w-4 mr-2" />
-                    Bulk Verification
+                    {t('admin:carAdministrativeOverview.bulkVerification')}
                   </Button>
                   <Button variant="outline" className="w-full" disabled>
                     <AlertTriangle className="h-4 w-4 mr-2" />
-                    Review Flagged Items
+                    {t('admin:carAdministrativeOverview.reviewFlaggedItems')}
                   </Button>
                 </CardContent>
               </Card>
