@@ -68,6 +68,13 @@ export function CurrentAddressesPanel({
     }
   };
 
+  const getLocalizedLocation = (location: string) => {
+    const key = `address:locations.${location.toLowerCase().replace(/\s+/g, '_')}`;
+    const translated = t(key);
+    // If translation key doesn't exist, return original
+    return translated === key ? location : translated;
+  };
+
   const renderAddressCard = (address: CitizenAddress, isPrimary: boolean = false) => (
     <Card className={isPrimary ? "border-primary/20 bg-primary/5" : ""}>
       <CardHeader className="pb-3">
@@ -82,7 +89,11 @@ export function CurrentAddressesPanel({
             )}
             {(address.city || address.region) && (
               <p className="text-sm text-muted-foreground">
-                {[address.city, address.region, address.country].filter(Boolean).join(', ')}
+                {[
+                  address.city && getLocalizedLocation(address.city),
+                  address.region && getLocalizedLocation(address.region), 
+                  address.country && getLocalizedLocation(address.country)
+                ].filter(Boolean).join(', ')}
               </p>
             )}
           </div>
