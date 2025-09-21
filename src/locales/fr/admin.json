@@ -791,5 +791,32 @@
     "private": "Privé",
     "confidential": "Confidentiel",
     "restricted": "Restreint"
+  },
+  "carAutoApprovalStats": {
+    "title": "Statistiques d'Auto-Approbation CAR",
+    "description": "Métriques de performance pour le système automatisé de vérification d'adresses",
+    "totalSubmissions": "Total des Soumissions",
+    "autoApproved": "Auto-Approuvées",
+    "manualReview": "Révision Manuelle",
+    "rejected": "Rejetées",
+    "approvalRate": "Taux d'Approbation",
+    "averageProcessingTime": "Temps de Traitement Moyen",
+    "systemPerformance": "Performance du Système",
+    "recentActivity": "Activité Récente",
+    "last24Hours": "Dernières 24 Heures",
+    "last7Days": "7 Derniers Jours",
+    "last30Days": "30 Derniers Jours",
+    "addresses": "adresses",
+    "seconds": "secondes",
+    "loading": "Chargement des statistiques...",
+    "noData": "Aucune donnée disponible pour la période sélectionnée",
+    "refreshData": "Actualiser les Données",
+    "exportStats": "Exporter les Statistiques",
+    "excellent": "Excellent",
+    "good": "Bon",
+    "improving": "En amélioration",
+    "declarationsNeedAttention": "déclarations nécessitent votre attention", 
+    "actionRequired": "Action Requise",
+    "considerVerifyingMore": "Considérez vérifier plus d'adresses pour améliorer le taux d'auto-approbation"
   }
 }

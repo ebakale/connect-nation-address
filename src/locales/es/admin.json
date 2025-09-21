@@ -994,6 +994,33 @@
     "private": "Privado",
     "confidential": "Confidencial",
     "restricted": "Restringido"
-  }
+    }
+  },
+  "carAutoApprovalStats": {
+    "title": "Estadísticas de Auto-Aprobación CAR",
+    "description": "Métricas de rendimiento para el sistema automatizado de verificación de direcciones",
+    "totalSubmissions": "Total de Envíos",
+    "autoApproved": "Auto-Aprobadas",
+    "manualReview": "Revisión Manual",
+    "rejected": "Rechazadas",
+    "approvalRate": "Tasa de Aprobación",
+    "averageProcessingTime": "Tiempo Promedio de Procesamiento",
+    "systemPerformance": "Rendimiento del Sistema",
+    "recentActivity": "Actividad Reciente",
+    "last24Hours": "Últimas 24 Horas",
+    "last7Days": "Últimos 7 Días",
+    "last30Days": "Últimos 30 Días",
+    "addresses": "direcciones",
+    "seconds": "segundos",
+    "loading": "Cargando estadísticas...",
+    "noData": "No hay datos disponibles para el período seleccionado",
+    "refreshData": "Actualizar Datos",
+    "exportStats": "Exportar Estadísticas",
+    "excellent": "Excelente",
+    "good": "Bueno",
+    "improving": "Mejorando", 
+    "declarationsNeedAttention": "declaraciones necesitan tu atención",
+    "actionRequired": "Acción Requerida",
+    "considerVerifyingMore": "Considera verificar más direcciones para mejorar la tasa de auto-aprobación"
   }
 }

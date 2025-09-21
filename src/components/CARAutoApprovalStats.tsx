@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Clock, AlertCircle, TrendingUp } from 'lucide-react';
@@ -12,6 +13,7 @@ interface AutoApprovalStats {
 }
 
 export function CARAutoApprovalStats() {
+  const { t } = useTranslation(['admin']);
   const [stats, setStats] = useState<AutoApprovalStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -74,42 +76,42 @@ export function CARAutoApprovalStats() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <TrendingUp className="h-5 w-5" />
-          Auto-Approval Impact
+          {t('admin:carAutoApprovalStats.title')}
         </CardTitle>
         <CardDescription>
-          Efficiency gains from automated verification system
+          {t('admin:carAutoApprovalStats.description')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center p-3 bg-gray-50 rounded-lg">
             <div className="text-2xl font-bold text-gray-900">{stats.total_declarations}</div>
-            <div className="text-sm text-gray-600">Total Declarations</div>
+            <div className="text-sm text-gray-600">{t('admin:carAutoApprovalStats.totalSubmissions')}</div>
           </div>
           
           <div className="text-center p-3 bg-green-50 rounded-lg">
             <div className="text-2xl font-bold text-green-700">{stats.auto_approved}</div>
-            <div className="text-sm text-green-600">Auto-Approved</div>
+            <div className="text-sm text-green-600">{t('admin:carAutoApprovalStats.autoApproved')}</div>
           </div>
           
           <div className="text-center p-3 bg-orange-50 rounded-lg">
             <div className="text-2xl font-bold text-orange-700">{stats.manual_review_required}</div>
-            <div className="text-sm text-orange-600">Manual Review</div>
+            <div className="text-sm text-orange-600">{t('admin:carAutoApprovalStats.manualReview')}</div>
           </div>
           
           <div className="text-center p-3 bg-blue-50 rounded-lg">
             <div className="text-2xl font-bold text-blue-700">{stats.auto_approval_rate.toFixed(1)}%</div>
-            <div className="text-sm text-blue-600">Auto-Approval Rate</div>
+            <div className="text-sm text-blue-600">{t('admin:carAutoApprovalStats.approvalRate')}</div>
           </div>
         </div>
 
         <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
           <div className="flex items-center gap-2">
             <CheckCircle className="h-5 w-5 text-green-600" />
-            <span className="font-medium text-green-900">Administrative Efficiency</span>
+            <span className="font-medium text-green-900">{t('admin:carAutoApprovalStats.systemPerformance')}</span>
           </div>
           <Badge variant="outline" className="bg-green-100 text-green-800">
-            {stats.auto_approval_rate > 70 ? 'Excellent' : stats.auto_approval_rate > 50 ? 'Good' : 'Improving'}
+            {stats.auto_approval_rate > 70 ? t('admin:carAutoApprovalStats.excellent') : stats.auto_approval_rate > 50 ? t('admin:carAutoApprovalStats.good') : t('admin:carAutoApprovalStats.improving')}
           </Badge>
         </div>
 
@@ -118,11 +120,11 @@ export function CARAutoApprovalStats() {
             <div className="flex items-center gap-2">
               <Clock className="h-5 w-5 text-orange-600" />
               <span className="font-medium text-orange-900">
-                {stats.manual_review_required} declarations need your attention
+                {stats.manual_review_required} {t('admin:carAutoApprovalStats.declarationsNeedAttention')}
               </span>
             </div>
             <Badge variant="outline" className="bg-orange-100 text-orange-800">
-              Action Required
+              {t('admin:carAutoApprovalStats.actionRequired')}
             </Badge>
           </div>
         )}
@@ -132,7 +134,7 @@ export function CARAutoApprovalStats() {
             <div className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-blue-600" />
               <span className="font-medium text-blue-900">
-                Consider verifying more addresses to improve auto-approval rate
+                {t('admin:carAutoApprovalStats.considerVerifyingMore')}
               </span>
             </div>
           </div>

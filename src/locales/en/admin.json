@@ -1292,6 +1292,33 @@
     "private": "Private",
     "confidential": "Confidential",
     "restricted": "Restricted"
-  }
+    }
+  },
+  "carAutoApprovalStats": {
+    "title": "CAR Auto-Approval Statistics",
+    "description": "Performance metrics for the automated address verification system",
+    "totalSubmissions": "Total Submissions",
+    "autoApproved": "Auto-Approved",
+    "manualReview": "Manual Review",
+    "rejected": "Rejected",
+    "approvalRate": "Approval Rate",
+    "averageProcessingTime": "Avg Processing Time",
+    "systemPerformance": "System Performance",
+    "recentActivity": "Recent Activity",
+    "last24Hours": "Last 24 Hours",
+    "last7Days": "Last 7 Days",
+    "last30Days": "Last 30 Days",
+    "addresses": "addresses",
+    "seconds": "seconds",
+    "loading": "Loading statistics...",
+    "noData": "No data available for the selected period",
+    "refreshData": "Refresh Data",
+    "exportStats": "Export Statistics",
+    "excellent": "Excellent",
+    "good": "Good", 
+    "improving": "Improving",
+    "declarationsNeedAttention": "declarations need your attention",
+    "actionRequired": "Action Required",
+    "considerVerifyingMore": "Consider verifying more addresses to improve auto-approval rate"
   }
 }
