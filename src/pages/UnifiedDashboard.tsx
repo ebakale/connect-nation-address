@@ -688,6 +688,8 @@ const UnifiedDashboard = () => {
                   size="sm"
                   onClick={signOut} 
                   className="flex items-center gap-2"
+                  aria-label={t('common:navigation.logout', { defaultValue: 'Logout' })}
+                  title={t('common:navigation.logout', { defaultValue: 'Logout' })}
                 >
                   <LogOut className="h-4 w-4" />
                   <span className="hidden sm:inline">{t('common:navigation.logout', { defaultValue: 'Logout' })}</span>
