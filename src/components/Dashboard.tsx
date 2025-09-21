@@ -207,17 +207,17 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
   );
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 sm:space-y-6 lg:space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('nationalDigitalAddressSystem')}</h1>
-          <p className="text-muted-foreground">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight mobile-line-clamp-2">{t('nationalDigitalAddressSystem')}</h1>
+          <p className="text-sm sm:text-base text-muted-foreground mobile-line-clamp-2">
             {t('comprehensiveAddressManagement')}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="outline" className="border-success text-success">
+        <div className="flex items-center gap-2 shrink-0">
+          <Badge variant="outline" className="border-success text-success text-xs sm:text-sm">
             <Shield className="h-3 w-3 mr-1" />
             {t('systemOperational')}
           </Badge>
@@ -225,8 +225,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       </div>
 
       {/* Data Scope Notice */}
-      <div className="mb-4 p-3 bg-muted/50 rounded-lg border">
-        <p className="text-sm text-muted-foreground">
+      <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-muted/50 rounded-lg border">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           <span className="font-medium">Dashboard Scope:</span> Showing all-time statistics. 
           For time-filtered analysis, visit the Analytics section.
         </p>
@@ -276,7 +276,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {quickActions.map((action, index) => (
               <Card 
                 key={index} 
@@ -284,18 +284,18 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                 onClick={action.action}
               >
                 {/* Image Header */}
-                <div className="relative h-24 bg-cover bg-center" style={{ backgroundImage: `url(${action.image})` }}>
+                <div className="relative h-20 sm:h-24 bg-cover bg-center" style={{ backgroundImage: `url(${action.image})` }}>
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/40 to-transparent"></div>
-                  <div className="absolute bottom-2 left-3 right-3">
+                  <div className="absolute bottom-2 left-2 right-2 sm:left-3 sm:right-3">
                     <div className="flex items-center gap-2">
-                      <action.icon className="h-4 w-4 text-white" />
-                      <h4 className="font-semibold text-white text-sm truncate">{action.title}</h4>
+                      <action.icon className="h-3 w-3 sm:h-4 sm:w-4 text-white shrink-0" />
+                      <h4 className="font-semibold text-white text-xs sm:text-sm truncate">{action.title}</h4>
                     </div>
                   </div>
                 </div>
                 {/* Content */}
-                <CardContent className="p-3">
-                  <p className="text-xs text-muted-foreground line-clamp-2">{action.description}</p>
+                <CardContent className="p-2 sm:p-3">
+                  <p className="text-xs text-muted-foreground mobile-line-clamp-2">{action.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -308,16 +308,16 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         <div className="lg:col-span-2 space-y-4">
           {/* Address Search */}
           <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Search className="h-5 w-5" />
+            <CardHeader className="p-3 sm:p-6">
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <Search className="h-4 w-4 sm:h-5 sm:w-5" />
                 {t('dashboard:searchAddresses')}
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs sm:text-sm">
                 Find verified addresses and view them on the map below
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 sm:p-6 pt-0">
               <AddressSearch 
                 onSelectAddress={setSelectedAddress}
               />
@@ -326,53 +326,55 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
 
           {/* Location Map */}
           <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
+            <CardHeader className="p-3 sm:p-6">
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <MapPin className="h-4 w-4 sm:h-5 sm:w-5" />
                 Current Location & Nearby Points of Interest
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <DashboardLocationMap 
-                searchedAddress={selectedAddress}
-                onAddressSearched={setSelectedAddress}
-              />
+              <div className="h-64 sm:h-80 lg:h-96">
+                <DashboardLocationMap 
+                  searchedAddress={selectedAddress}
+                  onAddressSearched={setSelectedAddress}
+                />
+              </div>
             </CardContent>
           </Card>
         </div>
 
         <div className="space-y-4">
           <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle>{t('recentActivity')}</CardTitle>
+            <CardHeader className="p-3 sm:p-6">
+              <CardTitle className="text-base sm:text-lg">{t('recentActivity')}</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+            <CardContent className="p-3 sm:p-6 pt-0">
+              <div className="space-y-3 sm:space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-success/10 rounded-full">
-                    <CheckCircle className="h-4 w-4 text-success" />
+                  <div className="p-1.5 sm:p-2 bg-success/10 rounded-full shrink-0">
+                    <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-success" />
                   </div>
-                  <div>
-                    <p className="text-sm font-medium">156 addresses verified today</p>
-                    <p className="text-xs text-muted-foreground">Malabo district processing</p>
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm font-medium mobile-line-clamp-2">156 addresses verified today</p>
+                    <p className="text-xs text-muted-foreground truncate">Malabo district processing</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary/10 rounded-full">
-                    <Plus className="h-4 w-4 text-primary" />
+                  <div className="p-1.5 sm:p-2 bg-primary/10 rounded-full shrink-0">
+                    <Plus className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                   </div>
-                  <div>
-                    <p className="text-sm font-medium">42 new addresses registered</p>
-                    <p className="text-xs text-muted-foreground">Bata expansion project</p>
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm font-medium mobile-line-clamp-2">42 new addresses registered</p>
+                    <p className="text-xs text-muted-foreground truncate">Bata expansion project</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-warning/10 rounded-full">
-                    <Building className="h-4 w-4 text-warning" />
+                  <div className="p-1.5 sm:p-2 bg-warning/10 rounded-full shrink-0">
+                    <Building className="h-3 w-3 sm:h-4 sm:w-4 text-warning" />
                   </div>
-                  <div>
-                    <p className="text-sm font-medium">Commercial zone mapping</p>
-                    <p className="text-xs text-muted-foreground">85% complete</p>
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm font-medium mobile-line-clamp-2">Commercial zone mapping</p>
+                    <p className="text-xs text-muted-foreground truncate">85% complete</p>
                   </div>
                 </div>
               </div>
@@ -380,30 +382,30 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
           </Card>
 
           <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle>{t('systemStatus')}</CardTitle>
+            <CardHeader className="p-3 sm:p-6">
+              <CardTitle className="text-base sm:text-lg">{t('systemStatus')}</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">{t('apiServices')}</span>
-                  <Badge variant="outline" className="border-success text-success">{t('online')}</Badge>
+            <CardContent className="p-3 sm:p-6 pt-0">
+              <div className="space-y-3 sm:space-y-4">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs sm:text-sm truncate">{t('apiServices')}</span>
+                  <Badge variant="outline" className="border-success text-success text-xs">{t('online')}</Badge>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">{t('databaseSync')}</span>
-                  <Badge variant="outline" className="border-success text-success">{t('active')}</Badge>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs sm:text-sm truncate">{t('databaseSync')}</span>
+                  <Badge variant="outline" className="border-success text-success text-xs">{t('active')}</Badge>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">{t('mappingServices')}</span>
-                  <Badge variant="outline" className="border-success text-success">{t('operational')}</Badge>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs sm:text-sm truncate">{t('mappingServices')}</span>
+                  <Badge variant="outline" className="border-success text-success text-xs">{t('operational')}</Badge>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">{t('verificationQueue')}</span>
-                  <Badge variant="outline" className="border-warning text-warning">{t('processing')}</Badge>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs sm:text-sm truncate">{t('verificationQueue')}</span>
+                  <Badge variant="outline" className="border-warning text-warning text-xs">{t('processing')}</Badge>
                 </div>
-                <div className="mt-4 p-3 bg-muted/50 rounded-lg">
-                  <p className="text-sm font-medium">{t('activeUsers')}: {stats.activeUsers.toLocaleString()}</p>
-                  <p className="text-xs text-muted-foreground">{t('governmentAgenciesAndAuthorized')}</p>
+                <div className="mt-3 sm:mt-4 p-2 sm:p-3 bg-muted/50 rounded-lg">
+                  <p className="text-xs sm:text-sm font-medium">{t('activeUsers')}: {stats.activeUsers.toLocaleString()}</p>
+                  <p className="text-xs text-muted-foreground mobile-line-clamp-2">{t('governmentAgenciesAndAuthorized')}</p>
                 </div>
               </div>
             </CardContent>

@@ -379,34 +379,77 @@ All colors MUST be HSL.
   
   /* Mobile typography and spacing improvements */
   @media (max-width: 640px) {
-    .text-3xl { @apply text-lg; }
-    .text-2xl { @apply text-base; }
-    .text-xl { @apply text-sm; }
+    /* Typography scaling */
+    .text-4xl, .text-3xl { @apply text-xl; }
+    .text-2xl { @apply text-lg; }
+    .text-xl { @apply text-base; }
     .text-lg { @apply text-sm; }
-    .text-base { @apply text-xs; }
+    .text-base { @apply text-sm; }
     
-    .p-8 { @apply p-2; }
-    .p-6 { @apply p-2; }
+    /* Spacing adjustments */
+    .p-8 { @apply p-3; }
+    .p-6 { @apply p-3; }
     .p-4 { @apply p-2; }
-    .gap-8 { @apply gap-2; }
-    .gap-6 { @apply gap-2; }
+    .gap-8 { @apply gap-3; }
+    .gap-6 { @apply gap-3; }
     .gap-4 { @apply gap-2; }
+    .space-y-8 > * + * { @apply mt-4; }
+    .space-y-6 > * + * { @apply mt-3; }
+    .space-y-4 > * + * { @apply mt-2; }
     
     /* Container responsive padding */
     .container { @apply px-2; }
     
     /* Button responsiveness */
     button { 
-      min-height: 36px; 
-      @apply text-xs px-2 py-1;
+      min-height: 40px; 
+      @apply text-sm px-3 py-2;
     }
     
+    /* Table responsiveness */
+    table { @apply text-xs; }
+    th, td { @apply px-2 py-1; }
+    
     /* Card responsive sizing */
-    .card { @apply text-xs; }
+    .card { @apply text-sm; }
+    .card-content { @apply p-3 text-sm; }
+    .card-header { @apply p-3 pb-2; }
+    .card-title { @apply text-base font-semibold; }
+    .card-description { @apply text-sm; }
+    
+    /* Badge sizing for mobile */
+    .badge { @apply text-xs px-2 py-0.5; }
+    
+    /* Grid responsiveness */
+    .grid-cols-4 { @apply grid-cols-2; }
+    .grid-cols-3 { @apply grid-cols-1; }
+    .lg\\:grid-cols-4 { @apply grid-cols-2; }
+    .lg\\:grid-cols-3 { @apply grid-cols-1; }
+    .sm\\:grid-cols-3 { @apply grid-cols-1; }
+    .sm\\:grid-cols-2 { @apply grid-cols-1; }
     
     /* Flex utilities for mobile */
     .mobile-flex-col { @apply flex-col; }
     .mobile-text-center { @apply text-center; }
+    .mobile-full-width { @apply w-full; }
+    
+    /* Dialog and modal adjustments */
+    .dialog-content { @apply max-w-[95vw] max-h-[90vh]; }
+    .popover-content { @apply max-w-[95vw]; }
+    
+    /* Form responsiveness */
+    .form-grid { @apply grid-cols-1 gap-2; }
+    input, select, textarea { 
+      @apply text-base px-3 py-2;
+      min-height: 40px;
+    }
+    
+    /* Navigation responsiveness */
+    .nav-item { @apply text-sm px-2 py-2; }
+    
+    /* Map and media responsiveness */
+    .map-container { @apply h-64; }
+    .image-container { @apply h-32; }
     
     /* Overflow handling */
     .mobile-truncate { @apply truncate; }
@@ -416,14 +459,24 @@ All colors MUST be HSL.
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    
-    /* Mobile card adjustments */
-    .card-content { @apply p-2 text-xs; }
-    .card-header { @apply p-2 pb-1; }
-    .card-title { @apply text-sm font-medium; }
-    .card-description { @apply text-xs; }
-    
-    /* Badge sizing for mobile */
-    .badge { @apply text-xs px-1 py-0.5; }
+    .mobile-line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
   }
+  
+  /* Mobile-first responsive grid utilities */
+  .responsive-grid-1 { @apply grid-cols-1; }
+  .responsive-grid-2 { @apply grid-cols-1 sm:grid-cols-2; }
+  .responsive-grid-3 { @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3; }
+  .responsive-grid-4 { @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-4; }
+  .responsive-grid-5 { @apply grid-cols-2 sm:grid-cols-3 lg:grid-cols-5; }
+  
+  /* Mobile-friendly text sizes */
+  .mobile-title { @apply text-lg sm:text-xl lg:text-2xl; }
+  .mobile-subtitle { @apply text-base sm:text-lg lg:text-xl; }
+  .mobile-body { @apply text-sm sm:text-base; }
+  .mobile-caption { @apply text-xs sm:text-sm; }
 }
