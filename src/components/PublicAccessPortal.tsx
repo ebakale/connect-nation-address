@@ -427,7 +427,13 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                         </div>
                         <div>
                           <span className="font-medium">{`${t('address:type')}:`}</span>
-                          <span className="ml-2 capitalize">{address.addressType}</span>
+                          <span className="ml-2 capitalize">{
+                            t(`address:addressType.${String(address.addressType).toLowerCase()}` as any, {
+                              defaultValue: t(`address:${String(address.addressType).toLowerCase()}` as any, {
+                                defaultValue: String(address.addressType),
+                              }),
+                            })
+                          }</span>
                         </div>
                         <div className="break-all">
                           <span className="font-medium">{`${t('address:coordinates')}:`}</span>
