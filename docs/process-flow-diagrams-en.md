@@ -1,4 +1,4 @@
-# Process Flow Diagrams - Digital Address System
+# Process Flow Diagrams - ConnectNation Address System
 
 ## 1. NAR Process (National Address Registry)
 
@@ -7,42 +7,55 @@
 ```
 Start
   ↓
-Field Agent arrives at location
+Citizen submits address request via Public Portal
+  ├── Fills address request form with location details
+  ├── Provides justification for address creation
+  ├── Uploads property photos and ownership documents
+  └── Submits coordinates (GPS or manual input)
   ↓
-Verifies GPS coordinates
+System performs auto-verification checks
+  ├── Coordinate validation (within country bounds)
+  ├── Photo quality analysis
+  ├── Duplicate address detection
+  └── Address information consistency check
   ↓
-Takes photographs of building/structure
+Auto-verification result?
+  ├── PASS → Address flagged for standard review
+  └── FAIL → Address flagged for manual review
   ↓
-Completes address capture form
-  ├── Basic information (name, type)
-  ├── Geographic coordinates
-  ├── Photographs
-  └── Owner/occupant data
+Verifier reviews request in Review Queue
+  ├── Views address details and photos
+  ├── Checks verification analysis results
+  ├── Reviews recommendations from auto-verification
+  └── Makes approval decision
   ↓
-Generates UAC (Universal Address Code)
+Approval decision?
+  ├── APPROVE → Address moves to publication queue
+  ├── REJECT → Returns to citizen with rejection reason
+  └── EDIT → Verifier modifies details before approval
   ↓
-Submits request for review
+Registrar publishes approved address
+  ├── Generates UAC (Universal Address Code)
+  ├── Sets address as active in system
+  └── Makes address searchable
   ↓
-Verifier reviews information
-  ├── Is information complete and accurate?
-  │   ├── YES → Approves address
-  │   └── NO → Rejects with comments
+Address becomes available in system
+  ├── Visible in public address search
+  ├── Available for emergency services
+  └── Accessible via mobile applications
   ↓
-Registrar publishes the address
-  ↓
-Address active in system
-  ↓
-Notification sent to citizen
+Citizen receives notification of approval
   ↓
 End
 ```
 
-### Address States
-- **Draft**: Captured but not submitted
-- **Pending**: Awaiting verification
-- **Verified**: Approved by verifier
-- **Published**: Active in system
-- **Rejected**: Requires corrections
+### Address States in Current System
+- **Draft**: Saved locally but not submitted (offline mode)
+- **Pending**: Submitted and awaiting verification
+- **Flagged**: Requires manual review due to validation issues
+- **Verified**: Approved by verifier, awaiting publication
+- **Published**: Active in system with UAC generated
+- **Rejected**: Returned to citizen with required corrections
 
 ## 2. CAR Process (Citizen Address Repository)
 

@@ -1,4 +1,4 @@
-# Diagramas de Flujo de Procesos - Sistema de Direcciones Digitales
+# Diagramas de Flujo de Procesos - Sistema ConnectNation Address
 
 ## 1. Proceso NAR (Registro Nacional de Direcciones)
 
@@ -7,42 +7,55 @@
 ```
 Inicio
   ↓
-Agente de Campo llega a ubicación
+Ciudadano envía solicitud de dirección via Portal Público
+  ├── Completa formulario de solicitud con detalles de ubicación
+  ├── Proporciona justificación para creación de dirección
+  ├── Sube fotos de propiedad y documentos de propiedad
+  └── Envía coordenadas (GPS o entrada manual)
   ↓
-Verifica coordenadas GPS
+Sistema realiza verificaciones automáticas
+  ├── Validación de coordenadas (dentro de límites del país)
+  ├── Análisis de calidad de fotos
+  ├── Detección de direcciones duplicadas
+  └── Verificación de consistencia de información de dirección
   ↓
-Toma fotografías del edificio/estructura
+¿Resultado de auto-verificación?
+  ├── APROBADO → Dirección marcada para revisión estándar
+  └── FALLIDO → Dirección marcada para revisión manual
   ↓
-Completa formulario de captura de dirección
-  ├── Información básica (nombre, tipo)
-  ├── Coordenadas geográficas
-  ├── Fotografías
-  └── Datos del propietario/ocupante
+Verificador revisa solicitud en Cola de Revisión
+  ├── Ve detalles de dirección y fotos
+  ├── Verifica resultados de análisis de verificación
+  ├── Revisa recomendaciones de auto-verificación
+  └── Toma decisión de aprobación
   ↓
-Genera UAC (Código de Dirección Universal)
+¿Decisión de aprobación?
+  ├── APROBAR → Dirección pasa a cola de publicación
+  ├── RECHAZAR → Regresa al ciudadano con razón de rechazo
+  └── EDITAR → Verificador modifica detalles antes de aprobar
   ↓
-Envía solicitud para revisión
+Registrador publica dirección aprobada
+  ├── Genera UAC (Código de Dirección Universal)
+  ├── Establece dirección como activa en sistema
+  └── Hace dirección buscable
   ↓
-Verificador revisa la información
-  ├── ¿Información completa y precisa?
-  │   ├── SÍ → Aprueba dirección
-  │   └── NO → Rechaza con comentarios
+Dirección queda disponible en el sistema
+  ├── Visible en búsqueda pública de direcciones
+  ├── Disponible para servicios de emergencia
+  └── Accesible via aplicaciones móviles
   ↓
-Registrador publica la dirección
-  ↓
-Dirección activa en el sistema
-  ↓
-Notificación enviada al ciudadano
+Ciudadano recibe notificación de aprobación
   ↓
 Fin
 ```
 
-### Estados de la Dirección
-- **Borrador**: Capturada pero no enviada
-- **Pendiente**: En espera de verificación
-- **Verificada**: Aprobada por verificador
-- **Publicada**: Activa en el sistema
-- **Rechazada**: Requiere correcciones
+### Estados de Dirección en Sistema Actual
+- **Borrador**: Guardado localmente pero no enviado (modo offline)
+- **Pendiente**: Enviado y esperando verificación
+- **Marcado**: Requiere revisión manual debido a problemas de validación
+- **Verificado**: Aprobado por verificador, esperando publicación
+- **Publicado**: Activo en sistema con UAC generado
+- **Rechazado**: Devuelto al ciudadano con correcciones requeridas
 
 ## 2. Proceso CAR (Repositorio de Direcciones del Ciudadano)
 
