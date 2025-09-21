@@ -69,9 +69,12 @@ export const ValuePropositionPDF: React.FC = () => {
       pdf.setFontSize(18);
       pdf.text('Customer Value Proposition', pageWidth / 2, 100, { align: 'center' });
       
+      pdf.setFontSize(16);
+      pdf.text('For Equatorial Guinea', pageWidth / 2, 120, { align: 'center' });
+      
       pdf.setFontSize(12);
-      pdf.text('Transforming National Address Infrastructure', pageWidth / 2, 130, { align: 'center' });
-      pdf.text('for Government Excellence & Citizen Empowerment', pageWidth / 2, 140, { align: 'center' });
+      pdf.text('Building the Nation\'s First Comprehensive Address System', pageWidth / 2, 140, { align: 'center' });
+      pdf.text('Transforming Economic Opportunity & Emergency Response', pageWidth / 2, 150, { align: 'center' });
       
       pdf.setFontSize(10);
       pdf.text(`Generated on ${new Date().toLocaleDateString()}`, pageWidth / 2, 260, { align: 'center' });
@@ -83,17 +86,19 @@ export const ValuePropositionPDF: React.FC = () => {
       pdf.text('Customer Value Proposition Canvas', margin, 30);
       
       pdf.setFontSize(12);
-      const canvasText = `ConnectNation's Digital Addressing System follows a proven Customer Value Proposition framework that directly addresses government challenges while delivering measurable benefits.
+      const canvasText = `Equatorial Guinea faces a unique challenge: the absence of a traditional national address system. Poor urbanization has left citizens, businesses, emergency services, and government agencies unable to reliably locate people and places.
 
-This document outlines:
-• Products & Services we offer
-• Gain Generators that create value
-• Pain Relievers that solve problems
-• Customer Gains you'll achieve
-• Customer Pains we eliminate
-• Customer Jobs we help you accomplish
+ConnectNation's Digital Addressing System represents a transformational opportunity to leapfrog traditional addressing limitations and establish Equatorial Guinea as a leader in digital infrastructure.
 
-Our systematic approach ensures every feature delivers tangible value to your organization and citizens.`;
+This document outlines our Customer Value Proposition:
+• Products & Services that build addressing from ground zero
+• Gain Generators that unlock previously impossible opportunities
+• Pain Relievers that solve fundamental location challenges
+• Customer Gains that transform society and economy
+• Customer Pains that currently cripple service delivery
+• Customer Jobs that require urgent national addressing
+
+Our approach transforms Equatorial Guinea's addressing challenge into a competitive advantage.`;
 
       const lines = pdf.splitTextToSize(canvasText, pageWidth - 2 * margin);
       pdf.text(lines, margin, 50);
@@ -108,24 +113,31 @@ Our systematic approach ensures every feature delivers tangible value to your or
       
       const products = [
         '1. National Digital Address Registry (NAR)',
-        '   • Centralized address database with unique codes',
-        '   • Real-time address validation and verification',
-        '   • Multi-language support and standardization',
+        '   • First-ever centralized address database for Equatorial Guinea',
+        '   • Unique address codes for every location nationwide',
+        '   • GPS-based coordinate system with visual landmarks',
+        '   • Multi-language support (Spanish, French, Portuguese)',
         '',
         '2. Citizen Address Repository (CAR)',
-        '   • Self-service address registration portal',
-        '   • Digital address cards and QR codes',
-        '   • Mobile-first citizen experience',
+        '   • Mobile-first registration for citizens without addresses',
+        '   • QR-coded digital address cards for instant identification',
+        '   • Offline capability for rural and remote areas',
+        '   • SMS-based address sharing for basic phones',
         '',
-        '3. Emergency Response Management',
-        '   • Real-time incident tracking and dispatch',
-        '   • GPS-enabled unit coordination',
-        '   • Automated backup request system',
+        '3. Emergency Response Revolution',
+        '   • GPS-enabled emergency location for the first time',
+        '   • Real-time unit dispatch with precise coordinates',
+        '   • Life-saving response capabilities in previously unreachable areas',
         '',
-        '4. Professional Services',
-        '   • 90-day deployment program',
-        '   • Staff training and change management',
-        '   • Ongoing technical support and maintenance'
+        '4. Economic Enablement Platform',
+        '   • Business registration with verifiable addresses',
+        '   • Delivery and logistics infrastructure foundation',
+        '   • Banking and financial services location verification',
+        '',
+        '5. National Infrastructure Services',
+        '   • Complete system deployment in 90 days',
+        '   • Government staff training and capacity building',
+        '   • Ongoing support for national addressing maintenance'
       ];
       
       let yPos = 70;
@@ -144,25 +156,30 @@ Our systematic approach ensures every feature delivers tangible value to your or
       pdf.text('How We Create Value for You:', margin, 50);
       
       const gainGenerators = [
-        'Operational Excellence:',
-        '• 99.9% system uptime with enterprise infrastructure',
-        '• Automated workflows reduce manual processing by 90%',
-        '• Real-time data synchronization across all modules',
+        'National Addressing Foundation:',
+        '• Creates Equatorial Guinea\'s first comprehensive address system',
+        '• Establishes unique location identity for every citizen and business',
+        '• Enables international standards compliance for global integration',
         '',
-        'Citizen Empowerment:',
-        '• Self-service registration reduces counter visits by 80%',
-        '• Mobile-first design increases accessibility',
-        '• Multi-language support serves diverse populations',
+        'Economic Transformation:',
+        '• Unlocks e-commerce and delivery services for the first time',
+        '• Enables banking services to reach previously "unaddressable" citizens',
+        '• Creates foundation for foreign investment and business expansion',
         '',
-        'Emergency Efficiency:',
-        '• GPS integration enables precise location tracking',
-        '• Automated dispatch reduces response coordination time',
-        '• Real-time unit status prevents resource conflicts',
+        'Emergency Service Revolution:',
+        '• Transforms emergency response from impossible to life-saving',
+        '• GPS-enabled location for medical, fire, and police emergencies',
+        '• Reduces emergency response uncertainty from hours to minutes',
         '',
-        'Future-Ready Technology:',
-        '• API-first architecture enables unlimited integrations',
-        '• Offline-first design works in remote areas',
-        '• Cloud-native scaling handles growing demands'
+        'Government Service Delivery:',
+        '• Enables home delivery of government services and documents',
+        '• Creates voter registration and census capabilities',
+        '• Establishes tax collection and social services infrastructure',
+        '',
+        'Digital Leapfrogging:',
+        '• Bypasses traditional addressing limitations entirely',
+        '• Positions Equatorial Guinea as regional digital leader',
+        '• Creates modern infrastructure without legacy system constraints'
       ];
       
       yPos = 70;
@@ -187,25 +204,30 @@ Our systematic approach ensures every feature delivers tangible value to your or
       pdf.text('Critical Problems We Solve:', margin, 50);
       
       const painRelievers = [
-        'Address Management Chaos:',
-        '• Unified registry eliminates duplicate and conflicting addresses',
-        '• Standardized formats ensure consistency across departments',
-        '• Real-time validation prevents data quality issues',
+        'Complete Address Absence:',
+        '• Creates the nation\'s first systematic addressing infrastructure',
+        '• Eliminates the fundamental "no address" barrier to services',
+        '• Establishes location identity for previously "invisible" citizens',
         '',
-        'Emergency Response Delays:',
-        '• GPS coordinates enable instant location identification',
-        '• Automated dispatch eliminates manual coordination delays',
-        '• Real-time status updates prevent resource conflicts',
+        'Emergency Service Impossibility:',
+        '• Transforms "we cannot find you" into precise GPS location',
+        '• Eliminates emergency service failures due to unknown locations',
+        '• Enables life-saving response in previously unreachable areas',
         '',
-        'Citizen Service Barriers:',
-        '• Self-service portal eliminates office visit requirements',
-        '• Mobile-first design serves citizens anywhere, anytime',
-        '• Multi-language support removes language barriers',
+        'Economic Exclusion:',
+        '• Removes the "no address, no service" barrier to banking',
+        '• Enables delivery services to reach every citizen for the first time',
+        '• Creates business registration capability for informal economy',
         '',
-        'Bureaucratic Inefficiencies:',
-        '• Automated workflows eliminate manual paper processing',
-        '• Digital approvals reduce processing from weeks to hours',
-        '• Integrated systems eliminate departmental silos'
+        'Government Service Gaps:',
+        '• Eliminates inability to deliver services to "addressless" citizens',
+        '• Removes location barriers to healthcare and education access',
+        '• Enables tax collection and social services in all areas',
+        '',
+        'Social Isolation:',
+        '• Connects rural and urban populations to national infrastructure',
+        '• Removes geographic barriers to citizen participation',
+        '• Enables family and social connections across distances'
       ];
       
       yPos = 70;
@@ -231,22 +253,28 @@ Our systematic approach ensures every feature delivers tangible value to your or
       
       const customerGains = [
         'For Government Officials:',
-        '• Increased operational efficiency and cost savings',
-        '• Enhanced citizen satisfaction and trust',
-        '• Improved inter-agency collaboration and data sharing',
-        '• Measurable performance metrics and accountability',
+        '• National infrastructure creation enhances international standing',
+        '• First-time ability to locate and serve all citizens equally',
+        '• Foundation for modern tax collection and census capabilities',
+        '• Positions Equatorial Guinea as regional technology leader',
         '',
         'For Citizens:',
-        '• Faster, more convenient government services',
-        '• Improved emergency response and personal safety',
-        '• Reduced bureaucratic hassles and wait times',
-        '• Digital empowerment and accessibility',
+        '• First-time access to banking, delivery, and modern services',
+        '• Emergency services can finally find and help them',
+        '• Economic opportunities through addressable business registration',
+        '• Connection to national identity and civic participation',
         '',
         'For Emergency Services:',
-        '• Life-saving response time improvements',
-        '• Better resource allocation and coordination',
-        '• Enhanced situational awareness and decision-making',
-        '• Reduced operational stress and improved outcomes'
+        '• Transformation from impossible to life-saving response capability',
+        '• GPS-enabled location of every citizen for the first time',
+        '• Professional emergency coordination replacing chaos',
+        '• Ability to save lives previously unreachable',
+        '',
+        'For Businesses:',
+        '• Access to previously unreachable customer markets',
+        '• Delivery and logistics capabilities enable new business models',
+        '• Formal economy expansion through addressable registration',
+        '• International business credibility through proper addressing'
       ];
       
       yPos = 70;
@@ -272,22 +300,28 @@ Our systematic approach ensures every feature delivers tangible value to your or
       
       const customerPains = [
         'For Government Officials:',
-        '• Legacy systems create operational chaos and inefficiency',
-        '• Manual processes consume excessive time and resources',
-        '• Lack of inter-agency coordination hampers service delivery',
-        '• Poor data quality undermines decision-making',
+        '• Complete inability to locate citizens for service delivery',
+        '• No infrastructure for tax collection or census operations',
+        '• International embarrassment over lack of basic addressing',
+        '• Cannot attract foreign investment without addressable locations',
         '',
         'For Citizens:',
-        '• Bureaucratic barriers limit access to essential services',
-        '• Long wait times and complex procedures cause frustration',
-        '• Inconsistent service quality across departments',
-        '• Language barriers exclude many from government services',
+        '• Excluded from banking services due to "no fixed address"',
+        '• Cannot receive deliveries, mail, or essential services',
+        '• Emergency services cannot find them during life-threatening situations',
+        '• Economic isolation prevents business development and job opportunities',
         '',
         'For Emergency Services:',
-        '• Location uncertainty delays critical response times',
-        '• Poor coordination leads to resource conflicts',
-        '• Manual dispatch processes waste precious minutes',
-        '• Lack of real-time information hampers decision-making'
+        '• Completely unable to locate people during emergencies',
+        '• Lives lost due to inability to find accident or medical emergency sites',
+        '• No coordination capability for disaster response',
+        '• International aid cannot reach specific affected areas',
+        '',
+        'For Businesses:',
+        '• Cannot establish formal business presence without addresses',
+        '• Unable to deliver products or services to customers',
+        '• Excluded from international commerce and logistics',
+        '• Informal economy prevents growth and investment'
       ];
       
       yPos = 70;
@@ -312,28 +346,34 @@ Our systematic approach ensures every feature delivers tangible value to your or
       pdf.text('Jobs You Need to Get Done:', margin, 50);
       
       const customerJobs = [
-        'Functional Jobs (Government Officials):',
-        '• Modernize national address infrastructure',
-        '• Improve inter-agency coordination and data sharing',
-        '• Enhance emergency response capabilities',
-        '• Increase operational efficiency and reduce costs',
+        'Nation-Building Jobs (Government Officials):',
+        '• Create Equatorial Guinea\'s first national addressing system',
+        '• Establish modern infrastructure for economic development',
+        '• Build foundation for international business and investment',
+        '• Enable systematic governance and citizen services',
         '',
-        'Emotional Jobs (Citizens):',
-        '• Feel safe and protected in emergencies',
-        '• Experience efficient, respectful government services',
-        '• Maintain dignity when accessing public services',
-        '• Feel empowered through digital access',
+        'Survival Jobs (Citizens):',
+        '• Obtain basic location identity for accessing services',
+        '• Ensure emergency services can find them during crises',
+        '• Access banking, healthcare, and economic opportunities',
+        '• Participate in formal economy and civic life',
         '',
-        'Social Jobs (Emergency Services):',
-        '• Save lives through faster response times',
-        '• Protect communities with better coordination',
-        '• Serve the public with pride and effectiveness',
-        '• Build trust through reliable emergency services',
+        'Life-Saving Jobs (Emergency Services):',
+        '• Locate citizens during medical emergencies for the first time',
+        '• Respond to disasters with precise coordinate capability',
+        '• Save lives currently lost due to location uncertainty',
+        '• Provide professional emergency services nationwide',
         '',
-        'Survival Jobs (All):',
-        '• Ensure critical services function during crises',
-        '• Maintain government continuity and legitimacy',
-        '• Protect public safety and national security'
+        'Economic Development Jobs (Businesses):',
+        '• Establish formal business presence with verifiable addresses',
+        '• Access previously unreachable customer markets',
+        '• Enable delivery and logistics business models',
+        '• Connect to international commerce and supply chains',
+        '',
+        'Transformation Jobs (All Stakeholders):',
+        '• Leapfrog from no addressing to world-class digital system',
+        '• Position Equatorial Guinea as regional technology leader',
+        '• Create foundation for smart city and digital economy initiatives'
       ];
       
       yPos = 70;
