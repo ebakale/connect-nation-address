@@ -24,7 +24,7 @@ const Index = () => {
   const [activeSection, setActiveSection] = useState('overview');
   const [emergencyPrefilledData, setEmergencyPrefilledData] = useState<any>(null);
   const { user, loading } = useAuth();
-  const { t } = useTranslation(['common','address','emergency']);
+  const { t, i18n } = useTranslation(['common','address','emergency']);
   const navigate = useNavigate();
   const { isPoliceRole } = useUserRole();
 
@@ -43,6 +43,29 @@ const Index = () => {
     public: 'Search Addresses',
     emergency: 'Report Emergency',
     help: 'Help',
+  };
+
+  const navFallbacksEs: Record<string, string> = {
+    overview: 'Inicio',
+    about: 'Acerca de',
+    public: 'Buscar Direcciones',
+    emergency: 'Reportar Emergencia',
+    help: 'Ayuda',
+  };
+
+  const navFallbacksFr: Record<string, string> = {
+    overview: 'Accueil',
+    about: 'À propos',
+    public: 'Rechercher des adresses',
+    emergency: 'Signaler une urgence',
+    help: 'Aide',
+  };
+
+  const getFallbackLabel = (id: string) => {
+    const lang = (i18n.resolvedLanguage || i18n.language || 'en').split('-')[0];
+    if (lang === 'es') return navFallbacksEs[id] ?? navFallbacks[id];
+    if (lang === 'fr') return navFallbacksFr[id] ?? navFallbacks[id];
+    return navFallbacks[id];
   };
 
   const navigationItems = useMemo(() => [
@@ -104,7 +127,7 @@ const Index = () => {
       const currentSection = navigationItems.find(item => item.id === activeSection);
       if (currentSection) {
         items.push({
-          label: translateKey(currentSection.labelKey, navFallbacks[currentSection.id]),
+          label: translateKey(currentSection.labelKey, getFallbackLabel(currentSection.id)),
           onClick: () => handleSectionChange(activeSection),
           isActive: true
         });
@@ -887,7 +910,7 @@ const Index = () => {
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <Icon className={`h-3 w-3 sm:h-4 sm:w-4 ${activeSection === item.id ? 'glow-pulse' : ''}`} />
-                  <span className="text-xs sm:text-sm whitespace-nowrap">{translateKey(item.labelKey, navFallbacks[item.id])}</span>
+                  <span className="text-xs sm:text-sm whitespace-nowrap">{translateKey(item.labelKey, getFallbackLabel(item.id))}</span>
                 </button>
               );
             })}
