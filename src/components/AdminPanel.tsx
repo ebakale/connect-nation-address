@@ -148,7 +148,7 @@ const AdminPanel: React.FC = () => {
                 </Card>
                 <Card className="p-4">
                   <div className="space-y-3">
-                    <h3 className="font-semibold text-sm">{t('admin:strategicOverview')}</h3>
+                    <h3 className="font-semibold text-sm">{t('strategicOverview')}</h3>
                     <p className="text-xs text-muted-foreground">
                       {t('admin:strategicOverviewDescription')}
                     </p>
