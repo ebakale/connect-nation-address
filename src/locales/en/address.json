@@ -135,5 +135,22 @@
     "tenant": "🔑", 
     "family": "👨‍👩‍👧‍👦",
     "other": "📍"
+  },
+  "kind": {
+    "primary": "Primary",
+    "secondary": "Secondary"
+  },
+  "scope": {
+    "building": "Building",
+    "unit": "Unit"
+  },
+  "verificationStatus": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected", 
+    "document_review": "Document Review",
+    "field_verification": "Field Verification",
+    "legal_review": "Legal Review",
+    "requires_additional_documents": "Requires Additional Documents"
   }
 }

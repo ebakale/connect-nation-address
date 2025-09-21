@@ -800,5 +800,22 @@
     "tenant": "🔑",
     "family": "👨‍👩‍👧‍👦", 
     "other": "📍"
+  },
+  "kind": {
+    "primary": "Principal",
+    "secondary": "Secundaria"
+  },
+  "scope": {
+    "building": "Edificio",
+    "unit": "Unidad"
+  },
+  "verificationStatus": {
+    "pending": "Pendiente",
+    "approved": "Aprobado",
+    "rejected": "Rechazado",
+    "document_review": "Revisión de Documentos",
+    "field_verification": "Verificación de Campo",
+    "legal_review": "Revisión Legal",
+    "requires_additional_documents": "Requiere Documentos Adicionales"
   }
 }

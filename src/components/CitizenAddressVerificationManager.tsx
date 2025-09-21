@@ -206,30 +206,30 @@ export const CitizenAddressVerificationManager = ({
                     <div className="flex items-start justify-between gap-3">
                       <div className="space-y-2 flex-1 min-w-0">
                         <div className="flex items-center gap-1 flex-wrap">
-                          <Badge variant={address.address_kind === 'PRIMARY' ? 'default' : 'secondary'} className="text-xs px-2 py-0.5">
-                            {address.address_kind}
-                          </Badge>
-                          <Badge variant="outline" className="text-xs px-2 py-0.5">
-                            {address.scope}
-                          </Badge>
-                          <Badge variant={address.status === 'CONFIRMED' ? 'default' : 'secondary'} className="text-xs px-2 py-0.5">
-                            {address.status}
-                          </Badge>
+                           <Badge variant={address.address_kind === 'PRIMARY' ? 'default' : 'secondary'} className="text-xs px-2 py-0.5">
+                             {t(`address:kind.${address.address_kind.toLowerCase()}`)}
+                           </Badge>
+                           <Badge variant="outline" className="text-xs px-2 py-0.5">
+                             {t(`address:scope.${address.scope.toLowerCase()}`)}
+                           </Badge>
+                           <Badge variant={address.status === 'CONFIRMED' ? 'default' : 'secondary'} className="text-xs px-2 py-0.5">
+                             {t(`address:status.${address.status.toLowerCase()}`)}
+                           </Badge>
                           {verification && (
                             <Badge 
                               variant="outline" 
                               className={`text-xs px-2 py-0.5 ${getStatusColor(verification.status)}`}
                             >
                               {getStatusIcon(verification.status)}
-                              <span className="ml-1">{formatStatus(verification.status)}</span>
+                              <span className="ml-1">{t(`address:verificationStatus.${verification.status}`)}</span>
                             </Badge>
                           )}
                         </div>
                         <div className="space-y-1">
-                          <p className="text-xs text-muted-foreground font-mono">
-                            UAC: {address.uac}
-                            {address.unit_uac && ` | Unit: ${address.unit_uac}`}
-                          </p>
+                           <p className="text-xs text-muted-foreground font-mono">
+                             {t('address:uacCode')}: {address.uac}
+                             {address.unit_uac && ` | ${t('address:unit')}: ${address.unit_uac}`}
+                           </p>
                           {address.street && (
                             <p className="text-sm leading-tight">
                               {address.street}, {address.city}, {address.region}

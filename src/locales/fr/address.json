@@ -650,5 +650,22 @@
     "tenant": "🔑",
     "family": "👨‍👩‍👧‍👦",
     "other": "📍"
+  },
+  "kind": {
+    "primary": "Principale",
+    "secondary": "Secondaire"
+  },
+  "scope": {
+    "building": "Bâtiment",
+    "unit": "Unité"
+  },
+  "verificationStatus": {
+    "pending": "En Attente",
+    "approved": "Approuvé",
+    "rejected": "Rejeté",
+    "document_review": "Révision de Documents",
+    "field_verification": "Vérification de Terrain",
+    "legal_review": "Révision Légale",
+    "requires_additional_documents": "Nécessite des Documents Supplémentaires"
   }
 }
