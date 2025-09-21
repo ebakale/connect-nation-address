@@ -29,6 +29,22 @@ const Index = () => {
   const { isPoliceRole } = useUserRole();
 
   // All hooks must be called before any conditional returns
+  const translateKey = (key: string, fallback?: string) => {
+    const translated = t(key);
+    const withoutNs = key.includes(':') ? key.split(':')[1] : key;
+    return translated === key || translated === withoutNs
+      ? (fallback ?? withoutNs.replace(/\./g, ' '))
+      : translated;
+  };
+
+  const navFallbacks: Record<string, string> = {
+    overview: 'Home',
+    about: 'About',
+    public: 'Search Addresses',
+    emergency: 'Report Emergency',
+    help: 'Help',
+  };
+
   const navigationItems = useMemo(() => [
     { id: 'overview', labelKey: 'common:navigation.home', icon: MapPin },
     { id: 'about', labelKey: 'common:navigation.about', icon: Users },
@@ -88,7 +104,7 @@ const Index = () => {
       const currentSection = navigationItems.find(item => item.id === activeSection);
       if (currentSection) {
         items.push({
-          label: t(currentSection.labelKey),
+          label: translateKey(currentSection.labelKey, navFallbacks[currentSection.id]),
           onClick: () => handleSectionChange(activeSection),
           isActive: true
         });
@@ -871,7 +887,7 @@ const Index = () => {
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <Icon className={`h-3 w-3 sm:h-4 sm:w-4 ${activeSection === item.id ? 'glow-pulse' : ''}`} />
-                  <span className="text-xs sm:text-sm whitespace-nowrap">{t(item.labelKey)}</span>
+                  <span className="text-xs sm:text-sm whitespace-nowrap">{translateKey(item.labelKey, navFallbacks[item.id])}</span>
                 </button>
               );
             })}
