@@ -742,6 +742,16 @@
       "governmentBenefitsText": "Operaciones gubernamentales simplificadas a través de gestión centralizada de direcciones y ubicaciones. Coordinación inter-agencias mejorada a través de plataformas de datos compartidos. Planificación de políticas y asignación de recursos mejoradas a través de análisis integral. Gastos administrativos reducidos a través de procesos automatizados de verificación y aprobación.",
       "implementationText": "Enfoque de implementación por fases comenzando con los principales centros urbanos y expandiéndose a áreas rurales. Programas de capacitación integral para funcionarios gubernamentales y personal de respuesta de emergencia. Integración con sistemas gubernamentales existentes y cumplimiento de estándares internacionales. Soporte continuo y mantenimiento a través de construcción de capacidad local.",
       "conclusionText": "El Sistema Nacional de Direcciones Digitales Connect Nation posiciona a Guinea Ecuatorial a la vanguardia de la innovación en gobernanza digital, entregando mejoras medibles en seguridad pública, desarrollo económico y servicios ciudadanos. El enfoque integrado asegura el máximo retorno de inversión mientras establece una base para el avance tecnológico futuro y el liderazgo regional."
-    }
+  },
+  "claimantRelationship": {
+    "owner": "Propietario",
+    "resident": "Residente",
+    "tenant": "Inquilino", 
+    "family_member": "Miembro de la Familia",
+    "caretaker": "Cuidador",
+    "business_owner": "Propietario de Negocio",
+    "employee": "Empleado",
+    "other": "Otro"
+  }
   }
 }

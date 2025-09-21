@@ -537,9 +537,9 @@ export const ResidencyVerificationManager = () => {
                     <User className="w-4 h-4 text-muted-foreground" />
                     <div>
                        <p className="text-sm font-medium">{t('admin:claimantType')}</p>
-                       <p className="text-sm text-muted-foreground">
-                         {formatStatus(verification.claimant_relationship)}
-                       </p>
+                        <p className="text-sm text-muted-foreground">
+                          {t(`admin:claimantRelationship.${verification.claimant_relationship}`, { defaultValue: formatStatus(verification.claimant_relationship) })}
+                        </p>
                      </div>
                    </div>
                    <div className="flex items-center gap-2">

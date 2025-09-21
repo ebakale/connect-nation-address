@@ -538,6 +538,15 @@
       "governmentBenefitsText": "Opérations gouvernementales rationalisées grâce à la gestion centralisée des adresses et emplacements. Coordination inter-agences améliorée grâce aux plateformes de données partagées. Planification des politiques et allocation des ressources améliorées grâce à l'analyse complète. Frais administratifs réduits grâce aux processus automatisés de vérification et d'approbation.",
       "implementationText": "Approche de mise en œuvre par phases commençant par les principaux centres urbains et s'étendant aux zones rurales. Programmes de formation complets pour les fonctionnaires gouvernementaux et le personnel de réponse d'urgence. Intégration avec les systèmes gouvernementaux existants et conformité aux normes internationales. Soutien continu et maintenance grâce au renforcement des capacités locales.",
       "conclusionText": "Le Système National d'Adressage Numérique Connect Nation positionne la Guinée Équatoriale à l'avant-garde de l'innovation en gouvernance numérique, livrant des améliorations mesurables en sécurité publique, développement économique et services citoyens. L'approche intégrée assure un retour sur investissement maximum tout en établissant une base pour l'avancement technologique futur et le leadership régional."
-    }
+  },
+  "claimantRelationship": {
+    "owner": "Propriétaire",
+    "resident": "Résident",
+    "tenant": "Locataire",
+    "family_member": "Membre de la Famille", 
+    "caretaker": "Gardien",
+    "business_owner": "Propriétaire d'Entreprise",
+    "employee": "Employé",
+    "other": "Autre"
   }
 }

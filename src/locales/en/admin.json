@@ -1040,6 +1040,16 @@
       "governmentBenefitsText": "Streamlined government operations through centralized address and location management. Enhanced inter-agency coordination through shared data platforms. Improved policy planning and resource allocation through comprehensive analytics. Reduced administrative overhead through automated verification and approval processes.",
       "implementationText": "Phased implementation approach beginning with major urban centers and expanding to rural areas. Comprehensive training programs for government officials and emergency responders. Integration with existing government systems and international standards compliance. Ongoing support and maintenance through local capacity building.",
       "conclusionText": "The Connect Nation Digital Addressing System positions Equatorial Guinea at the forefront of digital governance innovation, delivering measurable improvements in public safety, economic development, and citizen services. The integrated approach ensures maximum return on investment while establishing a foundation for future technological advancement and regional leadership."
-    }
+  },
+  "claimantRelationship": {
+    "owner": "Owner",
+    "resident": "Resident", 
+    "tenant": "Tenant",
+    "family_member": "Family Member",
+    "caretaker": "Caretaker",
+    "business_owner": "Business Owner",
+    "employee": "Employee",
+    "other": "Other"
+  }
   }
 }
