@@ -426,7 +426,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                           <span className="ml-2 font-mono text-primary text-xs">{address.uac}</span>
                         </div>
                         <div>
-                          <span className="font-medium">{`${t('address:type')}:`}</span>
+                          <span className="font-medium">{t('address:publicPortal.typeLabel')}</span>
                           <span className="ml-2 capitalize">{address.addressType}</span>
                         </div>
                         <div className="break-all">
