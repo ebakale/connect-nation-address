@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Loader2 } from 'lucide-react';
 import { useCitizenAddresses } from '@/hooks/useCAR';
 import type { AddressScope, OccupantType } from '@/types/car';
+import { useTranslation } from 'react-i18next';
 
 const formSchema = z.object({
   scope: z.enum(['BUILDING', 'UNIT'] as const),
@@ -23,6 +24,7 @@ interface AddSecondaryAddressFormProps {
 }
 
 export function AddSecondaryAddressForm({ onSuccess }: AddSecondaryAddressFormProps) {
+  const { t } = useTranslation(['address', 'common']);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { addSecondaryAddress } = useCitizenAddresses();
 
@@ -62,20 +64,20 @@ export function AddSecondaryAddressForm({ onSuccess }: AddSecondaryAddressFormPr
           name="scope"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Address Scope</FormLabel>
+              <FormLabel>{t('address:scope')}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select address scope" />
+                    <SelectValue placeholder={t('address:selectScope')} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="BUILDING">Entire Building</SelectItem>
-                  <SelectItem value="UNIT">Specific Unit</SelectItem>
+                  <SelectItem value="BUILDING">{t('address:entireBuilding')}</SelectItem>
+                  <SelectItem value="UNIT">{t('address:specificUnit')}</SelectItem>
                 </SelectContent>
               </Select>
               <FormDescription>
-                Choose whether this secondary address covers the entire building or a specific unit.
+                {t('address:secondaryScopeDescription')}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -87,16 +89,16 @@ export function AddSecondaryAddressForm({ onSuccess }: AddSecondaryAddressFormPr
           name="uac"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>UAC (Unified Address Code)</FormLabel>
+              <FormLabel>{t('address:uacCode')}</FormLabel>
               <FormControl>
                 <Input 
-                  placeholder="e.g., GQ-BN-MAL-ABC123-XY" 
+                  placeholder={t('address:uacPlaceholder')} 
                   {...field} 
                   className="font-mono"
                 />
               </FormControl>
               <FormDescription>
-                Enter the official UAC for this secondary address.
+                {t('address:secondaryUacDescription')}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -109,16 +111,16 @@ export function AddSecondaryAddressForm({ onSuccess }: AddSecondaryAddressFormPr
             name="unit_uac"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Unit UAC</FormLabel>
+                <FormLabel>{t('address:unitUac')}</FormLabel>
                 <FormControl>
                   <Input 
-                    placeholder="e.g., GQ-BN-MAL-ABC123-U01-XY" 
+                    placeholder={t('address:unitUacPlaceholder')} 
                     {...field} 
                     className="font-mono"
                   />
                 </FormControl>
                 <FormDescription>
-                  Enter the UAC for the specific unit within the building.
+                  {t('address:unitUacDescription')}
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -129,7 +131,7 @@ export function AddSecondaryAddressForm({ onSuccess }: AddSecondaryAddressFormPr
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Add Secondary Address
+          {t('address:addSecondary')}
         </Button>
       </form>
     </Form>

@@ -13,6 +13,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useCitizenAddresses } from '@/hooks/useCAR';
 import type { AddressScope, OccupantType } from '@/types/car';
+import { useTranslation } from 'react-i18next';
 
 const formSchema = z.object({
   scope: z.enum(['BUILDING', 'UNIT'] as const),
@@ -28,6 +29,7 @@ interface SetPrimaryAddressFormProps {
 }
 
 export function SetPrimaryAddressForm({ onSuccess }: SetPrimaryAddressFormProps) {
+  const { t } = useTranslation(['address', 'common']);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { setPrimaryAddress } = useCitizenAddresses();
 
@@ -69,20 +71,20 @@ export function SetPrimaryAddressForm({ onSuccess }: SetPrimaryAddressFormProps)
           name="scope"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Address Scope</FormLabel>
+              <FormLabel>{t('address:scope')}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select address scope" />
+                    <SelectValue placeholder={t('address:selectScope')} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="BUILDING">Entire Building</SelectItem>
-                  <SelectItem value="UNIT">Specific Unit</SelectItem>
+                  <SelectItem value="BUILDING">{t('address:entireBuilding')}</SelectItem>
+                  <SelectItem value="UNIT">{t('address:specificUnit')}</SelectItem>
                 </SelectContent>
               </Select>
               <FormDescription>
-                Choose whether you're registering for the entire building or a specific unit within it.
+                {t('address:scopeDescription')}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -94,16 +96,16 @@ export function SetPrimaryAddressForm({ onSuccess }: SetPrimaryAddressFormProps)
           name="uac"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>UAC (Unified Address Code)</FormLabel>
+              <FormLabel>{t('address:uacCode')}</FormLabel>
               <FormControl>
                 <Input 
-                  placeholder="e.g., GQ-BN-MAL-ABC123-XY" 
+                  placeholder={t('address:uacPlaceholder')} 
                   {...field} 
                   className="font-mono"
                 />
               </FormControl>
               <FormDescription>
-                Enter the official UAC for this address. This should be provided by the National Address Registry.
+                {t('address:uacDescription')}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -116,16 +118,16 @@ export function SetPrimaryAddressForm({ onSuccess }: SetPrimaryAddressFormProps)
             name="unit_uac"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Unit UAC</FormLabel>
+                <FormLabel>{t('address:unitUac')}</FormLabel>
                 <FormControl>
                   <Input 
-                    placeholder="e.g., GQ-BN-MAL-ABC123-U01-XY" 
+                    placeholder={t('address:unitUacPlaceholder')} 
                     {...field} 
                     className="font-mono"
                   />
                 </FormControl>
                 <FormDescription>
-                  Enter the UAC for the specific unit within the building.
+                  {t('address:unitUacDescription')}
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -139,7 +141,7 @@ export function SetPrimaryAddressForm({ onSuccess }: SetPrimaryAddressFormProps)
           name="effective_from"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Effective From</FormLabel>
+              <FormLabel>{t('address:effectiveFrom')}</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -153,7 +155,7 @@ export function SetPrimaryAddressForm({ onSuccess }: SetPrimaryAddressFormProps)
                       {field.value ? (
                         format(field.value, "PPP")
                       ) : (
-                        <span>Pick a date</span>
+                        <span>{t('address:pickDate')}</span>
                       )}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
@@ -171,7 +173,7 @@ export function SetPrimaryAddressForm({ onSuccess }: SetPrimaryAddressFormProps)
                 </PopoverContent>
               </Popover>
               <FormDescription>
-                Date when this address becomes your primary residence.
+                {t('address:effectiveFromDescription')}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -180,7 +182,7 @@ export function SetPrimaryAddressForm({ onSuccess }: SetPrimaryAddressFormProps)
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Set as Primary Address
+          {t('address:setAsPrimary')}
         </Button>
       </form>
     </Form>

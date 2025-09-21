@@ -21,7 +21,7 @@ export const CitizenAddressVerificationManager = ({
   onSuccess, 
   onCancel 
 }: CitizenAddressVerificationManagerProps) => {
-  const { t } = useTranslation('address');
+  const { t } = useTranslation(['address', 'common']);
   const { addresses, loading: addressesLoading } = useCitizenAddresses();
   const { verifications, loading: verificationsLoading } = useResidencyVerification();
   
@@ -110,17 +110,17 @@ export const CitizenAddressVerificationManager = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Plus className="h-5 w-5" />
-            Set Primary Address
+            {t('address:setPrimaryAddress')}
           </CardTitle>
           <CardDescription>
-            Set your primary address in the Citizen Address Repository before requesting verification.
+            {t('address:setPrimaryAddressForVerification')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <SetPrimaryAddressForm onSuccess={handleAddressAdded} />
           <div className="flex gap-2 mt-4">
             <Button variant="outline" onClick={() => setStep('select_address')}>
-              Back
+              {t('common:back')}
             </Button>
           </div>
         </CardContent>
@@ -134,17 +134,17 @@ export const CitizenAddressVerificationManager = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Plus className="h-5 w-5" />
-            Add Secondary Address
+            {t('address:addSecondaryAddress')}
           </CardTitle>
           <CardDescription>
-            Add a secondary address in the Citizen Address Repository before requesting verification.
+            {t('address:addSecondaryAddressForVerification')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <AddSecondaryAddressForm onSuccess={handleAddressAdded} />
           <div className="flex gap-2 mt-4">
             <Button variant="outline" onClick={() => setStep('select_address')}>
-              Back
+              {t('common:back')}
             </Button>
           </div>
         </CardContent>
@@ -158,10 +158,10 @@ export const CitizenAddressVerificationManager = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            Verify Address Ownership/Residency
+            {t('address:verifyOwnership')}
           </CardTitle>
           <CardDescription>
-            Submit legal documents to verify your ownership or residency for this address.
+            {t('address:verifyOwnershipDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -180,10 +180,10 @@ export const CitizenAddressVerificationManager = ({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Shield className="h-5 w-5" />
-          Address Verification
+          {t('address:addressVerification')}
         </CardTitle>
         <CardDescription>
-          First set your address in the Citizen Address Repository, then request verification.
+          {t('address:addressVerificationDescription')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -191,12 +191,12 @@ export const CitizenAddressVerificationManager = ({
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              You need to set at least one address in the Citizen Address Repository before requesting verification.
+              {t('address:needAddressForVerification')}
             </AlertDescription>
           </Alert>
         ) : (
           <div className="space-y-3">
-            <h4 className="font-medium">Your Current Addresses</h4>
+            <h4 className="font-medium">{t('address:currentAddresses')}</h4>
             {currentAddresses.map((address) => {
               const verification = getVerificationForAddress(address.id);
               
@@ -250,12 +250,12 @@ export const CitizenAddressVerificationManager = ({
                                   onClick={() => setEditingVerification(verification)}
                                 >
                                   <Edit className="h-3 w-3 mr-1" />
-                                  Edit
+                                  {t('common:edit')}
                                 </Button>
                               </DialogTrigger>
                               <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                                 <DialogHeader>
-                                  <DialogTitle>Edit Verification Request</DialogTitle>
+                                  <DialogTitle>{t('address:editVerificationRequest')}</DialogTitle>
                                 </DialogHeader>
                                 <ResidencyVerificationForm
                                   citizenAddressId={address.id}
@@ -279,7 +279,7 @@ export const CitizenAddressVerificationManager = ({
                               setStep('verify_address');
                             }}
                           >
-                            Request Verification
+                            {t('address:requestVerification')}
                           </Button>
                         )}
                       </div>
@@ -287,16 +287,16 @@ export const CitizenAddressVerificationManager = ({
 
                     {verification && verification.verification_notes && (
                       <div className="mt-2 p-2 bg-muted rounded-md">
-                        <p className="text-xs font-medium mb-1">Reviewer Notes:</p>
+                        <p className="text-xs font-medium mb-1">{t('address:reviewerNotes')}:</p>
                         <p className="text-xs leading-relaxed">{verification.verification_notes}</p>
                       </div>
                     )}
 
                     {verification && verification.status === 'requires_additional_documents' && (
                       <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                        <p className="text-sm font-medium text-orange-800 mb-1">Action Required:</p>
+                        <p className="text-sm font-medium text-orange-800 mb-1">{t('address:actionRequired')}:</p>
                         <p className="text-sm text-orange-700">
-                          Please review the notes above and update your verification request with the requested changes.
+                          {t('address:actionRequiredDescription')}
                         </p>
                       </div>
                     )}
@@ -308,7 +308,7 @@ export const CitizenAddressVerificationManager = ({
         )}
 
         <div className="flex flex-col gap-2 pt-4 border-t">
-          <h4 className="font-medium">Add New Address</h4>
+          <h4 className="font-medium">{t('address:addNewAddress')}</h4>
           <div className="flex gap-2">
             <Button 
               variant="outline" 
@@ -318,7 +318,7 @@ export const CitizenAddressVerificationManager = ({
               }}
             >
               <Plus className="h-4 w-4 mr-2" />
-              Set Primary Address
+              {t('address:setPrimaryAddress')}
             </Button>
             <Button 
               variant="outline"
@@ -328,7 +328,7 @@ export const CitizenAddressVerificationManager = ({
               }}
             >
               <Plus className="h-4 w-4 mr-2" />
-              Add Secondary Address
+              {t('address:addSecondaryAddress')}
             </Button>
           </div>
         </div>
@@ -336,7 +336,7 @@ export const CitizenAddressVerificationManager = ({
         {onCancel && (
           <div className="flex justify-end pt-4 border-t">
             <Button variant="outline" onClick={onCancel}>
-              Cancel
+              {t('common:cancel')}
             </Button>
           </div>
         )}
