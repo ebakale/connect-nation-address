@@ -42,11 +42,11 @@ export function CitizenAddressPortal() {
         <div className="flex gap-2">
           <Badge variant="outline" className="flex items-center gap-1">
             <Home className="h-3 w-3" />
-            {primaryAddress ? '1 Primary' : 'No Primary'}
+            {primaryAddress ? t('address:onePrimary') : t('address:noPrimary')}
           </Badge>
           <Badge variant="outline" className="flex items-center gap-1">
             <MapPin className="h-3 w-3" />
-            {secondaryAddresses.length} Secondary
+            {secondaryAddresses.length} {t('address:secondary')}
           </Badge>
         </div>
       </div>
@@ -55,23 +55,23 @@ export function CitizenAddressPortal() {
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="current" className="flex items-center gap-2">
             <Home className="h-4 w-4" />
-            Current
+            {t('address:current')}
           </TabsTrigger>
           <TabsTrigger value="set-primary" className="flex items-center gap-2">
             <MapPin className="h-4 w-4" />
-            Set Primary
+            {t('address:setPrimary')}
           </TabsTrigger>
           <TabsTrigger value="add-secondary" className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
-            Add Secondary
+            {t('address:addSecondary')}
           </TabsTrigger>
           <TabsTrigger value="verify" className="flex items-center gap-2">
             <Shield className="h-4 w-4" />
-            Verify
+            {t('address:verify')}
           </TabsTrigger>
           <TabsTrigger value="history" className="flex items-center gap-2">
             <History className="h-4 w-4" />
-            History
+            {t('address:history')}
           </TabsTrigger>
         </TabsList>
 
@@ -89,10 +89,10 @@ export function CitizenAddressPortal() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Home className="h-5 w-5" />
-                Set Primary Address
+                {t('address:setPrimaryAddress')}
               </CardTitle>
               <CardDescription>
-                Your primary address is your main residence. You can only have one primary address at a time.
+                {t('address:primaryAddressDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -106,10 +106,10 @@ export function CitizenAddressPortal() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Plus className="h-5 w-5" />
-                Add Secondary Address
+                {t('address:addSecondaryAddress')}
               </CardTitle>
               <CardDescription>
-                Secondary addresses can include work locations, temporary residences, or other relevant locations.
+                {t('address:secondaryAddressDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent>

@@ -6,6 +6,7 @@ import { Home, MapPin, Calendar, User, Trash2, Plus } from 'lucide-react';
 import { format } from "date-fns";
 import { useCitizenAddresses } from '@/hooks/useCAR';
 import type { CitizenAddress } from '@/types/car';
+import { useTranslation } from 'react-i18next';
 
 interface CurrentAddressesPanelProps {
   primaryAddress?: CitizenAddress;
@@ -20,11 +21,12 @@ export function CurrentAddressesPanel({
   onAddSecondary, 
   onSetPrimary 
 }: CurrentAddressesPanelProps) {
+  const { t } = useTranslation(['address', 'common']);
   const { retireAddress } = useCitizenAddresses();
 
   const handleRetireAddress = async (addressId: string) => {
     try {
-      await retireAddress(addressId, 'User requested removal');
+      await retireAddress(addressId, t('address:userRequestedRemoval'));
     } catch (error) {
       // Error handling is done in the hook
     }
@@ -76,21 +78,21 @@ export function CurrentAddressesPanel({
           </div>
           <div className="flex flex-col gap-2 items-end">
             <Badge className={getStatusColor(address.status)}>
-              {address.status.replace('_', ' ')}
+              {t(`address:status.${address.status.toLowerCase()}`)}
             </Badge>
             <Badge variant="outline">
-              {getOccupantIcon(address.occupant)} {address.occupant}
+              {getOccupantIcon(address.occupant)} {t(`address:occupant.${address.occupant.toLowerCase()}`)}
             </Badge>
             {address.nar_verified && (
               <Badge variant="secondary" className="text-xs">
-                ✓ NAR Verified
+                ✓ {t('address:narVerified')}
               </Badge>
             )}
           </div>
         </div>
         {address.unit_uac && (
           <CardDescription className="font-mono text-sm mt-2">
-            Unit: {address.unit_uac}
+            {t('address:unit')}: {address.unit_uac}
           </CardDescription>
         )}
       </CardHeader>
@@ -99,14 +101,14 @@ export function CurrentAddressesPanel({
           {/* Additional address details */}
           {address.address_type && (
             <div className="text-sm">
-              <span className="text-muted-foreground">Type: </span>
-              <span className="capitalize">{address.address_type}</span>
+              <span className="text-muted-foreground">{t('address:type')}: </span>
+              <span className="capitalize">{t(`address:addressType.${address.address_type}`)}</span>
             </div>
           )}
           
           {address.address_description && (
             <div className="text-sm">
-              <span className="text-muted-foreground">Description: </span>
+              <span className="text-muted-foreground">{t('address:description')}: </span>
               <span>{address.address_description}</span>
             </div>
           )}
@@ -116,7 +118,7 @@ export function CurrentAddressesPanel({
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
-                {isPrimary ? `Effective from ${format(new Date(address.effective_from), 'MMM d, yyyy')}` : `Added ${format(new Date(address.created_at), 'MMM d, yyyy')}`}
+                {isPrimary ? `${t('address:effectiveFrom')} ${format(new Date(address.effective_from), 'MMM d, yyyy')}` : `${t('address:added')} ${format(new Date(address.created_at), 'MMM d, yyyy')}`}
               </div>
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
@@ -126,32 +128,32 @@ export function CurrentAddressesPanel({
             <div className="flex gap-2">
               {isPrimary && (
                 <Button onClick={onSetPrimary} variant="outline" size="sm">
-                  Update Primary
+                  {t('address:updatePrimary')}
                 </Button>
               )}
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
                     <Trash2 className="h-4 w-4" />
-                    {isPrimary ? '' : ' Remove'}
+                    {isPrimary ? '' : ` ${t('address:remove')}`}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>
-                      {isPrimary ? 'Retire Primary Address?' : 'Remove Secondary Address?'}
+                      {isPrimary ? t('address:retirePrimaryQuestion') : t('address:removeSecondaryQuestion')}
                     </AlertDialogTitle>
                     <AlertDialogDescription>
                       {isPrimary 
-                        ? 'This will remove your primary address. You can set a new primary address at any time.'
-                        : 'This will remove this secondary address from your profile. This action cannot be undone.'
+                        ? t('address:retirePrimaryDescription')
+                        : t('address:removeSecondaryDescription')
                       }
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel>{t('common:cancel')}</AlertDialogCancel>
                     <AlertDialogAction onClick={() => handleRetireAddress(address.id)}>
-                      {isPrimary ? 'Retire Address' : 'Remove Address'}
+                      {isPrimary ? t('address:retireAddress') : t('address:removeAddress')}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -170,12 +172,12 @@ export function CurrentAddressesPanel({
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold flex items-center gap-2">
             <Home className="h-5 w-5 text-primary" />
-            Primary Address
+            {t('address:primaryAddress')}
           </h2>
           {!primaryAddress && (
             <Button onClick={onSetPrimary} variant="outline" size="sm">
               <Plus className="h-4 w-4 mr-2" />
-              Set Primary
+              {t('address:setPrimary')}
             </Button>
           )}
         </div>
@@ -187,11 +189,11 @@ export function CurrentAddressesPanel({
             <CardContent className="flex flex-col items-center justify-center py-8">
               <Home className="h-12 w-12 text-muted-foreground mb-4" />
               <p className="text-muted-foreground text-center mb-4">
-                You haven't set a primary address yet. Your primary address is your main residence.
+                {t('address:noPrimaryAddressMessage')}
               </p>
               <Button onClick={onSetPrimary}>
                 <Plus className="h-4 w-4 mr-2" />
-                Set Primary Address
+                {t('address:setPrimaryAddress')}
               </Button>
             </CardContent>
           </Card>
@@ -203,11 +205,11 @@ export function CurrentAddressesPanel({
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold flex items-center gap-2">
             <MapPin className="h-5 w-5 text-primary" />
-            Secondary Addresses ({secondaryAddresses.length})
+            {t('address:secondaryAddresses')} ({secondaryAddresses.length})
           </h2>
           <Button onClick={onAddSecondary} variant="outline" size="sm">
             <Plus className="h-4 w-4 mr-2" />
-            Add Secondary
+            {t('address:addSecondary')}
           </Button>
         </div>
 
@@ -224,11 +226,11 @@ export function CurrentAddressesPanel({
             <CardContent className="flex flex-col items-center justify-center py-8">
               <MapPin className="h-12 w-12 text-muted-foreground mb-4" />
               <p className="text-muted-foreground text-center mb-4">
-                No secondary addresses registered. Add work locations, temporary residences, or other relevant addresses.
+                {t('address:noSecondaryAddressesMessage')}
               </p>
               <Button onClick={onAddSecondary} variant="outline">
                 <Plus className="h-4 w-4 mr-2" />
-                Add Secondary Address
+                {t('address:addSecondaryAddress')}
               </Button>
             </CardContent>
           </Card>

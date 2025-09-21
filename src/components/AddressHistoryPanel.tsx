@@ -3,12 +3,14 @@ import { Badge } from "@/components/ui/badge";
 import { History, Calendar, MapPin, Home, ArrowRight } from 'lucide-react';
 import { format } from "date-fns";
 import type { CitizenAddress } from '@/types/car';
+import { useTranslation } from 'react-i18next';
 
 interface AddressHistoryPanelProps {
   addressHistory: CitizenAddress[];
 }
 
 export function AddressHistoryPanel({ addressHistory }: AddressHistoryPanelProps) {
+  const { t } = useTranslation(['address', 'common']);
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'CONFIRMED':
@@ -36,7 +38,7 @@ export function AddressHistoryPanel({ addressHistory }: AddressHistoryPanelProps
         <CardContent className="flex flex-col items-center justify-center py-12">
           <History className="h-12 w-12 text-muted-foreground mb-4" />
           <p className="text-muted-foreground text-center">
-            No address history available yet. Historical addresses will appear here when you update or retire addresses.
+            {t('address:noAddressHistoryMessage')}
           </p>
         </CardContent>
       </Card>
@@ -47,8 +49,8 @@ export function AddressHistoryPanel({ addressHistory }: AddressHistoryPanelProps
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-6">
         <History className="h-5 w-5 text-primary" />
-        <h2 className="text-xl font-semibold">Address History</h2>
-        <Badge variant="outline">{addressHistory.length} records</Badge>
+        <h2 className="text-xl font-semibold">{t('address:addressHistory')}</h2>
+        <Badge variant="outline">{addressHistory.length} {t('address:records')}</Badge>
       </div>
 
       <div className="space-y-4">

@@ -1,4 +1,6 @@
 {
+  "manageYourCitizenAddresses": "Gérez vos adresses citoyennes et vérifications",
+  "viewManageYourVerifications": "Voir et gérer vos demandes de vérification",
   "unitsProfiles": {
     "supervisorManagement": "Gestion des Superviseurs",
     "manageUnitsAndProfiles": "Gérer les unités d'urgence et les profils d'officiers",
