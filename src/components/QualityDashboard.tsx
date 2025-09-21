@@ -402,10 +402,10 @@ export function QualityDashboard() {
       {/* Detailed Analytics */}
       <Tabs defaultValue="regional" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="regional">Regional Overview</TabsTrigger>
-          <TabsTrigger value="quality">Quality Metrics</TabsTrigger>
-          <TabsTrigger value="car">CAR Analytics</TabsTrigger>
-          <TabsTrigger value="cities">City Breakdown</TabsTrigger>
+          <TabsTrigger value="regional">{t('admin:quality.regionalOverview')}</TabsTrigger>
+          <TabsTrigger value="quality">{t('admin:quality.qualityMetrics')}</TabsTrigger>
+          <TabsTrigger value="car">{t('admin:quality.carAnalytics')}</TabsTrigger>
+          <TabsTrigger value="cities">{t('admin:quality.cityBreakdown')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="regional" className="space-y-4">
@@ -413,8 +413,8 @@ export function QualityDashboard() {
             {/* Regional Bar Chart */}
             <Card className="md:col-span-1">
               <CardHeader>
-                <CardTitle>Addresses by Region</CardTitle>
-                <CardDescription>Total registered addresses per region</CardDescription>
+                <CardTitle>{t('admin:quality.addressesByRegion')}</CardTitle>
+                <CardDescription>{t('admin:quality.totalRegisteredAddresses')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -432,8 +432,8 @@ export function QualityDashboard() {
             {/* Verification Status Pie Chart */}
             <Card className="md:col-span-1">
               <CardHeader>
-                <CardTitle>Verification Status</CardTitle>
-                <CardDescription>Distribution of verified vs unverified addresses</CardDescription>
+                <CardTitle>{t('admin:quality.verificationStatus')}</CardTitle>
+                <CardDescription>{t('admin:quality.distributionVerifiedVsUnverified')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -443,7 +443,7 @@ export function QualityDashboard() {
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      label={({ name, percent }) => `${name === 'Verified' ? t('admin:quality.verified') : t('admin:quality.unverified')} ${(percent * 100).toFixed(0)}%`}
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
@@ -462,18 +462,18 @@ export function QualityDashboard() {
           {/* Regional Table */}
           <Card>
             <CardHeader>
-              <CardTitle>Regional Performance</CardTitle>
-              <CardDescription>Detailed metrics by region</CardDescription>
+              <CardTitle>{t('admin:quality.regionalPerformance')}</CardTitle>
+              <CardDescription>{t('admin:quality.detailedMetricsByRegion')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left p-2">Region</th>
-                      <th className="text-right p-2">Cities</th>
-                      <th className="text-right p-2">Addresses</th>
-                      <th className="text-right p-2">Verified</th>
+                      <th className="text-left p-2">{t('admin:quality.region')}</th>
+                      <th className="text-right p-2">{t('admin:quality.cities')}</th>
+                      <th className="text-right p-2">{t('admin:quality.addresses')}</th>
+                      <th className="text-right p-2">{t('admin:quality.verified')}</th>
                       <th className="text-right p-2">Published</th>
                       <th className="text-right p-2">Quality</th>
                     </tr>
