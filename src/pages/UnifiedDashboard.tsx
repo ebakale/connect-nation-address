@@ -105,7 +105,7 @@ const UnifiedDashboard = () => {
     hasSystemAdminAccess
   } = useUserRole();
   const { user, signOut } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useTranslation(['dashboard', 'common']);
   const navigate = useNavigate();
 
   // Route users to appropriate dashboard based on their primary role
