@@ -50,7 +50,7 @@ interface DashboardSidebarProps {
 }
 
 export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: DashboardSidebarProps) {
-  const { t } = useTranslation(['dashboard', 'common']);
+  const { t } = useTranslation('dashboard');
   const { state, setOpen, setOpenMobile } = useSidebar();
   const collapsed = state === 'collapsed';
   const isMobile = useIsMobile();
@@ -79,21 +79,21 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   const navigationItems: NavigationItem[] = [
     {
       id: 'overview',
-      title: t('common:navigation.dashboard'),
+      title: t('dashboardOverview'),
       icon: Home,
       onClick: () => handleItemClick('overview'),
       visible: true
     },
     {
       id: 'unified-address-dashboard',
-      title: t('dashboard:addressManagement'),
+      title: t('addressManagement'),
       icon: MapPin,
       onClick: () => handleItemClick('unified-address-dashboard'),
       visible: true
     },
     {
       id: 'submit-request',
-      title: t('dashboard:submitRequest'),
+      title: t('submitRequest'),
       icon: FileText,
       onClick: () => handleItemClick('submit-request'),
       visible: isCitizen || isFieldAgent || isPropertyClaimant
@@ -101,28 +101,28 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
      // Admin and management items
     {
       id: 'admin-panel',
-      title: t('dashboard:administration'),
+      title: t('admin'),
       icon: Settings,
       onClick: () => handleItemClick('admin-panel'),
       visible: hasAdminAccess
     },
     {
       id: 'analytics',
-      title: t('dashboard:analytics'),
+      title: t('analytics'),
       icon: BarChart3,
       onClick: () => handleItemClick('analytics'),
       visible: hasAdminAccess
     },
     {
       id: 'profile',
-      title: t('common:navigation.profile'),
+      title: t('profileSettings'),
       icon: User,
       onClick: () => handleItemClick('profile'),
       visible: true
     },
     {
       id: 'emergency-contacts',
-      title: t('dashboard:emergencyContacts'),
+      title: t('emergencyContacts'),
       icon: Phone,
       onClick: () => handleItemClick('emergency-contacts'),
       visible: true
