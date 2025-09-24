@@ -504,7 +504,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="address_type">{t('addressType')}</Label>
+              <Label htmlFor="address_type">{t('addressTypeLabel')}</Label>
               <Select value={formData.address_type} onValueChange={(value) => setFormData(prev => ({ ...prev, address_type: value }))}>
                 <SelectTrigger className="bg-background">
                   <SelectValue />

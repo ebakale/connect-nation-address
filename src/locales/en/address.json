@@ -293,7 +293,7 @@
   "streetPlaceholder": "e.g., Independence Avenue",
   "buildingApartment": "Building/Apartment",
   "buildingPlaceholder": "e.g., Building A, Apt 3B",
-  "addressType": "Address Type",
+  "addressTypeLabel": "Address Type",
   "claimantType": "Claimant Type",
   "propertyOwner": "Property Owner",
   "resident": "Resident",

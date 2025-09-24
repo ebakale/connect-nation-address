@@ -409,5 +409,11 @@
   "unifiedAddressDashboard": "Panel de Direcciones Unificado",
   "integratedNARCARDescription": "Registro Nacional de Direcciones (NAR) y Repositorio de Direcciones de Ciudadanos (CAR) Integrados",
   "close": "Cerrar",
-  "citizenWelcomeMessage": "¡Bienvenido al sistema de direcciones unificado! Puedes buscar direcciones en el Registro Nacional de Direcciones y gestionar tus direcciones personales en el Repositorio de Direcciones de Ciudadanos."
+  "citizenWelcomeMessage": "¡Bienvenido al sistema de direcciones unificado! Puedes buscar direcciones en el Registro Nacional de Direcciones y gestionar tus direcciones personales en el Repositorio de Direcciones de Ciudadanos.",
+  "viewStatusYourAddressRequests": "Ver el estado de tus solicitudes de dirección",
+  "viewRequests": "Ver Solicitudes",
+  "newRequest": "Nueva Solicitud",
+  "requestNewAddress": "Solicitar Nueva Dirección",
+  "requestNewAddressDescription": "Enviar una solicitud para registrar una nueva dirección en el Registro Nacional de Direcciones",
+  "narRequests": "Solicitudes NAR"
 }

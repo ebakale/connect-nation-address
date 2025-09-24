@@ -373,5 +373,11 @@
   "unifiedAddressDashboard": "Tableau de Bord d'Adresses Unifié",
   "integratedNARCARDescription": "Registre National des Adresses (NAR) et Répertoire d'Adresses des Citoyens (CAR) Intégrés",
   "close": "Fermer",
-  "citizenWelcomeMessage": "Bienvenue dans le système d'adresses unifié ! Vous pouvez rechercher des adresses dans le Registre National des Adresses et gérer vos adresses personnelles dans le Répertoire d'Adresses des Citoyens."
+  "citizenWelcomeMessage": "Bienvenue dans le système d'adresses unifié ! Vous pouvez rechercher des adresses dans le Registre National des Adresses et gérer vos adresses personnelles dans le Répertoire d'Adresses des Citoyens.",
+  "viewStatusYourAddressRequests": "Voir le statut de vos demandes d'adresse",
+  "viewRequests": "Voir les Demandes",
+  "newRequest": "Nouvelle Demande",
+  "requestNewAddress": "Demander une Nouvelle Adresse",
+  "requestNewAddressDescription": "Soumettre une demande pour enregistrer une nouvelle adresse dans le Registre National des Adresses",
+  "narRequests": "Demandes NAR"
 }
