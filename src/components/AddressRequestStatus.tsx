@@ -6,10 +6,10 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { CalendarDays, MapPin, MessageSquare, RefreshCw, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { CalendarDays, MapPin, MessageSquare, RefreshCw, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, FileText } from 'lucide-react';
 import { format } from 'date-fns';
 
-interface AddressRequest {
+interface AddressRequestData {
   id: string;
   country: string;
   region: string;
@@ -37,7 +37,7 @@ const statusConfig: Record<string, { color: string; key: string }> = {
 
 export const AddressRequestStatus = () => {
   const { t } = useTranslation('address');
-  const [requests, setRequests] = useState<AddressRequest[]>([]);
+  const [requests, setRequests] = useState<AddressRequestData[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const requestsPerPage = 5;
@@ -50,13 +50,18 @@ export const AddressRequestStatus = () => {
 
     setLoading(true);
     try {
-      // Direct fetch to avoid type issues
-      const { data, error } = await fetch('/api/address-requests?user_id=' + user.id)
-        .then(res => res.json())
-        .catch(() => ({ data: [], error: null }));
+      // Use a more specific select to avoid type issues
+      const response = await supabase
+        .from('address_requests')
+        .select('id, country, region, city, street, building, latitude, longitude, address_type, description, justification, status, reviewer_notes, created_at, updated_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
       
-      if (error) throw error;
-      setRequests(data || []);
+      if (response.error) {
+        throw response.error;
+      }
+      
+      setRequests(response.data as AddressRequestData[]);
     } catch (error) {
       console.error('Error fetching address requests:', error);
       toast({
@@ -82,7 +87,7 @@ export const AddressRequestStatus = () => {
     );
   };
 
-  const formatAddress = (request: AddressRequest) => {
+  const formatAddress = (request: AddressRequestData) => {
     const parts = [
       request.building,
       request.street,
@@ -103,161 +108,176 @@ export const AddressRequestStatus = () => {
     setExpandedCards(newExpanded);
   };
 
+  // Pagination logic
   const totalPages = Math.ceil(requests.length / requestsPerPage);
   const startIndex = (currentPage - 1) * requestsPerPage;
   const endIndex = startIndex + requestsPerPage;
   const currentRequests = requests.slice(startIndex, endIndex);
 
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
   if (loading) {
     return (
+      <div className="flex justify-center items-center py-8">
+        <RefreshCw className="h-6 w-6 animate-spin" />
+        <span className="ml-2">{t('loading')}</span>
+      </div>
+    );
+  }
+
+  if (requests.length === 0) {
+    return (
       <Card>
-        <CardHeader className="text-center">
-          <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-2" />
-          <CardTitle>Loading requests...</CardTitle>
-        </CardHeader>
+        <CardContent className="py-8">
+          <div className="text-center">
+            <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">{t('noRequests')}</h3>
+            <p className="text-muted-foreground">{t('noRequestsDescription')}</p>
+          </div>
+        </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5" />
-              Address Request Status
-            </CardTitle>
-            <CardDescription>
-              Track your address submissions
-            </CardDescription>
-          </div>
-          <Button
-            onClick={fetchRequests}
-            variant="outline"
-            size="sm"
-            disabled={loading}
-          >
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent>
-        {requests.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>No requests found</p>
-          </div>
-        ) : (
-          <>
-            <div className="space-y-4">
-              {currentRequests.map((request) => {
-                const isExpanded = expandedCards.has(request.id);
-                return (
-                  <div key={request.id} className="border rounded-lg p-4 transition-all duration-200 hover:shadow-md">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <MapPin className="h-4 w-4 text-muted-foreground" />
-                          <span className="font-medium">{formatAddress(request)}</span>
-                          {getStatusBadge(request.status)}
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold">{t('yourAddressRequests')}</h2>
+        <Button
+          variant="outline"
+          onClick={fetchRequests}
+          disabled={loading}
+          className="flex items-center gap-2"
+        >
+          <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+          {t('refresh')}
+        </Button>
+      </div>
+
+      <div className="space-y-4">
+        {currentRequests.map((request) => {
+          const isExpanded = expandedCards.has(request.id);
+          
+          return (
+            <Card key={request.id} className="border-l-4 border-l-primary/20">
+              <CardHeader className="pb-3">
+                <div className="flex justify-between items-start">
+                  <div className="space-y-1">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <MapPin className="h-4 w-4" />
+                      {formatAddress(request)}
+                    </CardTitle>
+                    <CardDescription className="flex items-center gap-4 text-sm">
+                      <span className="flex items-center gap-1">
+                        <CalendarDays className="h-3 w-3" />
+                        {format(new Date(request.created_at), 'MMM d, yyyy')}
+                      </span>
+                      <span className="capitalize">{request.address_type}</span>
+                    </CardDescription>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {getStatusBadge(request.status)}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleCardExpansion(request.id)}
+                    >
+                      {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+
+              {isExpanded && (
+                <CardContent className="pt-0">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <h4 className="font-medium mb-2">{t('requestDetails')}</h4>
+                      <dl className="space-y-1">
+                        <div className="flex justify-between">
+                          <dt className="text-muted-foreground">{t('status')}:</dt>
+                          <dd className="capitalize">{request.status}</dd>
                         </div>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <CalendarDays className="h-3 w-3" />
-                            <span>Submitted: {format(new Date(request.created_at), 'MMM dd, yyyy')}</span>
+                        <div className="flex justify-between">
+                          <dt className="text-muted-foreground">{t('type')}:</dt>
+                          <dd className="capitalize">{request.address_type}</dd>
+                        </div>
+                        {request.latitude && request.longitude && (
+                          <div className="flex justify-between">
+                            <dt className="text-muted-foreground">{t('coordinates')}:</dt>
+                            <dd>{request.latitude.toFixed(6)}, {request.longitude.toFixed(6)}</dd>
                           </div>
-                          <Badge variant="outline" className="text-xs">
-                            {request.address_type}
-                          </Badge>
-                        </div>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => toggleCardExpansion(request.id)}
-                        className="ml-2"
-                      >
-                        {isExpanded ? (
-                          <ChevronUp className="h-4 w-4" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4" />
                         )}
-                      </Button>
+                      </dl>
                     </div>
 
-                    {isExpanded && (
-                      <div className="space-y-3 pt-3 border-t">
-                        {request.description && (
-                          <div>
-                            <span className="text-sm font-medium">Description:</span>
-                            <p className="text-sm text-muted-foreground mt-1">{request.description}</p>
-                          </div>
-                        )}
-                        
-                        <div>
-                          <span className="text-sm font-medium">Justification:</span>
-                          <p className="text-sm text-muted-foreground mt-1">{request.justification}</p>
-                        </div>
+                    <div>
+                      <h4 className="font-medium mb-2">{t('justification')}</h4>
+                      <p className="text-muted-foreground text-sm">{request.justification}</p>
+                      
+                      {request.description && (
+                        <>
+                          <h4 className="font-medium mb-2 mt-4">{t('description')}</h4>
+                          <p className="text-muted-foreground text-sm">{request.description}</p>
+                        </>
+                      )}
 
-                        {request.reviewer_notes && (
-                          <div>
-                            <span className="text-sm font-medium">Reviewer Notes:</span>
-                            <p className="text-sm text-muted-foreground mt-1">{request.reviewer_notes}</p>
-                          </div>
-                        )}
-
-                        {request.latitude && request.longitude && (
-                          <div>
-                            <span className="text-sm font-medium">Coordinates:</span>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {request.latitude.toFixed(6)}, {request.longitude.toFixed(6)}
-                            </p>
-                          </div>
-                        )}
-
-                        <div className="text-xs text-muted-foreground">
-                          <span>Last Updated: {format(new Date(request.updated_at), 'MMM dd, yyyy HH:mm')}</span>
-                        </div>
-                      </div>
-                    )}
+                      {request.reviewer_notes && (
+                        <>
+                          <h4 className="font-medium mb-2 mt-4 flex items-center gap-1">
+                            <MessageSquare className="h-3 w-3" />
+                            {t('reviewerNotes')}
+                          </h4>
+                          <p className="text-muted-foreground text-sm bg-muted p-2 rounded">
+                            {request.reviewer_notes}
+                          </p>
+                        </>
+                      )}
+                    </div>
                   </div>
-                );
-              })}
-            </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between mt-6">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                >
-                  <ChevronLeft className="h-4 w-4 mr-2" />
-                  Previous
-                </Button>
-                
-                <span className="text-sm text-muted-foreground">
-                  Page {currentPage} of {totalPages}
-                </span>
-                
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
-                >
-                  Next
-                  <ChevronRight className="h-4 w-4 ml-2" />
-                </Button>
-              </div>
-            )}
-          </>
-        )}
-      </CardContent>
-    </Card>
+                  <div className="mt-4 pt-4 border-t">
+                    <p className="text-xs text-muted-foreground">
+                      {t('lastUpdated')}: {format(new Date(request.updated_at), 'MMM d, yyyy HH:mm')}
+                    </p>
+                  </div>
+                </CardContent>
+              )}
+            </Card>
+          );
+        })}
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          
+          <span className="text-sm text-muted-foreground px-4">
+            {t('pageXOfY', { current: currentPage, total: totalPages })}
+          </span>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
+    </div>
   );
 };

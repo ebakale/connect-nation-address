@@ -305,8 +305,21 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
             </div>
             <AddressSearch />
           </div>
-        );
+         );
 
+      case 'requests':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:addressRequests')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:viewStatusYourAddressRequests')}</p>
+              </div>
+              <Badge variant="outline">{t('dashboard:narRequests')}</Badge>
+            </div>
+            <AddressRequestStatus />
+          </div>
+        );
 
       case 'verification':
         return (
