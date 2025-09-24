@@ -317,7 +317,6 @@ const demoScenarios: DemoScenario[] = [
 export const DemoPresentation: React.FC = () => {
   const [selectedScenario, setSelectedScenario] = useState<string>('citizen');
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const [showRoles, setShowRoles] = useState(false);
 
   const currentScenario = demoScenarios.find(s => s.id === selectedScenario);
 
@@ -392,47 +391,28 @@ export const DemoPresentation: React.FC = () => {
           fontSize: 14
         });
 
-        // Características
-        scenarioSlide.addText("Características Principales:", {
+        // Slide de características
+        const featuresSlide = pptx.addSlide();
+        featuresSlide.addText(`${scenario.title} - Características`, {
           x: 0.5,
-          y: 3,
-          w: 4,
-          h: 0.4,
-          fontSize: 16,
+          y: 0.5,
+          w: 9,
+          h: 0.8,
+          fontSize: 24,
           bold: true
         });
 
         scenario.features.forEach((feature, idx) => {
-          scenarioSlide.addText(`• ${feature}`, {
+          featuresSlide.addText(`• ${feature}`, {
             x: 0.5,
-            y: 3.5 + (idx * 0.3),
-            w: 4,
+            y: 1.5 + (idx * 0.4),
+            w: 9,
             h: 0.3,
             fontSize: 12
           });
         });
 
-        // Beneficios
-        scenarioSlide.addText("Beneficios:", {
-          x: 5,
-          y: 3,
-          w: 4,
-          h: 0.4,
-          fontSize: 16,
-          bold: true
-        });
-
-        scenario.benefits.forEach((benefit, idx) => {
-          scenarioSlide.addText(`• ${benefit}`, {
-            x: 5,
-            y: 3.5 + (idx * 0.3),
-            w: 4,
-            h: 0.3,
-            fontSize: 12
-          });
-        });
-
-        // Slide de workflow
+        // Slide de flujo de trabajo
         const workflowSlide = pptx.addSlide();
         workflowSlide.addText(`${scenario.title} - Flujo de Trabajo`, {
           x: 0.5,
@@ -458,95 +438,56 @@ export const DemoPresentation: React.FC = () => {
       // Slide de especificaciones técnicas
       const techSlide = pptx.addSlide();
       techSlide.addText("Especificaciones Técnicas", {
-        x: 1,
+        x: 0.5,
         y: 0.5,
-        w: 8,
+        w: 9,
         h: 0.8,
-        fontSize: 24,
-        bold: true,
-        align: 'center'
-      });
-
-      techSlide.addText("Dispositivos Compatibles:", {
-        x: 0.5,
-        y: 1.5,
-        w: 4,
-        h: 0.4,
-        fontSize: 16,
-        bold: true
-      });
-
-      techSlide.addText("• Móviles iOS/Android\n• Navegadores de escritorio\n• Dispositivos de campo", {
-        x: 0.5,
-        y: 2,
-        w: 4,
-        h: 1,
-        fontSize: 12
-      });
-
-      techSlide.addText("Métricas Clave:", {
-        x: 5,
-        y: 1.5,
-        w: 4,
-        h: 0.4,
-        fontSize: 16,
+        fontSize: 28,
         bold: true
       });
 
       techSlide.addText("• 99.9% Precisión GPS\n• <30s Tiempo de Respuesta\n• 24/7 Disponibilidad\n• 100% Trabajo Offline", {
-        x: 5,
-        y: 2,
-        w: 4,
-        h: 1,
-        fontSize: 12
+        x: 0.5,
+        y: 1.5,
+        w: 9,
+        h: 3,
+        fontSize: 18,
+        bullet: true
       });
 
-      await pptx.writeFile({ fileName: "ConnectNation_Address_Demo.pptx" });
-      toast.success("Presentación exportada exitosamente como PowerPoint");
+      await pptx.writeFile({ fileName: 'ConnectNation-Demo-Presentation.pptx' });
+      toast.success('Presentación exportada exitosamente');
     } catch (error) {
-      console.error("Error al exportar PowerPoint:", error);
-      toast.error("Error al exportar la presentación");
+      console.error('Error exporting PowerPoint:', error);
+      toast.error('Error al exportar la presentación');
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
-          <div className="flex justify-between items-start">
-            <div className="flex-1">
-              <h1 className="text-4xl font-bold text-foreground">
-                ConnectNation Address - Presentación Demo
-              </h1>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                Demostraciones adaptadas a las necesidades específicas de cada actor del sistema
-              </p>
-            </div>
-            <Button 
-              onClick={exportToPowerPoint}
-              variant="outline"
-              className="flex items-center space-x-2"
-            >
-              <Download className="h-4 w-4" />
-              <span>Exportar a PowerPoint</span>
+          <h1 className="text-4xl font-bold text-gray-900">
+            ConnectNation Address - Demo Interactivo
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Demostraciones adaptadas a las necesidades específicas de cada actor del sistema
+          </p>
+          <div className="flex justify-center gap-4">
+            <Button onClick={exportToPowerPoint} variant="outline">
+              <Download className="mr-2 h-4 w-4" />
+              Exportar PowerPoint
             </Button>
-          </div>
-          <div className="flex justify-center">
-            <img 
-              src={demoImage} 
-              alt="Demo adaptada a necesidades específicas"
-              className="max-w-md rounded-lg shadow-lg"
-            />
           </div>
         </div>
 
         {/* Scenario Selection */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {demoScenarios.map((scenario) => (
             <Card 
               key={scenario.id}
-              className={`cursor-pointer transition-all duration-200 hover:shadow-lg ${
+              className={`cursor-pointer transition-all hover:scale-105 ${
                 selectedScenario === scenario.id ? 'ring-2 ring-primary' : ''
               }`}
               onClick={() => {
@@ -568,83 +509,104 @@ export const DemoPresentation: React.FC = () => {
         {/* Demo Content */}
         {currentScenario && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Scenario Info */}
-            <div className="space-y-4">
+            {/* Left: Scenario Info */}
+            <div className="lg:col-span-2 space-y-6">
               <Card>
                 <CardHeader>
                   <div className="flex items-center space-x-3">
-                    <div className={`w-10 h-10 rounded-lg ${currentScenario.color} flex items-center justify-center text-white`}>
+                    <div className={`w-12 h-12 rounded-lg ${currentScenario.color} flex items-center justify-center text-white`}>
                       {currentScenario.icon}
                     </div>
                     <div>
-                      <CardTitle>{currentScenario.title}</CardTitle>
-                      <CardDescription>{currentScenario.actor}</CardDescription>
+                      <CardTitle className="text-2xl">{currentScenario.title}</CardTitle>
+                      <CardDescription className="text-lg">{currentScenario.actor}</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    {currentScenario.description}
-                  </p>
+                  <p className="text-gray-700 mb-4">{currentScenario.description}</p>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Características Principales</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {currentScenario.features.map((feature, index) => (
-                      <li key={index} className="flex items-start space-x-2">
-                        <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Beneficios</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {currentScenario.benefits.map((benefit, index) => (
-                      <li key={index} className="flex items-start space-x-2">
-                        <BarChart3 className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm">{benefit}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+              {/* Features, Workflow, Benefits */}
+              <Tabs defaultValue="features" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="features">Características</TabsTrigger>
+                  <TabsTrigger value="workflow">Flujo de Trabajo</TabsTrigger>
+                  <TabsTrigger value="benefits">Beneficios</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="features" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Características Principales</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {currentScenario.features.map((feature, index) => (
+                          <div key={index} className="flex items-start space-x-2">
+                            <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm">{feature}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                
+                <TabsContent value="workflow" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Flujo de Trabajo</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {currentScenario.workflow.map((step, index) => (
+                          <div key={index} className="flex items-start space-x-3">
+                            <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                              {index + 1}
+                            </div>
+                            <span className="text-sm">{step}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                
+                <TabsContent value="benefits" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Beneficios Clave</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {currentScenario.benefits.map((benefit, index) => (
+                          <div key={index} className="flex items-start space-x-2">
+                            <BarChart3 className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm">{benefit}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
             </div>
 
-            {/* Demo Workflow */}
-            <div className="lg:col-span-2">
-              <Card className="h-full">
+            {/* Right: Interactive Demo */}
+            <div className="space-y-6">
+              <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl">Flujo de Trabajo Demo</CardTitle>
-                    <Badge variant="outline">
-                      Paso {currentStep + 1} de {currentScenario.workflow.length}
-                    </Badge>
-                  </div>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Calendar className="h-5 w-5" />
+                    <span>Demo Interactivo</span>
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Progress Bar */}
-                  <div className="w-full bg-secondary rounded-full h-2">
-                    <div 
-                      className="bg-primary h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${((currentStep + 1) / currentScenario.workflow.length) * 100}%` }}
-                    />
-                  </div>
-
+                <CardContent className="space-y-4">
                   {/* Current Step */}
-                  <div className="bg-secondary/50 rounded-lg p-6 border-l-4 border-primary">
-                    <div className="flex items-center space-x-3 mb-3">
+                  <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
+                    <div className="flex items-center space-x-2 mb-2">
                       <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
                         {currentStep + 1}
                       </div>
