@@ -98,6 +98,27 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       onClick: () => handleItemClick('submit-request'),
       visible: isCitizen || isFieldAgent || isPropertyClaimant
     },
+    {
+      id: 'capture-address',
+      title: t('captureAddress'),
+      icon: Camera,
+      onClick: () => handleItemClick('capture-address'),
+      visible: isFieldAgent || canCreateDraftAddress
+    },
+    {
+      id: 'field-drafts',
+      title: t('myDrafts'),
+      icon: Clock,
+      onClick: () => handleItemClick('field-drafts'),
+      visible: isFieldAgent || canCreateDraftAddress
+    },
+    {
+      id: 'field-map',
+      title: t('fieldMap'),
+      icon: MapPin,
+      onClick: () => handleItemClick('field-map'),
+      visible: isFieldAgent
+    },
      // Admin and management items
     {
       id: 'admin-panel',
@@ -134,6 +155,10 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   // Group items by category
   const mainItems = visibleItems.filter(item => 
     ['overview', 'unified-address-dashboard'].includes(item.id)
+  );
+
+  const fieldItems = visibleItems.filter(item => 
+    ['submit-request', 'capture-address', 'field-drafts', 'field-map'].includes(item.id)
   );
   
   const adminItems = visibleItems.filter(item => 
@@ -208,6 +233,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
 
         {/* Navigation Groups */}
         {renderMenuGroup(mainItems, t('main'))}
+        {renderMenuGroup(fieldItems, t('fieldWork'))}
         {renderMenuGroup(adminItems, t('administration'))}
         {renderMenuGroup(managementItems, t('management'))}
         {renderMenuGroup(settingsItems, t('settings'))}

@@ -291,6 +291,8 @@ const UnifiedDashboard = () => {
       case 'submit-request': return t('dashboard:submitRequest');
       case 'request-status': return t('dashboard:requestStatus');
       case 'capture-address': return t('dashboard:captureAddress');
+      case 'field-drafts': return t('dashboard:myDrafts');
+      case 'field-map': return t('dashboard:fieldMap');
       case 'verification-queue': return t('dashboard:verificationQueue');
       case 'publishing-queue': return t('dashboard:publishingQueue');
       case 'unpublishing-queue': return t('dashboard:unpublishingQueue');
@@ -313,6 +315,8 @@ const UnifiedDashboard = () => {
       case 'submit-request': return t('dashboard:submitRequestDescription');
       case 'request-status': return t('dashboard:requestStatusDescription');
       case 'capture-address': return t('dashboard:captureAddressDescription');
+      case 'field-drafts': return t('dashboard:reviewPendingDrafts');
+      case 'field-map': return t('dashboard:viewAssignedAreas');
       case 'verification-queue': return t('dashboard:verificationQueueDescription');
       case 'publishing-queue': return t('dashboard:publishingQueueDescription');
       case 'unpublishing-queue': return t('dashboard:unpublishingQueueDescription');
@@ -550,6 +554,20 @@ const UnifiedDashboard = () => {
             <AddressCaptureForm 
               onCancel={() => setActiveView('overview')}
             />
+          </div>
+        );
+
+      case 'field-drafts':
+        return (
+          <div className="max-w-6xl">
+            <DraftManager />
+          </div>
+        );
+
+      case 'field-map':
+        return (
+          <div className="max-w-7xl">
+            <FieldMap />
           </div>
         );
 
