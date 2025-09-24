@@ -444,7 +444,6 @@
     "viewAddressesProgress": "Ver direcciones y seguir tu progreso"
   },
   "drafts": {
-    "myDrafts": "Mis Borradores",
     "manageDraftAddresses": "Gestiona tus direcciones en borrador antes del envío",
     "draftsCount": "{{count}} borrador(es)",
     "close": "Cerrar",

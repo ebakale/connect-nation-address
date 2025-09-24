@@ -408,7 +408,6 @@
     "viewAddressesProgress": "Voir les adresses et suivre votre progrès"
   },
   "drafts": {
-    "myDrafts": "Mes Brouillons",
     "manageDraftAddresses": "Gérez vos adresses en brouillon avant soumission",
     "draftsCount": "{{count}} brouillon(s)",
     "close": "Fermer",
