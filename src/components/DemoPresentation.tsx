@@ -40,7 +40,7 @@ const demoScenarios: DemoScenario[] = [
   {
     id: 'citizen',
     title: 'Portal Ciudadano',
-    actor: 'Ciudadano',
+    actor: 'Ciudadanos',
     description: 'Portal integral para búsqueda pública, gestión de direcciones personales y reporte de emergencias',
     features: [
       'Acceso al portal público para búsqueda de direcciones',
@@ -82,17 +82,17 @@ const demoScenarios: DemoScenario[] = [
   {
     id: 'police',
     title: 'Dashboard Policial',
-    actor: 'Oficiales de Policía',
-    description: 'Sistema integral de gestión operativa policial con múltiples roles y funcionalidades especializadas',
+    actor: 'Personal Policial (Operadores, Despachadores, Supervisores)',
+    description: 'Sistema integral de gestión operativa policial con múltiples roles y funcionalidades especializadas según el rango',
     features: [
-      'Mapa en tiempo real de incidentes activos',
-      'Sistema de comunicaciones entre unidades',
-      'Gestión de estado de oficiales y unidades',
+      'Mapa en tiempo real de incidentes activos por ciudad',
+      'Sistema de comunicaciones entre unidades policiales',
+      'Gestión de estado de oficiales y unidades operativas',
       'Panel de despacho y asignación de recursos',
       'Seguimiento de tiempos de respuesta',
       'Sistema de respaldo (backup) entre unidades',
       'Analíticas avanzadas y reportes de rendimiento',
-      'Gestión administrativa de usuarios y unidades',
+      'Gestión administrativa de usuarios y unidades (Admin)',
       'Dashboard de liderazgo para supervisores',
       'Panel de coordinación para áreas geográficas',
       'Estado operativo y sesiones de operadores',
@@ -127,26 +127,26 @@ const demoScenarios: DemoScenario[] = [
   {
     id: 'registrar',
     title: 'Consola de Registro',
-    actor: 'Registradores',
-    description: 'Sistema integral de gestión y publicación del registro nacional de direcciones con control de calidad',
+    actor: 'Registradores Territoriales',
+    description: 'Sistema integral de gestión y publicación del registro nacional de direcciones con control de calidad territorial',
     features: [
-      'Dashboard con estadísticas clave del registro',
+      'Dashboard con estadísticas clave del registro territorial',
       'Cola de publicación de direcciones verificadas',
       'Cola de despublicación de direcciones publicadas',
-      'Gestión territorial por provincias y municipios',
-      'Analíticas de cobertura geográfica',
-      'Control de calidad y duplicados',
-      'Reportes de rendimiento del sistema',
+      'Gestión territorial por provincias y municipios asignados',
+      'Analíticas de cobertura geográfica del territorio',
+      'Control de calidad y detección de duplicados',
+      'Reportes de rendimiento del sistema por región',
       'Seguimiento de métricas de publicación diaria',
       'Gestión de alcance geográfico por registrador',
       'Herramientas de verificación geoespacial',
       'Panel de aprobación/rechazo con justificación',
-      'Monitoreo de cobertura territorial'
+      'Monitoreo de cobertura territorial asignada'
     ],
     workflow: [
       'Autenticación como registrador territorial',
       'Visualización del dashboard con métricas de registro',
-      'Revisión de direcciones listas para publicar',
+      'Revisión de direcciones listas para publicar en su territorio',
       'Validación con herramientas geoespaciales avanzadas',
       'Publicación masiva de direcciones verificadas',
       'Gestión de direcciones ya publicadas (despublicación)',
@@ -222,7 +222,7 @@ const demoScenarios: DemoScenario[] = [
   {
     id: 'emergency',
     title: 'Central de Emergencias',
-    actor: 'Operadores de Emergencia',
+    actor: 'Operadores de Emergencia (Operadores, Despachadores, Supervisores)',
     description: 'Sistema integral de gestión, despacho y coordinación de servicios de emergencia con múltiples roles operativos',
     features: [
       'Recepción automática de alertas ciudadanas',
@@ -271,12 +271,53 @@ const demoScenarios: DemoScenario[] = [
     ],
     icon: <AlertTriangle className="h-6 w-6" />,
     color: 'bg-purple-500'
+  },
+  {
+    id: 'verifier',
+    title: 'Dashboard de Verificación',
+    actor: 'Verificadores de Direcciones',
+    description: 'Sistema especializado para verificación y validación de solicitudes de direcciones con herramientas avanzadas',
+    features: [
+      'Cola de revisión de solicitudes pendientes',
+      'Herramientas de verificación geográfica avanzadas',
+      'Panel de aprobación/rechazo con justificación detallada',
+      'Sistema de detección automática de duplicados',
+      'Validación cruzada con bases de datos existentes',
+      'Herramientas de análisis de calidad de fotografías',
+      'Sistema de verificación por lotes',
+      'Reportes de calidad de datos y métricas',
+      'Integración con mapas satelitales para validación',
+      'Historial completo de decisiones de verificación'
+    ],
+    workflow: [
+      'Acceso al panel de verificación especializado',
+      'Revisión de cola de solicitudes pendientes',
+      'Análisis detallado de cada solicitud con herramientas',
+      'Verificación geoespacial usando mapas y coordenadas',
+      'Validación de fotografías y documentos adjuntos',
+      'Detección de posibles duplicados en el sistema',
+      'Decisión de aprobación o rechazo con justificación',
+      'Documentación del proceso de verificación',
+      'Envío de notificación al solicitante',
+      'Actualización de métricas de calidad'
+    ],
+    benefits: [
+      'Control de calidad garantizado en verificaciones',
+      'Proceso de verificación estandarizado y trazable',
+      'Reducción significativa de errores y duplicados',
+      'Eficiencia en el procesamiento de solicitudes',
+      'Documentación completa de decisiones',
+      'Mejora continua del proceso de verificación'
+    ],
+    icon: <UserCheck className="h-6 w-6" />,
+    color: 'bg-teal-500'
   }
 ];
 
 export const DemoPresentation: React.FC = () => {
   const [selectedScenario, setSelectedScenario] = useState<string>('citizen');
   const [currentStep, setCurrentStep] = useState<number>(0);
+  const [showRoles, setShowRoles] = useState(false);
 
   const currentScenario = demoScenarios.find(s => s.id === selectedScenario);
 
@@ -678,6 +719,195 @@ export const DemoPresentation: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Roles de Usuarios y Acceso */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl">Roles de Usuarios y Acceso a Portales</CardTitle>
+            <CardDescription>
+              El sistema ConnectNation Address implementa un sistema de roles jerárquico que determina el acceso a diferentes portales y funcionalidades.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {/* Roles Administrativos */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-primary">Roles Administrativos</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className="border-blue-200">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Administrador del Sistema (admin)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Acceso completo a todos los portales y funcionalidades administrativas</p>
+                      <div>
+                        <span className="text-xs font-medium text-blue-600">Portales:</span>
+                        <p className="text-xs">Todos los portales, Panel de administración global</p>
+                      </div>
+                      <div>
+                        <span className="text-xs font-medium text-green-600">Permisos:</span>
+                        <p className="text-xs">Gestión de usuarios, Configuración del sistema, Analíticas globales</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-blue-200">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Administrador NDAA (ndaa_admin)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Administrador de la Autoridad Nacional de Direcciones</p>
+                      <div>
+                        <span className="text-xs font-medium text-blue-600">Portales:</span>
+                        <p className="text-xs">Dashboard administrativo, Consola de registro, Analíticas nacionales</p>
+                      </div>
+                      <div>
+                        <span className="text-xs font-medium text-green-600">Permisos:</span>
+                        <p className="text-xs">Supervisión nacional, Gestión de registradores, Políticas nacionales</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Roles Policiales */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-red-600">Roles Policiales</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className="border-red-200">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Administrador Policial (police_admin)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Administración completa del sistema policial</p>
+                      <div>
+                        <span className="text-xs font-medium text-blue-600">Portales:</span>
+                        <p className="text-xs">Dashboard policial completo, Central de emergencias, Administración de unidades</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-red-200">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Supervisor Policial (police_supervisor)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Supervisión de operaciones policiales</p>
+                      <div>
+                        <span className="text-xs font-medium text-blue-600">Portales:</span>
+                        <p className="text-xs">Dashboard policial, Central de emergencias, Dashboard de liderazgo</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-red-200">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Despachador Policial (police_dispatcher)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Despacho y coordinación de unidades</p>
+                      <div>
+                        <span className="text-xs font-medium text-blue-600">Portales:</span>
+                        <p className="text-xs">Central de emergencias, Sistema de comunicaciones</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-red-200">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Operador Policial (police_operator)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Operaciones básicas policiales</p>
+                      <div>
+                        <span className="text-xs font-medium text-blue-600">Portales:</span>
+                        <p className="text-xs">Dashboard policial básico, Recepción de incidentes</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Roles de Registro */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-green-600">Roles de Registro</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card className="border-green-200">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Registrador (registrar)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Gestión del registro por territorio</p>
+                      <div>
+                        <span className="text-xs font-medium text-blue-600">Portal:</span>
+                        <p className="text-xs">Consola de registro</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-green-200">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Verificador (verifier)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Verificación de solicitudes</p>
+                      <div>
+                        <span className="text-xs font-medium text-blue-600">Portal:</span>
+                        <p className="text-xs">Dashboard de verificación</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-green-200">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Agente de Campo (field_agent)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Captura de datos en terreno</p>
+                      <div>
+                        <span className="text-xs font-medium text-blue-600">Portal:</span>
+                        <p className="text-xs">App de campo móvil</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Roles Ciudadanos */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-blue-600">Roles Ciudadanos</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className="border-blue-200">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Ciudadano (citizen)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Usuario general del sistema</p>
+                      <div>
+                        <span className="text-xs font-medium text-blue-600">Portales:</span>
+                        <p className="text-xs">Portal ciudadano, Portal público</p>
+                      </div>
+                      <div>
+                        <span className="text-xs font-medium text-green-600">Permisos:</span>
+                        <p className="text-xs">Búsqueda de direcciones, Solicitudes personales, Reporte de emergencias</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-blue-200">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Reclamante de Propiedad (property_claimant)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Ciudadano con derechos sobre propiedades</p>
+                      <div>
+                        <span className="text-xs font-medium text-blue-600">Portal:</span>
+                        <p className="text-xs">Portal ciudadano avanzado</p>
+                      </div>
+                      <div>
+                        <span className="text-xs font-medium text-green-600">Permisos:</span>
+                        <p className="text-xs">Gestión de propiedades, Verificación de residencia</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Technical Specifications */}
         <Card>
