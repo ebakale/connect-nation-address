@@ -128,26 +128,42 @@ const demoScenarios: DemoScenario[] = [
     id: 'registrar',
     title: 'Consola de Registro',
     actor: 'Registradores',
-    description: 'Herramientas para validación y gestión del registro de direcciones',
+    description: 'Sistema integral de gestión y publicación del registro nacional de direcciones con control de calidad',
     features: [
-      'Cola de revisión de solicitudes',
-      'Herramientas de verificación geográfica',
-      'Panel de aprobación/rechazo',
-      'Gestión de duplicados',
-      'Reportes de calidad de datos'
+      'Dashboard con estadísticas clave del registro',
+      'Cola de publicación de direcciones verificadas',
+      'Cola de despublicación de direcciones publicadas',
+      'Gestión territorial por provincias y municipios',
+      'Analíticas de cobertura geográfica',
+      'Control de calidad y duplicados',
+      'Reportes de rendimiento del sistema',
+      'Seguimiento de métricas de publicación diaria',
+      'Gestión de alcance geográfico por registrador',
+      'Herramientas de verificación geoespacial',
+      'Panel de aprobación/rechazo con justificación',
+      'Monitoreo de cobertura territorial'
     ],
     workflow: [
-      'Acceso al panel de administración',
-      'Revisión de solicitudes pendientes',
-      'Verificación con herramientas geoespaciales',
-      'Aprobación o rechazo con justificación',
-      'Publicación de direcciones verificadas'
+      'Autenticación como registrador territorial',
+      'Visualización del dashboard con métricas de registro',
+      'Revisión de direcciones listas para publicar',
+      'Validación con herramientas geoespaciales avanzadas',
+      'Publicación masiva de direcciones verificadas',
+      'Gestión de direcciones ya publicadas (despublicación)',
+      'Administración de estructura provincial y municipal',
+      'Análisis de cobertura geográfica del registro',
+      'Generación de reportes de calidad de datos',
+      'Supervisión de métricas de rendimiento diario'
     ],
     benefits: [
-      'Control de calidad garantizado',
-      'Proceso de verificación estandarizado',
-      'Trazabilidad completa',
-      'Reducción de errores'
+      'Control de calidad garantizado en el registro nacional',
+      'Gestión eficiente de la cobertura territorial',
+      'Publicación coordinada de direcciones verificadas',
+      'Supervisión completa del registro por provincias',
+      'Métricas claras de rendimiento del sistema',
+      'Trazabilidad completa del proceso de registro',
+      'Optimización de recursos por área geográfica',
+      'Mantenimiento de la integridad del registro nacional'
     ],
     icon: <FileCheck className="h-6 w-6" />,
     color: 'bg-green-500'
