@@ -466,19 +466,75 @@ const UnifiedDashboard = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="pt-0">
-                    <div className="space-y-4">
-                       <div className="p-3 bg-muted/50 rounded-lg">
-                         <p className="font-medium text-sm mb-1">{t('dashboard:recentSearches')}</p>
-                         <p className="text-muted-foreground text-xs">{t('dashboard:recentSearchesDesc')}</p>
-                       </div>
-                       <div className="p-3 bg-muted/50 rounded-lg">
-                         <p className="font-medium text-sm mb-1">{t('dashboard:savedLocations')}</p>
-                         <p className="text-muted-foreground text-xs">{t('dashboard:savedLocationsDesc')}</p>
-                       </div>
-                       <div className="p-3 bg-muted/50 rounded-lg">
-                         <p className="font-medium text-sm mb-1">{t('dashboard:exportData')}</p>
-                         <p className="text-muted-foreground text-xs">{t('dashboard:exportDataDesc')}</p>
-                       </div>
+                    <div className="space-y-3">
+                      {isFieldAgent && (
+                        <>
+                          <Button 
+                            onClick={() => setActiveView('capture-address')}
+                            className="w-full justify-start gap-2 h-auto py-3"
+                            variant="outline"
+                          >
+                            <Camera className="h-4 w-4" />
+                            <div className="text-left">
+                              <div className="font-medium">{t('dashboard:captureAddress')}</div>
+                              <div className="text-xs text-muted-foreground">{t('dashboard:captureAddressDescription')}</div>
+                            </div>
+                          </Button>
+                          
+                          <Button 
+                            onClick={() => setActiveView('field-drafts')}
+                            className="w-full justify-start gap-2 h-auto py-3"
+                            variant="outline"
+                          >
+                            <Clock className="h-4 w-4" />
+                            <div className="text-left">
+                              <div className="font-medium">{t('dashboard:myDrafts')}</div>
+                              <div className="text-xs text-muted-foreground">{t('dashboard:reviewPendingDrafts')}</div>
+                            </div>
+                          </Button>
+                          
+                          <Button 
+                            onClick={() => setActiveView('field-map')}
+                            className="w-full justify-start gap-2 h-auto py-3"
+                            variant="outline"
+                          >
+                            <MapPin className="h-4 w-4" />
+                            <div className="text-left">
+                              <div className="font-medium">{t('dashboard:fieldMap.fieldMap')}</div>
+                              <div className="text-xs text-muted-foreground">{t('dashboard:viewAssignedAreas')}</div>
+                            </div>
+                          </Button>
+                          
+                          <Button 
+                            onClick={() => setActiveView('submit-request')}
+                            className="w-full justify-start gap-2 h-auto py-3"
+                            variant="outline"
+                          >
+                            <FileText className="h-4 w-4" />
+                            <div className="text-left">
+                              <div className="font-medium">{t('dashboard:submitRequest')}</div>
+                              <div className="text-xs text-muted-foreground">{t('dashboard:submitRequestDescription')}</div>
+                            </div>
+                          </Button>
+                        </>
+                      )}
+                      
+                      {!isFieldAgent && (
+                        <>
+                          <div className="p-3 bg-muted/50 rounded-lg">
+                            <p className="font-medium text-sm mb-1">{t('dashboard:recentSearches')}</p>
+                            <p className="text-muted-foreground text-xs">{t('dashboard:recentSearchesDesc')}</p>
+                          </div>
+                          <div className="p-3 bg-muted/50 rounded-lg">
+                            <p className="font-medium text-sm mb-1">{t('dashboard:savedLocations')}</p>
+                            <p className="text-muted-foreground text-xs">{t('dashboard:savedLocationsDesc')}</p>
+                          </div>
+                          <div className="p-3 bg-muted/50 rounded-lg">
+                            <p className="font-medium text-sm mb-1">{t('dashboard:exportData')}</p>
+                            <p className="text-muted-foreground text-xs">{t('dashboard:exportDataDesc')}</p>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
