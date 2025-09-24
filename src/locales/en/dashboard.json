@@ -408,5 +408,11 @@
   "unifiedAddressDashboard": "Unified Address Dashboard",
   "integratedNARCARDescription": "Integrated National Address Registry (NAR) and Citizen Address Repository (CAR)",
   "close": "Close",
-  "citizenWelcomeMessage": "Welcome to the unified address system! You can search for addresses in the National Address Registry and manage your personal addresses in the Citizen Address Repository."
+  "citizenWelcomeMessage": "Welcome to the unified address system! You can search for addresses in the National Address Registry and manage your personal addresses in the Citizen Address Repository.",
+  "viewStatusYourAddressRequests": "View the status of your address requests",
+  "viewRequests": "View Requests",
+  "newRequest": "New Request", 
+  "requestNewAddress": "Request New Address",
+  "requestNewAddressDescription": "Submit a request to register a new address in the National Address Registry",
+  "narRequests": "NAR Requests"
 }

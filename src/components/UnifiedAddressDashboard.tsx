@@ -317,7 +317,32 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
               </div>
               <Badge variant="outline">{t('dashboard:narRequests')}</Badge>
             </div>
-            <AddressRequestStatus />
+            
+            <Tabs defaultValue="view-requests" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="view-requests">{t('dashboard:viewRequests')}</TabsTrigger>
+                <TabsTrigger value="new-request">{t('dashboard:newRequest')}</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="view-requests" className="space-y-4">
+                <AddressRequestStatus />
+              </TabsContent>
+              
+              <TabsContent value="new-request" className="space-y-4">
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold">{t('dashboard:requestNewAddress')}</h3>
+                    <p className="text-sm text-muted-foreground">{t('dashboard:requestNewAddressDescription')}</p>
+                  </div>
+                  <AddressRequestForm 
+                    onSuccess={() => {
+                      // Refresh the page or show success message
+                      window.location.reload();
+                    }}
+                  />
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
         );
 
