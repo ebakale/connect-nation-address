@@ -251,5 +251,12 @@
   "uploadProofDocument": "Upload proof document (lease, deed, utility bill, etc.)",
   "removeProof": "Remove proof",
   "selectProofFile": "Select proof file",
-  "supportedFormats": "Supported formats: PDF, JPG, PNG (max 10MB)"
+  "supportedFormats": "Supported formats: PDF, JPG, PNG (max 10MB)",
+  "proofRequired": "Proof Required",
+  "uploadDocument": "Upload Document",
+  "maxFileSize10MB": "Max file size: 10MB",
+  "proofExamples": "Examples: lease agreement, utility bill, property deed",
+  "addressPhoto": "Address Photo",
+  "addPhotoLocation": "Add a photo of the location",
+  "takePhoto": "Take Photo"
 }
