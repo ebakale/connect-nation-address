@@ -691,9 +691,9 @@ const UnifiedDashboard = () => {
           <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="flex items-center px-4 py-3">
               <SidebarTrigger className="-ml-1" />
-              <div className="flex-1 ml-4 min-w-0">
+              <div className="flex-1 ml-4 min-w-0 max-w-none">
                 <h1 className="text-lg font-semibold leading-tight">{getViewTitle()}</h1>
-                <p className="text-sm text-muted-foreground mt-1 mb-2 break-words leading-normal">{getViewDescription()}</p>
+                <p className="text-sm text-muted-foreground mt-1 mb-2 break-words leading-normal w-full max-w-full">{getViewDescription()}</p>
               </div>
               <div className="flex items-center gap-2">
                 <OfflineIndicator />
