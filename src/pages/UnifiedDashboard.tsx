@@ -701,9 +701,9 @@ const UnifiedDashboard = () => {
                   <div className="text-right hidden sm:block">
                     <p className="text-sm font-medium">{userProfile.full_name}</p>
                     <div className="flex gap-1">
-                      {userRoles.map((roleLabel) => (
-                        <Badge key={roleLabel} variant="secondary" className="text-xs">
-                          {roleLabel}
+                      {userRoles.map((roleLabel, index) => (
+                        <Badge key={`${roleLabel}-${index}`} variant="secondary" className="text-xs">
+                          {String(roleLabel)}
                         </Badge>
                       ))}
                     </div>
