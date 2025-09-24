@@ -18,6 +18,7 @@ import PoliceDashboard from "./pages/PoliceDashboard";
 
 import { UnitsAndProfilesPage } from "./pages/UnitsAndProfilesPage";
 import CitizenPortalUnified from "./pages/CitizenPortalUnified";
+import { DemoPresentationPage } from "./pages/DemoPresentationPage";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +63,7 @@ const AppRoutes = () => {
       <Route path="/auth" element={<UnifiedAuth />} />
       <Route path="/portal" element={<Portal />} />
       <Route path="/citizen" element={<CitizenPortalUnified />} />
+      <Route path="/demo-presentation" element={<DemoPresentationPage />} />
       
       <Route path="/dashboard" element={<ProtectedRoute><UnifiedDashboard /></ProtectedRoute>} />
       <Route path="/police" element={<ProtectedRoute><PoliceDashboard /></ProtectedRoute>} />
