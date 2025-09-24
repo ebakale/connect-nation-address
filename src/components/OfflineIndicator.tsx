@@ -26,7 +26,11 @@ export const OfflineIndicator = () => {
 
   if (isOnline && !syncInProgress) {
     return (
-      <div className="flex flex-col items-center gap-1">
+      <div className="flex items-center gap-2">
+        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+          <Wifi className="w-3 h-3 mr-1" />
+          Online
+        </Badge>
         <Button
           variant="ghost"
           size="sm"
@@ -35,10 +39,6 @@ export const OfflineIndicator = () => {
         >
           <Activity className="w-3 h-3" />
         </Button>
-        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-          <Wifi className="w-3 h-3 mr-1" />
-          Online
-        </Badge>
       </div>
     );
   }
