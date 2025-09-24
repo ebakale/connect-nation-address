@@ -318,7 +318,7 @@
   "admin": "Administrador",
   "verifier": "Verificador",
   "registrar": "Registrador",
-  "fieldAgent": "Agente de Campo",
+  "fieldAgentRole": "Agente de Campo",
   "citizen": "Ciudadano",
   "unknownUser": "Usuario Desconocido",
   "unknownEmail": "desconocido@ejemplo.com",

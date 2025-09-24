@@ -322,7 +322,7 @@
   "admin": "Admin",
   "verifier": "Verifier", 
   "registrar": "Registrar",
-  "fieldAgent": "Field Agent",
+  "fieldAgentRole": "Field Agent",
   "citizen": "Citizen",
   "unknownUser": "Unknown User",
   "unknownEmail": "unknown@example.com",

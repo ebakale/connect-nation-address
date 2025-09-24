@@ -282,7 +282,7 @@
   "admin": "Administrateur",
   "verifier": "Vérificateur",
   "registrar": "Enregistreur",
-  "fieldAgent": "Agent de Terrain",
+  "fieldAgentRole": "Agent de Terrain",
   "citizen": "Citoyen",
   "unknownUser": "Utilisateur Inconnu",
   "unknownEmail": "inconnu@exemple.com",

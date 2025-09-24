@@ -277,7 +277,7 @@ const UnifiedDashboard = () => {
   if (isAdmin) userRoles.push(t('dashboard:admin'));
   if (isVerifier) userRoles.push(t('dashboard:verifier'));
   if (isRegistrar) userRoles.push(t('dashboard:registrar'));
-  if (isFieldAgent) userRoles.push(t('dashboard:fieldAgent'));
+  if (isFieldAgent) userRoles.push(t('dashboard:fieldAgentRole'));
   if (isCitizen) userRoles.push(t('dashboard:citizen'));
 
   const handleSidebarNavigation = (viewId: string) => {
