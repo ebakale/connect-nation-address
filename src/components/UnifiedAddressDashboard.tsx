@@ -42,6 +42,7 @@ interface UnifiedAddressDashboardProps {
 }
 
 export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProps) {
+  // Unified dashboard for NAR and CAR systems
   const { t } = useTranslation(['dashboard', 'address', 'admin']);
   const { user } = useUnifiedAuth();
   const { 
