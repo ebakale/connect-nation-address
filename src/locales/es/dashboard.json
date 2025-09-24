@@ -194,6 +194,7 @@
   "submitRequest": "Enviar Solicitud",
   "captureAddress": "Capturar Dirección",
   "myDrafts": "Mis Borradores",
+  "fieldMap": "Mapa de Campo",
   "verificationQueue": "Cola de Verificación",
   "dashboardOverview": "Resumen del Panel",
   "requestStatus": "Estado de Solicitud",
@@ -467,7 +468,6 @@
     "failedToDeleteDraft": "Error al eliminar borrador"
   },
   "fieldMap": {
-    "fieldMap": "Mapa de Campo",
     "viewAddressesInArea": "Ver direcciones en tu área asignada en Google Maps",
     "close": "Cerrar",
     "mapNotConfigured": "Mapa no configurado",

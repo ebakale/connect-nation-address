@@ -159,6 +159,7 @@
   "submitRequest": "Soumettre une Demande",
   "captureAddress": "Capturer une Adresse",
   "myDrafts": "Mes Brouillons",
+  "fieldMap": "Carte de Terrain",
   "verificationQueue": "File de Vérification",
   "dashboardOverview": "Aperçu du Tableau de Bord",
   "requestStatus": "Statut de la Demande",
@@ -431,7 +432,6 @@
     "failedToDeleteDraft": "Échec de la suppression du brouillon"
   },
   "fieldMap": {
-    "fieldMap": "Carte de Terrain",
     "viewAddressesInArea": "Voir les adresses dans votre zone assignée sur Google Maps",
     "close": "Fermer",
     "mapNotConfigured": "Carte non configurée",
