@@ -41,26 +41,34 @@ const demoScenarios: DemoScenario[] = [
     id: 'citizen',
     title: 'Portal Ciudadano',
     actor: 'Ciudadano',
-    description: 'Demostración de búsqueda y verificación de direcciones para uso cotidiano',
+    description: 'Portal completo para solicitud, gestión y verificación de direcciones personales',
     features: [
       'Búsqueda de direcciones por texto o UAC',
-      'Verificación instantánea de direcciones',
-      'Solicitud de nuevas direcciones',
+      'Sistema de solicitudes de nuevas direcciones',
+      'Gestión de mis direcciones personales',
+      'Seguimiento de solicitudes en tiempo real',
+      'Verificación de residencia con documentos',
+      'Visualización en mapas interactivos',
       'Reporte de emergencias',
       'Acceso móvil optimizado'
     ],
     workflow: [
-      'Acceso al portal público',
-      'Búsqueda de dirección por nombre de calle',
-      'Visualización en mapa interactivo',
-      'Verificación de código UAC',
-      'Solicitud de nueva dirección si no existe'
+      'Acceso al portal ciudadano unificado',
+      'Navegación a la pestaña "Solicitudes de Direcciones"',
+      'Visualización de solicitudes existentes en "Ver Solicitudes"',
+      'Creación de nueva solicitud en "Nueva Solicitud"',
+      'Captura de fotografía y ubicación GPS',
+      'Carga de documentos de propiedad/residencia',
+      'Seguimiento del estado de verificación',
+      'Recepción de notificaciones de actualización'
     ],
     benefits: [
+      'Proceso completo de gestión de direcciones',
+      'Seguimiento transparente del estado',
+      'Verificación documental integrada',
+      'Notificaciones automáticas de progreso',
       'Acceso 24/7 desde cualquier dispositivo',
-      'Información verificada y actualizada',
-      'Proceso simplificado para solicitudes',
-      'Integración con servicios de emergencia'
+      'Historial completo de solicitudes'
     ],
     icon: <Users className="h-6 w-6" />,
     color: 'bg-blue-500'
