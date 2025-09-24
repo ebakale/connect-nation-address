@@ -455,5 +455,12 @@
     "failedToLoadAddresses": "Échec du chargement des adresses",
     "draft": "Brouillon",
     "createdOn": "Créé : {{date}}"
-  }
+  },
+  "fieldWork": "Travail de Terrain",
+  "residencyVerificationManager": "Gestionnaire de Vérification de Résidence",
+  "myVerificationRequests": "Mes Demandes de Vérification",
+  "myAddressesCar": "Mes Adresses (CAR)",
+  "residencyVerificationManagerDesc": "Gérer et examiner les demandes de vérification de résidence des citoyens",
+  "myVerificationRequestsDesc": "Voir et modifier vos demandes de vérification de résidence. Télécharger de nouveaux documents et suivre les changements d'état.",
+  "myAddressesCarDesc": "Gérer vos adresses citoyennes dans le Référentiel d'Adresses Citoyennes (CAR). Définir les adresses primaires et secondaires."
 }

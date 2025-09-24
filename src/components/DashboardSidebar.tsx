@@ -147,6 +147,50 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       icon: Phone,
       onClick: () => handleItemClick('emergency-contacts'),
       visible: true
+    },
+    // Address and verification management
+    {
+      id: 'address-data',
+      title: t('addressData'),
+      icon: FileCheck,
+      onClick: () => handleItemClick('address-data'),
+      visible: hasAdminAccess || canVerifyAddresses || canPublishAddresses
+    },
+    {
+      id: 'province-management',
+      title: t('provinceManagement'),
+      icon: MapPin,
+      onClick: () => handleItemClick('province-management'),
+      visible: hasAdminAccess
+    },
+    {
+      id: 'verification-tools',
+      title: t('verificationTools'),
+      icon: CheckCircle,
+      onClick: () => handleItemClick('verification-tools'),
+      visible: canVerifyAddresses || hasAdminAccess
+    },
+    {
+      id: 'residency-verification-manager',
+      title: t('residencyVerificationManager'),
+      icon: UserCheck,
+      onClick: () => handleItemClick('residency-verification-manager'),
+      visible: hasAdminAccess || canVerifyAddresses
+    },
+    // Citizen-specific items
+    {
+      id: 'residency-verification-dashboard',
+      title: t('myVerificationRequests'),
+      icon: FileDown,
+      onClick: () => handleItemClick('residency-verification-dashboard'),
+      visible: isCitizen
+    },
+    {
+      id: 'citizen-address-portal',
+      title: t('myAddressesCar'),
+      icon: User,
+      onClick: () => handleItemClick('citizen-address-portal'),
+      visible: isCitizen
     }
   ];
 

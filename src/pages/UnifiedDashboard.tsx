@@ -299,9 +299,9 @@ const UnifiedDashboard = () => {
       case 'analytics': return t('dashboard:analytics');
       case 'province-management': return t('dashboard:provinceManagement');
       case 'verification-tools': return t('dashboard:verificationTools');
-      case 'residency-verification-manager': return 'Residency Verification Manager';
-      case 'residency-verification-dashboard': return 'My Verification Requests';
-      case 'citizen-address-portal': return 'My Addresses (CAR)';
+      case 'residency-verification-manager': return t('dashboard:residencyVerificationManager');
+      case 'residency-verification-dashboard': return t('dashboard:myVerificationRequests');
+      case 'citizen-address-portal': return t('dashboard:myAddressesCar');
       case 'profile': return t('dashboard:title');
       case 'emergency-contacts': return t('dashboard:emergencyContacts');
       default: return t('dashboard:title');
@@ -323,9 +323,9 @@ const UnifiedDashboard = () => {
       case 'analytics': return t('dashboard:analyticsDescription');
       case 'province-management': return t('dashboard:provinceManagementDescription');
       case 'verification-tools': return t('dashboard:verificationToolsDescription');
-      case 'residency-verification-manager': return 'Manage and review residency verification requests from citizens';
-      case 'residency-verification-dashboard': return 'View and edit your residency verification requests. Upload new documents and track status changes.';
-      case 'citizen-address-portal': return 'Manage your citizen addresses in the Citizen Address Repository (CAR). Set primary and secondary addresses.';
+      case 'residency-verification-manager': return t('dashboard:residencyVerificationManagerDesc');
+      case 'residency-verification-dashboard': return t('dashboard:myVerificationRequestsDesc');
+      case 'citizen-address-portal': return t('dashboard:myAddressesCarDesc');
       case 'profile': return t('dashboard:welcomeMessage');
       case 'emergency-contacts': return t('dashboard:welcomeMessage');
       default: return t('dashboard:welcomeMessage');

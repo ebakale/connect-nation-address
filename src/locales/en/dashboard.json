@@ -495,5 +495,12 @@
     "failedToLoadAddresses": "Failed to load addresses",
     "draft": "Draft",
     "createdOn": "Created: {{date}}"
-  }
+  },
+  "fieldWork": "Field Work",
+  "residencyVerificationManager": "Residency Verification Manager",
+  "myVerificationRequests": "My Verification Requests", 
+  "myAddressesCar": "My Addresses (CAR)",
+  "residencyVerificationManagerDesc": "Manage and review residency verification requests from citizens",
+  "myVerificationRequestsDesc": "View and edit your residency verification requests. Upload new documents and track status changes.",
+  "myAddressesCarDesc": "Manage your citizen addresses in the Citizen Address Repository (CAR). Set primary and secondary addresses."
 }
