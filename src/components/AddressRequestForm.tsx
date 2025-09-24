@@ -304,7 +304,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
 
       const requestData = {
         ...formData,
-        user_id: user.id,
+        requester_id: user.id,
         latitude: formData.latitude ? parseFloat(formData.latitude) : null,
         longitude: formData.longitude ? parseFloat(formData.longitude) : null,
         photo_url: photoUrl,
@@ -323,7 +323,7 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
       
       toast({
         title: t('success'),
-        description: 'Address request submitted. You can now proceed with residency/ownership verification.'
+        description: t('requestSubmittedToast')
       });
 
       // Move to verification step instead of resetting form
@@ -375,9 +375,9 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
       <div className="space-y-4">
         <Card className="w-full max-w-2xl mx-auto">
           <CardHeader>
-            <CardTitle>Address Request Submitted Successfully</CardTitle>
+            <CardTitle>{t('requestSubmittedTitle')}</CardTitle>
             <CardDescription>
-              Your address request has been submitted. You can now optionally verify your residency or ownership to expedite the approval process.
+              {t('requestSubmittedDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -387,13 +387,13 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
                 onClick={handleSkipVerification}
                 className="flex-1"
               >
-                Skip Verification (Submit Later)
+                {t('skipVerification')}
               </Button>
               <Button 
                 onClick={() => setCurrentStep(VERIFICATION_STEPS.RESIDENCY_VERIFICATION)}
                 className="flex-1"
               >
-                Continue with Verification
+                {t('continueVerification')}
               </Button>
             </div>
           </CardContent>
@@ -401,17 +401,16 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
         
         {/* Note: Address verification now requires CAR address setup first */}
         <div className="text-center p-6 border-2 border-dashed border-muted rounded-lg">
-          <h3 className="text-lg font-semibold mb-2">Address Request Submitted</h3>
+          <h3 className="text-lg font-semibold mb-2">{t('requestSubmittedHeader')}</h3>
           <p className="text-muted-foreground mb-4">
-            Your address request has been submitted for review. To verify ownership/residency, 
-            you'll need to first set this address in your Citizen Address Repository.
+            {t('requestSubmittedInfo')}
           </p>
           <div className="flex gap-2 justify-center">
             <Button onClick={handleVerificationSuccess}>
-              Continue to Dashboard
+              {t('continueToDashboard')}
             </Button>
             <Button variant="outline" onClick={handleSkipVerification}>
-              Skip for Now
+              {t('skipForNow')}
             </Button>
           </div>
         </div>
