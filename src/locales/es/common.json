@@ -443,7 +443,7 @@
   "latitude": "Latitud",
   "longitude": "Longitud",
   "distance": "Distancia",
-  "navigation": "Navegación",
+  "navigationLabel": "Navegación",
   "recordInformation": "Información del Registro",
   "created": "Creado",
   "updated": "Actualizado",
