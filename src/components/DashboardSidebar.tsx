@@ -114,7 +114,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     },
     {
       id: 'field-map',
-      title: t('fieldMap'),
+      title: t('fieldMap.fieldMap'),
       icon: MapPin,
       onClick: () => handleItemClick('field-map'),
       visible: isFieldAgent
