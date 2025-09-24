@@ -41,34 +41,40 @@ const demoScenarios: DemoScenario[] = [
     id: 'citizen',
     title: 'Portal Ciudadano',
     actor: 'Ciudadano',
-    description: 'Portal completo para solicitud, gestión y verificación de direcciones personales',
+    description: 'Portal integral para búsqueda pública, gestión de direcciones personales y reporte de emergencias',
     features: [
+      'Acceso al portal público para búsqueda de direcciones',
       'Búsqueda de direcciones por texto o UAC',
       'Sistema de solicitudes de nuevas direcciones',
       'Gestión de mis direcciones personales',
       'Seguimiento de solicitudes en tiempo real',
       'Verificación de residencia con documentos',
+      'Reporte de incidentes y emergencias',
+      'Notificaciones de emergencia en tiempo real',
       'Visualización en mapas interactivos',
-      'Reporte de emergencias',
       'Acceso móvil optimizado'
     ],
     workflow: [
-      'Acceso al portal ciudadano unificado',
-      'Navegación a la pestaña "Solicitudes de Direcciones"',
-      'Visualización de solicitudes existentes en "Ver Solicitudes"',
+      'Acceso al portal público para búsqueda de direcciones',
+      'Búsqueda de direcciones verificadas por texto o UAC',
+      'Visualización de resultados en mapa interactivo',
+      'Acceso autenticado al portal ciudadano personal',
+      'Navegación a "Solicitudes de Direcciones"',
+      'Revisión de solicitudes en "Ver Solicitudes"',
       'Creación de nueva solicitud en "Nueva Solicitud"',
-      'Captura de fotografía y ubicación GPS',
-      'Carga de documentos de propiedad/residencia',
-      'Seguimiento del estado de verificación',
-      'Recepción de notificaciones de actualización'
+      'Acceso a la pestaña "Emergencias" para reportar incidentes',
+      'Envío de alerta con ubicación automática',
+      'Seguimiento del estado de solicitudes y reportes'
     ],
     benefits: [
-      'Proceso completo de gestión de direcciones',
-      'Seguimiento transparente del estado',
+      'Acceso público a información de direcciones verificadas',
+      'Portal personal completo para gestión de direcciones',
+      'Sistema integrado de emergencias y alertas',
+      'Seguimiento transparente de todos los procesos',
       'Verificación documental integrada',
-      'Notificaciones automáticas de progreso',
+      'Respuesta rápida a emergencias con geolocalización',
       'Acceso 24/7 desde cualquier dispositivo',
-      'Historial completo de solicitudes'
+      'Historial completo de solicitudes y reportes'
     ],
     icon: <Users className="h-6 w-6" />,
     color: 'bg-blue-500'
