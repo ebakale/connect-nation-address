@@ -741,11 +741,11 @@ const UnifiedDashboard = () => {
                   size="sm"
                   onClick={signOut} 
                   className="flex items-center gap-1 shrink-0"
-                  aria-label={tCommon('navigation.logout')}
-                  title={tCommon('navigation.logout')}
+                  aria-label={t('common:navigation.logout')}
+                  title={t('common:navigation.logout')}
                 >
                   <LogOut className="h-4 w-4" />
-                  <span className="hidden md:inline text-xs">{tCommon('navigation.logout')}</span>
+                  <span className="hidden md:inline text-xs">{t('common:navigation.logout')}</span>
                 </Button>
               </div>
             </div>
