@@ -17,8 +17,11 @@ import {
   CheckCircle,
   Clock,
   UserCheck,
-  Navigation
+  Navigation,
+  Download
 } from 'lucide-react';
+import { toast } from 'sonner';
+import PptxGenJS from 'pptxgenjs';
 import demoImage from '@/assets/demo-presentation-image.png';
 
 interface DemoScenario {
@@ -198,17 +201,201 @@ export const DemoPresentation: React.FC = () => {
     setCurrentStep(0);
   };
 
+  const exportToPowerPoint = async () => {
+    try {
+      const pptx = new PptxGenJS();
+      
+      // Slide de título
+      const titleSlide = pptx.addSlide();
+      titleSlide.addText("ConnectNation Address - Presentación Demo", {
+        x: 1,
+        y: 1,
+        w: 8,
+        h: 1,
+        fontSize: 32,
+        bold: true,
+        align: 'center'
+      });
+      titleSlide.addText("Demostraciones adaptadas a las necesidades específicas de cada actor del sistema", {
+        x: 1,
+        y: 2.5,
+        w: 8,
+        h: 0.5,
+        fontSize: 18,
+        align: 'center'
+      });
+
+      // Slide para cada escenario
+      demoScenarios.forEach((scenario, index) => {
+        // Slide principal del escenario
+        const scenarioSlide = pptx.addSlide();
+        scenarioSlide.addText(scenario.title, {
+          x: 0.5,
+          y: 0.5,
+          w: 9,
+          h: 0.8,
+          fontSize: 28,
+          bold: true,
+          color: scenario.color.replace('bg-', '').replace('-500', '')
+        });
+        
+        scenarioSlide.addText(`Actor: ${scenario.actor}`, {
+          x: 0.5,
+          y: 1.3,
+          w: 9,
+          h: 0.5,
+          fontSize: 16,
+          italic: true
+        });
+
+        scenarioSlide.addText(scenario.description, {
+          x: 0.5,
+          y: 2,
+          w: 9,
+          h: 0.8,
+          fontSize: 14
+        });
+
+        // Características
+        scenarioSlide.addText("Características Principales:", {
+          x: 0.5,
+          y: 3,
+          w: 4,
+          h: 0.4,
+          fontSize: 16,
+          bold: true
+        });
+
+        scenario.features.forEach((feature, idx) => {
+          scenarioSlide.addText(`• ${feature}`, {
+            x: 0.5,
+            y: 3.5 + (idx * 0.3),
+            w: 4,
+            h: 0.3,
+            fontSize: 12
+          });
+        });
+
+        // Beneficios
+        scenarioSlide.addText("Beneficios:", {
+          x: 5,
+          y: 3,
+          w: 4,
+          h: 0.4,
+          fontSize: 16,
+          bold: true
+        });
+
+        scenario.benefits.forEach((benefit, idx) => {
+          scenarioSlide.addText(`• ${benefit}`, {
+            x: 5,
+            y: 3.5 + (idx * 0.3),
+            w: 4,
+            h: 0.3,
+            fontSize: 12
+          });
+        });
+
+        // Slide de workflow
+        const workflowSlide = pptx.addSlide();
+        workflowSlide.addText(`${scenario.title} - Flujo de Trabajo`, {
+          x: 0.5,
+          y: 0.5,
+          w: 9,
+          h: 0.8,
+          fontSize: 24,
+          bold: true
+        });
+
+        scenario.workflow.forEach((step, idx) => {
+          workflowSlide.addText(`${idx + 1}. ${step}`, {
+            x: 0.5,
+            y: 1.5 + (idx * 0.6),
+            w: 9,
+            h: 0.5,
+            fontSize: 14,
+            bullet: true
+          });
+        });
+      });
+
+      // Slide de especificaciones técnicas
+      const techSlide = pptx.addSlide();
+      techSlide.addText("Especificaciones Técnicas", {
+        x: 1,
+        y: 0.5,
+        w: 8,
+        h: 0.8,
+        fontSize: 24,
+        bold: true,
+        align: 'center'
+      });
+
+      techSlide.addText("Dispositivos Compatibles:", {
+        x: 0.5,
+        y: 1.5,
+        w: 4,
+        h: 0.4,
+        fontSize: 16,
+        bold: true
+      });
+
+      techSlide.addText("• Móviles iOS/Android\n• Navegadores de escritorio\n• Dispositivos de campo", {
+        x: 0.5,
+        y: 2,
+        w: 4,
+        h: 1,
+        fontSize: 12
+      });
+
+      techSlide.addText("Métricas Clave:", {
+        x: 5,
+        y: 1.5,
+        w: 4,
+        h: 0.4,
+        fontSize: 16,
+        bold: true
+      });
+
+      techSlide.addText("• 99.9% Precisión GPS\n• <30s Tiempo de Respuesta\n• 24/7 Disponibilidad\n• 100% Trabajo Offline", {
+        x: 5,
+        y: 2,
+        w: 4,
+        h: 1,
+        fontSize: 12
+      });
+
+      await pptx.writeFile({ fileName: "ConnectNation_Address_Demo.pptx" });
+      toast.success("Presentación exportada exitosamente como PowerPoint");
+    } catch (error) {
+      console.error("Error al exportar PowerPoint:", error);
+      toast.error("Error al exportar la presentación");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-foreground">
-            ConnectNation Address - Presentación Demo
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Demostraciones adaptadas a las necesidades específicas de cada actor del sistema
-          </p>
+          <div className="flex justify-between items-start">
+            <div className="flex-1">
+              <h1 className="text-4xl font-bold text-foreground">
+                ConnectNation Address - Presentación Demo
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                Demostraciones adaptadas a las necesidades específicas de cada actor del sistema
+              </p>
+            </div>
+            <Button 
+              onClick={exportToPowerPoint}
+              variant="outline"
+              className="flex items-center space-x-2"
+            >
+              <Download className="h-4 w-4" />
+              <span>Exportar a PowerPoint</span>
+            </Button>
+          </div>
           <div className="flex justify-center">
             <img 
               src={demoImage} 
