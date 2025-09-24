@@ -693,9 +693,9 @@ const UnifiedDashboard = () => {
               <div className="flex items-center">
                 <SidebarTrigger className="-ml-1" />
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 overflow-x-auto">
                 <h1 className="text-lg font-semibold leading-tight">{getViewTitle()}</h1>
-                <p className="text-sm text-muted-foreground mt-1 mb-2 leading-normal">{getViewDescription()}</p>
+                <p className="text-sm text-muted-foreground mt-1 mb-2 leading-normal whitespace-nowrap">{getViewDescription()}</p>
               </div>
               <div className="flex items-center gap-2">
                 <OfflineIndicator />
