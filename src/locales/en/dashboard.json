@@ -245,6 +245,7 @@
   "analyticsDescription": "View system analytics and reports",
   "provinceManagementDescription": "Manage provincial settings and configurations",
   "verificationToolsDescription": "Tools for address verification",
+  "accessRestricted": "Access to this section is restricted for your role",
   "selectOptionHelp": "Select an option from the sidebar to get started.",
   "reportsAnalytics": "Reports & Analytics",
   "addressRegistrationInsights": "Comprehensive insights into address registration and verification data",

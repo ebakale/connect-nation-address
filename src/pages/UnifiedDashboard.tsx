@@ -649,6 +649,13 @@ const UnifiedDashboard = () => {
         );
 
       case 'unified-address-dashboard':
+        // Field agents should not access this - redirect to overview
+        if (isFieldAgent) {
+          setActiveView('overview');
+          return <div className="text-center py-12">
+            <p className="text-muted-foreground">Redirecting to overview...</p>
+          </div>;
+        }
         return (
           <div className="max-w-7xl">
             <UnifiedAddressDashboard />

@@ -89,7 +89,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       title: t('addressManagement'),
       icon: MapPin,
       onClick: () => handleItemClick('unified-address-dashboard'),
-      visible: true
+      visible: !isFieldAgent // Hide from field agents as functionality is in overview
     },
     {
       id: 'submit-request',
