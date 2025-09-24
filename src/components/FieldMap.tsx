@@ -12,6 +12,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader } from '@googlemaps/js-api-loader';
+import { useTranslation } from 'react-i18next';
 
 interface FieldAddress {
   id: string;
@@ -34,6 +35,7 @@ interface FieldMapProps {
 const FieldMap = ({ onClose }: FieldMapProps) => {
   const { user } = useAuth();
   const { getGeographicScope } = useUserRole();
+  const { t } = useTranslation(['dashboard']);
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<google.maps.Map | null>(null);
   const [addresses, setAddresses] = useState<FieldAddress[]>([]);
@@ -55,7 +57,7 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
       setIsApiReady(true);
     } catch (error) {
       console.error('Error fetching Google Maps API key:', error);
-      toast.error('Failed to load map');
+      toast.error(t('dashboard:fieldMap.failedToLoadMap'));
     }
   };
 
@@ -79,7 +81,7 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
       setAddresses(data || []);
     } catch (error) {
       console.error('Error fetching addresses:', error);
-      toast.error('Failed to load addresses');
+      toast.error(t('dashboard:fieldMap.failedToLoadAddresses'));
     } finally {
       setLoading(false);
     }
@@ -100,11 +102,11 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
         },
         (error) => {
           console.error('Error getting location:', error);
-          toast.error('Unable to get your current location');
+          toast.error(t('dashboard:fieldMap.unableToGetLocation'));
         }
       );
     } else {
-      toast.error('Geolocation is not supported by this browser');
+      toast.error(t('dashboard:fieldMap.geolocationNotSupported'));
     }
   };
 
@@ -138,7 +140,7 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
 
     } catch (error) {
       console.error('Error initializing Google Maps:', error);
-      toast.error('Failed to initialize map');
+      toast.error(t('dashboard:fieldMap.failedToInitializeMap'));
     }
   };
 
@@ -190,10 +192,10 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
                 padding: 2px 6px; 
                 font-size: 10px; 
                 border-radius: 4px;
-                background: ${isDraft ? '#fef3c7' : '#d1fae5'};
-                color: ${isDraft ? '#92400e' : '#065f46'};
-              ">
-                ${isDraft ? 'Draft' : 'Verified'}
+                 background: ${isDraft ? '#fef3c7' : '#d1fae5'};
+                 color: ${isDraft ? '#92400e' : '#065f46'};
+               ">
+                 ${isDraft ? t('dashboard:fieldMap.draft') : t('dashboard:fieldMap.verified')}
               </span>
               <span style="
                 display: inline-block; 
@@ -206,8 +208,8 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
                 ${(() => { const v = address.address_type || ''; const cleaned = v.replace(/[{}]/g,'').trim(); return (!v || v.includes('{{') || v.includes('}}') || cleaned.toLowerCase() === 'type' || cleaned === '') ? 'unknown' : cleaned; })()}
               </span>
             </div>
-            <p style="font-size: 10px; color: #999; margin: 0;">
-              Created: ${new Date(address.created_at).toLocaleDateString()}
+             <p style="font-size: 10px; color: #999; margin: 0;">
+               ${t('dashboard:fieldMap.createdOn', { date: new Date(address.created_at).toLocaleDateString() })}
             </p>
           </div>
         `
@@ -243,7 +245,7 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <div className="text-lg">Loading Google Maps field view...</div>
+        <div className="text-lg">{t('dashboard:fieldMap.loadingGoogleMaps')}</div>
       </div>
     );
   }
@@ -252,9 +254,9 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold">Field Map</h2>
+          <h2 className="text-2xl font-bold">{t('dashboard:fieldMap.fieldMap')}</h2>
           <p className="text-muted-foreground">
-            View addresses in your assigned area on Google Maps
+            {t('dashboard:fieldMap.viewAddressesInArea')}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -268,7 +270,7 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
           {onClose && (
             <Button variant="outline" size="sm" onClick={onClose}>
               <X className="h-4 w-4 mr-2" />
-              Close
+              {t('dashboard:fieldMap.close')}
             </Button>
           )}
         </div>
@@ -276,9 +278,9 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
 
       {!isApiReady && (
         <Alert>
-          <AlertTitle>Map not configured</AlertTitle>
+          <AlertTitle>{t('dashboard:fieldMap.mapNotConfigured')}</AlertTitle>
           <AlertDescription>
-            Please add GOOGLE_MAPS_API_KEY in Supabase Edge Function Secrets to enable the map.
+            {t('dashboard:fieldMap.addGoogleMapsApiKey')}
           </AlertDescription>
         </Alert>
       )}
@@ -287,7 +289,7 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Layers className="h-5 w-5" />
-            Map Controls
+            {t('dashboard:fieldMap.mapControls')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -300,7 +302,7 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
               />
               <Label htmlFor="show-drafts" className="flex items-center gap-1">
                 <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                Show Drafts
+                {t('dashboard:fieldMap.showDrafts')}
               </Label>
             </div>
             
@@ -312,7 +314,7 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
               />
               <Label htmlFor="show-verified" className="flex items-center gap-1">
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                Show Verified
+                {t('dashboard:fieldMap.showVerified')}
               </Label>
             </div>
 
@@ -323,7 +325,7 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
               className="flex items-center gap-2"
             >
               <Navigation className="h-4 w-4" />
-              My Location
+              {t('dashboard:fieldMap.myLocation')}
             </Button>
 
             <Button 
@@ -333,7 +335,7 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
               className="flex items-center gap-2"
             >
               <Target className="h-4 w-4" />
-              Refresh
+              {t('dashboard:fieldMap.refresh')}
             </Button>
           </div>
         </CardContent>
@@ -351,7 +353,7 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Statistics</CardTitle>
+          <CardTitle>{t('dashboard:fieldMap.statistics')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
@@ -359,25 +361,25 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
               <div className="text-2xl font-bold text-yellow-600">
                 {addresses.filter(a => !a.verified || !a.public).length}
               </div>
-              <div className="text-sm text-muted-foreground">Drafts</div>
+              <div className="text-sm text-muted-foreground">{t('dashboard:fieldMap.drafts')}</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-green-600">
                 {addresses.filter(a => a.verified && a.public).length}
               </div>
-              <div className="text-sm text-muted-foreground">Verified</div>
+              <div className="text-sm text-muted-foreground">{t('dashboard:fieldMap.verified')}</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-blue-600">
                 {addresses.length}
               </div>
-              <div className="text-sm text-muted-foreground">Total</div>
+              <div className="text-sm text-muted-foreground">{t('dashboard:fieldMap.total')}</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-purple-600">
                 {geographicScope.length}
               </div>
-              <div className="text-sm text-muted-foreground">Regions</div>
+              <div className="text-sm text-muted-foreground">{t('dashboard:fieldMap.regions')}</div>
             </div>
           </div>
         </CardContent>

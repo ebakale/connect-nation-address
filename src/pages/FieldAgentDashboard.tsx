@@ -16,7 +16,7 @@ import Footer from '@/components/Footer';
 const FieldAgentDashboard = () => {
   const { role, loading, getGeographicScope } = useUserRole();
   const { user, signOut } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useTranslation(['dashboard', 'common']);
   const [captureOpen, setCaptureOpen] = useState(false);
   const [draftsOpen, setDraftsOpen] = useState(false);
   const [mapOpen, setMapOpen] = useState(false);
@@ -24,7 +24,7 @@ const FieldAgentDashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center">
-        <div className="text-lg">{t('loading')}</div>
+        <div className="text-lg">{t('common:loading')}</div>
       </div>
     );
   }
@@ -37,8 +37,8 @@ const FieldAgentDashboard = () => {
         <div className="mb-8">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">{t('fieldAgentDashboard')}</h1>
-              <p className="text-muted-foreground">{t('captureAndDraftAddresses')}</p>
+              <h1 className="text-3xl font-bold text-foreground mb-2">{t('dashboard:fieldAgent.dashboard')}</h1>
+              <p className="text-muted-foreground">{t('dashboard:fieldAgent.captureAndDraftAddresses')}</p>
               {geographicScope.length > 0 && (
                 <div className="flex gap-2 mt-2">
                   {geographicScope.map((scope) => (
@@ -53,7 +53,7 @@ const FieldAgentDashboard = () => {
               
               <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
                 <LogOut className="h-4 w-4" />
-                {t('logout')}
+                {t('common:logout')}
               </Button>
             </div>
           </div>
@@ -62,45 +62,45 @@ const FieldAgentDashboard = () => {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
           <Card className="min-w-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
-              <CardTitle className="text-xs font-medium truncate">{t('todaysCaptures')}</CardTitle>
+              <CardTitle className="text-xs font-medium truncate">{t('dashboard:fieldAgent.todaysCaptures')}</CardTitle>
               <Camera className="h-3 w-3 text-muted-foreground flex-shrink-0" />
             </CardHeader>
             <CardContent className="pb-2">
               <div className="text-lg font-bold">12</div>
-              <p className="text-xs text-muted-foreground truncate">{t('fromYesterday')}</p>
+              <p className="text-xs text-muted-foreground truncate">{t('dashboard:fieldAgent.fromYesterday')}</p>
             </CardContent>
           </Card>
 
           <Card className="min-w-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
-              <CardTitle className="text-xs font-medium truncate">{t('pendingDrafts')}</CardTitle>
+              <CardTitle className="text-xs font-medium truncate">{t('dashboard:fieldAgent.pendingDrafts')}</CardTitle>
               <Clock className="h-3 w-3 text-muted-foreground flex-shrink-0" />
             </CardHeader>
             <CardContent className="pb-2">
               <div className="text-lg font-bold">5</div>
-              <p className="text-xs text-muted-foreground truncate">{t('awaitingSubmission')}</p>
+              <p className="text-xs text-muted-foreground truncate">{t('dashboard:fieldAgent.awaitingSubmission')}</p>
             </CardContent>
           </Card>
 
           <Card className="min-w-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
-              <CardTitle className="text-xs font-medium truncate">{t('submitted')}</CardTitle>
+              <CardTitle className="text-xs font-medium truncate">{t('dashboard:fieldAgent.submitted')}</CardTitle>
               <CheckCircle className="h-3 w-3 text-muted-foreground flex-shrink-0" />
             </CardHeader>
             <CardContent className="pb-2">
               <div className="text-lg font-bold">147</div>
-              <p className="text-xs text-muted-foreground truncate">{t('thisMonth')}</p>
+              <p className="text-xs text-muted-foreground truncate">{t('dashboard:fieldAgent.thisMonth')}</p>
             </CardContent>
           </Card>
 
           <Card className="min-w-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
-              <CardTitle className="text-xs font-medium truncate">{t('accuracyRate')}</CardTitle>
+              <CardTitle className="text-xs font-medium truncate">{t('dashboard:fieldAgent.accuracyRate')}</CardTitle>
               <MapPin className="h-3 w-3 text-muted-foreground flex-shrink-0" />
             </CardHeader>
             <CardContent className="pb-2">
               <div className="text-lg font-bold">98.5%</div>
-              <p className="text-xs text-muted-foreground truncate">{t('verificationRate')}</p>
+              <p className="text-xs text-muted-foreground truncate">{t('dashboard:fieldAgent.verificationRate')}</p>
             </CardContent>
           </Card>
         </div>
@@ -110,24 +110,24 @@ const FieldAgentDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Camera className="h-5 w-5 text-primary" />
-                {t('captureNewAddress')}
+                {t('dashboard:fieldAgent.captureNewAddress')}
               </CardTitle>
               <CardDescription>
-                {t('createNewDraft')}
+                {t('dashboard:fieldAgent.createNewDraft')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Dialog open={captureOpen} onOpenChange={setCaptureOpen}>
                 <DialogTrigger asChild>
                   <Button className="w-full">
-                    {t('startCapture')}
+                    {t('dashboard:fieldAgent.startCapture')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>{t('captureNewAddressTitle')}</DialogTitle>
+                    <DialogTitle>{t('dashboard:fieldAgent.captureNewAddressTitle')}</DialogTitle>
                     <DialogDescription>
-                      {t('fillAddressDetails')}
+                      {t('dashboard:fieldAgent.fillAddressDetails')}
                     </DialogDescription>
                   </DialogHeader>
                   <AddressCaptureForm 
@@ -143,24 +143,24 @@ const FieldAgentDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5 text-primary" />
-                {t('myDrafts')}
+                {t('dashboard:fieldAgent.myDrafts')}
               </CardTitle>
               <CardDescription>
-                {t('reviewPendingDrafts')}
+                {t('dashboard:fieldAgent.reviewPendingDrafts')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Dialog open={draftsOpen} onOpenChange={setDraftsOpen}>
                 <DialogTrigger asChild>
                   <Button className="w-full" variant="outline">
-                    {t('viewDrafts')}
+                    {t('dashboard:fieldAgent.viewDrafts')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>{t('draftManagement')}</DialogTitle>
+                    <DialogTitle>{t('dashboard:fieldAgent.draftManagement')}</DialogTitle>
                     <DialogDescription>
-                      {t('reviewEditSubmit')}
+                      {t('dashboard:fieldAgent.reviewEditSubmit')}
                     </DialogDescription>
                   </DialogHeader>
                   <DraftManager onClose={() => setDraftsOpen(false)} />
@@ -173,24 +173,24 @@ const FieldAgentDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MapPin className="h-5 w-5 text-primary" />
-                {t('fieldMap')}
+                {t('dashboard:fieldAgent.fieldMap')}
               </CardTitle>
               <CardDescription>
-                {t('viewAssignedAreas')}
+                {t('dashboard:fieldAgent.viewAssignedAreas')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Dialog open={mapOpen} onOpenChange={setMapOpen}>
                 <DialogTrigger asChild>
                   <Button className="w-full" variant="outline">
-                    {t('openMap')}
+                    {t('dashboard:fieldAgent.openMap')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>{t('fieldMapTitle')}</DialogTitle>
+                    <DialogTitle>{t('dashboard:fieldAgent.fieldMapTitle')}</DialogTitle>
                     <DialogDescription>
-                      {t('viewAddressesProgress')}
+                      {t('dashboard:fieldAgent.viewAddressesProgress')}
                     </DialogDescription>
                   </DialogHeader>
                   <FieldMap onClose={() => setMapOpen(false)} />

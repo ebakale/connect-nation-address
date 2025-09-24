@@ -486,5 +486,7 @@
     "bulletSecureVerification": "Secure email verification",
     "bulletImmediateSearch": "Immediate access to search features",
     "bulletSubmitRequests": "Submit address registration requests"
-  }
+  },
+  "loading": "Loading...",
+  "logout": "Logout"
 }
