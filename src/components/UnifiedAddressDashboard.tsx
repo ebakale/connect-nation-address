@@ -46,7 +46,8 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
   const { t } = useTranslation(['dashboard', 'address', 'admin']);
   const { user } = useUnifiedAuth();
   const { 
-    isCitizen, 
+    isCitizen,
+    isFieldAgent,
     isVerifier, 
     isRegistrar, 
     hasAdminAccess, 
@@ -236,7 +237,10 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
             <Tabs defaultValue="search" className="space-y-4">
               <TabsList>
                 <TabsTrigger value="search">{t('address:searchAddresses')}</TabsTrigger>
-                <TabsTrigger value="requests">{t('dashboard:reviewRequests')}</TabsTrigger>
+                {/* Only show Review Requests tab for verifiers, registrars, and admins - not for field agents */}
+                {(isVerifier || isRegistrar || hasAdminAccess) && !isFieldAgent && (
+                  <TabsTrigger value="requests">{t('dashboard:reviewRequests')}</TabsTrigger>
+                )}
               </TabsList>
               <TabsContent value="search">
                 <div className="space-y-4">
@@ -250,18 +254,21 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
                   <AddressSearch />
                 </div>
               </TabsContent>
-              <TabsContent value="requests">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-lg font-semibold">{t('dashboard:addressRequestsReview')}</h3>
-                      <p className="text-sm text-muted-foreground">{t('dashboard:reviewManageCitizenRequests')}</p>
+              {/* Only render Review Requests content for authorized roles */}
+              {(isVerifier || isRegistrar || hasAdminAccess) && !isFieldAgent && (
+                <TabsContent value="requests">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold">{t('dashboard:addressRequestsReview')}</h3>
+                        <p className="text-sm text-muted-foreground">{t('dashboard:reviewManageCitizenRequests')}</p>
+                      </div>
+                      <Badge variant="outline">{t('dashboard:adminReview')}</Badge>
                     </div>
-                    <Badge variant="outline">{t('dashboard:adminReview')}</Badge>
+                    <AddressRequestStatus />
                   </div>
-                  <AddressRequestStatus />
-                </div>
-              </TabsContent>
+                </TabsContent>
+              )}
             </Tabs>
           </div>
         );
