@@ -243,5 +243,13 @@
   "lastUpdated": "Last Updated",
   "pageXOfY": "Page {{current}} of {{total}}",
   "underReview": "Under Review",
-  "completed": "Completed"
+  "completed": "Completed",
+  "getLocation": "Get Location",
+  "descriptionPlaceholder": "Describe any additional details about this address...",
+  "proofOfOwnership": "Proof of Ownership",
+  "proofOfOwnershipOptional": "Proof of Ownership (Optional)",
+  "uploadProofDocument": "Upload proof document (lease, deed, utility bill, etc.)",
+  "removeProof": "Remove proof",
+  "selectProofFile": "Select proof file",
+  "supportedFormats": "Supported formats: PDF, JPG, PNG (max 10MB)"
 }
