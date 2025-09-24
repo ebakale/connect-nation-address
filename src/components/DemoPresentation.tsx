@@ -274,23 +274,23 @@ const demoScenarios: DemoScenario[] = [
   },
   {
     id: 'verifier',
-    title: 'Dashboard de Verificación',
-    actor: 'Verificadores de Direcciones',
-    description: 'Sistema especializado para verificación y validación de solicitudes de direcciones con herramientas avanzadas',
+    title: 'Dashboard de Verificación NAR',
+    actor: 'Verificadores de Direcciones NAR',
+    description: 'Sistema especializado para verificación y validación de solicitudes de direcciones del Registro Nacional con herramientas avanzadas',
     features: [
-      'Cola de revisión de solicitudes pendientes',
+      'Cola de revisión de solicitudes pendientes del NAR',
       'Herramientas de verificación geográfica avanzadas',
       'Panel de aprobación/rechazo con justificación detallada',
       'Sistema de detección automática de duplicados',
       'Validación cruzada con bases de datos existentes',
       'Herramientas de análisis de calidad de fotografías',
       'Sistema de verificación por lotes',
-      'Reportes de calidad de datos y métricas',
+      'Reportes de calidad de datos y métricas NAR',
       'Integración con mapas satelitales para validación',
       'Historial completo de decisiones de verificación'
     ],
     workflow: [
-      'Acceso al panel de verificación especializado',
+      'Acceso al panel de verificación especializado NAR',
       'Revisión de cola de solicitudes pendientes',
       'Análisis detallado de cada solicitud con herramientas',
       'Verificación geoespacial usando mapas y coordenadas',
@@ -302,7 +302,7 @@ const demoScenarios: DemoScenario[] = [
       'Actualización de métricas de calidad'
     ],
     benefits: [
-      'Control de calidad garantizado en verificaciones',
+      'Control de calidad garantizado en verificaciones NAR',
       'Proceso de verificación estandarizado y trazable',
       'Reducción significativa de errores y duplicados',
       'Eficiencia en el procesamiento de solicitudes',
@@ -311,6 +311,57 @@ const demoScenarios: DemoScenario[] = [
     ],
     icon: <UserCheck className="h-6 w-6" />,
     color: 'bg-teal-500'
+  },
+  {
+    id: 'car',
+    title: 'Portal CAR - Registro Ciudadano',
+    actor: 'Ciudadanos y Verificadores CAR',
+    description: 'Módulo especializado para gestión de direcciones personales ciudadanas con verificación de residencia y propiedad',
+    features: [
+      'Gestión de registros de persona con identificación nacional',
+      'Declaración de direcciones primarias y secundarias personales',
+      'Sistema de verificación de residencia con documentos legales',
+      'Gestión de ocupación: propietario, inquilino, familia, otro',
+      'Control de vigencia temporal de direcciones',
+      'Seguimiento de estado: autodeclarado, confirmado, rechazado',
+      'Verificación automática con direcciones NAR verificadas',
+      'Cola de revisión manual para verificadores CAR',
+      'Auditoría completa de eventos y cambios',
+      'Permisos granulares por verificador CAR',
+      'Gestión de duplicados de registros de persona',
+      'Historial completo de direcciones por ciudadano',
+      'Integración con marco legal de cumplimiento',
+      'Verificación de documentos de propiedad/residencia',
+      'Sistema de consentimiento de privacidad'
+    ],
+    workflow: [
+      'Creación automática de registro de persona al autenticarse',
+      'Declaración de dirección primaria con UAC del NAR',
+      'Especificación de tipo de ocupación y alcance (edificio/unidad)',
+      'Validación automática si UAC existe en NAR verificado',
+      'Envío a cola de revisión manual si UAC no verificado',
+      'Verificación por car_verifier con documentos legales',
+      'Aprobación/rechazo con justificación documentada',
+      'Actualización de estado y notificación al ciudadano',
+      'Registro de eventos de auditoría para trazabilidad',
+      'Gestión de direcciones secundarias adicionales',
+      'Seguimiento de verificaciones de residencia pendientes',
+      'Acceso a historial completo de direcciones personales'
+    ],
+    benefits: [
+      'Registro personal completo de direcciones ciudadanas',
+      'Verificación formal de residencia y propiedad',
+      'Trazabilidad completa de historial de direcciones',
+      'Cumplimiento legal con documentación requerida',
+      'Separación clara entre registro nacional y personal',
+      'Validación automática con direcciones oficiales',
+      'Control granular de permisos por verificador',
+      'Auditoría completa para transparencia',
+      'Gestión de consentimiento de privacidad',
+      'Integración seamless con verificaciones NAR'
+    ],
+    icon: <Users className="h-6 w-6" />,
+    color: 'bg-indigo-500'
   }
 ];
 
@@ -695,7 +746,7 @@ export const DemoPresentation: React.FC = () => {
               {/* Roles Administrativos */}
               <div>
                 <h3 className="text-lg font-semibold mb-3 text-primary">Roles Administrativos</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <Card className="border-blue-200">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-base">Administrador del Sistema (admin)</CardTitle>
@@ -725,6 +776,22 @@ export const DemoPresentation: React.FC = () => {
                       <div>
                         <span className="text-xs font-medium text-green-600">Permisos:</span>
                         <p className="text-xs">Supervisión nacional, Gestión de registradores, Políticas nacionales</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-indigo-200">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Administrador CAR (car_admin)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Administrador del Registro Ciudadano de Direcciones</p>
+                      <div>
+                        <span className="text-xs font-medium text-blue-600">Portales:</span>
+                        <p className="text-xs">Portal CAR administrativo, Dashboard de calidad CAR</p>
+                      </div>
+                      <div>
+                        <span className="text-xs font-medium text-green-600">Permisos:</span>
+                        <p className="text-xs">Gestión de verificadores CAR, Métricas de calidad, Políticas de residencia</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -786,31 +853,39 @@ export const DemoPresentation: React.FC = () => {
                 </div>
               </div>
 
-              {/* Roles de Registro */}
+              {/* Roles de Registro NAR */}
               <div>
-                <h3 className="text-lg font-semibold mb-3 text-green-600">Roles de Registro</h3>
+                <h3 className="text-lg font-semibold mb-3 text-green-600">Roles de Registro NAR</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <Card className="border-green-200">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-base">Registrador (registrar)</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
-                      <p className="text-sm text-muted-foreground">Gestión del registro por territorio</p>
+                      <p className="text-sm text-muted-foreground">Gestión del registro nacional por territorio</p>
                       <div>
                         <span className="text-xs font-medium text-blue-600">Portal:</span>
-                        <p className="text-xs">Consola de registro</p>
+                        <p className="text-xs">Consola de registro NAR</p>
+                      </div>
+                      <div>
+                        <span className="text-xs font-medium text-green-600">Permisos:</span>
+                        <p className="text-xs">Publicación de direcciones, Gestión territorial, Analíticas de cobertura</p>
                       </div>
                     </CardContent>
                   </Card>
                   <Card className="border-green-200">
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-base">Verificador (verifier)</CardTitle>
+                      <CardTitle className="text-base">Verificador NAR (verifier)</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
-                      <p className="text-sm text-muted-foreground">Verificación de solicitudes</p>
+                      <p className="text-sm text-muted-foreground">Verificación de solicitudes del registro nacional</p>
                       <div>
                         <span className="text-xs font-medium text-blue-600">Portal:</span>
-                        <p className="text-xs">Dashboard de verificación</p>
+                        <p className="text-xs">Dashboard de verificación NAR</p>
+                      </div>
+                      <div>
+                        <span className="text-xs font-medium text-green-600">Permisos:</span>
+                        <p className="text-xs">Validación geoespacial, Aprobación/rechazo, Control de calidad</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -823,6 +898,65 @@ export const DemoPresentation: React.FC = () => {
                       <div>
                         <span className="text-xs font-medium text-blue-600">Portal:</span>
                         <p className="text-xs">App de campo móvil</p>
+                      </div>
+                      <div>
+                        <span className="text-xs font-medium text-green-600">Permisos:</span>
+                        <p className="text-xs">Captura GPS, Fotografía georreferenciada, Trabajo offline</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Roles CAR */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-indigo-600">Roles CAR (Registro Ciudadano)</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card className="border-indigo-200">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Verificador CAR (car_verifier)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Verificación especializada de direcciones ciudadanas</p>
+                      <div>
+                        <span className="text-xs font-medium text-blue-600">Portal:</span>
+                        <p className="text-xs">Dashboard CAR especializado</p>
+                      </div>
+                      <div>
+                        <span className="text-xs font-medium text-green-600">Permisos:</span>
+                        <p className="text-xs">Revisión de direcciones ciudadanas, Verificación de residencia, Gestión de estatus</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-indigo-200">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Verificador de Residencia (residency_verifier)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Verificación de documentos de residencia y propiedad</p>
+                      <div>
+                        <span className="text-xs font-medium text-blue-600">Portal:</span>
+                        <p className="text-xs">Portal de verificación de residencia</p>
+                      </div>
+                      <div>
+                        <span className="text-xs font-medium text-green-600">Permisos:</span>
+                        <p className="text-xs">Validación de documentos, Verificación legal, Consentimientos de privacidad</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-indigo-200">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Administrador CAR (car_admin)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Gestión completa del módulo CAR</p>
+                      <div>
+                        <span className="text-xs font-medium text-blue-600">Portal:</span>
+                        <p className="text-xs">Dashboard administrativo CAR</p>
+                      </div>
+                      <div>
+                        <span className="text-xs font-medium text-green-600">Permisos:</span>
+                        <p className="text-xs">Gestión de permisos, Métricas de calidad, Fusión de duplicados</p>
                       </div>
                     </CardContent>
                   </Card>
