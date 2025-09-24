@@ -83,26 +83,43 @@ const demoScenarios: DemoScenario[] = [
     id: 'police',
     title: 'Dashboard Policial',
     actor: 'Oficiales de Policía',
-    description: 'Sistema de gestión de incidentes y comunicaciones operativas',
+    description: 'Sistema integral de gestión operativa policial con múltiples roles y funcionalidades especializadas',
     features: [
-      'Mapa en tiempo real de incidentes',
+      'Mapa en tiempo real de incidentes activos',
       'Sistema de comunicaciones entre unidades',
-      'Gestión de estado de oficiales',
+      'Gestión de estado de oficiales y unidades',
+      'Panel de despacho y asignación de recursos',
       'Seguimiento de tiempos de respuesta',
-      'Reportes de actividad'
+      'Sistema de respaldo (backup) entre unidades',
+      'Analíticas avanzadas y reportes de rendimiento',
+      'Gestión administrativa de usuarios y unidades',
+      'Dashboard de liderazgo para supervisores',
+      'Panel de coordinación para áreas geográficas',
+      'Estado operativo y sesiones de operadores',
+      'Notificaciones y alertas en tiempo real'
     ],
     workflow: [
-      'Login con credenciales policiales',
-      'Visualización del mapa de incidentes activos',
-      'Asignación automática de incidentes',
-      'Comunicación con central y otras unidades',
-      'Actualización de estado del incidente'
+      'Autenticación con credenciales policiales',
+      'Inicialización automática de sesión operativa',
+      'Visualización del dashboard según rol (Operador/Despachador/Supervisor/Admin)',
+      'Monitoreo del mapa de incidentes activos por ciudad asignada',
+      'Asignación automática o manual de incidentes a unidades',
+      'Comunicación bidireccional con unidades en campo',
+      'Solicitud y gestión de respaldo entre unidades',
+      'Actualización de estado de incidentes en tiempo real',
+      'Análisis de rendimiento y generación de reportes',
+      'Administración de personal y configuración del sistema'
     ],
     benefits: [
+      'Coordinación eficiente entre roles policiales',
       'Respuesta más rápida a emergencias',
-      'Mejor coordinación entre unidades',
+      'Mejor asignación de recursos según ubicación',
+      'Comunicación mejorada entre unidades',
       'Seguimiento completo de operaciones',
-      'Optimización de recursos'
+      'Análisis de rendimiento para mejora continua',
+      'Gestión centralizada de personal y equipos',
+      'Optimización de recursos policiales',
+      'Transparencia operativa y trazabilidad'
     ],
     icon: <Shield className="h-6 w-6" />,
     color: 'bg-red-500'
