@@ -50,18 +50,17 @@ export const AddressRequestStatus = () => {
 
     setLoading(true);
     try {
-      // Use a more specific select to avoid type issues
-      const response = await supabase
+      const { data, error } = await supabase
         .from('address_requests')
         .select('id, country, region, city, street, building, latitude, longitude, address_type, description, justification, status, reviewer_notes, created_at, updated_at')
-        .eq('user_id', user.id)
+        .eq('requester_id', user.id)
         .order('created_at', { ascending: false });
       
-      if (response.error) {
-        throw response.error;
+      if (error) {
+        throw error;
       }
       
-      setRequests(response.data as AddressRequestData[]);
+      setRequests(data || []);
     } catch (error) {
       console.error('Error fetching address requests:', error);
       toast({

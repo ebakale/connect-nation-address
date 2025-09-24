@@ -232,5 +232,16 @@
     "uacCopied": "UAC copied to clipboard",
     "coordinatesCopied": "Coordinates copied to clipboard",
     "addressInfoCopied": "Address information copied to clipboard"
-  }
+  },
+  "loading": "Loading...",
+  "refresh": "Refresh",
+  "yourAddressRequests": "Your Address Requests",
+  "noRequests": "No Address Requests",
+  "noRequestsDescription": "You haven't submitted any address requests yet.",
+  "requestDetails": "Request Details",
+  "justification": "Justification",
+  "lastUpdated": "Last Updated",
+  "pageXOfY": "Page {{current}} of {{total}}",
+  "underReview": "Under Review",
+  "completed": "Completed"
 }
