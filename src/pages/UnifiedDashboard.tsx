@@ -694,7 +694,7 @@ const UnifiedDashboard = () => {
                 <SidebarTrigger className="-ml-1 shrink-0" />
                 <div className="min-w-0 flex-1">
                   <h1 className="text-lg font-semibold leading-tight whitespace-nowrap truncate">{getViewTitle()}</h1>
-                  <p className="text-sm text-muted-foreground leading-tight whitespace-nowrap overflow-hidden text-ellipsis max-w-full">{getViewDescription()}</p>
+                  
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
