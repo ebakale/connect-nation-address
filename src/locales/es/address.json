@@ -850,7 +850,6 @@
     "government_issued_id": "Identificación Gubernamental",
     "government_id": "ID Gubernamental",
     "other": "Otro"
-  }
   },
   "getLocation": "Obtener Ubicación",
   "descriptionPlaceholder": "Describe detalles adicionales sobre esta dirección...",
