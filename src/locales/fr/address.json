@@ -933,5 +933,7 @@
   "aiAnalysisComments.lowQualityData": "Données de faible qualité détectées",
   "aiAnalysisComments.highConfidenceRating": "Cote de haute confiance attribuée",
   "aiAnalysisComments.moderateConfidenceRating": "Cote de confiance modérée attribuée",
-  "aiAnalysisComments.lowConfidenceRating": "Cote de faible confiance attribuée"
+  "aiAnalysisComments.lowConfidenceRating": "Cote de faible confiance attribuée",
+  "approve": "Approuver",
+  "reject": "Rejeter"
 }

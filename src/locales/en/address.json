@@ -497,5 +497,6 @@
   "edit": "Edit",
   "autoVerifying": "Auto Verifying...",
   "verifying": "Verifying...",
-  "autoVerify": "Auto Verify"
+  "autoVerify": "Auto Verify",
+  "reject": "Reject"
 }
