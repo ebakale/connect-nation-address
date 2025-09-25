@@ -98,6 +98,7 @@ const UnifiedDashboard = () => {
     isFieldAgent, 
     isVerifier, 
     isRegistrar,
+    isCARVerifier,
     getGeographicScope,
     hasAdminAccess,
     canCreateDraftAddress,
@@ -118,10 +119,12 @@ const UnifiedDashboard = () => {
     if (!loading) {
       if (isPoliceRole) {
         navigate('/police', { replace: true });
+      } else if (isCARVerifier) {
+        navigate('/car-verifier-dashboard', { replace: true });
       }
-      // All addressing-related roles now stay on unified dashboard
+      // All other addressing-related roles stay on unified dashboard
     }
-  }, [loading, isPoliceRole, navigate]);
+  }, [loading, isPoliceRole, isCARVerifier, navigate]);
 
   // Stats state
   const [stats, setStats] = useState<DashboardStats>({
