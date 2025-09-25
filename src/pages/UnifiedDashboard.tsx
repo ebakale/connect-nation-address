@@ -51,8 +51,9 @@ import { ResidencyVerificationManager } from "@/components/ResidencyVerification
 import { ResidencyVerificationDashboard } from "@/components/ResidencyVerificationDashboard";
 import { UserVerificationRequests } from "@/components/UserVerificationRequests";
 import { CitizenAddressPortal } from "@/components/CitizenAddressPortal";
-import { CitizenAddressVerificationManager } from "@/components/CitizenAddressVerificationManager";
-import CARAdministrativeOverview from "@/components/CARAdministrativeOverview";
+import { CARVerificationInterface } from "@/components/CARVerificationInterface";
+import { CARAddressOverview } from "@/components/CARAddressOverview";
+import { ResidencyVerificationPanel } from "@/components/ResidencyVerificationPanel";
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
 import { UnifiedAddressDashboard } from "@/components/UnifiedAddressDashboard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -651,6 +652,20 @@ const UnifiedDashboard = () => {
           </div>
         );
 
+      case 'address-search':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:addressSearch')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:searchNationalRegistry')}</p>
+              </div>
+              <Badge variant="outline">{t('dashboard:narPublicAccess')}</Badge>
+            </div>
+            <AddressSearch />
+          </div>
+        );
+
       case 'address-data':
         return (
           <div className="max-w-6xl">
@@ -792,9 +807,7 @@ const UnifiedDashboard = () => {
               </div>
               <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
             </div>
-            <div className="p-6 bg-muted rounded-lg">
-              <p className="text-center">CAR Verification Interface - Coming Soon</p>
-            </div>
+            <CARVerificationInterface />
           </div>
         );
 
@@ -808,7 +821,7 @@ const UnifiedDashboard = () => {
               </div>
               <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
             </div>
-            <ResidencyVerificationManager />
+            <ResidencyVerificationPanel />
           </div>
         );
 
@@ -822,9 +835,7 @@ const UnifiedDashboard = () => {
               </div>
               <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
             </div>
-            <div className="p-6 bg-muted rounded-lg">
-              <p className="text-center">CAR Addresses Overview - Coming Soon</p>
-            </div>
+            <CARAddressOverview />
           </div>
         );
 
@@ -844,12 +855,10 @@ const UnifiedDashboard = () => {
                 <TabsTrigger value="addresses">{t('dashboard:administrativeOverview')}</TabsTrigger>
               </TabsList>
               <TabsContent value="verification">
-                <ResidencyVerificationManager />
+                <ResidencyVerificationPanel />
               </TabsContent>
               <TabsContent value="addresses">
-                <div className="p-6 bg-muted rounded-lg">
-                  <p className="text-center">CAR Addresses Overview - Coming Soon</p>
-                </div>
+                <CARAddressOverview />
               </TabsContent>
             </Tabs>
           </div>
@@ -885,9 +894,7 @@ const UnifiedDashboard = () => {
                 </div>
               </TabsContent>
               <TabsContent value="overview">
-                <div className="p-6 bg-muted rounded-lg">
-                  <p className="text-center">CAR Addresses Overview - Coming Soon</p>
-                </div>
+                <CARAddressOverview />
               </TabsContent>
             </Tabs>
           </div>
