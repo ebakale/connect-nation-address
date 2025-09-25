@@ -222,7 +222,7 @@ export const useUserRole = () => {
   };
   
   // Verification and publishing permissions
-  const canVerifyAddresses = role === 'verifier' || hasRegistrarAccess;
+  const canVerifyAddresses = role === 'verifier' || role === 'car_verifier' || role === 'residency_verifier' || hasRegistrarAccess || hasCARVerificationAccess;
   const canPublishAddresses = hasRegistrarAccess;
   const canRetireAddresses = hasRegistrarAccess;
   const canOverrideDecisions = hasNDAAAccess; // Only NDAA can override decisions
