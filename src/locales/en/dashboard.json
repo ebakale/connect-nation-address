@@ -503,5 +503,17 @@
   "myAddressesCar": "My Addresses (CAR)",
   "residencyVerificationManagerDesc": "Manage and review residency verification requests from citizens",
   "myVerificationRequestsDesc": "View and edit your residency verification requests. Upload new documents and track status changes.",
-  "myAddressesCarDesc": "Manage your citizen addresses in the Citizen Address Repository (CAR). Set primary and secondary addresses."
+  "myAddressesCarDesc": "Manage your citizen addresses in the Citizen Address Repository (CAR). Set primary and secondary addresses.",
+  "carVerifierWelcomeMessage": "Welcome, CAR Verifier. You can verify citizen address declarations, manage residency verifications, and oversee CAR address quality.",
+  "carAdminWelcomeMessage": "Welcome, CAR Administrator. You have full access to CAR system management, analytics, and configuration.",
+  "verifyCarAddresses": "Verify citizen address declarations and manage CAR verification workflows",
+  "carVerifier": "CAR Verifier",
+  "manageResidencyVerifications": "Manage residency verification requests and documentation",
+  "manageCarAddresses": "Manage and oversee citizen address repository",
+  "carAnalytics": "CAR Analytics",
+  "carAnalyticsDescription": "View CAR system analytics, quality metrics, and performance data",
+  "qualityMetrics": "Quality Metrics",
+  "carQualityMetrics": "CAR Quality Metrics",
+  "trackCarSystemQuality": "Track and monitor CAR system quality and performance",
+  "qualityMetricsPlaceholder": "Quality metrics dashboard will display system performance data here."
 }

@@ -328,8 +328,11 @@ export const useUserRole = () => {
     // CAR role checks
     isCARAdmin,
     isCARVerifier,
+    isCarVerifier: isCARVerifier, // Alias for compatibility
+    isCarAdmin: isCARAdmin, // Alias for compatibility
     isResidencyVerifier,
     hasCARAccess,
+    hasCarAccess: hasCARAccess, // Alias for compatibility
     // Police role checks
     isPoliceOperator,
     isPoliceSupervisor,

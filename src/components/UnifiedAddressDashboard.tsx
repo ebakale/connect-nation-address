@@ -49,10 +49,13 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     isCitizen,
     isFieldAgent,
     isVerifier, 
-    isRegistrar, 
+    isRegistrar,
+    isCarVerifier,
+    isCarAdmin, 
     hasAdminAccess, 
     hasNDAAAccess,
     hasSystemAdminAccess,
+    hasCarAccess,
     isPoliceRole 
   } = useUserRole();
 
@@ -61,19 +64,51 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
 
   // Define tabs based on user role
   const getAvailableTabs = () => {
+    const tabs = [];
+
+    // All users get address search
+    tabs.push({ id: 'search', label: t('address:searchAddresses'), icon: Search });
 
     if (isCitizen) {
-      return [
-        { id: 'search', label: t('address:searchAddresses'), icon: Search },
+      tabs.push(
         { id: 'my-addresses', label: t('dashboard:myAddressesCAR'), icon: Home },
         { id: 'requests', label: t('dashboard:addressRequests'), icon: FileText },
         { id: 'verification-requests', label: t('dashboard:myVerifications'), icon: UserCheck }
-      ];
+      );
     }
 
-    return [
-      { id: 'search', label: t('address:searchAddresses'), icon: Search }
-    ];
+    // CAR Verifier specific tabs
+    if (isCarVerifier) {
+      tabs.push(
+        { id: 'car-verification', label: t('dashboard:carVerification'), icon: UserCheck },
+        { id: 'residency-verification', label: t('dashboard:residencyVerification'), icon: Shield },
+        { id: 'car-addresses', label: t('dashboard:carAddresses'), icon: Database }
+      );
+    }
+
+    // CAR Admin specific tabs
+    if (isCarAdmin || hasAdminAccess) {
+      tabs.push(
+        { id: 'car-admin', label: t('dashboard:carAdministration'), icon: Settings },
+        { id: 'car-analytics', label: t('dashboard:carAnalytics'), icon: BarChart3 }
+      );
+    }
+
+    // NAR Admin tabs for registrars and admins
+    if (isRegistrar || hasAdminAccess) {
+      tabs.push(
+        { id: 'nar-admin', label: t('dashboard:narAdministration'), icon: Building2 }
+      );
+    }
+
+    // System integration tab for admins
+    if (hasAdminAccess) {
+      tabs.push(
+        { id: 'integration', label: t('dashboard:systemIntegration'), icon: Network }
+      );
+    }
+
+    return tabs;
   };
 
   const availableTabs = getAvailableTabs();
@@ -142,6 +177,84 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
               <Badge variant="outline">{t('dashboard:carVerification')}</Badge>
             </div>
             <UserVerificationRequests />
+          </div>
+        );
+
+      case 'car-verification':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:carVerification')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:verifyCarAddresses')}</p>
+              </div>
+              <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
+            </div>
+            <CitizenAddressVerificationManager />
+          </div>
+        );
+
+      case 'residency-verification':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:residencyVerification')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:manageResidencyVerifications')}</p>
+              </div>
+              <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
+            </div>
+            <ResidencyVerificationManager />
+          </div>
+        );
+
+      case 'car-addresses':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:carAddresses')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:manageCarAddresses')}</p>
+              </div>
+              <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
+            </div>
+            <CARAdministrativeOverview />
+          </div>
+        );
+
+      case 'car-analytics':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:carAnalytics')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:carAnalyticsDescription')}</p>
+              </div>
+              <Badge variant="outline">{t('dashboard:carAdmin')}</Badge>
+            </div>
+            <Tabs defaultValue="metrics" className="space-y-4">
+              <TabsList>
+                <TabsTrigger value="metrics">{t('dashboard:qualityMetrics')}</TabsTrigger>
+                <TabsTrigger value="overview">{t('dashboard:overview')}</TabsTrigger>
+              </TabsList>
+              <TabsContent value="metrics">
+                <div className="grid gap-6">
+                  {/* Quality metrics would go here */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>{t('dashboard:carQualityMetrics')}</CardTitle>
+                      <CardDescription>{t('dashboard:trackCarSystemQuality')}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-muted-foreground">{t('dashboard:qualityMetricsPlaceholder')}</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+              <TabsContent value="overview">
+                <CARAdministrativeOverview />
+              </TabsContent>
+            </Tabs>
           </div>
         );
 
@@ -262,7 +375,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold">{t('dashboard:narCarIntegration')}</h2>
+                <h2 className="text-2xl font-bold">{t('dashboard:systemIntegration')}</h2>
                 <p className="text-muted-foreground">{t('dashboard:monitorManageSystemIntegration')}</p>
               </div>
               <Badge variant="outline">{t('dashboard:systemIntegration')}</Badge>
@@ -294,12 +407,30 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
         )}
       </div>
 
-      {/* Citizen Welcome Message */}
-      {isCitizen && !hasAdminAccess && !isVerifier && !isRegistrar && (
+      {/* Welcome Messages */}
+      {isCitizen && !hasAdminAccess && !isVerifier && !isRegistrar && !isCarVerifier && !isCarAdmin && (
         <Alert>
           <Home className="h-4 w-4" />
           <AlertDescription>
             {t('dashboard:citizenWelcomeMessage')}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {isCarVerifier && (
+        <Alert>
+          <Shield className="h-4 w-4" />
+          <AlertDescription>
+            {t('dashboard:carVerifierWelcomeMessage')}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {isCarAdmin && (
+        <Alert>
+          <Settings className="h-4 w-4" />
+          <AlertDescription>
+            {t('dashboard:carAdminWelcomeMessage')}
           </AlertDescription>
         </Alert>
       )}
