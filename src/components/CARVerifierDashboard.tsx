@@ -29,7 +29,11 @@ interface CARMetrics {
   addressesRequiringReview: number;
 }
 
-export function CARVerifierDashboard() {
+interface CARVerifierDashboardProps {
+  onRegisterNavigate?: (navigateTo: (pageId: string) => void) => void;
+}
+
+export function CARVerifierDashboard({ onRegisterNavigate }: CARVerifierDashboardProps) {
   const { t } = useTranslation(['admin', 'common']);
   const { toast } = useToast();
   const { hasCARAccess, hasCARVerificationAccess, hasCARManagementAccess, isResidencyVerifier } = useUserRole();
@@ -46,6 +50,34 @@ export function CARVerifierDashboard() {
   });
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+
+  // Expose navigation mapping to parent layout sidebar
+  useEffect(() => {
+    if (!onRegisterNavigate) return;
+    const navigateTo = (pageId: string) => {
+      switch (pageId) {
+        case 'dashboard':
+          setActiveTab('overview');
+          break;
+        case 'analytics':
+          setActiveTab('quality');
+          break;
+        case 'admin':
+        case 'search':
+          setActiveTab('verification');
+          break;
+        case 'manage':
+          setActiveTab('management');
+          break;
+        case 'add':
+          setActiveTab('residency');
+          break;
+        default:
+          setActiveTab('overview');
+      }
+    };
+    onRegisterNavigate(navigateTo);
+  }, [onRegisterNavigate]);
 
   useEffect(() => {
     if (hasCARAccess) {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import { CARVerifierDashboard } from '@/components/CARVerifierDashboard';
 import { useUserRole } from '@/hooks/useUserRole';
@@ -7,6 +7,8 @@ import { Shield } from 'lucide-react';
 
 export default function CARVerifierDashboardPage() {
   const { hasCARAccess, loading } = useUserRole();
+  const [currentPage, setCurrentPage] = useState<string>('dashboard');
+  const [navigateFn, setNavigateFn] = useState<((pageId: string) => void) | null>(null);
 
   if (loading) {
     return (
@@ -40,9 +42,9 @@ export default function CARVerifierDashboardPage() {
   }
 
   return (
-    <Layout>
+    <Layout currentPage={currentPage} onNavigate={(id) => { setCurrentPage(id); navigateFn?.(id); }}>
       <div className="container mx-auto px-4 py-8">
-        <CARVerifierDashboard />
+        <CARVerifierDashboard onRegisterNavigate={(fn) => setNavigateFn(() => fn)} />
       </div>
     </Layout>
   );
