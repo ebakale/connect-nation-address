@@ -488,5 +488,6 @@
     "bulletSubmitRequests": "Submit address registration requests"
   },
   "loading": "Loading...",
-  "logout": "Logout"
+  "logout": "Logout",
+  "address": "Address"
 }

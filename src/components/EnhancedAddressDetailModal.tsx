@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
+import { SaveLocationButton } from "@/components/SaveLocationButton";
 import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 import { useEnhancedGeolocation } from '@/hooks/useEnhancedGeolocation';
 import { supabase } from '@/integrations/supabase/client';
@@ -406,6 +407,23 @@ Shared from Equatorial Guinea Address Portal`;
                   <ExternalLink className="h-3 w-3 mr-1" />
                   {t('common:viewOnGoogleMaps')}
                 </Button>
+
+                <SaveLocationButton
+                  latitude={address.latitude}
+                  longitude={address.longitude}
+                  uac={address.uac}
+                  defaultName={address.street || `${address.street}, ${address.city}`}
+                  addressComponents={{
+                    street: address.street,
+                    city: address.city,
+                    region: address.region,
+                    country: address.country,
+                    building: address.building
+                  }}
+                  className="w-full h-8 text-xs"
+                  variant="outline"
+                  size="sm"
+                />
               </CardContent>
             </Card>
 

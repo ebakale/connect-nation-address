@@ -486,5 +486,6 @@
     "bulletSecureVerification": "Verificación de correo segura",
     "bulletImmediateSearch": "Acceso inmediato a funciones de búsqueda",
     "bulletSubmitRequests": "Enviar solicitudes de registro de direcciones"
-  }
+  },
+  "address": "Dirección"
 }

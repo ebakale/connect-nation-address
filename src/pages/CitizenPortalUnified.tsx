@@ -27,6 +27,7 @@ import Footer from '@/components/Footer';
 
 // CAR components for personal address management
 import { SetPrimaryAddressForm } from "@/components/SetPrimaryAddressForm";
+import { SavedLocationsManager } from "@/components/SavedLocationsManager";
 import { AddSecondaryAddressForm } from "@/components/AddSecondaryAddressForm";
 
 interface SearchResult {
@@ -147,7 +148,7 @@ const CitizenPortalUnified = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-6">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7">
             <TabsTrigger value="public" className="flex items-center gap-2">
               <Search className="h-4 w-4" />
               <span className="hidden sm:inline">Search</span>
@@ -161,6 +162,10 @@ const CitizenPortalUnified = () => {
                 <TabsTrigger value="addresses" className="flex items-center gap-2">
                   <Home className="h-4 w-4" />
                   <span className="hidden sm:inline">My Addresses</span>
+                </TabsTrigger>
+                <TabsTrigger value="saved" className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  <span className="hidden sm:inline">Saved</span>
                 </TabsTrigger>
                 <TabsTrigger value="verification" className="flex items-center gap-2">
                   <FileCheck className="h-4 w-4" />
@@ -429,6 +434,13 @@ const CitizenPortalUnified = () => {
                   </CardContent>
                 </Card>
               </div>
+            </TabsContent>
+          )}
+
+          {/* Saved Locations Tab (authenticated only) */}
+          {isAuthenticated && (
+            <TabsContent value="saved" className="space-y-6">
+              <SavedLocationsManager />
             </TabsContent>
           )}
 
