@@ -492,6 +492,7 @@
   "aiAnalysisComments.moderateConfidenceRating": "Moderate confidence rating assigned",
   "aiAnalysisComments.lowConfidenceRating": "Low confidence rating assigned",
   "approving": "Approving...",
+  "approve": "Approve",
   "editAndApprove": "Edit & Approve",
   "edit": "Edit",
   "autoVerifying": "Auto Verifying...",
