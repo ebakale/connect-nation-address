@@ -57,7 +57,7 @@ export function ResidencyVerificationPanel() {
       const { data: verificationsData, error: verificationsError } = await supabase
         .from('residency_ownership_verifications')
         .select('*')
-        .order('submitted_at', { ascending: false });
+        .order('created_at', { ascending: false });
 
       if (verificationsError) throw verificationsError;
 
