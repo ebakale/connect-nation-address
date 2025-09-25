@@ -30,6 +30,10 @@ import { CitizenAddressVerificationManager } from './CitizenAddressVerificationM
 import { ResidencyVerificationManager } from './ResidencyVerificationManager';
 import { UserVerificationRequests } from './UserVerificationRequests';
 import { CARAdministrativeOverview } from './CARAdministrativeOverview';
+import { CARVerificationQueue } from './CARVerificationQueue';
+import { CARResidencyVerification } from './CARResidencyVerification';
+import { CARDataValidation } from './CARDataValidation';
+import { CARAuditDocumentation } from './CARAuditDocumentation';
 
 // Import shared components
 import AddressSearch from './AddressSearch';
@@ -275,7 +279,22 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
               </div>
               <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
             </div>
-            <CitizenAddressVerificationManager />
+            <Tabs defaultValue="queue" className="space-y-4">
+              <TabsList>
+                <TabsTrigger value="queue">Verification Queue</TabsTrigger>
+                <TabsTrigger value="validation">Data Validation</TabsTrigger>
+                <TabsTrigger value="audit">Audit Trail</TabsTrigger>
+              </TabsList>
+              <TabsContent value="queue">
+                <CARVerificationQueue />
+              </TabsContent>
+              <TabsContent value="validation">
+                <CARDataValidation />
+              </TabsContent>
+              <TabsContent value="audit">
+                <CARAuditDocumentation />
+              </TabsContent>
+            </Tabs>
           </div>
         );
 
@@ -289,7 +308,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
               </div>
               <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
             </div>
-            <ResidencyVerificationManager />
+            <CARResidencyVerification />
           </div>
         );
 
