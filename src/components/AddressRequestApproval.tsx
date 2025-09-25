@@ -624,7 +624,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                 <Button
                   onClick={() => handleApprove(request.id)}
                   disabled={processing === request.id || autoVerifying === request.id}
-                  className="w-full text-xs"
+                  className="flex items-center justify-center w-full text-xs whitespace-nowrap min-w-fit"
                 >
                   {processing === request.id ? t('approving') : t('approve')}
                 </Button>
@@ -642,35 +642,35 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                   variant="outline"
                   onClick={() => handleReject(request)}
                   disabled={processing === request.id || autoVerifying === request.id}
-                  className="w-full text-xs"
+                  className="flex items-center justify-center w-full text-xs whitespace-nowrap min-w-fit"
                 >
                   {t('reject')}
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => handleViewOnMap(request)}
-                  className="flex items-center justify-center gap-1 w-full text-xs"
+                  className="flex items-center justify-center gap-1 w-full text-xs whitespace-nowrap min-w-fit"
                 >
                   <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">{t('viewOnMap')}</span>
-                  <span className="sm:hidden">{t('map')}</span>
+                  <span className="hidden sm:inline text-xs">{t('viewOnMap')}</span>
+                  <span className="sm:hidden text-xs">{t('map')}</span>
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => handleAutoVerify(request.id)}
                   disabled={processing === request.id || autoVerifying === request.id}
-                  className="flex items-center justify-center gap-1 w-full"
+                  className="flex items-center justify-center gap-1 w-full text-xs whitespace-nowrap min-w-fit"
                 >
                   {autoVerifying === request.id ? (
                     <>
                       <Zap className="h-3 w-3 sm:h-4 sm:w-4 animate-pulse" />
-                      <span className="hidden sm:inline">{t('autoVerifying')}</span>
-                      <span className="sm:hidden">{t('verifying')}</span>
+                      <span className="hidden sm:inline text-xs">{t('autoVerifying')}</span>
+                      <span className="sm:hidden text-xs">{t('verifying')}</span>
                     </>
                    ) : (
                      <>
                        <Zap className="h-3 w-3 sm:h-4 sm:w-4" />
-                       <span className="hidden md:inline text-xs whitespace-normal break-words">{t('autoVerify')}</span>
+                       <span className="hidden md:inline text-xs whitespace-nowrap">{t('autoVerify')}</span>
                        <span className="md:hidden text-xs">{t('verifying')}</span>
                      </>
                    )}
