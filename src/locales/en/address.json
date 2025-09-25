@@ -367,5 +367,8 @@
   "verified": "Verified",
   "unverified": "Unverified",
   "public": "Public",
-  "private": "Private"
+  "private": "Private",
+  "verificationQueue": "Verification Queue",
+  "reviewAndVerifyPending": "Review and verify pending address requests",
+  "close": "Close"
 }

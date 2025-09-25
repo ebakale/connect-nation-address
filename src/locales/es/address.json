@@ -960,5 +960,8 @@
   "skipForNow": "Omitir por Ahora",
   "educational": "Educativo",
   "healthcare": "Salud",
-  "other": "Otro"
+  "other": "Otro",
+  "verificationQueue": "Cola de Verificación",
+  "reviewAndVerifyPending": "Revisar y verificar solicitudes de direcciones pendientes",
+  "close": "Cerrar"
 }

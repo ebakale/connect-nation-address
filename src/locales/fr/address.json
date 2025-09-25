@@ -810,5 +810,8 @@
   "skipForNow": "Ignorer pour l'Instant",
   "educational": "Éducatif",
   "healthcare": "Santé",
-  "other": "Autre"
+  "other": "Autre",
+  "verificationQueue": "File de Vérification",
+  "reviewAndVerifyPending": "Examiner et vérifier les demandes d'adresses en attente",
+  "close": "Fermer"
 }
