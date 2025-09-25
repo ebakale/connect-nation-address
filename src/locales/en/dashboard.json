@@ -133,6 +133,20 @@
     "previous": "Previous",
     "next": "Next"
   },
+  "roles": {
+    "admin": "Administrator",
+    "ndaa_admin": "NDAA Administrator", 
+    "car_verifier": "CAR Verifier",
+    "car_admin": "CAR Administrator",
+    "registrar": "Registrar",
+    "verifier": "Verifier",
+    "field_agent": "Field Agent",
+    "citizen": "Citizen",
+    "police_operator": "Police Operator",
+    "police_supervisor": "Police Supervisor",
+    "police_dispatcher": "Police Dispatcher",
+    "police_admin": "Police Administrator"
+  },
   "title": "Dashboard",
   "overview": "Overview",
   "systemOverview": "System Overview",

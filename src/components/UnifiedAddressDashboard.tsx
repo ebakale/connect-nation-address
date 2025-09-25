@@ -15,6 +15,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useUnifiedAuth } from "@/hooks/useUnifiedAuth";
 import { useTranslation } from 'react-i18next';
 import { supabase } from "@/integrations/supabase/client";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Import NAR components
 import { VerificationTools } from './VerificationTools';
@@ -46,6 +47,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
   const { t } = useTranslation(['dashboard', 'address', 'admin']);
   const { user } = useUnifiedAuth();
   const { 
+    role,
     isCitizen,
     isFieldAgent,
     isVerifier, 
@@ -59,17 +61,70 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     isPoliceRole 
   } = useUserRole();
 
-  const [activeTab, setActiveTab] = useState(isCitizen ? 'search' : 'search');
+  // Multi-role support
+  const [activeRole, setActiveRole] = useState<string>(role || 'citizen');
+  const [availableRoles, setAvailableRoles] = useState<string[]>([]);
 
+  // Fetch all user roles when component mounts
+  useEffect(() => {
+    const fetchAllUserRoles = async () => {
+      if (!user?.id) return;
 
-  // Define tabs based on user role
+      try {
+        const { data: roleData, error } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id);
+
+        if (!error && roleData) {
+          const roles = roleData.map(r => r.role);
+          setAvailableRoles(roles);
+          
+          // If user has car_verifier role and no active role is set to CAR, prioritize car_verifier
+          if (roles.includes('car_verifier') && activeRole !== 'car_verifier') {
+            setActiveRole('car_verifier');
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching user roles:', error);
+      }
+    };
+
+    fetchAllUserRoles();
+  }, [user?.id]);
+
+  // Update active role when role changes
+  useEffect(() => {
+    if (role && !activeRole) {
+      setActiveRole(role);
+    }
+  }, [role]);
+
+  // Set default tab based on active role
+  const getDefaultTab = () => {
+    const currentRole = activeRole || role;
+    if (currentRole === 'car_verifier') return 'car-verification';
+    if (currentRole === 'car_admin') return 'car-admin';
+    return 'search';
+  };
+
+  const [activeTab, setActiveTab] = useState(getDefaultTab());
+
+  // Update active tab when active role changes
+  useEffect(() => {
+    setActiveTab(getDefaultTab());
+  }, [activeRole, role]);
+
+  // Define tabs based on active role
   const getAvailableTabs = () => {
     const tabs = [];
+    const currentRole = activeRole || role;
 
     // All users get address search
     tabs.push({ id: 'search', label: t('address:searchAddresses'), icon: Search });
 
-    if (isCitizen) {
+    // Role-specific tabs based on current active role
+    if (currentRole === 'citizen') {
       tabs.push(
         { id: 'my-addresses', label: t('dashboard:myAddressesCAR'), icon: Home },
         { id: 'requests', label: t('dashboard:addressRequests'), icon: FileText },
@@ -78,7 +133,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     }
 
     // CAR Verifier specific tabs
-    if (isCarVerifier) {
+    if (currentRole === 'car_verifier') {
       tabs.push(
         { id: 'car-verification', label: t('dashboard:carVerification'), icon: UserCheck },
         { id: 'residency-verification', label: t('dashboard:residencyVerification'), icon: Shield },
@@ -87,22 +142,24 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     }
 
     // CAR Admin specific tabs
-    if (isCarAdmin || hasAdminAccess) {
+    if (currentRole === 'car_admin') {
       tabs.push(
         { id: 'car-admin', label: t('dashboard:carAdministration'), icon: Settings },
-        { id: 'car-analytics', label: t('dashboard:carAnalytics'), icon: BarChart3 }
+        { id: 'car-analytics', label: t('dashboard:carAnalytics'), icon: BarChart3 },
+        { id: 'car-verification', label: t('dashboard:carVerification'), icon: UserCheck },
+        { id: 'residency-verification', label: t('dashboard:residencyVerification'), icon: Shield }
       );
     }
 
     // NAR Admin tabs for registrars and admins
-    if (isRegistrar || hasAdminAccess) {
+    if (currentRole === 'registrar' || currentRole === 'ndaa_admin' || currentRole === 'admin') {
       tabs.push(
         { id: 'nar-admin', label: t('dashboard:narAdministration'), icon: Building2 }
       );
     }
 
     // System integration tab for admins
-    if (hasAdminAccess) {
+    if (currentRole === 'ndaa_admin' || currentRole === 'admin') {
       tabs.push(
         { id: 'integration', label: t('dashboard:systemIntegration'), icon: Network }
       );
@@ -400,15 +457,34 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
             {t('dashboard:integratedNARCARDescription')}
           </p>
         </div>
-        {onClose && (
-          <Button variant="outline" onClick={onClose}>
-            {t('dashboard:close')}
-          </Button>
-        )}
+        <div className="flex items-center gap-4">
+          {availableRoles.length > 1 && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">Switch Role:</span>
+              <Select value={activeRole} onValueChange={setActiveRole}>
+                <SelectTrigger className="w-48">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableRoles.map((roleOption) => (
+                    <SelectItem key={roleOption} value={roleOption}>
+                      {t(`dashboard:roles.${roleOption}`, roleOption.replace('_', ' '))}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+          {onClose && (
+            <Button variant="outline" onClick={onClose}>
+              {t('dashboard:close')}
+            </Button>
+          )}
+        </div>
       </div>
 
-      {/* Welcome Messages */}
-      {isCitizen && !hasAdminAccess && !isVerifier && !isRegistrar && !isCarVerifier && !isCarAdmin && (
+      {/* Welcome Messages based on active role */}
+      {activeRole === 'citizen' && (
         <Alert>
           <Home className="h-4 w-4" />
           <AlertDescription>
@@ -417,7 +493,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
         </Alert>
       )}
 
-      {isCarVerifier && (
+      {activeRole === 'car_verifier' && (
         <Alert>
           <Shield className="h-4 w-4" />
           <AlertDescription>
@@ -426,7 +502,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
         </Alert>
       )}
 
-      {isCarAdmin && (
+      {activeRole === 'car_admin' && (
         <Alert>
           <Settings className="h-4 w-4" />
           <AlertDescription>
