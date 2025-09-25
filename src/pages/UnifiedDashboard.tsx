@@ -296,8 +296,6 @@ const UnifiedDashboard = () => {
       case 'field-drafts': return t('dashboard:myDrafts');
       case 'field-map': return t('dashboard:fieldMap');
       case 'verification-queue': return t('dashboard:verificationQueue');
-      case 'publishing-queue': return t('dashboard:publishingQueue');
-      case 'unpublishing-queue': return t('dashboard:unpublishingQueue');
       case 'analytics': return t('dashboard:analytics');
       case 'province-management': return t('dashboard:provinceManagement');
       case 'verification-tools': return t('dashboard:verificationTools');
@@ -322,8 +320,6 @@ const UnifiedDashboard = () => {
       case 'field-drafts': return t('dashboard:reviewPendingDrafts');
       case 'field-map': return t('dashboard:viewAssignedAreas');
       case 'verification-queue': return t('dashboard:verificationQueueDescription');
-      case 'publishing-queue': return t('dashboard:publishingQueueDescription');
-      case 'unpublishing-queue': return t('dashboard:unpublishingQueueDescription');
       case 'analytics': return t('dashboard:analyticsDescription');
       case 'province-management': return t('dashboard:provinceManagementDescription');
       case 'verification-tools': return t('dashboard:verificationToolsDescription');
@@ -604,20 +600,6 @@ const UnifiedDashboard = () => {
         return (
           <div className="max-w-6xl">
             <AddressVerificationQueue />
-          </div>
-        );
-
-      case 'publishing-queue':
-        return (
-          <div className="max-w-6xl">
-            <AddressPublishingQueue />
-          </div>
-        );
-
-      case 'unpublishing-queue':
-        return (
-          <div className="max-w-6xl">
-            <AddressUnpublishingQueue />
           </div>
         );
 

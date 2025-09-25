@@ -148,25 +148,18 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       onClick: () => handleItemClick('emergency-contacts'),
       visible: true
     },
-    // Address and verification management
+    // Verification management (verifier-specific)
     {
-      id: 'address-data',
-      title: t('addressData'),
-      icon: FileCheck,
-      onClick: () => handleItemClick('address-data'),
-      visible: hasAdminAccess || canVerifyAddresses || canPublishAddresses
-    },
-    {
-      id: 'province-management',
-      title: t('provinceManagement'),
-      icon: MapPin,
-      onClick: () => handleItemClick('province-management'),
-      visible: hasAdminAccess
+      id: 'verification-queue',
+      title: t('verificationQueue'),
+      icon: CheckCircle,
+      onClick: () => handleItemClick('verification-queue'),
+      visible: canVerifyAddresses || hasAdminAccess
     },
     {
       id: 'verification-tools',
       title: t('verificationTools'),
-      icon: CheckCircle,
+      icon: AlertCircle,
       onClick: () => handleItemClick('verification-tools'),
       visible: canVerifyAddresses || hasAdminAccess
     },
@@ -175,7 +168,22 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       title: t('residencyVerificationManager'),
       icon: UserCheck,
       onClick: () => handleItemClick('residency-verification-manager'),
-      visible: hasAdminAccess || canVerifyAddresses
+      visible: canVerifyAddresses || hasAdminAccess
+    },
+    // Admin-only management
+    {
+      id: 'address-data',
+      title: t('addressData'),
+      icon: FileCheck,
+      onClick: () => handleItemClick('address-data'),
+      visible: hasAdminAccess
+    },
+    {
+      id: 'province-management',
+      title: t('provinceManagement'),
+      icon: MapPin,
+      onClick: () => handleItemClick('province-management'),
+      visible: hasAdminAccess
     },
     // Citizen-specific items
     {
@@ -209,8 +217,12 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     ['analytics', 'admin-panel'].includes(item.id)
   );
   
+  const verificationItems = visibleItems.filter(item => 
+    ['verification-queue', 'verification-tools', 'residency-verification-manager'].includes(item.id)
+  );
+  
   const managementItems = visibleItems.filter(item => 
-    ['address-data', 'province-management', 'verification-tools', 'residency-verification-manager'].includes(item.id)
+    ['address-data', 'province-management'].includes(item.id)
   );
   
   const settingsItems = visibleItems.filter(item => 
@@ -278,6 +290,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
         {/* Navigation Groups */}
         {renderMenuGroup(mainItems, t('main'))}
         {renderMenuGroup(fieldItems, t('fieldWork'))}
+        {renderMenuGroup(verificationItems, t('verification'))}
         {renderMenuGroup(adminItems, t('administration'))}
         {renderMenuGroup(managementItems, t('management'))}
         {renderMenuGroup(settingsItems, t('settings'))}

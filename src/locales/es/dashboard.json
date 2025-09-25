@@ -208,6 +208,7 @@
   "main": "Principal",
   "workflow": "Flujo de Trabajo",
   "management": "Gestión",
+  "verification": "Verificación",
   "administration": "Administración",
   "settings": "Configuración",
   "searchPlaceholder": "Buscar por dirección, código UAC o punto de referencia...",

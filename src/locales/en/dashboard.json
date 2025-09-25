@@ -209,6 +209,7 @@
   "main": "Main",
   "workflow": "Workflow", 
   "management": "Management",
+  "verification": "Verification",
   "administration": "Administration",
   "settings": "Settings",
   "searchPlaceholder": "Search by address, UAC code, or landmark...",
