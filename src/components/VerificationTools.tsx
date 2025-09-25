@@ -766,96 +766,6 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                         </CardContent>
                       </Card>
 
-                      {/* Photo Quality Assessment */}
-                      {selectedAddress.photo_url && (
-                        <div className="border rounded-lg p-4 space-y-3">
-                          <h3 className="font-medium flex items-center gap-2">
-                            <Camera className="h-4 w-4" />
-                            {t('admin:photoQualityAssessment')}
-                          </h3>
-                          
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <img 
-                                src={selectedAddress.photo_url} 
-                                alt="Address photo" 
-                                className="w-full h-32 object-cover rounded border"
-                              />
-                              <Button
-                                size="sm"
-                                className="w-full"
-                                onClick={async () => {
-                                  try {
-                                    const { data, error } = await supabase.functions.invoke('analyze-photo-quality', {
-                                      body: {
-                                        imageUrl: selectedAddress.photo_url,
-                                        expectedLocation: {
-                                          latitude: selectedAddress.latitude,
-                                          longitude: selectedAddress.longitude
-                                        }
-                                      }
-                                    });
-
-                                    if (error) throw error;
-                                    
-                                    setPhotoAnalysis({
-                                      resolution: `${data.resolution.width}x${data.resolution.height}`,
-                                      quality: data.overallScore,
-                                      hasAddressVisible: data.content.hasBuilding || data.content.hasStreetSign,
-                                      gpsMatch: data.metadata.hasGPS && data.metadata.coordinates.latitude
-                                    });
-                                    
-                                    toast({
-                                      title: "Photo Analysis Complete",
-                                      description: `Quality: ${data.overallScore}% | ${data.resolution.width}x${data.resolution.height}`,
-                                    });
-                                  } catch (error) {
-                                    console.error('Photo analysis failed:', error);
-                                    toast({
-                                      title: "Analysis Failed", 
-                                      description: "Could not analyze photo quality. Please try again.",
-                                      variant: "destructive",
-                                    });
-                                  }
-                                }}
-                              >
-                                <Eye className="h-4 w-4 mr-2" />
-                                {t('admin:analyzePhoto')}
-                              </Button>
-                            </div>
-                            
-                            {photoAnalysis && (
-                              <div className="space-y-3">
-                                <div className="grid grid-cols-2 gap-2 text-sm">
-                                  <div className="p-2 bg-muted rounded">
-                                    <div className="font-medium">{t('admin:resolution')}</div>
-                                    <div className="text-muted-foreground">{photoAnalysis.resolution}</div>
-                                  </div>
-                                  <div className="p-2 bg-muted rounded">
-                                    <div className="font-medium">{t('admin:quality')}</div>
-                                    <div className="text-muted-foreground">{photoAnalysis.quality}%</div>
-                                  </div>
-                                </div>
-                                
-                                <div className="space-y-1">
-                                  <div className="flex items-center gap-2 text-sm">
-                                    <div className={`w-2 h-2 rounded-full ${photoAnalysis.hasAddressVisible ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                                    {t('admin:addressNumberVisible')}
-                                  </div>
-                                  <div className="flex items-center gap-2 text-sm">
-                                    <div className={`w-2 h-2 rounded-full ${photoAnalysis.gpsMatch ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                                    {t('admin:gpsCoordinatesMatch')}
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                     </div>
-
-                    {/* Right Column - Verification Actions */}
-                    <div className="space-y-4">
                       {/* Verification Actions */}
                       <Card>
                         <CardHeader className="pb-3">
@@ -982,6 +892,97 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                           </Button>
                         </CardContent>
                       </Card>
+
+                      {/* Photo Quality Assessment */}
+                      {selectedAddress.photo_url && (
+                        <div className="border rounded-lg p-4 space-y-3">
+                          <h3 className="font-medium flex items-center gap-2">
+                            <Camera className="h-4 w-4" />
+                            {t('admin:photoQualityAssessment')}
+                          </h3>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <img 
+                                src={selectedAddress.photo_url} 
+                                alt="Address photo" 
+                                className="w-full h-32 object-cover rounded border"
+                              />
+                              <Button
+                                size="sm"
+                                className="w-full"
+                                onClick={async () => {
+                                  try {
+                                    const { data, error } = await supabase.functions.invoke('analyze-photo-quality', {
+                                      body: {
+                                        imageUrl: selectedAddress.photo_url,
+                                        expectedLocation: {
+                                          latitude: selectedAddress.latitude,
+                                          longitude: selectedAddress.longitude
+                                        }
+                                      }
+                                    });
+
+                                    if (error) throw error;
+                                    
+                                    setPhotoAnalysis({
+                                      resolution: `${data.resolution.width}x${data.resolution.height}`,
+                                      quality: data.overallScore,
+                                      hasAddressVisible: data.content.hasBuilding || data.content.hasStreetSign,
+                                      gpsMatch: data.metadata.hasGPS && data.metadata.coordinates.latitude
+                                    });
+                                    
+                                    toast({
+                                      title: "Photo Analysis Complete",
+                                      description: `Quality: ${data.overallScore}% | ${data.resolution.width}x${data.resolution.height}`,
+                                    });
+                                  } catch (error) {
+                                    console.error('Photo analysis failed:', error);
+                                    toast({
+                                      title: "Analysis Failed", 
+                                      description: "Could not analyze photo quality. Please try again.",
+                                      variant: "destructive",
+                                    });
+                                  }
+                                }}
+                              >
+                                <Eye className="h-4 w-4 mr-2" />
+                                {t('admin:analyzePhoto')}
+                              </Button>
+                            </div>
+                            
+                            {photoAnalysis && (
+                              <div className="space-y-3">
+                                <div className="grid grid-cols-2 gap-2 text-sm">
+                                  <div className="p-2 bg-muted rounded">
+                                    <div className="font-medium">{t('admin:resolution')}</div>
+                                    <div className="text-muted-foreground">{photoAnalysis.resolution}</div>
+                                  </div>
+                                  <div className="p-2 bg-muted rounded">
+                                    <div className="font-medium">{t('admin:quality')}</div>
+                                    <div className="text-muted-foreground">{photoAnalysis.quality}%</div>
+                                  </div>
+                                </div>
+                                
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-2 text-sm">
+                                    <div className={`w-2 h-2 rounded-full ${photoAnalysis.hasAddressVisible ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                                    {t('admin:addressNumberVisible')}
+                                  </div>
+                                  <div className="flex items-center gap-2 text-sm">
+                                    <div className={`w-2 h-2 rounded-full ${photoAnalysis.gpsMatch ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                                    {t('admin:gpsCoordinatesMatch')}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                     </div>
+
+                    {/* Right Column - Verification Actions */}
+                    <div className="space-y-4">
                     </div>
                   </div>
                 </CardContent>
