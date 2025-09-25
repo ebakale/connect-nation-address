@@ -109,10 +109,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     if (isVerifier || isRegistrar) {
       return [
         ...baseTabs,
-        { id: 'search', label: t('address:searchAddresses'), icon: Search },
-        { id: 'verification', label: t('dashboard:addressVerification'), icon: CheckCircle },
-        { id: 'car-verification', label: t('dashboard:citizenVerification'), icon: UserCheck },
-        { id: 'queue-management', label: t('dashboard:queueManagement'), icon: Clock }
+        { id: 'search', label: t('address:searchAddresses'), icon: Search }
       ];
     }
 
@@ -209,17 +206,6 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
               </Button>
 
 
-              {(isVerifier || isRegistrar) && (
-                <Button 
-                  variant="outline" 
-                  className="h-auto p-4 flex flex-col items-center gap-2"
-                  onClick={() => setActiveTab('verification')}
-                >
-                  <CheckCircle className="h-6 w-6" />
-                  <span>{t('dashboard:verification')}</span>
-                  <span className="text-xs text-muted-foreground">{t('dashboard:reviewQueue')}</span>
-                </Button>
-              )}
             </div>
           </div>
         );
@@ -230,46 +216,19 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold">{t('dashboard:addressManagement')}</h2>
-                <p className="text-muted-foreground">{t('dashboard:searchAddressesManageRequests')}</p>
+                <p className="text-muted-foreground">{t('dashboard:searchNationalRegistry')}</p>
               </div>
-              <Badge variant="outline">{t('dashboard:addressManagement')}</Badge>
+              <Badge variant="outline">{t('dashboard:narPublicAccess')}</Badge>
             </div>
-            <Tabs defaultValue="search" className="space-y-4">
-              <TabsList>
-                <TabsTrigger value="search">{t('address:searchAddresses')}</TabsTrigger>
-                {/* Only show Review Requests tab for verifiers, registrars, and admins - not for field agents */}
-                {(isVerifier || isRegistrar || hasAdminAccess) && !isFieldAgent && (
-                  <TabsTrigger value="requests">{t('dashboard:reviewRequests')}</TabsTrigger>
-                )}
-              </TabsList>
-              <TabsContent value="search">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-lg font-semibold">{t('dashboard:addressSearch')}</h3>
-                      <p className="text-sm text-muted-foreground">{t('dashboard:searchNationalRegistry')}</p>
-                    </div>
-                    <Badge variant="outline">{t('dashboard:narPublicAccess')}</Badge>
-                  </div>
-                  <AddressSearch />
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold">{t('dashboard:addressSearch')}</h3>
+                  <p className="text-sm text-muted-foreground">{t('dashboard:searchNationalRegistry')}</p>
                 </div>
-              </TabsContent>
-              {/* Only render Review Requests content for authorized roles */}
-              {(isVerifier || isRegistrar || hasAdminAccess) && !isFieldAgent && (
-                <TabsContent value="requests">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="text-lg font-semibold">{t('dashboard:addressRequestsReview')}</h3>
-                        <p className="text-sm text-muted-foreground">{t('dashboard:reviewManageCitizenRequests')}</p>
-                      </div>
-                      <Badge variant="outline">{t('dashboard:adminReview')}</Badge>
-                    </div>
-                    <AddressRequestStatus />
-                  </div>
-                </TabsContent>
-              )}
-            </Tabs>
+              </div>
+              <AddressSearch />
+            </div>
           </div>
         );
 
@@ -354,62 +313,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           </div>
         );
 
-      case 'verification':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">{t('dashboard:addressVerification')}</h2>
-                <p className="text-muted-foreground">{t('dashboard:reviewVerifyNARSubmissions')}</p>
-              </div>
-              <Badge variant="outline">{t('dashboard:narVerification')}</Badge>
-            </div>
-            <VerificationTools />
-          </div>
-        );
 
-      case 'car-verification':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">{t('dashboard:citizenVerification')}</h2>
-                <p className="text-muted-foreground">{t('dashboard:reviewCitizenResidencyRequests')}</p>
-              </div>
-              <Badge variant="outline">{t('dashboard:carVerification')}</Badge>
-            </div>
-            <ResidencyVerificationManager />
-          </div>
-        );
-
-      case 'queue-management':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">{t('dashboard:queueManagement')}</h2>
-                <p className="text-muted-foreground">{t('dashboard:manageVerificationPublishingQueues')}</p>
-              </div>
-              <Badge variant="outline">{t('dashboard:narQueues')}</Badge>
-            </div>
-            <Tabs defaultValue="verification" className="space-y-4">
-              <TabsList>
-                <TabsTrigger value="verification">{t('dashboard:verificationQueue')}</TabsTrigger>
-                <TabsTrigger value="publishing">{t('dashboard:publishingQueue')}</TabsTrigger>
-                <TabsTrigger value="unpublishing">{t('dashboard:unpublishingQueue')}</TabsTrigger>
-              </TabsList>
-              <TabsContent value="verification">
-                <AddressVerificationQueue />
-              </TabsContent>
-              <TabsContent value="publishing">
-                <AddressPublishingQueue />
-              </TabsContent>
-              <TabsContent value="unpublishing">
-                <AddressUnpublishingQueue />
-              </TabsContent>
-            </Tabs>
-          </div>
-        );
 
       case 'nar-admin':
         return (
