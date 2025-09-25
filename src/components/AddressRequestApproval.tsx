@@ -430,7 +430,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                 <Calendar className="h-3 w-3" />
                 <span>{t('submittedOn', { date: new Date(request.created_at).toLocaleDateString() })}</span>
                 <User className="h-3 w-3 ml-4" />
-                <span>{t('userId', { id: request.user_id.slice(0, 8) })}</span>
+                <span>{t('userId', { id: request.user_id ? request.user_id.slice(0, 8) : 'N/A' })}</span>
               </div>
 
               {request.photo_url && (
