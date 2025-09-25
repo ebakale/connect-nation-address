@@ -584,5 +584,52 @@
   "qualityMetrics": "Quality Metrics",
   "carQualityMetrics": "CAR Quality Metrics",
   "trackCarSystemQuality": "Track and monitor CAR system quality and performance",
-  "qualityMetricsPlaceholder": "Quality metrics dashboard will display system performance data here."
+  "qualityMetricsPlaceholder": "Quality metrics dashboard will display system performance data here.",
+  
+  // Additional CAR Verifier Dashboard keys
+  "carVerifierDashboard": "CAR Verifier Dashboard",
+  "carVerifierDescription": "Verify citizen address declarations, manage residency documents, and track verification metrics",
+  "reviewPendingVerifications": "Review pending verifications",
+  "manageResidencyDocuments": "Manage residency verification documents",
+  "documentVerification": "Document Verification",
+  "viewCarAddressData": "View CAR address data",
+  "carData": "CAR Data",
+  "viewVerificationMetrics": "View verification metrics",
+  "awaitingReview": "Awaiting review",
+  "verifiedToday": "Verified Today",
+  "addressesProcessed": "Addresses processed",
+  "flaggedItems": "Flagged Items",
+  "requiresAttention": "Requires attention",
+  "averageProcessingTime": "Average processing time",
+  "perVerification": "per verification",
+  "verificationAnalytics": "Verification Analytics",
+  "trackVerificationMetrics": "Track verification metrics over time",
+  "weeklyVerificationTrend": "Weekly Verification Trend",
+  "verificationVolumeOverTime": "Verification volume over time",
+  "verificationAccuracyRate": "Verification Accuracy Rate",
+  "accuracyMetrics": "Accuracy metrics",
+  "accuracyThisMonth": "Accuracy this month",
+  "regionDistribution": "Region Distribution",
+  "verificationsByRegion": "Verifications by region",
+  "latestVerificationActions": "Latest verification actions",
+  "addressVerified": "Address verified",
+  "documentFlagged": "Document flagged",
+  "residencyConfirmed": "Residency confirmed",
+
+  // Common toasts used in CAR components
+  "error": "Error",
+  "success": "Success",
+  "failedToLoadAddresses": "Failed to load addresses",
+  "addressStatusUpdated": "Address status updated",
+  "failedToUpdateStatus": "Failed to update status",
+
+  // CAR Verification Queue/Interface helpers
+  "searchByUACOrAddress": "Search by UAC or address",
+  "tryAdjustingFilters": "Try adjusting your filters to see more results.",
+  "reviewAddress": "Review Address",
+  "verificationNotes": "Verification Notes",
+  "addNotesAboutVerification": "Add notes about this verification",
+  "confirm": "Confirm",
+  "addressDetails": "Address Details",
+  "effectiveFrom": "Effective From"
 }
