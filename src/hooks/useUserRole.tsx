@@ -194,7 +194,6 @@ export const useUserRole = () => {
   
   const canCreateDraftAddress = 
     role === 'field_agent' || 
-    hasVerifierAccess || // Verifiers can create for corrections
     role === 'data_steward' || // Data stewards can create test sandboxes
     role === 'support'; // Support can create for troubleshooting
   
