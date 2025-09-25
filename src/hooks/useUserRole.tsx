@@ -41,16 +41,10 @@ export const useUserRole = () => {
 
       try {
         setLoading(true);
-        // Fetch user roles and metadata (user can have multiple roles)
+        // Fetch user roles first (simple query)
         const { data: roleData, error: roleError } = await supabase
           .from('user_roles')
-          .select(`
-            role,
-            user_role_metadata!fk_user_role_metadata_user_role(
-              scope_type,
-              scope_value
-            )
-          `)
+          .select('role')
           .eq('user_id', user.id);
 
         if (roleError) {
@@ -81,9 +75,8 @@ export const useUserRole = () => {
           
           setRole(highestRole as UserRole);
           
-          // Collect all metadata from all roles
-          const allMetadata = roleData.flatMap(r => r.user_role_metadata || []);
-          setRoleMetadata(allMetadata as RoleMetadata[]);
+          // Set metadata to empty for now (can be fetched separately if needed)
+          setRoleMetadata([]);
         } else {
           // Only set to citizen if we don't have a cached role
           if (!role) {
