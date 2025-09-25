@@ -62,7 +62,10 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     isPropertyClaimant,
     isVerifier, 
     isRegistrar,
+    isCarVerifier,
+    isCarAdmin,
     hasAdminAccess,
+    hasCarAccess,
     canCreateDraftAddress,
     canVerifyAddresses,
     canPublishAddresses
@@ -76,7 +79,53 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     }
   };
 
-  const navigationItems: NavigationItem[] = [
+  // CAR Verifier navigation items
+  const carNavigationItems: NavigationItem[] = [
+    {
+      id: 'overview',
+      title: t('dashboardOverview'),
+      icon: Home,
+      onClick: () => handleItemClick('overview'),
+      visible: true
+    },
+    {
+      id: 'car-verification',
+      title: t('carVerification'),
+      icon: UserCheck,
+      onClick: () => handleItemClick('car-verification'),
+      visible: isCarVerifier || isCarAdmin
+    },
+    {
+      id: 'residency-verification',
+      title: t('residencyVerification'),
+      icon: Shield,
+      onClick: () => handleItemClick('residency-verification'),
+      visible: isCarVerifier || isCarAdmin
+    },
+    {
+      id: 'car-addresses',
+      title: t('carAddresses'),
+      icon: MapPin,
+      onClick: () => handleItemClick('car-addresses'),
+      visible: isCarVerifier || isCarAdmin
+    },
+    {
+      id: 'car-admin',
+      title: t('carAdministration'),
+      icon: Settings,
+      onClick: () => handleItemClick('car-admin'),
+      visible: isCarAdmin
+    },
+    {
+      id: 'car-analytics',
+      title: t('carAnalytics'),
+      icon: BarChart3,
+      onClick: () => handleItemClick('car-analytics'),
+      visible: isCarAdmin
+    }
+  ];
+
+  const standardNavigationItems: NavigationItem[] = [
     {
       id: 'overview',
       title: t('dashboardOverview'),
@@ -202,9 +251,88 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     }
   ];
 
+  // Use CAR navigation if user is CAR verifier/admin, otherwise use standard
+  const navigationItems = (isCarVerifier || isCarAdmin) ? carNavigationItems : standardNavigationItems;
+
   const visibleItems = navigationItems.filter(item => item.visible);
 
-  // Group items by category
+  // Group items by category for CAR users
+  if (isCarVerifier || isCarAdmin) {
+    const carMainItems = visibleItems.filter(item => 
+      ['overview'].includes(item.id)
+    );
+    
+    const carVerificationItems = visibleItems.filter(item => 
+      ['car-verification', 'residency-verification', 'car-addresses'].includes(item.id)
+    );
+    
+    const carAdminItems = visibleItems.filter(item => 
+      ['car-admin', 'car-analytics'].includes(item.id)
+    );
+
+    const renderCARMenuGroup = (items: NavigationItem[], label: string) => {
+      if (items.length === 0) return null;
+      
+      return (
+        <SidebarGroup>
+          <SidebarGroupLabel>{!collapsed && label}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {items.map((item) => (
+                <SidebarMenuItem key={item.id}>
+                  <SidebarMenuButton
+                    onClick={item.onClick}
+                    className={cn(
+                      "w-full justify-start transition-colors",
+                      "hover:bg-accent hover:text-accent-foreground",
+                      collapsed ? "px-2" : "px-3"
+                    )}
+                  >
+                    <item.icon className={cn("shrink-0", collapsed ? "h-5 w-5" : "h-4 w-4 mr-2")} />
+                    {!collapsed && (
+                      <span className="flex-1 text-left">{item.title}</span>
+                    )}
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      );
+    };
+
+    return (
+      <Sidebar className={cn("border-r bg-background", collapsed ? "w-16" : "w-60")}>
+        <SidebarContent className="gap-0">
+          {/* Header */}
+          {!collapsed && (
+            <div className="p-4 border-b">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-primary/10 rounded-lg">
+                  <img 
+                    src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" 
+                    alt="BIAKAM Logo" 
+                    className="h-6 w-auto" 
+                  />
+                </div>
+                <div>
+                  <h2 className="font-semibold text-sm">CAR Dashboard</h2>
+                  <p className="text-xs text-muted-foreground">{isCarAdmin ? t('carAdmin') : t('carVerifier')}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* CAR Navigation Groups */}
+          {renderCARMenuGroup(carMainItems, t('main'))}
+          {renderCARMenuGroup(carVerificationItems, t('verification'))}
+          {renderCARMenuGroup(carAdminItems, t('administration'))}
+        </SidebarContent>
+      </Sidebar>
+    );
+  }
+
+  // Standard groups for other users
   const mainItems = visibleItems.filter(item => 
     ['overview', 'unified-address-dashboard'].includes(item.id)
   );

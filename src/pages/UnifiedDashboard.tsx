@@ -51,8 +51,11 @@ import { ResidencyVerificationManager } from "@/components/ResidencyVerification
 import { ResidencyVerificationDashboard } from "@/components/ResidencyVerificationDashboard";
 import { UserVerificationRequests } from "@/components/UserVerificationRequests";
 import { CitizenAddressPortal } from "@/components/CitizenAddressPortal";
+import { CitizenAddressVerificationManager } from "@/components/CitizenAddressVerificationManager";
+import { CARAdministrativeOverview } from "@/components/CARAdministrativeOverview";
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
 import { UnifiedAddressDashboard } from "@/components/UnifiedAddressDashboard";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 interface SearchResult {
   uac: string;
   readable: string;
@@ -157,7 +160,7 @@ const UnifiedDashboard = () => {
   // Auto-open CAR dashboard for CAR roles
   useEffect(() => {
     if (!loading && (isCarVerifier || isCarAdmin)) {
-      setActiveView('unified-address-dashboard');
+      setActiveView('car-verification');
     }
   }, [loading, isCarVerifier, isCarAdmin]);
 
@@ -776,6 +779,109 @@ const UnifiedDashboard = () => {
         return (
           <div className="max-w-6xl">
             <CitizenAddressPortal />
+          </div>
+        );
+
+      case 'car-verification':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:carVerification')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:verifyCarAddresses')}</p>
+              </div>
+              <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
+            </div>
+            <CitizenAddressVerificationManager />
+          </div>
+        );
+
+      case 'residency-verification':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:residencyVerification')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:manageResidencyVerifications')}</p>
+              </div>
+              <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
+            </div>
+            <ResidencyVerificationManager />
+          </div>
+        );
+
+      case 'car-addresses':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:carAddresses')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:manageCarAddresses')}</p>
+              </div>
+              <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
+            </div>
+            <CARAdministrativeOverview />
+          </div>
+        );
+
+      case 'car-admin':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:carAdministration')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:manageCitizenAddressRepository')}</p>
+              </div>
+              <Badge variant="outline">{t('dashboard:carAdmin')}</Badge>
+            </div>
+            <Tabs defaultValue="verification" className="space-y-4">
+              <TabsList>
+                <TabsTrigger value="verification">{t('dashboard:residencyVerification')}</TabsTrigger>
+                <TabsTrigger value="addresses">{t('dashboard:administrativeOverview')}</TabsTrigger>
+              </TabsList>
+              <TabsContent value="verification">
+                <ResidencyVerificationManager />
+              </TabsContent>
+              <TabsContent value="addresses">
+                <CARAdministrativeOverview />
+              </TabsContent>
+            </Tabs>
+          </div>
+        );
+
+      case 'car-analytics':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:carAnalytics')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:carAnalyticsDescription')}</p>
+              </div>
+              <Badge variant="outline">{t('dashboard:carAdmin')}</Badge>
+            </div>
+            <Tabs defaultValue="metrics" className="space-y-4">
+              <TabsList>
+                <TabsTrigger value="metrics">{t('dashboard:qualityMetrics')}</TabsTrigger>
+                <TabsTrigger value="overview">{t('dashboard:overview')}</TabsTrigger>
+              </TabsList>
+              <TabsContent value="metrics">
+                <div className="grid gap-6">
+                  {/* Quality metrics would go here */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>{t('dashboard:carQualityMetrics')}</CardTitle>
+                      <CardDescription>{t('dashboard:trackCarSystemQuality')}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-muted-foreground">{t('dashboard:qualityMetricsPlaceholder')}</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+              <TabsContent value="overview">
+                <CARAdministrativeOverview />
+              </TabsContent>
+            </Tabs>
           </div>
         );
 
