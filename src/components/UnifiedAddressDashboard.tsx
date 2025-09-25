@@ -56,46 +56,11 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     isPoliceRole 
   } = useUserRole();
 
-  const [activeTab, setActiveTab] = useState(isCitizen ? 'search' : 'overview');
-  const [stats, setStats] = useState({
-    totalNARAddresses: 0,
-    totalCARAddresses: 0,
-    pendingVerifications: 0,
-    publishedAddresses: 0,
-    activeUsers: 0
-  });
+  const [activeTab, setActiveTab] = useState(isCitizen ? 'search' : 'search');
 
-  useEffect(() => {
-    // Fetch unified statistics
-    fetchUnifiedStats();
-  }, []);
-
-  const fetchUnifiedStats = async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke('unified-address-statistics')
-      
-      if (error) {
-        console.error('Error fetching statistics:', error)
-        return
-      }
-      
-      setStats({
-        totalNARAddresses: data.totalNARAddresses || 0,
-        totalCARAddresses: data.totalCARAddresses || 0,
-        pendingVerifications: data.pendingVerifications || 0,
-        publishedAddresses: data.publishedAddresses || 0,
-        activeUsers: data.activeUsers || 0
-      })
-    } catch (error) {
-      console.error('Failed to fetch unified statistics:', error)
-    }
-  };
 
   // Define tabs based on user role
   const getAvailableTabs = () => {
-    const baseTabs = [
-      { id: 'overview', label: t('dashboard:overview'), icon: Home }
-    ];
 
     if (isCitizen) {
       return [
@@ -106,109 +71,29 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
       ];
     }
 
-    if (isVerifier || isRegistrar) {
-      return [
-        ...baseTabs,
-        { id: 'search', label: t('address:searchAddresses'), icon: Search }
-      ];
-    }
-
-    if (hasAdminAccess) {
-      return [
-        ...baseTabs,
-        { id: 'address-management', label: t('dashboard:addressManagement'), icon: Search },
-        { id: 'nar-admin', label: t('dashboard:narAdministration'), icon: Database },
-        { id: 'car-admin', label: t('dashboard:carAdministration'), icon: Users },
-        { id: 'integration', label: t('dashboard:narCarIntegration'), icon: Network }
-      ];
-    }
-
-    return baseTabs;
+    return [
+      { id: 'search', label: t('address:searchAddresses'), icon: Search }
+    ];
   };
 
   const availableTabs = getAvailableTabs();
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'overview':
+
+      case 'search':
         return (
           <div className="space-y-6">
-            {/* System Overview - Only for Admins/Verifiers */}
-            {(hasAdminAccess || isVerifier || isRegistrar) && (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{t('dashboard:narAddresses')}</CardTitle>
-                      <Database className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{stats.totalNARAddresses}</div>
-                      <p className="text-xs text-muted-foreground">{t('dashboard:nationalRegistry')}</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{t('dashboard:carAddresses')}</CardTitle>
-                      <Home className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{stats.totalCARAddresses}</div>
-                      <p className="text-xs text-muted-foreground">{t('dashboard:citizenAddresses')}</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{t('dashboard:pendingVerifications')}</CardTitle>
-                      <Clock className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{stats.pendingVerifications}</div>
-                      <p className="text-xs text-muted-foreground">{t('dashboard:requiresReview')}</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">{t('dashboard:integrationStatus')}</CardTitle>
-                      <Network className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-green-600">{t('dashboard:active')}</div>
-                      <p className="text-xs text-muted-foreground">{t('dashboard:narCarSync')}</p>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Integration Status Alert */}
-                <Alert>
-                  <Network className="h-4 w-4" />
-                  <AlertDescription>
-                    {t('dashboard:integrationDescription')}
-                  </AlertDescription>
-                </Alert>
-              </>
-            )}
-
-
-            {/* Quick Actions Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Button 
-                variant="outline" 
-                className="h-auto p-4 flex flex-col items-center gap-2"
-                onClick={() => setActiveTab('address-management')}
-              >
-                <Search className="h-6 w-6" />
-                <span>{t('dashboard:addressManagement')}</span>
-                <span className="text-xs text-muted-foreground">{t('dashboard:searchManageAddresses')}</span>
-              </Button>
-
-
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:addressSearch')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:searchNationalRegistry')}</p>
+              </div>
+              <Badge variant="outline">{t('dashboard:narPublicAccess')}</Badge>
             </div>
+            <AddressSearch />
           </div>
-        );
+         );
 
       case 'address-management':
         return (

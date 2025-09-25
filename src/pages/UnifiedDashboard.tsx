@@ -3,12 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   Shield, Users, Settings, BarChart3, LogOut, Search, FileText, Clock, AlertCircle,
-  Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map, User, Phone
+  Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map, User, Phone,
+  Database, Network, Home
 } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
@@ -131,6 +133,15 @@ const UnifiedDashboard = () => {
     publicAddresses: 0
   });
 
+  // Unified stats for NAR/CAR integration
+  const [unifiedStats, setUnifiedStats] = useState({
+    totalNARAddresses: 0,
+    totalCARAddresses: 0,
+    pendingVerifications: 0,
+    publishedAddresses: 0,
+    activeUsers: 0
+  });
+
   // Pending requests state
   const [pendingRequests, setPendingRequests] = useState<PendingRequest[]>([]);
   const [showPendingRequests, setShowPendingRequests] = useState(false);
@@ -174,6 +185,27 @@ const UnifiedDashboard = () => {
         });
       } catch (error) {
         console.error('Error fetching dashboard stats:', error);
+      }
+    };
+
+    const fetchUnifiedStats = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('unified-address-statistics')
+        
+        if (error) {
+          console.error('Error fetching statistics:', error)
+          return
+        }
+        
+        setUnifiedStats({
+          totalNARAddresses: data.totalNARAddresses || 0,
+          totalCARAddresses: data.totalCARAddresses || 0,
+          pendingVerifications: data.pendingVerifications || 0,
+          publishedAddresses: data.publishedAddresses || 0,
+          activeUsers: data.activeUsers || 0
+        })
+      } catch (error) {
+        console.error('Failed to fetch unified statistics:', error)
       }
     };
 
@@ -245,6 +277,7 @@ const UnifiedDashboard = () => {
     };
 
     fetchStats();
+    fetchUnifiedStats();
     fetchPendingRequests();
     fetchUserProfile();
   }, [hasAdminAccess, user]);
@@ -367,6 +400,65 @@ const UnifiedDashboard = () => {
                   </div>
                 )}
               </div>
+            )}
+
+            {/* System Overview - Only for Admins/Verifiers */}
+            {(hasAdminAccess || isVerifier || isRegistrar) && (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">{t('dashboard:narAddresses')}</CardTitle>
+                      <Database className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{unifiedStats.totalNARAddresses}</div>
+                      <p className="text-xs text-muted-foreground">{t('dashboard:nationalRegistry')}</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">{t('dashboard:carAddresses')}</CardTitle>
+                      <Home className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{unifiedStats.totalCARAddresses}</div>
+                      <p className="text-xs text-muted-foreground">{t('dashboard:citizenAddresses')}</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">{t('dashboard:pendingVerifications')}</CardTitle>
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{unifiedStats.pendingVerifications}</div>
+                      <p className="text-xs text-muted-foreground">{t('dashboard:requiresReview')}</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">{t('dashboard:integrationStatus')}</CardTitle>
+                      <Network className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-green-600">{t('dashboard:active')}</div>
+                      <p className="text-xs text-muted-foreground">{t('dashboard:narCarSync')}</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Integration Status Alert */}
+                <Alert>
+                  <Network className="h-4 w-4" />
+                  <AlertDescription>
+                    {t('dashboard:integrationDescription')}
+                  </AlertDescription>
+                </Alert>
+              </>
             )}
 
             {/* Address Search Section */}
