@@ -632,7 +632,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                   variant="outline"
                   onClick={() => handleEdit(request)}
                   disabled={processing === request.id || autoVerifying === request.id}
-                  className="flex items-center justify-center gap-1 w-full text-xs flex-wrap"
+                  className="flex items-center justify-center gap-1 w-full text-xs whitespace-nowrap min-w-fit"
                 >
                   <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="hidden sm:inline text-xs">{t('editAndApprove')}</span>
