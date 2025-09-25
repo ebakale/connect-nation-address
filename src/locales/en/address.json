@@ -493,5 +493,8 @@
   "aiAnalysisComments.lowConfidenceRating": "Low confidence rating assigned",
   "approving": "Approving...",
   "editAndApprove": "Edit & Approve",
-  "edit": "Edit"
+  "edit": "Edit",
+  "autoVerifying": "Auto Verifying...",
+  "verifying": "Verifying...",
+  "autoVerify": "Auto Verify"
 }
