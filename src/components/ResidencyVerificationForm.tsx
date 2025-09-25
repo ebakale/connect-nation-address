@@ -474,26 +474,24 @@ export const ResidencyVerificationForm = ({
               {uploading ? 'Uploading...' : loading ? 'Processing...' : editingVerification ? 'Update Request' : 'Submit Request'}
             </Button>
             {onCancel && (
-              <DialogClose asChild>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => {
-                    console.log('Cancel button clicked, loading:', loading, 'uploading:', uploading);
-                    console.log('onCancel prop exists:', !!onCancel);
-                    if (onCancel) {
-                      console.log('Calling onCancel function');
-                      onCancel();
-                    } else {
-                      console.log('onCancel prop is missing!');
-                    }
-                  }}
-                  disabled={loading || uploading}
-                  className={loading || uploading ? 'opacity-50 cursor-not-allowed' : ''}
-                >
-                  Cancel
-                </Button>
-              </DialogClose>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => {
+                  console.log('Cancel button clicked, loading:', loading, 'uploading:', uploading);
+                  console.log('onCancel prop exists:', !!onCancel);
+                  if (onCancel) {
+                    console.log('Calling onCancel function');
+                    onCancel();
+                  } else {
+                    console.log('onCancel prop is missing!');
+                  }
+                }}
+                disabled={loading || uploading}
+                className={loading || uploading ? 'opacity-50 cursor-not-allowed' : ''}
+              >
+                Cancel
+              </Button>
             )}
           </div>
         </form>
