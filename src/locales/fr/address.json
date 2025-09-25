@@ -813,5 +813,15 @@
   "other": "Autre",
   "verificationQueue": "File de Vérification",
   "reviewAndVerifyPending": "Examiner et vérifier les demandes d'adresses en attente",
-  "close": "Fermer"
+  "close": "Fermer",
+  "failedToLoadRequests": "Échec du chargement des demandes d'adresses",
+  "loadingAddressRequests": "Chargement des demandes d'adresses...",
+  "addressRequestApprovalPanel": "Panneau d'Approbation des Demandes d'Adresses",
+  "pendingRequests": "Demandes en Attente",
+  "pendingShort": "Attente",
+  "manualReview": "Examen Manuel",
+  "reviewShort": "Examen",
+  "autoVerification": "Vérification Automatique",
+  "autoShort": "Auto",
+  "rejectedShort": "Rejetées"
 }

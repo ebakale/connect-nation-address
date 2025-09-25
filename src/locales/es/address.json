@@ -963,5 +963,15 @@
   "other": "Otro",
   "verificationQueue": "Cola de Verificación",
   "reviewAndVerifyPending": "Revisar y verificar solicitudes de direcciones pendientes",
-  "close": "Cerrar"
+  "close": "Cerrar",
+  "failedToLoadRequests": "Error al cargar solicitudes de direcciones",
+  "loadingAddressRequests": "Cargando solicitudes de direcciones...",
+  "addressRequestApprovalPanel": "Panel de Aprobación de Solicitudes de Direcciones",
+  "pendingRequests": "Solicitudes Pendientes",
+  "pendingShort": "Pendientes",
+  "manualReview": "Revisión Manual",
+  "reviewShort": "Revisión",
+  "autoVerification": "Verificación Automática",
+  "autoShort": "Auto",
+  "rejectedShort": "Rechazadas"
 }

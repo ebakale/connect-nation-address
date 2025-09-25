@@ -370,5 +370,15 @@
   "private": "Private",
   "verificationQueue": "Verification Queue",
   "reviewAndVerifyPending": "Review and verify pending address requests",
-  "close": "Close"
+  "close": "Close",
+  "failedToLoadRequests": "Failed to load address requests",
+  "loadingAddressRequests": "Loading address requests...",
+  "addressRequestApprovalPanel": "Address Request Approval Panel",
+  "pendingRequests": "Pending Requests",
+  "pendingShort": "Pending",
+  "manualReview": "Manual Review",
+  "reviewShort": "Review",
+  "autoVerification": "Auto Verification",
+  "autoShort": "Auto",
+  "rejectedShort": "Rejected"
 }
