@@ -613,15 +613,11 @@
   "addressVerified": "Address verified",
   "documentFlagged": "Document flagged",
   "residencyConfirmed": "Residency confirmed",
-
-  // Common toasts used in CAR components
   "error": "Error",
   "success": "Success",
   "failedToLoadAddresses": "Failed to load addresses",
   "addressStatusUpdated": "Address status updated",
   "failedToUpdateStatus": "Failed to update status",
-
-  // CAR Verification Queue/Interface helpers
   "searchByUACOrAddress": "Search by UAC or address",
   "tryAdjustingFilters": "Try adjusting your filters to see more results.",
   "reviewAddress": "Review Address",
