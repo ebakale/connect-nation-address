@@ -36,8 +36,6 @@ interface CARVerifierDashboardProps {
 }
 
 export function CARVerifierDashboard({ onRegisterNavigate }: CARVerifierDashboardProps) {
-  const { t } = useTranslation(['admin', 'common']);
-  
   const { hasCARAccess, hasCARVerificationAccess, hasCARManagementAccess, isResidencyVerifier } = useUserRole();
   console.log('CARVerifierDashboard access flags', { hasCARAccess, hasCARVerificationAccess, isResidencyVerifier });
   
