@@ -728,6 +728,44 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                         )}
                       </div>
 
+                      {/* Verification Summary Panel */}
+                      <Card>
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-sm">{t('admin:verificationStatus')}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm">{t('admin:overallScore')}</span>
+                            <Badge variant={
+                              coordVerificationResults && photoAnalysis 
+                                ? (coordVerificationResults.accuracy + photoAnalysis.quality) / 2 > 80 
+                                  ? "default" 
+                                  : "secondary"
+                                : "outline"
+                            }>
+                              {coordVerificationResults && photoAnalysis 
+                                ? Math.round((coordVerificationResults.accuracy + photoAnalysis.quality) / 2)
+                                : "--"}%
+                            </Badge>
+                          </div>
+                          
+                          <div className="space-y-2 text-xs">
+                            <div className="flex items-center justify-between">
+                              <span>{t('admin:coordinates')}</span>
+                              <span className={coordVerificationResults ? "text-green-600" : "text-muted-foreground"}>
+                                {coordVerificationResults ? t('admin:verified') : t('admin:pending')}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span>{t('admin:photoQuality')}</span>
+                              <span className={photoAnalysis ? "text-green-600" : "text-muted-foreground"}>
+                                {photoAnalysis ? t('admin:analyzed') : selectedAddress.photo_url ? t('admin:pending') : t('admin:noPhoto')}
+                              </span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
                       {/* Photo Quality Assessment */}
                       {selectedAddress.photo_url && (
                         <div className="border rounded-lg p-4 space-y-3">
@@ -814,47 +852,10 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                           </div>
                         </div>
                       )}
-                    </div>
+                     </div>
 
-                    {/* Verification Summary Panel */}
+                    {/* Right Column - Verification Actions */}
                     <div className="space-y-4">
-                      <Card>
-                        <CardHeader className="pb-3">
-                          <CardTitle className="text-sm">{t('admin:verificationStatus')}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm">{t('admin:overallScore')}</span>
-                            <Badge variant={
-                              coordVerificationResults && photoAnalysis 
-                                ? (coordVerificationResults.accuracy + photoAnalysis.quality) / 2 > 80 
-                                  ? "default" 
-                                  : "secondary"
-                                : "outline"
-                            }>
-                              {coordVerificationResults && photoAnalysis 
-                                ? Math.round((coordVerificationResults.accuracy + photoAnalysis.quality) / 2)
-                                : "--"}%
-                            </Badge>
-                          </div>
-                          
-                          <div className="space-y-2 text-xs">
-                            <div className="flex items-center justify-between">
-                              <span>{t('admin:coordinates')}</span>
-                              <span className={coordVerificationResults ? "text-green-600" : "text-muted-foreground"}>
-                                {coordVerificationResults ? t('admin:verified') : t('admin:pending')}
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span>{t('admin:photoQuality')}</span>
-                              <span className={photoAnalysis ? "text-green-600" : "text-muted-foreground"}>
-                                {photoAnalysis ? t('admin:analyzed') : selectedAddress.photo_url ? t('admin:pending') : t('admin:noPhoto')}
-                              </span>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
                       {/* Verification Actions */}
                       <Card>
                         <CardHeader className="pb-3">
