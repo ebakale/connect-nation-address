@@ -358,7 +358,7 @@ Shared from Equatorial Guinea Address Portal`;
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <Navigation className="h-4 w-4" />
-                  {t('common:navigation')}
+                  {t('common:navigationLabel')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 pt-2">
