@@ -20,7 +20,7 @@ interface AddressMapDialogProps {
     region: string;
     country: string;
     building?: string;
-  };
+  } | null;
 }
 
 export function AddressMapDialog({ isOpen, onClose, address }: AddressMapDialogProps) {
@@ -57,7 +57,7 @@ export function AddressMapDialog({ isOpen, onClose, address }: AddressMapDialogP
 
   // Initialize map when API key is available
   useEffect(() => {
-    if (!isOpen || !googleMapsApiKey || !mapContainer.current) return;
+    if (!isOpen || !googleMapsApiKey || !mapContainer.current || !address) return;
 
     const initializeMap = async () => {
       try {
@@ -157,18 +157,28 @@ export function AddressMapDialog({ isOpen, onClose, address }: AddressMapDialogP
 
         <div className="flex-1 flex flex-col min-h-0">
           {/* Address Info */}
-          <div className="mb-3 p-2 sm:p-3 bg-muted rounded-lg">
-            <h3 className="font-medium text-sm sm:text-base break-words">
-              {address.building && `${address.building}, `}
-              {address.street}
-            </h3>
-            <p className="text-xs sm:text-sm text-muted-foreground break-words">
-              {address.city}, {address.region}, {address.country}
-            </p>
-            <p className="text-xs text-muted-foreground break-all">
-              Coordinates: {address.latitude}, {address.longitude}
-            </p>
-          </div>
+          {address && (
+            <div className="mb-3 p-2 sm:p-3 bg-muted rounded-lg">
+              <h3 className="font-medium text-sm sm:text-base break-words">
+                {address.building && `${address.building}, `}
+                {address.street}
+              </h3>
+              <p className="text-xs sm:text-sm text-muted-foreground break-words">
+                {address.city}, {address.region}, {address.country}
+              </p>
+              <p className="text-xs text-muted-foreground break-all">
+                Coordinates: {address.latitude}, {address.longitude}
+              </p>
+            </div>
+          )}
+          
+          {!address && (
+            <div className="mb-3 p-2 sm:p-3 bg-muted rounded-lg">
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                No address data available
+              </p>
+            </div>
+          )}
 
           {/* Map or API Key Input */}
           <div className="flex-1 relative min-h-0">
