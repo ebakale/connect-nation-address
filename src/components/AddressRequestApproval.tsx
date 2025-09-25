@@ -635,7 +635,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                   className="flex items-center justify-center gap-1 w-full text-xs flex-wrap"
                 >
                   <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">{t('editAndApprove')}</span>
+                  <span className="hidden sm:inline text-xs">{t('editAndApprove')}</span>
                   <span className="sm:hidden">{t('edit')}</span>
                 </Button>
                 <Button
