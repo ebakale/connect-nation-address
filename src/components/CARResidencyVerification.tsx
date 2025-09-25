@@ -230,17 +230,17 @@ export function CARResidencyVerification() {
     <div className="space-y-6">
       {/* Stats Overview */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <StatCard title="Total Requests" value={stats.total} color="text-blue-600" />
-        <StatCard title="Pending Review" value={stats.pending} color="text-yellow-600" />
-        <StatCard title="Approved" value={stats.approved} color="text-green-600" />
-        <StatCard title="Rejected" value={stats.rejected} color="text-red-600" />
-        <StatCard title="Need Documents" value={stats.requires_documents} color="text-orange-600" />
+        <StatCard title={t('dashboard:totalRequests')} value={stats.total} color="text-blue-600" />
+        <StatCard title={t('dashboard:pendingReview')} value={stats.pending} color="text-yellow-600" />
+        <StatCard title={t('dashboard:approved')} value={stats.approved} color="text-green-600" />
+        <StatCard title={t('dashboard:rejected')} value={stats.rejected} color="text-red-600" />
+        <StatCard title={t('dashboard:needDocuments')} value={stats.requires_documents} color="text-orange-600" />
       </div>
 
       {/* Filters */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Verification Filters</CardTitle>
+          <CardTitle className="text-lg">{t('dashboard:verificationFilters')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -347,13 +347,13 @@ export function CARResidencyVerification() {
                     </DialogTrigger>
                     <DialogContent className="max-w-4xl">
                       <DialogHeader>
-                        <DialogTitle>Verification Request Details</DialogTitle>
+                        <DialogTitle>{t('dashboard:verificationRequestDetails')}</DialogTitle>
                       </DialogHeader>
                       <Tabs defaultValue="details" className="w-full">
                         <TabsList>
-                          <TabsTrigger value="details">Details</TabsTrigger>
-                          <TabsTrigger value="documents">Documents</TabsTrigger>
-                          <TabsTrigger value="history">History</TabsTrigger>
+                          <TabsTrigger value="details">{t('dashboard:details')}</TabsTrigger>
+                          <TabsTrigger value="documents">{t('dashboard:documents')}</TabsTrigger>
+                          <TabsTrigger value="history">{t('dashboard:history')}</TabsTrigger>
                         </TabsList>
                         <TabsContent value="details" className="space-y-4">
                           <div className="grid grid-cols-2 gap-4 text-sm">
@@ -431,7 +431,7 @@ export function CARResidencyVerification() {
       <Dialog open={reviewDialog} onOpenChange={setReviewDialog}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Review Verification Request</DialogTitle>
+            <DialogTitle>{t('dashboard:reviewVerification')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             {selectedVerification && (
@@ -444,10 +444,10 @@ export function CARResidencyVerification() {
             )}
 
             <div>
-              <Label htmlFor="notes">Review Notes</Label>
+              <Label htmlFor="notes">{t('dashboard:reviewNotes')}</Label>
               <Textarea
                 id="notes"
-                placeholder="Add notes about your decision..."
+                placeholder={t('dashboard:addNotesAboutReview')}
                 value={reviewNotes}
                 onChange={(e) => setReviewNotes(e.target.value)}
               />
@@ -459,7 +459,7 @@ export function CARResidencyVerification() {
                 onClick={() => updateVerificationStatus(selectedVerification?.id!, 'approved', reviewNotes)}
               >
                 <CheckCircle className="h-4 w-4 mr-2" />
-                Approve
+                {t('dashboard:approve')}
               </Button>
               <Button
                 variant="outline"
@@ -467,7 +467,7 @@ export function CARResidencyVerification() {
                 onClick={() => updateVerificationStatus(selectedVerification?.id!, 'requires_additional_documents', reviewNotes)}
               >
                 <Upload className="h-4 w-4 mr-2" />
-                Request More Documents
+                {t('dashboard:requestMoreDocuments')}
               </Button>
               <Button
                 variant="destructive"
@@ -475,7 +475,7 @@ export function CARResidencyVerification() {
                 onClick={() => updateVerificationStatus(selectedVerification?.id!, 'rejected', reviewNotes, reviewNotes)}
               >
                 <AlertTriangle className="h-4 w-4 mr-2" />
-                Reject
+                {t('dashboard:reject')}
               </Button>
             </div>
           </div>
