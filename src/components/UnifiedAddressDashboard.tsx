@@ -71,7 +71,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
   });
 
   // Multi-role support
-  const [activeRole, setActiveRole] = useState<string>(role || 'citizen');
+  const [activeRole, setActiveRole] = useState<string | null>(role);
   const [availableRoles, setAvailableRoles] = useState<string[]>([]);
 
   // Fetch all user roles when component mounts
@@ -104,7 +104,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
 
   // Update active role when role changes
   useEffect(() => {
-    if (role && !activeRole) {
+    if (role && activeRole !== role) {
       setActiveRole(role);
     }
   }, [role]);
@@ -489,7 +489,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           {availableRoles.length > 1 && (
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium">Switch Role:</span>
-              <Select value={activeRole} onValueChange={setActiveRole}>
+              <Select value={activeRole || role || 'citizen'} onValueChange={setActiveRole}>
                 <SelectTrigger className="w-48">
                   <SelectValue />
                 </SelectTrigger>

@@ -98,6 +98,8 @@ const UnifiedDashboard = () => {
     isFieldAgent, 
     isVerifier, 
     isRegistrar,
+    isCarVerifier,
+    isCarAdmin,
     getGeographicScope,
     hasAdminAccess,
     canCreateDraftAddress,
@@ -151,6 +153,13 @@ const UnifiedDashboard = () => {
   const [activeView, setActiveView] = useState('overview');
   const [selectedAddress, setSelectedAddress] = useState<SearchResult | null>(null);
   const [showMapView, setShowMapView] = useState(false);
+
+  // Auto-open CAR dashboard for CAR roles
+  useEffect(() => {
+    if (!loading && (isCarVerifier || isCarAdmin)) {
+      setActiveView('unified-address-dashboard');
+    }
+  }, [loading, isCarVerifier, isCarAdmin]);
 
   // Fetch dashboard statistics
   useEffect(() => {
