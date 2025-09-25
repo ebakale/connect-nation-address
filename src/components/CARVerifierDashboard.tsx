@@ -79,7 +79,7 @@ export function CARVerifierDashboard({ onRegisterNavigate }: CARVerifierDashboar
       }
     };
     onRegisterNavigate(navigateTo);
-  }, [onRegisterNavigate]);
+  }, []); // Remove onRegisterNavigate dependency to prevent infinite loops
 
   const fetchMetrics = React.useCallback(async () => {
     try {
