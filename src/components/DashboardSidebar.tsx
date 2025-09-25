@@ -110,7 +110,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       title: t('myDrafts'),
       icon: Clock,
       onClick: () => handleItemClick('field-drafts'),
-      visible: isFieldAgent || canCreateDraftAddress
+      visible: isFieldAgent // Only field agents need drafts
     },
     {
       id: 'field-map',
