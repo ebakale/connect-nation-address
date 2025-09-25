@@ -585,8 +585,6 @@
   "carQualityMetrics": "CAR Quality Metrics",
   "trackCarSystemQuality": "Track and monitor CAR system quality and performance",
   "qualityMetricsPlaceholder": "Quality metrics dashboard will display system performance data here.",
-  
-  // Additional CAR Verifier Dashboard keys
   "carVerifierDashboard": "CAR Verifier Dashboard",
   "carVerifierDescription": "Verify citizen address declarations, manage residency documents, and track verification metrics",
   "reviewPendingVerifications": "Review pending verifications",
