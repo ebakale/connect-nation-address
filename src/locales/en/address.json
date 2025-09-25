@@ -490,5 +490,8 @@
   "aiAnalysisComments.lowQualityData": "Low quality data detected",
   "aiAnalysisComments.highConfidenceRating": "High confidence rating assigned",
   "aiAnalysisComments.moderateConfidenceRating": "Moderate confidence rating assigned",
-  "aiAnalysisComments.lowConfidenceRating": "Low confidence rating assigned"
+  "aiAnalysisComments.lowConfidenceRating": "Low confidence rating assigned",
+  "approving": "Approving...",
+  "editAndApprove": "Edit & Approve",
+  "edit": "Edit"
 }
