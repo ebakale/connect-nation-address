@@ -37,6 +37,7 @@ export function CARVerifierDashboard({ onRegisterNavigate }: CARVerifierDashboar
   const { t } = useTranslation(['admin', 'common']);
   const { toast } = useToast();
   const { hasCARAccess, hasCARVerificationAccess, hasCARManagementAccess, isResidencyVerifier } = useUserRole();
+  console.log('CARVerifierDashboard access flags', { hasCARAccess, hasCARVerificationAccess, isResidencyVerifier });
   
   const [metrics, setMetrics] = useState<CARMetrics>({
     totalCitizenAddresses: 0,
@@ -55,6 +56,7 @@ export function CARVerifierDashboard({ onRegisterNavigate }: CARVerifierDashboar
   useEffect(() => {
     if (!onRegisterNavigate) return;
     const navigateTo = (pageId: string) => {
+      console.log('CAR nav click', pageId);
       switch (pageId) {
         case 'dashboard':
           setActiveTab('overview');

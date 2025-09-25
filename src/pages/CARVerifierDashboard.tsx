@@ -6,7 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Shield } from 'lucide-react';
 
 export default function CARVerifierDashboardPage() {
-  const { hasCARAccess, loading } = useUserRole();
+  const { hasCARAccess, loading, role, isCARVerifier, hasCARVerificationAccess } = useUserRole();
+  console.log('CARVerifierDashboardPage role', { role, hasCARAccess, hasCARVerificationAccess, isCARVerifier });
   const [currentPage, setCurrentPage] = useState<string>('dashboard');
   const [navigateFn, setNavigateFn] = useState<((pageId: string) => void) | null>(null);
 
