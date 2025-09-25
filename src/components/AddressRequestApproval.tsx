@@ -636,7 +636,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                 >
                   <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="hidden sm:inline text-xs">{t('editAndApprove')}</span>
-                  <span className="sm:hidden">{t('edit')}</span>
+                  <span className="sm:hidden text-xs">{t('edit')}</span>
                 </Button>
                 <Button
                   variant="outline"
