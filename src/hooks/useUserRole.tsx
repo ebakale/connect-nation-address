@@ -70,7 +70,9 @@ export const useUserRole = () => {
           const priorityOrder: UserRole[] = [
             'admin', 'ndaa_admin', 'police_admin',
             'police_supervisor', 'police_dispatcher', 'police_operator',
-            'registrar', 'verifier', 'field_agent', 'property_claimant',
+            'car_admin',
+            'registrar', 'verifier', 'car_verifier', 'residency_verifier',
+            'field_agent', 'property_claimant',
             'citizen', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user'
           ];
           const highestRole = priorityOrder.find(role => roles.includes(role)) || 'citizen';
