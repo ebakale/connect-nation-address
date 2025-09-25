@@ -52,7 +52,7 @@ import { ResidencyVerificationDashboard } from "@/components/ResidencyVerificati
 import { UserVerificationRequests } from "@/components/UserVerificationRequests";
 import { CitizenAddressPortal } from "@/components/CitizenAddressPortal";
 import { CitizenAddressVerificationManager } from "@/components/CitizenAddressVerificationManager";
-import { CARAdministrativeOverview } from "@/components/CARAdministrativeOverview";
+import CARAdministrativeOverview from "@/components/CARAdministrativeOverview";
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
 import { UnifiedAddressDashboard } from "@/components/UnifiedAddressDashboard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -792,7 +792,9 @@ const UnifiedDashboard = () => {
               </div>
               <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
             </div>
-            <CitizenAddressVerificationManager />
+            <div className="p-6 bg-muted rounded-lg">
+              <p className="text-center">CAR Verification Interface - Coming Soon</p>
+            </div>
           </div>
         );
 
@@ -820,7 +822,9 @@ const UnifiedDashboard = () => {
               </div>
               <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
             </div>
-            <CARAdministrativeOverview />
+            <div className="p-6 bg-muted rounded-lg">
+              <p className="text-center">CAR Addresses Overview - Coming Soon</p>
+            </div>
           </div>
         );
 
@@ -843,7 +847,9 @@ const UnifiedDashboard = () => {
                 <ResidencyVerificationManager />
               </TabsContent>
               <TabsContent value="addresses">
-                <CARAdministrativeOverview />
+                <div className="p-6 bg-muted rounded-lg">
+                  <p className="text-center">CAR Addresses Overview - Coming Soon</p>
+                </div>
               </TabsContent>
             </Tabs>
           </div>
@@ -879,7 +885,9 @@ const UnifiedDashboard = () => {
                 </div>
               </TabsContent>
               <TabsContent value="overview">
-                <CARAdministrativeOverview />
+                <div className="p-6 bg-muted rounded-lg">
+                  <p className="text-center">CAR Addresses Overview - Coming Soon</p>
+                </div>
               </TabsContent>
             </Tabs>
           </div>

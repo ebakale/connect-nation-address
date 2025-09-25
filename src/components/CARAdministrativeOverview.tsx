@@ -548,3 +548,5 @@ export function CARAdministrativeOverview() {
     </div>
   );
 }
+
+export default CARAdministrativeOverview;
