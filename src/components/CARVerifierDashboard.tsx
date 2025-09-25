@@ -79,13 +79,7 @@ export function CARVerifierDashboard({ onRegisterNavigate }: CARVerifierDashboar
     onRegisterNavigate(navigateTo);
   }, [onRegisterNavigate]);
 
-  useEffect(() => {
-    if (hasCARAccess) {
-      fetchMetrics();
-    }
-  }, [hasCARAccess]);
-
-  const fetchMetrics = async () => {
+  const fetchMetrics = React.useCallback(async () => {
     try {
       setLoading(true);
       
@@ -137,7 +131,14 @@ export function CARVerifierDashboard({ onRegisterNavigate }: CARVerifierDashboar
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast, t]);
+
+  useEffect(() => {
+    if (hasCARAccess) {
+      fetchMetrics();
+    }
+  }, [hasCARAccess, fetchMetrics]);
+
 
   if (!hasCARAccess) {
     return (
