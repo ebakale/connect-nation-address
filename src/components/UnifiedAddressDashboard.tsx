@@ -61,6 +61,15 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     isPoliceRole 
   } = useUserRole();
 
+  // Debug logging
+  console.log('UnifiedAddressDashboard - Role info:', {
+    role,
+    isCitizen,
+    isCarVerifier,
+    isCarAdmin,
+    hasCarAccess
+  });
+
   // Multi-role support
   const [activeRole, setActiveRole] = useState<string>(role || 'citizen');
   const [availableRoles, setAvailableRoles] = useState<string[]>([]);
@@ -120,48 +129,67 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     const tabs = [];
     const currentRole = activeRole || role;
 
-    // All users get address search
-    tabs.push({ id: 'search', label: t('address:searchAddresses'), icon: Search });
+    console.log('Current role for tabs:', currentRole, 'isCarVerifier:', isCarVerifier);
 
-    // Role-specific tabs based on current active role
-    if (currentRole === 'citizen') {
+    // Citizens get a simplified interface
+    if (currentRole === 'citizen' && !isCarVerifier && !hasCarAccess) {
+      tabs.push({ 
+        id: 'search', 
+        label: t('address:searchAddresses'), 
+        icon: Search 
+      });
       tabs.push(
         { id: 'my-addresses', label: t('dashboard:myAddressesCAR'), icon: Home },
         { id: 'requests', label: t('dashboard:addressRequests'), icon: FileText },
         { id: 'verification-requests', label: t('dashboard:myVerifications'), icon: UserCheck }
       );
+      return tabs;
     }
 
-    // CAR Verifier specific tabs
-    if (currentRole === 'car_verifier') {
+    // All users get address search
+    tabs.push({ id: 'search', label: t('address:searchAddresses'), icon: Search });
+
+    // CAR Verifier specific tabs - check both current role and role flags
+    if (currentRole === 'car_verifier' || isCarVerifier || hasCarAccess) {
       tabs.push(
         { id: 'car-verification', label: t('dashboard:carVerification'), icon: UserCheck },
         { id: 'residency-verification', label: t('dashboard:residencyVerification'), icon: Shield },
         { id: 'car-addresses', label: t('dashboard:carAddresses'), icon: Database }
       );
+      return tabs;
     }
 
     // CAR Admin specific tabs
-    if (currentRole === 'car_admin') {
+    if (currentRole === 'car_admin' || isCarAdmin) {
       tabs.push(
         { id: 'car-admin', label: t('dashboard:carAdministration'), icon: Settings },
         { id: 'car-analytics', label: t('dashboard:carAnalytics'), icon: BarChart3 },
         { id: 'car-verification', label: t('dashboard:carVerification'), icon: UserCheck },
         { id: 'residency-verification', label: t('dashboard:residencyVerification'), icon: Shield }
       );
+      return tabs;
     }
 
     // NAR Admin tabs for registrars and admins
-    if (currentRole === 'registrar' || currentRole === 'ndaa_admin' || currentRole === 'admin') {
+    if (currentRole === 'registrar' || currentRole === 'ndaa_admin' || currentRole === 'admin' || hasAdminAccess) {
       tabs.push(
         { id: 'nar-admin', label: t('dashboard:narAdministration'), icon: Building2 }
       );
     }
 
     // System integration tab for admins
-    if (currentRole === 'ndaa_admin' || currentRole === 'admin') {
+    if (currentRole === 'ndaa_admin' || currentRole === 'admin' || hasAdminAccess) {
       tabs.push(
         { id: 'integration', label: t('dashboard:systemIntegration'), icon: Network }
+      );
+    }
+
+    // Default citizen interface if no other role matches
+    if (tabs.length === 1) { // Only has search tab
+      tabs.push(
+        { id: 'my-addresses', label: t('dashboard:myAddressesCAR'), icon: Home },
+        { id: 'requests', label: t('dashboard:addressRequests'), icon: FileText },
+        { id: 'verification-requests', label: t('dashboard:myVerifications'), icon: UserCheck }
       );
     }
 
@@ -484,7 +512,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
       </div>
 
       {/* Welcome Messages based on active role */}
-      {activeRole === 'citizen' && (
+      {(activeRole === 'citizen' || (!activeRole && isCitizen)) && !isCarVerifier && !hasCarAccess && (
         <Alert>
           <Home className="h-4 w-4" />
           <AlertDescription>
@@ -493,7 +521,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
         </Alert>
       )}
 
-      {activeRole === 'car_verifier' && (
+      {(activeRole === 'car_verifier' || isCarVerifier) && (
         <Alert>
           <Shield className="h-4 w-4" />
           <AlertDescription>
@@ -502,7 +530,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
         </Alert>
       )}
 
-      {activeRole === 'car_admin' && (
+      {(activeRole === 'car_admin' || isCarAdmin) && (
         <Alert>
           <Settings className="h-4 w-4" />
           <AlertDescription>
