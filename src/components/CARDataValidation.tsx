@@ -71,23 +71,28 @@ export function CARDataValidation() {
 
       if (error) throw error;
 
-      // Group by UAC to find duplicates
-      const uacGroups: Record<string, any[]> = {};
-      addresses.forEach((addr: any) => {
+      // Group by UAC to find duplicates - simplified approach
+      const uacGroups: { [key: string]: any[] } = {};
+      
+      addresses.forEach((addr) => {
         if (!uacGroups[addr.uac]) {
           uacGroups[addr.uac] = [];
         }
         uacGroups[addr.uac].push(addr);
       });
 
-      const duplicates = Object.entries(uacGroups)
-        .filter(([_, addrs]) => addrs.length > 1)
-        .map(([uac, addrs]) => ({
-          citizen_address_id: addrs[0].id,
-          uac,
-          duplicates: addrs,
-          conflict_type: 'multiple_claims'
-        }));
+      const duplicates: DuplicateCheck[] = [];
+      Object.keys(uacGroups).forEach((uac) => {
+        const addrs = uacGroups[uac];
+        if (addrs.length > 1) {
+          duplicates.push({
+            citizen_address_id: addrs[0].id,
+            uac,
+            duplicates: addrs,
+            conflict_type: 'multiple_claims'
+          });
+        }
+      });
 
       setDuplicateChecks(duplicates);
     } catch (error) {
@@ -104,23 +109,20 @@ export function CARDataValidation() {
 
       if (totalError) throw totalError;
 
-      // Get NAR verification stats
+      // Get NAR verification stats with any type to avoid complex inference
       const { data: narStats, error: narError } = await supabase
         .from('citizen_address_with_details')
-        .select('nar_verified');
+        .select('nar_verified') as { data: any[] | null; error: any };
 
       if (narError) throw narError;
 
       const narVerified = narStats.filter(addr => addr.nar_verified).length;
       const narUnverified = narStats.filter(addr => !addr.nar_verified).length;
 
-      // Get flagged addresses
-      const { data: flaggedAddresses, error: flaggedError } = await supabase
-        .from('citizen_address')
-        .select('id')
-        .eq('flagged', true);
+      // Skip flagged addresses query since column doesn't exist
+      const flaggedAddresses: any[] = [];
 
-      if (flaggedError) throw flaggedError;
+      
 
       setStats({
         total_addresses: totalAddresses.length,

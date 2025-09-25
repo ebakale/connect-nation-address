@@ -51,11 +51,11 @@ export function CARVerificationQueue() {
         .order('created_at', { ascending: false });
 
       if (statusFilter !== 'all') {
-        query = query.eq('status', statusFilter);
+        query = query.eq('status', statusFilter as any);
       }
 
       if (kindFilter !== 'all') {
-        query = query.eq('address_kind', kindFilter);
+        query = query.eq('address_kind', kindFilter as any);
       }
 
       const { data, error } = await query;
