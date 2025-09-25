@@ -191,6 +191,12 @@ export const useResidencyVerification = () => {
       if (claimantRelationship === 'family_member') {
         return [...baseRequired, 'utility_bill', 'bank_statement'];
       }
+      if (claimantRelationship === 'authorized_representative') {
+        return [...baseRequired, 'authorization_letter', 'utility_bill'];
+      }
+      if (claimantRelationship === 'other') {
+        return [...baseRequired, 'utility_bill'];
+      }
     }
     
     return baseRequired;

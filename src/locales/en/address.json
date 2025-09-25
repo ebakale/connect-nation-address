@@ -16,7 +16,7 @@
   "userRequestedRemoval": "User requested removal",
   "status": {
     "self_declared": "Self Declared",
-    "confirmed": "Confirmed", 
+    "confirmed": "Confirmed",
     "rejected": "Rejected",
     "pending": "Pending"
   },

@@ -40,7 +40,7 @@ export const ResidencyVerificationForm = ({
   
   const [formData, setFormData] = useState({
     verificationType: editingVerification?.verification_type || 'residency',
-    claimantRelationship: editingVerification?.claimant_relationship || 'resident', 
+    claimantRelationship: editingVerification?.claimant_relationship || 'tenant', 
     primaryDocumentType: editingVerification?.primary_document_type || 'utility_bill',
     additionalNotes: ''
   });
@@ -297,12 +297,11 @@ export const ResidencyVerificationForm = ({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="resident">Resident</SelectItem>
                 <SelectItem value="owner">Property Owner</SelectItem>
                 <SelectItem value="tenant">Tenant</SelectItem>
                 <SelectItem value="family_member">Family Member</SelectItem>
-                <SelectItem value="business_operator">Business Operator</SelectItem>
                 <SelectItem value="authorized_representative">Authorized Representative</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
