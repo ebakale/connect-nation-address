@@ -116,15 +116,20 @@ const UnifiedDashboard = () => {
 
   // Route users to appropriate dashboard based on their primary role
   useEffect(() => {
+    console.log('Role redirect check:', { loading, role, isCARVerifier, isPoliceRole });
     if (!loading) {
       if (isPoliceRole) {
+        console.log('Redirecting to police dashboard');
         navigate('/police', { replace: true });
       } else if (isCARVerifier) {
+        console.log('Redirecting to CAR verifier dashboard');
         navigate('/car-verifier-dashboard', { replace: true });
+      } else {
+        console.log('Staying on unified dashboard');
       }
       // All other addressing-related roles stay on unified dashboard
     }
-  }, [loading, isPoliceRole, isCARVerifier, navigate]);
+  }, [loading, isPoliceRole, isCARVerifier, navigate, role]);
 
   // Stats state
   const [stats, setStats] = useState<DashboardStats>({
