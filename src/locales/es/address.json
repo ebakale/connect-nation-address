@@ -1083,5 +1083,9 @@
   "aiAnalysisComments.lowQualityData": "Datos de baja calidad detectados",
   "aiAnalysisComments.highConfidenceRating": "Calificación de alta confianza asignada",
   "aiAnalysisComments.moderateConfidenceRating": "Calificación de confianza moderada asignada",
-  "aiAnalysisComments.lowConfidenceRating": "Calificación de baja confianza asignada"
+  "aiAnalysisComments.lowConfidenceRating": "Calificación de baja confianza asignada",
+  "showingFlaggedAddresses": "Mostrando {{start}}-{{end}} de {{total}} direcciones marcadas",
+  "flaggedRequestApproved": "Solicitud marcada aprobada exitosamente",
+  "failedToApproveFlagged": "Error al aprobar solicitud marcada",
+  "building": "Edificio"
 }

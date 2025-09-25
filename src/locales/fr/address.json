@@ -935,5 +935,9 @@
   "aiAnalysisComments.moderateConfidenceRating": "Cote de confiance modérée attribuée",
   "aiAnalysisComments.lowConfidenceRating": "Cote de faible confiance attribuée",
   "approve": "Approuver",
-  "reject": "Rejeter"
+  "reject": "Rejeter",
+  "showingFlaggedAddresses": "Affichage {{start}}-{{end}} de {{total}} adresses signalées",
+  "flaggedRequestApproved": "Demande signalée approuvée avec succès",
+  "failedToApproveFlagged": "Échec de l'approbation de la demande signalée",
+  "building": "Bâtiment"
 }

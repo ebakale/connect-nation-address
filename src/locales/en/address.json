@@ -516,5 +516,9 @@
   "justificationHelpText": "Clearly explain how you've addressed the rejection feedback and why this corrected information should be approved.",
   "submittingResubmission": "Submitting Resubmission...",
   "submitResubmission": "Submit Resubmission",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "showingFlaggedAddresses": "Showing {{start}}-{{end}} of {{total}} flagged addresses",
+  "flaggedRequestApproved": "Flagged request approved successfully",
+  "failedToApproveFlagged": "Failed to approve flagged request",
+  "building": "Building"
 }
