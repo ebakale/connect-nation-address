@@ -1377,6 +1377,36 @@ export type Database = {
         }
         Relationships: []
       }
+      recent_searches: {
+        Row: {
+          id: string
+          metadata: Json | null
+          results_count: number | null
+          search_query: string
+          search_type: string
+          searched_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          metadata?: Json | null
+          results_count?: number | null
+          search_query: string
+          search_type?: string
+          searched_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          metadata?: Json | null
+          results_count?: number | null
+          search_query?: string
+          search_type?: string
+          searched_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       residency_ownership_verifications: {
         Row: {
           address_request_id: string | null

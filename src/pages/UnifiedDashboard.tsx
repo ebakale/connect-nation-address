@@ -39,6 +39,7 @@ import { AddressRequestApproval } from "@/components/AddressRequestApproval";
 import DraftManager from "@/components/DraftManager";
 import FieldMap from "@/components/FieldMap";
 import { SavedLocationsManager } from "@/components/SavedLocationsManager";
+import { RecentSearchesManager } from "@/components/RecentSearchesManager";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
 import { SystemManualPDF } from "@/components/SystemManualPDF";
 import EmergencyContacts from "@/components/EmergencyContacts";
@@ -303,6 +304,7 @@ const UnifiedDashboard = () => {
       case 'residency-verification-manager': return t('dashboard:residencyVerificationManager');
       case 'residency-verification-dashboard': return t('dashboard:myVerificationRequests');
       case 'citizen-address-portal': return t('dashboard:myAddressesCar');
+      case 'recent-searches': return t('dashboard:recentSearches');
       case 'saved-locations': return t('dashboard:savedLocations');
       case 'profile': return t('dashboard:title');
       case 'emergency-contacts': return t('dashboard:emergencyContacts');
@@ -328,6 +330,7 @@ const UnifiedDashboard = () => {
       case 'residency-verification-manager': return t('dashboard:residencyVerificationManagerDesc');
       case 'residency-verification-dashboard': return t('dashboard:myVerificationRequestsDesc');
       case 'citizen-address-portal': return t('dashboard:myAddressesCarDesc');
+      case 'recent-searches': return t('dashboard:recentSearchesDesc');
       case 'saved-locations': return t('dashboard:savedLocationsDesc');
       case 'profile': return t('dashboard:welcomeMessage');
       case 'emergency-contacts': return t('dashboard:welcomeMessage');
@@ -471,7 +474,7 @@ const UnifiedDashboard = () => {
                   <CardContent className="pt-0">
                     <div className="space-y-3">
                       <Button 
-                        onClick={() => setActiveView('address-search')}
+                        onClick={() => setActiveView('recent-searches')}
                         className="w-full justify-start gap-2 h-auto py-3"
                         variant="outline"
                       >
@@ -636,6 +639,18 @@ const UnifiedDashboard = () => {
         return (
           <div className="max-w-4xl">
             <VerificationTools />
+          </div>
+        );
+
+      case 'recent-searches':
+        return (
+          <div className="max-w-6xl">
+            <RecentSearchesManager 
+              onSearchSelect={(query) => {
+                setActiveView('address-search');
+                // Here you could pass the query to the search component
+              }}
+            />
           </div>
         );
 

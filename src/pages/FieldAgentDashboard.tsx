@@ -231,6 +231,30 @@ const FieldAgentDashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        <div className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Clock className="h-5 w-5 text-primary" />
+                Quick Access
+              </CardTitle>
+              <CardDescription>
+                Recently used features and locations
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button 
+                onClick={() => setSavedLocationsOpen(true)}
+                variant="outline" 
+                className="w-full justify-start gap-2"
+              >
+                <Star className="h-4 w-4" />
+                View Saved Locations
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
       <Footer />
     </div>

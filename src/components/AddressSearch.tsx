@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Search, MapPin, Navigation } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAddresses } from '@/hooks/useAddresses';
+import { useRecentSearches } from '@/hooks/useRecentSearches';
 import { QRCodeScanner } from '@/components/QRCodeScanner';
 import { EnhancedAddressDetailModal } from '@/components/EnhancedAddressDetailModal';
 
@@ -49,6 +50,7 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
   const [selectedAddress, setSelectedAddress] = useState<AddressData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { searchAddresses } = useAddresses();
+  const { addSearch } = useRecentSearches();
 
   // Convert search result to SearchResult format
   const convertToSearchResult = (searchResult: any): SearchResult => ({
@@ -97,12 +99,35 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
         ...result,
         rawData: searchResults[index]
       })));
+
+      // Track the search in recent searches
+      await addSearch({
+        search_query: query.trim(),
+        search_type: 'address',
+        results_count: searchResults.length,
+        metadata: {
+          timestamp: new Date().toISOString(),
+          hasResults: searchResults.length > 0
+        }
+      });
       
       // Clear the search field after successful search
       setQuery('');
     } catch (error) {
       console.error('Search error:', error);
       setResults([]);
+
+      // Still track failed searches (for analytics)
+      await addSearch({
+        search_query: query.trim(),
+        search_type: 'address',
+        results_count: 0,
+        metadata: {
+          timestamp: new Date().toISOString(),
+          hasResults: false,
+          error: true
+        }
+      });
     } finally {
       setIsSearching(false);
     }
