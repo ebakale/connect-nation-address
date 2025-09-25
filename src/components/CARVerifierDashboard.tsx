@@ -17,6 +17,14 @@ import { CARVerificationWorkflow } from './CARVerificationWorkflow';
 import { CitizenAddressVerificationManager } from './CitizenAddressVerificationManager';
 import { QualityDashboard } from './QualityDashboard';
 import { ResidencyVerificationManager } from './ResidencyVerificationManager';
+import { useCARMetrics } from '@/hooks/useCARMetrics';
+import { CARMetricsCards } from './car-verifier/CARMetricsCards';
+import { CAROverview } from './car-verifier/CAROverview';
+import { CARAddressReviewTab } from './car-verifier/CARAddressReviewTab';
+import { CARResidencyTab } from './car-verifier/CARResidencyTab';
+import { CARQualityTab } from './car-verifier/CARQualityTab';
+import { CARManagementTab } from './car-verifier/CARManagementTab';
+import { UnifiedAddressDashboard } from './UnifiedAddressDashboard';
 
 interface CARMetrics {
   totalCitizenAddresses: number;
@@ -39,17 +47,7 @@ export function CARVerifierDashboard({ onRegisterNavigate }: CARVerifierDashboar
   const { hasCARAccess, hasCARVerificationAccess, hasCARManagementAccess, isResidencyVerifier } = useUserRole();
   console.log('CARVerifierDashboard access flags', { hasCARAccess, hasCARVerificationAccess, isResidencyVerifier });
   
-  const [metrics, setMetrics] = useState<CARMetrics>({
-    totalCitizenAddresses: 0,
-    pendingVerificationAddresses: 0,
-    confirmedAddresses: 0,
-    rejectedAddresses: 0,
-    duplicatePersonRecords: 0,
-    averageVerificationTimeHours: 0,
-    totalPersonRecords: 0,
-    addressesRequiringReview: 0
-  });
-  const [loading, setLoading] = useState(true);
+  const { metrics, loading, refresh } = useCARMetrics(hasCARAccess);
   const [activeTab, setActiveTab] = useState('overview');
 
   // Expose navigation mapping to parent layout sidebar
@@ -81,65 +79,7 @@ export function CARVerifierDashboard({ onRegisterNavigate }: CARVerifierDashboar
     onRegisterNavigate(navigateTo);
   }, []); // Remove onRegisterNavigate dependency to prevent infinite loops
 
-  const fetchMetrics = React.useCallback(async () => {
-    try {
-      setLoading(true);
-      
-      // Update CAR quality metrics
-      await supabase.rpc('update_car_quality_metrics');
-      
-      // Fetch latest CAR metrics
-      const { data: carData, error: carError } = await supabase
-        .from('car_quality_metrics')
-        .select('*')
-        .order('date_measured', { ascending: false })
-        .limit(1)
-        .single();
-
-      if (carError && carError.code !== 'PGRST116') throw carError;
-
-      // Fetch person records count
-      const { count: personCount, error: personError } = await supabase
-        .from('person')
-        .select('*', { count: 'exact', head: true });
-
-      if (personError) throw personError;
-
-      // Fetch addresses requiring manual review
-      const { count: reviewCount, error: reviewError } = await supabase
-        .from('citizen_address_manual_review_queue')
-        .select('*', { count: 'exact', head: true });
-
-      if (reviewError) throw reviewError;
-
-      setMetrics({
-        totalCitizenAddresses: carData?.total_citizen_addresses || 0,
-        pendingVerificationAddresses: carData?.pending_verification_addresses || 0,
-        confirmedAddresses: carData?.confirmed_addresses || 0,
-        rejectedAddresses: carData?.rejected_addresses || 0,
-        duplicatePersonRecords: carData?.duplicate_person_records || 0,
-        averageVerificationTimeHours: carData?.average_verification_time_hours || 0,
-        totalPersonRecords: personCount || 0,
-        addressesRequiringReview: reviewCount || 0
-      });
-
-    } catch (error) {
-      console.error('Error fetching CAR metrics:', error);
-      toast({
-        title: t('common:error'),
-        description: 'Failed to fetch CAR metrics',
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [toast, t]);
-
-  useEffect(() => {
-    if (hasCARAccess) {
-      fetchMetrics();
-    }
-  }, [hasCARAccess, fetchMetrics]);
+  // Metrics handled by useCARMetrics hook
 
 
   if (!hasCARAccess) {
