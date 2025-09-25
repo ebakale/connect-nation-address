@@ -1,12 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, FileText, Map, Clock, CheckCircle, TrendingUp, Target, Camera, LogOut } from "lucide-react";
+import { MapPin, FileText, Map, Clock, CheckCircle, TrendingUp, Target, Camera, LogOut, Star } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
 import { AddressCaptureForm } from "@/components/AddressCaptureForm";
 import DraftManager from "@/components/DraftManager";
 import FieldMap from "@/components/FieldMap";
+import { SavedLocationsManager } from "@/components/SavedLocationsManager";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useTranslation } from 'react-i18next';
@@ -20,6 +21,7 @@ const FieldAgentDashboard = () => {
   const [captureOpen, setCaptureOpen] = useState(false);
   const [draftsOpen, setDraftsOpen] = useState(false);
   const [mapOpen, setMapOpen] = useState(false);
+  const [savedLocationsOpen, setSavedLocationsOpen] = useState(false);
 
   if (loading) {
     return (
@@ -105,7 +107,7 @@ const FieldAgentDashboard = () => {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -194,6 +196,36 @@ const FieldAgentDashboard = () => {
                     </DialogDescription>
                   </DialogHeader>
                   <FieldMap onClose={() => setMapOpen(false)} />
+                </DialogContent>
+              </Dialog>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-primary" />
+                {t('dashboard:savedLocations')}
+              </CardTitle>
+              <CardDescription>
+                {t('dashboard:savedLocationsDesc')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Dialog open={savedLocationsOpen} onOpenChange={setSavedLocationsOpen}>
+                <DialogTrigger asChild>
+                  <Button className="w-full" variant="outline">
+                    View Saved Locations
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Saved Locations</DialogTitle>
+                    <DialogDescription>
+                      Manage your bookmarked addresses and locations
+                    </DialogDescription>
+                  </DialogHeader>
+                  <SavedLocationsManager onClose={() => setSavedLocationsOpen(false)} />
                 </DialogContent>
               </Dialog>
             </CardContent>

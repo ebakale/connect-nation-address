@@ -38,6 +38,7 @@ import { ProfileEditor } from "@/components/ProfileEditor";
 import { AddressRequestApproval } from "@/components/AddressRequestApproval";
 import DraftManager from "@/components/DraftManager";
 import FieldMap from "@/components/FieldMap";
+import { SavedLocationsManager } from "@/components/SavedLocationsManager";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
 import { SystemManualPDF } from "@/components/SystemManualPDF";
 import EmergencyContacts from "@/components/EmergencyContacts";
@@ -302,6 +303,7 @@ const UnifiedDashboard = () => {
       case 'residency-verification-manager': return t('dashboard:residencyVerificationManager');
       case 'residency-verification-dashboard': return t('dashboard:myVerificationRequests');
       case 'citizen-address-portal': return t('dashboard:myAddressesCar');
+      case 'saved-locations': return t('dashboard:savedLocations');
       case 'profile': return t('dashboard:title');
       case 'emergency-contacts': return t('dashboard:emergencyContacts');
       default: return t('dashboard:title');
@@ -326,6 +328,7 @@ const UnifiedDashboard = () => {
       case 'residency-verification-manager': return t('dashboard:residencyVerificationManagerDesc');
       case 'residency-verification-dashboard': return t('dashboard:myVerificationRequestsDesc');
       case 'citizen-address-portal': return t('dashboard:myAddressesCarDesc');
+      case 'saved-locations': return t('dashboard:savedLocationsDesc');
       case 'profile': return t('dashboard:welcomeMessage');
       case 'emergency-contacts': return t('dashboard:welcomeMessage');
       default: return t('dashboard:welcomeMessage');
@@ -480,10 +483,9 @@ const UnifiedDashboard = () => {
                       </Button>
                       
                       <Button 
-                        onClick={() => {/* TODO: Implement saved locations */}}
+                        onClick={() => setActiveView('saved-locations')}
                         className="w-full justify-start gap-2 h-auto py-3"
                         variant="outline"
-                        disabled
                       >
                         <MapPin className="h-4 w-4" />
                         <div className="text-left">
@@ -634,6 +636,13 @@ const UnifiedDashboard = () => {
         return (
           <div className="max-w-4xl">
             <VerificationTools />
+          </div>
+        );
+
+      case 'saved-locations':
+        return (
+          <div className="max-w-6xl">
+            <SavedLocationsManager />
           </div>
         );
 

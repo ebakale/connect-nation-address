@@ -1509,6 +1509,48 @@ export type Database = {
           },
         ]
       }
+      saved_locations: {
+        Row: {
+          address_components: Json | null
+          created_at: string
+          description: string | null
+          id: string
+          latitude: number
+          longitude: number
+          name: string
+          tags: string[] | null
+          uac: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address_components?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          latitude: number
+          longitude: number
+          name: string
+          tags?: string[] | null
+          uac?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address_components?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          latitude?: number
+          longitude?: number
+          name?: string
+          tags?: string[] | null
+          uac?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       sms_fallback_queue: {
         Row: {
           attempts: number | null

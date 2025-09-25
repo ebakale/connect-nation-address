@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import MapView from './MapView';
 import AddressDirections from './AddressDirections';
 import AddressCard from './AddressCard';
+import { SaveLocationButton } from './SaveLocationButton';
 
 interface SearchResult {
   uac: string;
@@ -175,6 +176,19 @@ const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack, au
                     {t('copyCoords')}
                   </Button>
                 </div>
+
+                <SaveLocationButton
+                  latitude={address.coordinates.lat}
+                  longitude={address.coordinates.lng}
+                  uac={address.uac}
+                  defaultName={address.readable || `Address ${address.uac}`}
+                  addressComponents={{
+                    type: address.type,
+                    verified: address.verified
+                  }}
+                  variant="outline"
+                  className="w-full"
+                />
               </div>
             </CardContent>
           </Card>
