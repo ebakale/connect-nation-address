@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Calendar, User, FileText, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from 'react-i18next';
+import { AddressResubmissionDialog } from "./AddressResubmissionDialog";
 
 interface RejectedAddress {
   id: string;
@@ -89,6 +90,10 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
   const [rejectedAddresses, setRejectedAddresses] = useState<RejectedAddress[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+  const [resubmissionDialog, setResubmissionDialog] = useState<{
+    open: boolean;
+    address: RejectedAddress | null;
+  }>({ open: false, address: null });
 
   const fetchRejectedAddresses = async () => {
     try {
@@ -101,14 +106,17 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
     }
   };
 
-  const handleResubmit = async (originalRequestId: string) => {
-    try {
-      // For now, just show a message - this would need to be implemented
-      toast.info(t('resubmissionComingSoon'));
-    } catch (error) {
-      console.error('Error resubmitting address:', error);
-      toast.error(t('failedToResubmitAddress'));
-    }
+  const handleResubmit = (address: RejectedAddress) => {
+    setResubmissionDialog({
+      open: true,
+      address: address
+    });
+  };
+
+  const handleResubmissionSuccess = async () => {
+    await fetchRejectedAddresses();
+    onUpdate?.();
+    toast.success(t('resubmissionSuccessful'));
   };
 
   const toggleCardExpansion = (addressId: string) => {
@@ -253,10 +261,10 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleResubmit(address.id);
-                    }}
+                     onClick={(e) => {
+                       e.stopPropagation();
+                       handleResubmit(address);
+                     }}
                     className="text-xs"
                   >
                      <FileText className="h-3 w-3 mr-1" />
@@ -268,6 +276,13 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
           </Card>
         );
       })}
+
+      <AddressResubmissionDialog
+        open={resubmissionDialog.open}
+        onOpenChange={(open) => setResubmissionDialog({ open, address: null })}
+        rejectedAddress={resubmissionDialog.address}
+        onSuccess={handleResubmissionSuccess}
+      />
     </div>
   );
 }
