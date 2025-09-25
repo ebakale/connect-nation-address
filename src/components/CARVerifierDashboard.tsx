@@ -9,21 +9,15 @@ import {
   Clock, CheckCircle, AlertTriangle, Database,
   UserCheck, MapPin, TrendingUp, Activity
 } from 'lucide-react';
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+
+
 import { useUserRole } from '@/hooks/useUserRole';
-import { useTranslation } from 'react-i18next';
+
 import { CARVerificationWorkflow } from './CARVerificationWorkflow';
 import { CitizenAddressVerificationManager } from './CitizenAddressVerificationManager';
 import { QualityDashboard } from './QualityDashboard';
 import { ResidencyVerificationManager } from './ResidencyVerificationManager';
 import { useCARMetrics } from '@/hooks/useCARMetrics';
-import { CARMetricsCards } from './car-verifier/CARMetricsCards';
-import { CAROverview } from './car-verifier/CAROverview';
-import { CARAddressReviewTab } from './car-verifier/CARAddressReviewTab';
-import { CARResidencyTab } from './car-verifier/CARResidencyTab';
-import { CARQualityTab } from './car-verifier/CARQualityTab';
-import { CARManagementTab } from './car-verifier/CARManagementTab';
 import { UnifiedAddressDashboard } from './UnifiedAddressDashboard';
 
 interface CARMetrics {
@@ -43,7 +37,7 @@ interface CARVerifierDashboardProps {
 
 export function CARVerifierDashboard({ onRegisterNavigate }: CARVerifierDashboardProps) {
   const { t } = useTranslation(['admin', 'common']);
-  const { toast } = useToast();
+  
   const { hasCARAccess, hasCARVerificationAccess, hasCARManagementAccess, isResidencyVerifier } = useUserRole();
   console.log('CARVerifierDashboard access flags', { hasCARAccess, hasCARVerificationAccess, isResidencyVerifier });
   
@@ -129,7 +123,7 @@ export function CARVerifierDashboard({ onRegisterNavigate }: CARVerifierDashboar
             Citizen Address Repository verification and management tools
           </p>
         </div>
-        <Button onClick={fetchMetrics} variant="outline" size="sm">
+        <Button onClick={refresh} variant="outline" size="sm">
           <Activity className="h-4 w-4 mr-2" />
           Refresh Data
         </Button>
@@ -199,12 +193,13 @@ export function CARVerifierDashboard({ onRegisterNavigate }: CARVerifierDashboar
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="verification">Address Review</TabsTrigger>
           <TabsTrigger value="residency">Residency Verification</TabsTrigger>
           <TabsTrigger value="quality">Quality Dashboard</TabsTrigger>
           <TabsTrigger value="management">Address Management</TabsTrigger>
+          <TabsTrigger value="unified">Unified Dashboard</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
@@ -256,6 +251,14 @@ export function CARVerifierDashboard({ onRegisterNavigate }: CARVerifierDashboar
                     Manage Addresses
                   </Button>
                 )}
+                <Button 
+                  onClick={() => setActiveTab('unified')} 
+                  className="w-full justify-start"
+                  variant="outline"
+                >
+                  <MapPin className="h-4 w-4 mr-2" />
+                  Unified Address Dashboard
+                </Button>
               </CardContent>
             </Card>
 
@@ -304,7 +307,7 @@ export function CARVerifierDashboard({ onRegisterNavigate }: CARVerifierDashboar
         </TabsContent>
 
         <TabsContent value="verification" className="space-y-4">
-          <CARVerificationWorkflow onUpdate={fetchMetrics} />
+          <CARVerificationWorkflow onUpdate={refresh} />
         </TabsContent>
 
         <TabsContent value="residency" className="space-y-4">
@@ -327,7 +330,7 @@ export function CARVerifierDashboard({ onRegisterNavigate }: CARVerifierDashboar
 
         <TabsContent value="management" className="space-y-4">
           {hasCARManagementAccess ? (
-            <CitizenAddressVerificationManager onSuccess={fetchMetrics} />
+            <CitizenAddressVerificationManager onSuccess={refresh} />
           ) : (
             <Card>
               <CardContent className="p-6">
@@ -337,6 +340,9 @@ export function CARVerifierDashboard({ onRegisterNavigate }: CARVerifierDashboar
               </CardContent>
             </Card>
           )}
+        </TabsContent>
+        <TabsContent value="unified" className="space-y-4">
+          <UnifiedAddressDashboard />
         </TabsContent>
       </Tabs>
     </div>
