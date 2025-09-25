@@ -41,10 +41,16 @@ export const useUserRole = () => {
 
       try {
         setLoading(true);
-        // Fetch user roles first (simple query)
+        // Fetch user roles and metadata (user can have multiple roles)
         const { data: roleData, error: roleError } = await supabase
           .from('user_roles')
-          .select('role')
+          .select(`
+            role,
+            user_role_metadata!fk_user_role_metadata_user_role(
+              scope_type,
+              scope_value
+            )
+          `)
           .eq('user_id', user.id);
 
         if (roleError) {
@@ -64,7 +70,6 @@ export const useUserRole = () => {
           const priorityOrder: UserRole[] = [
             'admin', 'ndaa_admin', 'police_admin',
             'police_supervisor', 'police_dispatcher', 'police_operator',
-            'car_admin', 'car_verifier', 'residency_verifier',
             'registrar', 'verifier', 'field_agent', 'property_claimant',
             'citizen', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user'
           ];
@@ -75,8 +80,9 @@ export const useUserRole = () => {
           
           setRole(highestRole as UserRole);
           
-          // Set metadata to empty for now (can be fetched separately if needed)
-          setRoleMetadata([]);
+          // Collect all metadata from all roles
+          const allMetadata = roleData.flatMap(r => r.user_role_metadata || []);
+          setRoleMetadata(allMetadata as RoleMetadata[]);
         } else {
           // Only set to citizen if we don't have a cached role
           if (!role) {

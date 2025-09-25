@@ -14,7 +14,6 @@ import UnifiedAuth from "./pages/UnifiedAuth";
 import NotFound from "./pages/NotFound";
 import Portal from "./pages/Portal";
 import UnifiedDashboard from "./pages/UnifiedDashboard";
-import CARVerifierDashboard from "./pages/CARVerifierDashboard";
 import PoliceDashboard from "./pages/PoliceDashboard";
 
 import { UnitsAndProfilesPage } from "./pages/UnitsAndProfilesPage";
@@ -67,7 +66,6 @@ const AppRoutes = () => {
       <Route path="/demo-presentation" element={<DemoPresentationPage />} />
       
       <Route path="/dashboard" element={<ProtectedRoute><UnifiedDashboard /></ProtectedRoute>} />
-      <Route path="/car-verifier-dashboard" element={<ProtectedRoute><CARVerifierDashboard /></ProtectedRoute>} />
       <Route path="/police" element={<ProtectedRoute><PoliceDashboard /></ProtectedRoute>} />
       <Route path="/units-profiles" element={<ProtectedRoute><UnitsAndProfilesPage /></ProtectedRoute>} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

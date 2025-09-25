@@ -53,7 +53,6 @@ import { UserVerificationRequests } from "@/components/UserVerificationRequests"
 import { CitizenAddressPortal } from "@/components/CitizenAddressPortal";
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
 import { UnifiedAddressDashboard } from "@/components/UnifiedAddressDashboard";
-import { CARVerifierDashboard } from "@/components/CARVerifierDashboard";
 interface SearchResult {
   uac: string;
   readable: string;
@@ -99,7 +98,6 @@ const UnifiedDashboard = () => {
     isFieldAgent, 
     isVerifier, 
     isRegistrar,
-    isCARVerifier,
     getGeographicScope,
     hasAdminAccess,
     canCreateDraftAddress,
@@ -117,22 +115,13 @@ const UnifiedDashboard = () => {
 
   // Route users to appropriate dashboard based on their primary role
   useEffect(() => {
-    console.log('Role redirect check:', { loading, role, isCARVerifier, isPoliceRole });
     if (!loading) {
       if (isPoliceRole) {
-        console.log('Redirecting to police dashboard');
         navigate('/police', { replace: true });
-      } else if (isCARVerifier) {
-        console.log('Redirecting to CAR verifier dashboard');
-        navigate('/car-verifier-dashboard', { replace: true });
-      } else {
-        console.log('Staying on unified dashboard');
       }
-      // All other addressing-related roles stay on unified dashboard
+      // All addressing-related roles now stay on unified dashboard
     }
-  }, [loading, isPoliceRole, isCARVerifier, navigate, role]);
-
-  
+  }, [loading, isPoliceRole, navigate]);
 
   // Stats state
   const [stats, setStats] = useState<DashboardStats>({
@@ -350,7 +339,6 @@ const UnifiedDashboard = () => {
       case 'saved-locations': return t('dashboard:savedLocations');
       case 'profile': return t('dashboard:title');
       case 'emergency-contacts': return t('dashboard:emergencyContacts');
-      case 'car-verifier': return 'CAR Verifier';
       default: return t('dashboard:title');
     }
   };
@@ -375,7 +363,6 @@ const UnifiedDashboard = () => {
       case 'saved-locations': return t('dashboard:savedLocationsDesc');
       case 'profile': return t('dashboard:welcomeMessage');
       case 'emergency-contacts': return t('dashboard:welcomeMessage');
-      case 'car-verifier': return 'Tools for CAR verification, residency checks, and quality control';
       default: return t('dashboard:welcomeMessage');
     }
   };
@@ -801,13 +788,6 @@ const UnifiedDashboard = () => {
         return (
           <div className="max-w-6xl space-y-6">
             <AdminPanel />
-          </div>
-        );
-
-      case 'car-verifier':
-        return (
-          <div className="max-w-7xl">
-            <CARVerifierDashboard />
           </div>
         );
 
