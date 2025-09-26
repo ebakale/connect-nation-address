@@ -362,19 +362,6 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           </div>
         );
 
-      case 'search':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">{t('dashboard:addressSearch')}</h2>
-                <p className="text-muted-foreground">{t('dashboard:searchNationalRegistry')}</p>
-              </div>
-              <Badge variant="outline">{t('dashboard:narPublicAccess')}</Badge>
-            </div>
-            <AddressSearch />
-          </div>
-         );
 
       case 'requests':
         return (
