@@ -53,7 +53,7 @@ import { UserVerificationRequests } from "@/components/UserVerificationRequests"
 import { CitizenAddressPortal } from "@/components/CitizenAddressPortal";
 import { CARVerificationInterface } from "@/components/CARVerificationInterface";
 import { CARAddressOverview } from "@/components/CARAddressOverview";
-import { ResidencyVerificationPanel } from "@/components/ResidencyVerificationPanel";
+
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
 import { UnifiedAddressDashboard } from "@/components/UnifiedAddressDashboard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -821,7 +821,7 @@ const UnifiedDashboard = () => {
               </div>
               <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
             </div>
-            <ResidencyVerificationPanel />
+            <ResidencyVerificationManager />
           </div>
         );
 
@@ -855,7 +855,7 @@ const UnifiedDashboard = () => {
                 <TabsTrigger value="addresses">{t('dashboard:administrativeOverview')}</TabsTrigger>
               </TabsList>
               <TabsContent value="verification">
-                <ResidencyVerificationPanel />
+                <ResidencyVerificationManager />
               </TabsContent>
               <TabsContent value="addresses">
                 <CARAddressOverview />
