@@ -62,44 +62,52 @@ Please respond immediately.`;
     // Send notifications to all unit members
     if (unitMembers?.emergency_unit_members) {
       for (const member of unitMembers.emergency_unit_members) {
-        const profile = member.profiles;
+        const rawProfile: any = (member as any).profiles;
+        const profile: any = Array.isArray(rawProfile) ? rawProfile[0] : rawProfile;
         if (!profile) continue;
 
-        console.log(`Preparing notification for officer ${profile.full_name}`);
+        const fullName = (profile?.full_name as string) || 'Unknown';
+        const userId = profile?.user_id as string | undefined;
+        const phone = profile?.phone as string | null | undefined;
+        const email = profile?.email as string | null | undefined;
+
+        console.log(`Preparing notification for officer ${fullName}`);
 
         // Create in-app notification
-        const { error: notificationError } = await supabase
-          .from('emergency_notifications')
-          .insert({
-            user_id: profile.user_id,
-            incident_id: incidentId,
-            title: `Emergency Dispatch - ${incidentNumber}`,
-            message: message,
-            type: 'unit_assignment',
-            priority_level: priority,
-            read: false,
-            metadata: {
-              unit_code: unitCode,
-              unit_name: unitName,
-              incident_number: incidentNumber,
-              emergency_type: emergencyType
-            }
-          });
+        if (userId) {
+          const { error: notificationError } = await supabase
+            .from('emergency_notifications')
+            .insert({
+              user_id: userId,
+              incident_id: incidentId,
+              title: `Emergency Dispatch - ${incidentNumber}`,
+              message: message,
+              type: 'unit_assignment',
+              priority_level: priority,
+              read: false,
+              metadata: {
+                unit_code: unitCode,
+                unit_name: unitName,
+                incident_number: incidentNumber,
+                emergency_type: emergencyType
+              }
+            });
 
-        if (notificationError) {
-          console.error('Error creating notification:', notificationError);
-        } else {
-          console.log(`In-app notification created for ${profile.full_name}`);
+          if (notificationError) {
+            console.error('Error creating notification:', notificationError);
+          } else {
+            console.log(`In-app notification created for ${fullName}`);
+          }
         }
 
         // Add SMS notification to queue if phone number exists
-        if (profile.phone) {
-          console.log(`Adding SMS to queue for ${profile.phone}`);
+        if (phone) {
+          console.log(`Adding SMS to queue for ${phone}`);
           
           const { error: smsError } = await supabase
             .from('sms_fallback_queue')
             .insert({
-              phone_number: profile.phone,
+              phone_number: phone,
               message_content: message,
               priority: priority,
               location_data: location,
@@ -109,14 +117,14 @@ Please respond immediately.`;
           if (smsError) {
             console.error('Error queuing SMS:', smsError);
           } else {
-            console.log(`SMS queued for ${profile.phone}`);
+            console.log(`SMS queued for ${phone}`);
           }
         }
 
         notifications.push({
-          officer: profile.full_name,
-          phone: profile.phone,
-          email: profile.email,
+          officer: fullName,
+          phone: phone || null,
+          email: email || null,
           notified: true
         });
       }
@@ -154,7 +162,7 @@ Please respond immediately.`;
   } catch (error) {
     console.error('Notification error:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : String(error) }),
       { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

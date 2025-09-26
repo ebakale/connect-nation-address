@@ -85,10 +85,12 @@ serve(async (req) => {
 
         // Process performance data
         const operatorStats: Record<string, any> = {};
-        performance?.forEach(log => {
+        performance?.forEach((log: any) => {
+          const profiles = (log as any).profiles;
+          const fullName = Array.isArray(profiles) ? profiles[0]?.full_name : profiles?.full_name;
           if (!operatorStats[log.user_id]) {
             operatorStats[log.user_id] = {
-              name: log.profiles?.full_name || 'Unknown',
+              name: fullName || 'Unknown',
               incidents_created: 0,
               incidents_resolved: 0,
               units_assigned: 0
@@ -270,7 +272,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Police operator management error:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : String(error) }),
       { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

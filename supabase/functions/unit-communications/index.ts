@@ -279,7 +279,7 @@ const handler = async (req: Request): Promise<Response> => {
         // First get the message to check who sent it
         const { data: messageData, error: messageError } = await supabaseClient
           .from('unit_communications')
-          .select('from_user_id, message_type, metadata')
+          .select('from_user_id, to_user_id, message_type, metadata')
           .eq('id', message_id)
           .single()
 

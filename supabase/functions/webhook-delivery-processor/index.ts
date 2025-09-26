@@ -112,7 +112,7 @@ serve(async (req) => {
           .from('webhook_delivery')
           .update({
             attempts: delivery.attempts + 1,
-            last_error: error.message,
+            last_error: (error instanceof Error ? error.message : String(error)),
             next_retry_at: new Date(Date.now() + 300000).toISOString() // 5 minutes
           })
           .eq('id', delivery.id);
@@ -132,7 +132,7 @@ serve(async (req) => {
     console.error('Webhook delivery processor error:', error);
     return new Response(JSON.stringify({
       success: false,
-      error: error.message
+      error: (error instanceof Error ? error.message : String(error))
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

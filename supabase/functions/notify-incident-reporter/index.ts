@@ -215,7 +215,7 @@ Time: ${new Date().toLocaleString()}`;
   } catch (error) {
     console.error('Reporter notification error:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : String(error) }),
       { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

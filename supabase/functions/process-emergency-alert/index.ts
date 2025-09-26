@@ -156,23 +156,26 @@ serve(async (req) => {
 
       if (cityDispatchers && cityDispatchers.length > 0) {
         // Filter dispatchers by city and get their incident counts
-        const dispatcherCounts = await Promise.all(
-          cityDispatchers
-            .filter(d => d.user_role_metadata?.some(m => m.scope_value?.toLowerCase() === incidentCity.toLowerCase()))
-            .map(async (dispatcher) => {
-              const { count } = await supabase
-                .from('emergency_incidents')
-                .select('*', { count: 'exact', head: true })
-                .eq('assigned_operator_id', dispatcher.user_id)
-                .in('status', ['reported', 'dispatched', 'responding', 'on_scene']);
-              
-              return {
-                user_id: dispatcher.user_id,
-                count: count || 0,
-                name: dispatcher.profiles?.full_name
-              };
-            })
-        );
+          const dispatcherCounts = await Promise.all(
+            cityDispatchers
+              .filter(d => d.user_role_metadata?.some(m => m.scope_value?.toLowerCase() === incidentCity.toLowerCase()))
+              .map(async (dispatcher) => {
+                const { count } = await supabase
+                  .from('emergency_incidents')
+                  .select('*', { count: 'exact', head: true })
+                  .eq('assigned_operator_id', dispatcher.user_id)
+                  .in('status', ['reported', 'dispatched', 'responding', 'on_scene']);
+
+                const profiles = (dispatcher as any).profiles;
+                const fullName = Array.isArray(profiles) ? profiles[0]?.full_name : profiles?.full_name;
+                
+                return {
+                  user_id: dispatcher.user_id,
+                  count: count || 0,
+                  name: fullName
+                };
+              })
+          );
 
         // Assign to dispatcher with least active incidents
         if (dispatcherCounts.length > 0) {
@@ -299,7 +302,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         error: 'Failed to process emergency alert',
-        details: error.message 
+        details: error instanceof Error ? error.message : String(error)
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

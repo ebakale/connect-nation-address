@@ -244,7 +244,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         error: 'Failed to process backup request',
-        message: error.message
+        message: error instanceof Error ? error.message : String(error)
       }),
       { 
         headers: { 

@@ -90,11 +90,11 @@ serve(async (req) => {
           .update({
             attempts: message.attempts + 1,
             status: message.attempts + 1 >= message.max_attempts ? 'failed' : 'pending',
-            provider_response: { error: error.message, timestamp: new Date().toISOString() }
+            provider_response: { error: (error instanceof Error ? error.message : String(error)), timestamp: new Date().toISOString() }
           })
           .eq('id', message.id);
 
-        results.push({ id: message.id, status: 'error', error: error.message });
+        results.push({ id: message.id, status: 'error', error: (error instanceof Error ? error.message : String(error)) });
       }
     }
 
@@ -115,7 +115,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         error: 'Failed to process SMS queue',
-        details: error.message 
+        details: error instanceof Error ? error.message : String(error)
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
