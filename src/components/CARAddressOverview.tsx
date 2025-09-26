@@ -56,7 +56,7 @@ export function CARAddressOverview() {
       console.log('Starting CAR stats fetch...');
 
       // Test basic connectivity first
-      const testQuery = await supabase.from('citizen_address').select('*', { count: 'exact', head: true });
+      const testQuery = await supabase.from('citizen_address_with_details').select('*', { count: 'exact', head: true });
       console.log('Test query result:', testQuery);
 
       // Fetch overall stats with detailed logging
@@ -70,13 +70,13 @@ export function CARAddressOverview() {
         secondaryAddressesResult,
         recentActivityResult
       ] = await Promise.all([
-        supabase.from('citizen_address').select('*', { count: 'exact', head: true }),
-        supabase.from('citizen_address').select('*', { count: 'exact', head: true }).eq('status', 'CONFIRMED'),
-        supabase.from('citizen_address').select('*', { count: 'exact', head: true }).in('status', ['SELF_DECLARED']),
-        supabase.from('citizen_address').select('*', { count: 'exact', head: true }).eq('status', 'REJECTED'),
+        supabase.from('citizen_address_with_details').select('*', { count: 'exact', head: true }),
+        supabase.from('citizen_address_with_details').select('*', { count: 'exact', head: true }).eq('status', 'CONFIRMED'),
+        supabase.from('citizen_address_with_details').select('*', { count: 'exact', head: true }).in('status', ['SELF_DECLARED']),
+        supabase.from('citizen_address_with_details').select('*', { count: 'exact', head: true }).eq('status', 'REJECTED'),
         supabase.from('person').select('*', { count: 'exact', head: true }),
-        supabase.from('citizen_address').select('*', { count: 'exact', head: true }).eq('address_kind', 'PRIMARY'),
-        supabase.from('citizen_address').select('*', { count: 'exact', head: true }).eq('address_kind', 'SECONDARY'),
+        supabase.from('citizen_address_with_details').select('*', { count: 'exact', head: true }).eq('address_kind', 'PRIMARY'),
+        supabase.from('citizen_address_with_details').select('*', { count: 'exact', head: true }).eq('address_kind', 'SECONDARY'),
         supabase.from('citizen_address_event').select('*', { count: 'exact', head: true }).gte('at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
       ]);
 
