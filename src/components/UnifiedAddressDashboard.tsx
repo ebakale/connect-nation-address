@@ -31,7 +31,7 @@ import { ResidencyVerificationManager } from './ResidencyVerificationManager';
 import { UserVerificationRequests } from './UserVerificationRequests';
 import { CARAdministrativeOverview } from './CARAdministrativeOverview';
 import { CARVerificationQueue } from './CARVerificationQueue';
-import { CARResidencyVerification } from './CARResidencyVerification';
+
 import { CARDataValidation } from './CARDataValidation';
 import { CARAuditDocumentation } from './CARAuditDocumentation';
 
@@ -308,7 +308,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
               </div>
               <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
             </div>
-            <CARResidencyVerification />
+            <ResidencyVerificationManager />
           </div>
         );
 
