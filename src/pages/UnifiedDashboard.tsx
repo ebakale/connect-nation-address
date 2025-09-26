@@ -474,6 +474,65 @@ const UnifiedDashboard = () => {
               </>
             )}
 
+            {/* CAR Verifier Quick Stats */}
+            {(isCarVerifier || isCarAdmin) && (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">{t('dashboard:confirmedAddresses')}</CardTitle>
+                      <CheckCircle className="h-4 w-4 text-green-600" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-green-600">{unifiedStats.totalCARAddresses}</div>
+                      <p className="text-xs text-muted-foreground">{t('dashboard:verifiedCitizen')}</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">{t('dashboard:pendingAddresses')}</CardTitle>
+                      <Clock className="h-4 w-4 text-yellow-600" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-yellow-600">{unifiedStats.pendingVerifications}</div>
+                      <p className="text-xs text-muted-foreground">{t('dashboard:awaitingYourReview')}</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">{t('dashboard:residencyVerifications')}</CardTitle>
+                      <Shield className="h-4 w-4 text-blue-600" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-blue-600">{unifiedStats.pendingVerifications}</div>
+                      <p className="text-xs text-muted-foreground">{t('dashboard:pendingDocuments')}</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">{t('dashboard:workloadStatus')}</CardTitle>
+                      <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-primary">{t('dashboard:active')}</div>
+                      <p className="text-xs text-muted-foreground">{t('dashboard:carVerifierOnDuty')}</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* CAR Verifier Actions */}
+                <Alert>
+                  <Shield className="h-4 w-4" />
+                  <AlertDescription>
+                    {t('dashboard:carVerifierActions')}
+                  </AlertDescription>
+                </Alert>
+              </>
+            )}
+
             {/* Address Search Section */}
             <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
               <div className="xl:col-span-3 space-y-6">

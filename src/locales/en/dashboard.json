@@ -646,5 +646,12 @@
   "pending": "Pending",
   "geographicDistribution": "Geographic distribution of citizen addresses",
   "noRegionalDataAvailable": "No regional data available",
-  "failedToLoadStats": "Failed to load CAR statistics"
+  "failedToLoadStats": "Failed to load CAR statistics",
+  "verifiedCitizen": "Verified citizen addresses",
+  "awaitingYourReview": "Awaiting your review",
+  "residencyVerifications": "Residency Verifications", 
+  "pendingDocuments": "Pending document reviews",
+  "workloadStatus": "Workload Status",
+  "carVerifierOnDuty": "CAR verifier on duty",
+  "carVerifierActions": "Quick actions: Review pending addresses, verify residency documents, and approve citizen declarations from the CAR verification panel."
 }

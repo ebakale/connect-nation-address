@@ -500,5 +500,12 @@
   "pending": "En Attente",
   "geographicDistribution": "Distribution géographique des adresses citoyennes",
   "noRegionalDataAvailable": "Aucune donnée régionale disponible",
-  "failedToLoadStats": "Échec du chargement des statistiques CAR"
+  "failedToLoadStats": "Échec du chargement des statistiques CAR",
+  "verifiedCitizen": "Adresses citoyennes vérifiées",
+  "awaitingYourReview": "En attente de votre examen",
+  "residencyVerifications": "Vérifications de Résidence",
+  "pendingDocuments": "Examens de documents en attente",
+  "workloadStatus": "État de la Charge de Travail",
+  "carVerifierOnDuty": "Vérificateur CAR en service",
+  "carVerifierActions": "Actions rapides : Examiner les adresses en attente, vérifier les documents de résidence et approuver les déclarations citoyennes depuis le panneau de vérification CAR."
 }

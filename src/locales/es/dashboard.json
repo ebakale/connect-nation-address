@@ -536,5 +536,12 @@
   "pending": "Pendiente",
   "geographicDistribution": "Distribución geográfica de direcciones ciudadanas",
   "noRegionalDataAvailable": "No hay datos regionales disponibles",
-  "failedToLoadStats": "Error al cargar estadísticas CAR"
+  "failedToLoadStats": "Error al cargar estadísticas CAR",
+  "verifiedCitizen": "Direcciones ciudadanas verificadas",
+  "awaitingYourReview": "Esperando tu revisión",
+  "residencyVerifications": "Verificaciones de Residencia",
+  "pendingDocuments": "Revisiones de documentos pendientes",
+  "workloadStatus": "Estado de Carga de Trabajo",
+  "carVerifierOnDuty": "Verificador CAR en servicio",
+  "carVerifierActions": "Acciones rápidas: Revisar direcciones pendientes, verificar documentos de residencia y aprobar declaraciones ciudadanas desde el panel de verificación CAR."
 }
