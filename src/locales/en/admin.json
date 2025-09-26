@@ -99,6 +99,9 @@
   "testing": "Testing",
   "validation": "Validation",
   "verification": "Verification",
+  "verificationType": {
+    "residency": "Residency"
+  },
   "certification": "Certification",
   "approval": "Approval",
   "authorization": "Authorization",
