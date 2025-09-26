@@ -53,17 +53,22 @@ export function CARAddressOverview() {
   const fetchCARStats = async () => {
     try {
       setLoading(true);
+      console.log('Starting CAR stats fetch...');
 
-      // Fetch overall stats
+      // Test basic connectivity first
+      const testQuery = await supabase.from('citizen_address').select('*', { count: 'exact', head: true });
+      console.log('Test query result:', testQuery);
+
+      // Fetch overall stats with detailed logging
       const [
-        { count: totalAddresses },
-        { count: confirmedAddresses },
-        { count: pendingAddresses },
-        { count: rejectedAddresses },
-        { count: totalPersons },
-        { count: primaryAddresses },
-        { count: secondaryAddresses },
-        { count: recentActivity }
+        totalAddressesResult,
+        confirmedAddressesResult,
+        pendingAddressesResult,
+        rejectedAddressesResult,
+        totalPersonsResult,
+        primaryAddressesResult,
+        secondaryAddressesResult,
+        recentActivityResult
       ] = await Promise.all([
         supabase.from('citizen_address').select('*', { count: 'exact', head: true }),
         supabase.from('citizen_address').select('*', { count: 'exact', head: true }).eq('status', 'CONFIRMED'),
@@ -75,15 +80,37 @@ export function CARAddressOverview() {
         supabase.from('citizen_address_event').select('*', { count: 'exact', head: true }).gte('at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
       ]);
 
+      console.log('Raw query results:', {
+        totalAddresses: totalAddressesResult,
+        confirmedAddresses: confirmedAddressesResult,
+        pendingAddresses: pendingAddressesResult,
+        rejectedAddresses: rejectedAddressesResult,
+        totalPersons: totalPersonsResult,
+        primaryAddresses: primaryAddressesResult,
+        secondaryAddresses: secondaryAddressesResult,
+        recentActivity: recentActivityResult
+      });
+
       setStats({
-        totalAddresses: totalAddresses || 0,
-        confirmedAddresses: confirmedAddresses || 0,
-        pendingAddresses: pendingAddresses || 0,
-        rejectedAddresses: rejectedAddresses || 0,
-        totalPersons: totalPersons || 0,
-        primaryAddresses: primaryAddresses || 0,
-        secondaryAddresses: secondaryAddresses || 0,
-        recentActivity: recentActivity || 0,
+        totalAddresses: totalAddressesResult.count || 0,
+        confirmedAddresses: confirmedAddressesResult.count || 0,
+        pendingAddresses: pendingAddressesResult.count || 0,
+        rejectedAddresses: rejectedAddressesResult.count || 0,
+        totalPersons: totalPersonsResult.count || 0,
+        primaryAddresses: primaryAddressesResult.count || 0,
+        secondaryAddresses: secondaryAddressesResult.count || 0,
+        recentActivity: recentActivityResult.count || 0,
+      });
+
+      console.log('Final stats set:', {
+        totalAddresses: totalAddressesResult.count || 0,
+        confirmedAddresses: confirmedAddressesResult.count || 0,
+        pendingAddresses: pendingAddressesResult.count || 0,
+        rejectedAddresses: rejectedAddressesResult.count || 0,
+        totalPersons: totalPersonsResult.count || 0,
+        primaryAddresses: primaryAddressesResult.count || 0,
+        secondaryAddresses: secondaryAddressesResult.count || 0,
+        recentActivity: recentActivityResult.count || 0,
       });
 
       // Fetch region stats
@@ -91,6 +118,8 @@ export function CARAddressOverview() {
         .from('citizen_address_with_details')
         .select('region, status')
         .not('region', 'is', null);
+
+      console.log('Region data fetch result:', { regionData, regionError });
 
       if (!regionError && regionData) {
         const regionCounts = regionData.reduce((acc: any, curr) => {
@@ -114,6 +143,7 @@ export function CARAddressOverview() {
           pending: stats.pending,
         }));
 
+        console.log('Processed region stats:', regionStatsArray);
         setRegionStats(regionStatsArray.sort((a, b) => b.count - a.count));
       }
 
