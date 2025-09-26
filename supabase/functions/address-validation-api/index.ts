@@ -124,7 +124,7 @@ serve(async (req) => {
     let duplicateCheck = {
       hasDuplicates: false,
       duplicateCount: 0,
-      nearbyAddresses: []
+      nearbyAddresses: [] as any[]
     }
 
     if (latitude && longitude && city && region && country) {
@@ -181,7 +181,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         error: 'Internal server error',
-        details: error.message 
+        details: error instanceof Error ? error.message : String(error)
       }),
       { 
         status: 500, 
