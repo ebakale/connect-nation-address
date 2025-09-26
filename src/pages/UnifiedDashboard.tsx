@@ -143,7 +143,8 @@ const UnifiedDashboard = () => {
   const [unifiedStats, setUnifiedStats] = useState({
     totalNARAddresses: 0,
     totalCARAddresses: 0,
-    pendingVerifications: 0,
+    pendingCARVerifications: 0,
+    pendingResidencyVerifications: 0,
     publishedAddresses: 0,
     activeUsers: 0
   });
@@ -213,7 +214,8 @@ const UnifiedDashboard = () => {
         setUnifiedStats({
           totalNARAddresses: data.totalNARAddresses || 0,
           totalCARAddresses: data.totalCARAddresses || 0,
-          pendingVerifications: data.pendingVerifications || 0,
+          pendingCARVerifications: data.pendingCARVerifications || 0,
+          pendingResidencyVerifications: data.pendingResidencyVerifications || 0,
           publishedAddresses: data.publishedAddresses || 0,
           activeUsers: data.activeUsers || 0
         })
@@ -447,7 +449,7 @@ const UnifiedDashboard = () => {
                       <Clock className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{unifiedStats.pendingVerifications}</div>
+                      <div className="text-2xl font-bold">{unifiedStats.pendingCARVerifications + unifiedStats.pendingResidencyVerifications}</div>
                       <p className="text-xs text-muted-foreground">{t('dashboard:requiresReview')}</p>
                     </CardContent>
                   </Card>
@@ -495,7 +497,7 @@ const UnifiedDashboard = () => {
                       <Clock className="h-4 w-4 text-yellow-600" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-yellow-600">{unifiedStats.pendingVerifications}</div>
+                      <div className="text-2xl font-bold text-yellow-600">{unifiedStats.pendingCARVerifications}</div>
                       <p className="text-xs text-muted-foreground">{t('dashboard:awaitingYourReview')}</p>
                     </CardContent>
                   </Card>
@@ -506,7 +508,7 @@ const UnifiedDashboard = () => {
                       <Shield className="h-4 w-4 text-blue-600" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-blue-600">{unifiedStats.pendingVerifications}</div>
+                      <div className="text-2xl font-bold text-blue-600">{unifiedStats.pendingResidencyVerifications}</div>
                       <p className="text-xs text-muted-foreground">{t('dashboard:pendingDocuments')}</p>
                     </CardContent>
                   </Card>
