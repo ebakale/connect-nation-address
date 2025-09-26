@@ -12,6 +12,7 @@ import {
   Shield, FileText, CheckCircle, Clock, AlertTriangle, 
   Eye, Download, Upload, User, Home, Calendar
 } from 'lucide-react';
+import { VerificationReviewDialog } from './VerificationReviewDialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
@@ -43,6 +44,7 @@ export function CARResidencyVerification() {
   const [typeFilter, setTypeFilter] = useState('all');
   const [selectedVerification, setSelectedVerification] = useState<ResidencyVerification | null>(null);
   const [reviewNotes, setReviewNotes] = useState('');
+  const [reviewStatus, setReviewStatus] = useState('');
   const [reviewDialog, setReviewDialog] = useState(false);
   const [stats, setStats] = useState({
     total: 0,
@@ -428,59 +430,16 @@ export function CARResidencyVerification() {
       </div>
 
       {/* Review Dialog */}
-      <Dialog open={reviewDialog} onOpenChange={setReviewDialog}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>{t('dashboard:reviewVerification')}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            {selectedVerification && (
-              <div className="bg-muted p-4 rounded-lg">
-                <div className="font-medium">{selectedVerification.full_name}</div>
-                <div className="text-sm text-muted-foreground">
-                  {selectedVerification.verification_type?.replace('_', ' ')} verification
-                </div>
-              </div>
-            )}
-
-            <div>
-              <Label htmlFor="notes">{t('dashboard:reviewNotes')}</Label>
-              <Textarea
-                id="notes"
-                placeholder={t('dashboard:addNotesAboutReview')}
-                value={reviewNotes}
-                onChange={(e) => setReviewNotes(e.target.value)}
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Button
-                className="w-full"
-                onClick={() => updateVerificationStatus(selectedVerification?.id!, 'approved', reviewNotes)}
-              >
-                <CheckCircle className="h-4 w-4 mr-2" />
-                {t('dashboard:approve')}
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => updateVerificationStatus(selectedVerification?.id!, 'requires_additional_documents', reviewNotes)}
-              >
-                <Upload className="h-4 w-4 mr-2" />
-                {t('dashboard:requestMoreDocuments')}
-              </Button>
-              <Button
-                variant="destructive"
-                className="w-full"
-                onClick={() => updateVerificationStatus(selectedVerification?.id!, 'rejected', reviewNotes, reviewNotes)}
-              >
-                <AlertTriangle className="h-4 w-4 mr-2" />
-                {t('dashboard:reject')}
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <VerificationReviewDialog
+        isOpen={reviewDialog}
+        onClose={() => setReviewDialog(false)}
+        verification={selectedVerification}
+        reviewStatus={reviewStatus}
+        reviewNotes={reviewNotes}
+        onReviewStatusChange={setReviewStatus}
+        onReviewNotesChange={setReviewNotes}
+        onUpdateStatus={updateVerificationStatus}
+       />
     </div>
   );
 }
