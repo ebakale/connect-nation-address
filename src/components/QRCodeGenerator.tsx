@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import QRCode from 'qrcode';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -42,8 +41,11 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
     try {
       if (!canvasRef.current) return;
       
+      // Dynamically import qrcode to avoid bundling issues
+      const QRCode = await import('qrcode');
+      
       // Generate QR code with UAC
-      await QRCode.toCanvas(canvasRef.current, uac, {
+      await QRCode.default.toCanvas(canvasRef.current, uac, {
         width: qrSize,
         margin: 2,
         color: {
@@ -53,7 +55,7 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
       });
 
       // Also generate data URL for download
-      const dataUrl = await QRCode.toDataURL(uac, {
+      const dataUrl = await QRCode.default.toDataURL(uac, {
         width: qrSize,
         margin: 2,
         color: {

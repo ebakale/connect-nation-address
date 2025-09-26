@@ -25,10 +25,9 @@ export default defineConfig(({ mode }) => ({
   optimizeDeps: {
     // Prevent multiple React copies in dev pre-bundle and ensure single React instance
     exclude: [
-      
-      
       '@tanstack/react-query'
     ],
+    include: ['qrcode']
   },
   build: {
     rollupOptions: {
