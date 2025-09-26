@@ -27,8 +27,14 @@ serve(async (req) => {
       .from('citizen_address')
       .select('*', { count: 'exact', head: true })
 
-    // Get pending verifications count
-    const { count: pendingVerifications } = await supabaseClient
+    // Get pending CAR address verifications count (SELF_DECLARED status)
+    const { count: pendingCARVerifications } = await supabaseClient
+      .from('citizen_address')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'SELF_DECLARED')
+
+    // Get pending residency verifications count
+    const { count: pendingResidencyVerifications } = await supabaseClient
       .from('residency_ownership_verifications')
       .select('*', { count: 'exact', head: true })
       .eq('status', 'pending')
@@ -48,7 +54,8 @@ serve(async (req) => {
     const stats = {
       totalNARAddresses: totalNARAddresses || 0,
       totalCARAddresses: totalCARAddresses || 0,
-      pendingVerifications: pendingVerifications || 0,
+      pendingCARVerifications: pendingCARVerifications || 0,
+      pendingResidencyVerifications: pendingResidencyVerifications || 0,
       publishedAddresses: publishedAddresses || 0,
       activeUsers: activeUsers || 0
     }
