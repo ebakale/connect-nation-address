@@ -49,46 +49,66 @@ export function ResidencyVerificationPanel() {
 
   useEffect(() => {
     fetchVerifications();
-  }, []);
+  }, [statusFilter]);
 
   const fetchVerifications = async () => {
     try {
       setLoading(true);
       
-      // First get verifications
-      const { data: verificationsData, error: verificationsError } = await supabase
+      console.log('Fetching verifications with status filter:', statusFilter);
+      
+      let query = supabase
         .from('residency_ownership_verifications')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select(`
+          *
+        `)
+        .order('updated_at', { ascending: false });
 
-      if (verificationsError) throw verificationsError;
+      if (statusFilter !== 'all') {
+        query = query.eq('status', statusFilter as any);
+      }
 
-      if (verificationsData && verificationsData.length > 0) {
-        // Get user profiles
-        const userIds = verificationsData.map(v => v.user_id);
-        const { data: profilesData, error: profilesError } = await supabase
+      const { data, error } = await query;
+      
+      console.log('Verification fetch result:', { data, error, count: data?.length });
+
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+      
+      // If we have verifications, fetch the associated profiles separately
+      if (data && data.length > 0) {
+        const userIds = data.map(v => v.user_id);
+        console.log('Fetching profiles for user IDs:', userIds);
+        
+        const { data: profiles, error: profilesError } = await supabase
           .from('profiles')
           .select('user_id, full_name, email')
           .in('user_id', userIds);
 
-        if (profilesError) throw profilesError;
+        console.log('Profiles fetch result:', { profiles, profilesError });
 
-        // Combine data
-        const combinedData = verificationsData.map(verification => ({
-          id: verification.id,
-          user_id: verification.user_id,
-          verification_type: verification.verification_type || 'residency',
-          status: verification.status as any,
-          submitted_at: verification.created_at,
-          reviewed_at: verification.verified_at || undefined,
-          reviewed_by: verification.verified_by || undefined,
-          notes: verification.verification_notes || undefined,
-          document_url: verification.primary_document_url || undefined,
-          verification_details: verification.verification_history || undefined,
-          profiles: profilesData?.find(p => p.user_id === verification.user_id)
-        }));
+        if (profilesError) {
+          console.error('Profiles fetch error:', profilesError);
+          // Still proceed with verification data even if profiles fail
+        }
 
-        setVerifications(combinedData);
+        // Combine the data
+        const combinedData = data.map(verification => {
+          const profile = profiles?.find(p => p.user_id === verification.user_id);
+          console.log(`Mapping verification ${verification.id} with user_id ${verification.user_id}:`, { profile });
+          return {
+            ...verification,
+            profiles: profile ? { 
+              full_name: profile.full_name || 'Unknown User', 
+              email: profile.email || 'Unknown Email' 
+            } : { full_name: 'Unknown User', email: 'Unknown Email' }
+          };
+        });
+        
+        console.log('Final combined data:', combinedData);
+        setVerifications(combinedData as unknown as ResidencyVerification[]);
       } else {
         setVerifications([]);
       }
@@ -99,6 +119,7 @@ export function ResidencyVerificationPanel() {
         description: t('dashboard:failedToLoadVerifications'),
         variant: 'destructive',
       });
+      setVerifications([]); // Ensure we clear the list on error
     } finally {
       setLoading(false);
     }
