@@ -625,5 +625,8 @@
   "addNotesAboutVerification": "Add notes about this verification",
   "confirm": "Confirm",
   "addressDetails": "Address Details",
-  "effectiveFrom": "Effective From"
+  "effectiveFrom": "Effective From",
+  "totalVerifications": "Total Verifications",
+  "underReview": "Under Review",
+  "verificationDetails": "Verification Details"
 }
