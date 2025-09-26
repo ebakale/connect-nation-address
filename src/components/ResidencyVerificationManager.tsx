@@ -93,10 +93,14 @@ export const ResidencyVerificationManager = () => {
       // If we have verifications, fetch the associated profiles separately
       if (data && data.length > 0) {
         const userIds = data.map(v => v.user_id);
+        console.log('Fetching profiles for user IDs:', userIds);
+        
         const { data: profiles, error: profilesError } = await supabase
           .from('profiles')
           .select('user_id, full_name, email')
           .in('user_id', userIds);
+
+        console.log('Profiles fetch result:', { profiles, profilesError });
 
         if (profilesError) {
           console.error('Profiles fetch error:', profilesError);
@@ -106,12 +110,17 @@ export const ResidencyVerificationManager = () => {
         // Combine the data
         const combinedData = data.map(verification => {
           const profile = profiles?.find(p => p.user_id === verification.user_id);
+          console.log(`Mapping verification ${verification.id} with user_id ${verification.user_id}:`, { profile });
           return {
             ...verification,
-            profiles: profile || { full_name: 'Unknown User', email: 'Unknown Email' }
+            profiles: profile ? { 
+              full_name: profile.full_name || 'Unknown User', 
+              email: profile.email || 'Unknown Email' 
+            } : { full_name: 'Unknown User', email: 'Unknown Email' }
           };
         });
         
+        console.log('Final combined data:', combinedData);
         setVerifications(combinedData as unknown as VerificationRequest[]);
       } else {
         setVerifications([]);
