@@ -164,12 +164,17 @@ const UnifiedDashboard = () => {
   const [selectedAddress, setSelectedAddress] = useState<SearchResult | null>(null);
   const [showMapView, setShowMapView] = useState(false);
 
-  // Auto-open CAR dashboard for CAR roles
+  // Auto-open specific dashboards for different roles
   useEffect(() => {
-    if (!loading && (isCarVerifier || isCarAdmin)) {
-      setActiveView('car-verification');
+    if (!loading) {
+      if (isCarVerifier || isCarAdmin) {
+        setActiveView('car-verification');
+      } else if (isRegistrar && !hasAdminAccess) {
+        // Registrars go to their dedicated dashboard unless they're also admins
+        setActiveView('registrar-dashboard');
+      }
     }
-  }, [loading, isCarVerifier, isCarAdmin]);
+  }, [loading, isCarVerifier, isCarAdmin, isRegistrar, hasAdminAccess]);
 
   // Fetch dashboard statistics
   useEffect(() => {
@@ -335,7 +340,11 @@ const UnifiedDashboard = () => {
   if (isFieldAgent) userRoles.push(t('dashboard:fieldAgentRole'));
   if (isCitizen) userRoles.push(t('dashboard:citizen'));
 
+  // Debug logging for registrar users
+  console.log('Debug - User roles:', { isRegistrar, hasAdminAccess, activeView });
+
   const handleSidebarNavigation = (viewId: string) => {
+    console.log('Debug - Navigating to view:', viewId);
     setActiveView(viewId);
   };
 
@@ -359,6 +368,7 @@ const UnifiedDashboard = () => {
       case 'saved-locations': return t('dashboard:savedLocations');
       case 'profile': return t('dashboard:title');
       case 'emergency-contacts': return t('dashboard:emergencyContacts');
+      case 'registrar-dashboard': return t('dashboard:registrarDashboard');
       default: return t('dashboard:title');
     }
   };
