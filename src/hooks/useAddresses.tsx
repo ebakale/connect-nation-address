@@ -48,7 +48,11 @@ export const useAddresses = () => {
   const { toast } = useToast();
 
   const fetchAddresses = async () => {
-    if (!hasVerifierAccess && !hasAdminAccess) return;
+    console.log('fetchAddresses called - hasVerifierAccess:', hasVerifierAccess, 'hasAdminAccess:', hasAdminAccess);
+    if (!hasVerifierAccess && !hasAdminAccess) {
+      console.log('No access permissions, returning early');
+      return;
+    }
 
     setLoading(true);
     try {

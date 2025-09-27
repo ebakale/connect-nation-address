@@ -63,6 +63,8 @@ export const useUserRole = () => {
           return;
         }
 
+        console.log('Raw roleData from database:', roleData);
+        
         // Only update if we actually got data back
         if (roleData && roleData.length > 0) {
           // Get the highest priority role (admin > ndaa_admin > registrar > etc.)
@@ -86,11 +88,10 @@ export const useUserRole = () => {
           const allMetadata = roleData.flatMap(r => r.user_role_metadata || []);
           setRoleMetadata(allMetadata as RoleMetadata[]);
         } else {
-          // Only set to citizen if we don't have a cached role
-          if (!role) {
-            setRole('citizen');
-            setRoleMetadata([]);
-          }
+          console.log('No roleData found, setting to citizen');
+          // Always set to citizen if we don't get role data back
+          setRole('citizen');
+          setRoleMetadata([]);
         }
       } catch (error) {
         console.error('Error fetching user role:', error);
