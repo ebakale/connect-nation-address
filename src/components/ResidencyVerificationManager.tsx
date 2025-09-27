@@ -116,9 +116,9 @@ export const ResidencyVerificationManager = () => {
           return {
             ...verification,
             profiles: profile ? { 
-              full_name: profile.full_name || 'Unknown User', 
-              email: profile.email || 'Unknown Email' 
-            } : { full_name: 'Unknown User', email: 'Unknown Email' }
+              full_name: profile.full_name || t('admin:unknownUser'), 
+              email: profile.email || t('admin:unknownEmail') 
+            } : { full_name: t('admin:unknownUser'), email: t('admin:unknownEmail') }
           };
         });
         

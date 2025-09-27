@@ -1538,5 +1538,7 @@
   "approved": "Approved",
   "rejected": "Rejected",
   "under_investigation": "Under Investigation",
-  "documentTypeLabel": "Document Type"
+  "documentTypeLabel": "Document Type",
+  "unknownUser": "Unknown User",
+  "unknownEmail": "Unknown Email"
 }
