@@ -678,5 +678,15 @@
   "tryAdjustingFilters": "Try adjusting the search term or filters to find addresses.",
   "addressStatusUpdated": "Address status has been updated successfully",
   "failedToLoadAddresses": "Failed to load citizen addresses",
-  "failedToUpdateStatus": "Failed to update address status"
+  "failedToUpdateStatus": "Failed to update address status",
+  "verifyCarAddresses": "Review and verify citizen address registrations",
+  "carVerifier": "CAR Verifier",
+  "manageResidencyVerifications": "Manage citizen residency verification requests",
+  "manageCarAddresses": "Manage and oversee citizen address registrations",
+  "carAnalytics": "CAR Analytics",
+  "carAnalyticsDescription": "View comprehensive CAR system analytics and reports",
+  "qualityMetrics": "Quality Metrics",
+  "carQualityMetrics": "CAR Quality Metrics",
+  "trackCarSystemQuality": "Track quality metrics for the CAR system",
+  "qualityMetricsPlaceholder": "Quality metrics dashboard coming soon..."
 }

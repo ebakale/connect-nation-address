@@ -532,5 +532,15 @@
   "tryAdjustingFilters": "Essayez d'ajuster le terme de recherche ou les filtres pour trouver des adresses.",
   "addressStatusUpdated": "Le statut de l'adresse a été mis à jour avec succès",
   "failedToLoadAddresses": "Échec du chargement des adresses de citoyens",
-  "failedToUpdateStatus": "Échec de la mise à jour du statut de l'adresse"
+  "failedToUpdateStatus": "Échec de la mise à jour du statut de l'adresse",
+  "verifyCarAddresses": "Examiner et vérifier les enregistrements d'adresses des citoyens",
+  "carVerifier": "Vérificateur CAR",
+  "manageResidencyVerifications": "Gérer les demandes de vérification de résidence des citoyens",
+  "manageCarAddresses": "Gérer et superviser les enregistrements d'adresses des citoyens",
+  "carAnalytics": "Analyses CAR",
+  "carAnalyticsDescription": "Voir les analyses et rapports complets du système CAR",
+  "qualityMetrics": "Métriques de Qualité",
+  "carQualityMetrics": "Métriques de Qualité CAR",
+  "trackCarSystemQuality": "Suivre les métriques de qualité pour le système CAR",
+  "qualityMetricsPlaceholder": "Tableau de bord des métriques de qualité bientôt disponible..."
 }
