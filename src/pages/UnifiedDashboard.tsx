@@ -966,7 +966,7 @@ const UnifiedDashboard = () => {
         if (isFieldAgent) {
           setActiveView('overview');
           return <div className="text-center py-12">
-            <p className="text-muted-foreground">Redirecting to overview...</p>
+            <p className="text-muted-foreground">{t('dashboard:redirectingToOverview')}</p>
           </div>;
         }
         return (

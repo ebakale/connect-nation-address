@@ -562,5 +562,6 @@
     "PENDING_VERIFICATION": "Vérification en Attente",
     "CONFIRMED": "Confirmé",
     "REJECTED": "Rejeté"
-  }
+  },
+  "redirectingToOverview": "Redirection vers l'aperçu..."
 }

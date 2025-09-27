@@ -598,5 +598,6 @@
     "PENDING_VERIFICATION": "Verificación Pendiente",
     "CONFIRMED": "Confirmado",
     "REJECTED": "Rechazado"
-  }
+  },
+  "redirectingToOverview": "Redirigiendo al resumen..."
 }
