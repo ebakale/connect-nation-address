@@ -67,13 +67,15 @@ export const RegistrarDashboardView = () => {
         verifiedResult,
         publicResult,
         pendingResult,
-        flaggedResult
+        flaggedResult,
+        readyToPublishResult
       ] = await Promise.all([
         supabase.from('addresses').select('id', { count: 'exact', head: true }),
         supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true),
         supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('public', true),
         supabase.from('address_requests').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
-        supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('flagged', true)
+        supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('flagged', true),
+        supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true).eq('public', false)
       ]);
 
       const totalAddresses = addressesResult.count || 0;
@@ -81,7 +83,7 @@ export const RegistrarDashboardView = () => {
       const publishedAddresses = publicResult.count || 0;
       const pendingApprovals = pendingResult.count || 0;
       const flaggedAddresses = flaggedResult.count || 0;
-      const readyToPublish = verifiedAddresses - publishedAddresses;
+      const readyToPublish = readyToPublishResult.count || 0;
 
       setStats({
         totalAddresses,
