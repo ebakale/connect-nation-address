@@ -177,9 +177,9 @@ export function AddressRequestReviewCard({
               </DialogTrigger>
               <DialogContent className="max-w-2xl">
                 <DialogHeader>
-                  <DialogTitle>Address Request Details</DialogTitle>
+                  <DialogTitle>Address Request Details - Pending Approval</DialogTitle>
                   <DialogDescription>
-                    Full details for address request {address.uac}
+                    Request details for UAC {address.uac} - requires approval before becoming a verified address
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
@@ -286,7 +286,7 @@ export function AddressRequestReviewCard({
                   <AlertDialogHeader>
                     <AlertDialogTitle>Approve Address Request</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This will approve the address request and confirm the citizen's address registration.
+                      This will approve the request and create a verified address in the system. The address will then be available for publication.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
