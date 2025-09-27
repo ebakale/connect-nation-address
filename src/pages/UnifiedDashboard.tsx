@@ -978,6 +978,13 @@ const UnifiedDashboard = () => {
           </div>
         );
 
+      case 'registrar-dashboard':
+        return (
+          <div className="max-w-7xl">
+            <RegistrarDashboardView />
+          </div>
+        );
+
       default:
         return (
           <div className="text-center py-12">
