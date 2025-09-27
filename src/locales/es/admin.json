@@ -1199,5 +1199,35 @@
     "addresses": "Direcciones",
     "quality": "Calidad",
     "published": "Publicado"
-  }
+  },
+  "failedToUpdateVerificationStatus": "Error al actualizar el estado de verificación",
+  "verificationType": {
+    "residency": "Residencia",
+    "ownership": "Propiedad",
+    "occupancy": "Ocupación",
+    "tenancy": "Arrendamiento"
+  },
+  "verification": "Verificación",
+  "submittedBy": "Enviado por",
+  "onDate": "el",
+  "claimantType": "Tipo de Solicitante",
+  "claimantRelationship": {
+    "self": "Propio",
+    "family_member": "Miembro de la Familia",
+    "legal_representative": "Representante Legal",
+    "property_manager": "Administrador de Propiedad",
+    "landlord": "Propietario",
+    "tenant": "Inquilino"
+  },
+  "documentType": {
+    "passport": "Pasaporte",
+    "national_id": "Cédula Nacional",
+    "drivers_license": "Licencia de Conducir",
+    "utility_bill": "Factura de Servicios",
+    "lease_agreement": "Contrato de Arrendamiento",
+    "property_deed": "Escritura de Propiedad",
+    "tax_document": "Documento Fiscal",
+    "bank_statement": "Estado de Cuenta Bancario"
+  },
+  "submitted": "Enviado"
 }

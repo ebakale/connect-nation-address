@@ -1500,5 +1500,35 @@
     "addresses": "Addresses",
     "quality": "Quality",
     "published": "Published"
-  }
+  },
+  "failedToUpdateVerificationStatus": "Failed to update verification status",
+  "verificationType": {
+    "residency": "Residency",
+    "ownership": "Ownership",
+    "occupancy": "Occupancy",
+    "tenancy": "Tenancy"
+  },
+  "verification": "Verification",
+  "submittedBy": "Submitted by",
+  "onDate": "on",
+  "claimantType": "Claimant Type",
+  "claimantRelationship": {
+    "self": "Self",
+    "family_member": "Family Member",
+    "legal_representative": "Legal Representative",
+    "property_manager": "Property Manager",
+    "landlord": "Landlord",
+    "tenant": "Tenant"
+  },
+  "documentType": {
+    "passport": "Passport",
+    "national_id": "National ID",
+    "drivers_license": "Driver's License",
+    "utility_bill": "Utility Bill",
+    "lease_agreement": "Lease Agreement",
+    "property_deed": "Property Deed",
+    "tax_document": "Tax Document",
+    "bank_statement": "Bank Statement"
+  },
+  "submitted": "Submitted"
 }

@@ -166,8 +166,8 @@ export const ResidencyVerificationManager = () => {
     } catch (error: any) {
       console.error('Error updating verification:', error);
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to update verification status',
+        title: t('common:error'),
+        description: error.message || t('admin:failedToUpdateVerificationStatus'),
         variant: 'destructive'
       });
     }

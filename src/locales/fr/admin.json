@@ -995,5 +995,35 @@
     "addresses": "Adresses",
     "quality": "Qualité",
     "published": "Publié"
-  }
+  },
+  "failedToUpdateVerificationStatus": "Échec de la mise à jour du statut de vérification",
+  "verificationType": {
+    "residency": "Résidence",
+    "ownership": "Propriété",
+    "occupancy": "Occupation",
+    "tenancy": "Location"
+  },
+  "verification": "Vérification",
+  "submittedBy": "Soumis par",
+  "onDate": "le",
+  "claimantType": "Type de Demandeur",
+  "claimantRelationship": {
+    "self": "Soi-même",
+    "family_member": "Membre de la Famille",
+    "legal_representative": "Représentant Légal",
+    "property_manager": "Gestionnaire de Propriété",
+    "landlord": "Propriétaire",
+    "tenant": "Locataire"
+  },
+  "documentType": {
+    "passport": "Passeport",
+    "national_id": "Carte d'Identité Nationale",
+    "drivers_license": "Permis de Conduire",
+    "utility_bill": "Facture de Services Publics",
+    "lease_agreement": "Contrat de Bail",
+    "property_deed": "Acte de Propriété",
+    "tax_document": "Document Fiscal",
+    "bank_statement": "Relevé Bancaire"
+  },
+  "submitted": "Soumis"
 }
