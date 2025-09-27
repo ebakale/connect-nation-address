@@ -78,12 +78,23 @@ export const RegistrarDashboardView = () => {
         supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true).eq('public', false)
       ]);
 
-      const totalAddresses = addressesResult.count || 0;
-      const verifiedAddresses = verifiedResult.count || 0;
-      const publishedAddresses = publicResult.count || 0;
+      let totalAddresses = addressesResult.count || 0;
+      let verifiedAddresses = verifiedResult.count || 0;
+      let publishedAddresses = publicResult.count || 0;
       const pendingApprovals = pendingResult.count || 0;
       const flaggedAddresses = flaggedResult.count || 0;
-      const readyToPublish = readyToPublishResult.count || 0;
+      let readyToPublish = readyToPublishResult.count || 0;
+
+      // Override with service-side counts (bypass RLS) when available
+      try {
+        const { data: unified, error: unifiedError } = await supabase.functions.invoke('unified-address-statistics');
+        if (!unifiedError && unified) {
+          if (typeof unified.totalNARAddresses === 'number') totalAddresses = unified.totalNARAddresses;
+          if (typeof unified.publishedAddresses === 'number') publishedAddresses = unified.publishedAddresses;
+        }
+      } catch (e) {
+        console.warn('Falling back to client-side counts:', e);
+      }
 
       setStats({
         totalAddresses,
