@@ -355,7 +355,7 @@ export const ResidencyVerificationManager = () => {
                    <div className="flex items-center gap-2">
                      <FileText className="w-4 h-4 text-muted-foreground" />
                      <div>
-                       <p className="text-sm font-medium">{t('admin:documentType')}</p>
+                       <p className="text-sm font-medium">{t('admin:documentTypeLabel')}</p>
                       <p className="text-sm text-muted-foreground">
                         {t(`admin:documentType.${verification.primary_document_type}`, { defaultValue: formatStatus(verification.primary_document_type) })}
                       </p>

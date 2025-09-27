@@ -1537,5 +1537,6 @@
   "legal_review": "Legal Review",
   "approved": "Approved",
   "rejected": "Rejected",
-  "under_investigation": "Under Investigation"
+  "under_investigation": "Under Investigation",
+  "documentTypeLabel": "Document Type"
 }

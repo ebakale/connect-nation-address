@@ -1236,5 +1236,6 @@
   "legal_review": "Revisión Legal", 
   "approved": "Aprobado",
   "rejected": "Rechazado",
-  "under_investigation": "Bajo Investigación"
+  "under_investigation": "Bajo Investigación",
+  "documentTypeLabel": "Tipo de Documento"
 }

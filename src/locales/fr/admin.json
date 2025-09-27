@@ -1032,5 +1032,6 @@
   "legal_review": "Examen Juridique",
   "approved": "Approuvé", 
   "rejected": "Rejeté",
-  "under_investigation": "Sous Enquête"
+  "under_investigation": "Sous Enquête",
+  "documentTypeLabel": "Type de Document"
 }
