@@ -1530,5 +1530,12 @@
     "tax_document": "Tax Document",
     "bank_statement": "Bank Statement"
   },
-  "submitted": "Submitted"
+  "submitted": "Submitted",
+  "pending": "Pending",
+  "document_review": "Document Review",
+  "field_verification": "Field Verification", 
+  "legal_review": "Legal Review",
+  "approved": "Approved",
+  "rejected": "Rejected",
+  "under_investigation": "Under Investigation"
 }

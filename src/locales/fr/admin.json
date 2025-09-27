@@ -1025,5 +1025,12 @@
     "tax_document": "Document Fiscal",
     "bank_statement": "Relevé Bancaire"
   },
-  "submitted": "Soumis"
+  "submitted": "Soumis",
+  "pending": "En Attente",
+  "document_review": "Examen de Documents",
+  "field_verification": "Vérification sur le Terrain",
+  "legal_review": "Examen Juridique",
+  "approved": "Approuvé", 
+  "rejected": "Rejeté",
+  "under_investigation": "Sous Enquête"
 }

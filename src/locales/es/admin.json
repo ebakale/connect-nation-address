@@ -1229,5 +1229,12 @@
     "tax_document": "Documento Fiscal",
     "bank_statement": "Estado de Cuenta Bancario"
   },
-  "submitted": "Enviado"
+  "submitted": "Enviado",
+  "pending": "Pendiente",
+  "document_review": "Revisión de Documentos",
+  "field_verification": "Verificación de Campo",
+  "legal_review": "Revisión Legal", 
+  "approved": "Aprobado",
+  "rejected": "Rechazado",
+  "under_investigation": "Bajo Investigación"
 }
