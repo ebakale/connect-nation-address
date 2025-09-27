@@ -87,7 +87,7 @@ export type Database = {
           rejection_notes: string | null
           rejection_reason: string | null
           request_type: string | null
-          requester_id: string | null
+          requester_id: string
           requires_manual_review: boolean | null
           resubmission_count: number | null
           resubmission_of: string | null
@@ -128,7 +128,7 @@ export type Database = {
           rejection_notes?: string | null
           rejection_reason?: string | null
           request_type?: string | null
-          requester_id?: string | null
+          requester_id: string
           requires_manual_review?: boolean | null
           resubmission_count?: number | null
           resubmission_of?: string | null
@@ -169,7 +169,7 @@ export type Database = {
           rejection_notes?: string | null
           rejection_reason?: string | null
           request_type?: string | null
-          requester_id?: string | null
+          requester_id?: string
           requires_manual_review?: boolean | null
           resubmission_count?: number | null
           resubmission_of?: string | null
