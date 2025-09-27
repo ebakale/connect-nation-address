@@ -336,7 +336,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
 
   // Standard groups for other users
   const mainItems = visibleItems.filter(item => 
-    ['overview', 'unified-address-dashboard'].includes(item.id)
+    ['overview', 'unified-address-dashboard', 'registrar-dashboard'].includes(item.id)
   );
 
   const fieldItems = visibleItems.filter(item => 
