@@ -18,6 +18,7 @@ import {
   Phone,
   FileDown,
   FileCheck,
+  Crown,
   UserCheck
 } from 'lucide-react';
 import {
@@ -160,6 +161,14 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       icon: MapPin,
       onClick: () => handleItemClick('field-map'),
       visible: isFieldAgent
+    },
+     // Registrar items
+    {
+      id: 'registrar-dashboard',
+      title: t('registrarDashboard'),
+      icon: Settings,
+      onClick: () => handleItemClick('registrar-dashboard'),
+      visible: isRegistrar || hasAdminAccess
     },
      // Admin and management items
     {

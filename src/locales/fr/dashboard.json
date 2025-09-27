@@ -565,5 +565,21 @@
   },
   "redirectingToOverview": "Redirection vers l'aperçu...",
   "manualReview": "Révision Manuelle", 
-  "bulkOperations": "Opérations en Masse"
+  "bulkOperations": "Opérations en Masse",
+  "registrarDashboard": "Tableau de Bord Registraire",
+  "manageAddressRegistration": "Gérer l'enregistrement et la publication nationale des adresses",
+  "publicationSummary": "Résumé de Publication",
+  "publicationMetrics": "Métriques et statut actuel de publication",
+  "latestSubmissions": "Dernières soumissions d'adresses nécessitant une révision",
+  "addressPublishingQueue": "File de Publication des Adresses",
+  "managePublishedAddresses": "Gérer les Adresses Publiées",
+  "removeFromPublicRegistry": "Retirer les adresses du registre public",
+  "addressQualityManagement": "Gestion de la Qualité des Adresses",
+  "reviewFlaggedAddresses": "Réviser et résoudre les adresses signalées",
+  "rejectedAddressRequests": "Demandes d'Adresses Rejetées",
+  "manageRejectedRequests": "Réviser et gérer les demandes rejetées",
+  "inRegistry": "Dans le Registre",
+  "publicationRate": "Taux de Publication",
+  "flaggedIssues": "Problèmes Signalés",
+  "accessDenied": "Accès Refusé"
 }

@@ -60,6 +60,7 @@ import { CARBulkOperations } from '@/components/CARBulkOperations';
 
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
 import { UnifiedAddressDashboard } from "@/components/UnifiedAddressDashboard";
+import { RegistrarDashboardView } from "@/components/RegistrarDashboardView";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 interface SearchResult {
   uac: string;

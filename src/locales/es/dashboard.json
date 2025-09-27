@@ -601,5 +601,21 @@
   },
   "redirectingToOverview": "Redirigiendo al resumen...",
   "manualReview": "Revisión Manual",
-  "bulkOperations": "Operaciones Masivas"
+  "bulkOperations": "Operaciones Masivas",
+  "registrarDashboard": "Panel del Registrador",
+  "manageAddressRegistration": "Gestionar registro y publicación nacional de direcciones",
+  "publicationSummary": "Resumen de Publicación",
+  "publicationMetrics": "Métricas y estado actual de publicación",
+  "latestSubmissions": "Últimas solicitudes de direcciones que requieren revisión",
+  "addressPublishingQueue": "Cola de Publicación de Direcciones",
+  "managePublishedAddresses": "Gestionar Direcciones Publicadas",
+  "removeFromPublicRegistry": "Remover direcciones del registro público",
+  "addressQualityManagement": "Gestión de Calidad de Direcciones",
+  "reviewFlaggedAddresses": "Revisar y resolver direcciones marcadas",
+  "rejectedAddressRequests": "Solicitudes de Direcciones Rechazadas",
+  "manageRejectedRequests": "Revisar y gestionar solicitudes rechazadas",
+  "inRegistry": "En Registro",
+  "publicationRate": "Tasa de Publicación",
+  "flaggedIssues": "Problemas Marcados",
+  "accessDenied": "Acceso Denegado"
 }

@@ -711,5 +711,21 @@
   },
   "redirectingToOverview": "Redirecting to overview...",
   "manualReview": "Manual Review",
-  "bulkOperations": "Bulk Operations"
+  "bulkOperations": "Bulk Operations",
+  "registrarDashboard": "Registrar Dashboard",
+  "manageAddressRegistration": "Manage national address registration and publication",
+  "publicationSummary": "Publication Summary",
+  "publicationMetrics": "Current publication metrics and status",
+  "latestSubmissions": "Latest address submissions requiring review",
+  "addressPublishingQueue": "Address Publishing Queue",
+  "managePublishedAddresses": "Manage Published Addresses",
+  "removeFromPublicRegistry": "Remove addresses from public registry",
+  "addressQualityManagement": "Address Quality Management",
+  "reviewFlaggedAddresses": "Review and resolve flagged addresses",
+  "rejectedAddressRequests": "Rejected Address Requests",
+  "manageRejectedRequests": "Review and manage rejected requests",
+  "inRegistry": "In Registry",
+  "publicationRate": "Publication Rate",
+  "flaggedIssues": "Flagged Issues",
+  "accessDenied": "Access Denied"
 }
