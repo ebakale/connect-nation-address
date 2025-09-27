@@ -230,7 +230,7 @@ export function CARVerificationInterface() {
                     <Badge className={getStatusColor(address.status)}>
                       <div className="flex items-center gap-1">
                         {getStatusIcon(address.status)}
-                        {address.status?.replace('_', ' ')}
+                        {t(`dashboard:statusTypes.${address.status}`, { defaultValue: address.status?.replace('_', ' ') })}
                       </div>
                     </Badge>
                   </div>
@@ -248,11 +248,11 @@ export function CARVerificationInterface() {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs text-muted-foreground">
                     <div>
                       <span className="font-medium">{t('dashboard:addressKind')}:</span> 
-                      <br />{address.address_kind?.replace('_', ' ')}
+                      <br />{t(`dashboard:addressKinds.${address.address_kind}`, { defaultValue: address.address_kind?.replace('_', ' ') })}
                     </div>
                     <div>
                       <span className="font-medium">{t('dashboard:occupant')}:</span> 
-                      <br />{address.occupant?.replace('_', ' ')}
+                      <br />{t(`dashboard:occupantTypes.${address.occupant}`, { defaultValue: address.occupant?.replace('_', ' ') })}
                     </div>
                     <div>
                       <span className="font-medium">{t('dashboard:scope')}:</span> 
@@ -285,9 +285,9 @@ export function CARVerificationInterface() {
                       <div className="space-y-4">
                         <div className="grid grid-cols-2 gap-4 text-sm">
                           <div><strong>UAC:</strong> {address.uac}</div>
-                          <div><strong>{t('dashboard:status')}:</strong> {address.status}</div>
-                          <div><strong>{t('dashboard:addressKind')}:</strong> {address.address_kind}</div>
-                          <div><strong>{t('dashboard:occupant')}:</strong> {address.occupant}</div>
+                          <div><strong>{t('dashboard:status')}:</strong> {t(`dashboard:statusTypes.${address.status}`, { defaultValue: address.status })}</div>
+                          <div><strong>{t('dashboard:addressKind')}:</strong> {t(`dashboard:addressKinds.${address.address_kind}`, { defaultValue: address.address_kind })}</div>
+                          <div><strong>{t('dashboard:occupant')}:</strong> {t(`dashboard:occupantTypes.${address.occupant}`, { defaultValue: address.occupant })}</div>
                           <div><strong>{t('dashboard:scope')}:</strong> {address.scope}</div>
                           <div><strong>{t('dashboard:effectiveFrom')}:</strong> {address.effective_from}</div>
                         </div>

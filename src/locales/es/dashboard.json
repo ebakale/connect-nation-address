@@ -578,5 +578,25 @@
   "qualityMetrics": "Métricas de Calidad",
   "carQualityMetrics": "Métricas de Calidad CAR",
   "trackCarSystemQuality": "Seguir métricas de calidad para el sistema CAR",
-  "qualityMetricsPlaceholder": "Panel de métricas de calidad próximamente..."
+  "qualityMetricsPlaceholder": "Panel de métricas de calidad próximamente...",
+  "addressKinds": {
+    "PRIMARY": "Primaria",
+    "SECONDARY": "Secundaria",
+    "TEMPORARY": "Temporal",
+    "BUSINESS": "Comercial",
+    "MAILING": "Correspondencia"
+  },
+  "occupantTypes": {
+    "OWNER": "Propietario",
+    "TENANT": "Inquilino",
+    "RELATIVE": "Familiar",
+    "EMPLOYEE": "Empleado",
+    "OTHER": "Otro"
+  },
+  "statusTypes": {
+    "SELF_DECLARED": "Auto Declarado",
+    "PENDING_VERIFICATION": "Verificación Pendiente",
+    "CONFIRMED": "Confirmado",
+    "REJECTED": "Rechazado"
+  }
 }

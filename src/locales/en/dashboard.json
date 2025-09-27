@@ -688,5 +688,25 @@
   "qualityMetrics": "Quality Metrics",
   "carQualityMetrics": "CAR Quality Metrics",
   "trackCarSystemQuality": "Track quality metrics for the CAR system",
-  "qualityMetricsPlaceholder": "Quality metrics dashboard coming soon..."
+  "qualityMetricsPlaceholder": "Quality metrics dashboard coming soon...",
+  "addressKinds": {
+    "PRIMARY": "Primary",
+    "SECONDARY": "Secondary",
+    "TEMPORARY": "Temporary",
+    "BUSINESS": "Business",
+    "MAILING": "Mailing"
+  },
+  "occupantTypes": {
+    "OWNER": "Owner",
+    "TENANT": "Tenant",
+    "RELATIVE": "Relative",
+    "EMPLOYEE": "Employee",
+    "OTHER": "Other"
+  },
+  "statusTypes": {
+    "SELF_DECLARED": "Self Declared",
+    "PENDING_VERIFICATION": "Pending Verification",
+    "CONFIRMED": "Confirmed",
+    "REJECTED": "Rejected"
+  }
 }
