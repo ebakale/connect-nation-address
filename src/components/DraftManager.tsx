@@ -76,7 +76,7 @@ const DraftManager = ({ onClose }: DraftManagerProps) => {
       const { error: insertError } = await supabase
         .from('address_requests')
         .insert({
-          user_id: user?.id,
+          requester_id: user?.id,
           latitude: draft.latitude,
           longitude: draft.longitude,
           street: draft.street,

@@ -41,31 +41,12 @@ export function ReviewQueuePanel() {
 
   const fetchFlaggedAddresses = async () => {
     try {
-      // Get flagged requests with basic data only
-      const { data, error } = await supabase
-        .from('address_requests')
-        .select(`
-          id,
-          latitude,
-          longitude,
-          street,
-          city,
-          region,
-          country,
-          building,
-          address_type,
-          description,
-          photo_url,
-          flag_reason,
-          flagged_at,
-          status,
-          justification
-        `)
-        .eq('flagged', true)
-        .order('flagged_at', { ascending: false });
-      
+      const { data, error } = await supabase.functions.invoke('admin-address-requests', {
+        body: { view: 'flagged' }
+      });
       if (error) throw error;
-      setFlaggedAddresses(data || []);
+      const items = (data as any)?.items || [];
+      setFlaggedAddresses(items);
     } catch (error) {
       console.error('Error fetching flagged addresses:', error);
       toast.error(t('failedToLoadFlagged'));

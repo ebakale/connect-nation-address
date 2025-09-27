@@ -32,20 +32,12 @@ export function ManualReviewPanel() {
 
   const fetchManualReviewRequests = async () => {
     try {
-      const { data, error } = await supabase.rpc('get_review_queue');
-      if (error) throw error;
-      
-      console.log('All review queue data:', data);
-      
-      // Filter to show only flagged requests and those requiring manual review
-      const filteredRequests = (data || []).filter((request: any) => {
-        const shouldInclude = request.flagged || request.requires_manual_review;
-        console.log(`Request ${request.id}: flagged=${request.flagged}, requires_manual_review=${request.requires_manual_review}, included=${shouldInclude}`);
-        return shouldInclude;
+      const { data, error } = await supabase.functions.invoke('admin-address-requests', {
+        body: { view: 'manual_review' }
       });
-      
-      console.log('Filtered manual review requests:', filteredRequests);
-      setManualReviewRequests(filteredRequests);
+      if (error) throw error;
+      const items = (data as any)?.items || [];
+      setManualReviewRequests(items);
     } catch (error) {
       console.error('Error fetching manual review requests:', error);
       toast.error(t('failedToLoadRequests'));
