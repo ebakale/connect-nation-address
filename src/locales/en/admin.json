@@ -1514,11 +1514,17 @@
   "claimantType": "Claimant Type",
   "claimantRelationship": {
     "self": "Self",
+    "owner": "Owner",
+    "landlord": "Landlord",
+    "resident": "Resident",
+    "tenant": "Tenant",
+    "occupant": "Occupant",
     "family_member": "Family Member",
+    "caretaker": "Caretaker",
     "legal_representative": "Legal Representative",
     "property_manager": "Property Manager",
-    "landlord": "Landlord",
-    "tenant": "Tenant"
+    "business_owner": "Business Owner",
+    "employee": "Employee"
   },
   "documentType": {
     "passport": "Passport",

@@ -1009,11 +1009,17 @@
   "claimantType": "Type de Demandeur",
   "claimantRelationship": {
     "self": "Soi-même",
+    "owner": "Propriétaire",
+    "landlord": "Propriétaire",
+    "resident": "Résident",
+    "tenant": "Locataire",
+    "occupant": "Occupant",
     "family_member": "Membre de la Famille",
+    "caretaker": "Gardien",
     "legal_representative": "Représentant Légal",
     "property_manager": "Gestionnaire de Propriété",
-    "landlord": "Propriétaire",
-    "tenant": "Locataire"
+    "business_owner": "Propriétaire d'Entreprise",
+    "employee": "Employé"
   },
   "documentType": {
     "passport": "Passeport",

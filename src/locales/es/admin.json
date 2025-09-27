@@ -1213,11 +1213,17 @@
   "claimantType": "Tipo de Solicitante",
   "claimantRelationship": {
     "self": "Propio",
+    "owner": "Propietario",
+    "landlord": "Propietario",
+    "resident": "Residente",
+    "tenant": "Inquilino",
+    "occupant": "Ocupante",
     "family_member": "Miembro de la Familia",
+    "caretaker": "Cuidador",
     "legal_representative": "Representante Legal",
     "property_manager": "Administrador de Propiedad",
-    "landlord": "Propietario",
-    "tenant": "Inquilino"
+    "business_owner": "Propietario de Negocio",
+    "employee": "Empleado"
   },
   "documentType": {
     "passport": "Pasaporte",
