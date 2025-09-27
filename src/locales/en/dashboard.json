@@ -709,5 +709,7 @@
     "CONFIRMED": "Confirmed",
     "REJECTED": "Rejected"
   },
-  "redirectingToOverview": "Redirecting to overview..."
+  "redirectingToOverview": "Redirecting to overview...",
+  "manualReview": "Manual Review",
+  "bulkOperations": "Bulk Operations"
 }

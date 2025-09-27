@@ -599,5 +599,7 @@
     "CONFIRMED": "Confirmado",
     "REJECTED": "Rechazado"
   },
-  "redirectingToOverview": "Redirigiendo al resumen..."
+  "redirectingToOverview": "Redirigiendo al resumen...",
+  "manualReview": "Revisión Manual",
+  "bulkOperations": "Operaciones Masivas"
 }

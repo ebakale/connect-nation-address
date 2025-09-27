@@ -116,13 +116,6 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       onClick: () => handleItemClick('car-admin'),
       visible: isCarAdmin
     },
-    {
-      id: 'car-analytics',
-      title: t('carAnalytics'),
-      icon: BarChart3,
-      onClick: () => handleItemClick('car-analytics'),
-      visible: isCarAdmin
-    }
   ];
 
   const standardNavigationItems: NavigationItem[] = [

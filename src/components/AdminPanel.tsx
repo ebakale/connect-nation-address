@@ -16,6 +16,7 @@ import NotificationTester from './NotificationTester';
 import { GoogleMapsImporter } from './GoogleMapsImporter';
 import { NARCARTestPanel } from './NARCARTestPanel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield, Hash } from 'lucide-react';
 import { NARAuthorityManager } from './NARAuthorityManager';
 import { CARPermissionsManager } from './CARPermissionsManager';
@@ -55,13 +56,11 @@ const AdminPanel: React.FC = () => {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="users" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 grid-rows-2 gap-1">
+        <TabsList className="grid w-full grid-cols-4 grid-rows-2 gap-1">
           <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:userManagement')}</TabsTrigger>
           <TabsTrigger value="permissions" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:permissions')}</TabsTrigger>
           <TabsTrigger value="workflows" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:workflows')}</TabsTrigger>
           <TabsTrigger value="nar-authorities" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:narAuthorities')}</TabsTrigger>
-          <TabsTrigger value="car-permissions" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:carPermissions')}</TabsTrigger>
-          <TabsTrigger value="car-workflow" className="text-xs sm:text-sm px-2 sm:px-3 whitespace-normal">{t('admin:carWorkflow.title')}</TabsTrigger>
           <TabsTrigger value="uac" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:uacSystem')}</TabsTrigger>
           <TabsTrigger value="quality" className="text-xs sm:text-sm px-2 sm:px-3 whitespace-normal">{t('admin:quality.title')}</TabsTrigger>
           <TabsTrigger value="system-tools" className="text-xs sm:text-sm px-2 sm:px-3 whitespace-normal">{t('admin:systemTools')}</TabsTrigger>
@@ -84,15 +83,16 @@ const AdminPanel: React.FC = () => {
         </TabsContent>
         
         <TabsContent value="nar-authorities">
-          <NARAuthorityManager />
-        </TabsContent>
-        
-        <TabsContent value="car-permissions">
-          <CARPermissionsManager />
-        </TabsContent>
-        
-        <TabsContent value="car-workflow">
-          <CARVerificationWorkflow />
+          <div className="space-y-6">
+            <Alert>
+              <Hash className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Note:</strong> CAR-specific permissions are now managed in the dedicated CAR Admin interface. 
+                Access via the CAR Administration dashboard for comprehensive management.
+              </AlertDescription>
+            </Alert>
+            <NARAuthorityManager />
+          </div>
         </TabsContent>
         
         <TabsContent value="uac">

@@ -53,6 +53,10 @@ import { UserVerificationRequests } from "@/components/UserVerificationRequests"
 import { CitizenAddressPortal } from "@/components/CitizenAddressPortal";
 import { CARVerificationInterface } from "@/components/CARVerificationInterface";
 import { CARAddressOverview } from "@/components/CARAddressOverview";
+import { CARAdministrativeOverview } from '@/components/CARAdministrativeOverview';
+import { CARQualityMetrics } from '@/components/CARQualityMetrics';
+import { CARManualReviewQueue } from '@/components/CARManualReviewQueue';
+import { CARBulkOperations } from '@/components/CARBulkOperations';
 
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
 import { UnifiedAddressDashboard } from "@/components/UnifiedAddressDashboard";
@@ -910,56 +914,37 @@ const UnifiedDashboard = () => {
               </div>
               <Badge variant="outline">{t('dashboard:carAdmin')}</Badge>
             </div>
-            <Tabs defaultValue="verification" className="space-y-4">
-              <TabsList>
+            <Tabs defaultValue="overview" className="space-y-4">
+              <TabsList className="grid w-full grid-cols-5">
+                <TabsTrigger value="overview">{t('dashboard:overview')}</TabsTrigger>
                 <TabsTrigger value="verification">{t('dashboard:residencyVerification')}</TabsTrigger>
-                <TabsTrigger value="addresses">{t('dashboard:administrativeOverview')}</TabsTrigger>
+                <TabsTrigger value="quality">{t('dashboard:qualityMetrics')}</TabsTrigger>
+                <TabsTrigger value="review">{t('dashboard:manualReview')}</TabsTrigger>
+                <TabsTrigger value="operations">{t('dashboard:bulkOperations')}</TabsTrigger>
               </TabsList>
+              <TabsContent value="overview">
+                <CARAdministrativeOverview />
+              </TabsContent>
               <TabsContent value="verification">
                 <ResidencyVerificationManager />
               </TabsContent>
-              <TabsContent value="addresses">
-                <CARAddressOverview />
+              <TabsContent value="quality">
+                <CARQualityMetrics />
+              </TabsContent>
+              <TabsContent value="review">
+                <CARManualReviewQueue />
+              </TabsContent>
+              <TabsContent value="operations">
+                <CARBulkOperations />
               </TabsContent>
             </Tabs>
           </div>
         );
 
       case 'car-analytics':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">{t('dashboard:carAnalytics')}</h2>
-                <p className="text-muted-foreground">{t('dashboard:carAnalyticsDescription')}</p>
-              </div>
-              <Badge variant="outline">{t('dashboard:carAdmin')}</Badge>
-            </div>
-            <Tabs defaultValue="metrics" className="space-y-4">
-              <TabsList>
-                <TabsTrigger value="metrics">{t('dashboard:qualityMetrics')}</TabsTrigger>
-                <TabsTrigger value="overview">{t('dashboard:overview')}</TabsTrigger>
-              </TabsList>
-              <TabsContent value="metrics">
-                <div className="grid gap-6">
-                  {/* Quality metrics would go here */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>{t('dashboard:carQualityMetrics')}</CardTitle>
-                      <CardDescription>{t('dashboard:trackCarSystemQuality')}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-muted-foreground">{t('dashboard:qualityMetricsPlaceholder')}</p>
-                    </CardContent>
-                  </Card>
-                </div>
-              </TabsContent>
-              <TabsContent value="overview">
-                <CARAddressOverview />
-              </TabsContent>
-            </Tabs>
-          </div>
-        );
+        // Redirect to car-admin for consolidated interface
+        setActiveView('car-admin');
+        return null;
 
       case 'unified-address-dashboard':
         // Field agents should not access this - redirect to overview
