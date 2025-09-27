@@ -20,7 +20,7 @@ export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps)
     fetchAddresses();
   }, []);
 
-  const unpublishedAddresses = addresses.filter(addr => addr.verified && !addr.public);
+  const unpublishedAddresses = addresses.filter(addr => addr.verified && !addr.public && !addr.flagged);
 
   const handlePublish = async (addressId: string, isPublic: boolean) => {
     await updateAddressStatus(addressId, { public: isPublic });

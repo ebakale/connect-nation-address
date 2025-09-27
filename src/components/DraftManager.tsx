@@ -22,6 +22,7 @@ interface DraftAddress {
   latitude: number;
   longitude: number;
   description?: string;
+  photo_url?: string;
   verified: boolean;
   public: boolean;
   created_at: string;
@@ -64,16 +65,38 @@ const DraftManager = ({ onClose }: DraftManagerProps) => {
   const submitDraft = async (draftId: string) => {
     setSubmitting(draftId);
     try {
-      const { error } = await supabase
-        .from('addresses')
-        .update({ 
-          verified: false, // Still needs verification by staff
-          public: false,   // Will be made public after verification
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', draftId);
+      const draft = drafts.find(d => d.id === draftId);
+      if (!draft) {
+        toast.error(t('dashboard:drafts.failedToSubmitDraft'));
+        setSubmitting(null);
+        return;
+      }
 
-      if (error) throw error;
+      // Create an address request from the draft and remove the draft from addresses
+      const { error: insertError } = await supabase
+        .from('address_requests')
+        .insert({
+          user_id: user?.id,
+          latitude: draft.latitude,
+          longitude: draft.longitude,
+          street: draft.street,
+          city: draft.city,
+          region: draft.region,
+          country: draft.country,
+          building: draft.building,
+          address_type: draft.address_type,
+          description: draft.description,
+          photo_url: draft.photo_url || null,
+          status: 'pending',
+          justification: 'Submitted by NAR authority for approval'
+        });
+
+      if (insertError) throw insertError;
+
+      const { error: deleteError } = await supabase
+        .from('addresses')
+        .delete()
+        .eq('id', draftId);
       
       toast.success(t('dashboard:drafts.draftSubmitted'));
       fetchDrafts(); // Refresh the list

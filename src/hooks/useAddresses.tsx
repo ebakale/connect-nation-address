@@ -18,6 +18,8 @@ export interface Address {
   description?: string;
   verified: boolean;
   public: boolean;
+  flagged?: boolean;
+  flag_reason?: string | null;
   photo_url?: string;
   created_at: string;
   updated_at: string;
@@ -58,7 +60,7 @@ export const useAddresses = () => {
     try {
       const { data, error } = await supabase
         .from('addresses')
-        .select('id, uac, country, region, city, street, building, latitude, longitude, address_type, description, verified, public, photo_url, created_at, updated_at, created_by_authority, authority_type, creation_source')
+        .select('id, uac, country, region, city, street, building, latitude, longitude, address_type, description, verified, public, flagged, flag_reason, photo_url, created_at, updated_at, created_by_authority, authority_type, creation_source')
         .order('created_at', { ascending: false });
 
       if (error) throw error;

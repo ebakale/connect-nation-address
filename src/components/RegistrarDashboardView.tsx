@@ -70,9 +70,9 @@ export const RegistrarDashboardView = () => {
         flaggedResult,
         readyToPublishResult
       ] = await Promise.all([
-        supabase.from('addresses').select('id', { count: 'exact', head: true }),
         supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true),
-        supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('public', true),
+        supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true),
+        supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('public', true).eq('verified', true),
         supabase.from('address_requests').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
         supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('flagged', true),
         supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true).eq('public', false)
