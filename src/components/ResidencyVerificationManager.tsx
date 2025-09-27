@@ -357,7 +357,7 @@ export const ResidencyVerificationManager = () => {
                      <div>
                        <p className="text-sm font-medium">{t('admin:documentTypeLabel')}</p>
                       <p className="text-sm text-muted-foreground">
-                        {t(`admin:documentType.${verification.primary_document_type}`, { defaultValue: formatStatus(verification.primary_document_type) })}
+                        {t(`admin:documentType.${(verification.primary_document_type || '').toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '')}`, { defaultValue: formatStatus(verification.primary_document_type) })}
                       </p>
                     </div>
                   </div>
