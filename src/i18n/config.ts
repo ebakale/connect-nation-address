@@ -10,6 +10,9 @@ import addressEN from '../locales/en/address.json';
 import emergencyEN from '../locales/en/emergency.json';
 import adminEN from '../locales/en/admin.json';
 
+console.log('Loading admin.json, length:', JSON.stringify(adminEN).length);
+console.log('Admin EN keys count:', Object.keys(adminEN).length);
+
 import commonES from '../locales/es/common.json';
 import authES from '../locales/es/auth.json';
 import dashboardES from '../locales/es/dashboard.json';
