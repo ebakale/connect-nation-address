@@ -4,6 +4,12 @@ import { Download, Presentation } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import PptxGenJS from 'pptxgenjs';
 
+// Import the same images used in the main page
+import heroImage from '@/assets/hero-address-system.jpg';
+import featureSearch from '@/assets/feature-address-search.jpg';
+import featureRegistration from '@/assets/feature-address-registration.jpg';
+import featureEmergencyManagement from '@/assets/feature-emergency-management.jpg';
+
 const FunctionalitiesObjectivesPDF: React.FC = () => {
   const { t, i18n } = useTranslation(['common', 'address', 'emergency']);
 
@@ -17,26 +23,44 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
       pptx.subject = 'Funcionalidades y Objetivos del Sistema';
       pptx.title = 'ConnectNation - Funcionalidades y Objetivos';
 
-      // Slide 1: Title slide
+      // Slide 1: Title slide with hero image
       const slide1 = pptx.addSlide();
-      slide1.background = { fill: '1e40af' }; // Primary blue background
+      
+      // Add hero image as background
+      slide1.addImage({
+        path: heroImage,
+        x: 0, y: 0, w: '100%', h: '100%'
+      });
+      
+      // Add dark overlay rectangle
+      slide1.addShape(pptx.ShapeType.rect, {
+        x: 0, y: 0, w: '100%', h: '100%',
+        fill: { color: '000000', transparency: 40 },
+        line: { type: 'none' }
+      });
       
       slide1.addText('ConnectNation', {
         x: 1, y: 2, w: 8, h: 1.5,
         fontSize: 48, bold: true, color: 'ffffff',
-        align: 'center'
+        align: 'center', shadow: { type: 'outer', blur: 3, offset: 2, angle: 45, color: '000000' }
+      });
+      
+      slide1.addText('Plataforma Digital', {
+        x: 1, y: 3.2, w: 8, h: 1,
+        fontSize: 32, color: 'ffffff',
+        align: 'center', shadow: { type: 'outer', blur: 2, offset: 1, angle: 45, color: '000000' }
       });
       
       slide1.addText('Funcionalidades Principales y Objetivos de la Plataforma', {
-        x: 1, y: 3.5, w: 8, h: 1,
-        fontSize: 24, color: 'ffffff',
+        x: 1, y: 4.5, w: 8, h: 1,
+        fontSize: 20, color: 'e5e7eb',
         align: 'center'
       });
 
       slide1.addText('Sistema de Direcciones Digitales para Guinea Ecuatorial', {
-        x: 1, y: 5, w: 8, h: 0.8,
-        fontSize: 18, color: 'e5e7eb',
-        align: 'center'
+        x: 1, y: 5.5, w: 8, h: 0.8,
+        fontSize: 16, color: 'e5e7eb',
+        align: 'center', italic: true
       });
 
       // Slide 2: Core Functionalities Overview
@@ -59,30 +83,56 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
         fontSize: 16, color: '6b7280'
       });
 
-      // Address Registry System details
+      // Address Registry System details with image
+      slide2.addImage({
+        path: featureSearch,
+        x: 0.5, y: 3, w: 4, h: 2.5,
+        rounding: true
+      });
+
+      // Add overlay for text readability
+      slide2.addShape(pptx.ShapeType.rect, {
+        x: 0.5, y: 4.8, w: 4, h: 0.7,
+        fill: { color: '1e40af', transparency: 10 },
+        line: { type: 'none' }
+      });
+
       slide2.addText('1. Sistema de Registro de Direcciones', {
-        x: 0.5, y: 3, w: 4.5, h: 0.6,
-        fontSize: 18, bold: true, color: '1e40af'
+        x: 0.5, y: 4.9, w: 4, h: 0.5,
+        fontSize: 16, bold: true, color: 'ffffff'
       });
 
       const addressFeatures = [
         '• Registro basado en GPS',
-        '• Verificación multinivel',
+        '• Verificación multinivel', 
         '• Búsqueda y descubrimiento inteligente',
         '• Documentación digital con códigos QR'
       ];
 
       addressFeatures.forEach((feature, index) => {
         slide2.addText(feature, {
-          x: 0.5, y: 3.6 + (index * 0.4), w: 4.5, h: 0.3,
-          fontSize: 14, color: '374151'
+          x: 0.5, y: 5.8 + (index * 0.3), w: 4, h: 0.25,
+          fontSize: 12, color: '374151'
         });
       });
 
-      // Emergency Management System details
+      // Emergency Management System details with image  
+      slide2.addImage({
+        path: featureEmergencyManagement,
+        x: 5, y: 3, w: 4, h: 2.5,
+        rounding: true
+      });
+
+      // Add overlay for text readability
+      slide2.addShape(pptx.ShapeType.rect, {
+        x: 5, y: 4.8, w: 4, h: 0.7,
+        fill: { color: 'dc2626', transparency: 10 },
+        line: { type: 'none' }
+      });
+
       slide2.addText('2. Sistema de Gestión de Emergencias', {
-        x: 5, y: 3, w: 4.5, h: 0.6,
-        fontSize: 18, bold: true, color: 'dc2626'
+        x: 5, y: 4.9, w: 4, h: 0.5,
+        fontSize: 16, bold: true, color: 'ffffff'
       });
 
       const emergencyFeatures = [
@@ -94,8 +144,8 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
 
       emergencyFeatures.forEach((feature, index) => {
         slide2.addText(feature, {
-          x: 5, y: 3.6 + (index * 0.4), w: 4.5, h: 0.3,
-          fontSize: 14, color: '374151'
+          x: 5, y: 5.8 + (index * 0.3), w: 4, h: 0.25,
+          fontSize: 12, color: '374151'
         });
       });
 
@@ -157,9 +207,9 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
         fontSize: 12, color: '374151'
       });
 
-      // Slide 4: Key Features Detail
+      // Slide 4: Key Features with Visual Design
       const slide4 = pptx.addSlide();
-      slide4.background = { fill: 'ffffff' };
+      slide4.background = { fill: 'f8fafc' };
       
       slide4.addText('Características Clave del Sistema', {
         x: 0.5, y: 0.5, w: 9, h: 1,
@@ -167,27 +217,31 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
         align: 'center'
       });
 
-      // Feature sections
+      // Create visual cards for features
       const keyFeatures = [
         {
           title: 'Control de Acceso Basado en Roles',
           description: 'Gestión avanzada de roles para permisos seguros y granulares',
-          color: '1e40af'
+          color: '1e40af',
+          icon: '👥'
         },
         {
-          title: 'Documentación Digital',
+          title: 'Documentación Digital', 
           description: 'Generación automatizada de documentos con códigos QR',
-          color: '059669'
+          color: '059669',
+          icon: '📄'
         },
         {
           title: 'Analíticas en Tiempo Real',
           description: 'Reportes comprensivos e insights operacionales',
-          color: 'dc2626'
+          color: 'dc2626',
+          icon: '📊'
         },
         {
           title: 'Soporte Multiidioma',
           description: 'Interfaz disponible en español, francés e inglés',
-          color: '7c3aed'
+          color: '7c3aed',
+          icon: '🌐'
         }
       ];
 
@@ -195,20 +249,35 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
         const row = Math.floor(index / 2);
         const col = index % 2;
         const x = 0.5 + (col * 4.5);
-        const y = 2 + (row * 2.5);
+        const y = 2 + (row * 2.8);
 
-        slide4.addText(feature.title, {
-          x: x, y: y, w: 4, h: 0.6,
-          fontSize: 16, bold: true, color: feature.color
+        // Feature card background
+        slide4.addShape(pptx.ShapeType.rect, {
+          x: x, y: y, w: 4, h: 2.5,
+          fill: { color: 'ffffff' },
+          line: { color: feature.color, width: 2 }
         });
 
+        // Feature icon
+        slide4.addText(feature.icon, {
+          x: x + 0.2, y: y + 0.2, w: 0.8, h: 0.8,
+          fontSize: 24, align: 'center'
+        });
+
+        // Feature title
+        slide4.addText(feature.title, {
+          x: x + 0.2, y: y + 1, w: 3.6, h: 0.6,
+          fontSize: 14, bold: true, color: feature.color
+        });
+
+        // Feature description
         slide4.addText(feature.description, {
-          x: x, y: y + 0.6, w: 4, h: 1,
-          fontSize: 12, color: '374151'
+          x: x + 0.2, y: y + 1.6, w: 3.6, h: 0.8,
+          fontSize: 11, color: '374151'
         });
       });
 
-      // Slide 5: Benefits and Impact
+      // Slide 5: Benefits with Visual Infographics
       const slide5 = pptx.addSlide();
       slide5.background = { fill: 'f8fafc' };
       
@@ -218,6 +287,41 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
         align: 'center'
       });
 
+      // Create visual statistics
+      const statistics = [
+        { label: 'Reducción en tiempo de respuesta', value: '60%', color: 'dc2626' },
+        { label: 'Mejora en precisión de ubicación', value: '85%', color: '059669' },
+        { label: 'Eficiencia operacional', value: '75%', color: '1e40af' },
+        { label: 'Satisfacción ciudadana', value: '90%', color: '7c3aed' }
+      ];
+
+      statistics.forEach((stat, index) => {
+        const x = 0.5 + (index * 2.25);
+        const y = 2;
+
+        // Circular progress background
+        slide5.addShape(pptx.ShapeType.ellipse, {
+          x: x + 0.5, y: y, w: 1.2, h: 1.2,
+          fill: { color: stat.color, transparency: 20 },
+          line: { color: stat.color, width: 3 }
+        });
+
+        // Statistic value
+        slide5.addText(stat.value, {
+          x: x + 0.5, y: y + 0.4, w: 1.2, h: 0.4,
+          fontSize: 20, bold: true, color: stat.color,
+          align: 'center'
+        });
+
+        // Statistic label
+        slide5.addText(stat.label, {
+          x: x, y: y + 1.5, w: 2.2, h: 0.8,
+          fontSize: 10, color: '374151',
+          align: 'center'
+        });
+      });
+
+      // Add benefits list
       const benefits = [
         'Reducción significativa en tiempos de respuesta de emergencias',
         'Mejora en la precisión de localización de servicios',
@@ -227,32 +331,49 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
         'Fortalecimiento de la infraestructura digital nacional'
       ];
 
+      slide5.addText('Impactos Clave:', {
+        x: 1, y: 4.2, w: 8, h: 0.5,
+        fontSize: 16, bold: true, color: '1e40af'
+      });
+
       benefits.forEach((benefit, index) => {
-        slide5.addText(`• ${benefit}`, {
-          x: 1, y: 2 + (index * 0.6), w: 8, h: 0.5,
-          fontSize: 14, color: '374151'
+        slide5.addText(`✓ ${benefit}`, {
+          x: 1, y: 4.8 + (index * 0.4), w: 8, h: 0.35,
+          fontSize: 12, color: '374151'
         });
       });
 
-      // Final slide: Contact and Next Steps
+      // Final slide: Contact and Next Steps with registration image
       const slide6 = pptx.addSlide();
-      slide6.background = { fill: '1e40af' };
+      
+      // Add registration feature image
+      slide6.addImage({
+        path: featureRegistration,
+        x: 0, y: 0, w: '100%', h: '100%'
+      });
+      
+      // Add dark overlay for text readability
+      slide6.addShape(pptx.ShapeType.rect, {
+        x: 0, y: 0, w: '100%', h: '100%',
+        fill: { color: '1e40af', transparency: 60 },
+        line: { type: 'none' }
+      });
       
       slide6.addText('Próximos Pasos', {
         x: 1, y: 2, w: 8, h: 1,
         fontSize: 36, bold: true, color: 'ffffff',
-        align: 'center'
+        align: 'center', shadow: { type: 'outer', blur: 2, offset: 1, angle: 45, color: '000000' }
       });
 
       slide6.addText('ConnectNation está listo para transformar\nla gestión de direcciones y emergencias\nen Guinea Ecuatorial', {
         x: 1, y: 3.5, w: 8, h: 1.5,
-        fontSize: 20, color: 'e5e7eb',
-        align: 'center'
+        fontSize: 20, color: 'ffffff',
+        align: 'center', shadow: { type: 'outer', blur: 1, offset: 1, angle: 45, color: '000000' }
       });
 
       slide6.addText('Para más información, contacte con el equipo de desarrollo', {
         x: 1, y: 5.5, w: 8, h: 0.8,
-        fontSize: 16, color: 'ffffff',
+        fontSize: 16, color: 'e5e7eb',
         align: 'center'
       });
 
