@@ -12,6 +12,7 @@ import FinancialAnalysisPDF from '@/components/FinancialAnalysisPDF';
 import FinancialAnalysisPDFEnglish from '@/components/FinancialAnalysisPDFEnglish';
 import ProcessFlowDiagramPDF from '@/components/ProcessFlowDiagramPDF';
 import ProcessFlowDiagramPDFEnglish from '@/components/ProcessFlowDiagramPDFEnglish';
+import FunctionalitiesObjectivesPDF from '@/components/FunctionalitiesObjectivesPDF';
 import { useAuth } from '@/hooks/useAuth';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
@@ -797,6 +798,7 @@ const Index = () => {
                   <FinancialAnalysisPDFEnglish />
                   <ProcessFlowDiagramPDF />
                   <ProcessFlowDiagramPDFEnglish />
+                  <FunctionalitiesObjectivesPDF />
               </div>
             </div>
           </div>
