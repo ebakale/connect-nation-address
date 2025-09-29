@@ -8,10 +8,7 @@ import authEN from '../locales/en/auth.json';
 import dashboardEN from '../locales/en/dashboard.json';
 import addressEN from '../locales/en/address.json';
 import emergencyEN from '../locales/en/emergency.json';
-const adminEN = {} as const;
-
-console.log('Loading admin.json, length:', JSON.stringify(adminEN).length);
-console.log('Admin EN keys count:', Object.keys(adminEN).length);
+import adminEN from '../locales/en/admin.json';
 
 import commonES from '../locales/es/common.json';
 import authES from '../locales/es/auth.json';
