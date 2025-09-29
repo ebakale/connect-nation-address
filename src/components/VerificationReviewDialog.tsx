@@ -168,7 +168,7 @@ export function VerificationReviewDialog({
                 <p className="text-xs text-muted-foreground">{verification.profiles?.email}</p>
               </div>
               <div>
-                <Label>{t('admin:verificationType')}</Label>
+                <Label>{t('admin:verificationTypeLabel')}</Label>
                 <p className="text-sm">{t(`admin:verificationType.${verification.verification_type}`, { defaultValue: formatStatus(verification.verification_type) })}</p>
               </div>
               {verification.claimant_relationship && (

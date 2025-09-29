@@ -54,6 +54,7 @@
   "onDate": "on",
   "claimantType": "Claimant Type",
   "claimantRelationshipLabel": "Claimant Relationship",
+  "verificationTypeLabel": "Verification Type",
   "claimantRelationship": {
     "owner": "Owner",
     "tenant": "Tenant",
