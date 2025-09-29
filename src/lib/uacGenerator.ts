@@ -112,50 +112,29 @@ function generateCheckDigit(baseCode: string): string {
 }
 
 /**
- * Generate the next sequential number for a given location
+ * Generate the next sequential number for a given location using database function
  */
 async function getNextSequenceNumber(countryCode: string, regionCode: string, cityCode: string): Promise<string> {
   try {
-    const prefix = `${countryCode}-${regionCode}-${cityCode}-`;
-    
-    // Get the latest UAC with this prefix
-    const { data: addresses, error } = await supabase
-      .from('addresses')
-      .select('uac')
-      .like('uac', `${prefix}%`)
-      .order('created_at', { ascending: false })
-      .limit(1);
+    // Call the database function to get next sequence with atomic increment
+    const { data, error } = await supabase.rpc('get_next_uac_sequence', {
+      p_country_code: countryCode,
+      p_region_code: regionCode,
+      p_city_code: cityCode
+    });
     
     if (error) {
-      console.warn('Could not fetch latest UAC, using fallback:', error);
-      // Fallback to timestamp-based sequence
-      return Date.now().toString(36).substr(-6).toUpperCase().padStart(6, '0');
-    }
-    
-    if (!addresses || addresses.length === 0) {
+      console.error('Error getting UAC sequence from database:', error);
+      // If database function fails, use manual fallback with proper format
       return '001A00';
     }
     
-    const latestUAC = addresses[0].uac;
-    const parts = latestUAC.split('-');
-    
-    if (parts.length >= 4) {
-      const sequencePart = parts[3];
-      // Extract numeric part and increment
-      const numericPart = sequencePart.match(/^\d+/);
-      if (numericPart) {
-        const nextNum = parseInt(numericPart[0]) + 1;
-        const alphaPart = sequencePart.substring(numericPart[0].length);
-        return nextNum.toString().padStart(3, '0') + alphaPart;
-      }
-    }
-    
-    // Fallback sequence
-    return Date.now().toString(36).substr(-6).toUpperCase().padStart(6, '0');
+    return data || '001A00';
     
   } catch (error) {
-    console.warn('Error generating sequence, using fallback:', error);
-    return Date.now().toString(36).substr(-6).toUpperCase().padStart(6, '0');
+    console.error('Error calling UAC sequence function:', error);
+    // Fallback to proper format instead of timestamp
+    return '001A00';
   }
 }
 

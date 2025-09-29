@@ -185,7 +185,8 @@ export const UACManager: React.FC = () => {
             <Info className="h-4 w-4" />
             <AlertDescription>
               <strong>{t('uacFormatLabel')}:</strong> [COUNTRY]-[REGION]-[CITY]-[SEQUENCE]-[CHECK]<br />
-              <strong>{t('exampleLabel')}:</strong> GQ-BN-MAL-001A23-7K ({t('exampleDescription')})
+              <strong>{t('exampleLabel')}:</strong> GQ-BN-MAL-001A00-7K ({t('exampleDescription')})<br />
+              <strong>Secuencia:</strong> 3 dígitos numéricos + 3 caracteres alfanuméricos (ej: 001A00, 002A00, 003A00...)
             </AlertDescription>
           </Alert>
 
@@ -202,7 +203,7 @@ export const UACManager: React.FC = () => {
                   id="validation-uac"
                   value={validationUAC}
                   onChange={(e) => setValidationUAC(e.target.value.toUpperCase())}
-                  placeholder="e.g., GQ-BN-MAL-001A23-7K"
+                  placeholder="e.g., GQ-BN-MAL-001A00-7K"
                   className="font-mono"
                 />
               </div>

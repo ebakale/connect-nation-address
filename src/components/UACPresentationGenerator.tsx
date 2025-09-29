@@ -117,7 +117,7 @@ export const UACPresentationGenerator: React.FC = () => {
         fill: { color: 'E2E8F0' }
       });
       
-      slide3.addText('Ejemplo: GQ-BN-MAL-001A23-7K', {
+      slide3.addText('Ejemplo: GQ-BN-MAL-001A00-7K', {
         x: 0.5,
         y: 3.2,
         w: 9,
@@ -133,7 +133,7 @@ export const UACPresentationGenerator: React.FC = () => {
         'GQ = Guinea Ecuatorial (código ISO 3166-1)',
         'BN = Bioko Norte (código de región)', 
         'MAL = Malabo (código de ciudad)',
-        '001A23 = Identificador secuencial (6 caracteres)',
+        '001A00 = Identificador secuencial (número + alfanumérico)',
         '7K = Dígito de verificación (2 caracteres)'
       ];
       
