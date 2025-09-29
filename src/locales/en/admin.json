@@ -1551,7 +1551,7 @@
   "field_verification": "Field Verification", 
   "legal_review": "Legal Review",
   "approved": "Approved",
-  "rejected": "Rejected",
+  "rejected": "Rejected", 
   "under_investigation": "Under Investigation",
   "documentTypeLabel": "Document Type",
   "unknownUser": "Unknown User",
