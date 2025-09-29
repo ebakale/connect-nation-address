@@ -179,7 +179,7 @@ export function VerificationReviewDialog({
               )}
               {verification.primary_document_type && (
                 <div>
-                  <Label>{t('admin:documentType')}</Label>
+                  <Label>{t('admin:documentTypeLabel')}</Label>
                   <p className="text-sm">{t(`admin:documentType.${verification.primary_document_type}`, { defaultValue: formatStatus(verification.primary_document_type) })}</p>
                 </div>
               )}

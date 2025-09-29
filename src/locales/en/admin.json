@@ -62,6 +62,7 @@
     "family_member": "Family Member",
     "caretaker": "Caretaker"
   },
+  "documentTypeLabel": "Document Type",
   "documentType": {
     "property_deed": "Property Deed",
     "lease_agreement": "Lease Agreement",
