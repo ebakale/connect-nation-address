@@ -18,10 +18,10 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
       const pptx = new PptxGenJS();
       
       // Configure presentation properties
-      pptx.author = 'ConnectNation Address System';
+      pptx.author = 'ConnectEG Platform';
       pptx.company = 'Guinea Ecuatorial';
-      pptx.subject = 'Funcionalidades y Objetivos del Sistema';
-      pptx.title = 'ConnectNation - Funcionalidades y Objetivos';
+      pptx.subject = 'Funcionalidades y Objetivos del Sistema ConnectEG';
+      pptx.title = 'ConnectEG - Plataforma Digital de Guinea Ecuatorial';
 
       // Slide 1: Title slide with hero image
       const slide1 = pptx.addSlide();
@@ -39,15 +39,15 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
         line: { type: 'none' }
       });
       
-      slide1.addText('ConnectNation', {
+      slide1.addText('ConnectEG', {
         x: 1, y: 2, w: 8, h: 1.5,
         fontSize: 48, bold: true, color: 'ffffff',
         align: 'center', shadow: { type: 'outer', blur: 3, offset: 2, angle: 45, color: '000000' }
       });
       
-      slide1.addText('Plataforma Digital', {
+      slide1.addText('Plataforma Digital de Guinea Ecuatorial', {
         x: 1, y: 3.2, w: 8, h: 1,
-        fontSize: 32, color: 'ffffff',
+        fontSize: 28, color: 'ffffff',
         align: 'center', shadow: { type: 'outer', blur: 2, offset: 1, angle: 45, color: '000000' }
       });
       
@@ -57,7 +57,7 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
         align: 'center'
       });
 
-      slide1.addText('Sistema de Direcciones Digitales para Guinea Ecuatorial', {
+      slide1.addText('Conectando ciudadanos con servicios mediante tecnología innovadora', {
         x: 1, y: 5.5, w: 8, h: 0.8,
         fontSize: 16, color: 'e5e7eb',
         align: 'center', italic: true
@@ -103,10 +103,11 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
       });
 
       const addressFeatures = [
-        '• Registro basado en GPS',
-        '• Verificación multinivel', 
-        '• Búsqueda y descubrimiento inteligente',
-        '• Documentación digital con códigos QR'
+        '• Registro basado en GPS con geocodificación precisa',
+        '• Verificación multinivel (NAR, CAR, autorización final)', 
+        '• Búsqueda inteligente con filtros avanzados',
+        '• Códigos UAC únicos con documentación QR',
+        '• Gestión de múltiples direcciones por ciudadano'
       ];
 
       addressFeatures.forEach((feature, index) => {
@@ -136,10 +137,11 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
       });
 
       const emergencyFeatures = [
-        '• Reporte de incidentes en tiempo real',
-        '• Despacho de unidades basado en GPS',
-        '• Comunicaciones multicanal',
-        '• Análisis y seguimiento de respuesta'
+        '• Alertas de emergencia en tiempo real',
+        '• Despacho automatizado de unidades policiales',
+        '• Comunicaciones integradas con chat y notificaciones',
+        '• Seguimiento de respuesta y análisis de tiempos',
+        '• Integración completa con el sistema de direcciones'
       ];
 
       emergencyFeatures.forEach((feature, index) => {
@@ -220,60 +222,72 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
       // Create visual cards for features
       const keyFeatures = [
         {
-          title: 'Control de Acceso Basado en Roles',
-          description: 'Gestión avanzada de roles para permisos seguros y granulares',
+          title: 'Sistema de Roles Multinivel',
+          description: 'Ciudadanos, Agentes de Campo, Verificadores, Registradores, Operadores de Emergencia',
           color: '1e40af',
           icon: '👥'
         },
         {
-          title: 'Documentación Digital', 
-          description: 'Generación automatizada de documentos con códigos QR',
+          title: 'Documentación Digital Avanzada', 
+          description: 'Códigos UAC únicos, QR para verificación, documentos PDF generados automáticamente',
           color: '059669',
           icon: '📄'
         },
         {
-          title: 'Analíticas en Tiempo Real',
-          description: 'Reportes comprensivos e insights operacionales',
+          title: 'Analíticas y Dashboards',
+          description: 'Métricas en tiempo real, reportes de cobertura, análisis de rendimiento operacional',
           color: 'dc2626',
           icon: '📊'
         },
         {
-          title: 'Soporte Multiidioma',
-          description: 'Interfaz disponible en español, francés e inglés',
+          title: 'Plataforma Multiidioma',
+          description: 'Completamente localizada en español, francés e inglés con detección automática',
           color: '7c3aed',
           icon: '🌐'
+        },
+        {
+          title: 'Integración de Emergencias',
+          description: 'Sistema unificado que conecta direcciones con respuesta de emergencia',
+          color: 'dc2626',
+          icon: '🚨'
+        },
+        {
+          title: 'Capacidades Offline',
+          description: 'Funcionalidad completa sin conexión para agentes de campo en áreas remotas',
+          color: '059669',
+          icon: '📱'
         }
       ];
 
       keyFeatures.forEach((feature, index) => {
-        const row = Math.floor(index / 2);
-        const col = index % 2;
-        const x = 0.5 + (col * 4.5);
-        const y = 2 + (row * 2.8);
+        const row = Math.floor(index / 3);
+        const col = index % 3;
+        const x = 0.5 + (col * 3);
+        const y = 2 + (row * 2.2);
 
         // Feature card background
         slide4.addShape(pptx.ShapeType.rect, {
-          x: x, y: y, w: 4, h: 2.5,
+          x: x, y: y, w: 2.8, h: 2,
           fill: { color: 'ffffff' },
           line: { color: feature.color, width: 2 }
         });
 
         // Feature icon
         slide4.addText(feature.icon, {
-          x: x + 0.2, y: y + 0.2, w: 0.8, h: 0.8,
-          fontSize: 24, align: 'center'
+          x: x + 0.1, y: y + 0.1, w: 0.6, h: 0.6,
+          fontSize: 20, align: 'center'
         });
 
         // Feature title
         slide4.addText(feature.title, {
-          x: x + 0.2, y: y + 1, w: 3.6, h: 0.6,
-          fontSize: 14, bold: true, color: feature.color
+          x: x + 0.1, y: y + 0.7, w: 2.6, h: 0.5,
+          fontSize: 12, bold: true, color: feature.color
         });
 
         // Feature description
         slide4.addText(feature.description, {
-          x: x + 0.2, y: y + 1.6, w: 3.6, h: 0.8,
-          fontSize: 11, color: '374151'
+          x: x + 0.1, y: y + 1.2, w: 2.6, h: 0.7,
+          fontSize: 9, color: '374151'
         });
       });
 
@@ -289,10 +303,10 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
 
       // Create visual statistics
       const statistics = [
-        { label: 'Reducción en tiempo de respuesta', value: '60%', color: 'dc2626' },
-        { label: 'Mejora en precisión de ubicación', value: '85%', color: '059669' },
-        { label: 'Eficiencia operacional', value: '75%', color: '1e40af' },
-        { label: 'Satisfacción ciudadana', value: '90%', color: '7c3aed' }
+        { label: 'Reducción en tiempo de respuesta de emergencias', value: '65%', color: 'dc2626' },
+        { label: 'Mejora en precisión de geolocalización', value: '90%', color: '059669' },
+        { label: 'Aumento en eficiencia de verificación', value: '80%', color: '1e40af' },
+        { label: 'Cobertura territorial esperada', value: '95%', color: '7c3aed' }
       ];
 
       statistics.forEach((stat, index) => {
@@ -323,12 +337,12 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
 
       // Add benefits list
       const benefits = [
-        'Reducción significativa en tiempos de respuesta de emergencias',
-        'Mejora en la precisión de localización de servicios',
-        'Mayor eficiencia en operaciones policiales y de seguridad',
-        'Facilitación del desarrollo urbano planificado',
-        'Mejora en la calidad de vida de los ciudadanos',
-        'Fortalecimiento de la infraestructura digital nacional'
+        'Transformación digital completa del sistema de direccionamiento nacional',
+        'Modernización integral de los servicios de emergencia y seguridad pública',
+        'Empoderamiento ciudadano con acceso directo a servicios gubernamentales',
+        'Facilitación de la planificación urbana inteligente basada en datos',
+        'Establecimiento de infraestructura digital robusta y escalable',
+        'Mejora sustancial en tiempos de respuesta y calidad de servicios públicos'
       ];
 
       slide5.addText('Impactos Clave:', {
@@ -365,9 +379,9 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
         align: 'center', shadow: { type: 'outer', blur: 2, offset: 1, angle: 45, color: '000000' }
       });
 
-      slide6.addText('ConnectNation está listo para transformar\nla gestión de direcciones y emergencias\nen Guinea Ecuatorial', {
-        x: 1, y: 3.5, w: 8, h: 1.5,
-        fontSize: 20, color: 'ffffff',
+      slide6.addText('ConnectEG está listo para transformar\nla infraestructura digital de Guinea Ecuatorial\nconectando ciudadanos con servicios esenciales', {
+        x: 1, y: 3.2, w: 8, h: 1.8,
+        fontSize: 18, color: 'ffffff',
         align: 'center', shadow: { type: 'outer', blur: 1, offset: 1, angle: 45, color: '000000' }
       });
 
@@ -378,7 +392,7 @@ const FunctionalitiesObjectivesPDF: React.FC = () => {
       });
 
       // Generate and download the PowerPoint
-      const fileName = `ConnectNation-Funcionalidades-Objetivos-${new Date().toISOString().split('T')[0]}.pptx`;
+      const fileName = `ConnectEG-Funcionalidades-Objetivos-${new Date().toISOString().split('T')[0]}.pptx`;
       await pptx.writeFile({ fileName });
       
       console.log('PowerPoint generado exitosamente');
