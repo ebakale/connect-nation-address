@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useUserRole } from '@/hooks/useUserRole';
+import { UACPresentationGenerator } from './UACPresentationGenerator';
 import { 
   validateUAC, 
   parseUAC, 
@@ -165,6 +166,9 @@ export const UACManager: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Presentación PowerPoint */}
+      <UACPresentationGenerator />
+      
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
