@@ -261,19 +261,23 @@ const Index = () => {
                       <div className="space-y-3">
                         <div className="flex items-center gap-3">
                           <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">{t('address:gpsBasedRegistration')}</span>
+                          <span className="text-sm">{t('address:gpsBasedRegistrationPrecise')}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">{t('address:multiLevelVerification')}</span>
+                          <span className="text-sm">{t('address:multiLevelVerificationNAR')}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">{t('address:smartSearchDiscovery')}</span>
+                          <span className="text-sm">{t('address:smartSearchAdvancedFilters')}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">{t('address:digitalDocumentationQR')}</span>
+                          <span className="text-sm">{t('address:uniqueUACCodesQR')}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <CheckCircle className="h-5 w-5 text-primary" />
+                          <span className="text-sm">{t('address:multipleAddressesManagement')}</span>
                         </div>
                       </div>
                     </div>
@@ -302,51 +306,47 @@ const Index = () => {
                         <p className="text-muted-foreground leading-relaxed text-lg">
                           {t('emergency:integratedEmergencyResponse')}
                         </p>
-                       <div className="space-y-3">
+                        <div className="space-y-3">
                           <div className="flex items-center gap-3">
                             <CheckCircle className="h-5 w-5 text-destructive" />
-                            <span className="text-sm">{t('emergency:realtimeIncidentReporting')}</span>
+                            <span className="text-sm">{t('emergency:realtimeEmergencyAlerts')}</span>
                           </div>
                           <div className="flex items-center gap-3">
                             <CheckCircle className="h-5 w-5 text-destructive" />
-                            <span className="text-sm">{t('emergency:gpsBasedUnitDispatch')}</span>
+                            <span className="text-sm">{t('emergency:automatedPoliceDispatch')}</span>
                           </div>
                           <div className="flex items-center gap-3">
                             <CheckCircle className="h-5 w-5 text-destructive" />
-                            <span className="text-sm">{t('emergency:multiChannelCommunications')}</span>
+                            <span className="text-sm">{t('emergency:integratedCommunications')}</span>
                           </div>
                           <div className="flex items-center gap-3">
                             <CheckCircle className="h-5 w-5 text-destructive" />
-                            <span className="text-sm">{t('emergency:analyticsResponseTracking')}</span>
+                            <span className="text-sm">{t('emergency:responseTimeTracking')}</span>
                           </div>
                           <div className="flex items-center gap-3">
                             <CheckCircle className="h-5 w-5 text-destructive" />
-                            <span className="text-sm">{t('common:platform.integratedAddressVerification')}</span>
+                            <span className="text-sm">{t('emergency:completeAddressIntegration')}</span>
                           </div>
-                          <div className="flex items-center gap-3">
-                            <CheckCircle className="h-5 w-5 text-destructive" />
-                            <span className="text-sm">{t('common:platform.crossModuleDataIntelligence')}</span>
-                          </div>
-                       </div>
+                        </div>
                      </div>
                   </CardContent>
                 </Card>
               </div>
 
-              {/* Additional Features Grid */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Additional Features Grid - Updated to match real system modules */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <Card className="group bg-gradient-to-br from-white to-secondary/5 border-2 border-secondary/10 hover:border-secondary/30 shadow-lg hover:shadow-green transform hover:scale-105 transition-all duration-300">
                   <CardHeader className="pb-4">
                     <div className="flex items-center gap-3">
                       <div className="p-3 bg-gradient-to-br from-secondary to-secondary/80 rounded-2xl">
                         <Users className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg font-bold">{t('common:platform.roleBasedAccess')}</CardTitle>
+                      <CardTitle className="text-lg font-bold">{t('common:platform.multiLevelRoleSystem')}</CardTitle>
                     </div>
                   </CardHeader>
                    <CardContent>
                       <p className="text-muted-foreground leading-relaxed text-sm">
-                        {t('common:platform.advancedRoleManagement')}
+                        {t('common:platform.citizensFieldAgentsVerifiersRegistrarsOperators')}
                       </p>
                    </CardContent>
                 </Card>
@@ -357,12 +357,12 @@ const Index = () => {
                       <div className="p-3 bg-gradient-to-br from-primary to-primary/80 rounded-2xl">
                         <FileText className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg font-bold">{t('common:platform.digitalDocumentationFeature')}</CardTitle>
+                      <CardTitle className="text-lg font-bold">{t('common:platform.advancedDigitalDocumentation')}</CardTitle>
                     </div>
                   </CardHeader>
                    <CardContent>
                       <p className="text-muted-foreground leading-relaxed text-sm">
-                        {t('common:platform.digitalDocumentationDescription')}
+                        {t('common:platform.uniqueUACCodesQRAutomatedPDFs')}
                       </p>
                    </CardContent>
                 </Card>
@@ -373,12 +373,12 @@ const Index = () => {
                       <div className="p-3 bg-gradient-to-br from-destructive to-destructive/80 rounded-2xl">
                         <BarChart3 className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg font-bold">{t('common:platform.realtimeAnalyticsFeature')}</CardTitle>
+                      <CardTitle className="text-lg font-bold">{t('common:platform.analyticsAndDashboards')}</CardTitle>
                     </div>
                   </CardHeader>
                    <CardContent>
                       <p className="text-muted-foreground leading-relaxed text-sm">
-                        {t('common:platform.realtimeAnalyticsDescription')}
+                        {t('common:platform.realtimeMetricsCoverageReportsPerformanceAnalysis')}
                       </p>
                    </CardContent>
                 </Card>
@@ -389,12 +389,44 @@ const Index = () => {
                       <div className="p-3 bg-gradient-to-br from-accent to-accent/80 rounded-2xl">
                         <Globe className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg font-bold">{t('common:platform.multiLanguageFeature')}</CardTitle>
+                      <CardTitle className="text-lg font-bold">{t('common:platform.multiLanguagePlatform')}</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
                      <p className="text-muted-foreground leading-relaxed text-sm">
-                       {t('common:platform.fullPlatformLocalization')}
+                       {t('common:platform.completeLocalizationSpanishFrenchEnglish')}
+                     </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="group bg-gradient-to-br from-white to-destructive/5 border-2 border-destructive/10 hover:border-destructive/30 shadow-lg hover:shadow-red transform hover:scale-105 transition-all duration-300">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 bg-gradient-to-br from-destructive to-destructive/80 rounded-2xl">
+                        <Shield className="h-6 w-6 text-white" />
+                      </div>
+                      <CardTitle className="text-lg font-bold">{t('common:platform.emergencyIntegration')}</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                     <p className="text-muted-foreground leading-relaxed text-sm">
+                       {t('common:platform.unifiedSystemAddressesEmergencyResponse')}
+                     </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="group bg-gradient-to-br from-white to-secondary/5 border-2 border-secondary/10 hover:border-secondary/30 shadow-lg hover:shadow-green transform hover:scale-105 transition-all duration-300">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 bg-gradient-to-br from-secondary to-secondary/80 rounded-2xl">
+                        <MapPin className="h-6 w-6 text-white" />
+                      </div>
+                      <CardTitle className="text-lg font-bold">{t('common:platform.offlineCapabilities')}</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                     <p className="text-muted-foreground leading-relaxed text-sm">
+                       {t('common:platform.fullFunctionalityWithoutConnectionRemoteAreas')}
                      </p>
                   </CardContent>
                 </Card>
@@ -488,12 +520,27 @@ const Index = () => {
                         <Shield className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('common:platform.dataExcellence')}</h3>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('common:platform.dataExcellenceQuality')}</h3>
                         <div className="h-1 w-16 bg-gradient-to-r from-primary to-primary/60 rounded-full mb-3"></div>
                       </div>
                     </div>
                     <p className="text-muted-foreground leading-relaxed">
-                      {t('common:platform.dataExcellenceDesc')}
+                      {t('common:platform.ensureDataIntegrityAccuracySystemReliability')}
+                    </p>
+                  </div>
+                  
+                  <div className="group p-8 bg-gradient-to-br from-white to-secondary/5 rounded-2xl border-2 border-secondary/10 hover:border-secondary/30 shadow-lg hover:shadow-green transform hover:scale-105 transition-all duration-300">
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="p-3 bg-gradient-to-br from-secondary to-secondary/80 rounded-2xl shadow-lg">
+                        <BarChart3 className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('common:platform.territorialCoverage')}</h3>
+                        <div className="h-1 w-16 bg-gradient-to-r from-secondary to-secondary/60 rounded-full mb-3"></div>
+                      </div>
+                    </div>
+                    <p className="text-muted-foreground leading-relaxed">
+                      {t('common:platform.achieveComprehensiveNationalCoverageRemoteAreas')}
                     </p>
                   </div>
                 </div>
