@@ -1623,6 +1623,30 @@ export type Database = {
         }
         Relationships: []
       }
+      uac_sequence_counters: {
+        Row: {
+          city_code: string
+          country_code: string
+          current_num: number
+          region_code: string
+          updated_at: string
+        }
+        Insert: {
+          city_code: string
+          country_code: string
+          current_num?: number
+          region_code: string
+          updated_at?: string
+        }
+        Update: {
+          city_code?: string
+          country_code?: string
+          current_num?: number
+          region_code?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       unit_communications: {
         Row: {
           acknowledged: boolean
@@ -2150,6 +2174,14 @@ export type Database = {
           verification_recommendations: string[]
           verified: boolean
         }[]
+      }
+      get_next_uac_sequence: {
+        Args: {
+          p_city_code: string
+          p_country_code: string
+          p_region_code: string
+        }
+        Returns: string
       }
       get_pending_verifications_count: {
         Args: Record<PropertyKey, never>
