@@ -1326,6 +1326,8 @@
     "business_license": "Business License",
     "birth_certificate": "Birth Certificate",
     "marriage_certificate": "Marriage Certificate",
+    "government_id": "Government ID",
+    "residence_certificate": "Residence Certificate",
     "other": "Other"
   },
   "privacyLevel": {
@@ -1333,7 +1335,6 @@
     "private": "Private",
     "confidential": "Confidential",
     "restricted": "Restricted"
-    }
   },
   "carAutoApprovalStats": {
     "title": "CAR Auto-Approval Statistics",
@@ -1534,7 +1535,15 @@
     "lease_agreement": "Lease Agreement",
     "property_deed": "Property Deed",
     "tax_document": "Tax Document",
-    "bank_statement": "Bank Statement"
+    "bank_statement": "Bank Statement",
+    "government_id": "Government ID",
+    "government_issued_id": "Government Issued ID",
+    "residence_certificate": "Residence Certificate",
+    "employment_letter": "Employment Letter",
+    "birth_certificate": "Birth Certificate",
+    "marriage_certificate": "Marriage Certificate",
+    "business_license": "Business License",
+    "other": "Other"
   },
   "submitted": "Submitted",
   "pending": "Pending",

@@ -38,6 +38,8 @@
     "updating": "Updating...",
     "updateStatus": "Update Status"
   },
+  "yes": "Yes",
+  "no": "No",
   "navigation": {
     "home": "Home",
     "dashboard": "Dashboard",

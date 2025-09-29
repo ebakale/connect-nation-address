@@ -38,6 +38,8 @@
     "updating": "Mise à jour...",
     "updateStatus": "Mettre à Jour le Statut"
   },
+  "yes": "Oui",
+  "no": "Non",
   "navigation": {
   "home": "Accueil",
   "dashboard": "Tableau de bord",

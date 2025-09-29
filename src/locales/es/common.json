@@ -38,6 +38,8 @@
     "updating": "Actualizando...",
     "updateStatus": "Actualizar Estado"
   },
+  "yes": "Sí",
+  "no": "No",
   "navigation": {
     "home": "Inicio",
     "dashboard": "Panel de control",
