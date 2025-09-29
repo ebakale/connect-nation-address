@@ -53,6 +53,7 @@
   "submittedBy": "Submitted by",
   "onDate": "on",
   "claimantType": "Claimant Type",
+  "claimantRelationshipLabel": "Claimant Relationship",
   "claimantRelationship": {
     "owner": "Owner",
     "tenant": "Tenant",

@@ -173,7 +173,7 @@ export function VerificationReviewDialog({
               </div>
               {verification.claimant_relationship && (
                 <div>
-                  <Label>{t('admin:claimantRelationship')}</Label>
+                  <Label>{t('admin:claimantRelationshipLabel')}</Label>
                   <p className="text-sm">{t(`admin:claimantRelationship.${verification.claimant_relationship}`, { defaultValue: formatStatus(verification.claimant_relationship) })}</p>
                 </div>
               )}
