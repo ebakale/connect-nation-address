@@ -424,14 +424,14 @@ export const DemoPresentation: React.FC = () => {
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Demostraciones adaptadas a las necesidades específicas de cada actor del sistema
           </p>
-          <div className="flex justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-4">
             <Button onClick={exportToPowerPoint} variant="outline">
               <Download className="mr-2 h-4 w-4" />
               Exportar PowerPoint
             </Button>
             <GovernmentMonetizationPPT />
-              <PresidentialDecreePDF />
-              <BiakamGovernmentContractPDF />
+            <PresidentialDecreePDF />
+            <BiakamGovernmentContractPDF />
           </div>
         </div>
 
