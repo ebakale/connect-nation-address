@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, QrCode, Copy, ExternalLink, Check, Navigation, Printer } from 'lucide-react';
+import { MapPin, QrCode, Copy, ExternalLink, Check, Navigation } from 'lucide-react';
 import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 import { useTranslation } from 'react-i18next';
-import QRCodeLib from 'qrcode';
-import coatOfArms from '@/assets/equatorial-guinea-coat-of-arms.png';
 
 interface AddressData {
   uac: string;
@@ -33,15 +31,7 @@ interface AddressCardProps {
 
 const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
   const [copied, setCopied] = useState(false);
-  const [qrCodeDataUrl, setQrCodeDataUrl] = useState('');
   const { t } = useTranslation('common');
-  const printRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    QRCodeLib.toDataURL(address.uac, { width: 200, margin: 2 })
-      .then(url => setQrCodeDataUrl(url))
-      .catch(err => console.error(err));
-  }, [address.uac]);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -53,150 +43,34 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
     return `${lat.toFixed(6)}° N, ${lng.toFixed(6)}° E`;
   };
 
-  const handlePrint = () => {
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) return;
-
-    const printContent = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Print Address - ${address.uac}</title>
-          <style>
-            @media print {
-              @page { margin: 0; }
-              body { margin: 0; }
-            }
-            body {
-              margin: 0;
-              padding: 20px;
-              font-family: Arial, sans-serif;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              min-height: 100vh;
-              background: #f5f5f5;
-            }
-            .address-plate {
-              background: #1e3a8a;
-              color: white;
-              padding: 40px 60px;
-              border-radius: 8px;
-              width: 600px;
-              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            }
-            .header {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              margin-bottom: 40px;
-              padding-bottom: 20px;
-              border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-            }
-            .coat-of-arms {
-              width: 80px;
-              height: 80px;
-              object-fit: contain;
-            }
-            .title {
-              font-size: 20px;
-              font-weight: bold;
-              text-align: center;
-              flex: 1;
-              line-height: 1.4;
-            }
-            .content {
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              gap: 30px;
-            }
-            .uac-section {
-              background: rgba(255, 255, 255, 0.15);
-              padding: 30px 40px;
-              border-radius: 8px;
-              text-align: center;
-              width: 100%;
-            }
-            .uac-label {
-              font-size: 16px;
-              opacity: 0.9;
-              margin-bottom: 12px;
-              font-weight: 500;
-            }
-            .uac-code {
-              font-size: 42px;
-              font-weight: bold;
-              font-family: 'Courier New', monospace;
-              letter-spacing: 3px;
-            }
-            .qr-section {
-              text-align: center;
-            }
-            .qr-code {
-              background: white;
-              padding: 20px;
-              border-radius: 8px;
-              display: inline-block;
-            }
-            .qr-code img {
-              display: block;
-              width: 200px;
-              height: 200px;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="address-plate">
-            <div class="header">
-              <img src="${coatOfArms}" alt="Coat of Arms" class="coat-of-arms" />
-              <div class="title">REPÚBLICA DE GUINEA ECUATORIAL<br/>DIRECCIÓN NACIONAL DE DIRECCIONES</div>
-              <img src="${coatOfArms}" alt="Coat of Arms" class="coat-of-arms" />
-            </div>
-            <div class="content">
-              <div class="uac-section">
-                <div class="uac-label">Código Único de Dirección</div>
-                <div class="uac-code">${address.uac}</div>
-              </div>
-              <div class="qr-section">
-                <div class="qr-code">
-                  <img src="${qrCodeDataUrl}" alt="QR Code" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </body>
-      </html>
-    `;
-
-    printWindow.document.write(printContent);
-    printWindow.document.close();
-    printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-    }, 250);
-  };
-
   const getDirections = () => {
     const { lat, lng } = address.coordinates;
     const addressString = `${address.street}, ${address.city}, ${address.region}, ${address.country}`;
     
+    // Detect user's device/browser and open appropriate map app
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     const isAndroid = /Android/.test(navigator.userAgent);
     
     let url;
     
     if (isIOS) {
+      // iOS: Try Apple Maps first, fallback to Google Maps
       url = `maps://maps.apple.com/?daddr=${lat},${lng}&dirflg=d`;
+      
+      // Fallback to Google Maps if Apple Maps fails
       setTimeout(() => {
         window.open(`https://maps.google.com/maps?daddr=${lat},${lng}&amp;ll=`);
       }, 25);
     } else if (isAndroid) {
+      // Android: Use Google Maps intent
       url = `intent://navigate?q=${lat},${lng}#Intent;scheme=google.navigation;package=com.google.android.apps.maps;end`;
+      
+      // Fallback to web version
       setTimeout(() => {
         window.open(`https://maps.google.com/maps?daddr=${lat},${lng}&amp;ll=`);
       }, 25);
     } else {
+      // Desktop: Open Google Maps in new tab
       url = `https://maps.google.com/maps?daddr=${lat},${lng}&amp;ll=`;
     }
     
@@ -284,8 +158,8 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
         </div>
 
         {/* Actions */}
-        <div className="flex flex-wrap gap-2 pt-2">
-          <Button variant="default" size="sm" onClick={onViewMap} className="flex-1 min-w-[120px]">
+        <div className="flex gap-2 pt-2">
+          <Button variant="default" size="sm" onClick={onViewMap} className="flex-1">
             <ExternalLink className="h-4 w-4" />
             {t('viewOnMap')}
           </Button>
@@ -293,19 +167,10 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
             variant="hero" 
             size="sm" 
             onClick={getDirections}
-            className="flex-1 min-w-[120px]"
+            className="flex-1"
           >
             <Navigation className="h-4 w-4" />
             {t('directions')}
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={handlePrint}
-            className="flex-1 min-w-[100px]"
-          >
-            <Printer className="h-4 w-4" />
-            {t('print')}
           </Button>
           <QRCodeGenerator 
             uac={address.uac}

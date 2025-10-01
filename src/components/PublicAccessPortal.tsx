@@ -7,10 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { 
   Search, MapPin, CheckCircle, AlertTriangle, Info, 
-  Navigation, Phone, Clock, Shield, Share2, QrCode, Mail, MessageCircle, ChevronDown
+  Navigation, Phone, Clock, Shield, Share2, QrCode, Mail, MessageCircle
 } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -19,7 +18,6 @@ import { QRCodeGenerator } from "@/components/QRCodeGenerator";
 import { useSearchAnalytics } from "@/hooks/useSearchAnalytics";
 import { useEnhancedGeolocation } from "@/hooks/useEnhancedGeolocation";
 import { useTranslation } from "react-i18next";
-import AddressCard from "@/components/AddressCard";
 
 interface PublicAddress {
   uac: string;
@@ -393,67 +391,197 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
           <div className="space-y-4">
             <h2 className="text-xl sm:text-2xl font-semibold">{`${t('address:searchResults')} (${searchResults.length})`}</h2>
             
-            <Accordion type="single" collapsible className="space-y-2">
-              {searchResults.map((address, index) => (
-                <AccordionItem 
-                  key={index} 
-                  value={`item-${index}`}
-                  className="border rounded-lg bg-card"
-                >
-                  <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-muted/50 rounded-lg">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-2 text-left pr-4">
-                      <div className="flex-1">
-                        <div className="font-semibold text-base">
-                          {address.building && `${address.building}, `}
-                          {address.street}
+            {searchResults.map((address, index) => (
+              <Card key={index} className="hover:shadow-md transition-shadow">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="grid gap-4 lg:grid-cols-3">
+                    {/* Address Information */}
+                    <div className="lg:col-span-2">
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-base sm:text-lg font-semibold text-foreground break-words">
+                            {address.building && `${address.building}, `}
+                            {address.street}
+                          </h3>
+                          <p className="text-sm text-muted-foreground break-words">
+                            {address.city}, {address.region}, {address.country}
+                          </p>
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                          {address.city}, {address.region}
+                        <div className="flex flex-wrap gap-2 sm:flex-col sm:items-end">
+                          {address.verified && (
+                            <Badge variant="default" className="text-xs">
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              {t('address:verified')}
+                            </Badge>
+                          )}
+                          <Badge variant={getQualityColor(address.completenessScore)} className="text-xs">
+                            {t('address:publicPortal.percentComplete', { percent: address.completenessScore })}
+                          </Badge>
                         </div>
                       </div>
-                      <div className="flex gap-2 items-center flex-wrap">
-                        {address.verified && (
-                          <Badge variant="default" className="text-xs">
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            {t('address:verified')}
-                          </Badge>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                        <div className="break-all">
+                          <span className="font-medium">{`${t('address:uac')}:`}</span> 
+                          <span className="ml-2 font-mono text-primary text-xs">{address.uac}</span>
+                        </div>
+                        <div>
+                          <span className="font-medium">{`${t('address:type')}:`}</span>
+                          <span className="ml-2 capitalize">{
+                            t(`address:addressType.${String(address.addressType).toLowerCase()}` as any, {
+                              defaultValue: t(`address:${String(address.addressType).toLowerCase()}` as any, {
+                                defaultValue: String(address.addressType),
+                              }),
+                            })
+                          }</span>
+                        </div>
+                        <div className="break-all">
+                          <span className="font-medium">{`${t('address:coordinates')}:`}</span>
+                          <span className="ml-2 font-mono text-xs">
+                            {address.latitude.toFixed(5)}, {address.longitude.toFixed(5)}
+                          </span>
+                        </div>
+                        {address.distance && (
+                          <div>
+                            <span className="font-medium">{t('address:publicPortal.distanceLabel')}</span>
+                            <span className="ml-2">{formatDistance(address.distance)}</span>
+                          </div>
                         )}
-                        <Badge variant="outline" className="text-xs font-mono">
-                          {address.uac}
-                        </Badge>
                       </div>
                     </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4 pb-4">
-                    <div className="pt-2">
-                      <AddressCard
-                        address={{
-                          uac: address.uac,
-                          country: address.country,
-                          region: address.region,
-                          city: address.city,
-                          street: address.street,
-                          building: address.building || '',
-                          coordinates: {
-                            lat: address.latitude,
-                            lng: address.longitude
-                          },
-                          metadata: {
-                            type: address.addressType,
-                            description: address.distance ? formatDistance(address.distance) : '',
-                            verified: address.verified
-                          }
-                        }}
-                        onViewMap={() => {
+
+                    {/* Actions */}
+                    <div className="flex flex-col gap-2 mt-4 lg:mt-0">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="w-full justify-start"
+                        onClick={() => {
                           const url = `https://www.google.com/maps?q=${address.latitude},${address.longitude}`;
                           window.open(url, '_blank');
                         }}
-                      />
+                      >
+                        <Navigation className="h-4 w-4 mr-2" />
+                        {t('address:getDirections')}
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="w-full justify-start"
+                        onClick={() => {
+                          navigator.clipboard.writeText(address.uac);
+                          toast({
+                            title: t('address:publicPortal.copiedTitle'),
+                            description: t('address:publicPortal.uacCopied'),
+                          });
+                        }}
+                      >
+                        <MapPin className="h-4 w-4 mr-2" />
+                        {t('address:copyUac')}
+                      </Button>
+
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="w-full justify-start"
+                        onClick={() => {
+                          const coords = `${address.latitude},${address.longitude}`;
+                          navigator.clipboard.writeText(coords);
+                          toast({
+            title: t('address:publicPortal.copiedTitle'),
+            description: t('address:publicPortal.coordinatesCopied'),
+                          });
+                        }}
+                      >
+                        <Navigation className="h-4 w-4 mr-2" />
+                        {t('address:copyCoordinates')}
+                      </Button>
+
+                      {/* Share Options */}
+                      <Dialog>
+                        <DialogTrigger asChild>
+            <Button variant="outline" size="sm" className="w-full justify-start">
+              <Share2 className="h-4 w-4 mr-2" />
+              {t('address:publicPortal.shareAddress')}
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{t('address:publicPortal.shareAddress')}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              {/* QR Code */}
+              <div className="flex flex-col items-center space-y-2">
+                <h4 className="text-sm font-medium">{t('common:qrCode')}</h4>
+                <QRCodeGenerator 
+                  uac={address.uac}
+                  addressText={`${address.building ? address.building + ', ' : ''}${address.street}, ${address.city}, ${address.region}`}
+                  variant="button"
+                  size="md"
+                />
+                <p className="text-xs text-muted-foreground text-center px-2">
+                  {t('address:publicPortal.qrClickHint')}
+                </p>
+              </div>
+              
+              <Separator />
+              
+              {/* Share Options */}
+              <div className="grid grid-cols-1 gap-2">
+                <Button
+                  variant="outline"
+                  className="justify-start w-full"
+                  onClick={() => handleShare(address, 'whatsapp')}
+                >
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  {t('address:publicPortal.shareViaWhatsApp')}
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  className="justify-start w-full"
+                  onClick={() => handleShare(address, 'email')}
+                >
+                  <Mail className="h-4 w-4 mr-2" />
+                  {t('address:publicPortal.shareViaEmail')}
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  className="justify-start w-full"
+                  onClick={() => handleShare(address, 'copy')}
+                >
+                  <Share2 className="h-4 w-4 mr-2" />
+                  {t('address:publicPortal.copyToClipboard')}
+                </Button>
+              </div>
+            </div>
+                        </DialogContent>
+                      </Dialog>
+
+                      <Button 
+                        variant="destructive" 
+                        size="sm"
+                        className="w-full justify-start"
+                        onClick={() => {
+                          if (onNavigateToEmergency) {
+                            onNavigateToEmergency(address);
+                            toast({
+                            title: t('address:publicPortal.navigatingToEmergencyTitle'),
+                            description: t('address:publicPortal.navigatingToEmergencyDesc'),
+                          });
+                        }
+                      }}
+                    >
+                      <AlertTriangle className="h-4 w-4 mr-2" />
+                      {t('address:publicPortal.reportIssueHere')}
+                      </Button>
                     </div>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         )}
 
