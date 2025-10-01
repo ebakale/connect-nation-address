@@ -25,6 +25,7 @@ import PptxGenJS from 'pptxgenjs';
 import demoImage from '@/assets/demo-presentation-image.png';
 import { GovernmentMonetizationPPT } from '@/components/GovernmentMonetizationPPT';
 import { PresidentialDecreePDF } from '@/components/PresidentialDecreePDF';
+import { BiakamGovernmentContractPDF } from '@/components/BiakamGovernmentContractPDF';
 
 interface DemoScenario {
   id: string;
@@ -429,7 +430,8 @@ export const DemoPresentation: React.FC = () => {
               Exportar PowerPoint
             </Button>
             <GovernmentMonetizationPPT />
-            <PresidentialDecreePDF />
+              <PresidentialDecreePDF />
+              <BiakamGovernmentContractPDF />
           </div>
         </div>
 
