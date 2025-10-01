@@ -1102,5 +1102,9 @@
   "comprehensiveDigitalAddressing": "Sistema integral de direccionamiento digital con registro basado en GPS, verificación multinivel y capacidades de búsqueda inteligente",
   "gpsBasedRegistrationPrecise": "Registro basado en GPS con captura precisa de coordenadas",
   "multiLevelVerificationNAR": "Sistema de verificación multinivel con autoridades NAR y CAR",
-  "smartSearchAdvancedFilters": "Búsqueda inteligente con filtros avanzados y resultados en tiempo real"
+  "smartSearchAdvancedFilters": "Búsqueda inteligente con filtros avanzados y resultados en tiempo real",
+  "addressRegistrySystem": "Sistema de Registro de Direcciones",
+  "digitalAddressingInfrastructure": "Infraestructura de Direccionamiento Digital",
+  "uniqueUACCodesQR": "Códigos UAC únicos con generación de QR para compartir fácilmente",
+  "multipleAddressesManagement": "Gestión de múltiples direcciones (primaria y secundarias)"
 }

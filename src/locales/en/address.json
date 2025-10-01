@@ -527,5 +527,9 @@
   "comprehensiveDigitalAddressing": "Comprehensive digital addressing system with GPS-based registration, multi-level verification, and smart search capabilities",
   "gpsBasedRegistrationPrecise": "GPS-based registration with precise coordinate capture",
   "multiLevelVerificationNAR": "Multi-level verification system with NAR and CAR authorities",
-  "smartSearchAdvancedFilters": "Smart search with advanced filters and real-time results"
+  "smartSearchAdvancedFilters": "Smart search with advanced filters and real-time results",
+  "addressRegistrySystem": "Address Registry System",
+  "digitalAddressingInfrastructure": "Digital Addressing Infrastructure",
+  "uniqueUACCodesQR": "Unique UAC codes with QR generation for easy sharing",
+  "multipleAddressesManagement": "Multiple addresses management (primary and secondary)"
 }

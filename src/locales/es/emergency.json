@@ -1689,5 +1689,10 @@
     "resolution_time": "Tiempo de Resolución",
     "location": "Ubicación",
     "priority": "Prioridad"
-  }
+  },
+  "realtimeEmergencyAlerts": "Alertas de emergencia en tiempo real con notificación automática a unidades cercanas",
+  "automatedPoliceDispatch": "Despacho policial automatizado con asignación inteligente de unidades basada en ubicación",
+  "integratedCommunications": "Comunicaciones integradas entre operadores, despachadores y unidades de campo",
+  "responseTimeTracking": "Seguimiento de tiempos de respuesta con análisis completo del ciclo de vida de incidentes",
+  "completeAddressIntegration": "Integración completa de direcciones usando códigos UAC para ubicación precisa"
 }

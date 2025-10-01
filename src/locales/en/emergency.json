@@ -1681,5 +1681,10 @@
     "resolution_time": "Resolution Time",
     "location": "Location",
     "priority": "Priority"
-  }
+  },
+  "realtimeEmergencyAlerts": "Real-time emergency alerts with automatic notification to nearby units",
+  "automatedPoliceDispatch": "Automated police dispatch with intelligent unit assignment based on location",
+  "integratedCommunications": "Integrated communications between operators, dispatchers, and field units",
+  "responseTimeTracking": "Response time tracking with complete incident lifecycle analytics",
+  "completeAddressIntegration": "Complete address integration using UAC codes for precise location"
 }
