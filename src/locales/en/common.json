@@ -203,9 +203,11 @@
     "completeLocalizationSpanishFrenchEnglish": "Complete localization for Spanish, French, and English support.",
     "emergencyIntegration": "Emergency Integration",
     "emergencyIntegrationDesc": "Seamless integration between digital addresses and response systems.",
+    "unifiedSystemAddressesEmergencyResponse": "Unified system linking digital addresses with emergency response for faster dispatch.",
     "offlineCapabilities": "Offline Capabilities",
     "offlineCapabilitiesDesc": "Full functionality even without internet connectivity.",
-
+    "fullFunctionalityWithoutConnectionRemoteAreas": "Full functionality without connection in remote areas with secure sync."
+    ,
     "aboutConnectEG": "ConEG is the national platform for unified digital addressing and emergency management.",
     "ourMission": "Our Mission",
     "missionDescription": "To connect citizens, addresses, and emergency services through reliable technology.",
