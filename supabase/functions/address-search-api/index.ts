@@ -67,7 +67,7 @@ serve(async (req) => {
       )
     }
 
-    const { query, limit = 1000, includePrivate = false, region, city, coordinates }: SearchRequest = await req.json()
+    const { query, limit, includePrivate = false, region, city, coordinates }: SearchRequest = await req.json()
 
     if (!query || query.trim().length === 0) {
       return new Response(
@@ -107,7 +107,7 @@ serve(async (req) => {
           return { ...address, distance }
         })
         .sort((a, b) => a.distance - b.distance) // Sort by closest first
-        .slice(0, limit)
+        // No limit applied - return all results
 
     } else if (coordinates && searchResults.length === 0) {
       // If no text matches found, fall back to proximity search
@@ -134,7 +134,7 @@ serve(async (req) => {
       }
 
       const { data: proximityData, error: proximityError } = await proximityQuery
-        .limit(limit * 2) // Get more to filter by distance
+        // No limit applied - get all matching addresses
 
       if (proximityError) {
         throw proximityError
@@ -152,10 +152,10 @@ serve(async (req) => {
         })
         .filter(address => address.distance <= radius)
         .sort((a, b) => a.distance - b.distance)
-        .slice(0, limit)
+        // No limit applied - return all results within radius
     } else {
-      // Text search only, no coordinates
-      searchResults = searchResults.slice(0, limit)
+      // Text search only, no coordinates - return all results
+      // No limit applied
     }
 
     // Apply additional filters
