@@ -7,9 +7,10 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { 
   Search, MapPin, CheckCircle, AlertTriangle, Info, 
-  Navigation, Phone, Clock, Shield, Share2, QrCode, Mail, MessageCircle
+  Navigation, Phone, Clock, Shield, Share2, QrCode, Mail, MessageCircle, ChevronDown
 } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -392,34 +393,67 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
           <div className="space-y-4">
             <h2 className="text-xl sm:text-2xl font-semibold">{`${t('address:searchResults')} (${searchResults.length})`}</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Accordion type="single" collapsible className="space-y-2">
               {searchResults.map((address, index) => (
-                <AddressCard
-                  key={index}
-                  address={{
-                    uac: address.uac,
-                    country: address.country,
-                    region: address.region,
-                    city: address.city,
-                    street: address.street,
-                    building: address.building || '',
-                    coordinates: {
-                      lat: address.latitude,
-                      lng: address.longitude
-                    },
-                    metadata: {
-                      type: address.addressType,
-                      description: address.distance ? formatDistance(address.distance) : '',
-                      verified: address.verified
-                    }
-                  }}
-                  onViewMap={() => {
-                    const url = `https://www.google.com/maps?q=${address.latitude},${address.longitude}`;
-                    window.open(url, '_blank');
-                  }}
-                />
+                <AccordionItem 
+                  key={index} 
+                  value={`item-${index}`}
+                  className="border rounded-lg bg-card"
+                >
+                  <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-muted/50 rounded-lg">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-2 text-left pr-4">
+                      <div className="flex-1">
+                        <div className="font-semibold text-base">
+                          {address.building && `${address.building}, `}
+                          {address.street}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {address.city}, {address.region}
+                        </div>
+                      </div>
+                      <div className="flex gap-2 items-center flex-wrap">
+                        {address.verified && (
+                          <Badge variant="default" className="text-xs">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            {t('address:verified')}
+                          </Badge>
+                        )}
+                        <Badge variant="outline" className="text-xs font-mono">
+                          {address.uac}
+                        </Badge>
+                      </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4 pb-4">
+                    <div className="pt-2">
+                      <AddressCard
+                        address={{
+                          uac: address.uac,
+                          country: address.country,
+                          region: address.region,
+                          city: address.city,
+                          street: address.street,
+                          building: address.building || '',
+                          coordinates: {
+                            lat: address.latitude,
+                            lng: address.longitude
+                          },
+                          metadata: {
+                            type: address.addressType,
+                            description: address.distance ? formatDistance(address.distance) : '',
+                            verified: address.verified
+                          }
+                        }}
+                        onViewMap={() => {
+                          const url = `https://www.google.com/maps?q=${address.latitude},${address.longitude}`;
+                          window.open(url, '_blank');
+                        }}
+                      />
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
+            </Accordion>
           </div>
         )}
 
