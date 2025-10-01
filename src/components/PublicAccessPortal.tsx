@@ -490,58 +490,68 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                                 <title>Address - ${address.uac}</title>
                                 <style>
                                   @page { 
-                                    size: A4; 
+                                    size: landscape; 
                                     margin: 0; 
+                                  }
+                                  * {
+                                    margin: 0;
+                                    padding: 0;
+                                    box-sizing: border-box;
                                   }
                                   body { 
                                     margin: 0; 
-                                    padding: 0;
+                                    padding: 40px;
                                     font-family: Arial, sans-serif;
                                     display: flex;
                                     justify-content: center;
                                     align-items: center;
                                     min-height: 100vh;
-                                    background: white;
+                                    background: #f0f0f0;
                                   }
                                   .print-card { 
-                                    background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
-                                    border: 12px solid white;
-                                    outline: 3px solid #1a365d;
-                                    padding: 60px 80px;
+                                    background: #3d5a80;
+                                    border: 20px solid white;
+                                    box-shadow: 
+                                      inset 0 0 0 3px white,
+                                      inset 0 0 0 4px #2c4a60;
+                                    padding: 80px 100px;
                                     text-align: center;
-                                    max-width: 600px;
-                                    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                                    width: 800px;
+                                    position: relative;
                                   }
                                   .coat-of-arms { 
-                                    width: 80px; 
+                                    width: 90px; 
                                     height: auto; 
-                                    margin: 0 auto 40px;
-                                    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+                                    margin: 0 auto 50px;
                                   }
                                   .uac-code { 
-                                    font-size: 48px; 
+                                    font-size: 56px; 
                                     font-weight: bold; 
                                     color: white;
-                                    letter-spacing: 2px;
-                                    margin: 40px 0;
-                                    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-                                    font-family: 'Courier New', monospace;
+                                    letter-spacing: 3px;
+                                    margin: 60px 0;
+                                    font-family: Arial, sans-serif;
                                   }
-                                  .qr-code { 
-                                    background: white;
-                                    padding: 20px;
+                                  .qr-container { 
+                                    background: #e8dcc4;
+                                    padding: 15px;
                                     display: inline-block;
-                                    margin-top: 40px;
-                                    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                                    margin-top: 50px;
                                   }
-                                  .qr-code img { 
-                                    width: 200px; 
-                                    height: 200px;
+                                  .qr-container img { 
+                                    width: 180px; 
+                                    height: 180px;
                                     display: block;
                                   }
                                   @media print {
                                     body { 
                                       background: white;
+                                      padding: 0;
+                                    }
+                                    .print-card {
+                                      box-shadow: 
+                                        inset 0 0 0 3px white,
+                                        inset 0 0 0 4px #2c4a60;
                                     }
                                   }
                                 </style>
@@ -552,8 +562,8 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                                        alt="Coat of Arms" 
                                        class="coat-of-arms" />
                                   <div class="uac-code">${address.uac}</div>
-                                  <div class="qr-code">
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(address.uac)}" 
+                                  <div class="qr-container">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(address.uac)}" 
                                          alt="QR Code" />
                                   </div>
                                 </div>
