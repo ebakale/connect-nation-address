@@ -1001,7 +1001,7 @@ const Index = () => {
       )}
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-12 relative z-10">
+      <main className="container mx-auto px-4 py-12">
         <SectionTransition sectionKey={activeSection}>
           {renderContent()}
         </SectionTransition>
