@@ -201,46 +201,57 @@ export const PresidentialDecreePDF: React.FC = () => {
       yPos = addWrappedText(doc, "Se ordena la integración progresiva del sistema en: servicios de emergencia (911), servicios postales, catastro, censos, servicios de delivery, y sistemas de respuesta a emergencias. Las instituciones tendrán un plazo de 24 meses para completar la integración.", margin, yPos, 170);
       yPos += lineHeight;
 
-      // Artículo 12: Campaña de Concienciación
+      // Artículo 12: Sistema de Gestión de Emergencias
       checkPageBreak();
       doc.setFont("helvetica", "bold");
-      doc.text("Artículo 12. Campaña Nacional", margin, yPos);
+      doc.text("Artículo 12. Módulo de Gestión de Emergencias", margin, yPos);
+      yPos += lineHeight;
+      doc.setFont("helvetica", "normal");
+      yPos = addWrappedText(doc, "El Sistema ConnectNation Address incluye un módulo especializado de gestión de emergencias que permite: despacho automático de unidades policiales y servicios de emergencia, localización precisa en tiempo real de incidentes, coordinación entre diferentes cuerpos de seguridad, registro y seguimiento de incidentes con geolocalización UAC, alertas ciudadanas, y análisis estadístico de incidentes por zonas geográficas.", margin, yPos, 170);
+      yPos += lineHeight;
+      yPos = addWrappedText(doc, "Este módulo será operado exclusivamente por las autoridades competentes designadas por el Gobierno, garantizando la seguridad nacional y la protección ciudadana. Biakam proporcionará capacitación, soporte técnico 24/7 y actualizaciones del módulo sin costo adicional durante la vigencia del contrato.", margin, yPos, 170);
+      yPos += lineHeight;
+
+      // Artículo 13: Campaña de Concienciación
+      checkPageBreak();
+      doc.setFont("helvetica", "bold");
+      doc.text("Artículo 13. Campaña Nacional", margin, yPos);
       yPos += lineHeight;
       doc.setFont("helvetica", "normal");
       yPos = addWrappedText(doc, "Se establece una campaña nacional de concienciación sobre los beneficios del sistema de direcciones digitales. El Gobierno asignará fondos anuales, y Biakam proporcionará materiales educativos y soporte técnico para la campaña.", margin, yPos, 170);
       yPos += lineHeight;
 
-      // Artículo 13: Tarifas Reguladas
+      // Artículo 14: Tarifas Reguladas
       checkPageBreak();
       doc.setFont("helvetica", "bold");
-      doc.text("Artículo 13. Regulación de Tarifas Comerciales", margin, yPos);
+      doc.text("Artículo 14. Regulación de Tarifas Comerciales", margin, yPos);
       yPos += lineHeight;
       doc.setFont("helvetica", "normal");
       yPos = addWrappedText(doc, "Las tarifas comerciales de Biakam para APIs empresariales y servicios premium serán supervisadas por la NAR para garantizar accesibilidad y prevenir prácticas monopolísticas. Se establecerán tarifas máximas referenciales.", margin, yPos, 170);
       yPos += lineHeight;
 
-      // Artículo 14: Resolución de Disputas
+      // Artículo 15: Resolución de Disputas
       checkPageBreak();
       doc.setFont("helvetica", "bold");
-      doc.text("Artículo 14. Mecanismo de Quejas y Apelaciones", margin, yPos);
+      doc.text("Artículo 15. Mecanismo de Quejas y Apelaciones", margin, yPos);
       yPos += lineHeight;
       doc.setFont("helvetica", "normal");
       yPos = addWrappedText(doc, "Se establece un sistema de quejas y apelaciones gestionado por la NAR para resolver disputas sobre direcciones, errores del sistema, o violaciones de privacidad. Las resoluciones serán vinculantes y ejecutables.", margin, yPos, 170);
       yPos += lineHeight;
 
-      // Artículo 15: Supervisión y Auditoría
+      // Artículo 16: Supervisión y Auditoría
       checkPageBreak();
       doc.setFont("helvetica", "bold");
-      doc.text("Artículo 15. Supervisión del Servicio", margin, yPos);
+      doc.text("Artículo 16. Supervisión del Servicio", margin, yPos);
       yPos += lineHeight;
       doc.setFont("helvetica", "normal");
       yPos = addWrappedText(doc, "Biakam presentará informes trimestrales a la NAR sobre: disponibilidad del sistema, incidentes de seguridad, estadísticas de uso, y mejoras implementadas. La NAR realizará auditorías anuales de calidad y seguridad.", margin, yPos, 170);
       yPos += lineHeight;
 
-      // Artículo 16: Incumplimiento y Sanciones
+      // Artículo 17: Incumplimiento y Sanciones
       checkPageBreak();
       doc.setFont("helvetica", "bold");
-      doc.text("Artículo 16. Consecuencias de Incumplimiento", margin, yPos);
+      doc.text("Artículo 17. Consecuencias de Incumplimiento", margin, yPos);
       yPos += lineHeight;
       doc.setFont("helvetica", "normal");
       yPos = addWrappedText(doc, "El incumplimiento grave por cualquiera de las partes dará lugar a:", margin, yPos, 170);
@@ -258,19 +269,19 @@ export const PresidentialDecreePDF: React.FC = () => {
       });
       yPos += lineHeight;
 
-      // Artículo 17: Poblaciones Vulnerables
+      // Artículo 18: Poblaciones Vulnerables
       checkPageBreak();
       doc.setFont("helvetica", "bold");
-      doc.text("Artículo 17. Inclusión y Accesibilidad", margin, yPos);
+      doc.text("Artículo 18. Inclusión y Accesibilidad", margin, yPos);
       yPos += lineHeight;
       doc.setFont("helvetica", "normal");
       yPos = addWrappedText(doc, "Se garantiza el acceso al sistema para personas con discapacidad, comunidades rurales, y poblaciones vulnerables. Biakam implementará interfaces accesibles, y el Gobierno facilitará puntos de registro asistido en zonas remotas.", margin, yPos, 170);
       yPos += lineHeight;
 
-      // Artículo 18: Arbitraje
+      // Artículo 19: Arbitraje
       checkPageBreak();
       doc.setFont("helvetica", "bold");
-      doc.text("Artículo 18. Arbitraje Internacional", margin, yPos);
+      doc.text("Artículo 19. Arbitraje Internacional", margin, yPos);
       yPos += lineHeight;
       doc.setFont("helvetica", "normal");
       yPos = addWrappedText(doc, "Las disputas contractuales entre el Gobierno y Biakam que no puedan resolverse mediante negociación serán sometidas a arbitraje internacional según las reglas de la Cámara de Comercio Internacional (CCI).", margin, yPos, 170);

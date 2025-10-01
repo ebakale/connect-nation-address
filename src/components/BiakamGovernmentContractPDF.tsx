@@ -139,14 +139,17 @@ export const BiakamGovernmentContractPDF: React.FC = () => {
       const obligacionesBiakam = [
         "a) Garantizar disponibilidad del sistema 24/7 con nivel de servicio (SLA) del 99.9%",
         "b) Proporcionar soporte técnico multilingüe (español, francés, portugués) en horario 8:00-20:00",
-        "c) Realizar mantenimiento preventivo mensual y correctivo inmediato",
-        "d) Actualizar la plataforma tecnológica conforme a estándares internacionales",
-        "e) Implementar medidas de seguridad y cifrado de datos según ISO 27001",
-        "f) Capacitar gratuitamente al personal gubernamental (mínimo 200 horas anuales)",
-        "g) Realizar campañas de concienciación pública (mínimo 4 campañas anuales)",
-        "h) Proporcionar informes trimestrales de desempeño y estadísticas",
-        "i) Garantizar acceso gratuito para todos los ciudadanos a funcionalidades básicas",
-        "j) Respetar la privacidad de los datos según normativa de protección de datos"
+        "c) Operar y mantener el Módulo de Gestión de Emergencias con disponibilidad 24/7",
+        "d) Proporcionar soporte técnico prioritario para emergencias con respuesta inmediata",
+        "e) Capacitar al personal de emergencias (operadores, despachadores, supervisores)",
+        "f) Realizar mantenimiento preventivo mensual y correctivo inmediato",
+        "g) Actualizar la plataforma tecnológica conforme a estándares internacionales",
+        "h) Implementar medidas de seguridad y cifrado de datos según ISO 27001",
+        "i) Capacitar gratuitamente al personal gubernamental (mínimo 200 horas anuales)",
+        "j) Realizar campañas de concienciación pública (mínimo 4 campañas anuales)",
+        "k) Proporcionar informes trimestrales de desempeño, estadísticas y métricas de emergencias",
+        "l) Garantizar acceso gratuito para todos los ciudadanos a funcionalidades básicas",
+        "m) Respetar la privacidad de los datos según normativa de protección de datos"
       ];
       
       obligacionesBiakam.forEach(item => {
@@ -167,14 +170,17 @@ export const BiakamGovernmentContractPDF: React.FC = () => {
       const obligacionesGobierno = [
         "a) Abonar puntualmente las tarifas anuales establecidas",
         "b) Promover la adopción masiva del sistema entre ciudadanos e instituciones",
-        "c) Integrar obligatoriamente el sistema en servicios públicos esenciales",
-        "d) Asignar presupuesto anual para campañas de concienciación ciudadana",
-        "e) Facilitar acceso a datos geográficos oficiales (mapas, catastro)",
-        "f) Designar personal de enlace para coordinación con BIAKAM",
-        "g) Supervisar el cumplimiento de estándares de calidad mediante la NAR",
-        "h) No desarrollar ni contratar sistemas de direccionamiento alternativos competidores",
-        "i) Proteger los derechos de propiedad intelectual de BIAKAM",
-        "j) Garantizar la seguridad física de infraestructuras compartidas"
+        "c) Designar y capacitar personal para operar el Módulo de Gestión de Emergencias",
+        "d) Establecer protocolos de respuesta a emergencias basados en direcciones UAC",
+        "e) Integrar obligatoriamente el sistema en servicios públicos esenciales",
+        "f) Asignar presupuesto anual para campañas de concienciación ciudadana",
+        "g) Facilitar acceso a datos geográficos oficiales (mapas, catastro)",
+        "h) Designar personal de enlace para coordinación con BIAKAM",
+        "i) Supervisar el cumplimiento de estándares de calidad mediante la NAR",
+        "j) Proporcionar retroalimentación sobre el módulo de emergencias y necesidades de mejora",
+        "k) No desarrollar ni contratar sistemas de direccionamiento alternativos competidores",
+        "l) Proteger los derechos de propiedad intelectual de BIAKAM",
+        "m) Garantizar la seguridad física de infraestructuras compartidas"
       ];
       
       obligacionesGobierno.forEach(item => {
