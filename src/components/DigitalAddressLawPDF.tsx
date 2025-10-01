@@ -2,9 +2,11 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Download, FileText } from 'lucide-react';
 import { jsPDF } from 'jspdf';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 
 export const DigitalAddressLawPDF: React.FC = () => {
+  const { toast } = useToast();
+  
   const generatePDF = () => {
     try {
       const doc = new jsPDF();
@@ -401,10 +403,17 @@ export const DigitalAddressLawPDF: React.FC = () => {
 
       // Save PDF
       doc.save('Ley_Direcciones_Digitales_Guinea_Ecuatorial.pdf');
-      toast.success('Documento de Ley generado exitosamente');
+      toast({
+        title: "Éxito",
+        description: "Documento de Ley generado exitosamente",
+      });
     } catch (error) {
       console.error('Error generating law PDF:', error);
-      toast.error('Error al generar el documento de Ley');
+      toast({
+        title: "Error",
+        description: "Error al generar el documento de Ley",
+        variant: "destructive",
+      });
     }
   };
 
