@@ -295,8 +295,8 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
   };
 
   return (
-    <div className="bg-gradient-to-br from-background to-muted/20">
-      <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4 lg:py-8 pb-24 max-w-4xl mobile-container">
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 pb-32">
+      <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4 lg:py-8 max-w-4xl">
         {/* Mobile-optimized Header */}
         <div className="text-center mb-4 sm:mb-6 lg:mb-8">
           <h1 className="text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-foreground mb-2 mobile-line-clamp-2">
@@ -403,7 +403,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
 
         {/* Search Results */}
         {searchResults.length > 0 && (
-          <div className="space-y-4 mb-24 pb-24">
+          <div className="space-y-4 pb-16">
             <div className="flex items-center justify-between">
               <h2 className="text-xl sm:text-2xl font-semibold">{`${t('address:searchResults')} (${searchResults.length})`}</h2>
               <p className="text-sm text-muted-foreground">
