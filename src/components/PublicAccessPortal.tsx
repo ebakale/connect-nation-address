@@ -59,6 +59,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
   const [searchResults, setSearchResults] = useState<PublicAddress[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchMetadata, setSearchMetadata] = useState<any>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
   const { trackSearch } = useSearchAnalytics();
   const { location, getCurrentPosition } = useEnhancedGeolocation({
@@ -67,6 +68,12 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
   });
 
   const { t } = useTranslation(["common","address"]);
+
+  const ITEMS_PER_PAGE = 5;
+  const totalPages = Math.ceil(searchResults.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedResults = searchResults.slice(startIndex, endIndex);
 
   // Clear state when component unmounts
   useEffect(() => {
@@ -95,6 +102,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
     }
 
     setLoading(true);
+    setCurrentPage(1); // Reset to first page on new search
     const searchStartTime = Date.now();
     
     try {
@@ -168,6 +176,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
 
   const handleQRScanResult = async (uac: string) => {
     setSearchQuery(uac);
+    setCurrentPage(1); // Reset to first page on new search
     // Auto-search with the scanned UAC
     setLoading(true);
     const qrSearchStartTime = Date.now();
@@ -395,10 +404,15 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
         {/* Search Results */}
         {searchResults.length > 0 && (
           <div className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-semibold">{`${t('address:searchResults')} (${searchResults.length})`}</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl sm:text-2xl font-semibold">{`${t('address:searchResults')} (${searchResults.length})`}</h2>
+              <p className="text-sm text-muted-foreground">
+                {t('common:pagination.page', { defaultValue: 'Page' })} {currentPage} {t('common:pagination.of', { defaultValue: 'of' })} {totalPages}
+              </p>
+            </div>
             
             <Accordion type="single" collapsible className="w-full space-y-2">
-              {searchResults.map((address, index) => (
+              {paginatedResults.map((address, index) => (
                 <AccordionItem key={index} value={`item-${index}`} className="border rounded-lg px-4">
                   <AccordionTrigger className="hover:no-underline py-4">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full pr-4 text-left gap-2">
@@ -645,6 +659,43 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                 </AccordionItem>
               ))}
             </Accordion>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 mt-6">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                >
+                  {t('common:pagination.previous', { defaultValue: 'Previous' })}
+                </Button>
+                
+                <div className="flex gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCurrentPage(page)}
+                      className="w-10"
+                    >
+                      {page}
+                    </Button>
+                  ))}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  {t('common:pagination.next', { defaultValue: 'Next' })}
+                </Button>
+              </div>
+            )}
           </div>
         )}
 
