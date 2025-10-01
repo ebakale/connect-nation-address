@@ -384,20 +384,6 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
           </CardContent>
         </Card>
 
-        {/* Search Metadata */}
-        {searchMetadata && (
-          <Alert className="mb-4">
-            <Info className="h-4 w-4 flex-shrink-0" />
-            <AlertDescription className="text-sm">
-              <div className="space-y-1 sm:space-y-0">
-                <div>{t('address:publicPortal.searchCompletedIn', { ms: searchMetadata.executionTime })}</div>
-                <div>{t('address:publicPortal.queryLabel', { query: searchMetadata.query })}</div>
-                <div>{t('address:publicPortal.typeLabel', { type: searchMetadata.searchType })}</div>
-                {location && <div>{t('address:publicPortal.usingYourLocation')}</div>}
-              </div>
-            </AlertDescription>
-          </Alert>
-        )}
 
         {/* Search Results */}
         {searchResults.length > 0 && (
