@@ -403,7 +403,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
 
         {/* Search Results */}
         {searchResults.length > 0 && (
-          <div className="space-y-4">
+          <div className="space-y-4 mb-8 pb-8">
             <div className="flex items-center justify-between">
               <h2 className="text-xl sm:text-2xl font-semibold">{`${t('address:searchResults')} (${searchResults.length})`}</h2>
               <p className="text-sm text-muted-foreground">
