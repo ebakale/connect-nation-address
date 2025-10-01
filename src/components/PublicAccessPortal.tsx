@@ -489,25 +489,72 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                               <head>
                                 <title>Address - ${address.uac}</title>
                                 <style>
+                                  @page { 
+                                    size: A4; 
+                                    margin: 0; 
+                                  }
+                                  body { 
+                                    margin: 0; 
+                                    padding: 0;
+                                    font-family: Arial, sans-serif;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    min-height: 100vh;
+                                    background: white;
+                                  }
+                                  .print-card { 
+                                    background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
+                                    border: 12px solid white;
+                                    outline: 3px solid #1a365d;
+                                    padding: 60px 80px;
+                                    text-align: center;
+                                    max-width: 600px;
+                                    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                                  }
+                                  .coat-of-arms { 
+                                    width: 80px; 
+                                    height: auto; 
+                                    margin: 0 auto 40px;
+                                    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+                                  }
+                                  .uac-code { 
+                                    font-size: 48px; 
+                                    font-weight: bold; 
+                                    color: white;
+                                    letter-spacing: 2px;
+                                    margin: 40px 0;
+                                    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                                    font-family: 'Courier New', monospace;
+                                  }
+                                  .qr-code { 
+                                    background: white;
+                                    padding: 20px;
+                                    display: inline-block;
+                                    margin-top: 40px;
+                                    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                                  }
+                                  .qr-code img { 
+                                    width: 200px; 
+                                    height: 200px;
+                                    display: block;
+                                  }
                                   @media print {
-                                    body { margin: 0; padding: 20px; font-family: Arial, sans-serif; }
-                                    .print-container { text-align: center; max-width: 400px; margin: 0 auto; }
-                                    .header { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #333; }
-                                    .title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
-                                    .uac { font-size: 32px; font-weight: bold; font-family: monospace; margin: 20px 0; }
-                                    .qr-section { margin: 30px 0; }
+                                    body { 
+                                      background: white;
+                                    }
                                   }
                                 </style>
                               </head>
                               <body>
-                                <div class="print-container">
-                                  <div class="header">
-                                    <div class="title">Digital Address</div>
-                                    <div style="font-size: 14px; color: #666;">Equatorial Guinea</div>
-                                  </div>
-                                  <div class="uac">${address.uac}</div>
-                                  <div class="qr-section">
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(address.uac)}" alt="QR Code" style="width: 200px; height: 200px;" />
+                                <div class="print-card">
+                                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Coat_of_arms_of_Equatorial_Guinea.svg/200px-Coat_of_arms_of_Equatorial_Guinea.svg.png" 
+                                       alt="Coat of Arms" 
+                                       class="coat-of-arms" />
+                                  <div class="uac-code">${address.uac}</div>
+                                  <div class="qr-code">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(address.uac)}" 
+                                         alt="QR Code" />
                                   </div>
                                 </div>
                               </body>
