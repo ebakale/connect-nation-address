@@ -109,7 +109,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
       // Use the public search API
       const searchRequest = {
         query: searchQuery.trim(),
-        limit: 100,
+        limit: 1000, // High limit to get all results
         includePrivate: false, // Public portal only shows public addresses
         ...(location && {
           coordinates: {
@@ -184,7 +184,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
     try {
       const searchRequest = {
         query: uac.trim(),
-        limit: 100,
+        limit: 1000, // High limit to get all results
         includePrivate: false,
         ...(location && {
           coordinates: {

@@ -67,7 +67,7 @@ serve(async (req) => {
       )
     }
 
-    const { query, limit = 50, includePrivate = false, region, city, coordinates }: SearchRequest = await req.json()
+    const { query, limit = 1000, includePrivate = false, region, city, coordinates }: SearchRequest = await req.json()
 
     if (!query || query.trim().length === 0) {
       return new Response(
