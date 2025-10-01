@@ -457,6 +457,55 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                         size="sm"
                         className="w-full justify-start"
                         onClick={() => {
+                          const printContent = `
+                            <!DOCTYPE html>
+                            <html>
+                              <head>
+                                <title>Address - ${address.uac}</title>
+                                <style>
+                                  @media print {
+                                    body { margin: 0; padding: 20px; font-family: Arial, sans-serif; }
+                                    .print-container { text-align: center; max-width: 400px; margin: 0 auto; }
+                                    .header { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #333; }
+                                    .title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+                                    .uac { font-size: 32px; font-weight: bold; font-family: monospace; margin: 20px 0; }
+                                    .qr-section { margin: 30px 0; }
+                                  }
+                                </style>
+                              </head>
+                              <body>
+                                <div class="print-container">
+                                  <div class="header">
+                                    <div class="title">Digital Address</div>
+                                    <div style="font-size: 14px; color: #666;">Equatorial Guinea</div>
+                                  </div>
+                                  <div class="uac">${address.uac}</div>
+                                  <div class="qr-section">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(address.uac)}" alt="QR Code" style="width: 200px; height: 200px;" />
+                                  </div>
+                                </div>
+                              </body>
+                            </html>
+                          `;
+                          const printWindow = window.open('', '_blank');
+                          if (printWindow) {
+                            printWindow.document.write(printContent);
+                            printWindow.document.close();
+                            printWindow.onload = () => {
+                              printWindow.print();
+                            };
+                          }
+                        }}
+                      >
+                        <QrCode className="h-4 w-4 mr-2" />
+                        {t('address:publicPortal.printAddress')}
+                      </Button>
+
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="w-full justify-start"
+                        onClick={() => {
                           const url = `https://www.google.com/maps?q=${address.latitude},${address.longitude}`;
                           window.open(url, '_blank');
                         }}
