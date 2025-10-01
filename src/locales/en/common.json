@@ -193,8 +193,10 @@
 
     "multiLevelRoleSystem": "Multi-level Role System",
     "multiLevelRoleSystemDesc": "Granular access control with specific roles for different operational levels.",
+    "citizensFieldAgentsVerifiersRegistrarsOperators": "Citizens, field agents, verifiers, registrars, and emergency operators with specific access levels.",
     "advancedDigitalDocumentation": "Advanced Digital Documentation",
     "advancedDigitalDocumentationDesc": "Automated document management with QR codes and digital evidence.",
+    "uniqueUACCodesQRAutomatedPDFs": "Unique UAC codes with QR generation, automated PDFs, and digital documentation.",
     "analyticsAndDashboards": "Analytics and Dashboards",
     "realtimeMetricsCoverageReportsPerformanceAnalysis": "Real-time metrics, coverage reports, and performance analysis for data-driven decision making.",
     "multiLanguagePlatform": "Multi-language Platform",
