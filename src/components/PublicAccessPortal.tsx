@@ -9,8 +9,14 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   Search, MapPin, CheckCircle, AlertTriangle, Info, 
-  Navigation, Phone, Clock, Shield, Share2, QrCode, Mail, MessageCircle
+  Navigation, Phone, Clock, Shield, Share2, QrCode, Mail, MessageCircle, ChevronDown
 } from 'lucide-react';
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { QRCodeScanner } from "@/components/QRCodeScanner";
@@ -391,67 +397,73 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
           <div className="space-y-4">
             <h2 className="text-xl sm:text-2xl font-semibold">{`${t('address:searchResults')} (${searchResults.length})`}</h2>
             
-            {searchResults.map((address, index) => (
-              <Card key={index} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-4 sm:p-6">
-                  <div className="grid gap-4 lg:grid-cols-3">
-                    {/* Address Information */}
-                    <div className="lg:col-span-2">
-                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-base sm:text-lg font-semibold text-foreground break-words">
-                            {address.building && `${address.building}, `}
-                            {address.street}
-                          </h3>
-                          <p className="text-sm text-muted-foreground break-words">
-                            {address.city}, {address.region}, {address.country}
-                          </p>
-                        </div>
-                        <div className="flex flex-wrap gap-2 sm:flex-col sm:items-end">
-                          {address.verified && (
-                            <Badge variant="default" className="text-xs">
-                              <CheckCircle className="h-3 w-3 mr-1" />
-                              {t('address:verified')}
-                            </Badge>
-                          )}
-                          <Badge variant={getQualityColor(address.completenessScore)} className="text-xs">
-                            {t('address:publicPortal.percentComplete', { percent: address.completenessScore })}
-                          </Badge>
-                        </div>
+            <Accordion type="single" collapsible className="w-full space-y-2">
+              {searchResults.map((address, index) => (
+                <AccordionItem key={index} value={`item-${index}`} className="border rounded-lg px-4">
+                  <AccordionTrigger className="hover:no-underline py-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full pr-4 text-left gap-2">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-base sm:text-lg font-semibold text-foreground break-words">
+                          {address.building && `${address.building}, `}
+                          {address.street}
+                        </h3>
+                        <p className="text-sm text-muted-foreground break-words">
+                          {address.city}, {address.region}
+                        </p>
                       </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                        <div className="break-all">
-                          <span className="font-medium">{`${t('address:uac')}:`}</span> 
-                          <span className="ml-2 font-mono text-primary text-xs">{address.uac}</span>
-                        </div>
-                        <div>
-                          <span className="font-medium">{`${t('address:type')}:`}</span>
-                          <span className="ml-2 capitalize">{
-                            t(`address:addressType.${String(address.addressType).toLowerCase()}` as any, {
-                              defaultValue: t(`address:${String(address.addressType).toLowerCase()}` as any, {
-                                defaultValue: String(address.addressType),
-                              }),
-                            })
-                          }</span>
-                        </div>
-                        <div className="break-all">
-                          <span className="font-medium">{`${t('address:coordinates')}:`}</span>
-                          <span className="ml-2 font-mono text-xs">
-                            {address.latitude.toFixed(5)}, {address.longitude.toFixed(5)}
-                          </span>
-                        </div>
-                        {address.distance && (
-                          <div>
-                            <span className="font-medium">{t('address:publicPortal.distanceLabel')}</span>
-                            <span className="ml-2">{formatDistance(address.distance)}</span>
-                          </div>
+                      <div className="flex flex-wrap gap-2 sm:items-center">
+                        {address.verified && (
+                          <Badge variant="default" className="text-xs">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            {t('address:verified')}
+                          </Badge>
                         )}
+                        <span className="text-xs font-mono text-primary">{address.uac}</span>
                       </div>
                     </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="pt-4 pb-2">
+                      <div className="grid gap-4 lg:grid-cols-3">
+                        {/* Address Information */}
+                        <div className="lg:col-span-2">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm mb-4">
+                            <div className="break-all">
+                              <span className="font-medium">{`${t('address:uac')}:`}</span> 
+                              <span className="ml-2 font-mono text-primary text-xs">{address.uac}</span>
+                            </div>
+                            <div>
+                              <span className="font-medium">{`${t('address:type')}:`}</span>
+                              <span className="ml-2 capitalize">{
+                                t(`address:addressType.${String(address.addressType).toLowerCase()}` as any, {
+                                  defaultValue: t(`address:${String(address.addressType).toLowerCase()}` as any, {
+                                    defaultValue: String(address.addressType),
+                                  }),
+                                })
+                              }</span>
+                            </div>
+                            <div className="break-all">
+                              <span className="font-medium">{`${t('address:coordinates')}:`}</span>
+                              <span className="ml-2 font-mono text-xs">
+                                {address.latitude.toFixed(5)}, {address.longitude.toFixed(5)}
+                              </span>
+                            </div>
+                            {address.distance && (
+                              <div>
+                                <span className="font-medium">{t('address:publicPortal.distanceLabel')}</span>
+                                <span className="ml-2">{formatDistance(address.distance)}</span>
+                              </div>
+                            )}
+                            <div className="sm:col-span-2">
+                              <Badge variant={getQualityColor(address.completenessScore)} className="text-xs">
+                                {t('address:publicPortal.percentComplete', { percent: address.completenessScore })}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
 
-                    {/* Actions */}
-                    <div className="flex flex-col gap-2 mt-4 lg:mt-0">
+                        {/* Actions */}
+                        <div className="flex flex-col gap-2 mt-4 lg:mt-0">
                       <Button 
                         variant="outline" 
                         size="sm"
@@ -624,13 +636,15 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                       }}
                     >
                       <AlertTriangle className="h-4 w-4 mr-2" />
-                      {t('address:publicPortal.reportIssueHere')}
-                      </Button>
+                          {t('address:publicPortal.reportIssueHere')}
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </div>
         )}
 
