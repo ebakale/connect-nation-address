@@ -1098,5 +1098,9 @@
   "showingFlaggedAddresses": "Mostrando {{start}}-{{end}} de {{total}} direcciones marcadas",
   "flaggedRequestApproved": "Solicitud marcada aprobada exitosamente",
   "failedToApproveFlagged": "Error al aprobar solicitud marcada",
-  "building": "Edificio"
+  "building": "Edificio",
+  "comprehensiveDigitalAddressing": "Sistema integral de direccionamiento digital con registro basado en GPS, verificación multinivel y capacidades de búsqueda inteligente",
+  "gpsBasedRegistrationPrecise": "Registro basado en GPS con captura precisa de coordenadas",
+  "multiLevelVerificationNAR": "Sistema de verificación multinivel con autoridades NAR y CAR",
+  "smartSearchAdvancedFilters": "Búsqueda inteligente con filtros avanzados y resultados en tiempo real"
 }

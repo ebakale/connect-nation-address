@@ -942,5 +942,9 @@
   "showingFlaggedAddresses": "Affichage {{start}}-{{end}} de {{total}} adresses signalées",
   "flaggedRequestApproved": "Demande signalée approuvée avec succès",
   "failedToApproveFlagged": "Échec de l'approbation de la demande signalée",
-  "building": "Bâtiment"
+  "building": "Bâtiment",
+  "comprehensiveDigitalAddressing": "Système complet d'adressage numérique avec enregistrement basé sur GPS, vérification multi-niveaux et capacités de recherche intelligente",
+  "gpsBasedRegistrationPrecise": "Enregistrement basé sur GPS avec capture précise des coordonnées",
+  "multiLevelVerificationNAR": "Système de vérification multi-niveaux avec les autorités NAR et CAR",
+  "smartSearchAdvancedFilters": "Recherche intelligente avec filtres avancés et résultats en temps réel"
 }

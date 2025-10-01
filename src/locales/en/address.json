@@ -523,5 +523,9 @@
   "showingFlaggedAddresses": "Showing {{start}}-{{end}} of {{total}} flagged addresses",
   "flaggedRequestApproved": "Flagged request approved successfully",
   "failedToApproveFlagged": "Failed to approve flagged request",
-  "building": "Building"
+  "building": "Building",
+  "comprehensiveDigitalAddressing": "Comprehensive digital addressing system with GPS-based registration, multi-level verification, and smart search capabilities",
+  "gpsBasedRegistrationPrecise": "GPS-based registration with precise coordinate capture",
+  "multiLevelVerificationNAR": "Multi-level verification system with NAR and CAR authorities",
+  "smartSearchAdvancedFilters": "Smart search with advanced filters and real-time results"
 }
