@@ -415,6 +415,7 @@
   "qrCode": "QR Code",
   "viewOnMap": "View on Map",
   "directions": "Directions",
+  "print": "Print",
   "verified": "Verified",
   "pending": "Pending",
   "addressRegistry": "Address Registry",
