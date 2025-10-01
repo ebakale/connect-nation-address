@@ -189,7 +189,9 @@
     "dataExcellence": "Excellence des Données",
     "dataExcellenceDesc": "Promouvoir la qualité des données, l'interopérabilité et l'accès sécurisé entre les agences.",
     "dataExcellenceQuality": "Qualité et Gestion des Données",
+    "ensureDataIntegrityAccuracySystemReliability": "Assurer l'intégrité des données, la précision et la fiabilité du système entre les agences.",
     "territorialCoverage": "Couverture Territoriale Complète",
+    "achieveComprehensiveNationalCoverageRemoteAreas": "Atteindre une couverture nationale complète, y compris les zones éloignées, avec synchronisation hors ligne sécurisée.",
 
     "multiLevelRoleSystem": "Système de Rôles Multi-niveaux",
     "multiLevelRoleSystemDesc": "Contrôle d'accès granulaire avec des rôles spécifiques pour différents niveaux opérationnels.",
