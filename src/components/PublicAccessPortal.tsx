@@ -280,7 +280,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
   };
 
   return (
-    <div className="mobile-viewport-stable bg-gradient-to-br from-background to-muted/20 overflow-hidden">
+    <div className="mobile-viewport-stable bg-gradient-to-br from-background to-muted/20">
       <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4 lg:py-8 max-w-4xl mobile-container">
         {/* Mobile-optimized Header */}
         <div className="text-center mb-4 sm:mb-6 lg:mb-8">
