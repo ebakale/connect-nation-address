@@ -96,7 +96,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage = 'dashboard', on
         </div>
       </header>
 
-      <div className="flex flex-1 relative overflow-hidden">
+      <div className="flex flex-1 relative overflow-x-hidden overflow-y-auto">
         {/* Mobile-optimized Sidebar with better touch handling */}
         <aside className={cn(
           "bg-white shadow-lg border-r w-72 min-h-full fixed lg:static z-30 transition-transform duration-300 ease-in-out mobile-scroll",
