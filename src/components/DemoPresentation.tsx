@@ -23,6 +23,7 @@ import {
 import { toast } from 'sonner';
 import PptxGenJS from 'pptxgenjs';
 import demoImage from '@/assets/demo-presentation-image.png';
+import { GovernmentMonetizationPPT } from '@/components/GovernmentMonetizationPPT';
 
 interface DemoScenario {
   id: string;
@@ -426,6 +427,7 @@ export const DemoPresentation: React.FC = () => {
               <Download className="mr-2 h-4 w-4" />
               Exportar PowerPoint
             </Button>
+            <GovernmentMonetizationPPT />
           </div>
         </div>
 
