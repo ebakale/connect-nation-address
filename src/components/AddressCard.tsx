@@ -80,67 +80,55 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
             .address-plate {
               background: #1e3a8a;
               color: white;
-              padding: 40px;
+              padding: 40px 60px;
               border-radius: 8px;
-              width: 800px;
+              width: 600px;
               box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             }
             .header {
               display: flex;
               justify-content: space-between;
               align-items: center;
-              margin-bottom: 30px;
+              margin-bottom: 40px;
               padding-bottom: 20px;
               border-bottom: 2px solid rgba(255, 255, 255, 0.3);
             }
             .coat-of-arms {
-              width: 100px;
-              height: 100px;
+              width: 80px;
+              height: 80px;
               object-fit: contain;
             }
             .title {
-              font-size: 28px;
+              font-size: 20px;
               font-weight: bold;
               text-align: center;
               flex: 1;
+              line-height: 1.4;
             }
             .content {
               display: flex;
-              gap: 40px;
-              align-items: flex-start;
-            }
-            .left-section {
-              flex: 1;
+              flex-direction: column;
+              align-items: center;
+              gap: 30px;
             }
             .uac-section {
-              background: rgba(255, 255, 255, 0.1);
-              padding: 20px;
+              background: rgba(255, 255, 255, 0.15);
+              padding: 30px 40px;
               border-radius: 8px;
-              margin-bottom: 20px;
+              text-align: center;
+              width: 100%;
             }
             .uac-label {
-              font-size: 14px;
+              font-size: 16px;
               opacity: 0.9;
-              margin-bottom: 8px;
+              margin-bottom: 12px;
+              font-weight: 500;
             }
             .uac-code {
-              font-size: 32px;
+              font-size: 42px;
               font-weight: bold;
               font-family: 'Courier New', monospace;
-              letter-spacing: 2px;
-            }
-            .address-details {
-              line-height: 1.8;
-            }
-            .address-details p {
-              margin: 8px 0;
-              font-size: 16px;
-            }
-            .address-details strong {
-              font-weight: bold;
-              display: block;
-              font-size: 18px;
-              margin-bottom: 4px;
+              letter-spacing: 3px;
             }
             .qr-section {
               text-align: center;
@@ -166,20 +154,9 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
               <img src="${coatOfArms}" alt="Coat of Arms" class="coat-of-arms" />
             </div>
             <div class="content">
-              <div class="left-section">
-                <div class="uac-section">
-                  <div class="uac-label">Código Único de Dirección</div>
-                  <div class="uac-code">${address.uac}</div>
-                </div>
-                <div class="address-details">
-                  <strong>${address.country}</strong>
-                  <p>${address.region}</p>
-                  <p>${address.city}</p>
-                  <p>${address.street}, ${address.building}</p>
-                  <p style="margin-top: 16px; opacity: 0.9;">
-                    📍 ${address.coordinates.lat.toFixed(6)}°N, ${address.coordinates.lng.toFixed(6)}°E
-                  </p>
-                </div>
+              <div class="uac-section">
+                <div class="uac-label">Código Único de Dirección</div>
+                <div class="uac-code">${address.uac}</div>
               </div>
               <div class="qr-section">
                 <div class="qr-code">
