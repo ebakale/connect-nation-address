@@ -498,7 +498,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                         }}
                       >
                         <QrCode className="h-4 w-4 mr-2" />
-                        {t('address:publicPortal.printAddress')}
+                        {t('address:publicPortal.printAddress', { defaultValue: t('common:buttons.print', { defaultValue: 'Print' }) })}
                       </Button>
 
                       <Button 
