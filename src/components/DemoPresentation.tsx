@@ -24,7 +24,6 @@ import { toast } from 'sonner';
 import PptxGenJS from 'pptxgenjs';
 import demoImage from '@/assets/demo-presentation-image.png';
 import { GovernmentMonetizationPPT } from '@/components/GovernmentMonetizationPPT';
-import { DigitalAddressLawPDF } from '@/components/DigitalAddressLawPDF';
 import { PresidentialDecreePDF } from '@/components/PresidentialDecreePDF';
 
 interface DemoScenario {
@@ -430,7 +429,6 @@ export const DemoPresentation: React.FC = () => {
               Exportar PowerPoint
             </Button>
             <GovernmentMonetizationPPT />
-            <DigitalAddressLawPDF />
             <PresidentialDecreePDF />
           </div>
         </div>
