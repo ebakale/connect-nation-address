@@ -557,5 +557,16 @@
   "publishAllCount_other": "Publish all ({{count}})",
   "publishToNationalRegistry": "Publish to National Registry",
   "publish": "Publish",
-  "created": "Created"
+  "created": "Created",
+  "publishingQueueCount_one": "{{count}} address ready to publish",
+  "publishingQueueCount_other": "{{count}} addresses ready to publish",
+  "publishVerifiedAddresses": "Publish verified addresses to the public database",
+  "loadingPublishingQueue": "Loading publishing queue...",
+  "noAddressesPendingPublication": "No addresses pending publication",
+  "addressesPublishedSuccessfully_one": "{{count}} address published successfully",
+  "addressesPublishedSuccessfully_other": "{{count}} addresses published successfully",
+  "failedToPublishAddresses": "Failed to publish addresses",
+  "addressPublishedSuccessfully": "Address published successfully",
+  "addressUnpublishedSuccessfully": "Address unpublished successfully",
+  "unknown": "Unknown"
 }
