@@ -79,6 +79,12 @@ export const AnalyticsReports = () => {
     return typeColorMap[key] || "hsl(var(--chart-5))";
   };
 
+  const translateTypeLabel = (type: string) => {
+    const key = (type || '').toLowerCase().trim();
+    const fallback = key ? key.charAt(0).toUpperCase() + key.slice(1) : '';
+    return t(`dashboard:legendLabels.${key}`, { defaultValue: fallback });
+  };
+
   useEffect(() => {
     fetchRealAddresses();
   }, []);
@@ -294,7 +300,7 @@ export const AnalyticsReports = () => {
       [t('dashboard:addressTypesHeader')],
       [t('dashboard:type'), t('dashboard:count'), t('dashboard:percentage')],
       ...typeData.map(type => [
-        type.type,
+        translateTypeLabel(type.type),
         type.count.toString(),
         `${type.percentage}%`
       ]),
@@ -542,7 +548,7 @@ export const AnalyticsReports = () => {
                       className="w-3 h-3 rounded-full" 
                       style={{ backgroundColor: getColorForType(type.type) }}
                     />
-                    <span className="text-sm font-medium">{type.type}</span>
+                    <span className="text-sm font-medium">{translateTypeLabel(type.type)}</span>
                   </div>
                   <div className="text-right">
                     <span className="text-sm font-bold">{type.count.toLocaleString()}</span>
