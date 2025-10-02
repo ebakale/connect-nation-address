@@ -568,5 +568,19 @@
   "failedToPublishAddresses": "Failed to publish addresses",
   "addressPublishedSuccessfully": "Address published successfully",
   "addressUnpublishedSuccessfully": "Address unpublished successfully",
-  "unknown": "Unknown"
+  "unknown": "Unknown",
+  "addressRemovedFromRegistry": "Address removed from public registry",
+  "addressesRemovedFromRegistryCount_one": "{{count}} address removed from public registry",
+  "addressesRemovedFromRegistryCount_other": "{{count}} addresses removed from public registry",
+  "failedToRemoveSomeAddresses": "Failed to remove some addresses from registry",
+  "loadingPublishedAddresses": "Loading published addresses...",
+  "publishedAddressesCount_one": "{{count}} published address",
+  "publishedAddressesCount_other": "{{count}} published addresses",
+  "manageAddressesInRegistry": "Manage addresses in the public registry",
+  "removeAllFromPublicRegistryCount_one": "Remove all from registry ({{count}})",
+  "removeAllFromPublicRegistryCount_other": "Remove all from registry ({{count}})",
+  "removeAll": "Remove All",
+  "noPublishedAddressesFound": "No published addresses found",
+  "removeFromPublicRegistry": "Remove from Public Registry",
+  "remove": "Remove"
 }
