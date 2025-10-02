@@ -25,6 +25,7 @@
   "loadingRoleInformation": "Loading role information...",
   "roleManagement": "Role Management",
   "userManagement": "User Management",
+  "permissions": "Permissions",
   "uacSystem": "UAC System",
   "apiWebhooks": "API & Webhooks",
   "documentation": "Documentation",
