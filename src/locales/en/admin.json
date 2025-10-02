@@ -339,5 +339,13 @@
     "carDescription": "CAR (Citizen Address Repository): Tracks citizen residential addresses and verifications",
     "addressRequestsDescription": "Address Requests: Handles new address submissions and verification workflow",
     "narAuthoritiesDescription": "NAR Authorities: Manages regional verification authorities and permissions"
+  },
+  "downloadSystemManual": "Download System Manual",
+  "downloadStrategicOverview": "Download Strategic Overview Document",
+  "generateRolesPdfGuide": "Generate Roles PDF Guide",
+  "strategicOverview": {
+    "title": "Connect Nation National Digital Address System",
+    "subtitle": "Strategic Vision and National Benefits for Equatorial Guinea",
+    "version": "Strategic Analysis Report v1.0"
   }
 }
