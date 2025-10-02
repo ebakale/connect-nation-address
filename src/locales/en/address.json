@@ -551,5 +551,11 @@
   "importGoogleMapsAddresses": "Import Google Maps Addresses",
   "previous": "Previous",
   "next": "Next",
-  "flaggedOn": "Flagged on {{date}}"
+  "flaggedOn": "Flagged on {{date}}",
+  "publishAll": "Publish All",
+  "publishAllCount_one": "Publish all ({{count}})",
+  "publishAllCount_other": "Publish all ({{count}})",
+  "publishToNationalRegistry": "Publish to National Registry",
+  "publish": "Publish",
+  "created": "Created"
 }
