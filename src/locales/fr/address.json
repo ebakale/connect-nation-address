@@ -961,5 +961,7 @@
   "importError": "Erreur d'Importation",
   "googleMapsImporter": "Importateur Google Maps",
   "importGoogleMapsDescription": "Importer des adresses depuis l'API Google Maps pour remplir la base de données d'adresses",
-  "importNotice": "Cela importera des adresses depuis Google Maps. Les adresses existantes ne seront pas dupliquées."
+  "importNotice": "Cela importera des adresses depuis Google Maps. Les adresses existantes ne seront pas dupliquées.",
+  "importingAddresses": "Importation des Adresses...",
+  "importGoogleMapsAddresses": "Importer les Adresses Google Maps"
 }

@@ -1117,5 +1117,7 @@
   "importError": "Error de Importación",
   "googleMapsImporter": "Importador de Google Maps",
   "importGoogleMapsDescription": "Importar direcciones desde la API de Google Maps para poblar la base de datos de direcciones",
-  "importNotice": "Esto importará direcciones desde Google Maps. Las direcciones existentes no se duplicarán."
+  "importNotice": "Esto importará direcciones desde Google Maps. Las direcciones existentes no se duplicarán.",
+  "importingAddresses": "Importando Direcciones...",
+  "importGoogleMapsAddresses": "Importar Direcciones de Google Maps"
 }

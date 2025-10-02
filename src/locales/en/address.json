@@ -542,5 +542,7 @@
   "importError": "Import Error",
   "googleMapsImporter": "Google Maps Importer",
   "importGoogleMapsDescription": "Import addresses from Google Maps API to populate the address database",
-  "importNotice": "This will import addresses from Google Maps. Existing addresses will not be duplicated."
+  "importNotice": "This will import addresses from Google Maps. Existing addresses will not be duplicated.",
+  "importingAddresses": "Importing Addresses...",
+  "importGoogleMapsAddresses": "Import Google Maps Addresses"
 }
