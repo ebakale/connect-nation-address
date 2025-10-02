@@ -291,6 +291,18 @@
     "noQualityIssuesFound": "No Quality Issues Found",
     "allAddressesMeetStandards": "All addresses meet quality standards",
     "carStatusDistribution": "CAR Status Distribution",
-    "citizenAddressesByStatus": "Citizen addresses by status"
+    "confirmed": "Confirmed",
+    "pending": "Pending",
+    "rejected": "Rejected",
+    "total": "Total",
+    "processingPerformance": "Processing Performance",
+    "carVerificationEfficiency": "CAR verification efficiency",
+    "confirmationRate": "Confirmation rate",
+    "avgProcessingTime": "Avg processing time",
+    "dataQualityIssuesCar": "Data Quality Issues (CAR)",
+    "carSpecificQualityConcerns": "CAR-specific quality concerns",
+    "processingBacklog": "Processing Backlog",
+    "actionRequired": "Action Required",
+    "duplicatePersonsNeedMerging": "duplicate persons need merging"
   }
 }
