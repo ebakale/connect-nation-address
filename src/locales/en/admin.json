@@ -275,6 +275,22 @@
     "detailedMetricsByRegion": "Detailed metrics by region",
     "region": "Region",
     "addresses": "Addresses",
-    "published": "Published"
+    "published": "Published",
+    "dataQualityDistribution": "Data Quality Distribution",
+    "addressCompletenessScores": "Address completeness scores",
+    "qualityIssues": "Quality Issues",
+    "itemsRequiringAttention": "Items requiring attention",
+    "lowQualityAddresses": "Low Quality Addresses",
+    "duplicateAddresses": "Duplicate Addresses",
+    "hideQualityIssues": "Hide Quality Issues",
+    "viewQualityIssues": "View Quality Issues",
+    "fixIssues": "Fix Issues",
+    "qualityIssuesBreakdown": "Quality Issues Breakdown",
+    "lowQualityDescription": "addresses with completeness score below 85%",
+    "duplicateGroupsIdentified": "duplicate groups identified",
+    "noQualityIssuesFound": "No Quality Issues Found",
+    "allAddressesMeetStandards": "All addresses meet quality standards",
+    "carStatusDistribution": "CAR Status Distribution",
+    "citizenAddressesByStatus": "Citizen addresses by status"
   }
 }
