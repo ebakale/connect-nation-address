@@ -518,6 +518,8 @@
   "hasGeographicAccess": "Tiene acceso a ubicaciones geográficas de prueba",
   "limitedGeographicAccess": "Su acceso está limitado por el alcance geográfico",
   "searchUsers": "Buscar usuarios...",
+  "verifierGeographicScopeDesc": "Los verificadores solo pueden procesar direcciones dentro de su provincia o distrito asignado",
+  "partnerApiScopeDesc": "Los socios de API tienen acceso de lectura limitado a su área de servicio o base de clientes",
   "createUser": "Crear Usuario",
   "refresh": "Actualizar",
   "loadingUsers": "Cargando usuarios...",

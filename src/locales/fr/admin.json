@@ -363,6 +363,8 @@
   "partnerApiScope": "Portée API du partenaire",
   "yourGeographicAccess": "Votre accès géographique",
   "hasGeographicAccess": "Vous avez accès aux emplacements géographiques de test",
+  "verifierGeographicScopeDesc": "Les vérificateurs ne peuvent traiter que les adresses dans leur province ou district assigné",
+  "partnerApiScopeDesc": "Les partenaires API ont un accès en lecture limité à leur zone de service ou base de clients",
   "limitedGeographicAccess": "Votre accès est limité par la portée géographique",
   "searchUsers": "Rechercher des utilisateurs...",
   "createUser": "Créer un utilisateur",
