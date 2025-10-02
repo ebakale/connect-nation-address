@@ -594,5 +594,6 @@
   "errorVerificationFailed": "Failed to save verification record",
   "addressesVerifiedSuccessfully": "addresses verified successfully",
   "addressesRejectedSuccessfully": "addresses rejected successfully",
-  "bulkVerificationFailed": "Bulk verification failed"
+  "bulkVerificationFailed": "Bulk verification failed",
+  "totalAddresses": "Total Addresses"
 }
