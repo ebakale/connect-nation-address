@@ -304,5 +304,35 @@
     "processingBacklog": "Processing Backlog",
     "actionRequired": "Action Required",
     "duplicatePersonsNeedMerging": "duplicate persons need merging"
+  },
+  "narCarIntegration": {
+    "testNames": {
+      "narAuthoritiesTable": "NAR Authorities Table",
+      "citizenAddressCar": "Citizen Address (CAR) Table",
+      "addressRequestsPending": "Address Requests (Pending)",
+      "narAddressesVerified": "NAR Addresses (Verified)",
+      "userRolesRls": "User Roles & RLS",
+      "generalTestError": "General Test Error"
+    },
+    "testMessages": {
+      "foundNarAuthorities": "Found {{count}} NAR authorities",
+      "foundCitizenAddresses": "Found {{count}} citizen addresses",
+      "foundPendingRequests": "Found {{count}} pending requests",
+      "foundVerifiedAddresses": "Found {{count}} verified addresses",
+      "userHasRoles": "User has {{count}} roles assigned",
+      "unknownError": "Unknown error occurred"
+    },
+    "statusLabels": {
+      "success": "Success",
+      "error": "Error",
+      "warning": "Warning",
+      "info": "Info"
+    },
+    "adminAccessRequired": "Administrator access required to run system tests",
+    "systemTestPanel": "NAR & CAR System Test Panel",
+    "testPanelDescription": "Run diagnostic tests to verify NAR and CAR system integration",
+    "runningTests": "Running Tests...",
+    "runSystemTests": "Run System Tests",
+    "testResults": "Test Results"
   }
 }

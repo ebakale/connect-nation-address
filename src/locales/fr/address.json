@@ -950,5 +950,16 @@
   "addressRegistrySystem": "Système de Registre d'Adresses",
   "digitalAddressingInfrastructure": "Infrastructure d'Adressage Numérique",
   "uniqueUACCodesQR": "Codes UAC uniques avec génération de QR pour un partage facile",
-  "multipleAddressesManagement": "Gestion de plusieurs adresses (principale et secondaires)"
+  "multipleAddressesManagement": "Gestion de plusieurs adresses (principale et secondaires)",
+  "startingImport": "Démarrage de l'Importation",
+  "fetchingAddresses": "Récupération des adresses depuis Google Maps...",
+  "importCompleted": "Importation Terminée",
+  "importSuccessfulCount": "{{successCount}} adresses importées avec succès ({{errorCount}} erreurs)",
+  "importFailed": "Échec de l'Importation",
+  "unknownError": "Une erreur inconnue s'est produite",
+  "failedToExport": "Échec de l'exportation des adresses",
+  "importError": "Erreur d'Importation",
+  "googleMapsImporter": "Importateur Google Maps",
+  "importGoogleMapsDescription": "Importer des adresses depuis l'API Google Maps pour remplir la base de données d'adresses",
+  "importNotice": "Cela importera des adresses depuis Google Maps. Les adresses existantes ne seront pas dupliquées."
 }

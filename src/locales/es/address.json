@@ -1106,5 +1106,16 @@
   "addressRegistrySystem": "Sistema de Registro de Direcciones",
   "digitalAddressingInfrastructure": "Infraestructura de Direccionamiento Digital",
   "uniqueUACCodesQR": "Códigos UAC únicos con generación de QR para compartir fácilmente",
-  "multipleAddressesManagement": "Gestión de múltiples direcciones (primaria y secundarias)"
+  "multipleAddressesManagement": "Gestión de múltiples direcciones (primaria y secundarias)",
+  "startingImport": "Iniciando Importación",
+  "fetchingAddresses": "Obteniendo direcciones desde Google Maps...",
+  "importCompleted": "Importación Completada",
+  "importSuccessfulCount": "Se importaron exitosamente {{successCount}} direcciones ({{errorCount}} errores)",
+  "importFailed": "Importación Fallida",
+  "unknownError": "Ocurrió un error desconocido",
+  "failedToExport": "Error al exportar direcciones",
+  "importError": "Error de Importación",
+  "googleMapsImporter": "Importador de Google Maps",
+  "importGoogleMapsDescription": "Importar direcciones desde la API de Google Maps para poblar la base de datos de direcciones",
+  "importNotice": "Esto importará direcciones desde Google Maps. Las direcciones existentes no se duplicarán."
 }

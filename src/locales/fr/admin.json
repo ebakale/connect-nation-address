@@ -285,6 +285,36 @@
     "actionRequired": "Action requise",
     "duplicatePersonsNeedMerging": "personnes dupliquées nécessitent une fusion"
   },
+  "narCarIntegration": {
+    "testNames": {
+      "narAuthoritiesTable": "Table des Autorités NAR",
+      "citizenAddressCar": "Table des Adresses de Citoyens (CAR)",
+      "addressRequestsPending": "Demandes d'Adresses (En Attente)",
+      "narAddressesVerified": "Adresses NAR (Vérifiées)",
+      "userRolesRls": "Rôles Utilisateur et RLS",
+      "generalTestError": "Erreur Générale de Test"
+    },
+    "testMessages": {
+      "foundNarAuthorities": "{{count}} autorités NAR trouvées",
+      "foundCitizenAddresses": "{{count}} adresses de citoyens trouvées",
+      "foundPendingRequests": "{{count}} demandes en attente trouvées",
+      "foundVerifiedAddresses": "{{count}} adresses vérifiées trouvées",
+      "userHasRoles": "L'utilisateur a {{count}} rôles attribués",
+      "unknownError": "Une erreur inconnue s'est produite"
+    },
+    "statusLabels": {
+      "success": "Succès",
+      "error": "Erreur",
+      "warning": "Avertissement",
+      "info": "Info"
+    },
+    "adminAccessRequired": "Accès administrateur requis pour exécuter les tests système",
+    "systemTestPanel": "Panneau de Test Système NAR et CAR",
+    "testPanelDescription": "Exécuter des tests de diagnostic pour vérifier l'intégration du système NAR et CAR",
+    "runningTests": "Exécution des Tests...",
+    "runSystemTests": "Exécuter les Tests Système",
+    "testResults": "Résultats des Tests"
+  },
   "workflowStatus": "État du flux de travail",
   "currentRolePosition": "Votre rôle actuel et position dans le flux de travail de gestion des adresses",
   "currentRole": "Rôle actuel",

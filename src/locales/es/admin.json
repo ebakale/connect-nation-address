@@ -438,6 +438,36 @@
     "actionRequired": "Acción Requerida",
     "duplicatePersonsNeedMerging": "personas duplicadas necesitan fusión"
   },
+  "narCarIntegration": {
+    "testNames": {
+      "narAuthoritiesTable": "Tabla de Autoridades NAR",
+      "citizenAddressCar": "Tabla de Direcciones de Ciudadanos (CAR)",
+      "addressRequestsPending": "Solicitudes de Direcciones (Pendientes)",
+      "narAddressesVerified": "Direcciones NAR (Verificadas)",
+      "userRolesRls": "Roles de Usuario y RLS",
+      "generalTestError": "Error General de Prueba"
+    },
+    "testMessages": {
+      "foundNarAuthorities": "Se encontraron {{count}} autoridades NAR",
+      "foundCitizenAddresses": "Se encontraron {{count}} direcciones de ciudadanos",
+      "foundPendingRequests": "Se encontraron {{count}} solicitudes pendientes",
+      "foundVerifiedAddresses": "Se encontraron {{count}} direcciones verificadas",
+      "userHasRoles": "El usuario tiene {{count}} roles asignados",
+      "unknownError": "Ocurrió un error desconocido"
+    },
+    "statusLabels": {
+      "success": "Éxito",
+      "error": "Error",
+      "warning": "Advertencia",
+      "info": "Información"
+    },
+    "adminAccessRequired": "Se requiere acceso de administrador para ejecutar pruebas del sistema",
+    "systemTestPanel": "Panel de Prueba del Sistema NAR y CAR",
+    "testPanelDescription": "Ejecutar pruebas de diagnóstico para verificar la integración del sistema NAR y CAR",
+    "runningTests": "Ejecutando Pruebas...",
+    "runSystemTests": "Ejecutar Pruebas del Sistema",
+    "testResults": "Resultados de Prueba"
+  },
   "workflowStatus": "Estado del Flujo de Trabajo",
   "currentRolePosition": "Su rol actual y posición en el flujo de trabajo de gestión de direcciones",
   "currentRole": "Rol Actual",

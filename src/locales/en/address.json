@@ -531,5 +531,16 @@
   "addressRegistrySystem": "Address Registry System",
   "digitalAddressingInfrastructure": "Digital Addressing Infrastructure",
   "uniqueUACCodesQR": "Unique UAC codes with QR generation for easy sharing",
-  "multipleAddressesManagement": "Multiple addresses management (primary and secondary)"
+  "multipleAddressesManagement": "Multiple addresses management (primary and secondary)",
+  "startingImport": "Starting Import",
+  "fetchingAddresses": "Fetching addresses from Google Maps...",
+  "importCompleted": "Import Completed",
+  "importSuccessfulCount": "Successfully imported {{successCount}} addresses ({{errorCount}} errors)",
+  "importFailed": "Import Failed",
+  "unknownError": "Unknown error occurred",
+  "failedToExport": "Failed to export addresses",
+  "importError": "Import Error",
+  "googleMapsImporter": "Google Maps Importer",
+  "importGoogleMapsDescription": "Import addresses from Google Maps API to populate the address database",
+  "importNotice": "This will import addresses from Google Maps. Existing addresses will not be duplicated."
 }
