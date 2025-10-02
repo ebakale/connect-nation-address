@@ -595,5 +595,6 @@
   "addressesVerifiedSuccessfully": "addresses verified successfully",
   "addressesRejectedSuccessfully": "addresses rejected successfully",
   "bulkVerificationFailed": "Bulk verification failed",
-  "totalAddresses": "Total Addresses"
+  "totalAddresses": "Total Addresses",
+  "qualityScore": "Quality Score"
 }
