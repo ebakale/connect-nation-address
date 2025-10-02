@@ -466,7 +466,12 @@
     "testPanelDescription": "Ejecutar pruebas de diagnóstico para verificar la integración del sistema NAR y CAR",
     "runningTests": "Ejecutando Pruebas...",
     "runSystemTests": "Ejecutar Pruebas del Sistema",
-    "testResults": "Resultados de Prueba"
+    "testResults": "Resultados de Prueba",
+    "systemArchitecture": "Arquitectura del Sistema",
+    "narDescription": "NAR (Registro Nacional de Direcciones): Gestiona direcciones oficiales verificadas con códigos UAC",
+    "carDescription": "CAR (Repositorio de Direcciones de Ciudadanos): Rastrea direcciones residenciales de ciudadanos y verificaciones",
+    "addressRequestsDescription": "Solicitudes de Direcciones: Maneja nuevas presentaciones de direcciones y flujo de verificación",
+    "narAuthoritiesDescription": "Autoridades NAR: Gestiona autoridades de verificación regionales y permisos"
   },
   "workflowStatus": "Estado del Flujo de Trabajo",
   "currentRolePosition": "Su rol actual y posición en el flujo de trabajo de gestión de direcciones",

@@ -333,6 +333,11 @@
     "testPanelDescription": "Run diagnostic tests to verify NAR and CAR system integration",
     "runningTests": "Running Tests...",
     "runSystemTests": "Run System Tests",
-    "testResults": "Test Results"
+    "testResults": "Test Results",
+    "systemArchitecture": "System Architecture",
+    "narDescription": "NAR (National Address Registry): Manages official verified addresses with UAC codes",
+    "carDescription": "CAR (Citizen Address Repository): Tracks citizen residential addresses and verifications",
+    "addressRequestsDescription": "Address Requests: Handles new address submissions and verification workflow",
+    "narAuthoritiesDescription": "NAR Authorities: Manages regional verification authorities and permissions"
   }
 }

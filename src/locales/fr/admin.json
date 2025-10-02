@@ -313,7 +313,12 @@
     "testPanelDescription": "Exécuter des tests de diagnostic pour vérifier l'intégration du système NAR et CAR",
     "runningTests": "Exécution des Tests...",
     "runSystemTests": "Exécuter les Tests Système",
-    "testResults": "Résultats des Tests"
+    "testResults": "Résultats des Tests",
+    "systemArchitecture": "Architecture du Système",
+    "narDescription": "NAR (Registre National des Adresses): Gère les adresses officielles vérifiées avec codes UAC",
+    "carDescription": "CAR (Référentiel d'Adresses de Citoyens): Suit les adresses résidentielles des citoyens et les vérifications",
+    "addressRequestsDescription": "Demandes d'Adresses: Traite les nouvelles soumissions d'adresses et le flux de vérification",
+    "narAuthoritiesDescription": "Autorités NAR: Gère les autorités de vérification régionales et les permissions"
   },
   "workflowStatus": "État du flux de travail",
   "currentRolePosition": "Votre rôle actuel et position dans le flux de travail de gestion des adresses",
