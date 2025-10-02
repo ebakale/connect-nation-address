@@ -250,7 +250,7 @@
     "regions": "régions",
     "averageCompletenessScore": "Score moyen de complétude",
     "confirmedPending": "{{confirmed}} confirmées, {{pending}} en attente",
-    "duplicatePersons": "{{count}} personnes dupliquées",
+    "duplicatePersons": "Personnes Dupliquées",
     "addressesVerified": "vérifiées",
     "detailedMetricsByRegion": "Métriques détaillées par région",
     "region": "Région",

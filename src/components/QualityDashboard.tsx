@@ -332,7 +332,7 @@ export function QualityDashboard() {
             </p>
             {carMetrics.duplicatePersonRecords > 0 && (
               <Badge variant="destructive" className="mt-2">
-                {t('admin:quality.duplicatePersons', { count: carMetrics.duplicatePersonRecords })}
+                {carMetrics.duplicatePersonRecords} {t('admin:quality.duplicatePersonsNeedMerging')}
               </Badge>
             )}
           </CardContent>
