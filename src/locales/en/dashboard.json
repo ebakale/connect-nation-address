@@ -745,5 +745,7 @@
   "pending": "Pending",
   "verifiedAddressesInRegistry": "Verified addresses in registry",
   "publishedAddresses": "Published Addresses",
-  "addressesPublished": "Addresses published"
+  "addressesPublished": "Addresses published",
+  "publishingQueueCount_one": "{{count}} address ready to publish",
+  "publishingQueueCount_other": "{{count}} addresses ready to publish"
 }
