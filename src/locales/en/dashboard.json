@@ -742,5 +742,8 @@
   "publishVerifiedAddresses": "Publish verified addresses to the public database",
   "flaggedAddresses": "Flagged Addresses",
   "rejectedRequests": "Rejected Requests",
-  "pending": "Pending"
+  "pending": "Pending",
+  "verifiedAddressesInRegistry": "Verified addresses in registry",
+  "publishedAddresses": "Published Addresses",
+  "addressesPublished": "Addresses published"
 }
