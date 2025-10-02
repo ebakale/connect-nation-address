@@ -271,7 +271,7 @@
     "averageCompletenessScore": "Average completeness score",
     "confirmedPending": "{{confirmed}} confirmed, {{pending}} pending",
     "duplicatePersons": "{{count}} duplicate persons",
-    "addressesVerifiedCount": "{{count}} verified",
+    "addressesVerified": "verified",
     "detailedMetricsByRegion": "Detailed metrics by region",
     "region": "Region",
     "addresses": "Addresses",

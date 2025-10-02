@@ -404,7 +404,7 @@
     "averageCompletenessScore": "Puntuación promedio de completitud",
     "confirmedPending": "{{confirmed}} confirmadas, {{pending}} pendientes",
     "duplicatePersons": "{{count}} personas duplicadas",
-    "addressesVerifiedCount": "{{count}} verificadas",
+    "addressesVerified": "verificadas",
     "detailedMetricsByRegion": "Métricas detalladas por región",
     "region": "Región",
     "addresses": "Direcciones",

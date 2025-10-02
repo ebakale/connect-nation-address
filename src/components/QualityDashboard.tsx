@@ -363,7 +363,7 @@ export function QualityDashboard() {
             <div className="text-2xl font-bold">{nationalSummary.overallCoverage}%</div>
             <Progress value={nationalSummary.overallCoverage} className="mt-2" />
             <p className="text-xs text-muted-foreground mt-1">
-              {t('admin:quality.addressesVerifiedCount', { count: nationalSummary.verifiedAddresses.toLocaleString() })}
+              {nationalSummary.verifiedAddresses.toLocaleString()} {t('admin:quality.addressesVerified')}
             </p>
           </CardContent>
         </Card>
