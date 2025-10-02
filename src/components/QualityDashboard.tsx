@@ -314,7 +314,7 @@ export function QualityDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{nationalSummary.totalAddresses.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              Across {nationalSummary.totalRegions} regions, {nationalSummary.totalCities} cities
+              {t('admin:quality.across')} {nationalSummary.totalRegions} {t('admin:quality.regions')}, {nationalSummary.totalCities} {t('admin:quality.cities')}
             </p>
           </CardContent>
         </Card>
@@ -328,11 +328,11 @@ export function QualityDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{carMetrics.totalCitizenAddresses.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              {carMetrics.confirmedAddresses} confirmed, {carMetrics.pendingVerificationAddresses} pending
+              {t('admin:quality.confirmedPending', { confirmed: carMetrics.confirmedAddresses, pending: carMetrics.pendingVerificationAddresses })}
             </p>
             {carMetrics.duplicatePersonRecords > 0 && (
               <Badge variant="destructive" className="mt-2">
-                {carMetrics.duplicatePersonRecords} duplicate persons
+                {t('admin:quality.duplicatePersons', { count: carMetrics.duplicatePersonRecords })}
               </Badge>
             )}
           </CardContent>
@@ -363,7 +363,7 @@ export function QualityDashboard() {
             <div className="text-2xl font-bold">{nationalSummary.overallCoverage}%</div>
             <Progress value={nationalSummary.overallCoverage} className="mt-2" />
             <p className="text-xs text-muted-foreground mt-1">
-              {nationalSummary.verifiedAddresses.toLocaleString()} verified
+              {t('admin:quality.addressesVerifiedCount', { count: nationalSummary.verifiedAddresses.toLocaleString() })}
             </p>
           </CardContent>
         </Card>
@@ -377,7 +377,7 @@ export function QualityDashboard() {
             <div className="text-2xl font-bold">{qualityMetrics.averageCompleteness}%</div>
             <Progress value={qualityMetrics.averageCompleteness} className="mt-2" />
             <p className="text-xs text-muted-foreground mt-1">
-              Average completeness score
+              {t('admin:quality.averageCompletenessScore')}
             </p>
           </CardContent>
         </Card>
@@ -474,8 +474,8 @@ export function QualityDashboard() {
                       <th className="text-right p-2">{t('admin:quality.cities')}</th>
                       <th className="text-right p-2">{t('admin:quality.addresses')}</th>
                       <th className="text-right p-2">{t('admin:quality.verified')}</th>
-                      <th className="text-right p-2">Published</th>
-                      <th className="text-right p-2">Quality</th>
+                      <th className="text-right p-2">{t('admin:quality.published')}</th>
+                      <th className="text-right p-2">{t('admin:quality.qualityScore')}</th>
                     </tr>
                   </thead>
                   <tbody>
