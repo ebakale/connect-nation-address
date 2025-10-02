@@ -637,6 +637,19 @@
     "averageProcessingTime": "Average processing time",
     "days": "days",
     "systemLoad": "System Load",
-    "dataIntegrity": "Data Integrity"
+    "dataIntegrity": "Data Integrity",
+    "administrativeTools": "Administrative tools for CAR system management",
+    "dataManagement": "Data Management",
+    "bulkOperationsDataManagement": "Bulk operations and data management",
+    "refreshStatistics": "Refresh Statistics",
+    "exportCarData": "Export CAR Data",
+    "systemMaintenance": "System Maintenance",
+    "systemMaintenanceOptimization": "System maintenance and optimization",
+    "runIntegrityCheck": "Run Integrity Check",
+    "optimizePerformance": "Optimize Performance",
+    "verificationTools": "Verification Tools",
+    "addressVerificationManagement": "Address verification management",
+    "bulkVerification": "Bulk Verification",
+    "reviewFlaggedItems": "Review Flagged Items"
   }
 }
