@@ -16,6 +16,10 @@
   "you": "You",
   "fullAccess": "Full Access",
   "noAccess": "No Access",
+  "yourCurrentPermissions": "Your Current Permissions",
+  "permissionsAvailableDescription": "Permissions available for your role: {{role}}",
+  "notAssigned": "Not Assigned",
+  "noRoleAssigned": "No role assigned to your account",
   "pleaseLogInToAccess": "Please log in to access role management features",
   "adminAccessRequired": "Administrator access required",
   "loadingRoleInformation": "Loading role information...",
@@ -373,14 +377,18 @@
   "limitedGeographicAccess": "Your access is limited by geographic scope",
   "roleLabels": {
     "citizen": "Citizen",
+    "property_claimant": "Property Claimant",
     "field_agent": "Field Agent",
     "verifier": "Verifier",
     "registrar": "Registrar",
     "admin": "Administrator",
+    "ndaa_admin": "NDAA Administrator",
     "partnerUtility": "Partner (Utility)",
     "data_steward": "Data Steward",
     "partnerEMS": "Partner (EMS)",
-    "partner": "Partner"
+    "partner": "Partner",
+    "auditor": "Auditor",
+    "support": "Support"
   },
   "stepDescriptions": {
     "submit_request": "Submit address registration request",
