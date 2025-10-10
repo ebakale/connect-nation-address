@@ -663,14 +663,14 @@ const UnifiedDashboard = () => {
                       </Button>
                       
                       <Button 
-                        onClick={() => setActiveView('saved-locations')}
+                        onClick={() => setActiveView('saved-addresses')}
                         className="w-full justify-start gap-2 h-auto py-3"
                         variant="outline"
                       >
                         <MapPin className="h-4 w-4" />
                         <div className="text-left">
-                          <div className="font-medium">{t('dashboard:savedLocations')}</div>
-                          <div className="text-xs text-muted-foreground">{t('dashboard:savedLocationsDesc')}</div>
+                          <div className="font-medium">{t('dashboard:savedAddresses')}</div>
+                          <div className="text-xs text-muted-foreground">{t('dashboard:savedAddressesDesc')}</div>
                         </div>
                       </Button>
                       
@@ -831,7 +831,7 @@ const UnifiedDashboard = () => {
           </div>
         );
 
-      case 'saved-locations':
+      case 'saved-addresses':
         return (
           <div className="max-w-6xl">
             <SavedLocationsManager />

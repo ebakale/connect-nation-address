@@ -104,21 +104,21 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2">
             <Star className="h-6 w-6 text-primary" />
-            {t('dashboard:savedLocations')}
+            {t('dashboard:savedAddresses')}
           </h2>
-          <p className="text-muted-foreground">{t('dashboard:savedLocationsDesc')}</p>
+          <p className="text-muted-foreground">{t('dashboard:savedAddressesDesc')}</p>
         </div>
         
         <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              {t('dashboard:addLocation')}
+              {t('dashboard:addAddress')}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{t('dashboard:addNewSavedLocation')}</DialogTitle>
+              <DialogTitle>{t('dashboard:addNewSavedAddress')}</DialogTitle>
               <DialogDescription>
                 {t('dashboard:createBookmarkDesc')}
               </DialogDescription>
@@ -134,7 +134,7 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
       {/* Search */}
       <div className="flex items-center gap-2">
         <Input
-          placeholder={t('dashboard:searchSavedLocations')}
+          placeholder={t('dashboard:searchSavedAddresses')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="flex-1"
@@ -148,14 +148,14 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
         <Card>
           <CardContent className="p-8 text-center">
             <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium mb-2">{t('dashboard:noSavedLocations')}</h3>
+            <h3 className="text-lg font-medium mb-2">{t('dashboard:noSavedAddresses')}</h3>
             <p className="text-muted-foreground mb-4">
-              {searchTerm ? t('dashboard:noLocationsMatch') : t('dashboard:startByAdding')}
+              {searchTerm ? t('dashboard:noAddressesMatch') : t('dashboard:startByAdding')}
             </p>
             {!searchTerm && (
               <Button onClick={() => setShowAddDialog(true)}>
                 <Plus className="h-4 w-4 mr-2" />
-                {t('dashboard:addLocation')}
+                {t('dashboard:addAddress')}
               </Button>
             )}
           </CardContent>
@@ -266,9 +266,9 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
         <Dialog open={true} onOpenChange={() => setEditingLocation(null)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{t('dashboard:editSavedLocation')}</DialogTitle>
+              <DialogTitle>{t('dashboard:editSavedAddress')}</DialogTitle>
               <DialogDescription>
-                {t('dashboard:updateLocationDesc')}
+                {t('dashboard:updateAddressDesc')}
               </DialogDescription>
             </DialogHeader>
             <EditLocationForm 
@@ -352,7 +352,7 @@ const AddLocationForm: React.FC<{
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="text-sm font-medium">{t('dashboard:locationName')} *</label>
+        <label className="text-sm font-medium">{t('dashboard:addressName')} *</label>
         <Input
           value={formData.name}
           onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
@@ -362,7 +362,7 @@ const AddLocationForm: React.FC<{
       </div>
 
       <div>
-        <label className="text-sm font-medium">{t('dashboard:locationDescription')}</label>
+        <label className="text-sm font-medium">{t('dashboard:addressDescription')}</label>
         <Textarea
           value={formData.description}
           onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
@@ -434,7 +434,7 @@ const AddLocationForm: React.FC<{
       </div>
 
       <div className="flex gap-2 pt-4">
-        <Button type="submit" className="flex-1">{t('dashboard:saveLocation')}</Button>
+        <Button type="submit" className="flex-1">{t('dashboard:saveAddress')}</Button>
         <Button type="button" variant="outline" onClick={onCancel}>{t('common:cancel')}</Button>
       </div>
     </form>
@@ -487,7 +487,7 @@ const EditLocationForm: React.FC<{
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="text-sm font-medium">{t('dashboard:locationName')} *</label>
+        <label className="text-sm font-medium">{t('dashboard:addressName')} *</label>
         <Input
           value={formData.name}
           onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
@@ -497,7 +497,7 @@ const EditLocationForm: React.FC<{
       </div>
 
       <div>
-        <label className="text-sm font-medium">{t('dashboard:locationDescription')}</label>
+        <label className="text-sm font-medium">{t('dashboard:addressDescription')}</label>
         <Textarea
           value={formData.description}
           onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
@@ -569,7 +569,7 @@ const EditLocationForm: React.FC<{
       </div>
 
       <div className="flex gap-2 pt-4">
-        <Button type="submit" className="flex-1">{t('dashboard:updateLocation')}</Button>
+        <Button type="submit" className="flex-1">{t('dashboard:updateAddress')}</Button>
         <Button type="button" variant="outline" onClick={onCancel}>{t('common:cancel')}</Button>
       </div>
     </form>

@@ -19,7 +19,8 @@ import {
   FileDown,
   FileCheck,
   Crown,
-  UserCheck
+  UserCheck,
+  Star
 } from 'lucide-react';
 import {
   Sidebar,
@@ -184,6 +185,13 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       icon: BarChart3,
       onClick: () => handleItemClick('analytics'),
       visible: hasAdminAccess
+    },
+    {
+      id: 'saved-addresses',
+      title: t('savedAddresses'),
+      icon: Star,
+      onClick: () => handleItemClick('saved-addresses'),
+      visible: true
     },
     {
       id: 'profile',
@@ -356,7 +364,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   );
   
   const settingsItems = visibleItems.filter(item => 
-    ['profile', 'residency-verification-dashboard', 'citizen-address-portal', 'emergency-contacts'].includes(item.id)
+    ['saved-addresses', 'profile', 'residency-verification-dashboard', 'citizen-address-portal', 'emergency-contacts'].includes(item.id)
   );
 
   const renderMenuGroup = (items: NavigationItem[], label: string) => {
