@@ -201,5 +201,30 @@
   "addressQualityManagement": "Gestión de Calidad de Direcciones",
   "reviewFlaggedAddresses": "Revisar y resolver direcciones marcadas",
   "rejectedAddressRequests": "Solicitudes de Direcciones Rechazadas",
-  "manageRejectedRequests": "Revisar y gestionar solicitudes rechazadas"
+  "manageRejectedRequests": "Revisar y gestionar solicitudes rechazadas",
+  "fieldMap": {
+    "fieldMap": "Mapa de Campo",
+    "viewAddressesInArea": "Ver direcciones en tu área asignada en Google Maps",
+    "close": "Cerrar",
+    "mapNotConfigured": "Mapa no configurado",
+    "addGoogleMapsApiKey": "Por favor añade GOOGLE_MAPS_API_KEY en Supabase Edge Function Secrets para habilitar el mapa.",
+    "mapControls": "Controles del Mapa",
+    "showDrafts": "Mostrar Borradores",
+    "showVerified": "Mostrar Verificados",
+    "myLocation": "Mi Ubicación",
+    "refresh": "Actualizar",
+    "statistics": "Estadísticas",
+    "drafts": "Borradores",
+    "verified": "Verificado",
+    "total": "Total",
+    "regions": "Regiones",
+    "loadingGoogleMaps": "Cargando vista de campo de Google Maps...",
+    "failedToLoadMap": "Error al cargar el mapa",
+    "unableToGetLocation": "No se pudo obtener tu ubicación actual",
+    "geolocationNotSupported": "La geolocalización no es compatible con este navegador",
+    "failedToInitializeMap": "Error al inicializar el mapa",
+    "failedToLoadAddresses": "Error al cargar direcciones",
+    "draft": "Borrador",
+    "createdOn": "Creado: {{date}}"
+  }
 }

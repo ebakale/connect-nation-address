@@ -201,5 +201,30 @@
   "addressQualityManagement": "Gestion de la Qualité des Adresses",
   "reviewFlaggedAddresses": "Réviser et résoudre les adresses signalées",
   "rejectedAddressRequests": "Demandes d'Adresses Rejetées",
-  "manageRejectedRequests": "Réviser et gérer les demandes rejetées"
+  "manageRejectedRequests": "Réviser et gérer les demandes rejetées",
+  "fieldMap": {
+    "fieldMap": "Carte de Terrain",
+    "viewAddressesInArea": "Voir les adresses dans votre zone assignée sur Google Maps",
+    "close": "Fermer",
+    "mapNotConfigured": "Carte non configurée",
+    "addGoogleMapsApiKey": "Veuillez ajouter GOOGLE_MAPS_API_KEY dans Supabase Edge Function Secrets pour activer la carte.",
+    "mapControls": "Contrôles de la Carte",
+    "showDrafts": "Afficher les Brouillons",
+    "showVerified": "Afficher les Vérifiés",
+    "myLocation": "Ma Position",
+    "refresh": "Actualiser",
+    "statistics": "Statistiques",
+    "drafts": "Brouillons",
+    "verified": "Vérifié",
+    "total": "Total",
+    "regions": "Régions",
+    "loadingGoogleMaps": "Chargement de la vue de terrain Google Maps...",
+    "failedToLoadMap": "Échec du chargement de la carte",
+    "unableToGetLocation": "Impossible d'obtenir votre position actuelle",
+    "geolocationNotSupported": "La géolocalisation n'est pas prise en charge par ce navigateur",
+    "failedToInitializeMap": "Échec de l'initialisation de la carte",
+    "failedToLoadAddresses": "Échec du chargement des adresses",
+    "draft": "Brouillon",
+    "createdOn": "Créé : {{date}}"
+  }
 }
