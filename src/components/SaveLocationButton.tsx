@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Bookmark, Plus } from 'lucide-react';
 import { useSavedLocations } from '@/hooks/useSavedLocations';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 
 interface SaveLocationButtonProps {
   address: {
@@ -30,6 +31,7 @@ export const SaveLocationButton: React.FC<SaveLocationButtonProps> = ({
   size = 'sm',
   className 
 }) => {
+  const { t } = useTranslation(['dashboard', 'common']);
   const [showDialog, setShowDialog] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -49,8 +51,8 @@ export const SaveLocationButton: React.FC<SaveLocationButtonProps> = ({
     
     if (!formData.name.trim()) {
       toast({
-        title: "Name required",
-        description: "Please enter a name for this location",
+        title: t('dashboard:nameRequired'),
+        description: t('dashboard:pleaseEnterName'),
         variant: "destructive"
       });
       return;
@@ -109,74 +111,74 @@ export const SaveLocationButton: React.FC<SaveLocationButtonProps> = ({
         className={className}
       >
         <Bookmark className="h-4 w-4 mr-2" />
-        {isAlreadySaved ? 'Saved' : 'Save to Address Book'}
+        {isAlreadySaved ? t('dashboard:saved') : t('dashboard:saveToAddressBook')}
       </Button>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Save to Address Book</DialogTitle>
+            <DialogTitle>{t('dashboard:saveToAddressBook')}</DialogTitle>
             <DialogDescription>
-              Save this address to your personal address book
+              {t('dashboard:saveAddressToBook')}
             </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleSave} className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Location Name *</label>
+              <label className="text-sm font-medium">{t('dashboard:locationName')} *</label>
               <Input
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                placeholder="e.g., John's House, Main Office"
+                placeholder={t('dashboard:locationNamePlaceholder')}
                 required
               />
             </div>
 
             <div>
-              <label className="text-sm font-medium">Contact Name</label>
+              <label className="text-sm font-medium">{t('dashboard:contactName')}</label>
               <Input
                 value={formData.contact_name}
                 onChange={(e) => setFormData(prev => ({ ...prev, contact_name: e.target.value }))}
-                placeholder="e.g., John Doe"
+                placeholder={t('dashboard:contactNamePlaceholder')}
               />
               <p className="text-xs text-muted-foreground mt-1">
-                Associate this address with a contact
+                {t('dashboard:associateWithContact')}
               </p>
             </div>
 
             <div>
-              <label className="text-sm font-medium">Contact Phone</label>
+              <label className="text-sm font-medium">{t('dashboard:contactPhone')}</label>
               <Input
                 type="tel"
                 value={formData.contact_phone}
                 onChange={(e) => setFormData(prev => ({ ...prev, contact_phone: e.target.value }))}
-                placeholder="e.g., +240 123 456 789"
+                placeholder={t('dashboard:contactPhonePlaceholder')}
               />
             </div>
 
             <div>
-              <label className="text-sm font-medium">Notes</label>
+              <label className="text-sm font-medium">{t('dashboard:notes')}</label>
               <Textarea
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                placeholder="Add any additional notes..."
+                placeholder={t('dashboard:notesPlaceholder')}
                 rows={2}
               />
             </div>
 
             <div>
-              <label className="text-sm font-medium">Tags</label>
+              <label className="text-sm font-medium">{t('dashboard:tags')}</label>
               <Input
                 value={formData.tags}
                 onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
-                placeholder="e.g., family, work, friends (comma-separated)"
+                placeholder={t('dashboard:tagsPlaceholder')}
               />
             </div>
 
             <div className="bg-muted p-3 rounded-lg text-sm">
-              <p className="font-medium mb-1">Address Details:</p>
+              <p className="font-medium mb-1">{t('dashboard:addressDetails')}:</p>
               <p className="text-muted-foreground text-xs">
-                UAC: {address.uac}<br />
+                {t('dashboard:uac')}: {address.uac}<br />
                 {address.street}{address.building ? ', ' + address.building : ''}<br />
                 {address.city}, {address.region}, {address.country}
               </p>
@@ -185,10 +187,10 @@ export const SaveLocationButton: React.FC<SaveLocationButtonProps> = ({
             <div className="flex gap-2 pt-2">
               <Button type="submit" className="flex-1">
                 <Plus className="h-4 w-4 mr-2" />
-                Save to Address Book
+                {t('dashboard:saveToAddressBook')}
               </Button>
               <Button type="button" variant="outline" onClick={() => setShowDialog(false)}>
-                Cancel
+                {t('common:cancel')}
               </Button>
             </div>
           </form>
