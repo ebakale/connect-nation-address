@@ -44,7 +44,7 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
   };
 
   const handleDelete = async (location: SavedLocation) => {
-    if (window.confirm(`Are you sure you want to delete "${location.name}"?`)) {
+    if (window.confirm(`${t('dashboard:confirmDelete')} "${location.name}"?`)) {
       await deleteSavedLocation(location.id);
     }
   };
@@ -52,8 +52,8 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
   const handleViewAddress = async (location: SavedLocation) => {
     if (!location.uac) {
       toast({
-        title: "Error",
-        description: "This location does not have a UAC",
+        title: t('common:error'),
+        description: t('dashboard:noUacError'),
         variant: "destructive",
       });
       return;
@@ -70,8 +70,8 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
 
       if (!data) {
         toast({
-          title: "Address Not Found",
-          description: "Could not find address details for this UAC",
+          title: t('dashboard:addressNotFound'),
+          description: t('dashboard:addressNotFoundDesc'),
           variant: "destructive",
         });
         return;
@@ -82,8 +82,8 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
     } catch (error: any) {
       console.error('Error fetching address:', error);
       toast({
-        title: "Error",
-        description: "Failed to load address details",
+        title: t('common:error'),
+        description: t('dashboard:errorLoadingAddress'),
         variant: "destructive",
       });
     }
@@ -113,14 +113,14 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              Add Location
+              {t('dashboard:addLocation')}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Saved Location</DialogTitle>
+              <DialogTitle>{t('dashboard:addNewSavedLocation')}</DialogTitle>
               <DialogDescription>
-                Create a bookmark for a frequently accessed location
+                {t('dashboard:createBookmarkDesc')}
               </DialogDescription>
             </DialogHeader>
             <AddLocationForm 
@@ -134,7 +134,7 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
       {/* Search */}
       <div className="flex items-center gap-2">
         <Input
-          placeholder="Search saved locations..."
+          placeholder={t('dashboard:searchSavedLocations')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="flex-1"
@@ -148,14 +148,14 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
         <Card>
           <CardContent className="p-8 text-center">
             <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium mb-2">No saved locations</h3>
+            <h3 className="text-lg font-medium mb-2">{t('dashboard:noSavedLocations')}</h3>
             <p className="text-muted-foreground mb-4">
-              {searchTerm ? 'No locations match your search.' : 'Start by adding your first saved location.'}
+              {searchTerm ? t('dashboard:noLocationsMatch') : t('dashboard:startByAdding')}
             </p>
             {!searchTerm && (
               <Button onClick={() => setShowAddDialog(true)}>
                 <Plus className="h-4 w-4 mr-2" />
-                Add Location
+                {t('dashboard:addLocation')}
               </Button>
             )}
           </CardContent>
@@ -198,7 +198,7 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
                   {location.uac && (
                     <div className="flex items-center gap-2">
                       <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm font-medium">UAC:</span>
+                      <span className="text-sm font-medium">{t('dashboard:uac')}:</span>
                       <Badge variant="secondary">{location.uac}</Badge>
                     </div>
                   )}
@@ -207,7 +207,7 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
                   {location.contact_phone && (
                     <div className="flex items-center gap-2">
                       <PhoneIcon className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm font-medium">Phone:</span>
+                      <span className="text-sm font-medium">{t('dashboard:contactPhone')}:</span>
                       <span className="text-sm">{location.contact_phone}</span>
                     </div>
                   )}
@@ -237,7 +237,7 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
                       className="flex items-center gap-2"
                     >
                       <ExternalLink className="h-4 w-4" />
-                      View Details
+                      {t('dashboard:viewDetails')}
                     </Button>
                     <Button
                       variant="outline"
@@ -266,9 +266,9 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
         <Dialog open={true} onOpenChange={() => setEditingLocation(null)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Edit Saved Location</DialogTitle>
+              <DialogTitle>{t('dashboard:editSavedLocation')}</DialogTitle>
               <DialogDescription>
-                Update the details of your saved location
+                {t('dashboard:updateLocationDesc')}
               </DialogDescription>
             </DialogHeader>
             <EditLocationForm 
@@ -313,6 +313,7 @@ const AddLocationForm: React.FC<{
   onCancel: () => void;
 }> = ({ onSuccess, onCancel }) => {
   const { addSavedLocation } = useSavedLocations();
+  const { t } = useTranslation(['dashboard', 'common']);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -351,90 +352,90 @@ const AddLocationForm: React.FC<{
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="text-sm font-medium">Name *</label>
+        <label className="text-sm font-medium">{t('dashboard:locationName')} *</label>
         <Input
           value={formData.name}
           onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-          placeholder="e.g., Main Office"
+          placeholder={t('dashboard:namePlaceholder')}
           required
         />
       </div>
 
       <div>
-        <label className="text-sm font-medium">Description</label>
+        <label className="text-sm font-medium">{t('dashboard:locationDescription')}</label>
         <Textarea
           value={formData.description}
           onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-          placeholder="Optional description"
+          placeholder={t('dashboard:descriptionPlaceholder')}
           rows={2}
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="text-sm font-medium">Latitude *</label>
+          <label className="text-sm font-medium">{t('dashboard:latitude')} *</label>
           <Input
             type="number"
             step="any"
             value={formData.latitude}
             onChange={(e) => setFormData(prev => ({ ...prev, latitude: e.target.value }))}
-            placeholder="e.g., 3.7504"
+            placeholder={t('dashboard:latitudePlaceholder')}
             required
           />
         </div>
         <div>
-          <label className="text-sm font-medium">Longitude *</label>
+          <label className="text-sm font-medium">{t('dashboard:longitude')} *</label>
           <Input
             type="number"
             step="any"
             value={formData.longitude}
             onChange={(e) => setFormData(prev => ({ ...prev, longitude: e.target.value }))}
-            placeholder="e.g., 8.7821"
+            placeholder={t('dashboard:longitudePlaceholder')}
             required
           />
         </div>
       </div>
 
       <div>
-        <label className="text-sm font-medium">UAC</label>
+        <label className="text-sm font-medium">{t('dashboard:uac')}</label>
         <Input
           value={formData.uac}
           onChange={(e) => setFormData(prev => ({ ...prev, uac: e.target.value }))}
-          placeholder="e.g., GQ-BN-MAL-A1B2C3"
+          placeholder={t('dashboard:uacPlaceholder')}
         />
       </div>
 
       <div>
-        <label className="text-sm font-medium">Contact Name</label>
+        <label className="text-sm font-medium">{t('dashboard:contactName')}</label>
         <Input
           value={formData.contact_name}
           onChange={(e) => setFormData(prev => ({ ...prev, contact_name: e.target.value }))}
-          placeholder="e.g., John Doe"
+          placeholder={t('dashboard:contactNamePlaceholder')}
         />
       </div>
 
       <div>
-        <label className="text-sm font-medium">Contact Phone</label>
+        <label className="text-sm font-medium">{t('dashboard:contactPhone')}</label>
         <Input
           type="tel"
           value={formData.contact_phone}
           onChange={(e) => setFormData(prev => ({ ...prev, contact_phone: e.target.value }))}
-          placeholder="e.g., +240 123 456 789"
+          placeholder={t('dashboard:contactPhonePlaceholder')}
         />
       </div>
 
       <div>
-        <label className="text-sm font-medium">Tags</label>
+        <label className="text-sm font-medium">{t('dashboard:tags')}</label>
         <Input
           value={formData.tags}
           onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
-          placeholder="e.g., office, important, frequent (comma-separated)"
+          placeholder={t('dashboard:tagsPlaceholder')}
         />
       </div>
 
       <div className="flex gap-2 pt-4">
-        <Button type="submit" className="flex-1">Save Location</Button>
-        <Button type="button" variant="outline" onClick={onCancel}>Cancel</Button>
+        <Button type="submit" className="flex-1">{t('dashboard:saveLocation')}</Button>
+        <Button type="button" variant="outline" onClick={onCancel}>{t('common:cancel')}</Button>
       </div>
     </form>
   );
@@ -447,6 +448,7 @@ const EditLocationForm: React.FC<{
   onCancel: () => void;
 }> = ({ location, onSuccess, onCancel }) => {
   const { updateSavedLocation } = useSavedLocations();
+  const { t } = useTranslation(['dashboard', 'common']);
   const [formData, setFormData] = useState({
     name: location.name,
     description: location.description || '',
@@ -485,90 +487,90 @@ const EditLocationForm: React.FC<{
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="text-sm font-medium">Name *</label>
+        <label className="text-sm font-medium">{t('dashboard:locationName')} *</label>
         <Input
           value={formData.name}
           onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-          placeholder="e.g., Main Office"
+          placeholder={t('dashboard:namePlaceholder')}
           required
         />
       </div>
 
       <div>
-        <label className="text-sm font-medium">Description</label>
+        <label className="text-sm font-medium">{t('dashboard:locationDescription')}</label>
         <Textarea
           value={formData.description}
           onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-          placeholder="Optional description"
+          placeholder={t('dashboard:descriptionPlaceholder')}
           rows={2}
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="text-sm font-medium">Latitude *</label>
+          <label className="text-sm font-medium">{t('dashboard:latitude')} *</label>
           <Input
             type="number"
             step="any"
             value={formData.latitude}
             onChange={(e) => setFormData(prev => ({ ...prev, latitude: e.target.value }))}
-            placeholder="e.g., 3.7504"
+            placeholder={t('dashboard:latitudePlaceholder')}
             required
           />
         </div>
         <div>
-          <label className="text-sm font-medium">Longitude *</label>
+          <label className="text-sm font-medium">{t('dashboard:longitude')} *</label>
           <Input
             type="number"
             step="any"
             value={formData.longitude}
             onChange={(e) => setFormData(prev => ({ ...prev, longitude: e.target.value }))}
-            placeholder="e.g., 8.7821"
+            placeholder={t('dashboard:longitudePlaceholder')}
             required
           />
         </div>
       </div>
 
       <div>
-        <label className="text-sm font-medium">UAC</label>
+        <label className="text-sm font-medium">{t('dashboard:uac')}</label>
         <Input
           value={formData.uac}
           onChange={(e) => setFormData(prev => ({ ...prev, uac: e.target.value }))}
-          placeholder="e.g., GQ-BN-MAL-A1B2C3"
+          placeholder={t('dashboard:uacPlaceholder')}
         />
       </div>
 
       <div>
-        <label className="text-sm font-medium">Contact Name</label>
+        <label className="text-sm font-medium">{t('dashboard:contactName')}</label>
         <Input
           value={formData.contact_name}
           onChange={(e) => setFormData(prev => ({ ...prev, contact_name: e.target.value }))}
-          placeholder="e.g., John Doe"
+          placeholder={t('dashboard:contactNamePlaceholder')}
         />
       </div>
 
       <div>
-        <label className="text-sm font-medium">Contact Phone</label>
+        <label className="text-sm font-medium">{t('dashboard:contactPhone')}</label>
         <Input
           type="tel"
           value={formData.contact_phone}
           onChange={(e) => setFormData(prev => ({ ...prev, contact_phone: e.target.value }))}
-          placeholder="e.g., +240 123 456 789"
+          placeholder={t('dashboard:contactPhonePlaceholder')}
         />
       </div>
 
       <div>
-        <label className="text-sm font-medium">Tags</label>
+        <label className="text-sm font-medium">{t('dashboard:tags')}</label>
         <Input
           value={formData.tags}
           onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
-          placeholder="e.g., office, important, frequent (comma-separated)"
+          placeholder={t('dashboard:tagsPlaceholder')}
         />
       </div>
 
       <div className="flex gap-2 pt-4">
-        <Button type="submit" className="flex-1">Update Location</Button>
-        <Button type="button" variant="outline" onClick={onCancel}>Cancel</Button>
+        <Button type="submit" className="flex-1">{t('dashboard:updateLocation')}</Button>
+        <Button type="button" variant="outline" onClick={onCancel}>{t('common:cancel')}</Button>
       </div>
     </form>
   );
