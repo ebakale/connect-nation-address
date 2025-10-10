@@ -6,7 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
-import { MapPin, Edit, Trash2, Plus, Star, Tag, ExternalLink } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { MapPin, Edit, Trash2, Plus, Star, Tag, ExternalLink, User, Phone as PhoneIcon } from 'lucide-react';
 import { useSavedLocations, SavedLocation } from '@/hooks/useSavedLocations';
 import { useTranslation } from 'react-i18next';
 import { EnhancedAddressDetailModal } from '@/components/EnhancedAddressDetailModal';
@@ -160,27 +161,84 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4">
+        <Accordion type="single" collapsible className="w-full space-y-2">
           {filteredLocations.map((location) => (
-            <Card 
+            <AccordionItem 
               key={location.id} 
-              className="hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => handleViewAddress(location)}
+              value={location.id}
+              className="border rounded-lg px-4 hover:shadow-md transition-shadow"
             >
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <MapPin className="h-5 w-5 text-primary" />
-                      {location.name}
-                    </CardTitle>
-                    {location.description && (
-                      <CardDescription className="mt-1">
-                        {location.description}
-                      </CardDescription>
+              <AccordionTrigger className="hover:no-underline py-4">
+                <div className="flex items-center gap-3 flex-1 text-left">
+                  <User className="h-5 w-5 text-primary flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-base truncate">
+                      {location.contact_name || location.name}
+                    </div>
+                    {location.contact_name && location.name !== location.contact_name && (
+                      <div className="text-sm text-muted-foreground truncate">
+                        {location.name}
+                      </div>
                     )}
                   </div>
-                  <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="pb-4 pt-2">
+                <div className="space-y-4">
+                  {/* Description */}
+                  {location.description && (
+                    <div className="text-sm text-muted-foreground">
+                      {location.description}
+                    </div>
+                  )}
+
+                  <Separator />
+
+                  {/* UAC */}
+                  {location.uac && (
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm font-medium">UAC:</span>
+                      <Badge variant="secondary">{location.uac}</Badge>
+                    </div>
+                  )}
+
+                  {/* Contact Phone */}
+                  {location.contact_phone && (
+                    <div className="flex items-center gap-2">
+                      <PhoneIcon className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm font-medium">Phone:</span>
+                      <span className="text-sm">{location.contact_phone}</span>
+                    </div>
+                  )}
+
+                  {/* Tags */}
+                  {location.tags.length > 0 && (
+                    <div className="flex items-start gap-2">
+                      <Tag className="h-4 w-4 text-muted-foreground mt-1" />
+                      <div className="flex flex-wrap gap-2">
+                        {location.tags.map((tag, index) => (
+                          <Badge key={index} variant="outline" className="text-xs">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <Separator />
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => handleViewAddress(location)}
+                      className="flex items-center gap-2"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      View Details
+                    </Button>
                     <Button
                       variant="outline"
                       size="sm"
@@ -197,56 +255,10 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
                     </Button>
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="space-y-3">
-                  {/* UAC if available */}
-                  {location.uac && (
-                    <div className="text-sm">
-                      <strong>UAC:</strong> <Badge variant="secondary">{location.uac}</Badge>
-                    </div>
-                  )}
-
-                  {/* Contact Information */}
-                  {(location.contact_name || location.contact_phone) && (
-                    <div className="text-sm space-y-1">
-                      {location.contact_name && (
-                        <div><strong>Contact:</strong> {location.contact_name}</div>
-                      )}
-                      {location.contact_phone && (
-                        <div><strong>Phone:</strong> {location.contact_phone}</div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Tags */}
-                  {location.tags.length > 0 && (
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Tag className="h-4 w-4 text-muted-foreground" />
-                      {location.tags.map((tag, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* View Details Button */}
-                  <div className="flex gap-2 pt-2">
-                    <Button
-                      variant="default"
-                      size="sm"
-                      className="flex items-center gap-2"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                      View Details
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+              </AccordionContent>
+            </AccordionItem>
           ))}
-        </div>
+        </Accordion>
       )}
 
       {/* Edit Dialog */}
