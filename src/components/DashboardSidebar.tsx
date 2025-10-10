@@ -321,12 +321,12 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
                 <div className="p-1.5 bg-primary/10 rounded-lg">
                   <img 
                     src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" 
-                    alt="BIAKAM Logo" 
+                    alt={t('biakamLogoAlt')} 
                     className="h-6 w-auto" 
                   />
                 </div>
                 <div>
-                  <h2 className="font-semibold text-sm">CAR Dashboard</h2>
+                  <h2 className="font-semibold text-sm">{t('carDashboard')}</h2>
                   <p className="text-xs text-muted-foreground">{isCarAdmin ? t('carAdmin') : t('carVerifier')}</p>
                 </div>
               </div>
@@ -413,12 +413,12 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
               <div className="p-1.5 bg-primary/10 rounded-lg">
                 <img 
                   src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" 
-                  alt="BIAKAM Logo" 
+                  alt={t('biakamLogoAlt')} 
                   className="h-6 w-auto" 
                 />
               </div>
               <div>
-                <h2 className="font-semibold text-sm">ConEG</h2>
+                <h2 className="font-semibold text-sm">{t('coneg')}</h2>
                 <p className="text-xs text-muted-foreground">{t('addressSystem')}</p>
               </div>
             </div>
