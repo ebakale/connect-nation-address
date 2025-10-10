@@ -409,16 +409,16 @@ Shared from Equatorial Guinea Address Portal`;
                 </Button>
 
                 <SaveLocationButton
-                  latitude={address.latitude}
-                  longitude={address.longitude}
-                  uac={address.uac}
-                  defaultName={address.street || `${address.street}, ${address.city}`}
-                  addressComponents={{
+                  address={{
+                    uac: address.uac,
                     street: address.street,
                     city: address.city,
                     region: address.region,
                     country: address.country,
-                    building: address.building
+                    building: address.building,
+                    latitude: address.latitude,
+                    longitude: address.longitude,
+                    addressType: address.addressType
                   }}
                   className="w-full h-8 text-xs"
                   variant="outline"

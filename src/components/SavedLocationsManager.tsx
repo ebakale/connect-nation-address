@@ -176,6 +176,18 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
                     </div>
                   )}
 
+                  {/* Contact Information */}
+                  {(location.contact_name || location.contact_phone) && (
+                    <div className="text-sm space-y-1">
+                      {location.contact_name && (
+                        <div><strong>Contact:</strong> {location.contact_name}</div>
+                      )}
+                      {location.contact_phone && (
+                        <div><strong>Phone:</strong> {location.contact_phone}</div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Tags */}
                   {location.tags.length > 0 && (
                     <div className="flex items-center gap-2 flex-wrap">
@@ -241,6 +253,8 @@ const AddLocationForm: React.FC<{
     latitude: '',
     longitude: '',
     uac: '',
+    contact_name: '',
+    contact_phone: '',
     tags: ''
   });
 
@@ -257,6 +271,8 @@ const AddLocationForm: React.FC<{
       latitude: parseFloat(formData.latitude),
       longitude: parseFloat(formData.longitude),
       uac: formData.uac || undefined,
+      contact_name: formData.contact_name || undefined,
+      contact_phone: formData.contact_phone || undefined,
       tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : []
     };
 
@@ -323,6 +339,25 @@ const AddLocationForm: React.FC<{
       </div>
 
       <div>
+        <label className="text-sm font-medium">Contact Name</label>
+        <Input
+          value={formData.contact_name}
+          onChange={(e) => setFormData(prev => ({ ...prev, contact_name: e.target.value }))}
+          placeholder="e.g., John Doe"
+        />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium">Contact Phone</label>
+        <Input
+          type="tel"
+          value={formData.contact_phone}
+          onChange={(e) => setFormData(prev => ({ ...prev, contact_phone: e.target.value }))}
+          placeholder="e.g., +240 123 456 789"
+        />
+      </div>
+
+      <div>
         <label className="text-sm font-medium">Tags</label>
         <Input
           value={formData.tags}
@@ -352,6 +387,8 @@ const EditLocationForm: React.FC<{
     latitude: location.latitude.toString(),
     longitude: location.longitude.toString(),
     uac: location.uac || '',
+    contact_name: location.contact_name || '',
+    contact_phone: location.contact_phone || '',
     tags: location.tags.join(', ')
   });
 
@@ -368,6 +405,8 @@ const EditLocationForm: React.FC<{
       latitude: parseFloat(formData.latitude),
       longitude: parseFloat(formData.longitude),
       uac: formData.uac || undefined,
+      contact_name: formData.contact_name || undefined,
+      contact_phone: formData.contact_phone || undefined,
       tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : []
     };
 
@@ -430,6 +469,25 @@ const EditLocationForm: React.FC<{
           value={formData.uac}
           onChange={(e) => setFormData(prev => ({ ...prev, uac: e.target.value }))}
           placeholder="e.g., GQ-BN-MAL-A1B2C3"
+        />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium">Contact Name</label>
+        <Input
+          value={formData.contact_name}
+          onChange={(e) => setFormData(prev => ({ ...prev, contact_name: e.target.value }))}
+          placeholder="e.g., John Doe"
+        />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium">Contact Phone</label>
+        <Input
+          type="tel"
+          value={formData.contact_phone}
+          onChange={(e) => setFormData(prev => ({ ...prev, contact_phone: e.target.value }))}
+          placeholder="e.g., +240 123 456 789"
         />
       </div>
 

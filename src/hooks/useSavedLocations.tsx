@@ -12,6 +12,8 @@ export interface SavedLocation {
   address_components: any;
   uac?: string;
   tags: string[];
+  contact_name?: string;
+  contact_phone?: string;
   created_at: string;
   updated_at: string;
 }
@@ -24,6 +26,8 @@ export interface SavedLocationInput {
   address_components?: any;
   uac?: string;
   tags?: string[];
+  contact_name?: string;
+  contact_phone?: string;
 }
 
 export const useSavedLocations = () => {

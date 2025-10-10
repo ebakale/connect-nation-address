@@ -178,13 +178,15 @@ const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack, au
                 </div>
 
                 <SaveLocationButton
-                  latitude={address.coordinates.lat}
-                  longitude={address.coordinates.lng}
-                  uac={address.uac}
-                  defaultName={address.readable || `Address ${address.uac}`}
-                  addressComponents={{
-                    type: address.type,
-                    verified: address.verified
+                  address={{
+                    uac: address.uac,
+                    street: address.readable.split(',')[0] || '',
+                    city: address.readable.split(',')[1]?.trim() || '',
+                    region: address.readable.split(',')[2]?.trim() || '',
+                    country: address.readable.split(',')[3]?.trim() || '',
+                    latitude: address.coordinates.lat,
+                    longitude: address.coordinates.lng,
+                    addressType: address.type
                   }}
                   variant="outline"
                   className="w-full"

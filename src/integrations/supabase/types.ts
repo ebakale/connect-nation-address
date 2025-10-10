@@ -1542,6 +1542,8 @@ export type Database = {
       saved_locations: {
         Row: {
           address_components: Json | null
+          contact_name: string | null
+          contact_phone: string | null
           created_at: string
           description: string | null
           id: string
@@ -1555,6 +1557,8 @@ export type Database = {
         }
         Insert: {
           address_components?: Json | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -1568,6 +1572,8 @@ export type Database = {
         }
         Update: {
           address_components?: Json | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string
           description?: string | null
           id?: string
