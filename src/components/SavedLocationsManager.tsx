@@ -6,9 +6,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
-import { MapPin, Edit, Trash2, Plus, Navigation, Star, Tag } from 'lucide-react';
+import { MapPin, Edit, Trash2, Plus, Star, Tag, ExternalLink } from 'lucide-react';
 import { useSavedLocations, SavedLocation } from '@/hooks/useSavedLocations';
 import { useTranslation } from 'react-i18next';
+import { EnhancedAddressDetailModal } from '@/components/EnhancedAddressDetailModal';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface SavedLocationsManagerProps {
   onNavigate?: (location: SavedLocation) => void;
@@ -21,9 +24,12 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
 }) => {
   const { savedLocations, loading, addSavedLocation, updateSavedLocation, deleteSavedLocation } = useSavedLocations();
   const { t } = useTranslation(['dashboard', 'common']);
+  const { toast } = useToast();
   const [editingLocation, setEditingLocation] = useState<SavedLocation | null>(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedAddress, setSelectedAddress] = useState<any>(null);
+  const [showAddressDetail, setShowAddressDetail] = useState(false);
 
   // Filter locations based on search term
   const filteredLocations = savedLocations.filter(location =>
@@ -42,18 +48,44 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
     }
   };
 
-  const handleNavigateToLocation = (location: SavedLocation) => {
-    if (onNavigate) {
-      onNavigate(location);
-    } else {
-      // Default navigation behavior - open in maps
-      const url = `https://maps.google.com/?q=${location.latitude},${location.longitude}`;
-      window.open(url, '_blank');
+  const handleViewAddress = async (location: SavedLocation) => {
+    if (!location.uac) {
+      toast({
+        title: "Error",
+        description: "This location does not have a UAC",
+        variant: "destructive",
+      });
+      return;
     }
-  };
 
-  const formatCoordinates = (lat: number, lng: number) => {
-    return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    try {
+      const { data, error } = await supabase
+        .from('addresses')
+        .select('*')
+        .eq('uac', location.uac)
+        .single();
+
+      if (error) throw error;
+
+      if (!data) {
+        toast({
+          title: "Address Not Found",
+          description: "Could not find address details for this UAC",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setSelectedAddress(data);
+      setShowAddressDetail(true);
+    } catch (error: any) {
+      console.error('Error fetching address:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load address details",
+        variant: "destructive",
+      });
+    }
   };
 
   if (loading) {
@@ -130,7 +162,11 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
       ) : (
         <div className="grid gap-4">
           {filteredLocations.map((location) => (
-            <Card key={location.id} className="hover:shadow-md transition-shadow">
+            <Card 
+              key={location.id} 
+              className="hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => handleViewAddress(location)}
+            >
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
@@ -144,7 +180,7 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
                       </CardDescription>
                     )}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                     <Button
                       variant="outline"
                       size="sm"
@@ -164,11 +200,6 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="space-y-3">
-                  {/* Coordinates */}
-                  <div className="text-sm text-muted-foreground">
-                    <strong>Coordinates:</strong> {formatCoordinates(location.latitude, location.longitude)}
-                  </div>
-
                   {/* UAC if available */}
                   {location.uac && (
                     <div className="text-sm">
@@ -200,16 +231,15 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
                     </div>
                   )}
 
-                  {/* Actions */}
+                  {/* View Details Button */}
                   <div className="flex gap-2 pt-2">
                     <Button
                       variant="default"
                       size="sm"
-                      onClick={() => handleNavigateToLocation(location)}
                       className="flex items-center gap-2"
                     >
-                      <Navigation className="h-4 w-4" />
-                      Navigate
+                      <ExternalLink className="h-4 w-4" />
+                      View Details
                     </Button>
                   </div>
                 </div>
@@ -236,6 +266,30 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
             />
           </DialogContent>
         </Dialog>
+      )}
+
+      {/* Address Detail Dialog */}
+      {selectedAddress && (
+        <EnhancedAddressDetailModal
+          address={{
+            uac: selectedAddress.uac,
+            street: selectedAddress.street,
+            city: selectedAddress.city,
+            region: selectedAddress.region,
+            country: selectedAddress.country,
+            building: selectedAddress.building,
+            latitude: selectedAddress.latitude,
+            longitude: selectedAddress.longitude,
+            addressType: selectedAddress.address_type,
+            verified: selectedAddress.verified,
+            completenessScore: selectedAddress.completeness_score || 0
+          }}
+          open={showAddressDetail}
+          onOpenChange={(open) => {
+            setShowAddressDetail(open);
+            if (!open) setSelectedAddress(null);
+          }}
+        />
       )}
     </div>
   );
