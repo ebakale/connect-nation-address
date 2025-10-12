@@ -3,8 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ProcessFlowDiagramPDF from '@/components/ProcessFlowDiagramPDF';
 import ProcessFlowDiagramPDFEnglish from '@/components/ProcessFlowDiagramPDFEnglish';
-import { FileText, BookOpen, Workflow, Download } from 'lucide-react';
+import { FileText, BookOpen, Workflow } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { FieldAgentGuide } from '@/components/guides/FieldAgentGuide';
+import { VerifierGuide } from '@/components/guides/VerifierGuide';
+import { RegistrarGuide } from '@/components/guides/RegistrarGuide';
+import { CitizenGuide } from '@/components/guides/CitizenGuide';
+import { EmergencyDispatcherGuide } from '@/components/guides/EmergencyDispatcherGuide';
 
 const Documentation: React.FC = () => {
   return (
@@ -253,48 +258,35 @@ const Documentation: React.FC = () => {
 
           {/* User Guides */}
           <TabsContent value="guides" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>User Guides</CardTitle>
-                <CardDescription>
-                  Step-by-step guides for different user roles
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 text-sm">
-                  <div className="p-3 border rounded-lg">
-                    <h4 className="font-semibold mb-2">Field Agents</h4>
-                    <p className="text-muted-foreground">
-                      Learn how to capture addresses, take photos, and submit requests for verification
-                    </p>
-                  </div>
-                  <div className="p-3 border rounded-lg">
-                    <h4 className="font-semibold mb-2">Verifiers</h4>
-                    <p className="text-muted-foreground">
-                      Guidelines for reviewing address data quality and approving or flagging submissions
-                    </p>
-                  </div>
-                  <div className="p-3 border rounded-lg">
-                    <h4 className="font-semibold mb-2">Registrars</h4>
-                    <p className="text-muted-foreground">
-                      Process for final approval and publication of addresses to the national registry
-                    </p>
-                  </div>
-                  <div className="p-3 border rounded-lg">
-                    <h4 className="font-semibold mb-2">Citizens</h4>
-                    <p className="text-muted-foreground">
-                      How to declare your address, request verification, and manage your address book
-                    </p>
-                  </div>
-                  <div className="p-3 border rounded-lg">
-                    <h4 className="font-semibold mb-2">Emergency Dispatchers</h4>
-                    <p className="text-muted-foreground">
-                      Managing emergency incidents, dispatching units, and tracking response times
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <Tabs defaultValue="field-agent" className="w-full">
+              <TabsList className="grid w-full grid-cols-5 max-w-3xl mx-auto">
+                <TabsTrigger value="field-agent">Field Agent</TabsTrigger>
+                <TabsTrigger value="verifier">Verifier</TabsTrigger>
+                <TabsTrigger value="registrar">Registrar</TabsTrigger>
+                <TabsTrigger value="citizen">Citizen</TabsTrigger>
+                <TabsTrigger value="dispatcher">Dispatcher</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="field-agent" className="mt-6">
+                <FieldAgentGuide />
+              </TabsContent>
+              
+              <TabsContent value="verifier" className="mt-6">
+                <VerifierGuide />
+              </TabsContent>
+              
+              <TabsContent value="registrar" className="mt-6">
+                <RegistrarGuide />
+              </TabsContent>
+              
+              <TabsContent value="citizen" className="mt-6">
+                <CitizenGuide />
+              </TabsContent>
+              
+              <TabsContent value="dispatcher" className="mt-6">
+                <EmergencyDispatcherGuide />
+              </TabsContent>
+            </Tabs>
           </TabsContent>
         </Tabs>
       </div>
