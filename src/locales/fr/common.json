@@ -55,6 +55,7 @@
     "login": "Se connecter",
     "register": "S'inscrire",
     "address": "Adresse",
+    "documentation": "Documentation",
     "goToDashboard": "Aller au Tableau de Bord",
     "goToLoginPage": "Aller à la Page de Connexion"
   },

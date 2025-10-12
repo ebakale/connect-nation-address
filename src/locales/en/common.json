@@ -55,6 +55,7 @@
     "login": "Login",
     "register": "Register",
     "address": "Address",
+    "documentation": "Documentation",
     "goToDashboard": "Go to Dashboard",
     "goToLoginPage": "Go to Login Page"
   },

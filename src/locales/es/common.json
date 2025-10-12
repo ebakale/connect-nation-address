@@ -55,6 +55,7 @@
     "login": "Iniciar sesión",
     "register": "Registrarse",
     "address": "Dirección",
+    "documentation": "Documentación",
     "goToDashboard": "Ir al Panel de Control",
     "goToLoginPage": "Ir a la Página de Inicio de Sesión"
   },

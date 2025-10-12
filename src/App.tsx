@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import Portal from "./pages/Portal";
 import UnifiedDashboard from "./pages/UnifiedDashboard";
 import PoliceDashboard from "./pages/PoliceDashboard";
+import Documentation from "./pages/Documentation";
 
 import { UnitsAndProfilesPage } from "./pages/UnitsAndProfilesPage";
 import CitizenPortalUnified from "./pages/CitizenPortalUnified";
@@ -64,6 +65,7 @@ const AppRoutes = () => {
       <Route path="/portal" element={<Portal />} />
       <Route path="/citizen" element={<CitizenPortalUnified />} />
       <Route path="/demo-presentation" element={<DemoPresentationPage />} />
+      <Route path="/documentation" element={<Documentation />} />
       
       <Route path="/dashboard" element={<ProtectedRoute><UnifiedDashboard /></ProtectedRoute>} />
       <Route path="/police" element={<ProtectedRoute><PoliceDashboard /></ProtectedRoute>} />

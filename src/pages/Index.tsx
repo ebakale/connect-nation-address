@@ -51,6 +51,7 @@ const Index = () => {
     about: 'About',
     public: 'Search Addresses',
     emergency: 'Report Emergency',
+    documentation: 'Documentation',
     help: 'Help',
   };
 
@@ -59,6 +60,7 @@ const Index = () => {
     about: 'Acerca de',
     public: 'Buscar Direcciones',
     emergency: 'Reportar Emergencia',
+    documentation: 'Documentación',
     help: 'Ayuda',
   };
 
@@ -67,6 +69,7 @@ const Index = () => {
     about: 'À propos',
     public: 'Rechercher des adresses',
     emergency: 'Signaler une urgence',
+    documentation: 'Documentation',
     help: 'Aide',
   };
 
@@ -82,6 +85,7 @@ const Index = () => {
     { id: 'about', labelKey: 'common:navigation.about', icon: Users },
     { id: 'public', labelKey: 'common:platform.searchAddresses', icon: Search },
     { id: 'emergency', labelKey: 'emergency:title', icon: Shield },
+    { id: 'documentation', labelKey: 'common:navigation.documentation', icon: Book, route: '/documentation' },
     { id: 'help', labelKey: 'common:navigation.help', icon: HelpCircle },
   ], []);
 
@@ -975,7 +979,11 @@ const Index = () => {
                 <button
                   key={item.id}
                   onClick={() => {
-                    handleSectionChange(item.id);
+                    if (item.route) {
+                      navigate(item.route);
+                    } else {
+                      handleSectionChange(item.id);
+                    }
                   }}
                   className={`flex items-center gap-1 sm:gap-2 py-3 px-2 sm:px-3 border-b-2 text-xs sm:text-sm transition-all duration-300 animate-fade-in cursor-pointer hover:bg-primary/5 ${
                     activeSection === item.id
