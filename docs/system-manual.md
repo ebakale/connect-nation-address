@@ -47,11 +47,20 @@ The official government-maintained registry of all verified addresses in Equator
 - Geographic scope-based access control
 - Public API for partner integration
 
-**Workflow Stages**:
-1. **Draft Creation** - Field agents capture new addresses
+**Address Creation Pathways**:
+
+**Pathway 1: Field Agent Workflow**
+1. **Draft Creation** - Field agents capture new addresses with GPS and photos
 2. **Verification** - Verifiers validate quality and accuracy
 3. **Approval** - Registrars review and approve
 4. **Publication** - Addresses become publicly searchable
+
+**Pathway 2: Citizen Request Workflow**
+1. **Citizen Request** - Citizens submit address creation requests
+2. **Auto-Verification** - System performs automated quality checks
+3. **Manual Review** - Verifiers review flagged or complex requests
+4. **Approval** - Registrars approve and publish to NAR
+5. **Publication** - Addresses become publicly searchable
 
 ### 2. CAR (Citizen Address Repository) Module
 Citizen-managed address declarations where residents can register their home and work addresses.
@@ -247,7 +256,7 @@ Real-time incident management and dispatch coordination for police and emergency
 
 ### NAR Address Creation Workflow
 
-#### Standard Address Registration
+#### Pathway 1: Field Agent Address Registration
 ```
 1. FIELD CAPTURE (Field Agent)
    ↓
@@ -284,6 +293,52 @@ Real-time incident management and dispatch coordination for police and emergency
 ```
 
 **SLA**: 48 hours from capture to publication
+
+#### Pathway 2: Citizen Address Request
+```
+1. CITIZEN REQUEST SUBMISSION
+   ↓
+   - Citizen logs into system
+   - Fills address creation form
+   - Provides GPS coordinates or address details
+   - Uploads optional documentation
+   - Submits request
+   - Status: PENDING
+
+2. AUTO-VERIFICATION (System)
+   ↓
+   - Validate GPS coordinates
+   - Check for duplicate addresses
+   - Analyze completeness
+   - Calculate auto-verification score
+   - Flag for manual review if needed
+   - Status: AUTO_VERIFIED or FLAGGED
+
+3. MANUAL REVIEW (Verifier - if flagged)
+   ↓
+   - Review flagged requests
+   - Validate accuracy and quality
+   - Approve, reject, or request corrections
+   - Add reviewer notes
+   - Forward approved requests to registrar
+
+4. APPROVAL (Registrar)
+   ↓
+   - Final quality review
+   - Approve for NAR publication
+   - Generate Unified Address Code (UAC)
+   - Publish to national registry
+   - Status: APPROVED
+
+5. PUBLICATION
+   ↓
+   - Address visible in public NAR search
+   - Available via API
+   - QR code generation enabled
+   - Citizen notified of approval
+```
+
+**SLA**: 5 business days for citizen requests
 
 ### CAR Address Declaration Workflow
 
