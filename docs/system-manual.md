@@ -1,8 +1,8 @@
-# Connect Nation Unified Platform - Comprehensive Manual
+# Biakam National Address System - Comprehensive Manual
 
 ## Table of Contents
 1. [System Overview](#system-overview)
-2. [Module Overview](#module-overview)
+2. [Module Architecture](#module-architecture)
 3. [User Roles and Permissions](#user-roles-and-permissions)
 4. [Core Workflows](#core-workflows)
 5. [Feature Descriptions](#feature-descriptions)
@@ -15,733 +15,712 @@
 
 ## System Overview
 
-The Connect Nation Unified Platform is a comprehensive digital ecosystem designed to modernize and integrate both address registration and police operations in Equatorial Guinea. This unified platform consists of two tightly integrated modules that work synergistically to provide enhanced public services, emergency response coordination, and data-driven urban planning capabilities.
+The Biakam National Address System is a comprehensive digital platform designed to modernize address management and emergency response in Equatorial Guinea. This unified system consists of three tightly integrated modules that work synergistically to provide enhanced public services, emergency response coordination, and data-driven urban planning capabilities.
 
-## Module Overview
+### Platform Name
+**Biakam** - Derived from the indigenous name for Malabo, symbolizing the connection between traditional location references and modern digital addressing.
 
-### Address Registry Module
-The address registry system manages the complete lifecycle of address registration, verification, and publication through a sophisticated multi-stage workflow. It provides a foundation for accurate location services and enables precise geographic data management across the nation.
+### Core Mission
+- **Standardized Addressing**: Create a universal, structured address system for Equatorial Guinea
+- **Emergency Response**: Enable rapid, accurate emergency service dispatch
+- **Economic Development**: Facilitate e-commerce, deliveries, and location-based services
+- **Urban Planning**: Provide data foundation for infrastructure development
+- **Digital Government**: Support smart city initiatives and IoT integration
 
-**Core Capabilities:**
-- **Structured Workflow Management**: Submit Request → Capture Draft → Verify → Publish workflow
-- **Geographic Information Integration**: GPS-based location capture with coordinate validation
-- **Unified Address Code (UAC) Generation**: Standardized addressing with hierarchical codes
-- **Evidence Documentation**: Secure photo capture and document management
-- **Quality Assurance Process**: Multi-level verification with duplicate detection
-- **Role-Based Access Control**: Geographic and organizational scope restrictions
-- **API Integration**: Partner access for utilities, delivery services, and emergency systems
+---
 
-### Police Operations Module
-The police operations system provides comprehensive incident management, emergency response coordination, and law enforcement operational support through real-time communication and tracking capabilities.
+## Module Architecture
 
-**Core Capabilities:**
-- **Real-time Incident Management**: End-to-end incident tracking from report to resolution
-- **Emergency Dispatch Coordination**: Intelligent unit assignment and resource optimization
-- **Field Operations Support**: Mobile-friendly tools for officers and supervisors
-- **Communication Hub**: Secure messaging and broadcast systems
-- **Performance Analytics**: Response time tracking and operational metrics
-- **Unit Management**: Hierarchical team organization and status monitoring
-- **Backup Coordination**: Streamlined resource request and deployment process
+### 1. NAR (National Address Registry) Module
+The official government-maintained registry of all verified addresses in Equatorial Guinea.
 
-### Unified Platform Benefits
-- **Enhanced Emergency Response**: Seamless integration between verified addresses and police dispatch
-- **Data-Driven Operations**: Comprehensive analytics across both addressing and emergency services
-- **Quality Service Delivery**: Improved postal services, utility connections, and public safety
-- **Economic Development**: Foundation for e-commerce, delivery services, and location-based businesses
-- **Smart Urban Planning**: Evidence-based infrastructure development and city planning
-- **Digital Government Infrastructure**: Platform for IoT integration and smart city initiatives
-- **Cross-Module Intelligence**: Shared data insights for better decision making
+**Purpose**: Authoritative source of truth for national addresses
+**Managed By**: Field Agents, Verifiers, Registrars
+**Access Level**: Government officials and authorized personnel
 
-### Technical Architecture
-- **Frontend**: React-based responsive web application with real-time updates
-- **Backend**: Supabase with PostgreSQL for robust data management
-- **Authentication**: Advanced role-based access control with geographic scoping
-- **Storage**: Secure cloud storage for evidence, documentation, and sensitive data
-- **Real-time Communication**: WebSocket integration for live dispatch and status updates
-- **API Layer**: RESTful APIs for external integrations and partner access
-- **Security**: End-to-end encryption for sensitive police data and evidence
-- **Mobile Support**: Progressive Web App capabilities for field operations
+**Core Features**:
+- Multi-stage address verification workflow
+- GPS-based location capture with coordinate validation
+- Unified Address Code (UAC) generation
+- Photo evidence and documentation management
+- Duplicate detection and quality assurance
+- Geographic scope-based access control
+- Public API for partner integration
+
+**Workflow Stages**:
+1. **Draft Creation** - Field agents capture new addresses
+2. **Verification** - Verifiers validate quality and accuracy
+3. **Approval** - Registrars review and approve
+4. **Publication** - Addresses become publicly searchable
+
+### 2. CAR (Citizen Address Repository) Module
+Citizen-managed address declarations where residents can register their home and work addresses.
+
+**Purpose**: Personal address management and residency verification
+**Managed By**: Citizens with government verification
+**Access Level**: Public (with authentication)
+
+**Core Features**:
+- Self-declaration of residence addresses
+- Link to verified NAR addresses via UAC
+- Multi-address support (primary, secondary)
+- Verification request workflow
+- Privacy-protected personal information
+- Address book management
+- QR code generation for address sharing
+
+**Verification Statuses**:
+- `SELF_DECLARED` - Initial citizen declaration
+- `PENDING_VERIFICATION` - Under government review
+- `CONFIRMED` - Verified by authorities
+- `REJECTED` - Verification denied
+- `ARCHIVED` - Historical record
+
+### 3. Emergency Management Module
+Real-time incident management and dispatch coordination for police and emergency services.
+
+**Purpose**: Rapid emergency response with precise location coordination
+**Managed By**: Police Dispatchers, Supervisors, and Field Operators
+**Access Level**: Law enforcement and emergency services
+
+**Core Features**:
+- Real-time incident reporting and tracking
+- Intelligent unit dispatch and assignment
+- GPS-based location verification
+- Encrypted sensitive incident data
+- Backup request and coordination
+- Response time tracking and analytics
+- Multi-unit communication hub
+- Performance metrics and SLA monitoring
+
+**Incident Workflow**:
+1. **Report** - Citizen reports emergency
+2. **Classify** - System categorizes and prioritizes
+3. **Locate** - Nearest UAC identified
+4. **Dispatch** - Units assigned and notified
+5. **Track** - Real-time response monitoring
+6. **Resolve** - Incident closure and documentation
 
 ---
 
 ## User Roles and Permissions
 
-The unified platform supports two distinct role hierarchies - one for the Address Registry Module and one for the Police Operations Module. Users can have roles in one or both modules based on their responsibilities.
+### NAR (National Address Registry) Roles
 
-### Address Registry Module Roles
+#### 1. Field Agent
+**Purpose**: Capture new addresses in the field with evidence
 
-#### 1. **Citizen** (Default Role)
-**Purpose**: General public users who can search for verified addresses
 **Permissions**:
-- ✅ Search verified addresses
-- ✅ View redacted evidence/documents
-- ✅ Access status information for their own submissions
-- ❌ Cannot create draft addresses
-- ❌ Cannot upload evidence
+- ✅ Create draft addresses with GPS coordinates
+- ✅ Upload photos and supporting documents
+- ✅ View own submissions
+- ✅ Access offline capture tools
 - ❌ Cannot verify or publish addresses
 
-**Workflow Stage**: Submit Request
+**Geographic Scope**: District-level assignment
+**Primary Dashboard**: Field Agent Dashboard (`/field-agent`)
 
-#### 2. **Property Claimant**
-**Purpose**: Property owners who can submit proof of ownership for address registration
+#### 2. Verifier
+**Purpose**: Quality assurance and address validation
+
 **Permissions**:
-- ✅ Search verified addresses
-- ✅ Upload evidence (own submissions only)
-- ✅ View own evidence and submissions
-- ✅ Access audit logs for own records
-- ❌ Cannot create draft addresses
-- ❌ Cannot verify addresses
-
-**Workflow Stage**: Submit Request with Evidence
-
-#### 3. **Field Agent**
-**Purpose**: Data collection specialists who capture address information in the field
-**Permissions**:
-- ✅ Create draft addresses
-- ✅ Upload evidence and photos
-- ✅ View own submissions and evidence
-- ✅ Access audit logs for own work
-- ✅ Geographic scope restrictions apply
-- ❌ Cannot verify or publish addresses
-
-**Workflow Stage**: Capture Draft
-**Geographic Scope**: Limited to assigned districts/areas
-
-#### 4. **Verifier**
-**Purpose**: Quality assurance specialists who verify address accuracy and resolve duplicates
-**Permissions**:
-- ✅ Verify addresses
-- ✅ Create corrective draft addresses
-- ✅ Merge and split records
-- ✅ Access full evidence
-- ✅ Flag addresses for review
-- ✅ Edit district-level metadata
-- ✅ Access district-level audit logs
+- ✅ Review and verify draft addresses
+- ✅ Approve or flag for corrections
+- ✅ Detect and merge duplicates
+- ✅ Access photo evidence
+- ✅ Create quality reports
 - ❌ Cannot publish to public registry
 
-**Workflow Stage**: Verify
-**Geographic Scope**: District-level access
-
-#### 5. **Registrar**
-**Purpose**: Provincial administrators who publish verified addresses to the official registry
-**Permissions**:
-- ✅ Publish addresses to public registry
-- ✅ Retire/unpublish addresses
-- ✅ All Verifier permissions
-- ✅ Merge and split records
-- ✅ Edit province-level metadata
-- ✅ Access province-level audit logs
-- ❌ Cannot override system decisions
-
-**Workflow Stage**: Publish
 **Geographic Scope**: Province-level access
+**Primary Dashboard**: Verifier Dashboard (`/verifier`)
 
-#### 6. **NDAA Admin** (National Digital Address Authority)
-**Purpose**: National-level administrators with full system oversight
+#### 3. Registrar
+**Purpose**: Final approval and publication authority
+
 **Permissions**:
-- ✅ Override system decisions
-- ✅ Manage API keys and webhooks
-- ✅ Edit national-level hierarchy
+- ✅ Publish verified addresses to NAR
+- ✅ Unpublish addresses when needed
+- ✅ All Verifier permissions
+- ✅ Manage provincial address hierarchy
+- ✅ Override verification decisions
+- ✅ Generate official reports
+
+**Geographic Scope**: Province-level authority
+**Primary Dashboard**: Registrar Dashboard (`/registrar`)
+
+#### 4. NAR Admin
+**Purpose**: System administration and national oversight
+
+**Permissions**:
+- ✅ All system permissions
+- ✅ Manage API integrations
+- ✅ Configure system settings
 - ✅ Access all audit logs
-- ✅ All lower-level permissions
-- ✅ System configuration management
+- ✅ User management
+- ✅ Bulk operations
 
-**Workflow Stage**: Override/Supervise
-**Geographic Scope**: National access
+**Geographic Scope**: National-level access
+**Primary Dashboard**: Unified Dashboard (`/unified`)
 
-#### 7. **Partner**
-**Purpose**: External organizations with API access for specific use cases
+### CAR (Citizen Address Repository) Roles
+
+#### 5. Citizen
+**Purpose**: Personal address management
+
 **Permissions**:
-- ✅ Search verified addresses via API
-- ✅ Request API access
-- ✅ Access delivery logs only
-- ❌ No evidence access
-- ❌ Cannot create or modify addresses
+- ✅ Declare residence addresses
+- ✅ Request address verification
+- ✅ Manage address book (primary/secondary)
+- ✅ Search verified NAR addresses
+- ✅ Generate QR codes for addresses
+- ✅ View verification status
+- ❌ Cannot access other citizens' data
 
-**Access Type**: API-based integration
+**Geographic Scope**: Own addresses only
+**Primary Portal**: Citizen Portal (`/citizen-portal`)
 
-#### 8. **Auditor**
-**Purpose**: Independent reviewers for compliance and quality assurance
+### Emergency Management Roles
+
+#### 6. Police Dispatcher
+**Purpose**: Emergency call handling and unit dispatch
+
 **Permissions**:
-- ✅ Read-only access to audit logs
-- ✅ View redacted evidence
-- ✅ Search verified addresses
-- ❌ Cannot modify any data
-- ❌ Cannot approve or reject addresses
+- ✅ Receive and process emergency calls
+- ✅ Create and categorize incidents
+- ✅ Dispatch units to incidents
+- ✅ Monitor real-time unit status
+- ✅ Coordinate multi-unit response
+- ✅ Access verified address data
+- ✅ Send broadcast alerts
+- ✅ Track response times
 
-**Access Type**: Read-only auditing
+**Geographic Scope**: Dispatch center jurisdiction
+**Primary Dashboard**: Police Dashboard (`/police`)
 
-#### 9. **Data Steward**
-**Purpose**: Quality assurance specialists for bulk operations and testing
+#### 7. Police Operator
+**Purpose**: Field response and incident handling
+
 **Permissions**:
-- ✅ Create test sandbox addresses
-- ✅ Suggest hierarchy changes
-- ✅ Access QA-specific audit logs
-- ✅ View redacted evidence
-- ❌ Cannot publish live addresses
+- ✅ View assigned incidents
+- ✅ Update incident status
+- ✅ Request backup support
+- ✅ Submit field reports
+- ✅ Access incident navigation
+- ✅ View unit assignments
+- ❌ Cannot dispatch or assign incidents
 
-**Focus**: Quality assurance and testing
+**Geographic Scope**: Assigned patrol area
+**Primary Dashboard**: Police Dashboard (`/police`)
 
-#### 10. **Support**
-**Purpose**: Customer service and technical support staff
+#### 8. Police Supervisor
+**Purpose**: Tactical oversight and unit management
+
 **Permissions**:
-- ✅ View user issues and tickets
-- ✅ Access basic system information
-- ✅ Help users with navigation
-- ❌ Cannot access sensitive data
-- ❌ Cannot modify addresses or evidence
+- ✅ Monitor all incidents in jurisdiction
+- ✅ Approve backup requests
+- ✅ Review unit performance
+- ✅ Generate operational reports
+- ✅ Reassign units as needed
+- ✅ Access analytics dashboard
+- ✅ Manage unit structures
 
-**Focus**: User assistance and support
+**Geographic Scope**: Regional or departmental
+**Primary Dashboard**: Police Dashboard (`/police`)
 
-### Police Operations Module Roles
+#### 9. Police Admin
+**Purpose**: System administration for police operations
 
-#### 1. **Police Admin**
-**Purpose**: System administrators for police operations with comprehensive oversight and configuration authority
 **Permissions**:
-- ✅ Manage all police system users and role assignments
-- ✅ Configure system-wide settings, parameters, and operational policies
-- ✅ Access all incident data, analytics, and performance reports
-- ✅ Manage unit structures, hierarchies, and operational assignments
-- ✅ Override operational decisions and emergency protocols
-- ✅ Full audit trail access and compliance monitoring
-- ✅ Integration management with external systems and APIs
+- ✅ All police module permissions
+- ✅ Manage police users and roles
+- ✅ Configure operational settings
+- ✅ Access all incident data
+- ✅ System integration management
+- ✅ Full audit access
 
-**Scope**: System-wide police operations and strategic oversight
-**Geographic Scope**: National-level access to all police operations
-
-#### 2. **Police Supervisor**
-**Purpose**: Senior officers responsible for tactical oversight, unit management, and operational performance
-**Permissions**:
-- ✅ Monitor all incidents within assigned jurisdiction and area of responsibility
-- ✅ Assign and reassign units to incidents based on operational needs
-- ✅ Access real-time unit status, locations, and availability tracking
-- ✅ Review officer performance metrics and effectiveness reports
-- ✅ Approve backup requests, resource allocation, and escalation procedures
-- ✅ Generate operational reports and performance analytics
-- ✅ Coordinate multi-unit operations and complex incident responses
-- ✅ Access cross-module data for enhanced situational awareness
-
-**Scope**: Regional, departmental, or jurisdictional oversight
-**Geographic Scope**: Province or region-level access with scope restrictions
-
-#### 3. **Police Dispatcher**
-**Purpose**: Emergency response coordinators managing real-time incident dispatch and communication
-**Permissions**:
-- ✅ Receive, process, and categorize emergency calls and incident reports
-- ✅ Create, update, and manage incident records with priority classification
-- ✅ Dispatch units to incidents using optimal assignment algorithms
-- ✅ Monitor unit status, availability, and real-time location tracking
-- ✅ Coordinate emergency response and multi-agency collaboration
-- ✅ Facilitate communication between field units, supervisors, and command
-- ✅ Access verified address registry for accurate location coordination
-- ✅ Manage emergency broadcast alerts and system-wide notifications
-
-**Scope**: Dispatch center operations and emergency coordination
-**Geographic Scope**: Dispatch center coverage area with incident management authority
-
-#### 4. **Police Operator**
-**Purpose**: Field officers and operational personnel responsible for direct incident response and law enforcement
-**Permissions**:
-- ✅ View assigned incidents with detailed briefings and background information
-- ✅ Update incident status, progress reports, and field observations
-- ✅ Request backup, additional resources, and supervisor assistance
-- ✅ Submit field reports, evidence documentation, and case materials
-- ✅ Access incident history for patrol areas and recurring locations
-- ✅ Communicate with dispatch, supervisors, and other units
-- ✅ Utilize mobile tools for field operations and real-time updates
-- ✅ Access verified address information for accurate location responses
-
-**Scope**: Field operations and assigned incident response
-**Geographic Scope**: Unit patrol area with incident-specific access
-
-### Cross-Module Integration and Enhanced Capabilities
-The unified platform provides significant advantages for users with roles spanning both modules:
-
-#### **Emergency Response Enhancement**
-- **Real-time Address Verification**: Police dispatchers can access and verify addresses instantly during emergency calls
-- **Priority Address Processing**: Emergency incidents can trigger fast-track address verification workflows
-- **Location Intelligence**: Integration of verified address data enhances response accuracy and efficiency
-
-#### **Operational Data Sharing**
-- **Incident Location Data**: Emergency incidents contribute to address verification and quality improvement
-- **Performance Analytics**: Cross-module reporting provides comprehensive operational insights
-- **Resource Optimization**: Shared data enables better resource allocation and strategic planning
-
-#### **Quality Assurance Integration**
-- **Address Validation through Emergency Response**: Police operations provide real-world validation of address accuracy
-- **Evidence Cross-Reference**: Address evidence and police incident documentation can be correlated
-- **System Reliability**: Cross-module validation improves overall data quality and system reliability
-
-#### **Strategic Intelligence**
-- **Pattern Recognition**: Combined address and incident data reveals operational patterns and trends
-- **Predictive Analytics**: Historical data from both modules supports predictive policing and resource planning
-- **Community Safety**: Enhanced address verification improves emergency response times and community safety outcomes
+**Geographic Scope**: National police operations
+**Primary Dashboard**: Police Admin Dashboard
 
 ---
 
 ## Core Workflows
 
-### Address Registry Module Workflows
+### NAR Address Creation Workflow
 
-#### 1. Standard Address Creation Workflow
-**Participants**: Citizen → Field Agent → Verifier → Registrar
+#### Standard Address Registration
+```
+1. FIELD CAPTURE (Field Agent)
+   ↓
+   - Visit physical location
+   - Capture GPS coordinates (latitude, longitude)
+   - Take multiple photos (building, street, landmarks)
+   - Record address details (street, building, landmarks)
+   - Create draft address record
+   - Submit for verification
 
-1. **Submit Request** (Citizen)
-   - Submit new address request through web interface
-   - Provide basic location and justification information
-   - Upload optional supporting documentation
+2. VERIFICATION (Verifier)
+   ↓
+   - Review photo quality and evidence
+   - Validate GPS accuracy
+   - Check for duplicates
+   - Verify address completeness
+   - Approve or flag for corrections
+   - Forward to registrar
 
-2. **Capture Draft** (Field Agent)
-   - Visit location and capture precise coordinates
-   - Take photographs of the location
-   - Create detailed address draft with evidence
-   - Verify physical existence and accessibility
-
-3. **Verify** (Verifier)
-   - Review draft for accuracy and completeness
-   - Check for duplicates and conflicts
-   - Resolve data quality issues
-   - Approve or request corrections
-
-4. **Publish** (Registrar)
-   - Final review of verified addresses
-   - Publish to provincial registry
+3. APPROVAL (Registrar)
+   ↓
+   - Final quality review
+   - Approve for publication
    - Generate Unified Address Code (UAC)
-   - Make address publicly searchable
+   - Publish to national registry
+   - Make publicly searchable
 
-### 2. Partner Bulk Update Workflow
-**Participants**: Partner → Data Steward → Verifier → Registrar
+4. PUBLICATION
+   ↓
+   - Address visible in public search
+   - Available via API
+   - QR code generation enabled
+   - Integration with CAR and Emergency modules
+```
 
-1. **Bulk Upload** (Partner/Utility)
-   - Upload customer references with coordinates
-   - Provide hashed personal data for privacy
-   - Submit batch requests via API
+**SLA**: 48 hours from capture to publication
 
-2. **QA Review** (Data Steward)
-   - Run automated quality assurance checks
-   - Validate data format and completeness
-   - Flag suspicious or duplicate entries
+### CAR Address Declaration Workflow
 
-3. **Batch Verify** (Verifier)
-   - Review QA results
-   - Approve subset of clean data
-   - Flag problematic entries for manual review
+#### Citizen Residency Registration
+```
+1. SELF-DECLARATION (Citizen)
+   ↓
+   - Login to citizen portal
+   - Search for NAR verified address
+   - Declare as primary or secondary residence
+   - Provide supporting information
+   - Submit verification request
+   - Status: SELF_DECLARED
 
-4. **Bulk Publish** (Registrar)
-   - Publish approved address batches
-   - Generate UACs for all new addresses
-   - Send confirmation webhooks to partners
+2. VERIFICATION REQUEST
+   ↓
+   - System flags address for verification
+   - Authorities receive notification
+   - Field verification scheduled (optional)
+   - Status: PENDING_VERIFICATION
 
-### 3. Emergency Fast-Track Workflow
-**Participants**: Partner (EMS) → Verifier → Registrar
+3. GOVERNMENT VERIFICATION
+   ↓
+   - Verifier reviews declaration
+   - Cross-reference with NAR data
+   - Validate residency claim
+   - Approve or reject with reason
+   - Status: CONFIRMED or REJECTED
 
-1. **Emergency Flag** (Partner - Emergency Services)
-   - Flag critical location for immediate processing
-   - Provide emergency justification
-   - Request priority handling
+4. CONFIRMED ADDRESS
+   ↓
+   - Citizen receives confirmation
+   - Address added to citizen profile
+   - Can be used for official purposes
+   - QR code generated for sharing
+```
 
-2. **Priority Verify** (Verifier)
-   - Process within emergency SLA (typically 2-4 hours)
-   - Fast-track verification procedures
-   - Escalate if needed
+**SLA**: 5 business days for verification
 
-3. **Fast Publish** (Registrar)
-   - Immediate publication to registry
-   - Generate temporary UAC if needed
-   - Send priority webhook confirmation
+### Emergency Response Workflow
 
-### Police Operations Module Workflows
+#### Critical Incident Management
+```
+1. INCIDENT REPORT
+   ↓
+   - Emergency call received
+   - System captures: type, location, priority
+   - Location verified using NAR address
+   - Reporter information encrypted
+   - Incident created with unique ID
 
-#### 1. Emergency Incident Response Workflow
-**Participants**: Citizen/System → Police Dispatcher → Police Operator → Police Supervisor
-**SLA**: Critical incidents within 4 minutes, standard incidents within 15 minutes
+2. CLASSIFICATION (Dispatcher)
+   ↓
+   - Categorize incident type
+   - Assign priority level (CRITICAL, HIGH, MEDIUM, LOW)
+   - Identify required resources
+   - Locate nearest UAC address
+   - Calculate proximity to available units
 
-1. **Incident Report and Categorization** (Citizen/System)
-   - Emergency call received through dispatch center
-   - Incident details captured with automated categorization
-   - Location verified using integrated address registry
-   - Priority assessment using algorithm-based classification
-   - Reporter contact information securely encrypted
+3. DISPATCH (Dispatcher)
+   ↓
+   - Select optimal unit(s)
+   - Assign incident to unit
+   - Provide incident briefing
+   - Share location and navigation
+   - Notify unit via system
 
-2. **Intelligent Dispatch Coordination** (Police Dispatcher)
-   - Available units identified using real-time tracking
-   - Optimal unit selection based on proximity, capability, and workload
-   - Incident assignment with comprehensive briefing
-   - Real-time communication channels established
-   - Address verification confirmation from registry module
+4. FIELD RESPONSE (Police Operator)
+   ↓
+   - Accept assignment
+   - Navigate to location using UAC
+   - Update status: EN_ROUTE → ARRIVED → IN_PROGRESS
+   - Request backup if needed
+   - Submit field updates
 
-3. **Dynamic Field Response** (Police Operator)
-   - Unit dispatched with turn-by-turn navigation to verified address
-   - Continuous status updates during transit and on-scene
-   - Mobile evidence collection and real-time documentation
-   - Field assessment with supervisor communication
-   - Backup request capability with justification workflow
+5. RESOLUTION
+   ↓
+   - Mark incident RESOLVED
+   - Submit final report
+   - Record outcome and actions taken
+   - Calculate response time metrics
+   - Archive incident data
+```
 
-4. **Strategic Supervision and Analysis** (Police Supervisor)
-   - Real-time response monitoring with performance metrics
-   - Resource coordination and allocation optimization
-   - Quality assurance and outcome evaluation
-   - Performance analysis and trend identification
-   - Cross-incident pattern recognition and intelligence
-
-#### 2. Advanced Backup Request and Resource Allocation Workflow
-**Participants**: Police Operator → Police Dispatcher → Police Supervisor
-**SLA**: Backup evaluation within 2 minutes, deployment within 8 minutes
-
-1. **Situational Assessment and Request** (Police Operator)
-   - Real-time situation evaluation with threat assessment
-   - Structured backup request with priority justification
-   - Specific resource requirements and timeline specification
-   - Continuous situation awareness and status reporting
-
-2. **Intelligent Resource Coordination** (Police Dispatcher)
-   - Automated backup request evaluation using priority algorithms
-   - Available resource identification with capability matching
-   - Deployment coordination with optimal routing
-   - Multi-unit communication facilitation and coordination
-   - Real-time status monitoring and adjustment
-
-3. **Strategic Approval and Deployment Management** (Police Supervisor)
-   - Risk assessment and resource allocation approval
-   - Multi-unit operation coordination and oversight
-   - Resource utilization optimization and effectiveness monitoring
-   - Decision documentation and performance evaluation
-   - Strategic deployment pattern analysis and optimization
-
-#### 3. Unit Performance and Communication Workflow
-**Participants**: Police Operator → Police Dispatcher → Police Supervisor → Police Admin
-
-1. **Operational Performance Tracking** (Police Operator)
-   - Real-time activity logging and status reporting
-   - Performance metrics capture and self-assessment
-   - Communication compliance and protocol adherence
-   - Field feedback and operational insights
-
-2. **Communication Hub Management** (Police Dispatcher)
-   - Central communication coordination and message routing
-   - Performance monitoring and quality assurance
-   - Emergency protocol activation and management
-   - Cross-unit coordination and information sharing
-
-3. **Performance Analysis and Optimization** (Police Supervisor)
-   - Individual and unit performance evaluation
-   - Operational efficiency analysis and improvement identification
-   - Training needs assessment and development planning
-   - Strategic operational planning and resource optimization
-
-4. **Strategic System Management** (Police Admin)
-   - System-wide performance analysis and trend identification
-   - Policy development and operational procedure optimization
-   - Resource allocation planning and strategic decision making
-   - Integration oversight and cross-module optimization
-
-### Cross-Module Integration Workflows
-
-#### 1. Emergency Address Verification and Integration Workflow
-**Participants**: Police Dispatcher → Address Verifier → Address Registrar → Police Operations
-**SLA**: Emergency verification within 30 minutes, standard fast-track within 2 hours
-
-1. **Emergency Location Coordination** (Police Dispatcher)
-   - Incident reported at unverified or problematic location
-   - Urgent address verification request with incident context
-   - Priority flag activation with emergency justification
-   - Real-time coordination with address registry team
-
-2. **Expedited Verification Process** (Address Verifier)
-   - Emergency fast-track verification workflow activation
-   - Field agent coordination for immediate location assessment
-   - Quality assurance procedures with expedited review
-   - Evidence collection and validation with priority processing
-
-3. **Emergency Publication and Integration** (Address Registrar)
-   - Immediate address registry update with emergency UAC generation
-   - Police dispatch system integration and notification
-   - Cross-module data synchronization and verification
-   - Emergency location services activation and optimization
-
-4. **Operational Integration and Feedback** (Police Operations)
-   - Verified address integration into active incident management
-   - Location accuracy feedback and quality assessment
-   - Response effectiveness evaluation and system optimization
-   - Cross-module performance analysis and improvement identification
-
-#### 2. Intelligence Sharing and Data Integration Workflow
-**Participants**: Cross-module data analysts → System administrators → Operations teams
-
-1. **Data Collection and Analysis**
-   - Cross-module data harvesting and pattern recognition
-   - Address verification patterns and police incident correlation
-   - Performance metrics integration and trend analysis
-   - Quality assurance and data integrity validation
-
-2. **Intelligence Generation and Distribution**
-   - Strategic insights development and actionable intelligence
-   - Performance optimization recommendations and system improvements
-   - Cross-module coordination enhancement and process optimization
-   - Decision support information and strategic planning resources
-
-3. **Operational Optimization and Implementation**
-   - System enhancement implementation and performance monitoring
-   - Cross-module workflow optimization and efficiency improvement
-   - Training and development program enhancement
-   - Strategic planning and resource allocation optimization
+**SLA**: 
+- Critical incidents: 3 minutes response
+- High priority: 8 minutes response  
+- Standard: 15 minutes response
 
 ---
 
 ## Feature Descriptions
 
-### Address Registry Module Features
+### Unified Address Code (UAC) System
 
-#### Address Search
-- **Smart Search**: Natural language and coordinate-based search
-- **Filter Options**: By verification status, date, location type
-- **Map Integration**: Visual search with interactive maps
-- **Export Functions**: Data export in multiple formats
+**Format**: `GQ-[PROVINCE]-[DISTRICT]-[SEQUENTIAL]`
+- Example: `GQ-BN-MAL-001234`
+- Province codes: BN (Bioko Norte), etc.
+- District codes: MAL (Malabo), etc.
+- Sequential: Unique 6-digit number
 
-### Address Registration
-- **Multi-Step Form**: Guided registration process
-- **Photo Upload**: Evidence capture with automatic compression
-- **GPS Integration**: Automatic coordinate capture
-- **Duplicate Detection**: Real-time duplicate checking
+**Generation**: Automatic upon address publication
+**Uniqueness**: Guaranteed at national level
+**Persistence**: Never reused, archived on deletion
 
-### Verification Tools
-- **Bulk Verification**: Process multiple addresses simultaneously
-- **Quality Scoring**: Automated quality assessment
-- **Conflict Resolution**: Tools for resolving address conflicts
-- **Evidence Review**: Secure evidence viewing and annotation
+### Multi-Language Support
+- **Spanish** (es) - Primary language
+- **French** (fr) - Secondary language  
+- **English** (en) - International support
+- **Auto-detection**: Browser language preference
+- **User override**: Manual language selection
 
-### Administrative Tools
-- **Role Management**: Assign and modify user roles
-- **Permission Matrix**: Visual permission management
-- **Workflow Monitoring**: Track progress through stages
-- **Analytics Dashboard**: System usage and performance metrics
+### Offline Capabilities
+- Offline address capture (Field Agents)
+- Offline incident reporting (Police Operators)
+- Offline map viewing (cached tiles)
+- Automatic synchronization when online
+- Conflict resolution on sync
 
-#### UAC Generation
-- **Unified Address Codes**: Standardized address identifiers
-- **Hierarchical Structure**: Country-Region-City-Unique format
-- **Check Digits**: Built-in validation for accuracy
-- **Batch Generation**: Efficient bulk UAC creation
+### QR Code Integration
+- Generate QR codes for any verified address
+- Scan QR codes to view address details
+- Share addresses via QR code
+- Print QR codes for physical display
+- Emergency access via QR scan
 
-### Police Operations Module Features
+### Map Integration
+- **Primary**: Mapbox for interactive maps
+- **Secondary**: Google Maps integration
+- Real-time location tracking
+- Turn-by-turn navigation
+- Offline map caching
+- Custom map layers for incidents/addresses
 
-#### Incident Management
-- **Real-time Incident Tracking**: Live updates on incident status and progress
-- **Priority Classification**: Automatic categorization based on severity and type
-- **Location Integration**: Seamless integration with address registry for accurate positioning
-- **Evidence Management**: Secure storage and tracking of incident-related evidence
+### Photo Evidence Management
+- Secure cloud storage (Supabase Storage)
+- Photo quality analysis
+- Automatic compression and optimization
+- Multiple photos per address
+- Photo viewer with zoom and gallery
+- Privacy protection for sensitive images
 
-#### Dispatch Operations
-- **Unit Tracking**: Real-time location and status monitoring of police units
-- **Optimal Assignment**: Intelligent unit selection based on proximity and availability
-- **Communication Hub**: Centralized communication between dispatch and field units
-- **Emergency Protocols**: Specialized workflows for high-priority incidents
-
-#### Performance Analytics
-- **Response Time Tracking**: Detailed metrics on incident response efficiency
-- **Officer Performance**: Individual and unit performance monitoring
-- **Crime Pattern Analysis**: Data-driven insights into crime trends and hotspots
-- **Resource Utilization**: Analysis of unit deployment and effectiveness
-
-#### Unit Management
-- **Team Organization**: Hierarchical unit structure management
-- **Shift Scheduling**: Automated scheduling and duty assignment
-- **Backup Coordination**: Streamlined process for requesting and deploying backup
-- **Status Monitoring**: Real-time visibility into unit availability and activities
-
-#### Communications
-- **Secure Messaging**: Encrypted communication channels for sensitive operations
-- **Broadcast Alerts**: System-wide notifications for critical situations
-- **Field Reporting**: Mobile-friendly tools for field report submission
-- **Emergency Notifications**: Automated alerts for priority incidents
+### Analytics and Reporting
+- Address registration statistics
+- Verification queue metrics
+- Emergency response times
+- Unit performance analytics
+- Geographic coverage maps
+- Export to PDF/CSV
 
 ---
 
 ## Administrator Guide
 
-### Initial System Setup
+### System Configuration
 
-#### 1. User Management
+#### User Management
+**Location**: Unified Dashboard → User Manager
+
+**Tasks**:
+- Create new users
+- Assign roles and permissions
+- Set geographic scope
+- Manage user status (active/inactive)
+- Reset passwords
+- View user activity logs
+
+#### Role Assignment
 ```
-1. Access Admin Panel → User Manager
-2. View all registered users
-3. Assign appropriate roles based on responsibilities
-4. Set geographic scopes for Field Agents and Verifiers
-5. Configure organization scopes for Partners
+1. Navigate to User Manager
+2. Select user or create new
+3. Assign appropriate role(s):
+   - NAR roles: field_agent, verifier, registrar, nar_admin
+   - CAR roles: citizen (auto-assigned)
+   - Police roles: police_dispatcher, police_operator, 
+                   police_supervisor, police_admin
+4. Set geographic scope (province/district)
+5. Save and notify user
 ```
 
-#### 2. Role Assignment Process
-```
-- Admin users can assign any role
-- Geographic scopes limit access to specific regions
-- Organization scopes define partner access levels
-- Multiple roles can be assigned to single users
-```
+#### System Settings
+- Emergency alert thresholds
+- Verification SLA targets
+- Auto-verification rules
+- API rate limits
+- Backup schedules
+- Notification preferences
 
-#### 3. System Configuration
-```
-1. Configure province and district boundaries
-2. Set up API keys for external integrations
-3. Configure webhook endpoints for partners
-4. Set system-wide parameters and limits
-```
+### Monitoring and Maintenance
 
-### Daily Operations
-
-#### 1. Monitor Verification Queue
-- Review pending address requests
-- Check auto-verification results
-- Manage flagged addresses
-- Monitor processing times
-
-#### 2. User Support
-- Assist users with role-related issues
-- Resolve access permission problems
-- Handle escalated verification disputes
-- Manage system-wide announcements
-
-#### 3. Data Quality Management
+#### Daily Tasks
+- Review pending verification queue
+- Monitor emergency response metrics
+- Check system health dashboard
 - Review audit logs for anomalies
-- Monitor system performance metrics
-- Identify and resolve data inconsistencies
-- Coordinate with technical support
+- Validate backup completion
 
-### Security Management
+#### Weekly Tasks
+- Address quality review
+- User activity analysis
+- Performance metric reports
+- Database optimization
+- Security review
 
-#### 1. Access Control
-- Regular review of user permissions
-- Audit trail monitoring
-- Failed login attempt tracking
-- Suspicious activity investigation
-
-#### 2. Data Protection
-- Evidence access logging
-- Geographic scope enforcement
-- API usage monitoring
-- Data export controls
+#### Monthly Tasks
+- Comprehensive system audit
+- User role review
+- Geographic coverage analysis
+- Partner API usage review
+- Disaster recovery testing
 
 ---
 
 ## User Guides by Role
 
-### For Citizens
+### Field Agent Guide
 
-#### Getting Started
-1. **Registration**: Create account through authentication page
-2. **Search Addresses**: Use the search function to find verified addresses
-3. **View Results**: Access public address information and UACs
-4. **Request New Address**: Submit requests for missing addresses
+#### Capturing New Addresses
+1. **Prepare for field work**
+   - Ensure mobile device charged
+   - Enable GPS/location services
+   - Download offline maps (if needed)
+   - Check camera functionality
 
-#### Common Tasks
-- **Search by UAC**: Enter UAC directly for specific address
-- **Search by Location**: Use natural language search
-- **View on Map**: Visual location verification
-- **Check Status**: Track submitted requests
+2. **At the location**
+   - Open Field Agent Dashboard
+   - Click "Capture New Address"
+   - Wait for GPS lock (accuracy < 10m)
+   - Take 3-5 photos (building, street, landmarks)
+   - Fill in address details:
+     - Street name/description
+     - Building number/name
+     - Landmarks and references
+     - Access notes
+   - Review and submit
 
-### For Field Agents
+3. **Photo guidelines**
+   - Front of building
+   - Street view showing location
+   - Nearest intersection or landmark
+   - Any identifying features
+   - Clear, well-lit images
 
-#### Daily Workflow
-1. **Review Assignments**: Check assigned geographic areas
-2. **Capture Addresses**: Visit locations and create drafts
-3. **Photo Documentation**: Take required evidence photos
-4. **GPS Coordinates**: Capture precise location data
-5. **Submit for Verification**: Complete drafts for review
+4. **Quality standards**
+   - GPS accuracy < 10 meters
+   - Minimum 3 photos
+   - Complete address description
+   - Clear access instructions
+   - No duplicate submissions
 
-#### Best Practices
-- Verify physical accessibility
-- Take photos from multiple angles
-- Include landmarks and house numbers
-- Double-check coordinate accuracy
-- Add descriptive notes for context
+### Verifier Guide
 
-### For Verifiers
+#### Address Verification Process
+1. **Access verification queue**
+   - Login to Verifier Dashboard
+   - View pending addresses
+   - Filter by priority/date/district
 
-#### Verification Process
-1. **Review Queue**: Process pending address requests
-2. **Quality Check**: Verify accuracy and completeness
-3. **Duplicate Detection**: Identify and resolve conflicts
-4. **Evidence Review**: Examine photos and documentation
-5. **Decision Making**: Approve, reject, or request corrections
+2. **Review address details**
+   - Examine GPS coordinates
+   - Review photos for quality
+   - Check address completeness
+   - Verify no duplicates nearby
+   - Validate field agent notes
 
-#### Quality Standards
-- Coordinate accuracy within 10 meters
-- Clear photographic evidence
-- Consistent naming conventions
-- Proper address hierarchy
-- Complete required fields
+3. **Make decision**
+   - **Approve**: If all quality criteria met
+   - **Flag for correction**: If issues found
+     - Specify correction needed
+     - Add reviewer notes
+     - Send back to field agent
+   - **Reject**: If fundamental issues
+     - Provide detailed reason
+     - Document decision
 
-### For Registrars
+4. **Quality criteria**
+   - GPS accuracy verified
+   - Photos clear and relevant
+   - No duplicate addresses within 20m
+   - Address description complete
+   - Meets naming standards
 
-#### Publication Workflow
-1. **Review Verified Addresses**: Final quality check
-2. **Batch Processing**: Efficiently handle multiple addresses
-3. **UAC Generation**: Create unique address codes
-4. **Registry Update**: Publish to official database
-5. **Status Communication**: Notify relevant parties
+### Citizen Guide
 
-#### Management Duties
-- Monitor provincial address quality
-- Coordinate with verifiers
-- Handle public inquiries
-- Manage provincial statistics
-- Ensure compliance with standards
+#### Declaring Your Address
+1. **Access citizen portal**
+   - Navigate to `/citizen-portal`
+   - Login or create account
+   - Verify email address
+
+2. **Search for your address**
+   - Use address search
+   - Browse map to find location
+   - Enter UAC if known
+   - Select verified NAR address
+
+3. **Declare residence**
+   - Click "Declare This Address"
+   - Choose type: Primary or Secondary
+   - Add personal notes (optional)
+   - Submit verification request
+
+4. **Track verification**
+   - View status in dashboard
+   - Receive email notifications
+   - Check verification timeline
+   - Respond to verification requests
+
+### Police Dispatcher Guide
+
+#### Handling Emergency Calls
+1. **Receive incident report**
+   - Emergency call or system alert
+   - Capture caller information
+   - Record incident details
+   - Verify location (UAC or description)
+
+2. **Create incident**
+   - Classify incident type
+   - Assign priority level
+   - Link to verified address
+   - Add incident notes
+
+3. **Dispatch units**
+   - View available units
+   - Select optimal unit(s)
+   - Assign incident
+   - Provide briefing
+   - Monitor response
+
+4. **Coordinate response**
+   - Track unit status
+   - Facilitate communication
+   - Approve backup requests
+   - Update incident progress
+   - Close incident when resolved
 
 ---
 
 ## Technical Documentation
 
+### Technology Stack
+
+#### Frontend
+- **Framework**: React 18.3+ with TypeScript
+- **Build Tool**: Vite
+- **UI Library**: Radix UI components
+- **Styling**: Tailwind CSS
+- **State Management**: TanStack Query
+- **Routing**: React Router v6
+- **Maps**: Mapbox GL JS, Google Maps API
+- **i18n**: i18next, react-i18next
+
+#### Backend
+- **Platform**: Supabase (PostgreSQL 15+)
+- **Authentication**: Supabase Auth (JWT-based)
+- **Database**: PostgreSQL with PostGIS extension
+- **Storage**: Supabase Storage (S3-compatible)
+- **Edge Functions**: Deno runtime
+- **Real-time**: WebSocket subscriptions
+
+#### Mobile
+- **Framework**: Capacitor 7
+- **Platforms**: iOS, Android
+- **Native Features**: Camera, Geolocation, QR Scanner
+
 ### Database Schema
 
 #### Core Tables
-- **addresses**: Main address registry
-- **address_requests**: Pending address submissions
-- **user_roles**: Role assignments
-- **user_role_metadata**: Geographic and organizational scopes
-- **profiles**: User profile information
-- **provinces**: Administrative boundaries
+```sql
+-- User management
+profiles (id, user_id, full_name, email, phone, created_at)
+user_roles (id, user_id, role, created_at)
+user_role_metadata (id, user_id, scope_type, scope_value)
 
-#### Key Relationships
-- Users have multiple roles through user_roles table
-- Roles have metadata for scoping
-- Addresses link to original requests
-- Evidence files stored in Supabase storage
+-- NAR module
+addresses (id, uac, coordinates, address_text, status, verified_at)
+address_requests (id, user_id, address_id, status, submitted_at)
+address_photos (id, address_id, photo_url, uploaded_at)
+
+-- CAR module  
+citizen_addresses (id, user_id, address_id, verification_status, type)
+residency_verifications (id, citizen_address_id, verified_by, status)
+
+-- Emergency module
+emergency_incidents (id, type, priority, status, location, created_at)
+emergency_units (id, name, type, status, current_location)
+emergency_unit_members (id, unit_id, user_id, role)
+backup_requests (id, incident_id, requesting_unit, status)
+```
+
+#### Security Functions
+```sql
+-- Role checking
+has_role(user_id UUID, role_name TEXT) → BOOLEAN
+get_user_role(user_id UUID) → app_role
+has_role_with_scope(user_id UUID, role TEXT, scope_type TEXT, scope_value TEXT) → BOOLEAN
+
+-- UAC generation
+generate_unified_uac_unique() → TEXT
+
+-- Address search
+search_addresses_safely(query TEXT) → TABLE
+```
 
 ### API Endpoints
 
-#### Authentication
+#### Edge Functions
 ```
-POST /auth/signin - User login
-POST /auth/signup - User registration  
-POST /auth/signout - User logout
-```
-
-#### Address Management
-```
-GET /addresses/search - Search verified addresses
-POST /addresses/request - Submit new address request
-PUT /addresses/{id}/verify - Verify address
-PUT /addresses/{id}/publish - Publish address
-```
-
-#### Administrative
-```
-GET /admin/users - List all users
-POST /admin/roles/assign - Assign user role
-GET /admin/analytics - System analytics
+/address-search-api - Public address search
+/address-validation-api - Coordinate validation  
+/auto-verify-address - Automatic verification
+/analyze-coordinates - GPS accuracy check
+/analyze-photo-quality - Image quality analysis
+/generate-missing-uacs - Batch UAC generation
+/process-emergency-alert - Emergency processing
+/notify-emergency-operators - Alert dispatchers
+/decrypt-incident-data - Secure incident access
+/unit-communications - Unit messaging
 ```
 
-### Security Features
+### Environment Configuration
 
-#### Row Level Security (RLS)
-- All tables protected with RLS policies
-- Users can only access data within their scope
-- Geographic restrictions enforced at database level
-- Audit trail for all data access
+#### Required Environment Variables
+```bash
+# Supabase
+VITE_SUPABASE_URL=https://[project-id].supabase.co
+VITE_SUPABASE_ANON_KEY=[anon-key]
 
-#### Data Encryption
-- All sensitive data encrypted at rest
-- API communications over HTTPS
-- File uploads encrypted in storage
-- Database connections secured with SSL
+# Maps
+VITE_MAPBOX_TOKEN=[mapbox-token]
+VITE_GOOGLE_MAPS_API_KEY=[google-key]
+
+# Features
+VITE_ENABLE_OFFLINE=true
+VITE_ENABLE_QR_CODES=true
+```
 
 ---
 
@@ -749,148 +728,80 @@ GET /admin/analytics - System analytics
 
 ### Common Issues
 
-#### Login Problems
-**Issue**: Users cannot access the system
+#### Address Not Appearing After Submission
+**Symptoms**: Address captured but not visible in verification queue
+**Causes**: 
+- GPS accuracy insufficient
+- Missing required fields
+- Photo upload failed
+
 **Solutions**:
-1. Verify email and password
-2. Check if account needs activation
-3. Confirm role assignment
-4. Clear browser cache and cookies
+1. Check GPS accuracy (should be < 10m)
+2. Verify all required fields completed
+3. Ensure minimum 3 photos uploaded
+4. Check network connectivity
+5. Review field agent dashboard for error messages
 
-#### Permission Errors
-**Issue**: "Access denied" messages
+#### Verification Queue Empty
+**Symptoms**: Verifier sees no pending addresses
+**Causes**:
+- All addresses verified
+- Geographic scope restriction
+- Filter settings too restrictive
+
 **Solutions**:
-1. Verify user role assignment
-2. Check geographic scope settings
-3. Confirm feature permissions
-4. Contact administrator for role update
+1. Check filter settings
+2. Verify geographic scope assignment
+3. Confirm addresses exist in system
+4. Check role permissions
 
-#### Upload Failures
-**Issue**: Cannot upload photos or documents
+#### Emergency Dispatch Not Receiving Incidents
+**Symptoms**: Incidents created but dispatcher not notified
+**Causes**:
+- Notification system disabled
+- Dispatcher offline
+- Role assignment issue
+
 **Solutions**:
-1. Check file size (max 10MB)
-2. Verify file format (JPG, PNG, PDF)
-3. Test internet connection
-4. Try different browser
+1. Verify dispatcher online status
+2. Check notification settings
+3. Confirm dispatcher role assigned correctly
+4. Review incident priority settings
 
-#### Search Issues
-**Issue**: Cannot find addresses
+#### Offline Sync Failing
+**Symptoms**: Data not synchronizing when online
+**Causes**:
+- Network connectivity issues
+- Conflicting changes
+- Storage quota exceeded
+
 **Solutions**:
-1. Verify address is verified/published
-2. Check search terms and filters
-3. Try coordinate-based search
-4. Contact support for data verification
+1. Check internet connection
+2. Clear offline cache
+3. Manually trigger sync
+4. Resolve data conflicts
+5. Check storage quota
 
-### Performance Issues
+### Error Codes
 
-#### Slow Loading
-**Causes**: Large datasets, network issues, browser problems
-**Solutions**:
-1. Use filters to limit results
-2. Check internet connection
-3. Clear browser cache
-4. Try different device/browser
-
-#### System Downtime
-**Response**: 
-1. Check system status page
-2. Wait for automatic recovery
-3. Contact technical support
-4. Use mobile backup access
-
-### Data Quality Issues
-
-#### Duplicate Addresses
-**Detection**: Automated during verification
-**Resolution**: 
-1. Verifiers merge duplicates
-2. Choose most accurate version
-3. Preserve audit trail
-4. Update cross-references
-
-#### Incorrect Coordinates
-**Identification**: GPS accuracy checks
-**Correction**:
-1. Field agent re-survey
-2. Verifier coordinate adjustment
-3. Evidence documentation
-4. Re-publication if needed
+| Code | Meaning | Action |
+|------|---------|--------|
+| AUTH_001 | Invalid credentials | Re-login |
+| AUTH_002 | Session expired | Refresh session |
+| ADDR_001 | Duplicate address | Review nearby addresses |
+| ADDR_002 | Invalid GPS | Recapture coordinates |
+| PHOTO_001 | Upload failed | Retry upload |
+| EMERG_001 | Unit unavailable | Select different unit |
+| SYNC_001 | Conflict detected | Review and resolve |
 
 ### Support Contacts
 
-#### Technical Support
-- **Email**: tech-support@address-system.gq
-- **Phone**: +240-XXX-XXXX
-- **Hours**: Monday-Friday, 8:00-17:00
-
-#### Administrative Support  
-- **Email**: admin-support@address-system.gq
-- **Phone**: +240-XXX-XXXX
-- **Hours**: Monday-Friday, 8:00-17:00
-
-#### Emergency Support
-- **24/7 Hotline**: +240-XXX-XXXX
-- **Emergency Email**: emergency@address-system.gq
-- **Response Time**: Within 2 hours
+**Technical Support**: tech-support@biakam.gq
+**Emergency Issues**: emergency-support@biakam.gq  
+**System Administrator**: admin@biakam.gq
 
 ---
 
-## Appendices
-
-### A. UAC Format Specification
-```
-Format: CC-RR-CCC-XXXXXX-XX
-CC = Country Code (GQ for Equatorial Guinea)
-RR = Region Code (standardized 2-letter codes)
-CCC = City Code (standardized 3-letter codes)  
-XXXXXX = Unique identifier (6 characters)
-XX = Check digits (2 characters)
-
-Example: GQ-LT-BAT-A1B2C3-MN
-```
-
-### B. Photo Requirements
-- **Format**: JPG or PNG
-- **Size**: Maximum 10MB per file
-- **Resolution**: Minimum 1024x768 pixels
-- **Content**: Clear view of address location
-- **Angle**: Multiple perspectives recommended
-- **Lighting**: Adequate lighting for visibility
-
-### C. Geographic Scope Codes
-
-#### Regions
-- **LT**: Litoral
-- **CS**: Centro Sur
-- **KN**: Kié-Ntem
-- **WN**: Wele-Nzas
-- **BN**: Bioko Norte
-- **BS**: Bioko Sur
-- **DJ**: Djibloho
-- **AN**: Annobón
-
-#### Major Cities
-- **MAL**: Malabo
-- **BAT**: Bata
-- **EVI**: Evinayong
-- **EBE**: Ebebiyín
-- **MON**: Mongomo
-- **LUB**: Luba
-- **CDP**: Ciudad de la Paz
-- **SAP**: San Antonio de Palé
-
-### D. System Limits
-- **Maximum file size**: 10MB
-- **Maximum batch size**: 100 addresses
-- **Search results limit**: 50 addresses
-- **Concurrent users**: 1000
-- **API rate limit**: 100 requests/minute
-- **Storage per user**: 100MB
-
----
-
-*This manual is regularly updated. For the latest version, visit the system documentation portal or contact your administrator.*
-
-**Version**: 1.0
-**Last Updated**: December 2024
-**Next Review**: March 2025
+*Last Updated: January 2025*
+*System Version: 2.0*
+*Document Version: 2.0*
