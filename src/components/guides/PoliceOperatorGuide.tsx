@@ -1,0 +1,263 @@
+import { Card } from "@/components/ui/card";
+import { Radio, MapPin, Camera, MessageSquare, AlertCircle } from "lucide-react";
+
+export function PoliceOperatorGuide() {
+  return (
+    <div className="space-y-6 max-w-4xl">
+      <div>
+        <h1 className="text-3xl font-bold mb-2">Police Operator (Field Unit) User Guide</h1>
+        <p className="text-muted-foreground">Complete guide for responding to incidents and managing field operations</p>
+      </div>
+
+      {/* Getting Started */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Radio className="h-5 w-5" />
+          Getting Started
+        </h2>
+        <div className="space-y-3">
+          <p><strong>Your Role:</strong> Police operators are field officers assigned to emergency units who respond to incidents on the ground.</p>
+          <p><strong>Access:</strong> Police Dashboard at /police-dashboard or Units & Profiles page</p>
+          <p><strong>Key Permissions:</strong> View assigned incidents, update incident status, communicate with dispatch, report field notes, request backup</p>
+        </div>
+      </Card>
+
+      {/* Unit Assignment */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4">Your Unit Assignment</h2>
+        <div className="space-y-3">
+          <p>You are assigned to a specific emergency unit (patrol car, motorcycle, etc.)</p>
+          
+          <h3 className="font-semibold mt-4">Unit Information:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li><strong>Unit Code:</strong> Your unique identifier (e.g., P-001)</li>
+            <li><strong>Unit Type:</strong> Patrol, motorcycle, K9, etc.</li>
+            <li><strong>Coverage Area:</strong> Your assigned region/city</li>
+            <li><strong>Unit Members:</strong> Your team members</li>
+            <li><strong>Unit Lead:</strong> Your team leader (if applicable)</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Unit Status:</h3>
+          <ul className="space-y-1 ml-4">
+            <li><strong className="text-green-600">Available:</strong> Ready for dispatch</li>
+            <li><strong className="text-blue-600">En Route:</strong> Traveling to incident</li>
+            <li><strong className="text-yellow-600">On Scene:</strong> At incident location</li>
+            <li><strong className="text-purple-600">Busy:</strong> Engaged in incident</li>
+            <li><strong className="text-red-600">Offline:</strong> Not available for dispatch</li>
+          </ul>
+        </div>
+      </Card>
+
+      {/* Receiving Incidents */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <AlertCircle className="h-5 w-5" />
+          Receiving Incident Assignments
+        </h2>
+        <div className="space-y-4">
+          <div className="border-l-4 border-primary pl-4">
+            <h3 className="font-semibold mb-2">Step 1: Receive Notification</h3>
+            <p className="mb-2">When dispatched to an incident, you'll receive:</p>
+            <ul className="list-disc list-inside space-y-1 ml-2">
+              <li>Push notification (if on mobile)</li>
+              <li>Alert in your dashboard</li>
+              <li>Radio communication from dispatcher</li>
+            </ul>
+          </div>
+
+          <div className="border-l-4 border-primary pl-4">
+            <h3 className="font-semibold mb-2">Step 2: Review Incident Details</h3>
+            <p className="mb-2">Click the incident to view:</p>
+            <ul className="list-disc list-inside space-y-1 ml-2">
+              <li><strong>Incident Number:</strong> Unique ID (e.g., INC-2025-000123)</li>
+              <li><strong>Emergency Type:</strong> Medical, crime, fire, etc.</li>
+              <li><strong>Priority Level:</strong> 1 (highest) to 5 (lowest)</li>
+              <li><strong>Location:</strong> Address with UAC and coordinates</li>
+              <li><strong>Incident UAC:</strong> Location identifier</li>
+              <li><strong>Reporter Info:</strong> Contact details (encrypted)</li>
+              <li><strong>Description:</strong> What happened</li>
+              <li><strong>Distance:</strong> From your current location</li>
+            </ul>
+          </div>
+
+          <div className="border-l-4 border-primary pl-4">
+            <h3 className="font-semibold mb-2">Step 3: Acknowledge Assignment</h3>
+            <p>Change your status to "En Route" to confirm you're responding</p>
+          </div>
+        </div>
+      </Card>
+
+      {/* Responding to Incidents */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4">Responding to Incidents</h2>
+        <div className="space-y-4">
+          <h3 className="font-semibold">Navigation:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>Use the map viewer to see incident location</li>
+            <li>Click "Get Directions" for turn-by-turn navigation</li>
+            <li>UAC helps identify exact building/location</li>
+            <li>Look for QR codes on buildings to verify address</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Status Updates:</h3>
+          <ol className="list-decimal list-inside space-y-2 ml-4">
+            <li><strong>En Route:</strong> Set when leaving for incident</li>
+            <li><strong>On Scene:</strong> Set when arriving at location</li>
+            <li><strong>Resolved:</strong> Set when incident handled</li>
+            <li><strong>Available:</strong> Set when ready for next call</li>
+          </ol>
+
+          <div className="bg-muted p-4 rounded-lg mt-4">
+            <p className="text-sm"><strong>⏱️ Important:</strong> Update status promptly - response times are tracked and affect performance metrics</p>
+          </div>
+        </div>
+      </Card>
+
+      {/* Field Reporting */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Camera className="h-5 w-5" />
+          Field Reporting
+        </h2>
+        <div className="space-y-3">
+          <h3 className="font-semibold">Adding Field Notes:</h3>
+          <ol className="list-decimal list-inside space-y-2 ml-4">
+            <li>Open the incident details</li>
+            <li>Click "Add Field Notes"</li>
+            <li>Document what you found:
+              <ul className="list-disc list-inside ml-4 mt-1">
+                <li>Situation upon arrival</li>
+                <li>Actions taken</li>
+                <li>People involved</li>
+                <li>Evidence collected</li>
+                <li>Any safety concerns</li>
+              </ul>
+            </li>
+            <li>Save notes - dispatcher and supervisors can see them</li>
+          </ol>
+
+          <h3 className="font-semibold mt-4">Taking Photos:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>Document scene with photos (if appropriate)</li>
+            <li>Photos are encrypted for security</li>
+            <li>Include in incident report</li>
+          </ul>
+        </div>
+      </Card>
+
+      {/* Communication */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <MessageSquare className="h-5 w-5" />
+          Communication
+        </h2>
+        <div className="space-y-3">
+          <h3 className="font-semibold">With Dispatch:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>Receive messages from dispatchers</li>
+            <li>Reply to dispatcher queries</li>
+            <li>Report status changes</li>
+            <li>Request additional information</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">With Other Units:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>See other units assigned to same incident</li>
+            <li>Coordinate response with backup units</li>
+            <li>Share field observations</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Requesting Backup:</h3>
+          <ol className="list-decimal list-inside space-y-2 ml-4">
+            <li>Click "Request Backup" on incident</li>
+            <li>Specify reason (need more officers, medical, K9, etc.)</li>
+            <li>Submit request - notifies dispatch and supervisor</li>
+            <li>Wait for backup assignment confirmation</li>
+          </ol>
+        </div>
+      </Card>
+
+      {/* Location Tracking */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <MapPin className="h-5 w-5" />
+          Location Tracking
+        </h2>
+        <div className="space-y-3">
+          <p><strong>GPS Tracking:</strong> Your unit's location is tracked in real-time for dispatch coordination</p>
+          
+          <h3 className="font-semibold mt-4">Why It Matters:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>📍 Dispatch can see your location and assign nearest incidents</li>
+            <li>🚨 Safety monitoring - supervisor knows where you are</li>
+            <li>⏱️ Accurate response time calculation</li>
+            <li>🗺️ Helps backup units find you if needed</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Updating Location:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>Location updates automatically when GPS is enabled</li>
+            <li>Ensure location permissions are allowed</li>
+            <li>Location accuracy shown in dashboard</li>
+          </ul>
+        </div>
+      </Card>
+
+      {/* Best Practices */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4">Best Practices</h2>
+        <div className="space-y-3">
+          <h3 className="font-semibold">For Effective Response:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>✅ Update status promptly at each stage</li>
+            <li>✅ Review full incident details before responding</li>
+            <li>✅ Use UAC and map for accurate location</li>
+            <li>✅ Document thoroughly with field notes</li>
+            <li>✅ Communicate clearly with dispatch</li>
+            <li>✅ Request backup early if situation requires it</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Safety First:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>🛡️ Assess scene safety before engaging</li>
+            <li>🛡️ Keep dispatch informed of situation changes</li>
+            <li>🛡️ Don't hesitate to request backup</li>
+            <li>🛡️ Report any safety concerns immediately</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Common Mistakes to Avoid:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>❌ Not updating status (dispatch can't track you)</li>
+            <li>❌ Incomplete field notes (poor documentation)</li>
+            <li>❌ Not requesting backup when needed</li>
+            <li>❌ Forgetting to set "Available" after incident</li>
+          </ul>
+        </div>
+      </Card>
+
+      {/* Performance */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4">Performance Tracking</h2>
+        <div className="space-y-3">
+          <p>Your performance is tracked to improve emergency response:</p>
+          
+          <h3 className="font-semibold mt-4">Key Metrics:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li><strong>Response Time:</strong> Time from dispatch to on-scene</li>
+            <li><strong>Resolution Time:</strong> Time from on-scene to resolved</li>
+            <li><strong>Incidents Handled:</strong> Total count per shift</li>
+            <li><strong>Status Update Compliance:</strong> Timely status changes</li>
+          </ul>
+
+          <p className="mt-4 text-sm text-muted-foreground">View your performance statistics in the Unit Performance dashboard</p>
+        </div>
+      </Card>
+
+      {/* Support */}
+      <Card className="p-6 bg-muted">
+        <h2 className="text-xl font-semibold mb-3">Need Help?</h2>
+        <p>Contact your unit lead, supervisor, or dispatch for operational support and guidance.</p>
+      </Card>
+    </div>
+  );
+}

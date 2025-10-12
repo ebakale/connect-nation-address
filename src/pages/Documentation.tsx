@@ -10,6 +10,11 @@ import { VerifierGuide } from '@/components/guides/VerifierGuide';
 import { RegistrarGuide } from '@/components/guides/RegistrarGuide';
 import { CitizenGuide } from '@/components/guides/CitizenGuide';
 import { EmergencyDispatcherGuide } from '@/components/guides/EmergencyDispatcherGuide';
+import { PoliceOperatorGuide } from '@/components/guides/PoliceOperatorGuide';
+import { PoliceSupervisorGuide } from '@/components/guides/PoliceSupervisorGuide';
+import { PoliceAdminGuide } from '@/components/guides/PoliceAdminGuide';
+import { CARVerifierGuide } from '@/components/guides/CARVerifierGuide';
+import { CARAdminGuide } from '@/components/guides/CARAdminGuide';
 
 const Documentation: React.FC = () => {
   return (
@@ -259,12 +264,17 @@ const Documentation: React.FC = () => {
           {/* User Guides */}
           <TabsContent value="guides" className="mt-6">
             <Tabs defaultValue="field-agent" className="w-full">
-              <TabsList className="grid w-full grid-cols-5 max-w-3xl mx-auto">
+              <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 max-w-6xl mx-auto">
                 <TabsTrigger value="field-agent">Field Agent</TabsTrigger>
                 <TabsTrigger value="verifier">Verifier</TabsTrigger>
                 <TabsTrigger value="registrar">Registrar</TabsTrigger>
                 <TabsTrigger value="citizen">Citizen</TabsTrigger>
                 <TabsTrigger value="dispatcher">Dispatcher</TabsTrigger>
+                <TabsTrigger value="police-operator">Police Officer</TabsTrigger>
+                <TabsTrigger value="police-supervisor">Supervisor</TabsTrigger>
+                <TabsTrigger value="police-admin">Police Admin</TabsTrigger>
+                <TabsTrigger value="car-verifier">CAR Verifier</TabsTrigger>
+                <TabsTrigger value="car-admin">CAR Admin</TabsTrigger>
               </TabsList>
               
               <TabsContent value="field-agent" className="mt-6">
@@ -285,6 +295,26 @@ const Documentation: React.FC = () => {
               
               <TabsContent value="dispatcher" className="mt-6">
                 <EmergencyDispatcherGuide />
+              </TabsContent>
+              
+              <TabsContent value="police-operator" className="mt-6">
+                <PoliceOperatorGuide />
+              </TabsContent>
+              
+              <TabsContent value="police-supervisor" className="mt-6">
+                <PoliceSupervisorGuide />
+              </TabsContent>
+              
+              <TabsContent value="police-admin" className="mt-6">
+                <PoliceAdminGuide />
+              </TabsContent>
+              
+              <TabsContent value="car-verifier" className="mt-6">
+                <CARVerifierGuide />
+              </TabsContent>
+              
+              <TabsContent value="car-admin" className="mt-6">
+                <CARAdminGuide />
               </TabsContent>
             </Tabs>
           </TabsContent>
