@@ -33,21 +33,23 @@ const ProcessFlowDiagramPDFEnglish: React.FC = () => {
     pdf.setFont('helvetica', 'normal');
     
     const narSteps = [
-      'START → Field Agent identifies new location',
+      'START → Citizen or authority submits address request',
       '↓',
-      'DATA CAPTURE → GPS coordinates, photographs, description',
+      'DATA CAPTURE → GPS coordinates, photographs, justification, documents',
       '↓', 
-      'UAC GENERATION → System generates Unique Address Code',
+      'AUTO-VERIFICATION → Coordinate validation, photo quality, duplicates',
       '↓',
-      'VALIDATION → Automatic verification of coordinates and duplicates',
+      'FLAGGING → System flags for standard or manual review',
       '↓',
-      'MANUAL REVIEW → Verifier reviews data quality',
+      'VERIFIER REVIEW → Verifier reviews in queue, approves/rejects/edits',
       '↓',
-      'APPROVAL → Registrar approves inclusion in NAR',
+      'APPROVAL → Creates address record via approve_address_request()',
       '↓',
-      'PUBLICATION → Address becomes publicly available',
+      'UAC GENERATION → System generates UAC using generate_unified_uac_unique()',
       '↓',
-      'END → Address active in the system'
+      'PUBLICATION → Registrar sets verified=true and public=true',
+      '↓',
+      'END → Address searchable, available for emergencies and CAR'
     ];
 
     narSteps.forEach(step => {
@@ -72,23 +74,25 @@ const ProcessFlowDiagramPDFEnglish: React.FC = () => {
     pdf.setFont('helvetica', 'normal');
 
     const carSteps = [
-      'START → Citizen accesses CAR portal',
+      'START → Citizen accesses CitizenAddressVerificationManager',
       '↓',
-      'AUTHENTICATION → Login with credentials or new registration',
+      'PERSON RECORD → System creates/loads person record linked to auth.uid()',
       '↓',
-      'DECLARATION → Citizen declares residence address',
+      'ACTION SELECTION → Set Primary/Add Secondary/Request Verification',
       '↓',
-      'UAC SEARCH → System searches corresponding UAC in NAR',
+      'UAC INPUT → Citizen enters UAC from NAR (must exist)',
       '↓',
-      'VALIDATION → Verification of personal data and address',
+      'SCOPE SELECTION → DWELLING (whole property) or UNIT (specific unit)',
       '↓',
-      'INITIAL STATUS → Address marked as "SELF_DECLARED"',
+      'RPC EXECUTION → set_primary_address() or add_secondary_address()',
       '↓',
-      'VERIFICATION → Confirmation process by authorities',
+      'STATUS → Address created with status "SELF_DECLARED"',
       '↓',
-      'APPROVAL/REJECTION → Final status "CONFIRMED" or "REJECTED"',
+      'VERIFIER REVIEW → CAR verifiers review in queue',
       '↓',
-      'END → Address registered in citizen profile'
+      'STATUS UPDATE → set_citizen_address_status() to CONFIRMED/REJECTED',
+      '↓',
+      'END → Active in citizen profile with effective dates'
     ];
 
     carSteps.forEach(step => {
@@ -114,27 +118,33 @@ const ProcessFlowDiagramPDFEnglish: React.FC = () => {
     pdf.setFont('helvetica', 'normal');
 
     const emergencySteps = [
-      'START → Citizen reports emergency',
+      'START → Reporter submits via EmergencyDispatchDialog',
       '↓',
-      'RECEPTION → System receives alert (call, SMS, app)',
+      'INCIDENT CREATION → Generates INC-[timestamp] number',
       '↓',
-      'CLASSIFICATION → Emergency type and priority',
+      'DATA ENCRYPTION → decrypt-incident-data edge function encrypts data',
       '↓',
-      'LOCATION → Identification of nearest UAC',
+      'STATUS: REPORTED → Initial incident status in emergency_incidents table',
       '↓',
-      'ENCRYPTION → Sensitive data encrypted for security',
+      'OPERATOR NOTIFICATION → notify-emergency-operators edge function',
       '↓',
-      'ASSIGNMENT → System assigns available dispatcher',
+      'OPERATOR ASSIGNMENT → Dispatcher assigns to operator',
       '↓',
-      'NOTIFICATION → Alert to emergency units',
+      'UNIT ASSIGNMENT → Operator assigns units, status: ASSIGNED',
       '↓',
-      'DISPATCH → Units proceed to location',
+      'UNIT NOTIFICATION → notify-unit-assignment edge function',
       '↓',
-      'TRACKING → Real-time incident monitoring',
+      'STATUS: RESPONDING → Unit en route, GPS tracking active',
       '↓',
-      'RESOLUTION → Incident closure and final report',
+      'STATUS: ON_SCENE → Unit arrives, responded_at timestamp',
       '↓',
-      'END → Incident resolved and documented'
+      'BACKUP (if needed) → process-backup-request via BackupNotificationManager',
+      '↓',
+      'STATUS: RESOLVED → Officer completes report, resolved_at timestamp',
+      '↓',
+      'STATUS: CLOSED → Final documentation, analytics updated',
+      '↓',
+      'END → notify-incident-reporter edge function notifies reporter'
     ];
 
     emergencySteps.forEach(step => {
@@ -159,12 +169,14 @@ const ProcessFlowDiagramPDFEnglish: React.FC = () => {
     pdf.setFont('helvetica', 'normal');
 
     const integrationFlow = [
-      '• NAR provides verified address base for CAR',
-      '• CAR feeds NAR with citizen address reports',
-      '• Emergencies use NAR UACs for precise location',
-      '• CAR provides resident data for emergency contact',
-      '• Unified authentication system across modules',
-      '• Integrated dashboards for authorities and administrators'
+      '• CAR requires valid NAR UACs (foreign key relationship)',
+      '• Emergency incidents reference NAR addresses via incident_uac',
+      '• Citizen addresses link to person records via person_id',
+      '• Person records link to auth users via auth_user_id',
+      '• Unified RLS policies use has_role() function across all modules',
+      '• Emergency units track location for nearest-unit assignment',
+      '• Quality metrics track coverage and verification rates',
+      '• Edge functions provide secure processing and notifications'
     ];
 
     integrationFlow.forEach(item => {
@@ -184,13 +196,17 @@ const ProcessFlowDiagramPDFEnglish: React.FC = () => {
     pdf.setFont('helvetica', 'normal');
 
     const roles = [
-      'FIELD AGENT → Captures addresses in the field',
-      'VERIFIER → Validates address data quality',
-      'REGISTRAR → Approves inclusion in national registry',
-      'CITIZEN → Declares and maintains their addresses',
-      'DISPATCHER → Manages emergencies and coordinates response',
-      'EMERGENCY UNIT → Responds to incidents',
-      'ADMINISTRATOR → Supervises system and users'
+      'ADMIN → Full system access, manages users and configuration',
+      'REGISTRAR → Publishes addresses, manages NAR authorities',
+      'VERIFIER → Reviews and approves NAR address requests',
+      'CITIZEN → Submits address requests, declares CAR addresses',
+      'CAR_ADMIN → Manages CAR permissions and quality metrics',
+      'CAR_VERIFIER → Reviews and verifies citizen address declarations',
+      'POLICE_ADMIN → Manages police system and units',
+      'POLICE_SUPERVISOR → Manages units and geographic coverage',
+      'POLICE_OPERATOR → Responds to incidents, unit member',
+      'POLICE_DISPATCHER → Assigns incidents to units',
+      'NAR_AUTHORITY → Can create/verify/update addresses (regional scope)'
     ];
 
     roles.forEach(role => {
@@ -210,12 +226,14 @@ const ProcessFlowDiagramPDFEnglish: React.FC = () => {
     pdf.setFont('helvetica', 'normal');
 
     const slaMetrics = [
-      'NAR Registration → Maximum 48 hours from capture',
-      'CAR Verification → Maximum 5 business days',
-      'Critical Emergency Response → Maximum 3 minutes',
-      'Normal Emergency Response → Maximum 15 minutes',
-      'System Availability → 99.5% uptime',
-      'Incident Resolution Time → According to protocol'
+      'Auto-verification → Immediate (coordinates, duplicates, photo quality)',
+      'Verifier Review → Address requests flagged within 24 hours',
+      'NAR Publication → Approved addresses published within 48 hours',
+      'CAR Verification → Citizen addresses reviewed within 5 business days',
+      'Critical Emergency → Operator notification < 1 minute, response varies by unit',
+      'Incident Tracking → Real-time GPS updates from units',
+      'Data Encryption → All sensitive emergency data encrypted at rest',
+      'System Availability → RLS policies enforce role-based access 24/7'
     ];
 
     slaMetrics.forEach(metric => {

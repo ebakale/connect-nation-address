@@ -119,52 +119,15 @@ const Documentation: React.FC = () => {
                 <CardContent>
                   <div className="flex flex-col gap-2">
                     {[
-                      { title: 'START', desc: 'Field Agent identifies new location', icon: '🚀' },
-                      { title: 'DATA CAPTURE', desc: 'GPS coordinates, photographs, description', icon: '📸' },
-                      { title: 'UAC GENERATION', desc: 'System generates Unique Address Code', icon: '🔢' },
-                      { title: 'AUTO VALIDATION', desc: 'Automatic verification of coordinates and duplicates', icon: '✓' },
-                      { title: 'MANUAL REVIEW', desc: 'Verifier reviews data quality', icon: '👁️' },
-                      { title: 'APPROVAL', desc: 'Registrar approves inclusion in NAR', icon: '✅' },
-                      { title: 'PUBLICATION', desc: 'Address becomes publicly available', icon: '🌐' },
-                      { title: 'END', desc: 'Address active in the system', icon: '🎯' }
-                    ].map((step, idx) => (
-                      <div key={idx}>
-                        <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-lg">
-                          <div className="text-2xl">{step.icon}</div>
-                          <div className="flex-1">
-                            <div className="font-semibold text-sm">{step.title}</div>
-                            <div className="text-xs text-muted-foreground">{step.desc}</div>
-                          </div>
-                        </div>
-                        {idx < 7 && (
-                          <div className="flex justify-center py-1">
-                            <div className="text-muted-foreground">↓</div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* CAR Process Diagram */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-primary">CAR Process - Citizen Address Repository</CardTitle>
-                  <CardDescription>Citizen address declaration and verification workflow</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-col gap-2">
-                    {[
-                      { title: 'START', desc: 'Citizen accesses CAR portal', icon: '🚀' },
-                      { title: 'AUTHENTICATION', desc: 'Login or new registration', icon: '🔐' },
-                      { title: 'DECLARATION', desc: 'Citizen declares residence address', icon: '📝' },
-                      { title: 'UAC SEARCH', desc: 'System searches corresponding UAC in NAR', icon: '🔍' },
-                      { title: 'VALIDATION', desc: 'Verification of personal data and address', icon: '✓' },
-                      { title: 'SELF-DECLARED', desc: 'Address marked as "SELF_DECLARED"', icon: '⏳' },
-                      { title: 'VERIFICATION', desc: 'Confirmation process by authorities', icon: '👁️' },
-                      { title: 'FINAL STATUS', desc: 'Status "CONFIRMED" or "REJECTED"', icon: '✅' },
-                      { title: 'END', desc: 'Address registered in citizen profile', icon: '🎯' }
+                      { title: 'START', desc: 'Citizen/authority submits address request', icon: '🚀' },
+                      { title: 'DATA CAPTURE', desc: 'GPS coordinates, photos, justification, documents', icon: '📸' },
+                      { title: 'AUTO-VERIFICATION', desc: 'Coordinate validation, photo quality, duplicates', icon: '🤖' },
+                      { title: 'FLAGGING', desc: 'System flags for standard or manual review', icon: '🚩' },
+                      { title: 'VERIFIER REVIEW', desc: 'Verifier reviews in queue, approves/rejects/edits', icon: '👁️' },
+                      { title: 'APPROVAL', desc: 'Creates address via approve_address_request() RPC', icon: '✅' },
+                      { title: 'UAC GENERATION', desc: 'System generates UAC using generate_unified_uac_unique()', icon: '🔢' },
+                      { title: 'PUBLICATION', desc: 'Registrar sets verified=true and public=true', icon: '🌐' },
+                      { title: 'END', desc: 'Address searchable, available for emergencies and CAR', icon: '🎯' }
                     ].map((step, idx) => (
                       <div key={idx}>
                         <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-lg">
@@ -185,26 +148,25 @@ const Documentation: React.FC = () => {
                 </CardContent>
               </Card>
 
-              {/* Emergency Management Diagram */}
+              {/* CAR Process Diagram */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-primary">Emergency Management Process</CardTitle>
-                  <CardDescription>Incident reporting and response workflow</CardDescription>
+                  <CardTitle className="text-primary">CAR Process - Citizen Address Repository</CardTitle>
+                  <CardDescription>Citizen address declaration and verification workflow</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-col gap-2">
                     {[
-                      { title: 'START', desc: 'Citizen reports emergency', icon: '🚨' },
-                      { title: 'RECEPTION', desc: 'System receives alert (call, SMS, app)', icon: '📞' },
-                      { title: 'CLASSIFICATION', desc: 'Emergency type and priority', icon: '🏷️' },
-                      { title: 'LOCATION', desc: 'Identification of nearest UAC', icon: '📍' },
-                      { title: 'ENCRYPTION', desc: 'Sensitive data encrypted for security', icon: '🔒' },
-                      { title: 'ASSIGNMENT', desc: 'System assigns available dispatcher', icon: '👤' },
-                      { title: 'NOTIFICATION', desc: 'Alert to emergency units', icon: '🔔' },
-                      { title: 'DISPATCH', desc: 'Units proceed to location', icon: '🚔' },
-                      { title: 'TRACKING', desc: 'Real-time incident monitoring', icon: '📊' },
-                      { title: 'RESOLUTION', desc: 'Incident closure and final report', icon: '✅' },
-                      { title: 'END', desc: 'Incident resolved and documented', icon: '🎯' }
+                      { title: 'START', desc: 'Citizen accesses CitizenAddressVerificationManager', icon: '🚀' },
+                      { title: 'PERSON RECORD', desc: 'System creates/loads person record linked to auth.uid()', icon: '👤' },
+                      { title: 'ACTION SELECTION', desc: 'Set Primary/Add Secondary/Request Verification', icon: '📝' },
+                      { title: 'UAC INPUT', desc: 'Citizen enters UAC from NAR (must exist)', icon: '🔍' },
+                      { title: 'SCOPE SELECTION', desc: 'DWELLING (whole property) or UNIT (specific unit)', icon: '🏠' },
+                      { title: 'RPC EXECUTION', desc: 'set_primary_address() or add_secondary_address()', icon: '⚙️' },
+                      { title: 'STATUS', desc: 'Address created with status "SELF_DECLARED"', icon: '⏳' },
+                      { title: 'VERIFIER REVIEW', desc: 'CAR verifiers review in queue', icon: '👁️' },
+                      { title: 'STATUS UPDATE', desc: 'set_citizen_address_status() to CONFIRMED/REJECTED', icon: '✅' },
+                      { title: 'END', desc: 'Active in citizen profile with effective dates', icon: '🎯' }
                     ].map((step, idx) => (
                       <div key={idx}>
                         <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-lg">
@@ -214,7 +176,50 @@ const Documentation: React.FC = () => {
                             <div className="text-xs text-muted-foreground">{step.desc}</div>
                           </div>
                         </div>
-                        {idx < 10 && (
+                        {idx < 9 && (
+                          <div className="flex justify-center py-1">
+                            <div className="text-muted-foreground">↓</div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Emergency Management Diagram */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-primary">Emergency Management Process</CardTitle>
+                  <CardDescription>Incident reporting and response workflow</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-2">
+                    {[
+                      { title: 'START', desc: 'Reporter submits via EmergencyDispatchDialog', icon: '🚨' },
+                      { title: 'INCIDENT CREATION', desc: 'Generates INC-[timestamp] number', icon: '📋' },
+                      { title: 'DATA ENCRYPTION', desc: 'decrypt-incident-data edge function encrypts data', icon: '🔒' },
+                      { title: 'STATUS: REPORTED', desc: 'Initial incident status in emergency_incidents table', icon: '📝' },
+                      { title: 'OPERATOR NOTIFICATION', desc: 'notify-emergency-operators edge function', icon: '🔔' },
+                      { title: 'OPERATOR ASSIGNMENT', desc: 'Dispatcher assigns to operator', icon: '👤' },
+                      { title: 'UNIT ASSIGNMENT', desc: 'Operator assigns units, status: ASSIGNED', icon: '🚔' },
+                      { title: 'UNIT NOTIFICATION', desc: 'notify-unit-assignment edge function', icon: '📲' },
+                      { title: 'STATUS: RESPONDING', desc: 'Unit en route, GPS tracking active', icon: '🚗' },
+                      { title: 'STATUS: ON_SCENE', desc: 'Unit arrives, responded_at timestamp', icon: '📍' },
+                      { title: 'BACKUP (if needed)', desc: 'process-backup-request via BackupNotificationManager', icon: '🆘' },
+                      { title: 'STATUS: RESOLVED', desc: 'Officer completes report, resolved_at timestamp', icon: '✅' },
+                      { title: 'STATUS: CLOSED', desc: 'Final documentation, analytics updated', icon: '📊' },
+                      { title: 'END', desc: 'notify-incident-reporter notifies reporter', icon: '🎯' }
+                    ].map((step, idx) => (
+                      <div key={idx}>
+                        <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-lg">
+                          <div className="text-2xl">{step.icon}</div>
+                          <div className="flex-1">
+                            <div className="font-semibold text-sm">{step.title}</div>
+                            <div className="text-xs text-muted-foreground">{step.desc}</div>
+                          </div>
+                        </div>
+                        {idx < 13 && (
                           <div className="flex justify-center py-1">
                             <div className="text-muted-foreground">↓</div>
                           </div>

@@ -33,21 +33,23 @@ const ProcessFlowDiagramPDF: React.FC = () => {
     pdf.setFont('helvetica', 'normal');
     
     const narSteps = [
-      'INICIO → Agente de Campo identifica nueva ubicación',
+      'INICIO → Ciudadano o autoridad envía solicitud de dirección',
       '↓',
-      'CAPTURA DE DATOS → Coordenadas GPS, fotografías, descripción',
+      'CAPTURA DE DATOS → Coordenadas GPS, fotos, justificación, documentos',
       '↓', 
-      'GENERACIÓN UAC → Sistema genera Código Único de Dirección',
+      'AUTO-VERIFICACIÓN → Validación coordenadas, calidad foto, duplicados',
       '↓',
-      'VALIDACIÓN → Verificación automática de coordenadas y duplicados',
+      'MARCADO → Sistema marca para revisión estándar o manual',
       '↓',
-      'REVISIÓN MANUAL → Verificador revisa calidad de datos',
+      'REVISIÓN VERIFICADOR → Verifica en cola, aprueba/rechaza/edita',
       '↓',
-      'APROBACIÓN → Registrador aprueba inclusión en NAR',
+      'APROBACIÓN → Crea registro dirección via approve_address_request()',
       '↓',
-      'PUBLICACIÓN → Dirección disponible públicamente',
+      'GENERACIÓN UAC → Sistema genera UAC con generate_unified_uac_unique()',
       '↓',
-      'FIN → Dirección activa en el sistema'
+      'PUBLICACIÓN → Registrador establece verified=true y public=true',
+      '↓',
+      'FIN → Dirección buscable, disponible para emergencias y CAR'
     ];
 
     narSteps.forEach(step => {
@@ -72,23 +74,25 @@ const ProcessFlowDiagramPDF: React.FC = () => {
     pdf.setFont('helvetica', 'normal');
 
     const carSteps = [
-      'INICIO → Ciudadano accede al portal CAR',
+      'INICIO → Ciudadano accede a CitizenAddressVerificationManager',
       '↓',
-      'AUTENTICACIÓN → Login con credenciales o registro nuevo',
+      'REGISTRO PERSONA → Sistema crea/carga registro persona con auth.uid()',
       '↓',
-      'DECLARACIÓN → Ciudadano declara su dirección de residencia',
+      'SELECCIÓN ACCIÓN → Principal/Secundaria/Solicitar Verificación',
       '↓',
-      'BÚSQUEDA UAC → Sistema busca UAC correspondiente en NAR',
+      'ENTRADA UAC → Ciudadano ingresa UAC de NAR (debe existir)',
       '↓',
-      'VALIDACIÓN → Verificación de datos personales y dirección',
+      'SELECCIÓN ALCANCE → DWELLING (propiedad) o UNIT (unidad específica)',
       '↓',
-      'ESTADO INICIAL → Dirección marcada como "AUTODECLARADA"',
+      'EJECUCIÓN RPC → set_primary_address() o add_secondary_address()',
       '↓',
-      'VERIFICACIÓN → Proceso de confirmación por autoridades',
+      'ESTADO → Dirección creada con estado "SELF_DECLARED"',
       '↓',
-      'APROBACIÓN/RECHAZO → Estado final "CONFIRMADA" o "RECHAZADA"',
+      'REVISIÓN VERIFICADOR → Verificadores CAR revisan en cola',
       '↓',
-      'FIN → Dirección registrada en perfil ciudadano'
+      'ACTUALIZACIÓN ESTADO → set_citizen_address_status() a CONFIRMED/REJECTED',
+      '↓',
+      'FIN → Activa en perfil ciudadano con fechas efectivas'
     ];
 
     carSteps.forEach(step => {
@@ -114,27 +118,33 @@ const ProcessFlowDiagramPDF: React.FC = () => {
     pdf.setFont('helvetica', 'normal');
 
     const emergencySteps = [
-      'INICIO → Ciudadano reporta emergencia',
+      'INICIO → Reportante envía via EmergencyDispatchDialog',
       '↓',
-      'RECEPCIÓN → Sistema recibe alerta (llamada, SMS, app)',
+      'CREACIÓN INCIDENTE → Genera número INC-[timestamp]',
       '↓',
-      'CLASIFICACIÓN → Tipo y prioridad de emergencia',
+      'CIFRADO DATOS → decrypt-incident-data edge function encripta',
       '↓',
-      'LOCALIZACIÓN → Identificación de UAC más cercano',
+      'ESTADO: REPORTED → Estado inicial en tabla emergency_incidents',
       '↓',
-      'CIFRADO → Datos sensibles encriptados por seguridad',
+      'NOTIFICACIÓN OPERADOR → notify-emergency-operators edge function',
       '↓',
-      'ASIGNACIÓN → Sistema asigna despachador disponible',
+      'ASIGNACIÓN OPERADOR → Despachador asigna a operador',
       '↓',
-      'NOTIFICACIÓN → Alerta a unidades de emergencia',
+      'ASIGNACIÓN UNIDAD → Operador asigna unidades, estado: ASSIGNED',
       '↓',
-      'DESPACHO → Unidades se dirigen al lugar',
+      'NOTIFICACIÓN UNIDAD → notify-unit-assignment edge function',
       '↓',
-      'SEGUIMIENTO → Monitoreo en tiempo real del incidente',
+      'ESTADO: RESPONDING → Unidad en ruta, rastreo GPS activo',
       '↓',
-      'RESOLUCIÓN → Cierre del incidente y reporte final',
+      'ESTADO: ON_SCENE → Unidad llega, timestamp responded_at',
       '↓',
-      'FIN → Incidente resuelto y documentado'
+      'RESPALDO (si necesario) → process-backup-request via BackupNotificationManager',
+      '↓',
+      'ESTADO: RESOLVED → Oficial completa reporte, timestamp resolved_at',
+      '↓',
+      'ESTADO: CLOSED → Documentación final, analíticas actualizadas',
+      '↓',
+      'FIN → notify-incident-reporter edge function notifica reportante'
     ];
 
     emergencySteps.forEach(step => {
@@ -159,12 +169,14 @@ const ProcessFlowDiagramPDF: React.FC = () => {
     pdf.setFont('helvetica', 'normal');
 
     const integrationFlow = [
-      '• NAR proporciona base de direcciones verificadas para CAR',
-      '• CAR alimenta NAR con reportes ciudadanos de direcciones',
-      '• Emergencias utilizan UACs de NAR para localización precisa',
-      '• CAR proporciona datos de residentes para contacto en emergencias',
-      '• Sistema unificado de autenticación entre módulos',
-      '• Dashboards integrados para autoridades y administradores'
+      '• CAR requiere UACs NAR válidos (relación foreign key)',
+      '• Incidentes emergencia referencian direcciones NAR via incident_uac',
+      '• Direcciones ciudadanas vinculan a registros persona via person_id',
+      '• Registros persona vinculan a usuarios auth via auth_user_id',
+      '• Políticas RLS unificadas usan función has_role() en módulos',
+      '• Unidades emergencia rastrean ubicación para asignación cercana',
+      '• Métricas calidad rastrean cobertura y tasas de verificación',
+      '• Edge functions proveen procesamiento seguro y notificaciones'
     ];
 
     integrationFlow.forEach(item => {
@@ -184,13 +196,17 @@ const ProcessFlowDiagramPDF: React.FC = () => {
     pdf.setFont('helvetica', 'normal');
 
     const roles = [
-      'AGENTE DE CAMPO → Captura direcciones en terreno',
-      'VERIFICADOR → Valida calidad de datos de direcciones',
-      'REGISTRADOR → Aprueba inclusión en registro nacional',
-      'CIUDADANO → Declara y mantiene sus direcciones',
-      'DESPACHADOR → Gestiona emergencias y coordina respuesta',
-      'UNIDAD DE EMERGENCIA → Responde a incidentes',
-      'ADMINISTRADOR → Supervisa sistema y usuarios'
+      'ADMIN → Acceso completo sistema, gestiona usuarios y configuración',
+      'REGISTRAR → Publica direcciones, gestiona autoridades NAR',
+      'VERIFIER → Revisa y aprueba solicitudes direcciones NAR',
+      'CITIZEN → Envía solicitudes direcciones, declara direcciones CAR',
+      'CAR_ADMIN → Gestiona permisos CAR y métricas calidad',
+      'CAR_VERIFIER → Revisa y verifica declaraciones direcciones ciudadanos',
+      'POLICE_ADMIN → Gestiona sistema policial y unidades',
+      'POLICE_SUPERVISOR → Gestiona unidades y cobertura geográfica',
+      'POLICE_OPERATOR → Responde incidentes, miembro unidad',
+      'POLICE_DISPATCHER → Asigna incidentes a unidades',
+      'NAR_AUTHORITY → Puede crear/verificar/actualizar direcciones (alcance regional)'
     ];
 
     roles.forEach(role => {
@@ -210,12 +226,14 @@ const ProcessFlowDiagramPDF: React.FC = () => {
     pdf.setFont('helvetica', 'normal');
 
     const slaMetrics = [
-      'Registro NAR → Máximo 48 horas desde captura',
-      'Verificación CAR → Máximo 5 días hábiles',
-      'Respuesta Emergencia Crítica → Máximo 3 minutos',
-      'Respuesta Emergencia Normal → Máximo 15 minutos',
-      'Disponibilidad Sistema → 99.5% tiempo activo',
-      'Tiempo Resolución Incidentes → Según protocolo'
+      'Auto-verificación → Inmediata (coordenadas, duplicados, calidad foto)',
+      'Revisión Verificador → Solicitudes marcadas dentro de 24 horas',
+      'Publicación NAR → Direcciones aprobadas publicadas en 48 horas',
+      'Verificación CAR → Direcciones ciudadanas revisadas en 5 días hábiles',
+      'Emergencia Crítica → Notificación operador < 1 minuto, respuesta varía',
+      'Rastreo Incidentes → Actualizaciones GPS en tiempo real de unidades',
+      'Cifrado Datos → Todos datos sensibles emergencia cifrados en reposo',
+      'Disponibilidad Sistema → Políticas RLS aplican acceso basado en rol 24/7'
     ];
 
     slaMetrics.forEach(metric => {
