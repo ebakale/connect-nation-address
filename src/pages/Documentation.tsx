@@ -98,37 +98,123 @@ const Documentation: React.FC = () => {
               </Card>
             </div>
 
-            {/* Visual Preview Section */}
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle>Process Overview</CardTitle>
-                <CardDescription>
-                  Quick reference guide to main system workflows
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-4 md:grid-cols-3">
-                  <div className="p-4 border rounded-lg space-y-2">
-                    <div className="font-semibold text-primary">1. NAR Process</div>
-                    <p className="text-sm text-muted-foreground">
-                      Address creation workflow from citizen submission through auto-verification, manual review, and final publication
-                    </p>
+            {/* Visual Process Flow Diagrams */}
+            <div className="grid gap-6 mt-6">
+              {/* NAR Process Diagram */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-primary">NAR Process - National Address Registry</CardTitle>
+                  <CardDescription>Complete workflow from field capture to publication</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-2">
+                    {[
+                      { title: 'START', desc: 'Field Agent identifies new location', icon: '🚀' },
+                      { title: 'DATA CAPTURE', desc: 'GPS coordinates, photographs, description', icon: '📸' },
+                      { title: 'UAC GENERATION', desc: 'System generates Unique Address Code', icon: '🔢' },
+                      { title: 'AUTO VALIDATION', desc: 'Automatic verification of coordinates and duplicates', icon: '✓' },
+                      { title: 'MANUAL REVIEW', desc: 'Verifier reviews data quality', icon: '👁️' },
+                      { title: 'APPROVAL', desc: 'Registrar approves inclusion in NAR', icon: '✅' },
+                      { title: 'PUBLICATION', desc: 'Address becomes publicly available', icon: '🌐' },
+                      { title: 'END', desc: 'Address active in the system', icon: '🎯' }
+                    ].map((step, idx) => (
+                      <div key={idx}>
+                        <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-lg">
+                          <div className="text-2xl">{step.icon}</div>
+                          <div className="flex-1">
+                            <div className="font-semibold text-sm">{step.title}</div>
+                            <div className="text-xs text-muted-foreground">{step.desc}</div>
+                          </div>
+                        </div>
+                        {idx < 7 && (
+                          <div className="flex justify-center py-1">
+                            <div className="text-muted-foreground">↓</div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                  <div className="p-4 border rounded-lg space-y-2">
-                    <div className="font-semibold text-primary">2. CAR Process</div>
-                    <p className="text-sm text-muted-foreground">
-                      Citizen address declaration and verification workflow with self-declaration and confirmation steps
-                    </p>
+                </CardContent>
+              </Card>
+
+              {/* CAR Process Diagram */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-primary">CAR Process - Citizen Address Repository</CardTitle>
+                  <CardDescription>Citizen address declaration and verification workflow</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-2">
+                    {[
+                      { title: 'START', desc: 'Citizen accesses CAR portal', icon: '🚀' },
+                      { title: 'AUTHENTICATION', desc: 'Login or new registration', icon: '🔐' },
+                      { title: 'DECLARATION', desc: 'Citizen declares residence address', icon: '📝' },
+                      { title: 'UAC SEARCH', desc: 'System searches corresponding UAC in NAR', icon: '🔍' },
+                      { title: 'VALIDATION', desc: 'Verification of personal data and address', icon: '✓' },
+                      { title: 'SELF-DECLARED', desc: 'Address marked as "SELF_DECLARED"', icon: '⏳' },
+                      { title: 'VERIFICATION', desc: 'Confirmation process by authorities', icon: '👁️' },
+                      { title: 'FINAL STATUS', desc: 'Status "CONFIRMED" or "REJECTED"', icon: '✅' },
+                      { title: 'END', desc: 'Address registered in citizen profile', icon: '🎯' }
+                    ].map((step, idx) => (
+                      <div key={idx}>
+                        <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-lg">
+                          <div className="text-2xl">{step.icon}</div>
+                          <div className="flex-1">
+                            <div className="font-semibold text-sm">{step.title}</div>
+                            <div className="text-xs text-muted-foreground">{step.desc}</div>
+                          </div>
+                        </div>
+                        {idx < 8 && (
+                          <div className="flex justify-center py-1">
+                            <div className="text-muted-foreground">↓</div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                  <div className="p-4 border rounded-lg space-y-2">
-                    <div className="font-semibold text-primary">3. Emergency Management</div>
-                    <p className="text-sm text-muted-foreground">
-                      Incident reporting and response workflow with real-time dispatch and tracking
-                    </p>
+                </CardContent>
+              </Card>
+
+              {/* Emergency Management Diagram */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-primary">Emergency Management Process</CardTitle>
+                  <CardDescription>Incident reporting and response workflow</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-2">
+                    {[
+                      { title: 'START', desc: 'Citizen reports emergency', icon: '🚨' },
+                      { title: 'RECEPTION', desc: 'System receives alert (call, SMS, app)', icon: '📞' },
+                      { title: 'CLASSIFICATION', desc: 'Emergency type and priority', icon: '🏷️' },
+                      { title: 'LOCATION', desc: 'Identification of nearest UAC', icon: '📍' },
+                      { title: 'ENCRYPTION', desc: 'Sensitive data encrypted for security', icon: '🔒' },
+                      { title: 'ASSIGNMENT', desc: 'System assigns available dispatcher', icon: '👤' },
+                      { title: 'NOTIFICATION', desc: 'Alert to emergency units', icon: '🔔' },
+                      { title: 'DISPATCH', desc: 'Units proceed to location', icon: '🚔' },
+                      { title: 'TRACKING', desc: 'Real-time incident monitoring', icon: '📊' },
+                      { title: 'RESOLUTION', desc: 'Incident closure and final report', icon: '✅' },
+                      { title: 'END', desc: 'Incident resolved and documented', icon: '🎯' }
+                    ].map((step, idx) => (
+                      <div key={idx}>
+                        <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-lg">
+                          <div className="text-2xl">{step.icon}</div>
+                          <div className="flex-1">
+                            <div className="font-semibold text-sm">{step.title}</div>
+                            <div className="text-xs text-muted-foreground">{step.desc}</div>
+                          </div>
+                        </div>
+                        {idx < 10 && (
+                          <div className="flex justify-center py-1">
+                            <div className="text-muted-foreground">↓</div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* Technical Documentation */}
