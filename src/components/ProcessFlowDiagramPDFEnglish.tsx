@@ -90,7 +90,12 @@ const ProcessFlowDiagramPDFEnglish: React.FC = () => {
       '↓',
       'STATUS → Address created with status "SELF_DECLARED"',
       '↓',
-      'VERIFIER REVIEW → CAR verifiers review in queue',
+      'AUTO-APPROVAL CHECK → Does UAC reference verified NAR address?',
+      '↓ YES',
+      'AUTO-VERIFY → trigger_auto_approve_citizen_address() sets CONFIRMED',
+      '↓ (Event logged via log_auto_approval_event())',
+      '↓ NO',
+      'VERIFIER REVIEW → CAR verifiers review in manual queue',
       '↓',
       'STATUS UPDATE → set_citizen_address_status() to CONFIRMED/REJECTED',
       '↓',
@@ -130,9 +135,12 @@ const ProcessFlowDiagramPDFEnglish: React.FC = () => {
       '↓',
       'OPERATOR NOTIFICATION → notify-emergency-operators edge function',
       '↓',
-      'OPERATOR ASSIGNMENT → Dispatcher assigns to operator',
+      'OPERATOR ASSIGNMENT → Dispatcher reviews and prepares assignment',
       '↓',
-      'UNIT ASSIGNMENT → Operator assigns units, status: ASSIGNED',
+      'UNIT ASSIGNMENT → Operator assigns units to incident',
+      '↓',
+      'AUTO-STATUS UPDATE → auto_update_incident_status() sets DISPATCHED',
+      '↓ (dispatched_at timestamp recorded)',
       '↓',
       'UNIT NOTIFICATION → notify-unit-assignment edge function',
       '↓',
@@ -199,16 +207,17 @@ const ProcessFlowDiagramPDFEnglish: React.FC = () => {
 
     const roles = [
       'ADMIN → Full system access, manages users and configuration',
-      'REGISTRAR → Publishes addresses, manages NAR authorities',
-      'VERIFIER → Reviews and approves NAR address requests',
+      'REGISTRAR → Publishes addresses (sets public=true), manages NAR authorities',
+      'VERIFIER → Reviews and approves NAR requests (sets verified=true)',
       'CITIZEN → Submits address requests, declares CAR addresses',
-      'CAR_ADMIN → Manages CAR permissions and quality metrics',
-      'CAR_VERIFIER → Reviews and verifies citizen address declarations',
+      'CAR_ADMIN → Manages CAR permissions via car_permissions table',
+      'CAR_VERIFIER → Reviews citizen addresses, has_car_permission() checks',
       'POLICE_ADMIN → Manages police system and units',
       'POLICE_SUPERVISOR → Manages units and geographic coverage',
       'POLICE_OPERATOR → Responds to incidents, unit member',
       'POLICE_DISPATCHER → Assigns incidents to units',
-      'NAR_AUTHORITY → Can create/verify/update addresses (regional scope)'
+      'NAR_AUTHORITY → Can create/verify addresses (regional scope)',
+      'EMERGENCY_DISPATCHER → Specialized dispatcher role for critical incidents'
     ];
 
     roles.forEach(role => {
@@ -229,10 +238,12 @@ const ProcessFlowDiagramPDFEnglish: React.FC = () => {
 
     const slaMetrics = [
       'Auto-verification → Immediate (coordinates, duplicates, photo quality)',
-      'Verifier Review → Address requests flagged within 24 hours',
-      'NAR Publication → Approved addresses published within 48 hours',
-      'CAR Verification → Citizen addresses reviewed within 5 business days',
-      'Critical Emergency → Operator notification < 1 minute, response varies by unit',
+      'Verifier Review → Address requests reviewed within 24 hours',
+      'NAR Publication → Approved addresses (verified=true) published within 48 hours',
+      'CAR Auto-Approval → Instant if UAC references verified NAR address',
+      'CAR Manual Review → Citizen addresses reviewed within 5 business days',
+      'Critical Emergency → Operator notification < 1 minute',
+      'Unit Dispatch → Auto-status to DISPATCHED when units assigned',
       'Incident Tracking → Real-time GPS updates from units',
       'Data Encryption → All sensitive emergency data encrypted at rest',
       'System Availability → RLS policies enforce role-based access 24/7'

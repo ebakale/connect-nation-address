@@ -90,7 +90,12 @@ const ProcessFlowDiagramPDF: React.FC = () => {
       '↓',
       'ESTADO → Dirección creada con estado "SELF_DECLARED"',
       '↓',
-      'REVISIÓN VERIFICADOR → Verificadores CAR revisan en cola',
+      'VERIFICACIÓN AUTO → ¿UAC referencia dirección NAR verificada?',
+      '↓ SÍ',
+      'AUTO-VERIFICAR → trigger_auto_approve_citizen_address() establece CONFIRMED',
+      '↓ (Evento registrado via log_auto_approval_event())',
+      '↓ NO',
+      'REVISIÓN VERIFICADOR → Verificadores CAR revisan en cola manual',
       '↓',
       'ACTUALIZACIÓN ESTADO → set_citizen_address_status() a CONFIRMED/REJECTED',
       '↓',
@@ -130,9 +135,12 @@ const ProcessFlowDiagramPDF: React.FC = () => {
       '↓',
       'NOTIFICACIÓN OPERADOR → notify-emergency-operators edge function',
       '↓',
-      'ASIGNACIÓN OPERADOR → Despachador asigna a operador',
+      'ASIGNACIÓN OPERADOR → Despachador revisa y prepara asignación',
       '↓',
-      'ASIGNACIÓN UNIDAD → Operador asigna unidades, estado: ASSIGNED',
+      'ASIGNACIÓN UNIDAD → Operador asigna unidades al incidente',
+      '↓',
+      'ACTUALIZACIÓN AUTO-ESTADO → auto_update_incident_status() establece DISPATCHED',
+      '↓ (timestamp dispatched_at registrado)',
       '↓',
       'NOTIFICACIÓN UNIDAD → notify-unit-assignment edge function',
       '↓',
@@ -199,16 +207,17 @@ const ProcessFlowDiagramPDF: React.FC = () => {
 
     const roles = [
       'ADMIN → Acceso completo sistema, gestiona usuarios y configuración',
-      'REGISTRAR → Publica direcciones, gestiona autoridades NAR',
-      'VERIFIER → Revisa y aprueba solicitudes direcciones NAR',
+      'REGISTRAR → Publica direcciones (establece public=true), gestiona autoridades NAR',
+      'VERIFIER → Revisa y aprueba solicitudes NAR (establece verified=true)',
       'CITIZEN → Envía solicitudes direcciones, declara direcciones CAR',
-      'CAR_ADMIN → Gestiona permisos CAR y métricas calidad',
-      'CAR_VERIFIER → Revisa y verifica declaraciones direcciones ciudadanos',
+      'CAR_ADMIN → Gestiona permisos CAR via tabla car_permissions',
+      'CAR_VERIFIER → Revisa direcciones ciudadanos, verificaciones has_car_permission()',
       'POLICE_ADMIN → Gestiona sistema policial y unidades',
       'POLICE_SUPERVISOR → Gestiona unidades y cobertura geográfica',
       'POLICE_OPERATOR → Responde incidentes, miembro unidad',
       'POLICE_DISPATCHER → Asigna incidentes a unidades',
-      'NAR_AUTHORITY → Puede crear/verificar/actualizar direcciones (alcance regional)'
+      'NAR_AUTHORITY → Puede crear/verificar direcciones (alcance regional)',
+      'EMERGENCY_DISPATCHER → Rol despachador especializado para incidentes críticos'
     ];
 
     roles.forEach(role => {
@@ -229,10 +238,12 @@ const ProcessFlowDiagramPDF: React.FC = () => {
 
     const slaMetrics = [
       'Auto-verificación → Inmediata (coordenadas, duplicados, calidad foto)',
-      'Revisión Verificador → Solicitudes marcadas dentro de 24 horas',
-      'Publicación NAR → Direcciones aprobadas publicadas en 48 horas',
-      'Verificación CAR → Direcciones ciudadanas revisadas en 5 días hábiles',
-      'Emergencia Crítica → Notificación operador < 1 minuto, respuesta varía',
+      'Revisión Verificador → Solicitudes revisadas dentro de 24 horas',
+      'Publicación NAR → Direcciones aprobadas (verified=true) publicadas en 48 horas',
+      'Auto-Aprobación CAR → Instantánea si UAC referencia dirección NAR verificada',
+      'Revisión Manual CAR → Direcciones ciudadanas revisadas en 5 días hábiles',
+      'Emergencia Crítica → Notificación operador < 1 minuto',
+      'Despacho Unidad → Auto-estado a DISPATCHED cuando unidades asignadas',
       'Rastreo Incidentes → Actualizaciones GPS en tiempo real de unidades',
       'Cifrado Datos → Todos datos sensibles emergencia cifrados en reposo',
       'Disponibilidad Sistema → Políticas RLS aplican acceso basado en rol 24/7'
