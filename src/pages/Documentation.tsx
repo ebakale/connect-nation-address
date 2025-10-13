@@ -58,18 +58,18 @@ const Documentation: React.FC = () => {
                     Process Flow Diagrams (English)
                   </CardTitle>
                   <CardDescription>
-                    Complete workflow documentation for NAR, CAR, and Emergency Management processes in English
+                    Complete workflow documentation for NAR, CAR, and Emergency Management - verified against actual implementation (updated Jan 2025)
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <h4 className="font-semibold">Includes:</h4>
                     <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                      <li>NAR Process - National Address Registry</li>
-                      <li>CAR Process - Citizen Address Repository</li>
-                      <li>Emergency Management Process</li>
+                      <li>NAR Process - Verifier sets verified=true, Registrar sets public=true</li>
+                      <li>CAR Process - Auto-approval via trigger for verified NAR links</li>
+                      <li>Emergency Management - Auto-status to 'dispatched' on unit assignment</li>
                       <li>Module Integration Workflows</li>
-                      <li>Roles and Responsibilities</li>
+                      <li>Roles and Responsibilities (cross-referenced with RLS policies)</li>
                       <li>Performance Metrics (SLA)</li>
                     </ul>
                   </div>
@@ -123,11 +123,11 @@ const Documentation: React.FC = () => {
                       { title: 'DATA CAPTURE', desc: 'GPS coordinates, photos, justification, documents', icon: '📸' },
                       { title: 'AUTO-VERIFICATION', desc: 'Coordinate validation, photo quality, duplicates', icon: '🤖' },
                       { title: 'FLAGGING', desc: 'System flags for standard or manual review', icon: '🚩' },
-                      { title: 'VERIFIER REVIEW', desc: 'Verifier reviews in queue, approves/rejects/edits', icon: '👁️' },
-                      { title: 'APPROVAL', desc: 'Creates address via approve_address_request() RPC', icon: '✅' },
-                      { title: 'UAC GENERATION', desc: 'System generates UAC using generate_unified_uac_unique()', icon: '🔢' },
-                      { title: 'PUBLICATION', desc: 'Registrar sets verified=true and public=true', icon: '🌐' },
-                      { title: 'END', desc: 'Address searchable, available for emergencies and CAR', icon: '🎯' }
+                      { title: 'VERIFIER REVIEW', desc: 'Verifier reviews, sets verified=true', icon: '👁️' },
+                      { title: 'UAC GENERATION', desc: 'UAC auto-generated via generate_unified_uac_unique()', icon: '🔢' },
+                      { title: 'REGISTRAR APPROVAL', desc: 'Registrar sets public=true to publish', icon: '✅' },
+                      { title: 'PUBLICATION', desc: 'Address now in public NAR, searchable', icon: '🌐' },
+                      { title: 'END', desc: 'Available for emergencies and CAR linking', icon: '🎯' }
                     ].map((step, idx) => (
                       <div key={idx}>
                         <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-lg">
@@ -160,12 +160,13 @@ const Documentation: React.FC = () => {
                       { title: 'START', desc: 'Citizen accesses CitizenAddressVerificationManager', icon: '🚀' },
                       { title: 'PERSON RECORD', desc: 'System creates/loads person record linked to auth.uid()', icon: '👤' },
                       { title: 'ACTION SELECTION', desc: 'Set Primary/Add Secondary/Request Verification', icon: '📝' },
-                      { title: 'UAC INPUT', desc: 'Citizen enters UAC from NAR (must exist)', icon: '🔍' },
-                      { title: 'SCOPE SELECTION', desc: 'DWELLING (whole property) or UNIT (specific unit)', icon: '🏠' },
+                      { title: 'UAC INPUT', desc: 'Citizen enters UAC from verified NAR address', icon: '🔍' },
+                      { title: 'SCOPE SELECTION', desc: 'BUILDING (whole property) or UNIT (specific unit)', icon: '🏠' },
                       { title: 'RPC EXECUTION', desc: 'set_primary_address() or add_secondary_address()', icon: '⚙️' },
-                      { title: 'STATUS', desc: 'Address created with status "SELF_DECLARED"', icon: '⏳' },
-                      { title: 'VERIFIER REVIEW', desc: 'CAR verifiers review in queue', icon: '👁️' },
-                      { title: 'STATUS UPDATE', desc: 'set_citizen_address_status() to CONFIRMED/REJECTED', icon: '✅' },
+                      { title: 'AUTO-APPROVAL CHECK', desc: 'trigger_auto_approve_citizen_address() trigger', icon: '🤖' },
+                      { title: 'STATUS: SELF_DECLARED', desc: 'If NAR UAC verified → Auto CONFIRMED', icon: '✅' },
+                      { title: 'MANUAL REVIEW', desc: 'CAR verifiers review non-auto-approved', icon: '👁️' },
+                      { title: 'STATUS UPDATE', desc: 'set_citizen_address_status() to CONFIRMED/REJECTED', icon: '✔️' },
                       { title: 'END', desc: 'Active in citizen profile with effective dates', icon: '🎯' }
                     ].map((step, idx) => (
                       <div key={idx}>
@@ -176,7 +177,7 @@ const Documentation: React.FC = () => {
                             <div className="text-xs text-muted-foreground">{step.desc}</div>
                           </div>
                         </div>
-                        {idx < 9 && (
+                        {idx < 10 && (
                           <div className="flex justify-center py-1">
                             <div className="text-muted-foreground">↓</div>
                           </div>
@@ -197,18 +198,18 @@ const Documentation: React.FC = () => {
                   <div className="flex flex-col gap-2">
                     {[
                       { title: 'START', desc: 'Reporter submits via EmergencyDispatchDialog', icon: '🚨' },
-                      { title: 'INCIDENT CREATION', desc: 'Generates INC-[timestamp] number', icon: '📋' },
+                      { title: 'INCIDENT CREATION', desc: 'Generates INC-[year]-[sequence] number', icon: '📋' },
                       { title: 'DATA ENCRYPTION', desc: 'decrypt-incident-data edge function encrypts data', icon: '🔒' },
-                      { title: 'STATUS: REPORTED', desc: 'Initial incident status in emergency_incidents table', icon: '📝' },
+                      { title: 'STATUS: reported', desc: 'Initial incident status in emergency_incidents table', icon: '📝' },
                       { title: 'OPERATOR NOTIFICATION', desc: 'notify-emergency-operators edge function', icon: '🔔' },
-                      { title: 'OPERATOR ASSIGNMENT', desc: 'Dispatcher assigns to operator', icon: '👤' },
-                      { title: 'UNIT ASSIGNMENT', desc: 'Operator assigns units, status: ASSIGNED', icon: '🚔' },
+                      { title: 'DISPATCHER ASSIGNMENT', desc: 'Dispatcher reviews and assigns units', icon: '👤' },
+                      { title: 'UNIT ASSIGNMENT', desc: 'Units assigned to incident (assigned_units[] array)', icon: '🚔' },
+                      { title: 'AUTO-STATUS UPDATE', desc: 'Trigger sets status=dispatched when units assigned', icon: '⚡' },
                       { title: 'UNIT NOTIFICATION', desc: 'notify-unit-assignment edge function', icon: '📲' },
-                      { title: 'STATUS: RESPONDING', desc: 'Unit en route, GPS tracking active', icon: '🚗' },
-                      { title: 'STATUS: ON_SCENE', desc: 'Unit arrives, responded_at timestamp', icon: '📍' },
+                      { title: 'STATUS: responded', desc: 'Unit en route, responded_at timestamp set', icon: '🚗' },
+                      { title: 'STATUS: resolved', desc: 'Incident handled, resolved_at timestamp', icon: '✅' },
                       { title: 'BACKUP (if needed)', desc: 'process-backup-request via BackupNotificationManager', icon: '🆘' },
-                      { title: 'STATUS: RESOLVED', desc: 'Officer completes report, resolved_at timestamp', icon: '✅' },
-                      { title: 'STATUS: CLOSED', desc: 'Final documentation, analytics updated', icon: '📊' },
+                      { title: 'STATUS: closed', desc: 'Final documentation, closed_at timestamp', icon: '📊' },
                       { title: 'END', desc: 'notify-incident-reporter notifies reporter', icon: '🎯' }
                     ].map((step, idx) => (
                       <div key={idx}>
@@ -238,7 +239,7 @@ const Documentation: React.FC = () => {
               <CardHeader>
                 <CardTitle>Technical Documentation</CardTitle>
                 <CardDescription>
-                  Architecture, API documentation, and system specifications
+                  Comprehensive architecture, API documentation, and system specifications (verified Jan 2025)
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
