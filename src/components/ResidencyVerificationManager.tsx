@@ -298,7 +298,7 @@ export const ResidencyVerificationManager = () => {
             variant="outline"
             size="default"
           >
-            {loading ? t('common:loading') : t('common:refresh')}
+            {loading ? t('common:buttons.loading') : t('common:buttons.refresh')}
           </Button>
         </div>
       </div>
