@@ -395,5 +395,6 @@
   "rateLimitPerKey": "1000 solicitudes/hora por clave",
   "apiKeyPlaceholder": "ej., Clave API de Producción",
   "apiKey": "Clave API",
-  "lastUsed": "Último Uso"
+  "lastUsed": "Último Uso",
+  "permissions": "Permisos"
 }

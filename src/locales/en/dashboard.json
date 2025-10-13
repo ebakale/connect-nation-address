@@ -977,5 +977,6 @@
   "rateLimitPerKey": "1000 requests/hour per key",
   "apiKeyPlaceholder": "e.g., Production API Key",
   "apiKey": "API Key",
-  "lastUsed": "Last Used"
+  "lastUsed": "Last Used",
+  "permissions": "Permissions"
 }
