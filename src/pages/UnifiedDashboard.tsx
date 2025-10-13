@@ -169,7 +169,7 @@ const UnifiedDashboard = () => {
       } else if (isRegistrar && !hasAdminAccess) {
         // Registrars go to their dedicated dashboard unless they're also admins
         setActiveView('registrar-dashboard');
-      } else if (isResidencyVerifier) {
+      } else if (isResidencyVerifier || isVerifier) {
         setActiveView('residency-verification-manager');
       }
     }
