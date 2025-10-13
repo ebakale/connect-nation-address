@@ -79,11 +79,10 @@ Citizen-managed address declarations where residents can register their home and
 - QR code generation for address sharing
 
 **Verification Statuses**:
-- `SELF_DECLARED` - Initial citizen declaration
-- `PENDING_VERIFICATION` - Under government review
-- `CONFIRMED` - Verified by authorities
+- `SELF_DECLARED` - Initial citizen declaration (auto-approved if UAC exists in verified NAR)
+- `CONFIRMED` - Verified by authorities or auto-approved via NAR link
 - `REJECTED` - Verification denied
-- `ARCHIVED` - Historical record
+- Note: System automatically approves declarations linked to verified NAR addresses
 
 ### 3. Emergency Management Module
 Real-time incident management and dispatch coordination for police and emergency services.
@@ -134,11 +133,12 @@ Real-time incident management and dispatch coordination for police and emergency
 
 **Permissions**:
 - ✅ Review and verify draft addresses
-- ✅ Approve or flag for corrections
+- ✅ Set verified=true via approve_address_request()
 - ✅ Detect and merge duplicates
 - ✅ Access photo evidence
+- ✅ Flag addresses for review
 - ✅ Create quality reports
-- ❌ Cannot publish to public registry
+- ❌ Cannot set public=true (publishing is Registrar role)
 
 **Geographic Scope**: Province-level access
 **Primary Dashboard**: Verifier Dashboard (`/verifier`)
@@ -147,12 +147,13 @@ Real-time incident management and dispatch coordination for police and emergency
 **Purpose**: Final approval and publication authority
 
 **Permissions**:
-- ✅ Publish verified addresses to NAR
-- ✅ Unpublish addresses when needed
-- ✅ All Verifier permissions
+- ✅ Set public=true to publish verified addresses to NAR
+- ✅ Unpublish addresses when needed (set public=false)
+- ✅ All Verifier permissions (includes setting verified=true)
 - ✅ Manage provincial address hierarchy
 - ✅ Override verification decisions
 - ✅ Generate official reports
+- ✅ Approve address requests (includes verification + publication)
 
 **Geographic Scope**: Province-level authority
 **Primary Dashboard**: Registrar Dashboard (`/registrar`)
@@ -273,16 +274,16 @@ Real-time incident management and dispatch coordination for police and emergency
    - Validate GPS accuracy
    - Check for duplicates
    - Verify address completeness
-   - Approve or flag for corrections
-   - Forward to registrar
+   - Set verified=true via approve_address_request()
+   - Forward to registrar for publication
 
-3. APPROVAL (Registrar)
+3. PUBLICATION (Registrar)
    ↓
    - Final quality review
-   - Approve for publication
-   - Generate Unified Address Code (UAC)
-   - Publish to national registry
-   - Make publicly searchable
+   - Set public=true to publish to registry
+   - UAC already generated during verification
+   - Make publicly searchable via NAR
+   - Address now available for CAR linking
 
 4. PUBLICATION
    ↓
@@ -322,12 +323,12 @@ Real-time incident management and dispatch coordination for police and emergency
    - Add reviewer notes
    - Forward approved requests to registrar
 
-4. APPROVAL (Registrar)
+4. PUBLICATION (Registrar)
    ↓
    - Final quality review
-   - Approve for NAR publication
-   - Generate Unified Address Code (UAC)
-   - Publish to national registry
+   - Set public=true to publish address
+   - UAC already generated at approval
+   - Address now in public NAR registry
    - Status: APPROVED
 
 5. PUBLICATION
@@ -349,22 +350,23 @@ Real-time incident management and dispatch coordination for police and emergency
    - Login to citizen portal
    - Search for NAR verified address
    - Declare as primary or secondary residence
-   - Provide supporting information
-   - Submit verification request
+   - Provide supporting information (unit_uac for apartments)
+   - Submit declaration
    - Status: SELF_DECLARED
 
-2. VERIFICATION REQUEST
+2. AUTO-APPROVAL CHECK (System)
    ↓
-   - System flags address for verification
-   - Authorities receive notification
-   - Field verification scheduled (optional)
-   - Status: PENDING_VERIFICATION
+   - Function: trigger_auto_approve_citizen_address()
+   - Checks if UAC exists in verified NAR addresses
+   - If verified NAR match found → Auto-approve to CONFIRMED
+   - If no match → Status remains SELF_DECLARED
+   - Event logged via log_auto_approval_event()
 
-3. GOVERNMENT VERIFICATION
+3. MANUAL VERIFICATION (If not auto-approved)
    ↓
    - Verifier reviews declaration
    - Cross-reference with NAR data
-   - Validate residency claim
+   - Validate residency claim  
    - Approve or reject with reason
    - Status: CONFIRMED or REJECTED
 
@@ -410,7 +412,8 @@ Real-time incident management and dispatch coordination for police and emergency
    ↓
    - Accept assignment
    - Navigate to location using UAC
-   - Update status: EN_ROUTE → ARRIVED → IN_PROGRESS
+   - Status auto-updates to 'dispatched' via trigger when unit assigned
+   - Update status: responded → resolved as needed
    - Request backup if needed
    - Submit field updates
 
@@ -606,12 +609,15 @@ Real-time incident management and dispatch coordination for police and emergency
 
 3. **Make decision**
    - **Approve**: If all quality criteria met
+     - Calls approve_address_request() which sets verified=true
+     - Generates UAC automatically
+     - Address ready for Registrar to publish (set public=true)
    - **Flag for correction**: If issues found
      - Specify correction needed
      - Add reviewer notes
      - Send back to field agent
    - **Reject**: If fundamental issues
-     - Provide detailed reason
+     - Provide detailed reason via reject_address_request_with_feedback()
      - Document decision
 
 4. **Quality criteria**
@@ -712,36 +718,41 @@ Real-time incident management and dispatch coordination for police and emergency
 -- User management
 profiles (id, user_id, full_name, email, phone, created_at)
 user_roles (id, user_id, role, created_at)
-user_role_metadata (id, user_id, scope_type, scope_value)
+user_role_metadata (id, user_role_id, scope_type, scope_value)
 
 -- NAR module
-addresses (id, uac, coordinates, address_text, status, verified_at)
-address_requests (id, user_id, address_id, status, submitted_at)
-address_photos (id, address_id, photo_url, uploaded_at)
+addresses (id, uac, latitude, longitude, street, city, verified, public)
+address_requests (id, requester_id, latitude, longitude, status, reviewed_by)
 
 -- CAR module  
-citizen_addresses (id, user_id, address_id, verification_status, type)
-residency_verifications (id, citizen_address_id, verified_by, status)
+person (id, auth_user_id, national_id)
+citizen_address (id, person_id, uac, address_kind, scope, status)
+citizen_address_event (id, person_id, citizen_address_id, event_type)
 
 -- Emergency module
-emergency_incidents (id, type, priority, status, location, created_at)
-emergency_units (id, name, type, status, current_location)
-emergency_unit_members (id, unit_id, user_id, role)
-backup_requests (id, incident_id, requesting_unit, status)
+emergency_incidents (id, emergency_type, status, incident_number, assigned_units[])
+emergency_units (id, unit_name, unit_code, status, location_latitude)
+emergency_unit_members (id, unit_id, officer_id, role, is_lead)
 ```
 
 #### Security Functions
 ```sql
 -- Role checking
-has_role(user_id UUID, role_name TEXT) → BOOLEAN
-get_user_role(user_id UUID) → app_role
-has_role_with_scope(user_id UUID, role TEXT, scope_type TEXT, scope_value TEXT) → BOOLEAN
+has_role(_user_id UUID, _role app_role) → BOOLEAN
+get_user_role(_user_id UUID) → app_role
+has_role_with_scope(_user_id UUID, _role app_role, _scope_type TEXT, _scope_value TEXT) → BOOLEAN
+has_car_permission(_user_id UUID, _permission TEXT) → BOOLEAN
 
--- UAC generation
-generate_unified_uac_unique() → TEXT
+-- Address operations
+generate_unified_uac_unique(country, region, city, address_id) → TEXT
+approve_address_request(request_id, approved_by) → UUID
+approve_address_request_with_duplicate_check(request_id, approved_by, ignore_duplicates) → JSONB
 
--- Address search
-search_addresses_safely(query TEXT) → TABLE
+-- CAR operations
+add_secondary_address(person_id, scope, uac, unit_uac, source) → UUID
+set_citizen_address_status(address_id, status, actor_id) → VOID
+trigger_auto_approve_citizen_address() → TRIGGER
+log_auto_approval_event() → TRIGGER
 ```
 
 ### API Endpoints
