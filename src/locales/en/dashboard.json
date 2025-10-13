@@ -897,5 +897,8 @@
   "publishedAddresses": "Published Addresses",
   "addressesPublished": "Addresses published",
   "publishingQueueCount_one": "{{count}} address ready to publish",
-  "publishingQueueCount_other": "{{count}} addresses ready to publish"
+  "publishingQueueCount_other": "{{count}} addresses ready to publish",
+  "noExternalSystems": "No external systems configured",
+  "never": "Never",
+  "noHealthData": "No health monitoring data available"
 }

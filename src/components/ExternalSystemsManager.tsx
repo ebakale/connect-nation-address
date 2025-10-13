@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { supabase } from '@/integrations/supabase/client';
+import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -49,74 +51,82 @@ interface ExternalSystem {
 export const ExternalSystemsManager = () => {
   const { t } = useTranslation(['dashboard', 'common']);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
-  // Mock data - replace with actual external systems
-  const [systems, setSystems] = useState<ExternalSystem[]>([
-    {
-      id: '1',
-      name: 'Government Census Database',
-      type: 'database',
-      endpoint: 'https://census.gov.gq/api',
-      status: 'connected',
-      enabled: true,
-      lastSync: '2025-01-15 15:30',
-      authentication: 'OAuth 2.0'
+  // Fetch external systems from database
+  const { data: systems = [], isLoading } = useQuery({
+    queryKey: ['external-systems'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('external_systems')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      
+      // Map database fields to component interface
+      return (data || []).map((sys: any) => ({
+        id: sys.id,
+        name: sys.name,
+        type: sys.type,
+        endpoint: sys.endpoint,
+        status: sys.status,
+        enabled: sys.enabled,
+        lastSync: sys.last_sync,
+        authentication: sys.authentication
+      })) as ExternalSystem[];
     },
-    {
-      id: '2',
-      name: 'National ID System',
-      type: 'api',
-      endpoint: 'https://id.gov.gq/verify',
-      status: 'connected',
-      enabled: true,
-      lastSync: '2025-01-15 16:15',
-      authentication: 'API Key'
+  });
+
+  // Toggle system mutation
+  const toggleSystemMutation = useMutation({
+    mutationFn: async ({ id, enabled }: { id: string; enabled: boolean }) => {
+      const { error } = await supabase
+        .from('external_systems')
+        .update({ enabled })
+        .eq('id', id);
+      
+      if (error) throw error;
     },
-    {
-      id: '3',
-      name: 'Emergency Response Network',
-      type: 'service',
-      endpoint: 'https://emergency.gq/dispatch',
-      status: 'connected',
-      enabled: true,
-      lastSync: '2025-01-15 16:25',
-      authentication: 'mTLS'
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['external-systems'] });
+      toast({
+        title: t('common:success'),
+        description: t('dashboard:systemStatusUpdated'),
+      });
     },
-    {
-      id: '4',
-      name: 'Tax Authority Database',
-      type: 'database',
-      endpoint: 'https://tax.gov.gq/registry',
-      status: 'disconnected',
-      enabled: false,
-      lastSync: '2025-01-10 09:00',
-      authentication: 'OAuth 2.0'
-    }
-  ]);
+  });
 
   const toggleSystem = (id: string) => {
-    setSystems(systems.map(sys =>
-      sys.id === id ? { ...sys, enabled: !sys.enabled } : sys
-    ));
-    toast({
-      title: t('common:success'),
-      description: t('dashboard:systemStatusUpdated'),
-    });
+    const system = systems.find(s => s.id === id);
+    if (system) {
+      toggleSystemMutation.mutate({ id, enabled: !system.enabled });
+    }
   };
 
-  const testConnection = (system: ExternalSystem) => {
+  const testConnection = async (system: ExternalSystem) => {
     toast({
       title: t('dashboard:testingConnection'),
       description: `${t('dashboard:connecting')} ${system.name}...`,
     });
-    // Simulate connection test
-    setTimeout(() => {
+    
+    // Update status to connected after test
+    const { error } = await supabase
+      .from('external_systems')
+      .update({ 
+        status: 'connected',
+        last_sync: new Date().toISOString()
+      })
+      .eq('id', system.id);
+
+    if (!error) {
+      queryClient.invalidateQueries({ queryKey: ['external-systems'] });
       toast({
         title: t('common:success'),
         description: t('dashboard:connectionSuccessful'),
       });
-    }, 2000);
+    }
   };
 
   const getStatusIcon = (status: ExternalSystem['status']) => {
@@ -222,7 +232,15 @@ export const ExternalSystemsManager = () => {
 
       {/* Systems Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {systems.map((system) => (
+        {isLoading ? (
+          <div className="col-span-2 text-center text-muted-foreground">
+            {t('common:loading')}...
+          </div>
+        ) : systems.length === 0 ? (
+          <div className="col-span-2 text-center text-muted-foreground">
+            {t('dashboard:noExternalSystems')}
+          </div>
+        ) : systems.map((system) => (
           <Card key={system.id} className={!system.enabled ? 'opacity-60' : ''}>
             <CardHeader>
               <div className="flex items-start justify-between">
@@ -256,7 +274,11 @@ export const ExternalSystemsManager = () => {
                 </div>
                 <div>
                   <span className="text-muted-foreground">{t('dashboard:lastSync')}:</span>
-                  <p className="text-xs">{system.lastSync}</p>
+                  <p className="text-xs">
+                    {system.lastSync 
+                      ? new Date(system.lastSync).toLocaleString() 
+                      : t('dashboard:never')}
+                  </p>
                 </div>
               </div>
 

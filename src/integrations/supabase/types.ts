@@ -1067,6 +1067,129 @@ export type Database = {
         }
         Relationships: []
       }
+      external_systems: {
+        Row: {
+          authentication: string
+          configuration: Json | null
+          created_at: string | null
+          created_by: string | null
+          enabled: boolean
+          endpoint: string
+          id: string
+          last_sync: string | null
+          name: string
+          status: string
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          authentication: string
+          configuration?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          enabled?: boolean
+          endpoint: string
+          id?: string
+          last_sync?: string | null
+          name: string
+          status?: string
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          authentication?: string
+          configuration?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          enabled?: boolean
+          endpoint?: string
+          id?: string
+          last_sync?: string | null
+          name?: string
+          status?: string
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      integration_api_keys: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          enabled: boolean
+          expires_at: string | null
+          id: string
+          key_hash: string
+          key_prefix: string
+          last_used: string | null
+          name: string
+          permissions: Json | null
+          rate_limit: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          enabled?: boolean
+          expires_at?: string | null
+          id?: string
+          key_hash: string
+          key_prefix: string
+          last_used?: string | null
+          name: string
+          permissions?: Json | null
+          rate_limit?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          enabled?: boolean
+          expires_at?: string | null
+          id?: string
+          key_hash?: string
+          key_prefix?: string
+          last_used?: string | null
+          name?: string
+          permissions?: Json | null
+          rate_limit?: number | null
+        }
+        Relationships: []
+      }
+      integration_health_metrics: {
+        Row: {
+          avg_response_time_ms: number | null
+          created_at: string | null
+          endpoint: string
+          id: string
+          last_check: string | null
+          metadata: Json | null
+          requests_last_24h: number | null
+          status: string
+          uptime_percentage: number | null
+        }
+        Insert: {
+          avg_response_time_ms?: number | null
+          created_at?: string | null
+          endpoint: string
+          id?: string
+          last_check?: string | null
+          metadata?: Json | null
+          requests_last_24h?: number | null
+          status?: string
+          uptime_percentage?: number | null
+        }
+        Update: {
+          avg_response_time_ms?: number | null
+          created_at?: string | null
+          endpoint?: string
+          id?: string
+          last_check?: string | null
+          metadata?: Json | null
+          requests_last_24h?: number | null
+          status?: string
+          uptime_percentage?: number | null
+        }
+        Relationships: []
+      }
       legal_compliance_framework: {
         Row: {
           applicable_laws: string[]

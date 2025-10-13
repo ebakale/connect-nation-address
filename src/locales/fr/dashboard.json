@@ -301,5 +301,8 @@
   "systemAdded": "Système ajouté",
   "systemStatusUpdated": "Statut mis à jour",
   "testingConnection": "Test de Connexion",
-  "connectionSuccessful": "Connexion réussie"
+  "connectionSuccessful": "Connexion réussie",
+  "noExternalSystems": "Aucun système externe configuré",
+  "never": "Jamais",
+  "noHealthData": "Aucune donnée de surveillance de la santé disponible"
 }

@@ -1,5 +1,6 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -34,35 +35,42 @@ interface HealthMetric {
 export const IntegrationHealthMonitor = () => {
   const { t } = useTranslation(['dashboard', 'common']);
 
-  // Mock data - replace with actual monitoring data
-  const [healthMetrics] = useState<HealthMetric[]>([
-    {
-      endpoint: '/address-search-api',
-      status: 'healthy',
-      uptime: 99.9,
-      avgResponseTime: 45,
-      lastCheck: '2025-01-15 16:30',
-      requestsLast24h: 12453
+  // Fetch health metrics from database
+  const { data: healthMetrics = [], isLoading } = useQuery({
+    queryKey: ['integration-health-metrics'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('integration_health_metrics')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(10);
+      
+      if (error) throw error;
+      
+      // Map database fields to component interface
+      return (data || []).map((metric: any) => ({
+        endpoint: metric.endpoint,
+        status: metric.status,
+        uptime: metric.uptime_percentage,
+        avgResponseTime: metric.avg_response_time_ms,
+        lastCheck: new Date(metric.last_check).toLocaleString(),
+        requestsLast24h: metric.requests_last_24h
+      })) as HealthMetric[];
     },
-    {
-      endpoint: '/government-integration-api',
-      status: 'healthy',
-      uptime: 99.7,
-      avgResponseTime: 120,
-      lastCheck: '2025-01-15 16:29',
-      requestsLast24h: 3421
-    },
-    {
-      endpoint: '/webhook-events',
-      status: 'degraded',
-      uptime: 98.2,
-      avgResponseTime: 230,
-      lastCheck: '2025-01-15 16:28',
-      requestsLast24h: 876
-    }
-  ]);
+  });
 
-  // Mock performance data
+  // Calculate overall metrics from health data
+  const overallUptime = healthMetrics.length > 0
+    ? (healthMetrics.reduce((sum, m) => sum + m.uptime, 0) / healthMetrics.length).toFixed(1)
+    : '0.0';
+  
+  const overallAvgResponse = healthMetrics.length > 0
+    ? Math.round(healthMetrics.reduce((sum, m) => sum + m.avgResponseTime, 0) / healthMetrics.length)
+    : 0;
+  
+  const totalRequests = healthMetrics.reduce((sum, m) => sum + m.requestsLast24h, 0);
+
+  // Mock performance data (would need time-series data)
   const performanceData = [
     { time: '00:00', requests: 120, responseTime: 45 },
     { time: '04:00', requests: 80, responseTime: 42 },
@@ -108,7 +116,7 @@ export const IntegrationHealthMonitor = () => {
             <Activity className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">99.6%</div>
+            <div className="text-2xl font-bold text-green-600">{overallUptime}%</div>
             <p className="text-xs text-muted-foreground">{t('dashboard:averageUptime')}</p>
           </CardContent>
         </Card>
@@ -119,7 +127,7 @@ export const IntegrationHealthMonitor = () => {
             <Clock className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">132ms</div>
+            <div className="text-2xl font-bold">{overallAvgResponse}ms</div>
             <p className="text-xs text-muted-foreground">{t('dashboard:last24Hours')}</p>
           </CardContent>
         </Card>
@@ -130,7 +138,7 @@ export const IntegrationHealthMonitor = () => {
             <TrendingUp className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">16,750</div>
+            <div className="text-2xl font-bold">{totalRequests.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">{t('dashboard:last24Hours')}</p>
           </CardContent>
         </Card>
@@ -198,7 +206,19 @@ export const IntegrationHealthMonitor = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {healthMetrics.map((metric) => (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center text-muted-foreground">
+                    {t('common:loading')}...
+                  </TableCell>
+                </TableRow>
+              ) : healthMetrics.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center text-muted-foreground">
+                    {t('dashboard:noHealthData')}
+                  </TableCell>
+                </TableRow>
+              ) : healthMetrics.map((metric) => (
                 <TableRow key={metric.endpoint}>
                   <TableCell className="font-mono text-sm">{metric.endpoint}</TableCell>
                   <TableCell>{getStatusBadge(metric.status)}</TableCell>
