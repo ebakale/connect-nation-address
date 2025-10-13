@@ -978,5 +978,8 @@
   "apiKeyPlaceholder": "e.g., Production API Key",
   "apiKey": "API Key",
   "lastUsed": "Last Used",
-  "permissions": "Permissions"
+  "permissions": "Permissions",
+  "governmentIntegrationApi": "Government Integration API",
+  "emergencyServicesApi": "Emergency Services API",
+  "mobileAppApiOld": "Mobile App API (Old)"
 }

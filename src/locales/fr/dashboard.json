@@ -396,5 +396,8 @@
   "apiKeyPlaceholder": "ex., Clé API de Production",
   "apiKey": "Clé API",
   "lastUsed": "Dernière Utilisation",
-  "permissions": "Autorisations"
+  "permissions": "Autorisations",
+  "governmentIntegrationApi": "API d'Intégration Gouvernementale",
+  "emergencyServicesApi": "API des Services d'Urgence",
+  "mobileAppApiOld": "API d'Application Mobile (Ancien)"
 }

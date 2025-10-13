@@ -43,10 +43,9 @@ export const IntegrationAPIManager = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   // Mock data - replace with actual API calls
-  const [apiKeys] = useState<APIKey[]>([
+  const apiKeysData: Omit<APIKey, 'name'>[] = [
     {
       id: '1',
-      name: 'Government Integration API',
       key: 'bk_live_a1b2c3d4e5f6g7h8i9j0',
       scope: ['address:read', 'address:write', 'verification:read'],
       created: '2025-01-10',
@@ -55,7 +54,6 @@ export const IntegrationAPIManager = () => {
     },
     {
       id: '2',
-      name: 'Emergency Services API',
       key: 'bk_live_k1l2m3n4o5p6q7r8s9t0',
       scope: ['incident:read', 'incident:write', 'location:read'],
       created: '2025-01-05',
@@ -64,14 +62,31 @@ export const IntegrationAPIManager = () => {
     },
     {
       id: '3',
-      name: 'Mobile App API (Old)',
       key: 'bk_live_u1v2w3x4y5z6a7b8c9d0',
       scope: ['address:read'],
       created: '2024-12-01',
       lastUsed: '2024-12-15 10:00',
       status: 'inactive'
     }
-  ]);
+  ];
+
+  const getApiKeyName = (id: string): string => {
+    switch (id) {
+      case '1':
+        return t('dashboard:governmentIntegrationApi');
+      case '2':
+        return t('dashboard:emergencyServicesApi');
+      case '3':
+        return t('dashboard:mobileAppApiOld');
+      default:
+        return '';
+    }
+  };
+
+  const apiKeys: APIKey[] = apiKeysData.map(key => ({
+    ...key,
+    name: getApiKeyName(key.id)
+  }));
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
