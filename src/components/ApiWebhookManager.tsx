@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,6 +29,7 @@ interface WebhookConfig {
 }
 
 const ApiWebhookManager: React.FC = () => {
+  const { t } = useTranslation(['dashboard', 'common']);
   const { toast } = useToast();
   const [showApiKey, setShowApiKey] = useState<Record<string, boolean>>({});
   const [newApiKey, setNewApiKey] = useState({ name: '', service: '', key: '' });
@@ -84,8 +86,8 @@ const ApiWebhookManager: React.FC = () => {
   const handleAddApiKey = () => {
     if (!newApiKey.name || !newApiKey.service || !newApiKey.key) {
       toast({
-        title: "Error",
-        description: "Please fill in all required fields",
+        title: t('common:error'),
+        description: t('dashboard:fillAllFields'),
         variant: "destructive",
       });
       return;
@@ -103,16 +105,16 @@ const ApiWebhookManager: React.FC = () => {
     setNewApiKey({ name: '', service: '', key: '' });
     
     toast({
-      title: "Success",
-      description: "API key added successfully",
+      title: t('common:success'),
+      description: t('dashboard:apiKeyAddedSuccess'),
     });
   };
 
   const handleAddWebhook = () => {
     if (!newWebhook.name || !newWebhook.url || newWebhook.events.length === 0) {
       toast({
-        title: "Error",
-        description: "Please fill in all required fields and select at least one event",
+        title: t('common:error'),
+        description: t('dashboard:webhookFieldsRequired'),
         variant: "destructive",
       });
       return;
@@ -130,8 +132,8 @@ const ApiWebhookManager: React.FC = () => {
     setNewWebhook({ name: '', url: '', events: [] });
     
     toast({
-      title: "Success",
-      description: "Webhook added successfully",
+      title: t('common:success'),
+      description: t('dashboard:webhookAddedSuccess'),
     });
   };
 
@@ -142,16 +144,16 @@ const ApiWebhookManager: React.FC = () => {
   const deleteApiKey = (keyId: string) => {
     setApiKeys(apiKeys.filter(key => key.id !== keyId));
     toast({
-      title: "Success",
-      description: "API key deleted successfully",
+      title: t('common:success'),
+      description: t('dashboard:apiKeyDeletedSuccess'),
     });
   };
 
   const deleteWebhook = (webhookId: string) => {
     setWebhooks(webhooks.filter(webhook => webhook.id !== webhookId));
     toast({
-      title: "Success",
-      description: "Webhook deleted successfully",
+      title: t('common:success'),
+      description: t('dashboard:webhookDeletedSuccess'),
     });
   };
 
@@ -179,16 +181,16 @@ const ApiWebhookManager: React.FC = () => {
 
       if (response.ok) {
         toast({
-          title: "Success",
-          description: "Webhook test successful",
+          title: t('common:success'),
+          description: t('dashboard:webhookTestSuccess'),
         });
       } else {
         throw new Error('Webhook test failed');
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Webhook test failed. Please check the URL and try again.",
+        title: t('common:error'),
+        description: t('dashboard:webhookTestFailed'),
         variant: "destructive",
       });
     }
@@ -200,26 +202,26 @@ const ApiWebhookManager: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Key className="h-5 w-5" />
-            API Keys & Webhooks Management
+            {t('dashboard:apiKeysWebhooksManagement')}
           </CardTitle>
           <CardDescription>
-            Manage API keys for external services and configure webhooks for system events
+            {t('dashboard:manageApiKeysWebhooks')}
           </CardDescription>
         </CardHeader>
       </Card>
 
       <Tabs defaultValue="api-keys" className="space-y-6">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="api-keys">API Keys</TabsTrigger>
-          <TabsTrigger value="webhooks">Webhooks</TabsTrigger>
+          <TabsTrigger value="api-keys">{t('dashboard:apiKeys')}</TabsTrigger>
+          <TabsTrigger value="webhooks">{t('dashboard:webhooks')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="api-keys" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Active API Keys</CardTitle>
+              <CardTitle className="text-lg">{t('dashboard:activeApiKeys')}</CardTitle>
               <CardDescription>
-                Manage API keys for external services like Mapbox, OpenAI, etc.
+                {t('dashboard:manageApiKeysForServices')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -245,9 +247,9 @@ const ApiWebhookManager: React.FC = () => {
                         {showApiKey[key.id] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
                     </div>
-                    {key.lastUsed && (
-                      <p className="text-xs text-muted-foreground mt-1">Last used: {key.lastUsed}</p>
-                    )}
+                     {key.lastUsed && (
+                       <p className="text-xs text-muted-foreground mt-1">{t('dashboard:lastUsed')}: {key.lastUsed}</p>
+                     )}
                   </div>
                   <div className="flex items-center gap-2">
                     <Button variant="outline" size="sm">
@@ -259,17 +261,17 @@ const ApiWebhookManager: React.FC = () => {
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent>
+                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Delete API Key</AlertDialogTitle>
+                          <AlertDialogTitle>{t('dashboard:deleteApiKey')}</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Are you sure you want to delete this API key? This action cannot be undone.
+                            {t('dashboard:deleteApiKeyConfirm')}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogCancel>{t('common:buttons.cancel')}</AlertDialogCancel>
                           <AlertDialogAction onClick={() => deleteApiKey(key.id)}>
-                            Delete
+                            {t('common:buttons.delete')}
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
@@ -278,44 +280,44 @@ const ApiWebhookManager: React.FC = () => {
                 </div>
               ))}
 
-              <Card>
+               <Card>
                 <CardHeader>
-                  <CardTitle className="text-base">Add New API Key</CardTitle>
+                  <CardTitle className="text-base">{t('dashboard:addNewApiKey')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="api-name">Name</Label>
+                      <Label htmlFor="api-name">{t('dashboard:name')}</Label>
                       <Input
                         id="api-name"
-                        placeholder="e.g., Mapbox Token"
+                        placeholder={t('dashboard:apiKeyNamePlaceholder')}
                         value={newApiKey.name}
                         onChange={(e) => setNewApiKey({ ...newApiKey, name: e.target.value })}
                       />
                     </div>
                     <div>
-                      <Label htmlFor="api-service">Service</Label>
+                      <Label htmlFor="api-service">{t('dashboard:service')}</Label>
                       <Input
                         id="api-service"
-                        placeholder="e.g., Mapbox"
+                        placeholder={t('dashboard:servicePlaceholder')}
                         value={newApiKey.service}
                         onChange={(e) => setNewApiKey({ ...newApiKey, service: e.target.value })}
                       />
                     </div>
                   </div>
                   <div>
-                    <Label htmlFor="api-key">API Key</Label>
+                    <Label htmlFor="api-key">{t('dashboard:apiKey')}</Label>
                     <Input
                       id="api-key"
                       type="password"
-                      placeholder="Enter API key"
+                      placeholder={t('dashboard:enterApiKey')}
                       value={newApiKey.key}
                       onChange={(e) => setNewApiKey({ ...newApiKey, key: e.target.value })}
                     />
                   </div>
                   <Button onClick={handleAddApiKey} className="w-full">
                     <Plus className="h-4 w-4 mr-2" />
-                    Add API Key
+                    {t('dashboard:addApiKey')}
                   </Button>
                 </CardContent>
               </Card>
@@ -326,9 +328,9 @@ const ApiWebhookManager: React.FC = () => {
         <TabsContent value="webhooks" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Webhook Configurations</CardTitle>
+              <CardTitle className="text-lg">{t('dashboard:webhookConfigurations')}</CardTitle>
               <CardDescription>
-                Configure webhooks to receive notifications about system events
+                {t('dashboard:configureWebhooksDesc')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -350,7 +352,7 @@ const ApiWebhookManager: React.FC = () => {
                       ))}
                     </div>
                     {webhook.lastTriggered && (
-                      <p className="text-xs text-muted-foreground">Last triggered: {webhook.lastTriggered}</p>
+                      <p className="text-xs text-muted-foreground">{t('dashboard:lastTriggered')}: {webhook.lastTriggered}</p>
                     )}
                   </div>
                   <div className="flex items-center gap-2">
@@ -359,14 +361,14 @@ const ApiWebhookManager: React.FC = () => {
                       size="sm"
                       onClick={() => testWebhook(webhook)}
                     >
-                      Test
+                      {t('dashboard:test')}
                     </Button>
                     <Button 
                       variant="outline" 
                       size="sm"
                       onClick={() => toggleWebhookStatus(webhook.id)}
                     >
-                      {webhook.status === 'active' ? 'Disable' : 'Enable'}
+                      {webhook.status === 'active' ? t('common:buttons.disable') : t('common:buttons.enable')}
                     </Button>
                     <Button variant="outline" size="sm">
                       <Edit className="h-4 w-4" />
@@ -379,15 +381,15 @@ const ApiWebhookManager: React.FC = () => {
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Webhook</AlertDialogTitle>
+                          <AlertDialogTitle>{t('dashboard:deleteWebhook')}</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Are you sure you want to delete this webhook? This action cannot be undone.
+                            {t('dashboard:deleteWebhookConfirm')}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogCancel>{t('common:buttons.cancel')}</AlertDialogCancel>
                           <AlertDialogAction onClick={() => deleteWebhook(webhook.id)}>
-                            Delete
+                            {t('common:buttons.delete')}
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
@@ -398,31 +400,31 @@ const ApiWebhookManager: React.FC = () => {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-base">Add New Webhook</CardTitle>
+                  <CardTitle className="text-base">{t('dashboard:addNewWebhook')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="webhook-name">Name</Label>
+                      <Label htmlFor="webhook-name">{t('dashboard:name')}</Label>
                       <Input
                         id="webhook-name"
-                        placeholder="e.g., Address Notifications"
+                        placeholder={t('dashboard:webhookNamePlaceholder')}
                         value={newWebhook.name}
                         onChange={(e) => setNewWebhook({ ...newWebhook, name: e.target.value })}
                       />
                     </div>
                     <div>
-                      <Label htmlFor="webhook-url">Webhook URL</Label>
+                      <Label htmlFor="webhook-url">{t('dashboard:webhookUrl')}</Label>
                       <Input
                         id="webhook-url"
-                        placeholder="https://your-service.com/webhook"
+                        placeholder={t('dashboard:webhookUrlPlaceholder')}
                         value={newWebhook.url}
                         onChange={(e) => setNewWebhook({ ...newWebhook, url: e.target.value })}
                       />
                     </div>
                   </div>
                   <div>
-                    <Label>Events to Subscribe To</Label>
+                    <Label>{t('dashboard:eventsToSubscribe')}</Label>
                     <div className="grid grid-cols-2 gap-2 mt-2">
                       {availableEvents.map((event) => (
                         <label key={event} className="flex items-center space-x-2">
@@ -450,7 +452,7 @@ const ApiWebhookManager: React.FC = () => {
                   </div>
                   <Button onClick={handleAddWebhook} className="w-full">
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Webhook
+                    {t('dashboard:addWebhook')}
                   </Button>
                 </CardContent>
               </Card>
@@ -461,9 +463,9 @@ const ApiWebhookManager: React.FC = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">External Management</CardTitle>
+          <CardTitle className="text-lg">{t('dashboard:externalManagement')}</CardTitle>
           <CardDescription>
-            For advanced configuration, access the Supabase dashboard
+            {t('dashboard:advancedConfigurationDesc')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -475,7 +477,7 @@ const ApiWebhookManager: React.FC = () => {
               className="flex items-center gap-2"
             >
               <ExternalLink className="h-4 w-4" />
-              Open Supabase Secrets Dashboard
+              {t('dashboard:openSupabaseDashboard')}
             </a>
           </Button>
         </CardContent>

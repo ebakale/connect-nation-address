@@ -36,10 +36,18 @@
     "tryAgain": "Try Again",
     "call": "Call",
     "updating": "Updating...",
-    "updateStatus": "Update Status"
+    "updateStatus": "Update Status",
+    "disable": "Disable",
+    "enable": "Enable",
+    "hide": "Hide",
+    "details": "Details",
+    "add": "Add"
   },
   "yes": "Yes",
   "no": "No",
+  "loading": "Loading",
+  "copied": "Copied",
+  "copiedToClipboard": "copied to clipboard",
   "navigation": {
     "home": "Home",
     "dashboard": "Dashboard",

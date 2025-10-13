@@ -36,10 +36,18 @@
     "tryAgain": "Essayer à nouveau",
     "call": "Appeler",
     "updating": "Mise à jour...",
-    "updateStatus": "Mettre à Jour le Statut"
+    "updateStatus": "Mettre à Jour le Statut",
+    "disable": "Désactiver",
+    "enable": "Activer",
+    "hide": "Masquer",
+    "details": "Détails",
+    "add": "Ajouter"
   },
   "yes": "Oui",
   "no": "Non",
+  "loading": "Chargement",
+  "copied": "Copié",
+  "copiedToClipboard": "copié dans le presse-papiers",
   "navigation": {
   "home": "Accueil",
   "dashboard": "Tableau de bord",

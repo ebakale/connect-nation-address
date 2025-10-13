@@ -36,10 +36,18 @@
     "tryAgain": "Intentar de nuevo",
     "call": "Llamar",
     "updating": "Actualizando...",
-    "updateStatus": "Actualizar Estado"
+    "updateStatus": "Actualizar Estado",
+    "disable": "Deshabilitar",
+    "enable": "Habilitar",
+    "hide": "Ocultar",
+    "details": "Detalles",
+    "add": "Agregar"
   },
   "yes": "Sí",
   "no": "No",
+  "loading": "Cargando",
+  "copied": "Copiado",
+  "copiedToClipboard": "copiado al portapapeles",
   "navigation": {
     "home": "Inicio",
     "dashboard": "Panel de control",
