@@ -157,6 +157,17 @@ export const useUserRole = () => {
   const hasCARManagementAccess = isCARAdmin || hasSystemAdminAccess;
   const hasCARVerificationAccess = hasCARAccess || hasVerifierAccess;
   
+  // NAR Authority check
+  const [isNARAuthority, setIsNARAuthority] = useState(false);
+  const [narAuthorityData, setNarAuthorityData] = useState<{
+    authority_level: string;
+    jurisdiction_region: string | null;
+    jurisdiction_city: string | null;
+    can_create_addresses: boolean;
+    can_verify_addresses: boolean;
+    can_update_addresses: boolean;
+  } | null>(null);
+  
   // Unit lead detection - check if user is a unit lead
   const [isUnitLead, setIsUnitLead] = useState(false);
   
@@ -190,6 +201,40 @@ export const useUserRole = () => {
     
     checkUnitLeadStatus();
   }, [user?.id, isPoliceOperator]);
+  
+  // Fetch NAR authority status
+  useEffect(() => {
+    const fetchNARAuthorityStatus = async () => {
+      if (!user) {
+        setIsNARAuthority(false);
+        setNarAuthorityData(null);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('nar_authorities')
+          .select('authority_level, jurisdiction_region, jurisdiction_city, can_create_addresses, can_verify_addresses, can_update_addresses')
+          .eq('user_id', user.id)
+          .eq('is_active', true)
+          .maybeSingle();
+
+        if (!error && data) {
+          setIsNARAuthority(true);
+          setNarAuthorityData(data);
+        } else {
+          setIsNARAuthority(false);
+          setNarAuthorityData(null);
+        }
+      } catch (error) {
+        console.error('Error fetching NAR authority status:', error);
+        setIsNARAuthority(false);
+        setNarAuthorityData(null);
+      }
+    };
+
+    fetchNARAuthorityStatus();
+  }, [user]);
   
   // Operational Permissions based on the permission map
   const canSearchVerifiedAddresses = true; // All roles can search verified addresses
@@ -313,6 +358,8 @@ export const useUserRole = () => {
     role,
     roleMetadata,
     loading,
+    isNARAuthority,
+    narAuthorityData,
     // Role checks
     isAdmin,
     isModerator,

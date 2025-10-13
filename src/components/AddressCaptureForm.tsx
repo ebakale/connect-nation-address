@@ -15,7 +15,10 @@ import { useTranslation } from 'react-i18next';
 
 interface AddressCaptureFormProps {
   onSave?: () => void;
+  onSuccess?: () => void;
   onCancel?: () => void;
+  defaultRegion?: string;
+  defaultCity?: string;
   initialData?: {
     id?: string;
     country: string;
@@ -31,13 +34,13 @@ interface AddressCaptureFormProps {
   };
 }
 
-export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCaptureFormProps) => {
+export const AddressCaptureForm = ({ onSave, onSuccess, onCancel, defaultRegion, defaultCity, initialData }: AddressCaptureFormProps) => {
   const { user } = useAuth();
   const { t } = useTranslation('address');
   const [formData, setFormData] = useState({
     country: initialData?.country || "Equatorial Guinea",
-    region: initialData?.region || "",
-    city: initialData?.city || "",
+    region: initialData?.region || defaultRegion || "",
+    city: initialData?.city || defaultCity || "",
     street: initialData?.street || "",
     building: initialData?.building || "",
     latitude: initialData?.latitude?.toString() || "",
@@ -245,6 +248,7 @@ export const AddressCaptureForm = ({ onSave, onCancel, initialData }: AddressCap
             description: t('toasts.addressCreatedInNAR')
           });
           onSave?.();
+          onSuccess?.();
         } else {
           throw error;
         }

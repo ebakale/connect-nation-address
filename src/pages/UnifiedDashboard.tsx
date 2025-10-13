@@ -54,6 +54,7 @@ import { CitizenAddressPortal } from "@/components/CitizenAddressPortal";
 import { CARAdministrativeOverview } from '@/components/CARAdministrativeOverview';
 import { CARQualityMetrics } from '@/components/CARQualityMetrics';
 import { CARBulkOperations } from '@/components/CARBulkOperations';
+import { NARAuthorityDashboard } from '@/components/NARAuthorityDashboard';
 
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
 import { UnifiedAddressDashboard } from "@/components/UnifiedAddressDashboard";
@@ -115,7 +116,8 @@ const UnifiedDashboard = () => {
     hasPoliceAccess,
     isPoliceRole,
     hasNDAAAccess,
-    hasSystemAdminAccess
+    hasSystemAdminAccess,
+    isNARAuthority
   } = useUserRole();
   const { user, signOut } = useAuth();
   const { t } = useTranslation(['dashboard', 'common']);
@@ -165,7 +167,10 @@ const UnifiedDashboard = () => {
   // Auto-open specific dashboards for different roles
   useEffect(() => {
     if (!loading) {
-      if (isCarAdmin) {
+      if (isNARAuthority) {
+        // NAR authorities get their dedicated dashboard
+        setActiveView('nar-authority-dashboard');
+      } else if (isCarAdmin) {
         setActiveView('car-verification');
       } else if (isRegistrar && !hasAdminAccess) {
         // Registrars go to their dedicated dashboard unless they're also admins
@@ -174,7 +179,7 @@ const UnifiedDashboard = () => {
         setActiveView('residency-verification-manager');
       }
     }
-  }, [loading, isCarAdmin, isRegistrar, hasAdminAccess, isResidencyVerifier]);
+  }, [loading, isNARAuthority, isCarAdmin, isRegistrar, hasAdminAccess, isResidencyVerifier]);
 
   // Fetch dashboard statistics
   useEffect(() => {
@@ -371,6 +376,7 @@ const UnifiedDashboard = () => {
       case 'profile': return t('dashboard:title');
       case 'emergency-contacts': return t('dashboard:emergencyContacts');
       case 'registrar-dashboard': return t('dashboard:registrarDashboard');
+      case 'nar-authority-dashboard': return t('dashboard:narAuthorityDashboard');
       default: return t('dashboard:title');
     }
   };
@@ -395,6 +401,7 @@ const UnifiedDashboard = () => {
       case 'saved-locations': return t('dashboard:savedLocationsDesc');
       case 'profile': return t('dashboard:welcomeMessage');
       case 'emergency-contacts': return t('dashboard:welcomeMessage');
+      case 'nar-authority-dashboard': return t('dashboard:narAuthorityDashboardDesc');
       default: return t('dashboard:welcomeMessage');
     }
   };
@@ -994,6 +1001,13 @@ const UnifiedDashboard = () => {
         return (
           <div className="max-w-7xl">
             <RegistrarDashboardView />
+          </div>
+        );
+
+      case 'nar-authority-dashboard':
+        return (
+          <div className="max-w-7xl">
+            <NARAuthorityDashboard />
           </div>
         );
 
