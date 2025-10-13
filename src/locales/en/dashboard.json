@@ -375,6 +375,7 @@
   "authenticationType": "Authentication Type",
   "selectAuthType": "Select authentication type",
   "connecting": "Connecting to",
+  "syncMode": "Sync Mode",
   "generatedOn": "Generated on",
   "period": "Period",
   "summaryStatistics": "SUMMARY STATISTICS",

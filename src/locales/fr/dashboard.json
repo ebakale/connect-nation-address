@@ -319,6 +319,7 @@
   "authenticationType": "Type d'Authentification",
   "selectAuthType": "Sélectionner le type d'authentification",
   "connecting": "Connexion à",
+  "syncMode": "Mode de Synchronisation",
   "fillAllFields": "Veuillez remplir tous les champs obligatoires",
   "apiKeyAddedSuccess": "Clé API ajoutée avec succès",
   "webhookFieldsRequired": "Veuillez remplir tous les champs obligatoires et sélectionner au moins un événement",
