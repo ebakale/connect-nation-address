@@ -83,6 +83,7 @@
   "citizen": "Citoyen",
   "registrarDashboard": "Tableau de Bord du Registraire",
   "searchAddresses": "Rechercher des Adresses",
+  "searchPlaceholder": "Saisissez UAC, nom de rue, ville ou région...",
   "findVerifiedAddresses": "Trouvez des adresses vérifiées et visualisez-les sur la carte ci-dessous",
   "searchTips": "Conseils de Recherche",
   "searchByUac": "Rechercher par Code UAC",

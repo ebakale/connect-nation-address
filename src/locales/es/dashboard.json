@@ -83,6 +83,7 @@
   "citizen": "Ciudadano",
   "registrarDashboard": "Panel del Registrador",
   "searchAddresses": "Buscar Direcciones",
+  "searchPlaceholder": "Ingrese UAC, nombre de calle, ciudad o región...",
   "findVerifiedAddresses": "Busca direcciones verificadas y visualízalas en el mapa a continuación",
   "searchTips": "Consejos de Búsqueda",
   "searchByUac": "Buscar por Código UAC",
