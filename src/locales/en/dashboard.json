@@ -975,5 +975,7 @@
   "healthy": "Healthy",
   "bearerTokenAuth": "Bearer Token in Authorization header",
   "rateLimitPerKey": "1000 requests/hour per key",
-  "apiKeyPlaceholder": "e.g., Production API Key"
+  "apiKeyPlaceholder": "e.g., Production API Key",
+  "apiKey": "API Key",
+  "lastUsed": "Last Used"
 }

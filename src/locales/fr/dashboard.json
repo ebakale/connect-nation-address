@@ -393,5 +393,7 @@
   "healthy": "Sain",
   "bearerTokenAuth": "Jeton Bearer dans l'en-tête d'Autorisation",
   "rateLimitPerKey": "1000 requêtes/heure par clé",
-  "apiKeyPlaceholder": "ex., Clé API de Production"
+  "apiKeyPlaceholder": "ex., Clé API de Production",
+  "apiKey": "Clé API",
+  "lastUsed": "Dernière Utilisation"
 }
