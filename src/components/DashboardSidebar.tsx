@@ -145,6 +145,21 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: true
     },
     {
+      id: 'verification-queue',
+      title: t('verificationQueue'),
+      icon: CheckCircle,
+      onClick: () => handleItemClick('verification-queue'),
+      visible: narAuthorityData?.can_verify_addresses || false,
+      badge: pendingCount
+    },
+    {
+      id: 'verification-tools',
+      title: t('verificationTools'),
+      icon: FileCheck,
+      onClick: () => handleItemClick('verification-tools'),
+      visible: narAuthorityData?.can_verify_addresses || false
+    },
+    {
       id: 'address-search',
       title: t('addressSearch'),
       icon: Search,
@@ -323,6 +338,10 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       ['nar-authority-dashboard'].includes(item.id)
     );
     
+    const narVerificationItems = visibleItems.filter(item => 
+      ['verification-queue', 'verification-tools'].includes(item.id)
+    );
+    
     const narToolsItems = visibleItems.filter(item => 
       ['address-search'].includes(item.id)
     );
@@ -398,6 +417,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
 
           {/* NAR Navigation Groups */}
           {renderNARMenuGroup(narMainItems, t('main'))}
+          {renderNARMenuGroup(narVerificationItems, t('verification'))}
           {renderNARMenuGroup(narToolsItems, t('tools'))}
           {renderNARMenuGroup(narSettingsItems, t('settings'))}
         </SidebarContent>
