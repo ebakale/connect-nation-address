@@ -72,7 +72,9 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     hasNDAAAccess,
     canCreateDraftAddress,
     canVerifyAddresses,
-    canPublishAddresses
+    canPublishAddresses,
+    isNARAuthority,
+    narAuthorityData
   } = useUserRole();
 
   const handleItemClick = (id: string) => {
@@ -130,6 +132,38 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       icon: Settings,
       onClick: () => handleItemClick('car-admin'),
       visible: isCarAdmin
+    },
+  ];
+
+  // NAR Authority navigation items
+  const narNavigationItems: NavigationItem[] = [
+    {
+      id: 'nar-authority-dashboard',
+      title: t('narAuthorityDashboard'),
+      icon: Shield,
+      onClick: () => handleItemClick('nar-authority-dashboard'),
+      visible: true
+    },
+    {
+      id: 'address-search',
+      title: t('addressSearch'),
+      icon: Search,
+      onClick: () => handleItemClick('address-search'),
+      visible: true
+    },
+    {
+      id: 'saved-addresses',
+      title: t('savedAddresses'),
+      icon: Star,
+      onClick: () => handleItemClick('saved-addresses'),
+      visible: true
+    },
+    {
+      id: 'profile',
+      title: t('profileSettings'),
+      icon: User,
+      onClick: () => handleItemClick('profile'),
+      visible: true
     },
   ];
 
@@ -277,10 +311,99 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   // Use appropriate navigation based on user role
   const navigationItems = 
     (isAdmin || hasNDAAAccess) ? adminNavigationItems : 
+    isNARAuthority ? narNavigationItems :
     isCarAdmin ? carNavigationItems : 
     standardNavigationItems;
 
   const visibleItems = navigationItems.filter(item => item.visible);
+
+  // NAR Authority specific rendering
+  if (isNARAuthority) {
+    const narMainItems = visibleItems.filter(item => 
+      ['nar-authority-dashboard'].includes(item.id)
+    );
+    
+    const narToolsItems = visibleItems.filter(item => 
+      ['address-search'].includes(item.id)
+    );
+    
+    const narSettingsItems = visibleItems.filter(item => 
+      ['saved-addresses', 'profile'].includes(item.id)
+    );
+
+    const renderNARMenuGroup = (items: NavigationItem[], label: string) => {
+      if (items.length === 0) return null;
+      
+      return (
+        <SidebarGroup>
+          <SidebarGroupLabel>{!collapsed && label}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {items.map((item) => (
+                <SidebarMenuItem key={item.id}>
+                  <SidebarMenuButton
+                    onClick={item.onClick}
+                    className={cn(
+                      "w-full justify-start transition-colors",
+                      "hover:bg-accent hover:text-accent-foreground",
+                      collapsed ? "px-2" : "px-3"
+                    )}
+                  >
+                    <item.icon className={cn("shrink-0", collapsed ? "h-5 w-5" : "h-4 w-4 mr-2")} />
+                    {!collapsed && (
+                      <span className="flex-1 text-left">{item.title}</span>
+                    )}
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      );
+    };
+
+    return (
+      <Sidebar className={cn("border-r bg-background", collapsed ? "w-16" : "w-60")}>
+        <SidebarContent className="gap-0">
+          {/* Header */}
+          {!collapsed && (
+            <div className="p-4 border-b">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-primary/10 rounded-lg">
+                  <Shield className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h2 className="font-semibold text-sm">{t('narAuthority')}</h2>
+                  <p className="text-xs text-muted-foreground">
+                    {narAuthorityData?.authority_level === 'national' ? t('nationalLevel') :
+                     narAuthorityData?.authority_level === 'regional' ? t('regionalLevel') :
+                     narAuthorityData?.authority_level === 'municipal' ? t('municipalLevel') :
+                     t('localLevel')}
+                  </p>
+                </div>
+              </div>
+              {/* Jurisdiction info */}
+              {!collapsed && (
+                <div className="mt-3 p-2 bg-muted/50 rounded-lg">
+                  <p className="text-xs font-medium text-muted-foreground mb-1">{t('jurisdiction')}</p>
+                  <p className="text-xs">
+                    {narAuthorityData?.jurisdiction_city ? 
+                      `${narAuthorityData.jurisdiction_city}, ${narAuthorityData.jurisdiction_region || ''}` :
+                      narAuthorityData?.jurisdiction_region || t('nationalWide')}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* NAR Navigation Groups */}
+          {renderNARMenuGroup(narMainItems, t('main'))}
+          {renderNARMenuGroup(narToolsItems, t('tools'))}
+          {renderNARMenuGroup(narSettingsItems, t('settings'))}
+        </SidebarContent>
+      </Sidebar>
+    );
+  }
 
   // Group items by category for CAR users
   if (isCarAdmin) {

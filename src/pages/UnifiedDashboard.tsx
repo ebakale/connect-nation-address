@@ -373,6 +373,7 @@ const UnifiedDashboard = () => {
       case 'citizen-address-portal': return t('dashboard:myAddressesCar');
       case 'recent-searches': return t('dashboard:recentSearches');
       case 'saved-locations': return t('dashboard:savedLocations');
+      case 'saved-addresses': return t('dashboard:savedAddresses');
       case 'profile': return t('dashboard:title');
       case 'emergency-contacts': return t('dashboard:emergencyContacts');
       case 'registrar-dashboard': return t('dashboard:registrarDashboard');

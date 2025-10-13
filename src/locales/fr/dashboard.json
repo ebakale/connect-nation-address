@@ -485,5 +485,8 @@
   "narAuthorityNotFound": "Autorité NAR Non Trouvée",
   "narAuthorityDataNotAvailable": "Les données d'autorité NAR ne sont pas disponibles pour votre compte",
   "errorFetchingAddresses": "Erreur lors de la récupération des adresses",
-  "addressCreatedSuccessfully": "Adresse créée avec succès"
+  "addressCreatedSuccessfully": "Adresse créée avec succès",
+  "narAuthority": "Autorité NAR",
+  "tools": "Outils",
+  "addressSearch": "Recherche d'Adresse"
 }

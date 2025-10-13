@@ -1067,5 +1067,8 @@
   "narAuthorityNotFound": "NAR Authority Not Found",
   "narAuthorityDataNotAvailable": "NAR authority data is not available for your account",
   "errorFetchingAddresses": "Error fetching addresses",
-  "addressCreatedSuccessfully": "Address created successfully"
+  "addressCreatedSuccessfully": "Address created successfully",
+  "narAuthority": "NAR Authority",
+  "tools": "Tools",
+  "addressSearch": "Address Search"
 }
