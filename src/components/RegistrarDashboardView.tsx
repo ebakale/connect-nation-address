@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from 'react-i18next';
+import { useUserRole } from "@/hooks/useUserRole";
 import { 
   MapPin, 
   Globe, 
@@ -44,6 +45,7 @@ interface PendingRequest {
 
 export const RegistrarDashboardView = () => {
   const { t } = useTranslation(['dashboard', 'common']);
+  const { roleMetadata } = useUserRole();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<RegistrarStats>({
     totalAddresses: 0,
@@ -55,13 +57,30 @@ export const RegistrarDashboardView = () => {
   });
   const [recentRequests, setRecentRequests] = useState<PendingRequest[]>([]);
 
+  // Get geographical scope from role metadata
+  const geographicScope = roleMetadata.find(m => 
+    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city'
+  );
+
   useEffect(() => {
     fetchRegistrarStats();
     fetchRecentRequests();
-  }, []);
+  }, [geographicScope]);
 
   const fetchRegistrarStats = async () => {
     try {
+      // Build base queries with geographical scope filter
+      const buildQuery = (baseQuery: any) => {
+        if (!geographicScope) return baseQuery;
+        
+        if (geographicScope.scope_type === 'city') {
+          return baseQuery.ilike('city', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+          return baseQuery.ilike('region', geographicScope.scope_value);
+        }
+        return baseQuery;
+      };
+
       const [
         addressesResult,
         verifiedResult,
@@ -70,31 +89,20 @@ export const RegistrarDashboardView = () => {
         flaggedResult,
         readyToPublishResult
       ] = await Promise.all([
-        supabase.from('addresses').select('id', { count: 'exact', head: true }),
-        supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true),
-        supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('public', true).eq('verified', true),
-        supabase.from('address_requests').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
-        supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('flagged', true),
-        supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true).eq('public', false)
+        buildQuery(supabase.from('addresses').select('id', { count: 'exact', head: true })),
+        buildQuery(supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true)),
+        buildQuery(supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('public', true).eq('verified', true)),
+        buildQuery(supabase.from('address_requests').select('id', { count: 'exact', head: true }).eq('status', 'pending')),
+        buildQuery(supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('flagged', true)),
+        buildQuery(supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true).eq('public', false))
       ]);
 
-      let totalAddresses = addressesResult.count || 0;
-      let verifiedAddresses = verifiedResult.count || 0;
-      let publishedAddresses = publicResult.count || 0;
+      const totalAddresses = addressesResult.count || 0;
+      const verifiedAddresses = verifiedResult.count || 0;
+      const publishedAddresses = publicResult.count || 0;
       const pendingApprovals = pendingResult.count || 0;
       const flaggedAddresses = flaggedResult.count || 0;
-      let readyToPublish = readyToPublishResult.count || 0;
-
-      // Override with service-side counts (bypass RLS) when available
-      try {
-        const { data: unified, error: unifiedError } = await supabase.functions.invoke('unified-address-statistics');
-        if (!unifiedError && unified) {
-          if (typeof unified.totalNARAddresses === 'number') totalAddresses = unified.totalNARAddresses;
-          if (typeof unified.publishedAddresses === 'number') publishedAddresses = unified.publishedAddresses;
-        }
-      } catch (e) {
-        console.warn('Falling back to client-side counts:', e);
-      }
+      const readyToPublish = readyToPublishResult.count || 0;
 
       setStats({
         totalAddresses,
@@ -113,10 +121,21 @@ export const RegistrarDashboardView = () => {
 
   const fetchRecentRequests = async () => {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('address_requests')
         .select('id, street, city, region, created_at')
-        .eq('status', 'pending')
+        .eq('status', 'pending');
+
+      // Apply geographical scope filter
+      if (geographicScope) {
+        if (geographicScope.scope_type === 'city') {
+          query = query.ilike('city', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+          query = query.ilike('region', geographicScope.scope_value);
+        }
+      }
+
+      const { data, error } = await query
         .order('created_at', { ascending: false })
         .limit(5);
 
@@ -136,7 +155,14 @@ export const RegistrarDashboardView = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">{t('dashboard:registrarDashboard')}</h2>
-          <p className="text-muted-foreground">{t('dashboard:manageAddressRegistration')}</p>
+          <p className="text-muted-foreground">
+            {t('dashboard:manageAddressRegistration')}
+            {geographicScope && (
+              <span className="ml-2 text-xs">
+                ({geographicScope.scope_type === 'city' ? 'City' : 'Region'}: {geographicScope.scope_value})
+              </span>
+            )}
+          </p>
         </div>
         <Badge variant="outline" className="text-sm">{t('dashboard:registrar')}</Badge>
       </div>
