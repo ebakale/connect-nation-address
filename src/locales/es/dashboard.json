@@ -282,6 +282,8 @@
   "realTime": "Tiempo Real",
   "governmentIntegration": "Integración Gubernamental",
   "governmentIntegrationDesc": "Conexión con sistemas gubernamentales",
+  "endpoint": "Punto de acceso",
+  "authentication": "Autenticación",
   "oauth2": "OAuth 2.0",
   "emergencyServicesIntegration": "Servicios de Emergencia",
   "emergencyServicesIntegrationDesc": "Conexión directa a emergencias",
