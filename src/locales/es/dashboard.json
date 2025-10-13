@@ -389,5 +389,6 @@
   "inactive": "Inactivo",
   "expired": "Expirado",
   "createNewApiKey": "Crear Nueva Clave API",
-  "viewLogs": "Ver Registros"
+  "viewLogs": "Ver Registros",
+  "healthy": "Saludable"
 }

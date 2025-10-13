@@ -971,5 +971,6 @@
   "noExternalSystems": "No external systems configured",
   "never": "Never",
   "noHealthData": "No health monitoring data available",
-  "viewLogs": "View Logs"
+  "viewLogs": "View Logs",
+  "healthy": "Healthy"
 }

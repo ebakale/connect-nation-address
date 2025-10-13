@@ -47,10 +47,10 @@ export const SystemIntegration = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{t('dashboard:activeIntegrations')}</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-600" />
+            <CheckCircle className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">3</div>
+            <div className="text-2xl font-bold text-primary">3</div>
             <p className="text-xs text-muted-foreground">{t('dashboard:workingProperly')}</p>
           </CardContent>
         </Card>
@@ -80,10 +80,10 @@ export const SystemIntegration = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{t('dashboard:systemHealth')}</CardTitle>
-            <Activity className="h-4 w-4 text-green-600" />
+            <Activity className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{t('dashboard:healthy')}</div>
+            <div className="text-2xl font-bold text-primary">{t('dashboard:healthy')}</div>
             <p className="text-xs text-muted-foreground">{t('dashboard:allSystemsOperational')}</p>
           </CardContent>
         </Card>
