@@ -15,6 +15,9 @@ import { PoliceSupervisorGuide } from '@/components/guides/PoliceSupervisorGuide
 import { PoliceAdminGuide } from '@/components/guides/PoliceAdminGuide';
 import { CARVerifierGuide } from '@/components/guides/CARVerifierGuide';
 import { CARAdminGuide } from '@/components/guides/CARAdminGuide';
+import { NDAAdminGuide } from '@/components/guides/NDAAdminGuide';
+import { SystemAdminGuide } from '@/components/guides/SystemAdminGuide';
+import { ResidencyVerifierGuide } from '@/components/guides/ResidencyVerifierGuide';
 
 const Documentation: React.FC = () => {
   return (
@@ -270,18 +273,33 @@ const Documentation: React.FC = () => {
           {/* User Guides */}
           <TabsContent value="guides" className="mt-6">
             <Tabs defaultValue="field-agent" className="w-full">
-              <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 max-w-6xl mx-auto">
+              <TabsList className="grid w-full grid-cols-5 lg:grid-cols-13 max-w-full mx-auto gap-1">
+                <TabsTrigger value="ndaa-admin">NDAA Admin</TabsTrigger>
+                <TabsTrigger value="system-admin">System Admin</TabsTrigger>
+                <TabsTrigger value="registrar">Registrar</TabsTrigger>
                 <TabsTrigger value="field-agent">Field Agent</TabsTrigger>
                 <TabsTrigger value="verifier">Verifier</TabsTrigger>
-                <TabsTrigger value="registrar">Registrar</TabsTrigger>
-                <TabsTrigger value="citizen">Citizen</TabsTrigger>
+                <TabsTrigger value="car-admin">CAR Admin</TabsTrigger>
+                <TabsTrigger value="car-verifier">CAR Verifier</TabsTrigger>
+                <TabsTrigger value="residency-verifier">Residency Verifier</TabsTrigger>
+                <TabsTrigger value="police-admin">Police Admin</TabsTrigger>
+                <TabsTrigger value="police-supervisor">Supervisor</TabsTrigger>
                 <TabsTrigger value="dispatcher">Dispatcher</TabsTrigger>
                 <TabsTrigger value="police-operator">Police Officer</TabsTrigger>
-                <TabsTrigger value="police-supervisor">Supervisor</TabsTrigger>
-                <TabsTrigger value="police-admin">Police Admin</TabsTrigger>
-                <TabsTrigger value="car-verifier">CAR Verifier</TabsTrigger>
-                <TabsTrigger value="car-admin">CAR Admin</TabsTrigger>
+                <TabsTrigger value="citizen">Citizen</TabsTrigger>
               </TabsList>
+              
+              <TabsContent value="ndaa-admin" className="mt-6">
+                <NDAAdminGuide />
+              </TabsContent>
+              
+              <TabsContent value="system-admin" className="mt-6">
+                <SystemAdminGuide />
+              </TabsContent>
+              
+              <TabsContent value="registrar" className="mt-6">
+                <RegistrarGuide />
+              </TabsContent>
               
               <TabsContent value="field-agent" className="mt-6">
                 <FieldAgentGuide />
@@ -291,12 +309,24 @@ const Documentation: React.FC = () => {
                 <VerifierGuide />
               </TabsContent>
               
-              <TabsContent value="registrar" className="mt-6">
-                <RegistrarGuide />
+              <TabsContent value="car-admin" className="mt-6">
+                <CARAdminGuide />
               </TabsContent>
               
-              <TabsContent value="citizen" className="mt-6">
-                <CitizenGuide />
+              <TabsContent value="car-verifier" className="mt-6">
+                <CARVerifierGuide />
+              </TabsContent>
+              
+              <TabsContent value="residency-verifier" className="mt-6">
+                <ResidencyVerifierGuide />
+              </TabsContent>
+              
+              <TabsContent value="police-admin" className="mt-6">
+                <PoliceAdminGuide />
+              </TabsContent>
+              
+              <TabsContent value="police-supervisor" className="mt-6">
+                <PoliceSupervisorGuide />
               </TabsContent>
               
               <TabsContent value="dispatcher" className="mt-6">
@@ -307,20 +337,8 @@ const Documentation: React.FC = () => {
                 <PoliceOperatorGuide />
               </TabsContent>
               
-              <TabsContent value="police-supervisor" className="mt-6">
-                <PoliceSupervisorGuide />
-              </TabsContent>
-              
-              <TabsContent value="police-admin" className="mt-6">
-                <PoliceAdminGuide />
-              </TabsContent>
-              
-              <TabsContent value="car-verifier" className="mt-6">
-                <CARVerifierGuide />
-              </TabsContent>
-              
-              <TabsContent value="car-admin" className="mt-6">
-                <CARAdminGuide />
+              <TabsContent value="citizen" className="mt-6">
+                <CitizenGuide />
               </TabsContent>
             </Tabs>
           </TabsContent>
