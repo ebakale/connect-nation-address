@@ -58,6 +58,7 @@ import { CARBulkOperations } from '@/components/CARBulkOperations';
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
 import { UnifiedAddressDashboard } from "@/components/UnifiedAddressDashboard";
 import { RegistrarDashboardView } from "@/components/RegistrarDashboardView";
+import { SystemIntegration } from "@/components/SystemIntegration";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 interface SearchResult {
   uac: string;
@@ -979,6 +980,13 @@ const UnifiedDashboard = () => {
         return (
           <div className="max-w-6xl space-y-6">
             <AdminPanel />
+          </div>
+        );
+
+      case 'integration':
+        return (
+          <div className="max-w-7xl">
+            <SystemIntegration />
           </div>
         );
 
