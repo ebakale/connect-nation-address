@@ -388,5 +388,6 @@
   "scope": "Ámbito",
   "inactive": "Inactivo",
   "expired": "Expirado",
-  "createNewApiKey": "Crear Nueva Clave API"
+  "createNewApiKey": "Crear Nueva Clave API",
+  "viewLogs": "Ver Registros"
 }

@@ -970,5 +970,6 @@
   "publishingQueueCount_other": "{{count}} addresses ready to publish",
   "noExternalSystems": "No external systems configured",
   "never": "Never",
-  "noHealthData": "No health monitoring data available"
+  "noHealthData": "No health monitoring data available",
+  "viewLogs": "View Logs"
 }
