@@ -114,7 +114,7 @@ export const IntegrationAPIManager = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 border rounded-lg">
               <h4 className="font-semibold mb-2">{t('dashboard:baseUrl')}</h4>
-              <code className="text-sm bg-muted p-2 rounded block">
+              <code className="text-sm bg-muted p-2 rounded block break-all overflow-x-auto">
                 https://calegudnfdbeznyiebbh.supabase.co/functions/v1
               </code>
             </div>
