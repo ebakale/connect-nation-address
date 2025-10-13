@@ -30,14 +30,18 @@ Verificador revisa solicitud en Cola de Revisión
   └── Toma decisión de aprobación
   ↓
 ¿Decisión de aprobación?
-  ├── APROBAR → Dirección pasa a cola de publicación
+  ├── APROBAR → Verificador aprueba via approve_address_request()
   ├── RECHAZAR → Regresa al ciudadano con razón de rechazo
   └── EDITAR → Verificador modifica detalles antes de aprobar
   ↓
+Dirección creada con verified=true, public=false
+  ├── UAC generado usando generate_unified_uac_unique()
+  ├── Registro de dirección insertado en tabla addresses
+  └── Estado de solicitud establecido como 'approved'
+  ↓
 Registrador publica dirección aprobada
-  ├── Genera UAC (Código de Dirección Universal)
-  ├── Establece dirección como activa en sistema
-  └── Hace dirección buscable
+  ├── Establece public=true (hacerla buscable)
+  └── Dirección queda disponible en el sistema
   ↓
 Dirección queda disponible en el sistema
   ├── Visible en búsqueda pública de direcciones
@@ -91,15 +95,21 @@ Sistema procesa solicitud via funciones RPC
   ├── add_secondary_address() → Crea nuevo registro citizen_address
   └── Verificación de residencia → Crea registro residency_verification
   ↓
-Cola de Revisión de Direcciones (para verificadores/registradores)
-  ├── Verificadores revisan direcciones ciudadanas pendientes
+Verificación de Auto-Aprobación
+  ├── ¿UAC referencia una dirección NAR verificada?
+  │   ├── SÍ → trigger_auto_approve_citizen_address() establece CONFIRMED
+  │   │          log_auto_approval_event() registra evento AUTO_VERIFY
+  │   └── NO → Requiere verificación manual
+  ↓
+Cola de Revisión Manual (para direcciones no auto-aprobadas)
+  ├── Verificadores CAR revisan direcciones ciudadanas pendientes
   ├── Verifican documentación y pruebas proporcionadas
   └── Actualizan estado de dirección via set_citizen_address_status()
   ↓
 Actualización de Estado
-  ├── APROBADO → Dirección se vuelve activa
-  ├── RECHAZADO → Regresa al ciudadano con razón
-  └── REQUIERE_DOCUMENTOS → Ciudadano debe proporcionar prueba adicional
+  ├── CONFIRMED → Dirección se vuelve activa (auto o manual)
+  ├── REJECTED → Regresa al ciudadano con razón
+  └── REQUIRES_DOCUMENTS → Ciudadano debe proporcionar prueba adicional
   ↓
 Dirección se vuelve activa en perfil del ciudadano
   ├── Dirección primaria usada para correspondencia oficial
@@ -149,13 +159,12 @@ Operador de Policía recibe alerta via IncidentList
   ↓
 Dispatcher asigna incidente a unidad disponible
   ├── Actualiza campo assigned_units en base de datos
-  ├── Establece timestamp dispatched_at
-  └── Cambia estado a "assigned"
+  └── Se activa trigger auto_update_incident_status()
   ↓
-Unidad recibe notificación via notify-unit-assignment
-  ├── Miembros de unidad ven incidente en su dashboard
-  ├── Líder de unidad puede aceptar o solicitar respaldo
-  └── Estado de incidente se actualiza a "responding"
+Estado actualizado automáticamente a "dispatched"
+  ├── Timestamp dispatched_at registrado
+  ├── Estado cambiado de "reported" a "dispatched"
+  └── Unidad recibe notificación via notify-unit-assignment
   ↓
 Unidad en camino a ubicación
   ├── Actualizaciones de estado en tiempo real via UnitStatusManager
@@ -189,7 +198,7 @@ Fin
 
 ### Estados de Incidente en Sistema Actual
 - **reported**: Recién recibido por el sistema
-- **assigned**: Unidad asignada para respuesta
+- **dispatched**: Unidad asignada y despachada (auto-establecido por trigger)
 - **responding**: Unidad en camino a ubicación
 - **on_scene**: Oficial presente en ubicación
 - **backup_requested**: Unidades adicionales solicitadas

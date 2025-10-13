@@ -30,14 +30,18 @@ Verifier reviews request in Review Queue
   └── Makes approval decision
   ↓
 Approval decision?
-  ├── APPROVE → Address moves to publication queue
+  ├── APPROVE → Verifier approves via approve_address_request()
   ├── REJECT → Returns to citizen with rejection reason
   └── EDIT → Verifier modifies details before approval
   ↓
+Address created with verified=true, public=false
+  ├── UAC generated using generate_unified_uac_unique()
+  ├── Address record inserted into addresses table
+  └── Request status set to 'approved'
+  ↓
 Registrar publishes approved address
-  ├── Generates UAC (Universal Address Code)
-  ├── Sets address as active in system
-  └── Makes address searchable
+  ├── Sets public=true (making it searchable)
+  └── Address becomes available in system
   ↓
 Address becomes available in system
   ├── Visible in public address search
@@ -91,13 +95,19 @@ System processes request via RPC functions
   ├── add_secondary_address() → Creates new citizen_address record
   └── Residency verification → Creates residency_verification record
   ↓
-Address Review Queue (for verifiers/registrars)
-  ├── Verifiers review pending citizen addresses
+Auto-Approval Check
+  ├── Does UAC reference a verified NAR address?
+  │   ├── YES → trigger_auto_approve_citizen_address() sets CONFIRMED
+  │   │          log_auto_approval_event() records AUTO_VERIFY event
+  │   └── NO → Requires manual verification
+  ↓
+Manual Review Queue (for non-auto-approved addresses)
+  ├── CAR verifiers review pending citizen addresses
   ├── Check documentation and proofs provided
   └── Update address status via set_citizen_address_status()
   ↓
 Status Update
-  ├── APPROVED → Address becomes active
+  ├── CONFIRMED → Address becomes active (auto or manual)
   ├── REJECTED → Returns to citizen with reason
   └── REQUIRES_DOCUMENTS → Citizen must provide additional proof
   ↓
@@ -149,13 +159,12 @@ Police Operator receives alert via IncidentList
   ↓
 Dispatcher assigns incident to available unit
   ├── Updates assigned_units field in database
-  ├── Sets dispatched_at timestamp
-  └── Changes status to "assigned"
+  └── auto_update_incident_status() trigger fires
   ↓
-Unit receives notification via notify-unit-assignment
-  ├── Unit members see incident on their dashboard
-  ├── Unit lead can accept or request backup
-  └── Incident status updates to "responding"
+Status automatically updated to "dispatched"
+  ├── dispatched_at timestamp recorded
+  ├── Status changed from "reported" to "dispatched"
+  └── Unit receives notification via notify-unit-assignment
   ↓
 Unit en route to location
   ├── Real-time status updates via UnitStatusManager
@@ -189,7 +198,7 @@ End
 
 ### Incident States in Current System
 - **reported**: Newly received by system
-- **assigned**: Unit assigned for response
+- **dispatched**: Unit assigned and dispatched (auto-set by trigger)
 - **responding**: Unit en route to location
 - **on_scene**: Officer present at location
 - **backup_requested**: Additional units requested
