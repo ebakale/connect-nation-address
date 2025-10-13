@@ -392,5 +392,6 @@
   "viewLogs": "Ver Registros",
   "healthy": "Saludable",
   "bearerTokenAuth": "Token Bearer en encabezado de Autorización",
-  "rateLimitPerKey": "1000 solicitudes/hora por clave"
+  "rateLimitPerKey": "1000 solicitudes/hora por clave",
+  "apiKeyPlaceholder": "ej., Clave API de Producción"
 }

@@ -172,7 +172,7 @@ export const IntegrationAPIManager = () => {
                 <div className="space-y-4 py-4">
                   <div className="space-y-2">
                     <Label htmlFor="key-name">{t('dashboard:keyName')}</Label>
-                    <Input id="key-name" placeholder="e.g., Production API Key" />
+                    <Input id="key-name" placeholder={t('dashboard:apiKeyPlaceholder')} />
                   </div>
                   <div className="space-y-2">
                     <Label>{t('dashboard:permissions')}</Label>
