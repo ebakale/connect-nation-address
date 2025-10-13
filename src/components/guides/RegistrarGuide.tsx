@@ -17,7 +17,7 @@ export function RegistrarGuide() {
         </h2>
         <div className="space-y-3">
           <p><strong>Your Role:</strong> Registrars have the highest level of administrative control over the National Address Registry, responsible for final approvals, system configuration, and data quality management.</p>
-          <p><strong>Access:</strong> Log in to the Registrar Dashboard at /registrar-dashboard</p>
+          <p><strong>Access:</strong> Log in and navigate to the Unified Dashboard at /dashboard - full registrar controls will be accessible</p>
           <p><strong>Key Permissions:</strong> Approve/reject addresses, manage users, publish addresses, configure system, manage NAR authorities, view analytics</p>
         </div>
       </Card>

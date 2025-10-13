@@ -17,7 +17,7 @@ export function FieldAgentGuide() {
         </h2>
         <div className="space-y-3">
           <p><strong>Your Role:</strong> Field agents are responsible for capturing new addresses in the National Address Registry (NAR) by visiting locations and collecting accurate data.</p>
-          <p><strong>Access:</strong> Log in to the Field Agent Dashboard at /field-agent-dashboard</p>
+          <p><strong>Access:</strong> Log in and navigate to the Unified Dashboard at /dashboard - your field agent interface will be displayed</p>
           <p><strong>Key Permissions:</strong> Create address drafts, capture GPS coordinates, take photos, work offline</p>
         </div>
       </Card>

@@ -16,7 +16,7 @@ export function CARAdminGuide() {
         </h2>
         <div className="space-y-3">
           <p><strong>Your Role:</strong> CAR administrators manage the Citizen Address Repository system, including user permissions, data quality, and system configuration.</p>
-          <p><strong>Access:</strong> Full CAR management dashboard</p>
+          <p><strong>Access:</strong> Log in and navigate to the Unified Dashboard at /dashboard - full CAR administration tools will be available</p>
           <p><strong>Key Permissions:</strong> Manage CAR verifiers, configure verification rules, access all citizen declarations, manage data quality, view analytics</p>
         </div>
       </Card>

@@ -16,7 +16,7 @@ export function CARVerifierGuide() {
         </h2>
         <div className="space-y-3">
           <p><strong>Your Role:</strong> CAR verifiers review and verify citizen address declarations in the Citizen Address Repository (CAR).</p>
-          <p><strong>Access:</strong> CAR Verification Dashboard</p>
+          <p><strong>Access:</strong> Log in and navigate to the Unified Dashboard at /dashboard - CAR verification interface will be displayed</p>
           <p><strong>Key Permissions:</strong> Review citizen declarations, verify residency claims, approve/reject addresses, access address history</p>
         </div>
       </Card>

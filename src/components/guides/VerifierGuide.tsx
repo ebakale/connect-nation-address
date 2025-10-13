@@ -17,7 +17,7 @@ export function VerifierGuide() {
         </h2>
         <div className="space-y-3">
           <p><strong>Your Role:</strong> Verifiers ensure the quality and accuracy of address submissions before they are approved for the National Address Registry.</p>
-          <p><strong>Access:</strong> Log in to the Verifier Dashboard at /verifier-dashboard</p>
+          <p><strong>Access:</strong> Log in and navigate to the Unified Dashboard at /dashboard - verification tools will be available in your interface</p>
           <p><strong>Key Permissions:</strong> Review address requests, verify data quality, approve/reject submissions, flag issues</p>
         </div>
       </Card>
