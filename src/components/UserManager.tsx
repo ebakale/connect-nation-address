@@ -195,8 +195,9 @@ const UserManager: React.FC = () => {
   };
 
   const assignRole = async (userId: string, role: string) => {
-    // Check if role requires geographic scope (dispatcher, supervisor, or registrar)
-    if (role === 'police_dispatcher' || role === 'police_supervisor' || role === 'registrar') {
+    // Check if role requires geographic scope
+    if (role === 'police_dispatcher' || role === 'police_supervisor' || 
+        role === 'registrar' || role === 'verifier' || role === 'field_agent') {
       setPendingAssignment({ userId, role });
       setShowScopeDialog(true);
       return;
@@ -549,7 +550,8 @@ const UserManager: React.FC = () => {
                                 ).map((role) => (
                                   <SelectItem key={role} value={role}>
                                     {role.replace('_', ' ')}
-                                    {(role === 'police_dispatcher' || role === 'police_supervisor' || role === 'registrar') && (
+                                    {(role === 'police_dispatcher' || role === 'police_supervisor' || 
+                                      role === 'registrar' || role === 'verifier' || role === 'field_agent') && (
                                       <span className="text-xs text-muted-foreground ml-1">({t('userManagement.requiresGeographicScope')})</span>
                                     )}
                                   </SelectItem>
@@ -645,7 +647,8 @@ const UserManager: React.FC = () => {
                             ).map((role) => (
                               <SelectItem key={role} value={role}>
                                 {role.replace('_', ' ')}
-                                {(role === 'police_dispatcher' || role === 'police_supervisor' || role === 'registrar') && (
+                                {(role === 'police_dispatcher' || role === 'police_supervisor' || 
+                                  role === 'registrar' || role === 'verifier' || role === 'field_agent') && (
                                   <span className="text-xs text-muted-foreground ml-1">({t('userManagement.requiresGeographicScope')})</span>
                                 )}
                               </SelectItem>
@@ -731,12 +734,12 @@ const UserManager: React.FC = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <MapPin className="h-5 w-5" />
-              {pendingAssignment?.role === 'registrar' 
+              {(pendingAssignment?.role === 'registrar' || pendingAssignment?.role === 'verifier' || pendingAssignment?.role === 'field_agent')
                 ? t('userManagement.assignGeographicScope') 
                 : t('userManagement.assignCityScope')}
             </DialogTitle>
             <DialogDescription>
-              {pendingAssignment?.role === 'registrar'
+              {(pendingAssignment?.role === 'registrar' || pendingAssignment?.role === 'verifier' || pendingAssignment?.role === 'field_agent')
                 ? t('userManagement.assignRegistrarScopeDescription')
                 : t('userManagement.assignCityScopeDescription')}
             </DialogDescription>
@@ -764,8 +767,8 @@ const UserManager: React.FC = () => {
               </Select>
             </div>
             
-            {/* For registrars, they can choose region-only or city-specific scope */}
-            {pendingAssignment?.role === 'registrar' && selectedGeographicScope && (
+            {/* For registrars, verifiers, and field agents, they can choose region-only or city-specific scope */}
+            {(pendingAssignment?.role === 'registrar' || pendingAssignment?.role === 'verifier' || pendingAssignment?.role === 'field_agent') && selectedGeographicScope && (
               <div className="p-3 bg-muted rounded-md">
                 <p className="text-sm text-muted-foreground mb-2">
                   {t('userManagement.registrarScopeOptions')}
@@ -794,8 +797,8 @@ const UserManager: React.FC = () => {
               </div>
             )}
             
-            {/* City selection - shown for police roles always, or for registrar if city-specific chosen */}
-            {(pendingAssignment?.role !== 'registrar' || selectedCity !== '') && (
+            {/* City selection - shown for police roles always, or for addressing roles if city-specific chosen */}
+            {((pendingAssignment?.role !== 'registrar' && pendingAssignment?.role !== 'verifier' && pendingAssignment?.role !== 'field_agent') || selectedCity !== '') && (
               <div className="space-y-2">
                 <Label htmlFor="city-scope">{t('userManagement.selectCity')}</Label>
                 <Select
@@ -832,8 +835,8 @@ const UserManager: React.FC = () => {
               <Button
                 onClick={() => {
                   if (pendingAssignment) {
-                    // For registrar, allow region-only or city-specific
-                    if (pendingAssignment.role === 'registrar' && selectedGeographicScope) {
+                    // For addressing roles (registrar, verifier, field_agent), allow region-only or city-specific
+                    if ((pendingAssignment.role === 'registrar' || pendingAssignment.role === 'verifier' || pendingAssignment.role === 'field_agent') && selectedGeographicScope) {
                       const scope = selectedCity && selectedCity !== 'select' ? selectedCity : selectedGeographicScope;
                       const scopeType = selectedCity && selectedCity !== 'select' ? 'city' : 'region';
                       assignRoleWithScope(
@@ -855,7 +858,7 @@ const UserManager: React.FC = () => {
                 }}
                 disabled={
                   !selectedGeographicScope || 
-                  (pendingAssignment?.role !== 'registrar' && (!selectedCity || selectedCity === 'select'))
+                  ((pendingAssignment?.role !== 'registrar' && pendingAssignment?.role !== 'verifier' && pendingAssignment?.role !== 'field_agent') && (!selectedCity || selectedCity === 'select'))
                 }
               >
                 {t('userManagement.assignRole')}
