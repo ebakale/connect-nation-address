@@ -124,6 +124,15 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
 
     console.log('Current role for tabs:', currentRole);
 
+    // ADMIN ROLE - Pure administrative functions only
+    if (currentRole === 'admin' || currentRole === 'ndaa_admin') {
+      tabs.push(
+        { id: 'admin-panel', label: t('dashboard:adminPanel'), icon: Settings },
+        { id: 'integration', label: t('dashboard:systemIntegration'), icon: Network }
+      );
+      return tabs;
+    }
+
     // Citizens get a simplified interface
     if (currentRole === 'citizen' && !hasCarAccess) {
       tabs.push({ 
@@ -139,7 +148,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
       return tabs;
     }
 
-    // All users get address search
+    // All operational users get address search
     tabs.push({ id: 'search', label: t('address:searchAddresses'), icon: Search });
 
     // CAR Admin specific tabs
@@ -161,17 +170,10 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
       return tabs;
     }
 
-    // NAR Admin tabs for registrars and admins
-    if (currentRole === 'registrar' || currentRole === 'ndaa_admin' || currentRole === 'admin' || hasAdminAccess) {
+    // NAR Admin tabs for registrars only (removed admin from this section)
+    if (currentRole === 'registrar') {
       tabs.push(
         { id: 'nar-admin', label: t('dashboard:narAdministration'), icon: Building2 }
-      );
-    }
-
-    // System integration tab for admins
-    if (currentRole === 'ndaa_admin' || currentRole === 'admin' || hasAdminAccess) {
-      tabs.push(
-        { id: 'integration', label: t('dashboard:systemIntegration'), icon: Network }
       );
     }
 

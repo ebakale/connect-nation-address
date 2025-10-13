@@ -433,8 +433,8 @@ const UnifiedDashboard = () => {
               </div>
             )}
 
-            {/* System Overview - Only for Admins/Verifiers */}
-            {(hasAdminAccess || isVerifier || isRegistrar) && (
+            {/* System Overview - Only for Operational Roles (not pure admin) */}
+            {((isVerifier || isRegistrar) && !isAdmin) && (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <Card>
@@ -490,6 +490,71 @@ const UnifiedDashboard = () => {
                   </AlertDescription>
                 </Alert>
               </>
+            )}
+
+            {/* Admin Quick Access - Pure Admin Functions Only */}
+            {(isAdmin || hasNDAAAccess) && (
+              <Card className="shadow-card border-primary/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="h-5 w-5" />
+                    {t('dashboard:adminFunctions')}
+                  </CardTitle>
+                  <CardDescription>
+                    {t('dashboard:systemAdministration')}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="flex items-center justify-between p-4 bg-muted/20 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <Settings className="h-8 w-8 text-primary" />
+                          <div>
+                            <p className="font-medium">{t('dashboard:adminPanel')}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {t('dashboard:manageUsersPermissions')}
+                            </p>
+                          </div>
+                        </div>
+                        <Button 
+                          onClick={() => setActiveView('admin-panel')}
+                          variant="outline"
+                          size="sm"
+                        >
+                          {t('common:buttons.open')}
+                        </Button>
+                      </div>
+
+                      <div className="flex items-center justify-between p-4 bg-muted/20 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <Network className="h-8 w-8 text-primary" />
+                          <div>
+                            <p className="font-medium">{t('dashboard:systemIntegration')}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {t('dashboard:apiWebhooks')}
+                            </p>
+                          </div>
+                        </div>
+                        <Button 
+                          onClick={() => setActiveView('integration')}
+                          variant="outline"
+                          size="sm"
+                        >
+                          {t('common:buttons.open')}
+                        </Button>
+                      </div>
+                    </div>
+
+                    <Alert>
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>
+                        {t('dashboard:adminOnlyNote')}
+                      </AlertDescription>
+                    </Alert>
+                  </div>
+                </CardContent>
+              </Card>
             )}
 
             {/* CAR Admin Quick Stats */}
@@ -551,179 +616,147 @@ const UnifiedDashboard = () => {
               </>
             )}
 
-            {/* Address Search Section */}
-            <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-              <div className="xl:col-span-3 space-y-6">
-                {/* Search Addresses */}
-                <Card className="shadow-card w-full">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <Search className="h-5 w-5" />
-                      {t('dashboard:searchAddresses')}
-                    </CardTitle>
-                    <CardDescription className="text-sm">
-                      {t('dashboard:findVerifiedAddresses')}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <AddressSearch 
-                      onSelectAddress={setSelectedAddress}
-                    />
-                  </CardContent>
-                </Card>
-
-                {/* Search Tips */}
-                <Card className="shadow-card w-full">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-lg">{t('dashboard:searchTips')}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="space-y-2">
-                        <p className="font-medium text-sm">{t('dashboard:searchByUac')}</p>
-                        <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:searchByUacDesc')}</p>
-                      </div>
-                      <div className="space-y-2">
-                        <p className="font-medium text-sm">{t('dashboard:searchByAddress')}</p>
-                        <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:searchByAddressDesc')}</p>
-                      </div>
-                      <div className="space-y-2">
-                        <p className="font-medium text-sm">{t('dashboard:searchByCity')}</p>
-                        <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:searchByCityDesc')}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Nearby Map and Points of Interest */}
-                <Card className="shadow-card w-full">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <MapPin className="h-5 w-5" />
-                      {t('dashboard:nearbyMapPoi')}
-                    </CardTitle>
-                    <CardDescription className="text-sm">
-                      {t('dashboard:nearbyMapDesc')}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    <div className="min-h-[400px] sm:min-h-[500px] w-full">
-                      <DashboardLocationMap 
-                        searchedAddress={selectedAddress}
-                        onAddressSearched={setSelectedAddress}
+            {/* Address Search Section - Only for operational roles, not pure admin */}
+            {!isAdmin && !hasNDAAAccess && (
+              <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+                <div className="xl:col-span-3 space-y-6">
+                  {/* Search Addresses */}
+                  <Card className="shadow-card w-full">
+                    <CardHeader className="pb-4">
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <Search className="h-5 w-5" />
+                        {t('dashboard:searchAddresses')}
+                      </CardTitle>
+                      <CardDescription className="text-sm">
+                        {t('dashboard:findVerifiedAddresses')}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <AddressSearch 
+                        onSelectAddress={setSelectedAddress}
                       />
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
 
-                {/* Map Features */}
-                <Card className="shadow-card w-full">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-lg">{t('dashboard:mapFeatures')}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="space-y-2">
-                        <p className="font-medium text-sm">{t('dashboard:currentLocation')}</p>
-                        <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:currentLocationDesc')}</p>
+                  {/* Search Tips */}
+                  <Card className="shadow-card w-full">
+                    <CardHeader className="pb-4">
+                      <CardTitle className="text-lg">{t('dashboard:searchTips')}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <p className="font-medium text-sm">{t('dashboard:searchByUac')}</p>
+                          <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:searchByUacDesc')}</p>
+                        </div>
+                        <div className="space-y-2">
+                          <p className="font-medium text-sm">{t('dashboard:searchByAddress')}</p>
+                          <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:searchByAddressDesc')}</p>
+                        </div>
+                        <div className="space-y-2">
+                          <p className="font-medium text-sm">{t('dashboard:searchByCity')}</p>
+                          <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:searchByCityDesc')}</p>
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <p className="font-medium text-sm">{t('dashboard:nearbyAddresses')}</p>
-                        <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:nearbyAddressesDesc')}</p>
+                    </CardContent>
+                  </Card>
+
+                  {/* Nearby Map and Points of Interest */}
+                  <Card className="shadow-card w-full">
+                    <CardHeader className="pb-4">
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <MapPin className="h-5 w-5" />
+                        {t('dashboard:nearbyMapPoi')}
+                      </CardTitle>
+                      <CardDescription className="text-sm">
+                        {t('dashboard:nearbyMapDesc')}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <div className="min-h-[400px] sm:min-h-[500px] w-full">
+                        <DashboardLocationMap 
+                          searchedAddress={selectedAddress}
+                          onAddressSearched={setSelectedAddress}
+                        />
                       </div>
-                      <div className="space-y-2">
-                        <p className="font-medium text-sm">{t('dashboard:pointsOfInterest')}</p>
-                        <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:pointsOfInterestDesc')}</p>
+                    </CardContent>
+                  </Card>
+
+                  {/* Map Features */}
+                  <Card className="shadow-card w-full">
+                    <CardHeader className="pb-4">
+                      <CardTitle className="text-lg">{t('dashboard:mapFeatures')}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <p className="font-medium text-sm">{t('dashboard:currentLocation')}</p>
+                          <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:currentLocationDesc')}</p>
+                        </div>
+                        <div className="space-y-2">
+                          <p className="font-medium text-sm">{t('dashboard:nearbyAddresses')}</p>
+                          <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:nearbyAddressesDesc')}</p>
+                        </div>
+                        <div className="space-y-2">
+                          <p className="font-medium text-sm">{t('dashboard:pointsOfInterest')}</p>
+                          <p className="text-muted-foreground text-xs leading-relaxed">{t('dashboard:pointsOfInterestDesc')}</p>
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Sidebar - Only visible on larger screens */}
+                <div className="xl:col-span-1 space-y-6">
+                  <Card className="shadow-card w-full sticky top-6">
+                    <CardHeader className="pb-4">
+                      <CardTitle className="text-lg">{t('dashboard:quickActions')}</CardTitle>
+                      <CardDescription className="text-sm">
+                        {t('dashboard:additionalToolsShortcuts')}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="space-y-3">
+                        <Button 
+                          onClick={() => setActiveView('recent-searches')}
+                          className="w-full justify-start gap-2 h-auto py-3"
+                          variant="outline"
+                        >
+                          <Search className="h-4 w-4" />
+                          <div className="text-left">
+                            <div className="font-medium">{t('dashboard:recentSearches')}</div>
+                            <div className="text-xs text-muted-foreground">{t('dashboard:recentSearchesDesc')}</div>
+                          </div>
+                        </Button>
+                        
+                        <Button 
+                          onClick={() => setActiveView('saved-addresses')}
+                          className="w-full justify-start gap-2 h-auto py-3"
+                          variant="outline"
+                        >
+                          <MapPin className="h-4 w-4" />
+                          <div className="text-left">
+                            <div className="font-medium">{t('dashboard:savedAddresses')}</div>
+                            <div className="text-xs text-muted-foreground">{t('dashboard:savedAddressesDesc')}</div>
+                          </div>
+                        </Button>
+                        
+                        <Button 
+                          onClick={() => setActiveView('address-data')}
+                          className="w-full justify-start gap-2 h-auto py-3"
+                          variant="outline"
+                        >
+                          <FileCheck className="h-4 w-4" />
+                          <div className="text-left">
+                            <div className="font-medium">{t('dashboard:exportData')}</div>
+                            <div className="text-xs text-muted-foreground">{t('dashboard:exportDataDesc')}</div>
+                          </div>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
-
-              {/* Sidebar - Only visible on larger screens */}
-              <div className="xl:col-span-1 space-y-6">
-                <Card className="shadow-card w-full sticky top-6">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-lg">{t('dashboard:quickActions')}</CardTitle>
-                    <CardDescription className="text-sm">
-                      {t('dashboard:additionalToolsShortcuts')}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="space-y-3">
-                      <Button 
-                        onClick={() => setActiveView('recent-searches')}
-                        className="w-full justify-start gap-2 h-auto py-3"
-                        variant="outline"
-                      >
-                        <Search className="h-4 w-4" />
-                        <div className="text-left">
-                          <div className="font-medium">{t('dashboard:recentSearches')}</div>
-                          <div className="text-xs text-muted-foreground">{t('dashboard:recentSearchesDesc')}</div>
-                        </div>
-                      </Button>
-                      
-                      <Button 
-                        onClick={() => setActiveView('saved-addresses')}
-                        className="w-full justify-start gap-2 h-auto py-3"
-                        variant="outline"
-                      >
-                        <MapPin className="h-4 w-4" />
-                        <div className="text-left">
-                          <div className="font-medium">{t('dashboard:savedAddresses')}</div>
-                          <div className="text-xs text-muted-foreground">{t('dashboard:savedAddressesDesc')}</div>
-                        </div>
-                      </Button>
-                      
-                      <Button 
-                        onClick={() => setActiveView('address-data')}
-                        className="w-full justify-start gap-2 h-auto py-3"
-                        variant="outline"
-                      >
-                        <FileCheck className="h-4 w-4" />
-                        <div className="text-left">
-                          <div className="font-medium">{t('dashboard:exportData')}</div>
-                          <div className="text-xs text-muted-foreground">{t('dashboard:exportDataDesc')}</div>
-                        </div>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-
-            {/* Admin Quick Access Notice */}
-            {hasAdminAccess && (
-              <Card className="shadow-card border-primary/20">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Shield className="h-5 w-5" />
-                    {t('dashboard:adminFunctions')}
-                  </CardTitle>
-                  <CardDescription>
-                    {t('dashboard:adminFunctionsDesc')}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between p-4 bg-muted/20 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <Settings className="h-8 w-8 text-primary" />
-                      <div>
-                        <p className="font-medium">{t('dashboard:useAdminPanel')}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {t('dashboard:useAdminPanelDesc')}
-                        </p>
-                      </div>
-                    </div>
-                    <Button 
-                      onClick={() => setActiveView('admin-panel')}
-                      variant="outline"
-                    >
-                      {t('dashboard:openAdminPanel')}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
             )}
 
           </div>

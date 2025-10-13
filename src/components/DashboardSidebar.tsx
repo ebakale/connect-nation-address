@@ -68,6 +68,8 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     isResidencyVerifier,
     hasAdminAccess,
     hasCarAccess,
+    isAdmin,
+    hasNDAAAccess,
     canCreateDraftAddress,
     canVerifyAddresses,
     canPublishAddresses
@@ -80,6 +82,31 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       setOpenMobile(false);
     }
   };
+
+  // Admin-only navigation items (pure administrative functions)
+  const adminNavigationItems: NavigationItem[] = [
+    {
+      id: 'overview',
+      title: t('dashboardOverview'),
+      icon: Home,
+      onClick: () => handleItemClick('overview'),
+      visible: true
+    },
+    {
+      id: 'admin-panel',
+      title: t('admin'),
+      icon: Settings,
+      onClick: () => handleItemClick('admin-panel'),
+      visible: true
+    },
+    {
+      id: 'profile',
+      title: t('profileSettings'),
+      icon: User,
+      onClick: () => handleItemClick('profile'),
+      visible: true
+    }
+  ];
 
   // CAR Verifier navigation items
   const carNavigationItems: NavigationItem[] = [
@@ -193,42 +220,42 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       onClick: () => handleItemClick('emergency-contacts'),
       visible: true
     },
-    // Verification management (verifier-specific)
+    // Verification management (verifier-specific, not for pure admins)
     {
       id: 'verification-queue',
       title: t('verificationQueue'),
       icon: CheckCircle,
       onClick: () => handleItemClick('verification-queue'),
-      visible: (canVerifyAddresses || hasAdminAccess) && !isResidencyVerifier
+      visible: (canVerifyAddresses && !isResidencyVerifier && !isAdmin && !hasNDAAAccess)
     },
     {
       id: 'verification-tools',
       title: t('verificationTools'),
       icon: AlertCircle,
       onClick: () => handleItemClick('verification-tools'),
-      visible: (canVerifyAddresses || hasAdminAccess) && !isResidencyVerifier
+      visible: (canVerifyAddresses && !isResidencyVerifier && !isAdmin && !hasNDAAAccess)
     },
     {
       id: 'residency-verification-manager',
       title: t('residencyVerificationManager'),
       icon: UserCheck,
       onClick: () => handleItemClick('residency-verification-manager'),
-      visible: isResidencyVerifier || isRegistrar || hasAdminAccess
+      visible: (isResidencyVerifier || isRegistrar) && !isAdmin && !hasNDAAAccess
     },
-    // Admin-only management
+    // Admin-only management (operational admins, not pure system admins)
     {
       id: 'address-data',
       title: t('addressData'),
       icon: FileCheck,
       onClick: () => handleItemClick('address-data'),
-      visible: hasAdminAccess
+      visible: hasAdminAccess && !isAdmin && !hasNDAAAccess
     },
     {
       id: 'province-management',
       title: t('provinceManagement'),
       icon: MapPin,
       onClick: () => handleItemClick('province-management'),
-      visible: hasAdminAccess
+      visible: hasAdminAccess && !isAdmin && !hasNDAAAccess
     },
     // Citizen-specific items
     {
@@ -236,19 +263,22 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       title: t('myVerificationRequests'),
       icon: FileDown,
       onClick: () => handleItemClick('residency-verification-dashboard'),
-      visible: isCitizen
+      visible: isCitizen && !isAdmin && !hasNDAAAccess
     },
     {
       id: 'citizen-address-portal',
       title: t('myAddressesCar'),
       icon: User,
       onClick: () => handleItemClick('citizen-address-portal'),
-      visible: isCitizen
+      visible: isCitizen && !isAdmin && !hasNDAAAccess
     }
   ];
 
-  // Use CAR navigation if user is CAR admin, otherwise use standard
-  const navigationItems = isCarAdmin ? carNavigationItems : standardNavigationItems;
+  // Use appropriate navigation based on user role
+  const navigationItems = 
+    (isAdmin || hasNDAAAccess) ? adminNavigationItems : 
+    isCarAdmin ? carNavigationItems : 
+    standardNavigationItems;
 
   const visibleItems = navigationItems.filter(item => item.visible);
 
