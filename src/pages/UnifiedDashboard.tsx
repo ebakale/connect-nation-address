@@ -337,6 +337,8 @@ const UnifiedDashboard = () => {
   if (isVerifier) userRoles.push(t('dashboard:verifier'));
   if (isRegistrar) userRoles.push(t('dashboard:registrar'));
   if (isFieldAgent) userRoles.push(t('dashboard:fieldAgentRole'));
+  if (isCarAdmin) userRoles.push(t('dashboard:carAdmin'));
+  if (isResidencyVerifier) userRoles.push(t('dashboard:residencyVerifier'));
   if (isCitizen) userRoles.push(t('dashboard:citizen'));
 
   // Debug logging for registrar users
