@@ -195,8 +195,8 @@ const UserManager: React.FC = () => {
   };
 
   const assignRole = async (userId: string, role: string) => {
-    // Check if role requires city scope (dispatcher or supervisor)
-    if (role === 'police_dispatcher' || role === 'police_supervisor') {
+    // Check if role requires geographic scope (dispatcher, supervisor, or registrar)
+    if (role === 'police_dispatcher' || role === 'police_supervisor' || role === 'registrar') {
       setPendingAssignment({ userId, role });
       setShowScopeDialog(true);
       return;
@@ -205,7 +205,7 @@ const UserManager: React.FC = () => {
     await assignRoleWithScope(userId, role, null);
   };
 
-  const assignRoleWithScope = async (userId: string, role: string, cityScope: string | null) => {
+  const assignRoleWithScope = async (userId: string, role: string, scope: string | null, scopeType: 'city' | 'region' | null = null) => {
     try {
       const { data: userRoleData, error: roleError } = await supabase
         .from('user_roles')
@@ -218,14 +218,14 @@ const UserManager: React.FC = () => {
 
       if (roleError) throw roleError;
 
-      // If city scope is provided, add metadata
-      if (cityScope && userRoleData) {
+      // If scope is provided, add metadata
+      if (scope && scopeType && userRoleData) {
         const { error: metadataError } = await supabase
           .from('user_role_metadata')
           .insert({
             user_role_id: userRoleData.id,
-            scope_type: 'city',
-            scope_value: cityScope
+            scope_type: scopeType,
+            scope_value: scope
           });
 
         if (metadataError) throw metadataError;
@@ -233,7 +233,7 @@ const UserManager: React.FC = () => {
 
       toast({
         title: t('userManagement.success'),
-        description: t('userManagement.roleAssignedSuccessfully') + (cityScope ? ' with city scope' : '')
+        description: t('userManagement.roleAssignedSuccessfully') + (scope ? ` with ${scopeType} scope: ${scope}` : '')
       });
 
       await fetchUsers();
@@ -544,13 +544,13 @@ const UserManager: React.FC = () => {
                                 <SelectValue placeholder={t('userManagement.assignRole')} />
                               </SelectTrigger>
                               <SelectContent>
-                                {(hasPoliceAdminAccess ? policeRoles : addressingRoles).filter(role => 
+                                 {(hasPoliceAdminAccess ? policeRoles : addressingRoles).filter(role => 
                                   !user.roles.some(userRole => userRole.role === role)
                                 ).map((role) => (
                                   <SelectItem key={role} value={role}>
                                     {role.replace('_', ' ')}
-                                    {(role === 'police_dispatcher' || role === 'police_supervisor') && (
-                                      <span className="text-xs text-muted-foreground ml-1">({t('userManagement.requiresCityScope')})</span>
+                                    {(role === 'police_dispatcher' || role === 'police_supervisor' || role === 'registrar') && (
+                                      <span className="text-xs text-muted-foreground ml-1">({t('userManagement.requiresGeographicScope')})</span>
                                     )}
                                   </SelectItem>
                                 ))}
@@ -645,8 +645,8 @@ const UserManager: React.FC = () => {
                             ).map((role) => (
                               <SelectItem key={role} value={role}>
                                 {role.replace('_', ' ')}
-                                {(role === 'police_dispatcher' || role === 'police_supervisor') && (
-                                  <span className="text-xs text-muted-foreground ml-1">({t('userManagement.requiresCityScope')})</span>
+                                {(role === 'police_dispatcher' || role === 'police_supervisor' || role === 'registrar') && (
+                                  <span className="text-xs text-muted-foreground ml-1">({t('userManagement.requiresGeographicScope')})</span>
                                 )}
                               </SelectItem>
                             ))}
@@ -731,10 +731,14 @@ const UserManager: React.FC = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <MapPin className="h-5 w-5" />
-              {t('userManagement.assignCityScope')}
+              {pendingAssignment?.role === 'registrar' 
+                ? t('userManagement.assignGeographicScope') 
+                : t('userManagement.assignCityScope')}
             </DialogTitle>
             <DialogDescription>
-              {t('userManagement.assignCityScopeDescription')}
+              {pendingAssignment?.role === 'registrar'
+                ? t('userManagement.assignRegistrarScopeDescription')
+                : t('userManagement.assignCityScopeDescription')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -760,25 +764,58 @@ const UserManager: React.FC = () => {
               </Select>
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="city-scope">{t('userManagement.selectCity')}</Label>
-              <Select
-                value={selectedCity}
-                onValueChange={setSelectedCity}
-                disabled={!selectedGeographicScope}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={selectedGeographicScope ? t('userManagement.chooseCity') : t('userManagement.selectRegionFirst')} />
-                </SelectTrigger>
-                <SelectContent>
-                  {selectedGeographicScope && regionCities[selectedGeographicScope]?.map((city) => (
-                    <SelectItem key={city} value={city}>
-                      {city}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {/* For registrars, they can choose region-only or city-specific scope */}
+            {pendingAssignment?.role === 'registrar' && selectedGeographicScope && (
+              <div className="p-3 bg-muted rounded-md">
+                <p className="text-sm text-muted-foreground mb-2">
+                  {t('userManagement.registrarScopeOptions')}
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    variant={selectedCity === '' && selectedGeographicScope ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setSelectedCity('')}
+                  >
+                    {t('userManagement.regionWide')} ({selectedGeographicScope})
+                  </Button>
+                  <Button
+                    variant={selectedCity !== '' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => {
+                      // Don't auto-select city, let user choose below
+                      if (selectedCity === '') {
+                        setSelectedCity('select');
+                      }
+                    }}
+                  >
+                    {t('userManagement.citySpecific')}
+                  </Button>
+                </div>
+              </div>
+            )}
+            
+            {/* City selection - shown for police roles always, or for registrar if city-specific chosen */}
+            {(pendingAssignment?.role !== 'registrar' || selectedCity !== '') && (
+              <div className="space-y-2">
+                <Label htmlFor="city-scope">{t('userManagement.selectCity')}</Label>
+                <Select
+                  value={selectedCity === 'select' ? '' : selectedCity}
+                  onValueChange={setSelectedCity}
+                  disabled={!selectedGeographicScope}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={selectedGeographicScope ? t('userManagement.chooseCity') : t('userManagement.selectRegionFirst')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {selectedGeographicScope && regionCities[selectedGeographicScope]?.map((city) => (
+                      <SelectItem key={city} value={city}>
+                        {city}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             
             <div className="flex justify-end gap-2">
               <Button
@@ -794,15 +831,32 @@ const UserManager: React.FC = () => {
               </Button>
               <Button
                 onClick={() => {
-                  if (pendingAssignment && selectedCity) {
-                    assignRoleWithScope(
-                      pendingAssignment.userId,
-                      pendingAssignment.role,
-                      selectedCity
-                    );
+                  if (pendingAssignment) {
+                    // For registrar, allow region-only or city-specific
+                    if (pendingAssignment.role === 'registrar' && selectedGeographicScope) {
+                      const scope = selectedCity && selectedCity !== 'select' ? selectedCity : selectedGeographicScope;
+                      const scopeType = selectedCity && selectedCity !== 'select' ? 'city' : 'region';
+                      assignRoleWithScope(
+                        pendingAssignment.userId,
+                        pendingAssignment.role,
+                        scope,
+                        scopeType
+                      );
+                    } else if (selectedCity && selectedCity !== 'select') {
+                      // For police roles, require city
+                      assignRoleWithScope(
+                        pendingAssignment.userId,
+                        pendingAssignment.role,
+                        selectedCity,
+                        'city'
+                      );
+                    }
                   }
                 }}
-                disabled={!selectedCity}
+                disabled={
+                  !selectedGeographicScope || 
+                  (pendingAssignment?.role !== 'registrar' && (!selectedCity || selectedCity === 'select'))
+                }
               >
                 {t('userManagement.assignRole')}
               </Button>
