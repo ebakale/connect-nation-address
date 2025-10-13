@@ -25,6 +25,16 @@ export const useUserRole = () => {
   const [role, setRole] = useState<UserRole>(null);
   const [roleMetadata, setRoleMetadata] = useState<RoleMetadata[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isNARAuthority, setIsNARAuthority] = useState(false);
+  const [narAuthorityData, setNarAuthorityData] = useState<{
+    authority_level: string;
+    jurisdiction_region: string | null;
+    jurisdiction_city: string | null;
+    can_create_addresses: boolean;
+    can_verify_addresses: boolean;
+    can_update_addresses: boolean;
+  } | null>(null);
+  const [isUnitLead, setIsUnitLead] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -156,20 +166,6 @@ export const useUserRole = () => {
   const hasCARAccess = isCARAdmin || isResidencyVerifier || isAdmin || hasSystemAdminAccess;
   const hasCARManagementAccess = isCARAdmin || hasSystemAdminAccess;
   const hasCARVerificationAccess = hasCARAccess || hasVerifierAccess;
-  
-  // NAR Authority check
-  const [isNARAuthority, setIsNARAuthority] = useState(false);
-  const [narAuthorityData, setNarAuthorityData] = useState<{
-    authority_level: string;
-    jurisdiction_region: string | null;
-    jurisdiction_city: string | null;
-    can_create_addresses: boolean;
-    can_verify_addresses: boolean;
-    can_update_addresses: boolean;
-  } | null>(null);
-  
-  // Unit lead detection - check if user is a unit lead
-  const [isUnitLead, setIsUnitLead] = useState(false);
   
   useEffect(() => {
     const checkUnitLeadStatus = async () => {
