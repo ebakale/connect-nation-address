@@ -106,7 +106,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
   const getDefaultTab = () => {
     const currentRole = activeRole || role;
     if (currentRole === 'car_admin' || isCarAdmin) return 'car-admin';
-    if (currentRole === 'residency_verifier' || isResidencyVerifier || isVerifier) return 'residency-verification';
+    if (currentRole === 'residency_verifier' || isResidencyVerifier) return 'residency-verification';
     return 'search';
   };
 
@@ -152,11 +152,12 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
       return tabs;
     }
 
-    // Residency Verifier specific tabs
-    if (currentRole === 'residency_verifier' || isResidencyVerifier || isVerifier) {
+    // Residency Verifier specific tabs (ONLY residency verification, no NAR tools)
+    if (currentRole === 'residency_verifier' || isResidencyVerifier) {
       tabs.push(
         { id: 'residency-verification', label: t('dashboard:residencyVerification'), icon: Shield }
       );
+      // Residency verifiers only see their dedicated tab, return early
       return tabs;
     }
 
