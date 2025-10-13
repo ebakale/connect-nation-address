@@ -51,7 +51,8 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     isFieldAgent,
     isVerifier, 
     isRegistrar,
-    isCarAdmin, 
+    isCarAdmin,
+    isResidencyVerifier,
     hasAdminAccess, 
     hasNDAAAccess,
     hasSystemAdminAccess,
@@ -104,8 +105,8 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
   // Set default tab based on active role
   const getDefaultTab = () => {
     const currentRole = activeRole || role;
-    if (currentRole === 'car_admin') return 'car-admin';
-    if (currentRole === 'residency_verifier') return 'residency-verification';
+    if (currentRole === 'car_admin' || isCarAdmin) return 'car-admin';
+    if (currentRole === 'residency_verifier' || isResidencyVerifier) return 'residency-verification';
     return 'search';
   };
 
@@ -152,7 +153,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     }
 
     // Residency Verifier specific tabs
-    if (currentRole === 'residency_verifier') {
+    if (currentRole === 'residency_verifier' || isResidencyVerifier) {
       tabs.push(
         { id: 'residency-verification', label: t('dashboard:residencyVerification'), icon: Shield }
       );
