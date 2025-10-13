@@ -105,6 +105,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
   const getDefaultTab = () => {
     const currentRole = activeRole || role;
     if (currentRole === 'car_admin') return 'car-admin';
+    if (currentRole === 'residency_verifier') return 'residency-verification';
     return 'search';
   };
 
@@ -145,6 +146,14 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
       tabs.push(
         { id: 'car-admin', label: t('dashboard:carAdministration'), icon: Settings },
         { id: 'car-analytics', label: t('dashboard:carAnalytics'), icon: BarChart3 },
+        { id: 'residency-verification', label: t('dashboard:residencyVerification'), icon: Shield }
+      );
+      return tabs;
+    }
+
+    // Residency Verifier specific tabs
+    if (currentRole === 'residency_verifier') {
+      tabs.push(
         { id: 'residency-verification', label: t('dashboard:residencyVerification'), icon: Shield }
       );
       return tabs;
