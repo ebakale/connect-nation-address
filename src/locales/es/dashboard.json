@@ -276,6 +276,8 @@
   "integrationSecurityNote": "Todas las claves API están encriptadas y almacenadas de forma segura",
   "narCarIntegration": "Integración NAR-CAR",
   "narCarIntegrationDesc": "Sincronización en tiempo real",
+  "status": "Estado",
+  "lastSync": "Última sincronización",
   "minutesAgo": "minutos atrás",
   "realTime": "Tiempo Real",
   "governmentIntegration": "Integración Gubernamental",
