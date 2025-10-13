@@ -59,7 +59,7 @@ export const ResidencyVerificationManager = () => {
   const [reviewStatus, setReviewStatus] = useState('');
   const [reviewDialog, setReviewDialog] = useState(false);
   
-  const { canVerifyAddresses, hasAdminAccess } = useUserRole();
+  const { canVerifyAddresses, hasAdminAccess, isResidencyVerifier, loading: roleLoading } = useUserRole();
   const { toast } = useToast();
 
   const fetchVerifications = useCallback(async () => {
@@ -226,7 +226,17 @@ export const ResidencyVerificationManager = () => {
   }, [canVerifyAddresses, hasAdminAccess, statusFilter]);
 
 
-  if (!canVerifyAddresses && !hasAdminAccess) {
+  if (roleLoading) {
+    return (
+      <Card>
+        <CardContent className="text-center py-8">
+          <h3 className="text-lg font-medium mb-2">{t('common:loading')}</h3>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!(canVerifyAddresses || hasAdminAccess || isResidencyVerifier)) {
     return (
       <Card>
         <CardContent className="text-center py-8">

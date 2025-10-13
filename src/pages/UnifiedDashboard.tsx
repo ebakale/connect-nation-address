@@ -105,6 +105,7 @@ const UnifiedDashboard = () => {
     isVerifier, 
     isRegistrar,
     isCarAdmin,
+    isResidencyVerifier,
     getGeographicScope,
     hasAdminAccess,
     canCreateDraftAddress,
@@ -168,9 +169,11 @@ const UnifiedDashboard = () => {
       } else if (isRegistrar && !hasAdminAccess) {
         // Registrars go to their dedicated dashboard unless they're also admins
         setActiveView('registrar-dashboard');
+      } else if (isResidencyVerifier) {
+        setActiveView('residency-verification-manager');
       }
     }
-  }, [loading, isCarAdmin, isRegistrar, hasAdminAccess]);
+  }, [loading, isCarAdmin, isRegistrar, hasAdminAccess, isResidencyVerifier]);
 
   // Fetch dashboard statistics
   useEffect(() => {
