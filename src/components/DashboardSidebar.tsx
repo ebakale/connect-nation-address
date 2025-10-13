@@ -65,6 +65,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     isVerifier, 
     isRegistrar,
     isCarAdmin,
+    isResidencyVerifier,
     hasAdminAccess,
     hasCarAccess,
     canCreateDraftAddress,
@@ -198,21 +199,21 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       title: t('verificationQueue'),
       icon: CheckCircle,
       onClick: () => handleItemClick('verification-queue'),
-      visible: canVerifyAddresses || hasAdminAccess
+      visible: (canVerifyAddresses || hasAdminAccess) && !isResidencyVerifier
     },
     {
       id: 'verification-tools',
       title: t('verificationTools'),
       icon: AlertCircle,
       onClick: () => handleItemClick('verification-tools'),
-      visible: canVerifyAddresses || hasAdminAccess
+      visible: (canVerifyAddresses || hasAdminAccess) && !isResidencyVerifier
     },
     {
       id: 'residency-verification-manager',
       title: t('residencyVerificationManager'),
       icon: UserCheck,
       onClick: () => handleItemClick('residency-verification-manager'),
-      visible: canVerifyAddresses || hasAdminAccess
+      visible: isResidencyVerifier || isRegistrar || hasAdminAccess
     },
     // Admin-only management
     {
