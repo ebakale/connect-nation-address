@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAddresses } from "@/hooks/useAddresses";
+import { useUserRole } from "@/hooks/useUserRole";
 import { Globe, Eye, EyeOff, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from 'react-i18next';
@@ -13,14 +14,34 @@ interface AddressPublishingQueueProps {
 
 export const AddressPublishingQueue = ({ onClose }: AddressPublishingQueueProps) => {
   const { addresses, loading, updateAddressStatus, fetchAddresses } = useAddresses();
+  const { roleMetadata } = useUserRole();
   const { toast } = useToast();
   const { t } = useTranslation('address');
+
+  // Get geographical scope from role metadata
+  const geographicScope = roleMetadata.find(m => 
+    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city'
+  );
 
   useEffect(() => {
     fetchAddresses();
   }, []);
 
-  const unpublishedAddresses = addresses.filter(addr => addr.verified && !addr.public && !addr.flagged);
+  // Filter addresses by geographical scope
+  const unpublishedAddresses = addresses.filter(addr => {
+    if (!addr.verified || addr.public || addr.flagged) return false;
+    
+    // Apply geographical scope filter
+    if (geographicScope) {
+      if (geographicScope.scope_type === 'city') {
+        return addr.city.toLowerCase() === geographicScope.scope_value.toLowerCase();
+      } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+        return addr.region.toLowerCase() === geographicScope.scope_value.toLowerCase();
+      }
+    }
+    
+    return true;
+  });
 
   const handlePublish = async (addressId: string, isPublic: boolean) => {
     await updateAddressStatus(addressId, { public: isPublic });
