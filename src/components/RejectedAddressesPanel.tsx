@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useUserRole } from "@/hooks/useUserRole";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import { AddressResubmissionDialog } from "./AddressResubmissionDialog";
 
 interface RejectedAddress {
   id: string;
-  user_id: string;
+  requester_id?: string;
   latitude: number;
   longitude: number;
   street: string;
@@ -87,6 +88,7 @@ const translateAIComment = (comment: string, t: any): string => {
 
 export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps) {
   const { t } = useTranslation('address');
+  const { roleMetadata } = useUserRole();
   const [rejectedAddresses, setRejectedAddresses] = useState<RejectedAddress[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
@@ -95,11 +97,31 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
     address: RejectedAddress | null;
   }>({ open: false, address: null });
 
+  // Get geographical scope from role metadata
+  const geographicScope = roleMetadata.find(m => 
+    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city'
+  );
+
   const fetchRejectedAddresses = async () => {
     try {
-      const { data, error } = await supabase.rpc('get_rejected_addresses_queue');
+      // Build query with geographical scope filter
+      let query = supabase
+        .from('address_requests')
+        .select('*')
+        .eq('status', 'rejected');
+
+      // Apply geographical scope filter
+      if (geographicScope) {
+        if (geographicScope.scope_type === 'city') {
+          query = query.ilike('city', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+          query = query.ilike('region', geographicScope.scope_value);
+        }
+      }
+
+      const { data, error } = await query.order('rejected_at', { ascending: false });
       if (error) throw error;
-      setRejectedAddresses(data || []);
+      setRejectedAddresses((data || []) as RejectedAddress[]);
     } catch (error) {
       console.error('Error fetching rejected addresses:', error);
       toast.error(t('failedToLoadRejectedAddresses'));

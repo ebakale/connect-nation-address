@@ -14,6 +14,7 @@ import {
   RefreshCw, Download, Eye, Clock, Settings, Users
 } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
+import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
 import { QualityIssuesFixer } from './QualityIssuesFixer';
 
@@ -68,6 +69,7 @@ interface CoverageAnalytics {
 
 export function QualityDashboard() {
   const { t } = useTranslation(['admin']);
+  const { roleMetadata } = useUserRole();
   const [analytics, setAnalytics] = useState<CoverageAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -88,30 +90,53 @@ export function QualityDashboard() {
   });
   const { toast } = useToast();
 
+  // Get geographical scope from role metadata
+  const geographicScope = roleMetadata.find(m => 
+    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city'
+  );
+
   const fetchQualityMetrics = async () => {
     try {
-      // Fetch low quality addresses (same logic as QualityIssuesFixer)
-      const { data: lowQualityAddresses, error: lowQualityError } = await supabase
+      // Build base query with geographical scope filter
+      const buildQuery = (baseQuery: any) => {
+        if (!geographicScope) return baseQuery;
+        
+        if (geographicScope.scope_type === 'city') {
+          return baseQuery.ilike('city', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+          return baseQuery.ilike('region', geographicScope.scope_value);
+        }
+        return baseQuery;
+      };
+
+      // Fetch low quality addresses with scope filter
+      let lowQualityQuery = supabase
         .from('addresses')
         .select('*')
         .lt('completeness_score', 85);
-
+      lowQualityQuery = buildQuery(lowQualityQuery);
+      
+      const { data: lowQualityAddresses, error: lowQualityError } = await lowQualityQuery;
       if (lowQualityError) throw lowQualityError;
 
-      // Fetch pending verification requests (same logic as QualityIssuesFixer)
-      const { data: pendingRequests, error: pendingError } = await supabase
+      // Fetch pending verification requests with scope filter
+      let pendingQuery = supabase
         .from('address_requests')
         .select('*')
         .eq('status', 'pending');
-
+      pendingQuery = buildQuery(pendingQuery);
+      
+      const { data: pendingRequests, error: pendingError } = await pendingQuery;
       if (pendingError) throw pendingError;
 
-      // Fetch all addresses for duplicate detection (same logic as QualityIssuesFixer)
-      const { data: allAddresses, error: allAddressesError } = await supabase
+      // Fetch all addresses for duplicate detection with scope filter
+      let allAddressesQuery = supabase
         .from('addresses')
-        .select('*')
+        .select('*');
+      allAddressesQuery = buildQuery(allAddressesQuery);
+      
+      const { data: allAddresses, error: allAddressesError } = await allAddressesQuery
         .order('created_at', { ascending: true });
-
       if (allAddressesError) throw allAddressesError;
 
       // Detect duplicates using same logic as QualityIssuesFixer

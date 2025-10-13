@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useUserRole } from "@/hooks/useUserRole";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AddressRequestApproval } from "./AddressRequestApproval";
@@ -12,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 
 interface AddressRequest {
   id: string;
-  user_id: string;
+  requester_id?: string;
   latitude: number;
   longitude: number;
   street: string;
@@ -36,21 +37,42 @@ interface AddressRequest {
 
 export function AddressRequestApprovalPanel() {
   const { t } = useTranslation('address');
+  const { roleMetadata } = useUserRole();
   const [addressRequests, setAddressRequests] = useState<AddressRequest[]>([]);
   const [manualReviewRequests, setManualReviewRequests] = useState<AddressRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Get geographical scope from role metadata
+  const geographicScope = roleMetadata.find(m => 
+    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city'
+  );
+
   const fetchAddressRequests = async () => {
     try {
-      const { data, error } = await supabase.rpc('get_review_queue');
+      // Build query with geographical scope filter
+      let query = supabase
+        .from('address_requests')
+        .select('*')
+        .eq('status', 'pending');
+
+      // Apply geographical scope filter
+      if (geographicScope) {
+        if (geographicScope.scope_type === 'city') {
+          query = query.ilike('city', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+          query = query.ilike('region', geographicScope.scope_value);
+        }
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false });
       if (error) throw error;
       
       // Filter requests for different tabs
-      const allRequests = data || [];
-      const filteredRequests = allRequests.filter((request: any) => 
+      const allRequests = (data || []) as AddressRequest[];
+      const filteredRequests = allRequests.filter((request) => 
         !request.flagged && !request.requires_manual_review
       );
-      const manualReviewData = allRequests.filter((request: any) => 
+      const manualReviewData = allRequests.filter((request) => 
         request.flagged || request.requires_manual_review
       );
       

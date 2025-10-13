@@ -14,7 +14,7 @@ import { z } from 'zod';
 
 interface RejectedAddress {
   id: string;
-  user_id: string;
+  requester_id?: string;
   latitude: number;
   longitude: number;
   street: string;
@@ -132,7 +132,7 @@ export function AddressResubmissionDialog({
     try {
       const { data, error } = await supabase.rpc('resubmit_address_request', {
         p_original_request_id: rejectedAddress.id,
-        p_user_id: rejectedAddress.user_id,
+        p_user_id: rejectedAddress.requester_id,
         p_latitude: formData.latitude,
         p_longitude: formData.longitude,
         p_street: formData.street,
