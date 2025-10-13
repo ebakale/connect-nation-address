@@ -154,10 +154,11 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     tabs.push({ id: 'search', label: t('address:searchAddresses'), icon: Search });
 
     // CAR Verifier specific tabs - check both current role and role flags
+    // IMPORTANT: CAR Verifiers do NOT have access to residency_ownership_verifications table
+    // That requires separate authorized_verifiers authorization (residency_verifier role)
     if (currentRole === 'car_verifier' || isCarVerifier || hasCarAccess) {
       tabs.push(
         { id: 'car-verification', label: t('dashboard:carVerification'), icon: UserCheck },
-        { id: 'residency-verification', label: t('dashboard:residencyVerification'), icon: Shield },
         { id: 'car-addresses', label: t('dashboard:carAddresses'), icon: Database }
       );
       return tabs;
@@ -299,6 +300,8 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
         );
 
       case 'residency-verification':
+        // This should only be accessible to users with residency_verifier role
+        // or users in the authorized_verifiers table with proper verification_scope
         return (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -306,7 +309,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
                 <h2 className="text-2xl font-bold">{t('dashboard:residencyVerification')}</h2>
                 <p className="text-muted-foreground">{t('dashboard:manageResidencyVerifications')}</p>
               </div>
-              <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
+              <Badge variant="outline">{t('dashboard:residencyVerifier')}</Badge>
             </div>
             <ResidencyVerificationManager />
           </div>

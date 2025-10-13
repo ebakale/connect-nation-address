@@ -11,7 +11,6 @@ import {
 import { useTranslation } from 'react-i18next';
 
 // Import CAR-specific components
-import { ResidencyVerificationManager } from './ResidencyVerificationManager';
 import { CitizenAddressVerificationManager } from './CitizenAddressVerificationManager';
 import { CARAdministrativeOverview } from './CARAdministrativeOverview';
 
@@ -23,18 +22,14 @@ export function CARVerifierDashboard({ onClose }: CARVerifierDashboardProps) {
   const { t } = useTranslation(['dashboard', 'address']);
   const [activeTab, setActiveTab] = useState('verification-queue');
 
+  // CAR Verifier tabs - focused on citizen_address table verification only
+  // Note: Residency verification (residency_ownership_verifications) requires separate authorization
   const verifierTabs = [
     { 
       id: 'verification-queue', 
       label: t('dashboard:verificationQueue'), 
       icon: UserCheck,
       description: t('dashboard:reviewPendingVerifications')
-    },
-    { 
-      id: 'residency-verification', 
-      label: t('dashboard:residencyVerification'), 
-      icon: Shield,
-      description: t('dashboard:manageResidencyVerifications')
     },
     { 
       id: 'address-overview', 
@@ -132,22 +127,6 @@ export function CARVerifierDashboard({ onClose }: CARVerifierDashboardProps) {
           </div>
         );
 
-      case 'residency-verification':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">{t('dashboard:residencyVerification')}</h2>
-                <p className="text-muted-foreground">{t('dashboard:manageResidencyDocuments')}</p>
-              </div>
-              <Badge variant="outline" className="bg-shield/10">
-                <Shield className="h-3 w-3 mr-1" />
-                {t('dashboard:documentVerification')}
-              </Badge>
-            </div>
-            <ResidencyVerificationManager />
-          </div>
-        );
 
       case 'address-overview':
         return (
@@ -304,7 +283,7 @@ export function CARVerifierDashboard({ onClose }: CARVerifierDashboardProps) {
 
       {/* Navigation Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3">
           {verifierTabs.map((tab) => (
             <TabsTrigger key={tab.id} value={tab.id} className="flex items-center gap-2">
               <tab.icon className="h-4 w-4" />
