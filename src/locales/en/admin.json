@@ -1,5 +1,6 @@
 {
   "title": "Administration",
+  "bulkImportUsers": "Bulk Import Users",
   "admin": "Administrator",
   "users": "Users",
   "settings": "Settings",

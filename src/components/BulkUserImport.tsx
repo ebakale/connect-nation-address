@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,6 +31,7 @@ interface ImportResult {
 }
 
 export function BulkUserImport() {
+  const { t } = useTranslation(['admin', 'common']);
   const [isOpen, setIsOpen] = useState(false);
   const [csvContent, setCsvContent] = useState('');
   const [importing, setImporting] = useState(false);
@@ -239,7 +241,7 @@ Maria Garcia,maria@example.com,City Hall,+240555666777,verifier,city,Bata,SafePa
       <DialogTrigger asChild>
         <Button variant="outline" className="flex items-center gap-2">
           <Upload className="h-4 w-4" />
-          Bulk Import Users
+          {t('admin:bulkImportUsers')}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">

@@ -1,5 +1,6 @@
 {
   "title": "Administration",
+  "bulkImportUsers": "Importation en Masse d'Utilisateurs",
   "admin": "Administrateur",
   "users": "Utilisateurs",
   "settings": "Paramètres",
