@@ -43,11 +43,13 @@ const ProcessFlowDiagramPDFEnglish: React.FC = () => {
       '↓',
       'VERIFIER REVIEW → Verifier reviews in queue, approves/rejects/edits',
       '↓',
-      'APPROVAL → Creates address record via approve_address_request()',
+      'APPROVAL → Verifier approves via approve_address_request()',
+      '↓',
+      'ADDRESS CREATION → Creates address with verified=true, public=false',
       '↓',
       'UAC GENERATION → System generates UAC using generate_unified_uac_unique()',
       '↓',
-      'PUBLICATION → Registrar sets verified=true and public=true',
+      'PUBLICATION → Registrar sets public=true (making it searchable)',
       '↓',
       'END → Address searchable, available for emergencies and CAR'
     ];

@@ -43,11 +43,13 @@ const ProcessFlowDiagramPDF: React.FC = () => {
       '↓',
       'REVISIÓN VERIFICADOR → Verifica en cola, aprueba/rechaza/edita',
       '↓',
-      'APROBACIÓN → Crea registro dirección via approve_address_request()',
+      'APROBACIÓN → Verificador aprueba via approve_address_request()',
+      '↓',
+      'CREACIÓN DIRECCIÓN → Crea dirección con verified=true, public=false',
       '↓',
       'GENERACIÓN UAC → Sistema genera UAC con generate_unified_uac_unique()',
       '↓',
-      'PUBLICACIÓN → Registrador establece verified=true y public=true',
+      'PUBLICACIÓN → Registrador establece public=true (hacerla buscable)',
       '↓',
       'FIN → Dirección buscable, disponible para emergencias y CAR'
     ];
