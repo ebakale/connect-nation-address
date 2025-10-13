@@ -5,7 +5,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Shield, MapPin, Plus, CheckCircle, FileCheck, AlertCircle, Building2, Map } from "lucide-react";
+import { Shield, MapPin, Plus, CheckCircle, FileCheck, AlertCircle, Globe, Home } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import { AddressCaptureForm } from "./AddressCaptureForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -79,16 +79,14 @@ export const NARAuthorityDashboard = () => {
     toast.success(t('dashboard:addressCreatedSuccessfully'));
   };
 
-  const getAuthorityLevelBadge = (level: string) => {
-    const variants: Record<string, { variant: "default" | "secondary" | "outline", label: string }> = {
-      national: { variant: "default", label: t('dashboard:nationalLevel') },
-      regional: { variant: "secondary", label: t('dashboard:regionalLevel') },
-      municipal: { variant: "outline", label: t('dashboard:municipalLevel') },
-      local: { variant: "outline", label: t('dashboard:localLevel') }
-    };
-    
-    const config = variants[level] || variants.local;
-    return <Badge variant={config.variant}>{config.label}</Badge>;
+  // NAR is always national level
+  const getAuthorityLevelBadge = () => {
+    return (
+      <Badge variant="default" className="flex items-center gap-1">
+        <Globe className="h-3 w-3" />
+        {t('dashboard:nationalLevel')}
+      </Badge>
+    );
   };
 
   if (!narAuthorityData) {
@@ -122,18 +120,14 @@ export const NARAuthorityDashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <p className="text-sm font-medium text-muted-foreground mb-1">{t('dashboard:authorityLevel')}</p>
-              {getAuthorityLevelBadge(narAuthorityData.authority_level)}
+              {getAuthorityLevelBadge()}
             </div>
             
             <div>
               <p className="text-sm font-medium text-muted-foreground mb-1">{t('dashboard:jurisdiction')}</p>
               <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">
-                  {narAuthorityData.jurisdiction_city ? 
-                    `${narAuthorityData.jurisdiction_city}, ${narAuthorityData.jurisdiction_region || ''}` :
-                    narAuthorityData.jurisdiction_region || t('dashboard:nationalWide')}
-                </span>
+                <Globe className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm">{t('dashboard:nationalWide')}</span>
               </div>
             </div>
           </div>
@@ -218,8 +212,6 @@ export const NARAuthorityDashboard = () => {
             </DialogHeader>
             <AddressCaptureForm 
               onSuccess={handleAddressCreated}
-              defaultRegion={narAuthorityData.jurisdiction_region || undefined}
-              defaultCity={narAuthorityData.jurisdiction_city || undefined}
             />
           </DialogContent>
         </Dialog>
@@ -229,7 +221,7 @@ export const NARAuthorityDashboard = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Building2 className="h-5 w-5" />
+            <Home className="h-5 w-5" />
             {t('dashboard:myCreatedAddresses')}
           </CardTitle>
           <CardDescription>
@@ -241,7 +233,7 @@ export const NARAuthorityDashboard = () => {
             <p className="text-center text-muted-foreground py-8">{t('common:buttons.loading')}</p>
           ) : addresses.length === 0 ? (
             <div className="text-center py-8">
-              <Map className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+              <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
               <p className="text-muted-foreground">{t('dashboard:noAddressesCreatedYet')}</p>
             </div>
           ) : (

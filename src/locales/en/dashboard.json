@@ -1070,5 +1070,13 @@
   "addressCreatedSuccessfully": "Address created successfully",
   "narAuthority": "NAR Authority",
   "tools": "Tools",
-  "addressSearch": "Address Search"
+  "addressSearch": "Address Search",
+  "nationalLevel": "National Level",
+  "nationalLevelDesc": "Full authority across the entire National Address Registry",
+  "nationalWide": "Nationwide",
+  "nationalWideDesc": "This authority has jurisdiction over the entire country",
+  "narAuthorityProfileDesc": "Your NAR Authority profile and permissions",
+  "yourJurisdictionAndPermissions": "Your jurisdiction and permissions",
+  "myCreatedAddresses": "Addresses I Created",
+  "createNARAddress": "Create NAR Address"
 }

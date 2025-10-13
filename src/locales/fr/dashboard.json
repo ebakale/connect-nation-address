@@ -488,5 +488,13 @@
   "addressCreatedSuccessfully": "Adresse créée avec succès",
   "narAuthority": "Autorité NAR",
   "tools": "Outils",
-  "addressSearch": "Recherche d'Adresse"
+  "addressSearch": "Recherche d'Adresse",
+  "nationalLevel": "Niveau National",
+  "nationalLevelDesc": "Pleine autorité sur l'ensemble du Registre National d'Adresses",
+  "nationalWide": "À l'échelle Nationale",
+  "nationalWideDesc": "Cette autorité a juridiction sur l'ensemble du pays",
+  "narAuthorityProfileDesc": "Votre profil et permissions d'Autorité NAR",
+  "yourJurisdictionAndPermissions": "Votre juridiction et permissions",
+  "myCreatedAddresses": "Adresses que J'ai Créées",
+  "createNARAddress": "Créer une Adresse NAR"
 }

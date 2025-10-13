@@ -20,7 +20,8 @@ import {
   FileCheck,
   Crown,
   UserCheck,
-  Star
+  Star,
+  Globe
 } from 'lucide-react';
 import {
   Sidebar,
@@ -405,10 +406,9 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
               {!collapsed && (
                 <div className="mt-3 p-2 bg-muted/50 rounded-lg">
                   <p className="text-xs font-medium text-muted-foreground mb-1">{t('jurisdiction')}</p>
-                  <p className="text-xs">
-                    {narAuthorityData?.jurisdiction_city ? 
-                      `${narAuthorityData.jurisdiction_city}, ${narAuthorityData.jurisdiction_region || ''}` :
-                      narAuthorityData?.jurisdiction_region || t('nationalWide')}
+                  <p className="text-xs flex items-center gap-1">
+                    <Globe className="h-3 w-3" />
+                    {t('nationalWide')}
                   </p>
                 </div>
               )}

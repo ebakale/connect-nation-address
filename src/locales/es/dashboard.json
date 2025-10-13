@@ -488,5 +488,13 @@
   "addressCreatedSuccessfully": "Dirección creada exitosamente",
   "narAuthority": "Autoridad NAR",
   "tools": "Herramientas",
-  "addressSearch": "Búsqueda de Direcciones"
+  "addressSearch": "Búsqueda de Direcciones",
+  "nationalLevel": "Nivel Nacional",
+  "nationalLevelDesc": "Autoridad completa en todo el Registro Nacional de Direcciones",
+  "nationalWide": "A Nivel Nacional",
+  "nationalWideDesc": "Esta autoridad tiene jurisdicción sobre todo el país",
+  "narAuthorityProfileDesc": "Tu perfil y permisos de Autoridad NAR",
+  "yourJurisdictionAndPermissions": "Tu jurisdicción y permisos",
+  "myCreatedAddresses": "Direcciones que Creé",
+  "createNARAddress": "Crear Dirección NAR"
 }

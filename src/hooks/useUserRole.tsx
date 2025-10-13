@@ -28,8 +28,6 @@ export const useUserRole = () => {
   const [isNARAuthority, setIsNARAuthority] = useState(false);
   const [narAuthorityData, setNarAuthorityData] = useState<{
     authority_level: string;
-    jurisdiction_region: string | null;
-    jurisdiction_city: string | null;
     can_create_addresses: boolean;
     can_verify_addresses: boolean;
     can_update_addresses: boolean;
@@ -210,7 +208,7 @@ export const useUserRole = () => {
       try {
         const { data, error } = await supabase
           .from('nar_authorities')
-          .select('authority_level, jurisdiction_region, jurisdiction_city, can_create_addresses, can_verify_addresses, can_update_addresses')
+          .select('authority_level, can_create_addresses, can_verify_addresses, can_update_addresses')
           .eq('user_id', user.id)
           .eq('is_active', true)
           .maybeSingle();

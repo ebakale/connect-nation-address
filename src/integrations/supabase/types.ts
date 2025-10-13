@@ -1249,8 +1249,6 @@ export type Database = {
           created_at: string | null
           id: string
           is_active: boolean | null
-          jurisdiction_city: string | null
-          jurisdiction_region: string | null
           user_id: string
         }
         Insert: {
@@ -1263,8 +1261,6 @@ export type Database = {
           created_at?: string | null
           id?: string
           is_active?: boolean | null
-          jurisdiction_city?: string | null
-          jurisdiction_region?: string | null
           user_id: string
         }
         Update: {
@@ -1277,8 +1273,6 @@ export type Database = {
           created_at?: string | null
           id?: string
           is_active?: boolean | null
-          jurisdiction_city?: string | null
-          jurisdiction_region?: string | null
           user_id?: string
         }
         Relationships: []
@@ -2315,6 +2309,13 @@ export type Database = {
       get_pending_verifications_count: {
         Args: Record<PropertyKey, never>
         Returns: number
+      }
+      get_registrar_scope: {
+        Args: { _user_id: string }
+        Returns: {
+          scope_type: string
+          scope_value: string
+        }[]
       }
       get_rejected_addresses_queue: {
         Args: Record<PropertyKey, never>
