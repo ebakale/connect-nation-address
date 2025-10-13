@@ -390,5 +390,7 @@
   "expired": "Expiré",
   "createNewApiKey": "Créer une Nouvelle Clé API",
   "viewLogs": "Voir les Journaux",
-  "healthy": "Sain"
+  "healthy": "Sain",
+  "bearerTokenAuth": "Jeton Bearer dans l'en-tête d'Autorisation",
+  "rateLimitPerKey": "1000 requêtes/heure par clé"
 }

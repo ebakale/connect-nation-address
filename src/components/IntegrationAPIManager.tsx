@@ -121,13 +121,13 @@ export const IntegrationAPIManager = () => {
             <div className="p-4 border rounded-lg">
               <h4 className="font-semibold mb-2">{t('dashboard:authentication')}</h4>
               <p className="text-sm text-muted-foreground">
-                Bearer Token in Authorization header
+                {t('dashboard:bearerTokenAuth')}
               </p>
             </div>
             <div className="p-4 border rounded-lg">
               <h4 className="font-semibold mb-2">{t('dashboard:rateLimit')}</h4>
               <p className="text-sm text-muted-foreground">
-                1000 requests/hour per key
+                {t('dashboard:rateLimitPerKey')}
               </p>
             </div>
           </div>

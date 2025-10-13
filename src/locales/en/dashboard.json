@@ -972,5 +972,7 @@
   "never": "Never",
   "noHealthData": "No health monitoring data available",
   "viewLogs": "View Logs",
-  "healthy": "Healthy"
+  "healthy": "Healthy",
+  "bearerTokenAuth": "Bearer Token in Authorization header",
+  "rateLimitPerKey": "1000 requests/hour per key"
 }
