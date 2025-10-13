@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Address } from "@/hooks/useAddresses";
 import { useTranslation } from 'react-i18next';
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface AddressStats {
   total: number;
@@ -63,6 +64,7 @@ export const AnalyticsReports = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const { toast } = useToast();
   const { t } = useTranslation(['dashboard', 'common']);
+  const { roleMetadata } = useUserRole();
 
   // Unique colors for each address type using semantic design tokens (map by slug)
   const typeColorMap: Record<string, string> = {
@@ -98,10 +100,24 @@ export const AnalyticsReports = () => {
   const fetchRealAddresses = async () => {
     setLoading(true);
     try {
-      const { data: addressData, error } = await supabase
+      const geographicScope = roleMetadata.find(m =>
+        m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city'
+      );
+
+      let query = supabase
         .from('addresses')
         .select('*')
         .order('created_at', { ascending: true });
+
+      if (geographicScope) {
+        if (geographicScope.scope_type === 'city') {
+          query = query.ilike('city', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+          query = query.ilike('region', geographicScope.scope_value);
+        }
+      }
+
+      const { data: addressData, error } = await query;
 
       if (error) throw error;
       

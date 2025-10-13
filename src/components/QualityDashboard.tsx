@@ -220,7 +220,12 @@ export function QualityDashboard() {
 
   const fetchAnalytics = async () => {
     try {
-      const { data, error } = await supabase.functions.invoke('coverage-analytics-api');
+      const body: any = {};
+      if (geographicScope) {
+        body.scope_type = geographicScope.scope_type;
+        body.scope_value = geographicScope.scope_value;
+      }
+      const { data, error } = await supabase.functions.invoke('coverage-analytics-api', { body });
       
       if (error) throw error;
       

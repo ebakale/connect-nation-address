@@ -79,6 +79,32 @@ serve(async (req) => {
 
     console.log('Generating coverage analytics...')
 
+    // Read scope from request (POST body or query params)
+    let scopeType: string | null = null
+    let scopeValue: string | null = null
+    try {
+      if (req.method === 'POST') {
+        const body = await req.json()
+        scopeType = body?.scope_type || null
+        scopeValue = body?.scope_value || null
+      } else {
+        const url = new URL(req.url)
+        scopeType = url.searchParams.get('scope_type')
+        scopeValue = url.searchParams.get('scope_value')
+      }
+    } catch (_) {}
+
+    const applyScope = (query: any, table: 'addresses' | 'address_requests' | 'coverage_analytics') => {
+      if (!scopeType || !scopeValue) return query
+      if (scopeType === 'city') {
+        return query.ilike('city', scopeValue)
+      }
+      if (scopeType === 'region' || scopeType === 'province') {
+        return query.ilike('region', scopeValue)
+      }
+      return query
+    }
+
     // Refresh coverage analytics using service role
     const { error: refreshError } = await supabaseClient.rpc('calculate_coverage_analytics')
     if (refreshError) {
@@ -87,9 +113,11 @@ serve(async (req) => {
     }
 
     // Get coverage analytics data
-    const { data: coverageData, error: coverageError } = await supabaseClient
+    let coverageQuery = supabaseClient
       .from('coverage_analytics')
       .select('*')
+    coverageQuery = applyScope(coverageQuery, 'coverage_analytics')
+    const { data: coverageData, error: coverageError } = await coverageQuery
       .order('region', { ascending: true })
       .order('city', { ascending: true })
 
@@ -98,19 +126,23 @@ serve(async (req) => {
     }
 
     // Get address statistics for national summary and quality analysis
-    const { data: addressStats, error: addressStatsError } = await supabaseClient
+    let addressesQuery = supabaseClient
       .from('addresses')
       .select('region, city, street, verified, public, completeness_score')
+    addressesQuery = applyScope(addressesQuery, 'addresses')
+    const { data: addressStats, error: addressStatsError } = await addressesQuery
 
     if (addressStatsError) {
       throw addressStatsError
     }
 
     // Get pending requests count
-    const { data: pendingRequests, error: pendingError } = await supabaseClient
+    let pendingQuery = supabaseClient
       .from('address_requests')
       .select('id', { count: 'exact', head: true })
       .eq('status', 'pending')
+    pendingQuery = applyScope(pendingQuery, 'address_requests')
+    const { data: pendingRequests, error: pendingError } = await pendingQuery
 
     if (pendingError) {
       console.error('Error getting pending requests:', pendingError)
