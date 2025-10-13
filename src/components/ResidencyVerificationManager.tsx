@@ -59,8 +59,13 @@ export const ResidencyVerificationManager = () => {
   const [reviewStatus, setReviewStatus] = useState('');
   const [reviewDialog, setReviewDialog] = useState(false);
   
-  const { canVerifyAddresses, hasAdminAccess, isResidencyVerifier, loading: roleLoading } = useUserRole();
+  const { canVerifyAddresses, hasAdminAccess, isResidencyVerifier, roleMetadata, loading: roleLoading } = useUserRole();
   const { toast } = useToast();
+
+  // Get geographical scope from role metadata
+  const geographicScope = roleMetadata.find(m => 
+    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city'
+  );
 
   const fetchVerifications = useCallback(async () => {
     if (!canVerifyAddresses && !hasAdminAccess) {
@@ -70,12 +75,16 @@ export const ResidencyVerificationManager = () => {
     
     setLoading(true);
     try {
-      console.log('Fetching verifications with permissions:', { canVerifyAddresses, hasAdminAccess, statusFilter });
+      console.log('Fetching verifications with permissions:', { canVerifyAddresses, hasAdminAccess, statusFilter, geographicScope });
       
       let query = supabase
         .from('residency_ownership_verifications')
         .select(`
-          *
+          *,
+          addresses!residency_ownership_verifications_address_uac_fkey(
+            city,
+            region
+          )
         `)
         .order('updated_at', { ascending: false });
 
@@ -92,9 +101,25 @@ export const ResidencyVerificationManager = () => {
         throw error;
       }
       
+      // Filter by geographical scope if applicable
+      let filteredData = data || [];
+      if (!hasAdminAccess && geographicScope && filteredData.length > 0) {
+        filteredData = filteredData.filter((v: any) => {
+          const address = v.addresses;
+          if (!address) return false;
+          
+          if (geographicScope.scope_type === 'city') {
+            return address.city?.toLowerCase() === geographicScope.scope_value?.toLowerCase();
+          } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+            return address.region?.toLowerCase() === geographicScope.scope_value?.toLowerCase();
+          }
+          return false;
+        });
+      }
+      
       // If we have verifications, fetch the associated profiles separately
-      if (data && data.length > 0) {
-        const userIds = data.map(v => v.user_id);
+      if (filteredData && filteredData.length > 0) {
+        const userIds = filteredData.map(v => v.user_id);
         console.log('Fetching profiles for user IDs:', userIds);
         
         const { data: profiles, error: profilesError } = await supabase
@@ -110,7 +135,7 @@ export const ResidencyVerificationManager = () => {
         }
 
         // Combine the data
-        const combinedData = data.map(verification => {
+        const combinedData = filteredData.map(verification => {
           const profile = profiles?.find(p => p.user_id === verification.user_id);
           console.log(`Mapping verification ${verification.id} with user_id ${verification.user_id}:`, { profile });
           return {
@@ -138,7 +163,7 @@ export const ResidencyVerificationManager = () => {
     } finally {
       setLoading(false);
     }
-  }, [canVerifyAddresses, hasAdminAccess, statusFilter, toast]);
+  }, [canVerifyAddresses, hasAdminAccess, statusFilter, geographicScope, toast]);
 
   const updateVerificationStatus = async (verificationId: string, newStatus: string, notes?: string) => {
     try {

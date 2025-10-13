@@ -197,7 +197,7 @@ const UserManager: React.FC = () => {
   const assignRole = async (userId: string, role: string) => {
     // Check if role requires geographic scope
     if (role === 'police_dispatcher' || role === 'police_supervisor' || 
-        role === 'registrar' || role === 'verifier' || role === 'field_agent') {
+        role === 'registrar' || role === 'verifier' || role === 'field_agent' || role === 'residency_verifier') {
       setPendingAssignment({ userId, role });
       setShowScopeDialog(true);
       return;
@@ -548,13 +548,13 @@ const UserManager: React.FC = () => {
                                  {(hasPoliceAdminAccess ? policeRoles : addressingRoles).filter(role => 
                                   !user.roles.some(userRole => userRole.role === role)
                                 ).map((role) => (
-                                  <SelectItem key={role} value={role}>
+                                   <SelectItem key={role} value={role}>
                                     {role.replace('_', ' ')}
-                                    {(role === 'police_dispatcher' || role === 'police_supervisor' || 
-                                      role === 'registrar' || role === 'verifier' || role === 'field_agent') && (
-                                      <span className="text-xs text-muted-foreground ml-1">({t('userManagement.requiresGeographicScope')})</span>
-                                    )}
-                                  </SelectItem>
+                                     {(role === 'police_dispatcher' || role === 'police_supervisor' || 
+                                       role === 'registrar' || role === 'verifier' || role === 'field_agent' || role === 'residency_verifier') && (
+                                       <span className="text-xs text-muted-foreground ml-1">({t('userManagement.requiresGeographicScope')})</span>
+                                     )}
+                                   </SelectItem>
                                 ))}
                               </SelectContent>
                             </Select>
@@ -647,10 +647,10 @@ const UserManager: React.FC = () => {
                             ).map((role) => (
                               <SelectItem key={role} value={role}>
                                 {role.replace('_', ' ')}
-                                {(role === 'police_dispatcher' || role === 'police_supervisor' || 
-                                  role === 'registrar' || role === 'verifier' || role === 'field_agent') && (
-                                  <span className="text-xs text-muted-foreground ml-1">({t('userManagement.requiresGeographicScope')})</span>
-                                )}
+                                 {(role === 'police_dispatcher' || role === 'police_supervisor' || 
+                                   role === 'registrar' || role === 'verifier' || role === 'field_agent' || role === 'residency_verifier') && (
+                                   <span className="text-xs text-muted-foreground ml-1">({t('userManagement.requiresGeographicScope')})</span>
+                                 )}
                               </SelectItem>
                             ))}
                           </SelectContent>
