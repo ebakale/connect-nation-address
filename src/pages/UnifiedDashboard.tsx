@@ -100,6 +100,7 @@ interface PendingRequest {
 const UnifiedDashboard = () => {
   const { 
     role, 
+    roleMetadata,
     loading, 
     isAdmin, 
     isCitizen, 
@@ -123,6 +124,11 @@ const UnifiedDashboard = () => {
   const { t } = useTranslation(['dashboard', 'common']);
   
   const navigate = useNavigate();
+
+  // Get geographical scope from role metadata
+  const geographicScope = roleMetadata.find(m => 
+    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city'
+  );
 
   // Route users to appropriate dashboard based on their primary role
   useEffect(() => {
@@ -184,9 +190,22 @@ const UnifiedDashboard = () => {
   // Fetch dashboard statistics
   useEffect(() => {
     const fetchStats = async () => {
-      if (!hasAdminAccess) return;
+      if (!hasAdminAccess && !isVerifier && !isFieldAgent) return;
       
       try {
+        // Build base queries with geographical scope filter for verifiers and field agents
+        const buildQuery = (baseQuery: any) => {
+          // Only apply geographical filtering for non-admins
+          if (hasAdminAccess || !geographicScope) return baseQuery;
+          
+          if (geographicScope.scope_type === 'city') {
+            return baseQuery.ilike('city', geographicScope.scope_value);
+          } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+            return baseQuery.ilike('region', geographicScope.scope_value);
+          }
+          return baseQuery;
+        };
+
         // Fetch all stats in parallel
         const [
           profilesResult,
@@ -198,10 +217,10 @@ const UnifiedDashboard = () => {
         ] = await Promise.all([
           supabase.from('profiles').select('id', { count: 'exact', head: true }),
           supabase.from('user_roles').select('role', { count: 'exact', head: true }),
-          supabase.from('address_requests').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
-          supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true),
-          supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true),
-          supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('public', true).eq('verified', true)
+          buildQuery(supabase.from('address_requests').select('id', { count: 'exact', head: true }).eq('status', 'pending')),
+          buildQuery(supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true)),
+          buildQuery(supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true)),
+          buildQuery(supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('public', true).eq('verified', true))
         ]);
 
         setStats({
@@ -241,11 +260,22 @@ const UnifiedDashboard = () => {
 
     const fetchPendingRequests = async () => {
       try {
-        // First get the address requests
-        const { data: requests, error: requestsError } = await supabase
+        // Build query with geographical scope filter
+        let query = supabase
           .from('address_requests')
           .select('*')
-          .eq('status', 'pending')
+          .eq('status', 'pending');
+
+        // Apply geographical scope filter for verifiers and field agents
+        if (!hasAdminAccess && geographicScope) {
+          if (geographicScope.scope_type === 'city') {
+            query = query.ilike('city', geographicScope.scope_value);
+          } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+            query = query.ilike('region', geographicScope.scope_value);
+          }
+        }
+
+        const { data: requests, error: requestsError } = await query
           .order('created_at', { ascending: false })
           .limit(10);
 
@@ -310,7 +340,7 @@ const UnifiedDashboard = () => {
     fetchUnifiedStats();
     fetchPendingRequests();
     fetchUserProfile();
-  }, [hasAdminAccess, user]);
+  }, [hasAdminAccess, isVerifier, isFieldAgent, user, geographicScope]);
 
   if (loading) {
     return (
@@ -337,7 +367,7 @@ const UnifiedDashboard = () => {
     );
   }
 
-  const geographicScope = getGeographicScope();
+  const scopeFromMetadata = getGeographicScope();
   const userRoles = [];
   if (isAdmin) userRoles.push(t('dashboard:admin'));
   if (isVerifier) userRoles.push(t('dashboard:verifier'));
@@ -430,9 +460,9 @@ const UnifiedDashboard = () => {
                 </div>
 
                 {/* Geographic scope */}
-                {geographicScope.length > 0 && (
+                {scopeFromMetadata.length > 0 && (
                   <div className="flex gap-2">
-                    {geographicScope.map((scope) => (
+                    {scopeFromMetadata.map((scope) => (
                       <Badge key={scope} variant="secondary" className="text-xs">
                         {scope}
                       </Badge>

@@ -34,7 +34,7 @@ interface FieldMapProps {
 
 const FieldMap = ({ onClose }: FieldMapProps) => {
   const { user } = useAuth();
-  const { getGeographicScope } = useUserRole();
+  const { getGeographicScope, roleMetadata } = useUserRole();
   const { t } = useTranslation(['dashboard']);
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<google.maps.Map | null>(null);
@@ -47,7 +47,10 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
   const [isApiReady, setIsApiReady] = useState(false);
   const markers = useRef<google.maps.Marker[]>([]);
 
-  const geographicScope = getGeographicScope();
+  // Get geographical scope from role metadata
+  const geographicScope = roleMetadata.find(m => 
+    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city'
+  );
 
   const fetchGoogleMapsApiKey = async () => {
     try {
@@ -70,9 +73,13 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
         .select('*')
         .order('created_at', { ascending: false });
 
-      // Filter by geographic scope if field agent has limited scope
-      if (geographicScope.length > 0) {
-        query = query.in('region', geographicScope);
+      // Filter by geographic scope
+      if (geographicScope) {
+        if (geographicScope.scope_type === 'city') {
+          query = query.ilike('city', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+          query = query.ilike('region', geographicScope.scope_value);
+        }
       }
 
       const { data, error } = await query;
@@ -260,13 +267,11 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex gap-2">
-            {geographicScope.map((scope) => (
-              <Badge key={scope} variant="secondary">
-                {scope}
-              </Badge>
-            ))}
-          </div>
+          {geographicScope && (
+            <Badge variant="secondary">
+              {geographicScope.scope_type === 'city' ? 'City' : 'Region'}: {geographicScope.scope_value}
+            </Badge>
+          )}
           {onClose && (
             <Button variant="outline" size="sm" onClick={onClose}>
               <X className="h-4 w-4 mr-2" />
@@ -377,9 +382,9 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
             </div>
             <div>
               <div className="text-2xl font-bold text-purple-600">
-                {geographicScope.length}
+                {geographicScope ? 1 : 0}
               </div>
-              <div className="text-sm text-muted-foreground">{t('dashboard:fieldMap.regions')}</div>
+              <div className="text-sm text-muted-foreground">{t('dashboard:fieldMap.scope')}</div>
             </div>
           </div>
         </CardContent>
