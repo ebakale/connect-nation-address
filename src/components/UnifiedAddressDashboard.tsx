@@ -51,7 +51,6 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     isFieldAgent,
     isVerifier, 
     isRegistrar,
-    isCarVerifier,
     isCarAdmin, 
     hasAdminAccess, 
     hasNDAAAccess,
@@ -64,7 +63,6 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
   console.log('UnifiedAddressDashboard - Role info:', {
     role,
     isCitizen,
-    isCarVerifier,
     isCarAdmin,
     hasCarAccess
   });
@@ -87,11 +85,6 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
         if (!error && roleData) {
           const roles = roleData.map(r => r.role);
           setAvailableRoles(roles);
-          
-          // If user has car_verifier role and no active role is set to CAR, prioritize car_verifier
-          if (roles.includes('car_verifier') && activeRole !== 'car_verifier') {
-            setActiveRole('car_verifier');
-          }
         }
       } catch (error) {
         console.error('Error fetching user roles:', error);
@@ -111,7 +104,6 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
   // Set default tab based on active role
   const getDefaultTab = () => {
     const currentRole = activeRole || role;
-    if (currentRole === 'car_verifier') return 'car-verification';
     if (currentRole === 'car_admin') return 'car-admin';
     return 'search';
   };
@@ -128,7 +120,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     const tabs = [];
     const currentRole = activeRole || role;
 
-    console.log('Current role for tabs:', currentRole, 'isCarVerifier:', isCarVerifier);
+    console.log('Current role for tabs:', currentRole);
 
     // Citizens get a simplified interface
     if (currentRole === 'citizen' && !hasCarAccess) {
@@ -463,20 +455,11 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
       </div>
 
       {/* Welcome Messages based on active role */}
-      {(activeRole === 'citizen' || (!activeRole && isCitizen)) && !isCarVerifier && !hasCarAccess && (
+      {(activeRole === 'citizen' || (!activeRole && isCitizen)) && !hasCarAccess && (
         <Alert>
           <Home className="h-4 w-4" />
           <AlertDescription>
             {t('dashboard:citizenWelcomeMessage')}
-          </AlertDescription>
-        </Alert>
-      )}
-
-      {(activeRole === 'car_verifier' || isCarVerifier) && (
-        <Alert>
-          <Shield className="h-4 w-4" />
-          <AlertDescription>
-            {t('dashboard:carVerifierWelcomeMessage')}
           </AlertDescription>
         </Alert>
       )}

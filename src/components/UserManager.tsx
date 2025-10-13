@@ -75,10 +75,10 @@ const UserManager: React.FC = () => {
   const addressingRoles = hasNDAAAccess 
     ? ['admin', 'ndaa_admin', 'registrar', 'verifier', 'field_agent', 'citizen', 
        'property_claimant', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user',
-       'car_admin', 'car_verifier', 'residency_verifier'] as const
+       'car_admin', 'residency_verifier'] as const
     : ['admin', 'registrar', 'verifier', 'field_agent', 'citizen', 
        'property_claimant', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user',
-       'car_admin', 'car_verifier', 'residency_verifier'] as const; // System admin cannot assign NDAA role
+       'car_admin', 'residency_verifier'] as const; // System admin cannot assign NDAA role
 
   // Region to cities mapping for Equatorial Guinea
   const regionCities: Record<string, string[]> = {

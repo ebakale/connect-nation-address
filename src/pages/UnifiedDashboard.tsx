@@ -104,7 +104,6 @@ const UnifiedDashboard = () => {
     isFieldAgent, 
     isVerifier, 
     isRegistrar,
-    isCarVerifier,
     isCarAdmin,
     getGeographicScope,
     hasAdminAccess,
@@ -164,14 +163,14 @@ const UnifiedDashboard = () => {
   // Auto-open specific dashboards for different roles
   useEffect(() => {
     if (!loading) {
-      if (isCarVerifier || isCarAdmin) {
+      if (isCarAdmin) {
         setActiveView('car-verification');
       } else if (isRegistrar && !hasAdminAccess) {
         // Registrars go to their dedicated dashboard unless they're also admins
         setActiveView('registrar-dashboard');
       }
     }
-  }, [loading, isCarVerifier, isCarAdmin, isRegistrar, hasAdminAccess]);
+  }, [loading, isCarAdmin, isRegistrar, hasAdminAccess]);
 
   // Fetch dashboard statistics
   useEffect(() => {
@@ -488,8 +487,8 @@ const UnifiedDashboard = () => {
               </>
             )}
 
-            {/* CAR Verifier Quick Stats */}
-            {(isCarVerifier || isCarAdmin) && (
+            {/* CAR Admin Quick Stats */}
+            {isCarAdmin && (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <Card>

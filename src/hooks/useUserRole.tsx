@@ -7,7 +7,7 @@ export type UserRole =
   | 'citizen' | 'property_claimant' | 'field_agent' 
   | 'verifier' | 'registrar' | 'ndaa_admin' 
   | 'partner' | 'auditor' | 'data_steward' | 'support'
-  | 'car_admin' | 'car_verifier' | 'residency_verifier'
+  | 'car_admin' | 'residency_verifier'
   | 'police_operator' | 'police_supervisor' | 'police_dispatcher' | 'police_admin'
   | null;
 
@@ -73,7 +73,7 @@ export const useUserRole = () => {
             'admin', 'ndaa_admin', 'police_admin',
             'police_supervisor', 'police_dispatcher', 'police_operator',
             'car_admin',
-            'registrar', 'verifier', 'car_verifier', 'residency_verifier',
+            'registrar', 'verifier', 'residency_verifier',
             'field_agent', 'property_claimant',
             'citizen', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user'
           ];
@@ -125,7 +125,6 @@ export const useUserRole = () => {
   
   // CAR role checks
   const isCARAdmin = role === 'car_admin';
-  const isCARVerifier = role === 'car_verifier';
   const isResidencyVerifier = role === 'residency_verifier';
   
   // Police role checks
@@ -154,7 +153,7 @@ export const useUserRole = () => {
   const hasPoliceAdminAccess = isPoliceAdmin;
   
   // CAR access checks  
-  const hasCARAccess = isCARAdmin || isCARVerifier || isResidencyVerifier || isAdmin || hasSystemAdminAccess;
+  const hasCARAccess = isCARAdmin || isResidencyVerifier || isAdmin || hasSystemAdminAccess;
   const hasCARManagementAccess = isCARAdmin || hasSystemAdminAccess;
   const hasCARVerificationAccess = hasCARAccess || hasVerifierAccess;
   
@@ -223,7 +222,7 @@ export const useUserRole = () => {
   };
   
   // Verification and publishing permissions
-  const canVerifyAddresses = role === 'verifier' || role === 'car_verifier' || role === 'residency_verifier' || hasRegistrarAccess || hasCARVerificationAccess;
+  const canVerifyAddresses = role === 'verifier' || role === 'residency_verifier' || hasRegistrarAccess || hasCARVerificationAccess;
   const canPublishAddresses = hasRegistrarAccess;
   const canRetireAddresses = hasRegistrarAccess;
   const canOverrideDecisions = hasNDAAAccess; // Only NDAA can override decisions
@@ -330,8 +329,6 @@ export const useUserRole = () => {
     isUser,
     // CAR role checks
     isCARAdmin,
-    isCARVerifier,
-    isCarVerifier: isCARVerifier, // Alias for compatibility
     isCarAdmin: isCARAdmin, // Alias for compatibility
     isResidencyVerifier,
     hasCARAccess,

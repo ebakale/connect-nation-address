@@ -6,7 +6,7 @@ import { useUserRole } from '@/hooks/useUserRole';
 export const RoleBasedRedirect = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { loading, isPoliceRole, isAdmin, isNDAAAdmin, isRegistrar, isVerifier, isFieldAgent, isCarVerifier, isCarAdmin } = useUserRole();
+  const { loading, isPoliceRole, isAdmin, isNDAAAdmin, isRegistrar, isVerifier, isFieldAgent, isCarAdmin } = useUserRole();
 
   useEffect(() => {
     if (!user || loading) return;
@@ -22,12 +22,12 @@ export const RoleBasedRedirect = () => {
       navigate('/dashboard'); // Verifier users go to main dashboard
     } else if (isFieldAgent) {
       navigate('/dashboard'); // Field agent users go to main dashboard
-    } else if (isCarVerifier || isCarAdmin) {
+    } else if (isCarAdmin) {
       navigate('/dashboard'); // CAR users go to main dashboard with CAR interface
     } else {
       navigate('/dashboard');
     }
-  }, [user, loading, isPoliceRole, isAdmin, isNDAAAdmin, isRegistrar, isVerifier, isFieldAgent, isCarVerifier, isCarAdmin, navigate]);
+  }, [user, loading, isPoliceRole, isAdmin, isNDAAAdmin, isRegistrar, isVerifier, isFieldAgent, isCarAdmin, navigate]);
 
   return null;
 };

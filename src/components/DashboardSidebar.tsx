@@ -64,7 +64,6 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     isPropertyClaimant,
     isVerifier, 
     isRegistrar,
-    isCarVerifier,
     isCarAdmin,
     hasAdminAccess,
     hasCarAccess,
@@ -91,25 +90,11 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: true
     },
     {
-      id: 'car-verification',
-      title: t('carVerification'),
-      icon: UserCheck,
-      onClick: () => handleItemClick('car-verification'),
-      visible: isCarVerifier || isCarAdmin
-    },
-    {
       id: 'residency-verification',
       title: t('residencyVerification'),
       icon: Shield,
       onClick: () => handleItemClick('residency-verification'),
-      visible: isCarVerifier || isCarAdmin
-    },
-    {
-      id: 'car-addresses',
-      title: t('carAddresses'),
-      icon: MapPin,
-      onClick: () => handleItemClick('car-addresses'),
-      visible: isCarVerifier || isCarAdmin
+      visible: isCarAdmin
     },
     {
       id: 'car-admin',
@@ -261,13 +246,13 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     }
   ];
 
-  // Use CAR navigation if user is CAR verifier/admin, otherwise use standard
-  const navigationItems = (isCarVerifier || isCarAdmin) ? carNavigationItems : standardNavigationItems;
+  // Use CAR navigation if user is CAR admin, otherwise use standard
+  const navigationItems = isCarAdmin ? carNavigationItems : standardNavigationItems;
 
   const visibleItems = navigationItems.filter(item => item.visible);
 
   // Group items by category for CAR users
-  if (isCarVerifier || isCarAdmin) {
+  if (isCarAdmin) {
     const carMainItems = visibleItems.filter(item => 
       ['overview'].includes(item.id)
     );
