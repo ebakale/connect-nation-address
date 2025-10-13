@@ -51,11 +51,8 @@ import { ResidencyVerificationManager } from "@/components/ResidencyVerification
 import { ResidencyVerificationDashboard } from "@/components/ResidencyVerificationDashboard";
 import { UserVerificationRequests } from "@/components/UserVerificationRequests";
 import { CitizenAddressPortal } from "@/components/CitizenAddressPortal";
-import { CARVerificationInterface } from "@/components/CARVerificationInterface";
-import { CARAddressOverview } from "@/components/CARAddressOverview";
 import { CARAdministrativeOverview } from '@/components/CARAdministrativeOverview';
 import { CARQualityMetrics } from '@/components/CARQualityMetrics';
-import { CARManualReviewQueue } from '@/components/CARManualReviewQueue';
 import { CARBulkOperations } from '@/components/CARBulkOperations';
 
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
@@ -873,19 +870,6 @@ const UnifiedDashboard = () => {
           </div>
         );
 
-      case 'car-verification':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">{t('dashboard:carVerification')}</h2>
-                <p className="text-muted-foreground">{t('dashboard:verifyCarAddresses')}</p>
-              </div>
-              <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
-            </div>
-            <CARVerificationInterface />
-          </div>
-        );
 
       case 'residency-verification':
         return (
@@ -901,19 +885,6 @@ const UnifiedDashboard = () => {
           </div>
         );
 
-      case 'car-addresses':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">{t('dashboard:carAddresses')}</h2>
-                <p className="text-muted-foreground">{t('dashboard:manageCarAddresses')}</p>
-              </div>
-              <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
-            </div>
-            <CARAddressOverview />
-          </div>
-        );
 
       case 'car-admin':
         return (
@@ -926,11 +897,10 @@ const UnifiedDashboard = () => {
               <Badge variant="outline">{t('dashboard:carAdmin')}</Badge>
             </div>
             <Tabs defaultValue="overview" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-5">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="overview">{t('dashboard:overview')}</TabsTrigger>
                 <TabsTrigger value="verification">{t('dashboard:residencyVerification')}</TabsTrigger>
                 <TabsTrigger value="quality">{t('dashboard:qualityMetrics')}</TabsTrigger>
-                <TabsTrigger value="review">{t('dashboard:manualReview')}</TabsTrigger>
                 <TabsTrigger value="operations">{t('dashboard:bulkOperations')}</TabsTrigger>
               </TabsList>
               <TabsContent value="overview">
@@ -941,9 +911,6 @@ const UnifiedDashboard = () => {
               </TabsContent>
               <TabsContent value="quality">
                 <CARQualityMetrics />
-              </TabsContent>
-              <TabsContent value="review">
-                <CARManualReviewQueue />
               </TabsContent>
               <TabsContent value="operations">
                 <CARBulkOperations />

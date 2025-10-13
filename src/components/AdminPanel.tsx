@@ -20,7 +20,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield, Hash } from 'lucide-react';
 import { NARAuthorityManager } from './NARAuthorityManager';
 import { CARPermissionsManager } from './CARPermissionsManager';
-import { CARVerificationWorkflow } from './CARVerificationWorkflow';
 
 const AdminPanel: React.FC = () => {
   const { t } = useTranslation('admin');

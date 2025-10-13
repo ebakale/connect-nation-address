@@ -26,14 +26,9 @@ import { NARAuthorityManager } from './NARAuthorityManager';
 
 // Import CAR components  
 import { CitizenAddressPortal } from './CitizenAddressPortal';
-import { CitizenAddressVerificationManager } from './CitizenAddressVerificationManager';
 import { ResidencyVerificationManager } from './ResidencyVerificationManager';
 import { UserVerificationRequests } from './UserVerificationRequests';
 import { CARAdministrativeOverview } from './CARAdministrativeOverview';
-import { CARVerificationQueue } from './CARVerificationQueue';
-
-import { CARDataValidation } from './CARDataValidation';
-import { CARAuditDocumentation } from './CARAuditDocumentation';
 
 // Import shared components
 import AddressSearch from './AddressSearch';
@@ -136,7 +131,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     console.log('Current role for tabs:', currentRole, 'isCarVerifier:', isCarVerifier);
 
     // Citizens get a simplified interface
-    if (currentRole === 'citizen' && !isCarVerifier && !hasCarAccess) {
+    if (currentRole === 'citizen' && !hasCarAccess) {
       tabs.push({ 
         id: 'search', 
         label: t('address:searchAddresses'), 
@@ -153,23 +148,11 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     // All users get address search
     tabs.push({ id: 'search', label: t('address:searchAddresses'), icon: Search });
 
-    // CAR Verifier specific tabs - check both current role and role flags
-    // IMPORTANT: CAR Verifiers do NOT have access to residency_ownership_verifications table
-    // That requires separate authorized_verifiers authorization (residency_verifier role)
-    if (currentRole === 'car_verifier' || isCarVerifier || hasCarAccess) {
-      tabs.push(
-        { id: 'car-verification', label: t('dashboard:carVerification'), icon: UserCheck },
-        { id: 'car-addresses', label: t('dashboard:carAddresses'), icon: Database }
-      );
-      return tabs;
-    }
-
     // CAR Admin specific tabs
     if (currentRole === 'car_admin' || isCarAdmin) {
       tabs.push(
         { id: 'car-admin', label: t('dashboard:carAdministration'), icon: Settings },
         { id: 'car-analytics', label: t('dashboard:carAnalytics'), icon: BarChart3 },
-        { id: 'car-verification', label: t('dashboard:carVerification'), icon: UserCheck },
         { id: 'residency-verification', label: t('dashboard:residencyVerification'), icon: Shield }
       );
       return tabs;
@@ -270,34 +253,6 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           </div>
         );
 
-      case 'car-verification':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">{t('dashboard:carVerification')}</h2>
-                <p className="text-muted-foreground">{t('dashboard:verifyCarAddresses')}</p>
-              </div>
-              <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
-            </div>
-            <Tabs defaultValue="queue" className="space-y-4">
-              <TabsList>
-                <TabsTrigger value="queue">Verification Queue</TabsTrigger>
-                <TabsTrigger value="validation">Data Validation</TabsTrigger>
-                <TabsTrigger value="audit">Audit Trail</TabsTrigger>
-              </TabsList>
-              <TabsContent value="queue">
-                <CARVerificationQueue />
-              </TabsContent>
-              <TabsContent value="validation">
-                <CARDataValidation />
-              </TabsContent>
-              <TabsContent value="audit">
-                <CARAuditDocumentation />
-              </TabsContent>
-            </Tabs>
-          </div>
-        );
 
       case 'residency-verification':
         // This should only be accessible to users with residency_verifier role
@@ -315,19 +270,6 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           </div>
         );
 
-      case 'car-addresses':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">{t('dashboard:carAddresses')}</h2>
-                <p className="text-muted-foreground">{t('dashboard:manageCarAddresses')}</p>
-              </div>
-              <Badge variant="outline">{t('dashboard:carVerifier')}</Badge>
-            </div>
-            <CARAdministrativeOverview />
-          </div>
-        );
 
       case 'car-analytics':
         return (

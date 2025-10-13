@@ -8,7 +8,6 @@ import { SetPrimaryAddressForm } from './SetPrimaryAddressForm';
 import { AddSecondaryAddressForm } from './AddSecondaryAddressForm';
 import { CurrentAddressesPanel } from './CurrentAddressesPanel';
 import { AddressHistoryPanel } from './AddressHistoryPanel';
-import { CitizenAddressVerificationManager } from './CitizenAddressVerificationManager';
 import { useTranslation } from 'react-i18next';
 
 export function CitizenAddressPortal() {
@@ -46,7 +45,7 @@ export function CitizenAddressPortal() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="current" className="flex items-center gap-2">
             <Home className="h-4 w-4" />
             {t('address:current')}
@@ -58,10 +57,6 @@ export function CitizenAddressPortal() {
           <TabsTrigger value="add-secondary" className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             {t('address:addSecondary')}
-          </TabsTrigger>
-          <TabsTrigger value="verify" className="flex items-center gap-2">
-            <Shield className="h-4 w-4" />
-            {t('address:verify')}
           </TabsTrigger>
           <TabsTrigger value="history" className="flex items-center gap-2">
             <History className="h-4 w-4" />
@@ -110,14 +105,6 @@ export function CitizenAddressPortal() {
               <AddSecondaryAddressForm onSuccess={() => setActiveTab('current')} />
             </CardContent>
           </Card>
-        </TabsContent>
-
-        <TabsContent value="verify" className="space-y-4">
-          <CitizenAddressVerificationManager 
-            onSuccess={() => {
-              setActiveTab('current');
-            }}
-          />
         </TabsContent>
 
         <TabsContent value="history" className="space-y-4">
