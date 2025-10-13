@@ -287,6 +287,8 @@
   "oauth2": "OAuth 2.0",
   "emergencyServicesIntegration": "Services d'Urgence",
   "emergencyServicesIntegrationDesc": "Connexion directe aux urgences",
+  "responseTime": "Temps de Réponse",
+  "priority": "Priorité",
   "generateApiKey": "Générer Clé API",
   "createWebhook": "Créer Webhook",
   "testConnection": "Tester Connexion",
