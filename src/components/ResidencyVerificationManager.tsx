@@ -260,7 +260,7 @@ export const ResidencyVerificationManager = () => {
       {/* Filters */}
       <div className="flex gap-4">
         <div className="flex-1">
-          <Label htmlFor="search">{t('common:search')}</Label>
+          <Label htmlFor="search">{t('common:buttons.search')}</Label>
           <div className="relative">
             <Search className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
             <Input
