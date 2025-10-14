@@ -92,6 +92,7 @@
   "scope_restricted": "Restricted",
   "scope_building": "Building",
   "scope_unknown": "Unknown",
+  "unitLabel": "Unit",
   "addresses": "Addresses",
   "address": "Address",
   "street": "Street",

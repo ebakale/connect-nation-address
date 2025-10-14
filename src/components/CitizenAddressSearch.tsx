@@ -358,7 +358,7 @@ export const CitizenAddressSearch = () => {
                                 <div className="space-y-1">
                                   <p className="font-mono text-sm text-primary">
                                     {t('address:uac')}: {address.uac}
-                                    {address.unit_uac && ` | Unit: ${address.unit_uac}`}
+                                    {address.unit_uac && ` | ${t('address:unitLabel')}: ${address.unit_uac}`}
                                   </p>
                                   <p className="text-sm">
                                     {formatAddress(address)}
