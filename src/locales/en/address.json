@@ -58,6 +58,8 @@
   "searchCitizenAddresses": "Search Citizen Addresses",
   "searchCitizenDescription": "Search for addresses registered by citizens in the CAR system",
   "searchCitizenPlaceholder": "Search by UAC, street name, or citizen name...",
+  "searchingCitizens": "Searching citizens...",
+  "noMatchingCitizens": "No matching citizens found for \"{{query}}\"",
   "addresses": "Addresses",
   "address": "Address",
   "street": "Street",

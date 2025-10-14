@@ -114,7 +114,22 @@ export const CitizenAddressSearch = () => {
       }
 
       if (personResults.length === 0) {
-        setSearchResults([]);
+        // Fallback: show profile hits even if person linkage is missing
+        const results: CitizenSearchResult[] = (profilesByName || []).map((p: any) => ({
+          person: {
+            id: '',
+            auth_user_id: p.user_id || null,
+            national_id: null,
+            created_at: ''
+          },
+          profile: {
+            full_name: p.full_name || null,
+            email: p.email || null,
+            phone: p.phone || null
+          },
+          addresses: []
+        }));
+        setSearchResults(results);
         return;
       }
 
