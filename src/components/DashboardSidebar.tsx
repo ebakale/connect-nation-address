@@ -196,7 +196,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       title: t('addressManagement'),
       icon: MapPin,
       onClick: () => handleItemClick('unified-address-dashboard'),
-      visible: hasAdminAccess // Only show to admins
+      visible: hasAdminAccess || isRegistrar || isResidencyVerifier // Allow registrars and residency verifiers to access CAR tabs
     },
     {
       id: 'submit-request',
