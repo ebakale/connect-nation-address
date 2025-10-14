@@ -274,10 +274,10 @@ export const CitizenAddressSearch = () => {
               <div className="flex items-center gap-2">
                 <User className="h-5 w-5" />
                 <h3 className="text-lg font-semibold">
-                  {t('address:searchResultsCount', { 
-                    count: searchResults.length,
-                    plural: searchResults.length !== 1 ? t('address:citizensPlural') : t('address:citizensSingular')
-                  })}
+                  {searchResults.length === 1 
+                    ? t('address:searchResultsSingle', { count: 1 })
+                    : t('address:searchResultsMultiple', { count: searchResults.length })
+                  }
                 </h3>
               </div>
 
