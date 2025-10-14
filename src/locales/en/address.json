@@ -90,6 +90,7 @@
   "scope_public": "Public",
   "scope_private": "Private",
   "scope_restricted": "Restricted",
+  "scope_building": "Building",
   "scope_unknown": "Unknown",
   "addresses": "Addresses",
   "address": "Address",
