@@ -64,7 +64,7 @@ export const ResidencyVerificationManager = () => {
 
   // Get geographical scope from role metadata
   const geographicScope = roleMetadata.find(m => 
-    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city'
+    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city' || m.scope_type === 'geographic'
   );
 
   const fetchVerifications = useCallback(async () => {
@@ -81,7 +81,11 @@ export const ResidencyVerificationManager = () => {
         .from('residency_ownership_verifications')
         .select(`
           *,
-          addresses!residency_ownership_verifications_address_uac_fkey(
+          address_requests!residency_ownership_verifications_address_request_id_fkey(
+            city,
+            region
+          ),
+          citizen_addresses!residency_ownership_verifications_citizen_address_id_fkey(
             city,
             region
           )
@@ -105,7 +109,8 @@ export const ResidencyVerificationManager = () => {
       let filteredData = data || [];
       if (!hasAdminAccess && geographicScope && filteredData.length > 0) {
         filteredData = filteredData.filter((v: any) => {
-          const address = v.addresses;
+          // Get address from either address_requests or citizen_addresses
+          const address = v.address_requests || v.citizen_addresses;
           if (!address) return false;
           
           if (geographicScope.scope_type === 'city') {
@@ -245,10 +250,10 @@ export const ResidencyVerificationManager = () => {
 
   // Initial fetch and when permissions or filter change
   useEffect(() => {
-    if (canVerifyAddresses || hasAdminAccess) {
+    if (!roleLoading && (canVerifyAddresses || hasAdminAccess)) {
       fetchVerifications();
     }
-  }, [canVerifyAddresses, hasAdminAccess, statusFilter]);
+  }, [roleLoading, canVerifyAddresses, hasAdminAccess, statusFilter, geographicScope?.scope_type, geographicScope?.scope_value]);
 
 
   if (roleLoading) {
