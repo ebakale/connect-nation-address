@@ -21,6 +21,9 @@ interface VerificationRequest {
   primary_document_url?: string;
   verification_notes?: string;
   created_at?: string;
+  uac?: string;
+  address_request_id?: string;
+  citizen_address_id?: string;
   profiles?: {
     full_name?: string;
     email?: string;
@@ -171,6 +174,12 @@ export function VerificationReviewDialog({
                 <Label>{t('admin:verificationTypeLabel')}</Label>
                 <p className="text-sm">{t(`admin:verificationType.${verification.verification_type}`, { defaultValue: formatStatus(verification.verification_type) })}</p>
               </div>
+              {verification.uac && (
+                <div>
+                  <Label>UAC</Label>
+                  <p className="text-sm font-mono bg-muted px-2 py-1 rounded">{verification.uac}</p>
+                </div>
+              )}
               {verification.claimant_relationship && (
                 <div>
                   <Label>{t('admin:claimantRelationshipLabel')}</Label>

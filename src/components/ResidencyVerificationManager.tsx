@@ -42,6 +42,9 @@ interface VerificationRequest {
   created_at: string;
   verified_at?: string;
   verified_by?: string;
+  address_request_id?: string;
+  citizen_address_id?: string;
+  uac?: string;
   profiles?: {
     full_name: string;
     email: string;
@@ -139,13 +142,18 @@ export const ResidencyVerificationManager = () => {
 
       const combined = base.map((v: any) => {
         let info: { city: string | null; region: string | null } | null = null;
+        let uac: string | null = null;
+        
         if (v.address_request_id && reqMap.has(v.address_request_id)) {
           info = reqMap.get(v.address_request_id)!;
         } else if (v.citizen_address_id) {
-          const uac = citizenIdToUac.get(v.citizen_address_id);
-          if (uac && uacToCityRegion.has(uac)) info = uacToCityRegion.get(uac)!;
+          const citizenUac = citizenIdToUac.get(v.citizen_address_id);
+          uac = citizenUac || null;
+          if (citizenUac && uacToCityRegion.has(citizenUac)) {
+            info = uacToCityRegion.get(citizenUac)!;
+          }
         }
-        return { ...v, address_info: info };
+        return { ...v, address_info: info, uac };
       });
       // Filter by geographical scope if applicable
       let filteredData: any[] = combined;
