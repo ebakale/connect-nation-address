@@ -276,7 +276,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       title: t('verificationQueue'),
       icon: CheckCircle,
       onClick: () => handleItemClick('verification-queue'),
-      visible: (canVerifyAddresses && !isResidencyVerifier && !isAdmin && !hasNDAAAccess)
+      visible: (canVerifyAddresses && !isResidencyVerifier && !isRegistrar && !isAdmin && !hasNDAAAccess)
     },
     {
       id: 'verification-tools',
