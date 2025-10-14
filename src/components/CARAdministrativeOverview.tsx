@@ -501,7 +501,39 @@ export function CARAdministrativeOverview() {
                     <BarChart3 className="h-4 w-4 mr-2" />
                     {t('admin:carAdministrativeOverview.refreshStatistics')}
                   </Button>
-                  <Button variant="outline" className="w-full" disabled>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={async () => {
+                      try {
+                        const { data, error } = await supabase
+                          .from('citizen_address_with_details')
+                          .select('*');
+                        
+                        if (error) throw error;
+                        
+                        const json = JSON.stringify(data, null, 2);
+                        const blob = new Blob([json], { type: 'application/json' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `car-export-${new Date().toISOString().split('T')[0]}.json`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                        
+                        toast({
+                          title: "Export Successful",
+                          description: `Exported ${data?.length || 0} CAR records`
+                        });
+                      } catch (error) {
+                        toast({
+                          title: "Export Failed",
+                          description: "Failed to export CAR data",
+                          variant: "destructive"
+                        });
+                      }
+                    }}
+                  >
                     <Database className="h-4 w-4 mr-2" />
                     {t('admin:carAdministrativeOverview.exportCarData')}
                   </Button>
@@ -514,11 +546,59 @@ export function CARAdministrativeOverview() {
                   <CardDescription>{t('admin:carAdministrativeOverview.systemMaintenanceOptimization')}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <Button variant="outline" className="w-full" disabled>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={async () => {
+                      try {
+                        // Check for duplicate person records
+                        const { data: duplicates, error } = await supabase
+                          .rpc('update_car_quality_metrics');
+                        
+                        if (error) throw error;
+                        
+                        await fetchCARStatistics();
+                        
+                        toast({
+                          title: "Integrity Check Complete",
+                          description: "System health metrics updated"
+                        });
+                      } catch (error) {
+                        toast({
+                          title: "Check Failed",
+                          description: "Failed to run integrity check",
+                          variant: "destructive"
+                        });
+                      }
+                    }}
+                  >
                     <Activity className="h-4 w-4 mr-2" />
                     {t('admin:carAdministrativeOverview.runIntegrityCheck')}
                   </Button>
-                  <Button variant="outline" className="w-full" disabled>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={async () => {
+                      try {
+                        // Calculate coverage analytics
+                        const { error } = await supabase
+                          .rpc('calculate_coverage_analytics');
+                        
+                        if (error) throw error;
+                        
+                        toast({
+                          title: "Optimization Complete",
+                          description: "Coverage analytics recalculated"
+                        });
+                      } catch (error) {
+                        toast({
+                          title: "Optimization Failed",
+                          description: "Failed to optimize performance",
+                          variant: "destructive"
+                        });
+                      }
+                    }}
+                  >
                     <TrendingUp className="h-4 w-4 mr-2" />
                     {t('admin:carAdministrativeOverview.optimizePerformance')}
                   </Button>
@@ -531,11 +611,59 @@ export function CARAdministrativeOverview() {
                   <CardDescription>{t('admin:carAdministrativeOverview.addressVerificationManagement')}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <Button variant="outline" className="w-full" disabled>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={async () => {
+                      try {
+                        // Auto-approve addresses that reference verified NAR addresses
+                        const { error } = await supabase
+                          .rpc('auto_approve_verified_citizen_addresses');
+                        
+                        if (error) throw error;
+                        
+                        await fetchCARStatistics();
+                        
+                        toast({
+                          title: "Bulk Verification Complete",
+                          description: "Auto-approved addresses linked to verified NAR records"
+                        });
+                      } catch (error) {
+                        toast({
+                          title: "Verification Failed",
+                          description: "Failed to run bulk verification",
+                          variant: "destructive"
+                        });
+                      }
+                    }}
+                  >
                     <CheckCircle className="h-4 w-4 mr-2" />
                     {t('admin:carAdministrativeOverview.bulkVerification')}
                   </Button>
-                  <Button variant="outline" className="w-full" disabled>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={async () => {
+                      try {
+                        const { data, error } = await supabase
+                          .from('citizen_address_manual_review_queue')
+                          .select('*');
+                        
+                        if (error) throw error;
+                        
+                        toast({
+                          title: "Review Queue",
+                          description: `Found ${data?.length || 0} items requiring manual review`
+                        });
+                      } catch (error) {
+                        toast({
+                          title: "Failed to Load",
+                          description: "Failed to load review queue",
+                          variant: "destructive"
+                        });
+                      }
+                    }}
+                  >
                     <AlertTriangle className="h-4 w-4 mr-2" />
                     {t('admin:carAdministrativeOverview.reviewFlaggedItems')}
                   </Button>
