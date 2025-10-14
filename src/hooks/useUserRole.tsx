@@ -161,8 +161,8 @@ export const useUserRole = () => {
   const hasPoliceAdminAccess = isPoliceAdmin;
   
   // CAR access checks  
-  const hasCARAccess = isCARAdmin || isResidencyVerifier || isAdmin || hasSystemAdminAccess;
-  const hasCARManagementAccess = isCARAdmin || hasSystemAdminAccess;
+  const hasCARAccess = isCARAdmin || isResidencyVerifier || isAdmin || hasSystemAdminAccess || hasRegistrarAccess;
+  const hasCARManagementAccess = isCARAdmin || hasSystemAdminAccess || hasRegistrarAccess;
   const hasCARVerificationAccess = hasCARAccess || hasVerifierAccess;
   
   useEffect(() => {
