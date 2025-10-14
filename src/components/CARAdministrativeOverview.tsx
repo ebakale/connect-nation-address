@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { CitizenAddressSearch } from "./CitizenAddressSearch";
 import { useTranslation } from 'react-i18next';
+import * as XLSX from 'xlsx';
 
 interface CARStats {
   totalAddresses: number;
@@ -512,18 +513,20 @@ export function CARAdministrativeOverview() {
                         
                         if (error) throw error;
                         
-                        const json = JSON.stringify(data, null, 2);
-                        const blob = new Blob([json], { type: 'application/json' });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `car-export-${new Date().toISOString().split('T')[0]}.json`;
-                        a.click();
-                        URL.revokeObjectURL(url);
+                        // Create worksheet from data
+                        const worksheet = XLSX.utils.json_to_sheet(data || []);
+                        
+                        // Create workbook
+                        const workbook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workbook, worksheet, 'CAR Data');
+                        
+                        // Generate Excel file and download
+                        const fileName = `car-export-${new Date().toISOString().split('T')[0]}.xlsx`;
+                        XLSX.writeFile(workbook, fileName);
                         
                         toast({
                           title: "Export Successful",
-                          description: `Exported ${data?.length || 0} CAR records`
+                          description: `Exported ${data?.length || 0} CAR records to Excel`
                         });
                       } catch (error) {
                         toast({
