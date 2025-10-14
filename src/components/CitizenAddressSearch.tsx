@@ -334,7 +334,7 @@ export const CitizenAddressSearch = () => {
                                     {t(`address:${address.address_kind === 'PRIMARY' ? 'primaryAddress' : 'secondaryAddress'}`)}
                                   </Badge>
                                   <Badge variant="outline">
-                                    {address.scope}
+                                    {t(`address:scope_${address.scope?.toLowerCase() || 'unknown'}`)}
                                   </Badge>
                                   <Badge 
                                     variant="outline" 
