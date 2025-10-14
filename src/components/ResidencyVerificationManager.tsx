@@ -85,7 +85,7 @@ export const ResidencyVerificationManager = () => {
             city,
             region
           ),
-          citizen_addresses!residency_ownership_verifications_citizen_address_id_fkey(
+          citizen_address!residency_ownership_verifications_citizen_address_id_fkey(
             city,
             region
           )
@@ -109,8 +109,8 @@ export const ResidencyVerificationManager = () => {
       let filteredData = data || [];
       if (!hasAdminAccess && geographicScope && filteredData.length > 0) {
         filteredData = filteredData.filter((v: any) => {
-          // Get address from either address_requests or citizen_addresses
-          const address = v.address_requests || v.citizen_addresses;
+          // Get address from either address_requests or citizen_address
+          const address = v.address_requests || v.citizen_address;
           if (!address) return false;
           
           if (geographicScope.scope_type === 'city') {
