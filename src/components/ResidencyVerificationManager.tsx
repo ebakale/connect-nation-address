@@ -79,17 +79,7 @@ export const ResidencyVerificationManager = () => {
       
       let query = supabase
         .from('residency_ownership_verifications')
-        .select(`
-          *,
-          address_requests!residency_ownership_verifications_address_request_id_fkey(
-            city,
-            region
-          ),
-          citizen_address!residency_ownership_verifications_citizen_address_id_fkey(
-            city,
-            region
-          )
-        `)
+        .select('*')
         .order('updated_at', { ascending: false });
 
       if (statusFilter !== 'all') {
@@ -98,25 +88,75 @@ export const ResidencyVerificationManager = () => {
 
       const { data, error } = await query;
       
-      console.log('Verification fetch result:', { data, error, count: data?.length });
+      console.log('Verification fetch result:', { dataCount: data?.length, error });
 
       if (error) {
         console.error('Supabase error:', error);
         throw error;
       }
-      
+
+      // Enrich with address info without relying on PostgREST relationships
+      const base = data || [];
+      const reqIds = Array.from(new Set(base.filter((v: any) => v.address_request_id).map((v: any) => v.address_request_id)));
+      const citizenIds = Array.from(new Set(base.filter((v: any) => v.citizen_address_id).map((v: any) => v.citizen_address_id)));
+
+      // Fetch related datasets in parallel
+      const [
+        reqRes,
+        citizenRes,
+      ] = await Promise.all([
+        reqIds.length
+          ? supabase.from('address_requests').select('id, city, region').in('id', reqIds)
+          : Promise.resolve({ data: [], error: null } as any),
+        citizenIds.length
+          ? supabase.from('citizen_address').select('id, uac').in('id', citizenIds)
+          : Promise.resolve({ data: [], error: null } as any),
+      ]);
+
+      if ((reqRes as any).error) console.error('Address requests fetch error:', (reqRes as any).error);
+      if ((citizenRes as any).error) console.error('Citizen address fetch error:', (citizenRes as any).error);
+
+      // If we have citizen addresses, fetch addresses by UAC to get region/city
+      let uacToCityRegion = new Map<string, { city: string | null; region: string | null }>();
+      const uacs = ((citizenRes as any).data || []).map((c: any) => c.uac).filter(Boolean);
+      if (uacs.length) {
+        const { data: addrRows, error: addrErr } = await supabase
+          .from('addresses')
+          .select('uac, city, region')
+          .in('uac', Array.from(new Set(uacs)));
+        if (addrErr) {
+          console.error('Addresses by UAC fetch error:', addrErr);
+        } else {
+          addrRows?.forEach((a: any) => uacToCityRegion.set(a.uac, { city: a.city, region: a.region }));
+        }
+      }
+
+      const reqMap = new Map<string, { city: string | null; region: string | null }>();
+      ((reqRes as any).data || []).forEach((r: any) => reqMap.set(r.id, { city: r.city, region: r.region }));
+
+      const citizenIdToUac = new Map<string, string>();
+      ((citizenRes as any).data || []).forEach((c: any) => citizenIdToUac.set(c.id, c.uac));
+
+      const combined = base.map((v: any) => {
+        let info: { city: string | null; region: string | null } | null = null;
+        if (v.address_request_id && reqMap.has(v.address_request_id)) {
+          info = reqMap.get(v.address_request_id)!;
+        } else if (v.citizen_address_id) {
+          const uac = citizenIdToUac.get(v.citizen_address_id);
+          if (uac && uacToCityRegion.has(uac)) info = uacToCityRegion.get(uac)!;
+        }
+        return { ...v, address_info: info };
+      });
       // Filter by geographical scope if applicable
-      let filteredData = data || [];
+      let filteredData: any[] = combined;
       if (!hasAdminAccess && geographicScope && filteredData.length > 0) {
         filteredData = filteredData.filter((v: any) => {
-          // Get address from either address_requests or citizen_address
-          const address = v.address_requests || v.citizen_address;
-          if (!address) return false;
-          
+          const info = v.address_info;
+          if (!info) return false;
           if (geographicScope.scope_type === 'city') {
-            return address.city?.toLowerCase() === geographicScope.scope_value?.toLowerCase();
+            return info.city?.toLowerCase() === geographicScope.scope_value?.toLowerCase();
           } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
-            return address.region?.toLowerCase() === geographicScope.scope_value?.toLowerCase();
+            return info.region?.toLowerCase() === geographicScope.scope_value?.toLowerCase();
           }
           return false;
         });
@@ -160,8 +200,8 @@ export const ResidencyVerificationManager = () => {
     } catch (error) {
       console.error('Error fetching verifications:', error);
       toast({
-        title: t('common:error'),
-        description: t('admin:failedToFetchVerificationRequests'),
+        title: t('common:error', { defaultValue: 'Error' }),
+        description: t('admin:failedToFetchVerificationRequests', { defaultValue: 'Failed to fetch verification requests' }),
         variant: 'destructive'
       });
       setVerifications([]); // Ensure we clear the list on error
@@ -196,8 +236,8 @@ export const ResidencyVerificationManager = () => {
     } catch (error: any) {
       console.error('Error updating verification:', error);
       toast({
-        title: t('common:error'),
-        description: error.message || t('admin:failedToUpdateVerificationStatus'),
+        title: t('common:error', { defaultValue: 'Error' }),
+        description: error.message || t('admin:failedToUpdateVerificationStatus', { defaultValue: 'Failed to update verification status' }),
         variant: 'destructive'
       });
     }
