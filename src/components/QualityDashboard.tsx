@@ -69,7 +69,7 @@ interface CoverageAnalytics {
 
 export function QualityDashboard() {
   const { t } = useTranslation(['admin']);
-  const { roleMetadata } = useUserRole();
+  const { roleMetadata, loading: roleLoading } = useUserRole();
   const [analytics, setAnalytics] = useState<CoverageAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -92,7 +92,7 @@ export function QualityDashboard() {
 
   // Get geographical scope from role metadata
   const geographicScope = roleMetadata.find(m => 
-    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city'
+    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city' || m.scope_type === 'geographic'
   );
 
   const fetchQualityMetrics = async () => {
@@ -105,6 +105,8 @@ export function QualityDashboard() {
           return baseQuery.ilike('city', geographicScope.scope_value);
         } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
           return baseQuery.ilike('region', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'geographic') {
+          return baseQuery.or(`city.ilike.${geographicScope.scope_value},region.ilike.${geographicScope.scope_value}`);
         }
         return baseQuery;
       };
@@ -253,8 +255,10 @@ export function QualityDashboard() {
   };
 
   useEffect(() => {
-    fetchAnalytics();
-  }, []);
+    if (!roleLoading) {
+      fetchAnalytics();
+    }
+  }, [roleLoading, geographicScope?.scope_type, geographicScope?.scope_value]);
 
   if (loading) {
     return (

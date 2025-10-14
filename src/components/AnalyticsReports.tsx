@@ -64,7 +64,7 @@ export const AnalyticsReports = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const { toast } = useToast();
   const { t } = useTranslation(['dashboard', 'common']);
-  const { roleMetadata } = useUserRole();
+  const { roleMetadata, loading: roleLoading } = useUserRole();
 
   // Unique colors for each address type using semantic design tokens (map by slug)
   const typeColorMap: Record<string, string> = {
@@ -88,8 +88,10 @@ export const AnalyticsReports = () => {
   };
 
   useEffect(() => {
-    fetchRealAddresses();
-  }, []);
+    if (!roleLoading) {
+      fetchRealAddresses();
+    }
+  }, [roleLoading]);
 
   useEffect(() => {
     if (addresses.length > 0) {
@@ -101,7 +103,7 @@ export const AnalyticsReports = () => {
     setLoading(true);
     try {
       const geographicScope = roleMetadata.find(m =>
-        m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city'
+        m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city' || m.scope_type === 'geographic'
       );
 
       let query = supabase
@@ -114,6 +116,8 @@ export const AnalyticsReports = () => {
           query = query.ilike('city', geographicScope.scope_value);
         } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
           query = query.ilike('region', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'geographic') {
+          query = query.or(`city.ilike.${geographicScope.scope_value},region.ilike.${geographicScope.scope_value}`);
         }
       }
 

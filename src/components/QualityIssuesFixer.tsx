@@ -41,17 +41,19 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editingIssue, setEditingIssue] = useState<QualityIssue | null>(null);
   const [editFormData, setEditFormData] = useState<any>({});
-  const { roleMetadata } = useUserRole();
+  const { roleMetadata, loading: roleLoading } = useUserRole();
   const { toast } = useToast();
 
   // Get geographical scope from role metadata
   const geographicScope = roleMetadata.find(m => 
-    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city'
+    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city' || m.scope_type === 'geographic'
   );
 
   useEffect(() => {
-    fetchQualityIssues();
-  }, []);
+    if (!roleLoading) {
+      fetchQualityIssues();
+    }
+  }, [roleLoading, geographicScope?.scope_type, geographicScope?.scope_value]);
 
   const fetchQualityIssues = async () => {
     try {
@@ -65,6 +67,8 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
           return baseQuery.ilike('city', geographicScope.scope_value);
         } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
           return baseQuery.ilike('region', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'geographic') {
+          return baseQuery.or(`city.ilike.${geographicScope.scope_value},region.ilike.${geographicScope.scope_value}`);
         }
         return baseQuery;
       };

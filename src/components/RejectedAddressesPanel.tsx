@@ -88,7 +88,7 @@ const translateAIComment = (comment: string, t: any): string => {
 
 export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps) {
   const { t } = useTranslation('address');
-  const { roleMetadata } = useUserRole();
+  const { roleMetadata, loading: roleLoading } = useUserRole();
   const [rejectedAddresses, setRejectedAddresses] = useState<RejectedAddress[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
@@ -99,7 +99,7 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
 
   // Get geographical scope from role metadata
   const geographicScope = roleMetadata.find(m => 
-    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city'
+    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city' || m.scope_type === 'geographic'
   );
 
   const fetchRejectedAddresses = async () => {
@@ -116,6 +116,8 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
           query = query.ilike('city', geographicScope.scope_value);
         } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
           query = query.ilike('region', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'geographic') {
+          query = query.or(`city.ilike.${geographicScope.scope_value},region.ilike.${geographicScope.scope_value}`);
         }
       }
 
@@ -159,8 +161,10 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
       await fetchRejectedAddresses();
       setLoading(false);
     };
-    fetchData();
-  }, []);
+    if (!roleLoading) {
+      fetchData();
+    }
+  }, [roleLoading, geographicScope?.scope_type, geographicScope?.scope_value]);
 
   if (loading) {
     return <div className="p-4 text-center">{t('loadingRejectedAddresses')}</div>;
