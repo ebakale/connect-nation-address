@@ -170,10 +170,12 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
       return tabs;
     }
 
-    // NAR Admin tabs for registrars only (removed admin from this section)
+    // NAR Admin tabs for registrars (includes both NAR and CAR management)
     if (currentRole === 'registrar') {
       tabs.push(
-        { id: 'nar-admin', label: t('dashboard:narAdministration'), icon: Building2 }
+        { id: 'nar-admin', label: t('dashboard:narAdministration'), icon: Building2 },
+        { id: 'car-analytics', label: t('dashboard:carAnalytics'), icon: BarChart3 },
+        { id: 'residency-verification', label: t('dashboard:residencyVerification'), icon: Shield }
       );
     }
 
