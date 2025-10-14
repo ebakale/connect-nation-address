@@ -47,6 +47,9 @@ export function AddressRequestApprovalPanel() {
     m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city'
   );
 
+  // Check if user has no geographical restriction (admin or national scope)
+  const hasNationalScope = roleMetadata.length === 0 || !geographicScope;
+
   const fetchAddressRequests = async () => {
     try {
       // Build query with geographical scope filter
@@ -55,13 +58,19 @@ export function AddressRequestApprovalPanel() {
         .select('*')
         .eq('status', 'pending');
 
-      // Apply geographical scope filter
-      if (geographicScope) {
+      // Apply geographical scope filter for non-national scope users
+      if (!hasNationalScope && geographicScope) {
         if (geographicScope.scope_type === 'city') {
           query = query.ilike('city', geographicScope.scope_value);
         } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
           query = query.ilike('region', geographicScope.scope_value);
         }
+      } else if (!hasNationalScope && !geographicScope) {
+        // No scope defined for non-national user - return empty to be safe
+        console.error('No geographical scope defined for registrar');
+        setAddressRequests([]);
+        setManualReviewRequests([]);
+        return;
       }
 
       const { data, error } = await query.order('created_at', { ascending: false });
