@@ -507,14 +507,91 @@ export function CARAdministrativeOverview() {
                     className="w-full"
                     onClick={async () => {
                       try {
-                        const { data, error } = await supabase
+                        // Fetch CAR data
+                        const { data: carData, error: carError } = await supabase
                           .from('citizen_address_with_details')
                           .select('*');
                         
-                        if (error) throw error;
+                        if (carError) throw carError;
                         
-                        // Create worksheet from data
-                        const worksheet = XLSX.utils.json_to_sheet(data || []);
+                        // Get unique person IDs
+                        const personIds = [...new Set(carData?.map(r => r.person_id))];
+                        
+                        // Fetch person and profile data separately
+                        const { data: persons, error: personError } = await supabase
+                          .from('person')
+                          .select('id, auth_user_id, national_id')
+                          .in('id', personIds);
+                        
+                        if (personError) throw personError;
+                        
+                        // Get auth user IDs
+                        const authUserIds = persons?.map(p => p.auth_user_id).filter(Boolean) || [];
+                        
+                        // Fetch profiles
+                        const { data: profiles, error: profileError } = await supabase
+                          .from('profiles')
+                          .select('user_id, full_name, email, phone')
+                          .in('user_id', authUserIds);
+                        
+                        if (profileError) throw profileError;
+                        
+                        // Create lookup maps
+                        const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
+                        const personMap = new Map(
+                          persons?.map(p => {
+                            const profile = profileMap.get(p.auth_user_id);
+                            return [
+                              p.id,
+                              {
+                                full_name: profile?.full_name || 'N/A',
+                                email: profile?.email || 'N/A',
+                                phone: profile?.phone || 'N/A',
+                                national_id: p.national_id || 'N/A'
+                              }
+                            ];
+                          }) || []
+                        );
+                        
+                        // Enrich CAR data with person names
+                        const enrichedData = carData?.map(record => ({
+                          person_name: personMap.get(record.person_id)?.full_name || 'Unknown',
+                          email: personMap.get(record.person_id)?.email || 'N/A',
+                          phone: personMap.get(record.person_id)?.phone || 'N/A',
+                          national_id: personMap.get(record.person_id)?.national_id || 'N/A',
+                          uac: record.uac,
+                          unit_uac: record.unit_uac || 'N/A',
+                          address_kind: record.address_kind,
+                          scope: record.scope,
+                          occupant: record.occupant || 'N/A',
+                          status: record.status,
+                          street: record.street || 'N/A',
+                          city: record.city || 'N/A',
+                          region: record.region || 'N/A',
+                          country: record.country || 'N/A',
+                          building: record.building || 'N/A',
+                          latitude: record.latitude || 'N/A',
+                          longitude: record.longitude || 'N/A',
+                          nar_verified: record.nar_verified ? 'Yes' : 'No',
+                          nar_public: record.nar_public ? 'Yes' : 'No',
+                          effective_from: record.effective_from || 'N/A',
+                          effective_to: record.effective_to || 'Active',
+                          source: record.source || 'N/A',
+                          notes: record.notes || 'N/A',
+                          created_at: new Date(record.created_at).toLocaleString(),
+                        })) || [];
+                        
+                        // Create worksheet from enriched data
+                        const worksheet = XLSX.utils.json_to_sheet(enrichedData);
+                        
+                        // Set column widths for better readability
+                        worksheet['!cols'] = [
+                          { wch: 25 }, // person_name
+                          { wch: 30 }, // email
+                          { wch: 15 }, // phone
+                          { wch: 15 }, // national_id
+                          { wch: 20 }, // uac
+                        ];
                         
                         // Create workbook
                         const workbook = XLSX.utils.book_new();
@@ -526,12 +603,13 @@ export function CARAdministrativeOverview() {
                         
                         toast({
                           title: "Export Successful",
-                          description: `Exported ${data?.length || 0} CAR records to Excel`
+                          description: `Exported ${enrichedData.length} CAR records with person details to Excel`
                         });
-                      } catch (error) {
+                      } catch (error: any) {
+                        console.error('Export error:', error);
                         toast({
                           title: "Export Failed",
-                          description: "Failed to export CAR data",
+                          description: error.message || "Failed to export CAR data",
                           variant: "destructive"
                         });
                       }
