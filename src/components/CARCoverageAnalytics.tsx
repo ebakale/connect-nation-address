@@ -12,6 +12,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from 'react-i18next';
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface CoverageData {
   id: string;
@@ -39,6 +40,7 @@ interface RegionalSummary {
 export function CARCoverageAnalytics() {
   const { toast } = useToast();
   const { t } = useTranslation(['admin', 'dashboard']);
+  const { roleMetadata, role } = useUserRole();
   
   const [coverageData, setCoverageData] = useState<CoverageData[]>([]);
   const [regionalSummary, setRegionalSummary] = useState<RegionalSummary[]>([]);
@@ -54,6 +56,14 @@ export function CARCoverageAnalytics() {
     avgPublicationRate: 0
   });
 
+  // Determine geographic scope from role metadata
+  const geographicMetadata = roleMetadata.find(m => 
+    m.scope_type === 'city' || m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'geographic'
+  );
+  
+  const scopeType = geographicMetadata?.scope_type || 'national';
+  const scopeValue = geographicMetadata?.scope_value || null;
+
   useEffect(() => {
     fetchCoverageData();
   }, []);
@@ -62,10 +72,20 @@ export function CARCoverageAnalytics() {
     try {
       setLoading(true);
 
-      // Fetch coverage analytics data
-      const { data: coverage, error: coverageError } = await supabase
+      // Fetch coverage analytics data with geographic scoping
+      let query = supabase
         .from('coverage_analytics')
-        .select('*')
+        .select('*');
+
+      // Apply geographic scoping based on user role
+      if (scopeType === 'city' && scopeValue) {
+        query = query.ilike('city', scopeValue);
+      } else if ((scopeType === 'region' || scopeType === 'province') && scopeValue) {
+        query = query.ilike('region', scopeValue);
+      }
+      // If national or no scope, no filter is applied
+
+      const { data: coverage, error: coverageError } = await query
         .order('region', { ascending: true })
         .order('city', { ascending: true });
 
@@ -227,11 +247,19 @@ export function CARCoverageAnalytics() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold">CAR Coverage Analytics</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-lg font-semibold">CAR Coverage Analytics</h3>
+            {scopeType !== 'national' && scopeValue && (
+              <Badge variant="outline">
+                {scopeType === 'city' ? 'City' : 'Regional'}: {scopeValue}
+              </Badge>
+            )}
+          </div>
           <p className="text-sm text-muted-foreground">
             Last updated: {coverageData[0]?.last_updated 
               ? new Date(coverageData[0].last_updated).toLocaleDateString() 
               : 'Never'}
+            {scopeType !== 'national' && scopeValue && ` • Viewing ${scopeValue} data only`}
           </p>
         </div>
         <Button 
