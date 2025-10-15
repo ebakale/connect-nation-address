@@ -230,8 +230,8 @@ export function CARAdministrativeOverview() {
         <TabsList>
           <TabsTrigger value="overview">{t('admin:carAdministrativeOverview.systemOverview')}</TabsTrigger>
           <TabsTrigger value="search">{t('admin:carAdministrativeOverview.citizenSearch')}</TabsTrigger>
-          <TabsTrigger value="analytics-overview">Analytics</TabsTrigger>
-          <TabsTrigger value="quality-metrics">Quality Metrics</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="quality">Quality Metrics</TabsTrigger>
           <TabsTrigger value="coverage">Coverage</TabsTrigger>
           <TabsTrigger value="health">{t('admin:carAdministrativeOverview.systemHealth')}</TabsTrigger>
           <TabsTrigger value="management">{t('admin:carAdministrativeOverview.managementTools')}</TabsTrigger>
@@ -354,7 +354,7 @@ export function CARAdministrativeOverview() {
           <CitizenAddressSearch />
         </TabsContent>
 
-        <TabsContent value="analytics-overview">
+        <TabsContent value="analytics">
           <div className="space-y-4">
             <Card>
               <CardHeader>
@@ -423,7 +423,7 @@ export function CARAdministrativeOverview() {
           </div>
         </TabsContent>
 
-        <TabsContent value="quality-metrics">
+        <TabsContent value="quality">
           <CARQualityMetrics />
         </TabsContent>
 
