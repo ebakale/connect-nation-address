@@ -29,7 +29,7 @@ import { AddressPublishingQueue } from "./AddressPublishingQueue";
 import { AddressUnpublishingQueue } from "./AddressUnpublishingQueue";
 import { QualityIssuesFixer } from "./QualityIssuesFixer";
 import { RejectedAddressesPanel } from "./RejectedAddressesPanel";
-
+import { QualityDashboard } from "./QualityDashboard";
 import { AnalyticsReports } from "./AnalyticsReports";
 import { ProvinceManagement } from "./ProvinceManagement";
 
@@ -478,9 +478,10 @@ export const NARAuthorityDashboard = () => {
 
         <TabsContent value="quality" className="space-y-6">
           <Tabs defaultValue="flagged-addresses" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="flagged-addresses">{t('dashboard:flaggedAddresses')}</TabsTrigger>
               <TabsTrigger value="rejected-requests">{t('dashboard:rejectedRequests')}</TabsTrigger>
+              <TabsTrigger value="quality-metrics">{t('dashboard:qualityMetrics')}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="flagged-addresses" className="space-y-4">
@@ -507,6 +508,9 @@ export const NARAuthorityDashboard = () => {
               </Card>
             </TabsContent>
             
+            <TabsContent value="quality-metrics" className="space-y-4">
+              <QualityDashboard />
+            </TabsContent>
           </Tabs>
         </TabsContent>
 
