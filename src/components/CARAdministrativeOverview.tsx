@@ -12,6 +12,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { CitizenAddressSearch } from "./CitizenAddressSearch";
+import { CARQualityMetrics } from "./CARQualityMetrics";
 import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 
@@ -351,75 +352,98 @@ export function CARAdministrativeOverview() {
         </TabsContent>
 
         <TabsContent value="analytics">
-          <div className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.regionalDistribution')}</CardTitle>
-                <CardDescription>{t('admin:carAdministrativeOverview.topRegionsByAddressCount')}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {stats.addressesByRegion.map((region, index) => (
-                    <div key={region.region} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs flex items-center justify-center font-medium">
-                          {index + 1}
+          <Tabs defaultValue="overview" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="quality-metrics">Quality Metrics</TabsTrigger>
+              <TabsTrigger value="coverage">Coverage</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="overview">
+              <div className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.regionalDistribution')}</CardTitle>
+                    <CardDescription>{t('admin:carAdministrativeOverview.topRegionsByAddressCount')}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {stats.addressesByRegion.map((region, index) => (
+                        <div key={region.region} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs flex items-center justify-center font-medium">
+                              {index + 1}
+                            </div>
+                            <span className="text-sm font-medium">{region.region}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Progress 
+                              value={(region.count / stats.totalAddresses) * 100} 
+                              className="w-20" 
+                            />
+                            <Badge variant="secondary">{region.count}</Badge>
+                          </div>
                         </div>
-                        <span className="text-sm font-medium">{region.region}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Progress 
-                          value={(region.count / stats.totalAddresses) * 100} 
-                          className="w-20" 
-                        />
-                        <Badge variant="secondary">{region.count}</Badge>
-                      </div>
+                      ))}
                     </div>
-                  ))}
+                  </CardContent>
+                </Card>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.recentActivity')}</CardTitle>
+                      <CardDescription>{t('admin:carAdministrativeOverview.lastSevenDays')}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-bold text-green-600">{stats.recentActivity}</div>
+                      <p className="text-sm text-muted-foreground">{t('admin:carAdministrativeOverview.newAddressesAdded')}</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.verificationRate')}</CardTitle>
+                      <CardDescription>{t('admin:carAdministrativeOverview.narLinkageSuccess')}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-bold text-blue-600">{stats.verificationRate}%</div>
+                      <Progress value={stats.verificationRate} className="mt-2" />
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.activeRatio')}</CardTitle>
+                      <CardDescription>{t('admin:carAdministrativeOverview.activeVsTotalAddresses')}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-bold text-purple-600">
+                        {stats.totalAddresses > 0 ? Math.round((stats.activeAddresses / stats.totalAddresses) * 100) : 0}%
+                      </div>
+                      <Progress 
+                        value={stats.totalAddresses > 0 ? (stats.activeAddresses / stats.totalAddresses) * 100 : 0} 
+                        className="mt-2" 
+                      />
+                    </CardContent>
+                  </Card>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </TabsContent>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <TabsContent value="quality-metrics">
+              <CARQualityMetrics />
+            </TabsContent>
+
+            <TabsContent value="coverage">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.recentActivity')}</CardTitle>
-                  <CardDescription>{t('admin:carAdministrativeOverview.lastSevenDays')}</CardDescription>
+                  <CardTitle>Coverage Analytics</CardTitle>
+                  <CardDescription>Regional coverage data coming soon</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-green-600">{stats.recentActivity}</div>
-                  <p className="text-sm text-muted-foreground">{t('admin:carAdministrativeOverview.newAddressesAdded')}</p>
-                </CardContent>
               </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.verificationRate')}</CardTitle>
-                  <CardDescription>{t('admin:carAdministrativeOverview.narLinkageSuccess')}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-blue-600">{stats.verificationRate}%</div>
-                  <Progress value={stats.verificationRate} className="mt-2" />
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.activeRatio')}</CardTitle>
-                  <CardDescription>{t('admin:carAdministrativeOverview.activeVsTotalAddresses')}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-purple-600">
-                    {stats.totalAddresses > 0 ? Math.round((stats.activeAddresses / stats.totalAddresses) * 100) : 0}%
-                  </div>
-                  <Progress 
-                    value={stats.totalAddresses > 0 ? (stats.activeAddresses / stats.totalAddresses) * 100 : 0} 
-                    className="mt-2" 
-                  />
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+            </TabsContent>
+          </Tabs>
         </TabsContent>
 
         <TabsContent value="health">
