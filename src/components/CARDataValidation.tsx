@@ -268,10 +268,10 @@ export function CARDataValidation() {
 
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="overview">Validation Overview</TabsTrigger>
-          <TabsTrigger value="duplicates">Duplicate Detection</TabsTrigger>
-          <TabsTrigger value="nar-cross-ref">NAR Cross-Reference</TabsTrigger>
-          <TabsTrigger value="single-validation">Single UAC Validation</TabsTrigger>
+          <TabsTrigger value="overview">{t('admin:validation.overview')}</TabsTrigger>
+          <TabsTrigger value="duplicates">{t('admin:validation.duplicateDetection')}</TabsTrigger>
+          <TabsTrigger value="nar-cross-ref">{t('admin:validation.narCrossReference')}</TabsTrigger>
+          <TabsTrigger value="single-validation">{t('admin:validation.singleUacValidation')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">

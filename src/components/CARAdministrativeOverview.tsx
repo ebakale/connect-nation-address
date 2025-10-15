@@ -355,9 +355,9 @@ export function CARAdministrativeOverview() {
         <TabsContent value="analytics">
           <Tabs defaultValue="overview" className="space-y-4">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="quality-metrics">Quality Metrics</TabsTrigger>
-              <TabsTrigger value="coverage">Coverage</TabsTrigger>
+              <TabsTrigger value="overview">{t('dashboard:overview')}</TabsTrigger>
+              <TabsTrigger value="quality-metrics">{t('dashboard:qualityMetrics')}</TabsTrigger>
+              <TabsTrigger value="coverage">{t('dashboard:coverage')}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview">

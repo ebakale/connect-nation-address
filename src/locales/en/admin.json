@@ -652,5 +652,11 @@
     "addressVerificationManagement": "Address verification management",
     "bulkVerification": "Bulk Verification",
     "reviewFlaggedItems": "Review Flagged Items"
+  },
+  "validation": {
+    "overview": "Validation Overview",
+    "duplicateDetection": "Duplicate Detection",
+    "narCrossReference": "NAR Cross-Reference",
+    "singleUacValidation": "Single UAC Validation"
   }
 }

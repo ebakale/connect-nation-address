@@ -592,6 +592,12 @@
     "errorTitle": "Erreur",
     "failedToLoadStatistics": "Échec du chargement des statistiques CAR"
   },
+  "validation": {
+    "overview": "Aperçu de la Validation",
+    "duplicateDetection": "Détection des Doublons",
+    "narCrossReference": "Référence Croisée NAR",
+    "singleUacValidation": "Validation UAC Unique"
+  },
   "narCarIntegration": {
     "adminAccessRequired": "Accès administrateur requis pour exécuter les tests NAR/CAR.",
     "systemTestPanel": "Panneau de Tests du Système NAR/CAR",
