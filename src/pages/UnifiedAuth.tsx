@@ -23,6 +23,11 @@ const UnifiedAuth = () => {
     lastName: '',
     phoneNumber: '',
     confirmPassword: '',
+    nationalIdType: 'id_card' as 'id_card' | 'passport',
+    nationalId: '',
+    dateOfBirth: '',
+    nationality: 'Equatorial Guinea',
+    preferredLanguage: 'es',
     role: 'citizen' as 'admin' | 'police_officer' | 'emergency_operator' | 'citizen' | 'field_agent' | 'registrar' | 'verifier',
     badgeNumber: '',
     unit: '',
@@ -63,25 +68,19 @@ const UnifiedAuth = () => {
     
     setLoading(true);
     
-    if (isOnlineMode) {
-      const { error } = await signUp(
-        formData.email, 
-        formData.password, 
-        formData.firstName,
-        formData.lastName,
-        formData.phoneNumber
-      );
-    } else {
-      // For offline mode, pass additional profile data
-      const { error } = await signUp(
-        formData.email, 
-        formData.password, 
-        formData.firstName,
-        formData.lastName,
-        formData.phoneNumber,
-        formData.role
-      );
-    }
+    const { error } = await signUp(
+      formData.email, 
+      formData.password, 
+      formData.firstName,
+      formData.lastName,
+      formData.phoneNumber,
+      formData.nationalIdType,
+      formData.nationalId,
+      formData.dateOfBirth,
+      formData.nationality,
+      formData.preferredLanguage,
+      formData.role
+    );
     
     setLoading(false);
   };
@@ -236,6 +235,59 @@ const UnifiedAuth = () => {
                          onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                          required
                        />
+                     </div>
+
+                     <div className="grid grid-cols-2 gap-4">
+                       <div className="space-y-3">
+                         <label className="text-sm font-semibold text-foreground">{t('auth:nationalIdType')}</label>
+                         <Select
+                           value={formData.nationalIdType}
+                           onValueChange={(value: 'id_card' | 'passport') => handleInputChange('nationalIdType', value)}
+                         >
+                           <SelectTrigger className="h-12 text-base border-2 focus:border-primary transition-colors">
+                             <SelectValue />
+                           </SelectTrigger>
+                           <SelectContent>
+                             <SelectItem value="id_card">{t('auth:idCard')}</SelectItem>
+                             <SelectItem value="passport">{t('auth:passport')}</SelectItem>
+                           </SelectContent>
+                         </Select>
+                       </div>
+                       <div className="space-y-3">
+                         <label className="text-sm font-semibold text-foreground">{t('auth:nationalId')}</label>
+                         <Input
+                           type="text"
+                           placeholder={t('auth:enterNationalId')}
+                           className="h-12 text-base border-2 focus:border-primary transition-colors"
+                           value={formData.nationalId}
+                           onChange={(e) => handleInputChange('nationalId', e.target.value)}
+                           required
+                         />
+                       </div>
+                     </div>
+
+                     <div className="grid grid-cols-2 gap-4">
+                       <div className="space-y-3">
+                         <label className="text-sm font-semibold text-foreground">{t('auth:dateOfBirth')}</label>
+                         <Input
+                           type="date"
+                           className="h-12 text-base border-2 focus:border-primary transition-colors"
+                           value={formData.dateOfBirth}
+                           onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
+                           required
+                         />
+                       </div>
+                       <div className="space-y-3">
+                         <label className="text-sm font-semibold text-foreground">{t('auth:nationality')}</label>
+                         <Input
+                           type="text"
+                           placeholder={t('auth:enterNationality')}
+                           className="h-12 text-base border-2 focus:border-primary transition-colors"
+                           value={formData.nationality}
+                           onChange={(e) => handleInputChange('nationality', e.target.value)}
+                           required
+                         />
+                       </div>
                      </div>
                      
                      {!isOnlineMode && (

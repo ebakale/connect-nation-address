@@ -9,7 +9,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string, firstName: string, lastName: string, phoneNumber: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, firstName: string, lastName: string, phoneNumber: string, nationalIdType: string, nationalId: string, dateOfBirth: string, nationality: string, preferredLanguage: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
 }
@@ -66,7 +66,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     password: string, 
     firstName: string,
     lastName: string,
-    phoneNumber: string
+    phoneNumber: string,
+    nationalIdType: string,
+    nationalId: string,
+    dateOfBirth: string,
+    nationality: string,
+    preferredLanguage: string
   ) => {
     const redirectUrl = `${window.location.origin}/`;
     
@@ -79,7 +84,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           first_name: firstName,
           last_name: lastName,
           full_name: `${firstName} ${lastName}`,
-          phone: phoneNumber
+          phone: phoneNumber,
+          national_id_type: nationalIdType,
+          national_id: nationalId,
+          date_of_birth: dateOfBirth,
+          nationality: nationality,
+          preferred_language: preferredLanguage
         }
       }
     });

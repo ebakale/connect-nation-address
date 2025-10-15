@@ -1395,33 +1395,48 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          date_of_birth: string | null
           email: string | null
           full_name: string | null
           id: string
+          national_id: string | null
+          national_id_type: string | null
+          nationality: string | null
           organization: string | null
           phone: string | null
+          preferred_language: string | null
           role: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
+          date_of_birth?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
+          national_id?: string | null
+          national_id_type?: string | null
+          nationality?: string | null
           organization?: string | null
           phone?: string | null
+          preferred_language?: string | null
           role?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
+          date_of_birth?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
+          national_id?: string | null
+          national_id_type?: string | null
+          nationality?: string | null
           organization?: string | null
           phone?: string | null
+          preferred_language?: string | null
           role?: string | null
           updated_at?: string
           user_id?: string

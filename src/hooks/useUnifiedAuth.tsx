@@ -25,7 +25,7 @@ interface UnifiedAuthContextType {
   loading: boolean;
   isOnlineMode: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signUp: (email: string, password: string, firstName: string, lastName: string, phoneNumber: string, role?: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, firstName: string, lastName: string, phoneNumber: string, nationalIdType: string, nationalId: string, dateOfBirth: string, nationality: string, preferredLanguage: string, role?: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<{ error: Error | null }>;
 }
 
@@ -174,11 +174,16 @@ export const UnifiedAuthProvider = ({ children }: { children: ReactNode }) => {
     firstName: string,
     lastName: string,
     phoneNumber: string,
+    nationalIdType: string,
+    nationalId: string,
+    dateOfBirth: string,
+    nationality: string,
+    preferredLanguage: string,
     role?: string
-  ) => {
+  ): Promise<{ error: Error | null }> => {
     try {
       if (isOnlineMode) {
-        await onlineAuth.signUp(email, password, firstName, lastName, phoneNumber);
+        await onlineAuth.signUp(email, password, firstName, lastName, phoneNumber, nationalIdType, nationalId, dateOfBirth, nationality, preferredLanguage);
         return { error: null };
       } else {
         const localRole = role || 'citizen';
@@ -186,7 +191,12 @@ export const UnifiedAuthProvider = ({ children }: { children: ReactNode }) => {
           display_name: `${firstName} ${lastName}`,
           first_name: firstName,
           last_name: lastName,
-          phone: phoneNumber
+          phone: phoneNumber,
+          national_id_type: nationalIdType,
+          national_id: nationalId,
+          date_of_birth: dateOfBirth,
+          nationality: nationality,
+          preferred_language: preferredLanguage
         };
         const result = await offlineAuth.signUp(
           email, 
