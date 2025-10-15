@@ -109,7 +109,7 @@ export const ProfileEditor = () => {
           date_of_birth: dob,
           nationality: profile.nationality?.trim() || null,
           preferred_language: profile.preferred_language || 'es'
-        });
+        }, { onConflict: 'user_id' });
 
       if (profileError) throw profileError;
 
