@@ -26,6 +26,7 @@ import { QualityDashboard } from "./QualityDashboard";
 import { AnalyticsReports } from "./AnalyticsReports";
 import { ProvinceManagement } from "./ProvinceManagement";
 import { CARQualityMetrics } from "./CARQualityMetrics";
+import { CARCoverageAnalytics } from "./CARCoverageAnalytics";
 
 interface RegistrarStats {
   totalAddresses: number;
@@ -440,15 +441,7 @@ export const RegistrarDashboardView = () => {
                 </TabsContent>
                 
                 <TabsContent value="coverage" className="space-y-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>{t('dashboard:coverageMetrics')}</CardTitle>
-                      <CardDescription>{t('dashboard:coverageMetricsDesc')}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">{t('dashboard:coverageComingSoon')}</p>
-                    </CardContent>
-                  </Card>
+                  <CARCoverageAnalytics />
                 </TabsContent>
               </Tabs>
             </TabsContent>
