@@ -65,8 +65,8 @@ export function CARQualityMetrics() {
     } catch (error) {
       console.error('Error fetching quality metrics:', error);
       toast({
-        title: "Error",
-        description: "Failed to load quality metrics",
+        title: t('admin:carAdministrativeOverview.errorTitle'),
+        description: t('admin:carAdministrativeOverview.failedToLoadStatistics'),
         variant: "destructive"
       });
     } finally {
@@ -87,14 +87,14 @@ export function CARQualityMetrics() {
       await fetchQualityMetrics();
       
       toast({
-        title: "Success",
-        description: "Quality metrics updated successfully"
+        title: t('common:status.success'),
+        description: t('admin:quality.metricsUpdated')
       });
     } catch (error) {
       console.error('Error refreshing metrics:', error);
       toast({
-        title: "Error",
-        description: "Failed to refresh quality metrics",
+        title: t('admin:carAdministrativeOverview.errorTitle'),
+        description: t('admin:quality.failedToRefreshMetrics'),
         variant: "destructive"
       });
     } finally {
@@ -127,17 +127,17 @@ export function CARQualityMetrics() {
   };
 
   const getQualityLabel = (score: number) => {
-    if (score >= 90) return "Excellent";
-    if (score >= 70) return "Good";
-    return "Needs Attention";
+    if (score >= 90) return t('admin:quality.excellent');
+    if (score >= 70) return t('admin:quality.good');
+    return t('admin:quality.needsAttention');
   };
 
   if (loading) {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Quality Metrics</h3>
-          <Badge variant="outline">Loading...</Badge>
+          <h3 className="text-lg font-semibold">{t('admin:quality.qualityMetrics')}</h3>
+          <Badge variant="outline">{t('common:loading')}</Badge>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
@@ -160,7 +160,7 @@ export function CARQualityMetrics() {
       <Alert>
         <AlertTriangle className="h-4 w-4" />
         <AlertDescription>
-          No quality metrics available. Click refresh to generate initial metrics.
+          {t('admin:quality.noMetricsAvailable')}
         </AlertDescription>
       </Alert>
     );
@@ -173,9 +173,9 @@ export function CARQualityMetrics() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold">CAR Quality Metrics</h3>
+          <h3 className="text-lg font-semibold">{t('admin:quality.carQualityMetrics')}</h3>
           <p className="text-sm text-muted-foreground">
-            Last updated: {new Date(metrics.dateMeasured).toLocaleDateString()}
+            {t('admin:quality.lastUpdated')}: {new Date(metrics.dateMeasured).toLocaleDateString()}
           </p>
         </div>
         <Button 
@@ -185,7 +185,7 @@ export function CARQualityMetrics() {
           size="sm"
         >
           <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-          Refresh
+          {t('dashboard:refreshData')}
         </Button>
       </div>
 
@@ -194,7 +194,7 @@ export function CARQualityMetrics() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BarChart3 className="h-5 w-5" />
-            Overall System Quality
+            {t('admin:quality.overallSystemQuality')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -208,8 +208,7 @@ export function CARQualityMetrics() {
               </p>
             </div>
             <div className="text-right text-sm text-muted-foreground">
-              <div>Based on verification rates,</div>
-              <div>rejection rates, and data integrity</div>
+              <div>{t('admin:quality.basedOnVerificationRates')}</div>
             </div>
           </div>
           <Progress value={qualityScore} className="h-3" />
@@ -220,20 +219,20 @@ export function CARQualityMetrics() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Addresses</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard:totalAddresses')}</CardTitle>
             <Database className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{metrics.totalCitizenAddresses.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              Citizen address records
+              {t('admin:quality.citizenAddressRecords')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Verification Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:quality.verificationRate')}</CardTitle>
             <CheckCircle className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
@@ -241,14 +240,14 @@ export function CARQualityMetrics() {
               {calculateVerificationRate()}%
             </div>
             <p className="text-xs text-muted-foreground">
-              {metrics.confirmedAddresses} confirmed
+              {metrics.confirmedAddresses} {t('admin:quality.confirmed')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Review</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:quality.pendingReview')}</CardTitle>
             <Clock className="h-4 w-4 text-yellow-600" />
           </CardHeader>
           <CardContent>
@@ -256,14 +255,14 @@ export function CARQualityMetrics() {
               {metrics.pendingVerificationAddresses}
             </div>
             <p className="text-xs text-muted-foreground">
-              Awaiting verification
+              {t('admin:quality.awaitingVerification')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Rejection Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:quality.rejectionRate')}</CardTitle>
             <AlertTriangle className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
@@ -271,14 +270,14 @@ export function CARQualityMetrics() {
               {calculateRejectionRate()}%
             </div>
             <p className="text-xs text-muted-foreground">
-              {metrics.rejectedAddresses} rejected
+              {metrics.rejectedAddresses} {t('admin:quality.rejected')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg. Processing Time</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:quality.avgProcessingTime')}</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -286,14 +285,14 @@ export function CARQualityMetrics() {
               {Math.round(metrics.averageVerificationTimeHours)}h
             </div>
             <p className="text-xs text-muted-foreground">
-              Average verification time
+              {t('admin:quality.averageVerificationTime')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Duplicate Records</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:quality.duplicateRecords')}</CardTitle>
             <AlertTriangle className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
@@ -301,7 +300,7 @@ export function CARQualityMetrics() {
               {metrics.duplicatePersonRecords}
             </div>
             <p className="text-xs text-muted-foreground">
-              Require attention
+              {t('admin:quality.requireAttention')}
             </p>
           </CardContent>
         </Card>
@@ -311,8 +310,8 @@ export function CARQualityMetrics() {
       {Object.keys(metrics.addressCoverageByRegion).length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Regional Address Distribution</CardTitle>
-            <CardDescription>Address coverage by region</CardDescription>
+            <CardTitle>{t('admin:quality.regionalAddressDistribution')}</CardTitle>
+            <CardDescription>{t('admin:quality.addressCoverageByRegion')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">

@@ -150,8 +150,8 @@ export function CARCoverageAnalytics() {
     } catch (error) {
       console.error('Error fetching coverage data:', error);
       toast({
-        title: "Error",
-        description: "Failed to load coverage analytics",
+        title: t('admin:carAdministrativeOverview.errorTitle'),
+        description: t('admin:coverage.failedToLoadCoverage'),
         variant: "destructive"
       });
     } finally {
@@ -172,14 +172,14 @@ export function CARCoverageAnalytics() {
       await fetchCoverageData();
       
       toast({
-        title: "Success",
-        description: "Coverage analytics updated successfully"
+        title: t('common:status.success'),
+        description: t('admin:coverage.coverageUpdated')
       });
     } catch (error) {
       console.error('Error refreshing coverage:', error);
       toast({
-        title: "Error",
-        description: "Failed to refresh coverage analytics",
+        title: t('admin:carAdministrativeOverview.errorTitle'),
+        description: t('admin:coverage.failedToRefreshCoverage'),
         variant: "destructive"
       });
     } finally {
@@ -194,17 +194,17 @@ export function CARCoverageAnalytics() {
   };
 
   const getCoverageLabel = (percentage: number) => {
-    if (percentage >= 80) return "Excellent";
-    if (percentage >= 50) return "Good";
-    return "Needs Attention";
+    if (percentage >= 80) return t('admin:quality.excellent');
+    if (percentage >= 50) return t('admin:quality.good');
+    return t('admin:quality.needsAttention');
   };
 
   if (loading) {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Coverage Analytics</h3>
-          <Badge variant="outline">Loading...</Badge>
+          <h3 className="text-lg font-semibold">{t('admin:coverage.coverageAnalytics')}</h3>
+          <Badge variant="outline">{t('common:loading')}</Badge>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
@@ -227,7 +227,7 @@ export function CARCoverageAnalytics() {
       <Alert>
         <AlertTriangle className="h-4 w-4" />
         <AlertDescription className="flex items-center justify-between">
-          <span>No coverage data available. Click refresh to generate coverage analytics.</span>
+          <span>{t('admin:coverage.noCoverageData')}</span>
           <Button 
             onClick={refreshCoverage} 
             disabled={refreshing}
@@ -235,7 +235,7 @@ export function CARCoverageAnalytics() {
             size="sm"
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            Refresh
+            {t('dashboard:refreshData')}
           </Button>
         </AlertDescription>
       </Alert>
@@ -248,18 +248,18 @@ export function CARCoverageAnalytics() {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h3 className="text-lg font-semibold">CAR Coverage Analytics</h3>
+            <h3 className="text-lg font-semibold">{t('admin:coverage.carCoverageAnalytics')}</h3>
             {scopeType !== 'national' && scopeValue && (
               <Badge variant="outline">
-                {scopeType === 'city' ? 'City' : 'Regional'}: {scopeValue}
+                {scopeType === 'city' ? t('admin:coverage.city') : t('admin:coverage.regional')}: {scopeValue}
               </Badge>
             )}
           </div>
           <p className="text-sm text-muted-foreground">
-            Last updated: {coverageData[0]?.last_updated 
+            {t('admin:quality.lastUpdated')}: {coverageData[0]?.last_updated 
               ? new Date(coverageData[0].last_updated).toLocaleDateString() 
-              : 'Never'}
-            {scopeType !== 'national' && scopeValue && ` • Viewing ${scopeValue} data only`}
+              : t('admin:coverage.never')}
+            {scopeType !== 'national' && scopeValue && ` • ${t('admin:coverage.viewingDataOnly', { scope: scopeValue })}`}
           </p>
         </div>
         <Button 
@@ -269,7 +269,7 @@ export function CARCoverageAnalytics() {
           size="sm"
         >
           <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-          Refresh
+          {t('dashboard:refreshData')}
         </Button>
       </div>
 
@@ -277,20 +277,20 @@ export function CARCoverageAnalytics() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Coverage</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:coverage.totalCoverage')}</CardTitle>
             <Globe className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{nationalStats.totalAddresses.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              Across {nationalStats.totalRegions} regions, {nationalStats.totalCities} cities
+              {t('admin:coverage.acrossRegionsCities', { regions: nationalStats.totalRegions, cities: nationalStats.totalCities })}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Verification Coverage</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:coverage.verificationCoverage')}</CardTitle>
             <CheckCircle className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
@@ -298,14 +298,14 @@ export function CARCoverageAnalytics() {
               {nationalStats.avgVerificationRate}%
             </div>
             <p className="text-xs text-muted-foreground">
-              {nationalStats.totalVerified.toLocaleString()} verified
+              {nationalStats.totalVerified.toLocaleString()} {t('admin:quality.verified')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Publication Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:coverage.publicationRate')}</CardTitle>
             <Activity className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
@@ -313,14 +313,14 @@ export function CARCoverageAnalytics() {
               {nationalStats.avgPublicationRate}%
             </div>
             <p className="text-xs text-muted-foreground">
-              {nationalStats.totalPublished.toLocaleString()} published
+              {nationalStats.totalPublished.toLocaleString()} {t('admin:quality.published')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Geographic Reach</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('admin:coverage.geographicReach')}</CardTitle>
             <MapPin className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
@@ -328,7 +328,7 @@ export function CARCoverageAnalytics() {
               {nationalStats.totalCities}
             </div>
             <p className="text-xs text-muted-foreground">
-              Cities with coverage
+              {t('admin:coverage.citiesWithCoverage')}
             </p>
           </CardContent>
         </Card>
@@ -337,15 +337,15 @@ export function CARCoverageAnalytics() {
       {/* Detailed Views */}
       <Tabs defaultValue="regional" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="regional">Regional Summary</TabsTrigger>
-          <TabsTrigger value="city">City Details</TabsTrigger>
+          <TabsTrigger value="regional">{t('admin:coverage.regionalSummary')}</TabsTrigger>
+          <TabsTrigger value="city">{t('admin:coverage.cityDetails')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="regional" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Regional Coverage Overview</CardTitle>
-              <CardDescription>Address coverage aggregated by region</CardDescription>
+              <CardTitle>{t('admin:coverage.regionalCoverageOverview')}</CardTitle>
+              <CardDescription>{t('admin:coverage.addressCoverageAggregated')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -355,34 +355,34 @@ export function CARCoverageAnalytics() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <h4 className="font-semibold">{region.region}</h4>
-                          <Badge variant="outline">{region.cities_count} cities</Badge>
+                          <Badge variant="outline">{region.cities_count} {t('admin:coverage.cities')}</Badge>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {region.total_addresses.toLocaleString()} total addresses
+                          {region.total_addresses.toLocaleString()} {t('admin:coverage.totalAddresses')}
                         </p>
                       </div>
                       <div className="flex gap-4 text-sm">
                         <div className="text-right">
                           <div className="font-medium text-green-600">{region.avg_verification_rate}%</div>
-                          <div className="text-muted-foreground">Verified</div>
+                          <div className="text-muted-foreground">{t('admin:quality.verified')}</div>
                         </div>
                         <div className="text-right">
                           <div className="font-medium text-blue-600">{region.avg_publication_rate}%</div>
-                          <div className="text-muted-foreground">Published</div>
+                          <div className="text-muted-foreground">{t('admin:quality.published')}</div>
                         </div>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div>
                         <div className="flex items-center justify-between text-xs mb-1">
-                          <span>Verification</span>
+                          <span>{t('admin:coverage.verification')}</span>
                           <span>{region.verified_addresses.toLocaleString()}</span>
                         </div>
                         <Progress value={region.avg_verification_rate} className="h-2" />
                       </div>
                       <div>
                         <div className="flex items-center justify-between text-xs mb-1">
-                          <span>Publication</span>
+                          <span>{t('admin:coverage.publication')}</span>
                           <span>{region.published_addresses.toLocaleString()}</span>
                         </div>
                         <Progress value={region.avg_publication_rate} className="h-2" />
@@ -398,8 +398,8 @@ export function CARCoverageAnalytics() {
         <TabsContent value="city" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>City-Level Coverage Details</CardTitle>
-              <CardDescription>Detailed coverage metrics by city</CardDescription>
+              <CardTitle>{t('admin:coverage.cityLevelCoverage')}</CardTitle>
+              <CardDescription>{t('admin:coverage.detailedCoverageMetrics')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -411,13 +411,13 @@ export function CARCoverageAnalytics() {
                         <p className="text-sm text-muted-foreground">{city.region}</p>
                       </div>
                       <Badge variant="outline">
-                        {city.addresses_registered.toLocaleString()} addresses
+                        {city.addresses_registered.toLocaleString()} {t('dashboard:addresses')}
                       </Badge>
                     </div>
                     
                     <div className="grid grid-cols-3 gap-4 mt-3">
                       <div>
-                        <div className="text-sm font-medium mb-1">Verification</div>
+                        <div className="text-sm font-medium mb-1">{t('admin:coverage.verification')}</div>
                         <div className="flex items-center gap-2">
                           <Progress value={city.verification_rate} className="flex-1 h-2" />
                           <span className="text-sm font-semibold text-green-600">
@@ -425,12 +425,12 @@ export function CARCoverageAnalytics() {
                           </span>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {city.addresses_verified.toLocaleString()} verified
+                          {city.addresses_verified.toLocaleString()} {t('admin:quality.verified')}
                         </p>
                       </div>
                       
                       <div>
-                        <div className="text-sm font-medium mb-1">Publication</div>
+                        <div className="text-sm font-medium mb-1">{t('admin:coverage.publication')}</div>
                         <div className="flex items-center gap-2">
                           <Progress value={city.publication_rate} className="flex-1 h-2" />
                           <span className="text-sm font-semibold text-blue-600">
@@ -438,12 +438,12 @@ export function CARCoverageAnalytics() {
                           </span>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {city.addresses_published.toLocaleString()} published
+                          {city.addresses_published.toLocaleString()} {t('admin:quality.published')}
                         </p>
                       </div>
                       
                       <div>
-                        <div className="text-sm font-medium mb-1">Coverage</div>
+                        <div className="text-sm font-medium mb-1">{t('dashboard:coverage')}</div>
                         <div className="flex items-center gap-2">
                           <Progress value={city.coverage_percentage} className="flex-1 h-2" />
                           <span className={`text-sm font-semibold ${getCoverageColor(city.coverage_percentage)}`}>
