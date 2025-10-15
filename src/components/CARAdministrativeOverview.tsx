@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -11,6 +12,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { CitizenAddressSearch } from "./CitizenAddressSearch";
+import { CARQualityMetrics } from "./CARQualityMetrics";
 import { CARCoverageAnalytics } from "./CARCoverageAnalytics";
 import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
@@ -224,141 +226,223 @@ export function CARAdministrativeOverview() {
 
   return (
     <div className="space-y-6">
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('admin:carAdministrativeOverview.totalCitizenAddresses')}</CardTitle>
-            <Database className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalAddresses}</div>
-            <p className="text-xs text-muted-foreground">
-              {stats.activeAddresses} {t('admin:carAdministrativeOverview.currentlyActive')}
-            </p>
-          </CardContent>
-        </Card>
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="overview">{t('admin:carAdministrativeOverview.systemOverview')}</TabsTrigger>
+          <TabsTrigger value="search">{t('admin:carAdministrativeOverview.citizenSearch')}</TabsTrigger>
+          <TabsTrigger value="analytics">{t('admin:carAdministrativeOverview.analytics')}</TabsTrigger>
+          <TabsTrigger value="health">{t('admin:carAdministrativeOverview.systemHealth')}</TabsTrigger>
+          <TabsTrigger value="management">{t('admin:carAdministrativeOverview.managementTools')}</TabsTrigger>
+        </TabsList>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('admin:carAdministrativeOverview.registeredPersons')}</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalPersons}</div>
-            <p className="text-xs text-muted-foreground">
-              {t('admin:carAdministrativeOverview.inCarSystem')}
-            </p>
-          </CardContent>
-        </Card>
+        <TabsContent value="overview">
+          <div className="space-y-4">
+            {/* Key Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{t('admin:carAdministrativeOverview.totalCitizenAddresses')}</CardTitle>
+                  <Database className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats.totalAddresses}</div>
+                  <p className="text-xs text-muted-foreground">
+                    {stats.activeAddresses} {t('admin:carAdministrativeOverview.currentlyActive')}
+                  </p>
+                </CardContent>
+              </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('admin:carAdministrativeOverview.pendingVerifications')}</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.pendingVerifications}</div>
-            <p className="text-xs text-muted-foreground">
-              {t('admin:carAdministrativeOverview.awaitingVerification')}
-            </p>
-          </CardContent>
-        </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{t('admin:carAdministrativeOverview.registeredPersons')}</CardTitle>
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats.totalPersons}</div>
+                  <p className="text-xs text-muted-foreground">
+                    {t('admin:carAdministrativeOverview.inCarSystem')}
+                  </p>
+                </CardContent>
+              </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('admin:carAdministrativeOverview.narVerificationRate')}</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.verificationRate}%</div>
-            <p className="text-xs text-muted-foreground">
-              {t('admin:carAdministrativeOverview.linkedToNar')}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{t('admin:carAdministrativeOverview.pendingVerifications')}</CardTitle>
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats.pendingVerifications}</div>
+                  <p className="text-xs text-muted-foreground">
+                    {t('admin:carAdministrativeOverview.awaitingVerification')}
+                  </p>
+                </CardContent>
+              </Card>
 
-      {/* Status Distribution */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.addressStatusDistribution')}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="text-sm">{t('admin:carAdministrativeOverview.verifiedApproved')}</span>
-              </div>
-              <Badge variant="outline">{stats.confirmedAddresses}</Badge>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{t('admin:carAdministrativeOverview.narVerificationRate')}</CardTitle>
+                  <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats.verificationRate}%</div>
+                  <p className="text-xs text-muted-foreground">
+                    {t('admin:carAdministrativeOverview.linkedToNar')}
+                  </p>
+                </CardContent>
+              </Card>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                <span className="text-sm">{t('admin:carAdministrativeOverview.unverifiedSelfDeclared')}</span>
-              </div>
-              <Badge variant="outline">{stats.pendingVerifications}</Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <span className="text-sm">{t('admin:carAdministrativeOverview.verificationRejected')}</span>
-              </div>
-              <Badge variant="outline">{stats.rejectedAddresses}</Badge>
-            </div>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.addressTypes')}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Building2 className="h-4 w-4 text-blue-500" />
-                <span className="text-sm">{t('admin:carAdministrativeOverview.primaryAddresses')}</span>
-              </div>
-              <Badge variant="outline">{stats.primaryAddresses}</Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-purple-500" />
-                <span className="text-sm">{t('admin:carAdministrativeOverview.secondaryAddresses')}</span>
-              </div>
-              <Badge variant="outline">{stats.secondaryAddresses}</Badge>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            {/* Status Distribution */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.addressStatusDistribution')}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <span className="text-sm">{t('admin:carAdministrativeOverview.verifiedApproved')}</span>
+                    </div>
+                    <Badge variant="outline">{stats.confirmedAddresses}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                      <span className="text-sm">{t('admin:carAdministrativeOverview.unverifiedSelfDeclared')}</span>
+                    </div>
+                    <Badge variant="outline">{stats.pendingVerifications}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                      <span className="text-sm">{t('admin:carAdministrativeOverview.verificationRejected')}</span>
+                    </div>
+                    <Badge variant="outline">{stats.rejectedAddresses}</Badge>
+                  </div>
+                </CardContent>
+              </Card>
 
-      {/* Citizen Search */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('admin:carAdministrativeOverview.citizenSearch')}</CardTitle>
-        </CardHeader>
-        <CardContent>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.addressTypes')}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Building2 className="h-4 w-4 text-blue-500" />
+                      <span className="text-sm">{t('admin:carAdministrativeOverview.primaryAddresses')}</span>
+                    </div>
+                    <Badge variant="outline">{stats.primaryAddresses}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-purple-500" />
+                      <span className="text-sm">{t('admin:carAdministrativeOverview.secondaryAddresses')}</span>
+                    </div>
+                    <Badge variant="outline">{stats.secondaryAddresses}</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="search">
           <CitizenAddressSearch />
-        </CardContent>
-      </Card>
+        </TabsContent>
 
-      {/* Coverage Analytics */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Coverage Analytics</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <CARCoverageAnalytics />
-        </CardContent>
-      </Card>
+        <TabsContent value="analytics">
+          <Tabs defaultValue="overview" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="quality-metrics">Quality Metrics</TabsTrigger>
+              <TabsTrigger value="coverage">Coverage</TabsTrigger>
+            </TabsList>
 
-      {/* System Health */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('admin:carAdministrativeOverview.systemHealth')}</CardTitle>
-        </CardHeader>
-        <CardContent>
+            <TabsContent value="overview">
+              <div className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.regionalDistribution')}</CardTitle>
+                    <CardDescription>{t('admin:carAdministrativeOverview.topRegionsByAddressCount')}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {stats.addressesByRegion.map((region, index) => (
+                        <div key={region.region} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs flex items-center justify-center font-medium">
+                              {index + 1}
+                            </div>
+                            <span className="text-sm font-medium">{region.region}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Progress 
+                              value={(region.count / stats.totalAddresses) * 100} 
+                              className="w-20" 
+                            />
+                            <Badge variant="secondary">{region.count}</Badge>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.recentActivity')}</CardTitle>
+                      <CardDescription>{t('admin:carAdministrativeOverview.lastSevenDays')}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-bold text-green-600">{stats.recentActivity}</div>
+                      <p className="text-sm text-muted-foreground">{t('admin:carAdministrativeOverview.newAddressesAdded')}</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.verificationRate')}</CardTitle>
+                      <CardDescription>{t('admin:carAdministrativeOverview.narLinkageSuccess')}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-bold text-blue-600">{stats.verificationRate}%</div>
+                      <Progress value={stats.verificationRate} className="mt-2" />
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.activeRatio')}</CardTitle>
+                      <CardDescription>{t('admin:carAdministrativeOverview.activeVsTotalAddresses')}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-bold text-purple-600">
+                        {stats.totalAddresses > 0 ? Math.round((stats.activeAddresses / stats.totalAddresses) * 100) : 0}%
+                      </div>
+                      <Progress 
+                        value={stats.totalAddresses > 0 ? (stats.activeAddresses / stats.totalAddresses) * 100 : 0} 
+                        className="mt-2" 
+                      />
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="quality-metrics">
+              <CARQualityMetrics />
+            </TabsContent>
+
+            <TabsContent value="coverage">
+              <CARCoverageAnalytics />
+            </TabsContent>
+          </Tabs>
+        </TabsContent>
+
+        <TabsContent value="health">
           <div className="space-y-4">
             <Alert>
               <Activity className="h-4 w-4" />
@@ -416,8 +500,280 @@ export function CARAdministrativeOverview() {
               </Card>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </TabsContent>
+
+        <TabsContent value="management">
+          <div className="space-y-4">
+            <Alert>
+              <Shield className="h-4 w-4" />
+              <AlertDescription>
+                {t('admin:carAdministrativeOverview.administrativeTools')}
+              </AlertDescription>
+            </Alert>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.dataManagement')}</CardTitle>
+                  <CardDescription>{t('admin:carAdministrativeOverview.bulkOperationsDataManagement')}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <Button variant="outline" className="w-full" onClick={() => fetchCARStatistics()}>
+                    <BarChart3 className="h-4 w-4 mr-2" />
+                    {t('admin:carAdministrativeOverview.refreshStatistics')}
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={async () => {
+                      try {
+                        // Fetch CAR data
+                        const { data: carData, error: carError } = await supabase
+                          .from('citizen_address_with_details')
+                          .select('*');
+                        
+                        if (carError) throw carError;
+                        
+                        // Get unique person IDs
+                        const personIds = [...new Set(carData?.map(r => r.person_id))];
+                        
+                        // Fetch person and profile data separately
+                        const { data: persons, error: personError } = await supabase
+                          .from('person')
+                          .select('id, auth_user_id, national_id')
+                          .in('id', personIds);
+                        
+                        if (personError) throw personError;
+                        
+                        // Get auth user IDs
+                        const authUserIds = persons?.map(p => p.auth_user_id).filter(Boolean) || [];
+                        
+                        // Fetch profiles
+                        const { data: profiles, error: profileError } = await supabase
+                          .from('profiles')
+                          .select('user_id, full_name, email, phone')
+                          .in('user_id', authUserIds);
+                        
+                        if (profileError) throw profileError;
+                        
+                        // Create lookup maps
+                        const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
+                        const personMap = new Map(
+                          persons?.map(p => {
+                            const profile = profileMap.get(p.auth_user_id);
+                            return [
+                              p.id,
+                              {
+                                full_name: profile?.full_name || 'N/A',
+                                email: profile?.email || 'N/A',
+                                phone: profile?.phone || 'N/A',
+                                national_id: p.national_id || 'N/A'
+                              }
+                            ];
+                          }) || []
+                        );
+                        
+                        // Enrich CAR data with person names
+                        const enrichedData = carData?.map(record => ({
+                          person_name: personMap.get(record.person_id)?.full_name || 'Unknown',
+                          email: personMap.get(record.person_id)?.email || 'N/A',
+                          phone: personMap.get(record.person_id)?.phone || 'N/A',
+                          national_id: personMap.get(record.person_id)?.national_id || 'N/A',
+                          uac: record.uac,
+                          unit_uac: record.unit_uac || 'N/A',
+                          address_kind: record.address_kind,
+                          scope: record.scope,
+                          occupant: record.occupant || 'N/A',
+                          status: record.status,
+                          street: record.street || 'N/A',
+                          city: record.city || 'N/A',
+                          region: record.region || 'N/A',
+                          country: record.country || 'N/A',
+                          building: record.building || 'N/A',
+                          latitude: record.latitude || 'N/A',
+                          longitude: record.longitude || 'N/A',
+                          nar_verified: record.nar_verified ? 'Yes' : 'No',
+                          nar_public: record.nar_public ? 'Yes' : 'No',
+                          effective_from: record.effective_from || 'N/A',
+                          effective_to: record.effective_to || 'Active',
+                          source: record.source || 'N/A',
+                          notes: record.notes || 'N/A',
+                          created_at: new Date(record.created_at).toLocaleString(),
+                        })) || [];
+                        
+                        // Create worksheet from enriched data
+                        const worksheet = XLSX.utils.json_to_sheet(enrichedData);
+                        
+                        // Set column widths for better readability
+                        worksheet['!cols'] = [
+                          { wch: 25 }, // person_name
+                          { wch: 30 }, // email
+                          { wch: 15 }, // phone
+                          { wch: 15 }, // national_id
+                          { wch: 20 }, // uac
+                        ];
+                        
+                        // Create workbook
+                        const workbook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workbook, worksheet, 'CAR Data');
+                        
+                        // Generate Excel file and download
+                        const fileName = `car-export-${new Date().toISOString().split('T')[0]}.xlsx`;
+                        XLSX.writeFile(workbook, fileName);
+                        
+                        toast({
+                          title: "Export Successful",
+                          description: `Exported ${enrichedData.length} CAR records with person details to Excel`
+                        });
+                      } catch (error: any) {
+                        console.error('Export error:', error);
+                        toast({
+                          title: "Export Failed",
+                          description: error.message || "Failed to export CAR data",
+                          variant: "destructive"
+                        });
+                      }
+                    }}
+                  >
+                    <Database className="h-4 w-4 mr-2" />
+                    {t('admin:carAdministrativeOverview.exportCarData')}
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.systemMaintenance')}</CardTitle>
+                  <CardDescription>{t('admin:carAdministrativeOverview.systemMaintenanceOptimization')}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={async () => {
+                      try {
+                        // Check for duplicate person records
+                        const { data: duplicates, error } = await supabase
+                          .rpc('update_car_quality_metrics');
+                        
+                        if (error) throw error;
+                        
+                        await fetchCARStatistics();
+                        
+                        toast({
+                          title: "Integrity Check Complete",
+                          description: "System health metrics updated"
+                        });
+                      } catch (error) {
+                        toast({
+                          title: "Check Failed",
+                          description: "Failed to run integrity check",
+                          variant: "destructive"
+                        });
+                      }
+                    }}
+                  >
+                    <Activity className="h-4 w-4 mr-2" />
+                    {t('admin:carAdministrativeOverview.runIntegrityCheck')}
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={async () => {
+                      try {
+                        // Calculate coverage analytics
+                        const { error } = await supabase
+                          .rpc('calculate_coverage_analytics');
+                        
+                        if (error) throw error;
+                        
+                        toast({
+                          title: "Optimization Complete",
+                          description: "Coverage analytics recalculated"
+                        });
+                      } catch (error) {
+                        toast({
+                          title: "Optimization Failed",
+                          description: "Failed to optimize performance",
+                          variant: "destructive"
+                        });
+                      }
+                    }}
+                  >
+                    <TrendingUp className="h-4 w-4 mr-2" />
+                    {t('admin:carAdministrativeOverview.optimizePerformance')}
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.verificationTools')}</CardTitle>
+                  <CardDescription>{t('admin:carAdministrativeOverview.addressVerificationManagement')}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={async () => {
+                      try {
+                        // Auto-approve addresses that reference verified NAR addresses
+                        const { error } = await supabase
+                          .rpc('auto_approve_verified_citizen_addresses');
+                        
+                        if (error) throw error;
+                        
+                        await fetchCARStatistics();
+                        
+                        toast({
+                          title: "Bulk Verification Complete",
+                          description: "Auto-approved addresses linked to verified NAR records"
+                        });
+                      } catch (error) {
+                        toast({
+                          title: "Verification Failed",
+                          description: "Failed to run bulk verification",
+                          variant: "destructive"
+                        });
+                      }
+                    }}
+                  >
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    {t('admin:carAdministrativeOverview.bulkVerification')}
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={async () => {
+                      try {
+                        const { data, error } = await supabase
+                          .from('citizen_address_manual_review_queue')
+                          .select('*');
+                        
+                        if (error) throw error;
+                        
+                        toast({
+                          title: "Review Queue",
+                          description: `Found ${data?.length || 0} items requiring manual review`
+                        });
+                      } catch (error) {
+                        toast({
+                          title: "Failed to Load",
+                          description: "Failed to load review queue",
+                          variant: "destructive"
+                        });
+                      }
+                    }}
+                  >
+                    <AlertTriangle className="h-4 w-4 mr-2" />
+                    {t('admin:carAdministrativeOverview.reviewFlaggedItems')}
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
