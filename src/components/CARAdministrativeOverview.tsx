@@ -231,7 +231,6 @@ export function CARAdministrativeOverview() {
           <TabsTrigger value="overview">{t('admin:carAdministrativeOverview.systemOverview')}</TabsTrigger>
           <TabsTrigger value="search">{t('admin:carAdministrativeOverview.citizenSearch')}</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="quality">Quality Metrics</TabsTrigger>
           <TabsTrigger value="coverage">Coverage</TabsTrigger>
           <TabsTrigger value="health">{t('admin:carAdministrativeOverview.systemHealth')}</TabsTrigger>
           <TabsTrigger value="management">{t('admin:carAdministrativeOverview.managementTools')}</TabsTrigger>
@@ -423,9 +422,6 @@ export function CARAdministrativeOverview() {
           </div>
         </TabsContent>
 
-        <TabsContent value="quality">
-          <CARQualityMetrics />
-        </TabsContent>
 
         <TabsContent value="coverage">
           <CARCoverageAnalytics />
