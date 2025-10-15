@@ -39,7 +39,7 @@ interface RegionalSummary {
 
 export function CARCoverageAnalytics() {
   const { toast } = useToast();
-  const { t } = useTranslation(['admin', 'dashboard']);
+  const { t } = useTranslation(['admin', 'dashboard', 'common']);
   const { roleMetadata, role } = useUserRole();
   
   const [coverageData, setCoverageData] = useState<CoverageData[]>([]);

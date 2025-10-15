@@ -27,7 +27,7 @@ interface QualityMetrics {
 
 export function CARQualityMetrics() {
   const { toast } = useToast();
-  const { t } = useTranslation(['admin']);
+  const { t } = useTranslation(['admin', 'dashboard', 'common']);
   
   const [metrics, setMetrics] = useState<QualityMetrics | null>(null);
   const [loading, setLoading] = useState(true);
