@@ -27,7 +27,7 @@ interface QualityMetrics {
 
 export function CARQualityMetrics() {
   const { toast } = useToast();
-  const { t } = useTranslation(['admin', 'dashboard', 'common']);
+  const { t, i18n } = useTranslation(['admin', 'dashboard', 'common']);
   
   const [metrics, setMetrics] = useState<QualityMetrics | null>(null);
   const [loading, setLoading] = useState(true);
@@ -132,6 +132,17 @@ export function CARQualityMetrics() {
     return t('admin:quality.needsAttention');
   };
 
+  const formatPercent = (value: number) => {
+    try {
+      return new Intl.NumberFormat(i18n.language, {
+        style: 'percent',
+        maximumFractionDigits: 0,
+      }).format(value / 100);
+    } catch {
+      return `${Math.round(value)}%`;
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -200,8 +211,8 @@ export function CARQualityMetrics() {
         <CardContent>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <div className={`text-3xl font-bold ${getQualityColor(qualityScore)}`}>
-                {qualityScore}%
+              <div className={`text-3xl font-bold ${getQualityColor(qualityScore)}`} aria-label={t('admin:quality.overallSystemQuality')}>
+                {formatPercent(qualityScore)}
               </div>
               <p className={`text-sm font-medium ${getQualityColor(qualityScore)}`}>
                 {getQualityLabel(qualityScore)}
