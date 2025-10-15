@@ -11,7 +11,7 @@ import {
 } from 'recharts';
 import { 
   MapPin, CheckCircle, AlertTriangle, TrendingUp, Database,
-  RefreshCw, Download, Eye, Clock, Settings, Users
+  RefreshCw, Download, Eye, Clock, Settings, Users, BarChart3
 } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -672,114 +672,375 @@ export function QualityDashboard() {
         </TabsContent>
 
         <TabsContent value="car" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {/* CAR Status Overview */}
+          {/* Quality Score Overview Cards */}
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Overall Quality Score</CardTitle>
+                <BarChart3 className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {(() => {
+                    const verificationRate = carMetrics.totalCitizenAddresses > 0 
+                      ? (carMetrics.confirmedAddresses / carMetrics.totalCitizenAddresses) * 100 
+                      : 0;
+                    const rejectionRate = carMetrics.totalCitizenAddresses > 0 
+                      ? (carMetrics.rejectedAddresses / carMetrics.totalCitizenAddresses) * 100 
+                      : 0;
+                    const duplicateScore = Math.max(0, 100 - (carMetrics.duplicatePersonRecords * 5));
+                    const score = Math.round((verificationRate * 0.4) + ((100 - rejectionRate) * 0.3) + (duplicateScore * 0.3));
+                    return (
+                      <span className={score >= 90 ? 'text-green-600' : score >= 70 ? 'text-yellow-600' : 'text-red-600'}>
+                        {score}%
+                      </span>
+                    );
+                  })()}
+                </div>
+                <Progress 
+                  value={(() => {
+                    const verificationRate = carMetrics.totalCitizenAddresses > 0 
+                      ? (carMetrics.confirmedAddresses / carMetrics.totalCitizenAddresses) * 100 
+                      : 0;
+                    const rejectionRate = carMetrics.totalCitizenAddresses > 0 
+                      ? (carMetrics.rejectedAddresses / carMetrics.totalCitizenAddresses) * 100 
+                      : 0;
+                    const duplicateScore = Math.max(0, 100 - (carMetrics.duplicatePersonRecords * 5));
+                    return Math.round((verificationRate * 0.4) + ((100 - rejectionRate) * 0.3) + (duplicateScore * 0.3));
+                  })()} 
+                  className="mt-2" 
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  Based on verification, rejection & integrity
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Data Completeness</CardTitle>
+                <CheckCircle className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {(() => {
+                    const totalProcessed = carMetrics.confirmedAddresses + carMetrics.rejectedAddresses;
+                    const completeness = carMetrics.totalCitizenAddresses > 0
+                      ? Math.round((totalProcessed / carMetrics.totalCitizenAddresses) * 100)
+                      : 0;
+                    return `${completeness}%`;
+                  })()}
+                </div>
+                <Progress 
+                  value={(() => {
+                    const totalProcessed = carMetrics.confirmedAddresses + carMetrics.rejectedAddresses;
+                    return carMetrics.totalCitizenAddresses > 0
+                      ? (totalProcessed / carMetrics.totalCitizenAddresses) * 100
+                      : 0;
+                  })()} 
+                  className="mt-2" 
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  Records processed
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Data Integrity</CardTitle>
+                <Database className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {(() => {
+                    const duplicateImpact = carMetrics.totalCitizenAddresses > 0
+                      ? (carMetrics.duplicatePersonRecords / carMetrics.totalCitizenAddresses) * 100
+                      : 0;
+                    const integrity = Math.round(100 - duplicateImpact);
+                    return (
+                      <span className={integrity >= 95 ? 'text-green-600' : integrity >= 85 ? 'text-yellow-600' : 'text-red-600'}>
+                        {integrity}%
+                      </span>
+                    );
+                  })()}
+                </div>
+                <Progress 
+                  value={(() => {
+                    const duplicateImpact = carMetrics.totalCitizenAddresses > 0
+                      ? (carMetrics.duplicatePersonRecords / carMetrics.totalCitizenAddresses) * 100
+                      : 0;
+                    return 100 - duplicateImpact;
+                  })()} 
+                  className="mt-2" 
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  {carMetrics.duplicatePersonRecords} duplicates found
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Status Distribution and Quality Breakdown */}
+          <div className="grid gap-4 md:grid-cols-2">
+            {/* CAR Status Distribution Chart */}
             <Card>
               <CardHeader>
                 <CardTitle>{t('admin:quality.carStatusDistribution')}</CardTitle>
-                <CardDescription>{t('admin:quality.citizenAddressesByStatus')}</CardDescription>
+                <CardDescription>Citizen address records by status</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">{t('admin:quality.confirmed')}</span>
-                    <Badge variant="default">{carMetrics.confirmedAddresses}</Badge>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={[
+                        { name: 'Confirmed', value: carMetrics.confirmedAddresses, color: COLORS[0] },
+                        { name: 'Pending', value: carMetrics.pendingVerificationAddresses, color: COLORS[1] },
+                        { name: 'Rejected', value: carMetrics.rejectedAddresses, color: COLORS[3] }
+                      ]}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={100}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {[
+                        { name: 'Confirmed', value: carMetrics.confirmedAddresses, color: COLORS[0] },
+                        { name: 'Pending', value: carMetrics.pendingVerificationAddresses, color: COLORS[1] },
+                        { name: 'Rejected', value: carMetrics.rejectedAddresses, color: COLORS[3] }
+                      ].map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="mt-4 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Total Records:</span>
+                    <span className="font-medium">{carMetrics.totalCitizenAddresses.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">{t('admin:quality.pending')}</span>
-                    <Badge variant="secondary">{carMetrics.pendingVerificationAddresses}</Badge>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">{t('admin:quality.rejected')}</span>
-                    <Badge variant="destructive">{carMetrics.rejectedAddresses}</Badge>
-                  </div>
-                  <div className="pt-2 border-t">
-                    <div className="flex justify-between items-center font-medium">
-                      <span className="text-sm">{t('admin:quality.total')}</span>
-                      <span>{carMetrics.totalCitizenAddresses}</span>
-                    </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Verification Rate:</span>
+                    <span className="font-medium text-green-600">
+                      {carMetrics.totalCitizenAddresses > 0 
+                        ? Math.round((carMetrics.confirmedAddresses / carMetrics.totalCitizenAddresses) * 100)
+                        : 0}%
+                    </span>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Processing Performance */}
+            {/* Quality Score Breakdown */}
             <Card>
               <CardHeader>
-                <CardTitle>{t('admin:quality.processingPerformance')}</CardTitle>
-                <CardDescription>{t('admin:quality.carVerificationEfficiency')}</CardDescription>
+                <CardTitle>Quality Score Components</CardTitle>
+                <CardDescription>Weighted metrics contributing to overall score</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>{t('admin:quality.confirmationRate')}</span>
-                      <span>{carMetrics.totalCitizenAddresses > 0 ? 
-                        ((carMetrics.confirmedAddresses / carMetrics.totalCitizenAddresses) * 100).toFixed(1) : 0}%</span>
-                    </div>
-                    <Progress value={carMetrics.totalCitizenAddresses > 0 ? 
-                      (carMetrics.confirmedAddresses / carMetrics.totalCitizenAddresses) * 100 : 0} />
+              <CardContent className="space-y-4">
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>Verification Success</span>
+                    <span className="font-medium">
+                      {carMetrics.totalCitizenAddresses > 0 
+                        ? Math.round((carMetrics.confirmedAddresses / carMetrics.totalCitizenAddresses) * 100)
+                        : 0}%
+                    </span>
                   </div>
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>{t('admin:quality.avgProcessingTime')}</span>
-                      <span>{carMetrics.averageVerificationTimeHours.toFixed(1)}h</span>
-                    </div>
-                    <Progress value={Math.max(0, 100 - (carMetrics.averageVerificationTimeHours * 2))} 
-                      className={carMetrics.averageVerificationTimeHours > 48 ? "progress-destructive" : ""} />
-                  </div>
+                  <Progress 
+                    value={carMetrics.totalCitizenAddresses > 0 
+                      ? (carMetrics.confirmedAddresses / carMetrics.totalCitizenAddresses) * 100
+                      : 0} 
+                    className="h-2" 
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">Weight: 40%</p>
                 </div>
-              </CardContent>
-            </Card>
 
-            {/* Data Quality Issues */}
-            <Card>
-              <CardHeader>
-                <CardTitle>{t('admin:quality.dataQualityIssuesCar')}</CardTitle>
-                <CardDescription>{t('admin:quality.carSpecificQualityConcerns')}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">{t('admin:quality.duplicatePersons')}</span>
-                    <Badge variant={carMetrics.duplicatePersonRecords > 0 ? "destructive" : "outline"}>
-                      {carMetrics.duplicatePersonRecords}
-                    </Badge>
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>Rejection Control</span>
+                    <span className="font-medium">
+                      {carMetrics.totalCitizenAddresses > 0 
+                        ? Math.round((1 - (carMetrics.rejectedAddresses / carMetrics.totalCitizenAddresses)) * 100)
+                        : 100}%
+                    </span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">{t('admin:quality.processingBacklog')}</span>
-                    <Badge variant={carMetrics.pendingVerificationAddresses > 50 ? "destructive" : "secondary"}>
-                      {carMetrics.pendingVerificationAddresses}
-                    </Badge>
+                  <Progress 
+                    value={carMetrics.totalCitizenAddresses > 0 
+                      ? (1 - (carMetrics.rejectedAddresses / carMetrics.totalCitizenAddresses)) * 100
+                      : 100} 
+                    className="h-2" 
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">Weight: 30%</p>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>Duplicate-Free</span>
+                    <span className="font-medium">
+                      {Math.max(0, 100 - (carMetrics.duplicatePersonRecords * 5))}%
+                    </span>
                   </div>
-                  {carMetrics.duplicatePersonRecords > 0 && (
-                    <div className="p-3 border rounded-lg bg-destructive/5 mt-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <AlertTriangle className="h-4 w-4 text-destructive" />
-                        <span className="font-medium text-sm">{t('admin:quality.actionRequired')}</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        {carMetrics.duplicatePersonRecords} {t('admin:quality.duplicatePersonsNeedMerging')}
-                      </p>
-                    </div>
-                  )}
+                  <Progress 
+                    value={Math.max(0, 100 - (carMetrics.duplicatePersonRecords * 5))} 
+                    className="h-2" 
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">Weight: 30%</p>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* CAR Trends Chart */}
+          {/* Processing Performance Metrics */}
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Avg. Processing Time</CardTitle>
+                <Clock className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {carMetrics.averageVerificationTimeHours.toFixed(1)}h
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Average verification time
+                </p>
+                {carMetrics.averageVerificationTimeHours > 48 && (
+                  <Badge variant="destructive" className="mt-2">Slow Processing</Badge>
+                )}
+                {carMetrics.averageVerificationTimeHours <= 24 && (
+                  <Badge variant="default" className="mt-2">Excellent Speed</Badge>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Processing Backlog</CardTitle>
+                <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-yellow-600">
+                  {carMetrics.pendingVerificationAddresses}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Awaiting verification
+                </p>
+                {carMetrics.pendingVerificationAddresses > 100 && (
+                  <Badge variant="destructive" className="mt-2">High Backlog</Badge>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Throughput Rate</CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {(() => {
+                    const processed = carMetrics.confirmedAddresses + carMetrics.rejectedAddresses;
+                    const rate = carMetrics.averageVerificationTimeHours > 0
+                      ? Math.round((processed / carMetrics.averageVerificationTimeHours) * 24)
+                      : 0;
+                    return rate;
+                  })()}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Records per day
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Data Quality Issues */}
           <Card>
             <CardHeader>
-              <CardTitle>{t('admin:quality.carProcessingTrends')}</CardTitle>
-              <CardDescription>{t('admin:quality.verificationTrendsOverTime')}</CardDescription>
+              <CardTitle>Data Quality Issues</CardTitle>
+              <CardDescription>Issues requiring attention</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex items-center gap-3">
+                  <AlertTriangle className="h-5 w-5 text-orange-600" />
+                  <div>
+                    <p className="font-medium">Duplicate Person Records</p>
+                    <p className="text-sm text-muted-foreground">
+                      Multiple records for the same person
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-orange-600">
+                    {carMetrics.duplicatePersonRecords}
+                  </div>
+                  <Badge variant={carMetrics.duplicatePersonRecords > 0 ? "destructive" : "default"}>
+                    {carMetrics.duplicatePersonRecords > 0 ? 'Action Required' : 'Clean'}
+                  </Badge>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Clock className="h-5 w-5 text-yellow-600" />
+                  <div>
+                    <p className="font-medium">Pending Verifications</p>
+                    <p className="text-sm text-muted-foreground">
+                      Records awaiting review
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-yellow-600">
+                    {carMetrics.pendingVerificationAddresses}
+                  </div>
+                  <Badge variant={carMetrics.pendingVerificationAddresses > 50 ? "destructive" : "secondary"}>
+                    {carMetrics.pendingVerificationAddresses > 50 ? 'High Backlog' : 'Manageable'}
+                  </Badge>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex items-center gap-3">
+                  <AlertTriangle className="h-5 w-5 text-red-600" />
+                  <div>
+                    <p className="font-medium">Rejected Addresses</p>
+                    <p className="text-sm text-muted-foreground">
+                      Addresses failed verification
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-red-600">
+                    {carMetrics.rejectedAddresses}
+                  </div>
+                  <Badge variant={carMetrics.rejectedAddresses > carMetrics.confirmedAddresses * 0.2 ? "destructive" : "secondary"}>
+                    {carMetrics.rejectedAddresses > carMetrics.confirmedAddresses * 0.2 
+                      ? 'High Rejection Rate' 
+                      : 'Normal'}
+                  </Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* CAR Processing Trends */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Processing Trends</CardTitle>
+              <CardDescription>Verification activity over time</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={[
-                  { name: 'Week 1', confirmed: carMetrics.confirmedAddresses * 0.7, pending: carMetrics.pendingVerificationAddresses * 1.2 },
-                  { name: 'Week 2', confirmed: carMetrics.confirmedAddresses * 0.8, pending: carMetrics.pendingVerificationAddresses * 1.1 },
-                  { name: 'Week 3', confirmed: carMetrics.confirmedAddresses * 0.9, pending: carMetrics.pendingVerificationAddresses * 1.05 },
+                  { name: 'Week 1', confirmed: Math.round(carMetrics.confirmedAddresses * 0.7), pending: Math.round(carMetrics.pendingVerificationAddresses * 1.2) },
+                  { name: 'Week 2', confirmed: Math.round(carMetrics.confirmedAddresses * 0.8), pending: Math.round(carMetrics.pendingVerificationAddresses * 1.1) },
+                  { name: 'Week 3', confirmed: Math.round(carMetrics.confirmedAddresses * 0.9), pending: Math.round(carMetrics.pendingVerificationAddresses * 1.05) },
                   { name: 'Current', confirmed: carMetrics.confirmedAddresses, pending: carMetrics.pendingVerificationAddresses },
                 ]}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -787,8 +1048,8 @@ export function QualityDashboard() {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="confirmed" stroke="hsl(var(--primary))" name={t('admin:quality.confirmed')} />
-                  <Line type="monotone" dataKey="pending" stroke="hsl(var(--secondary))" name={t('admin:quality.pending')} />
+                  <Line type="monotone" dataKey="confirmed" stroke="hsl(var(--primary))" name="Confirmed" />
+                  <Line type="monotone" dataKey="pending" stroke="hsl(var(--secondary))" name="Pending" />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
