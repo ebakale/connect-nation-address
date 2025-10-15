@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { CitizenAddressSearch } from "./CitizenAddressSearch";
 import { CARQualityMetrics } from "./CARQualityMetrics";
+import { CARCoverageAnalytics } from "./CARCoverageAnalytics";
 import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 
@@ -436,12 +437,7 @@ export function CARAdministrativeOverview() {
             </TabsContent>
 
             <TabsContent value="coverage">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Coverage Analytics</CardTitle>
-                  <CardDescription>Regional coverage data coming soon</CardDescription>
-                </CardHeader>
-              </Card>
+              <CARCoverageAnalytics />
             </TabsContent>
           </Tabs>
         </TabsContent>
