@@ -230,8 +230,6 @@ export function CARAdministrativeOverview() {
         <TabsList>
           <TabsTrigger value="overview">{t('admin:carAdministrativeOverview.systemOverview')}</TabsTrigger>
           <TabsTrigger value="search">{t('admin:carAdministrativeOverview.citizenSearch')}</TabsTrigger>
-          <TabsTrigger value="analytics-overview">Analytics</TabsTrigger>
-          <TabsTrigger value="quality-metrics">Quality Metrics</TabsTrigger>
           <TabsTrigger value="coverage">Coverage</TabsTrigger>
           <TabsTrigger value="health">{t('admin:carAdministrativeOverview.systemHealth')}</TabsTrigger>
           <TabsTrigger value="management">{t('admin:carAdministrativeOverview.managementTools')}</TabsTrigger>
@@ -352,79 +350,6 @@ export function CARAdministrativeOverview() {
 
         <TabsContent value="search">
           <CitizenAddressSearch />
-        </TabsContent>
-
-        <TabsContent value="analytics-overview">
-          <div className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.regionalDistribution')}</CardTitle>
-                <CardDescription>{t('admin:carAdministrativeOverview.topRegionsByAddressCount')}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {stats.addressesByRegion.map((region, index) => (
-                    <div key={region.region} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs flex items-center justify-center font-medium">
-                          {index + 1}
-                        </div>
-                        <span className="text-sm font-medium">{region.region}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Progress 
-                          value={(region.count / stats.totalAddresses) * 100} 
-                          className="w-20" 
-                        />
-                        <Badge variant="secondary">{region.count}</Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.recentActivity')}</CardTitle>
-                  <CardDescription>{t('admin:carAdministrativeOverview.lastSevenDays')}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-green-600">{stats.recentActivity}</div>
-                  <p className="text-sm text-muted-foreground">{t('admin:carAdministrativeOverview.newAddressesAdded')}</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.verificationRate')}</CardTitle>
-                  <CardDescription>{t('admin:carAdministrativeOverview.narLinkagePercentage')}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-blue-600">{stats.verificationRate}%</div>
-                  <p className="text-sm text-muted-foreground">{t('admin:carAdministrativeOverview.linkedToNarDatabase')}</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">{t('admin:carAdministrativeOverview.activeRatio')}</CardTitle>
-                  <CardDescription>{t('admin:carAdministrativeOverview.activeVsTotal')}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-purple-600">
-                    {stats.totalAddresses > 0 ? Math.round((stats.activeAddresses / stats.totalAddresses) * 100) : 0}%
-                  </div>
-                  <p className="text-sm text-muted-foreground">{stats.activeAddresses} / {stats.totalAddresses}</p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="quality-metrics">
-          <CARQualityMetrics />
         </TabsContent>
 
         <TabsContent value="coverage">
