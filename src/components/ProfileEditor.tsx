@@ -8,12 +8,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { User, Mail, Phone, Lock, Save } from "lucide-react";
+import { User, Mail, Phone, Lock, Save, Globe, Calendar, CreditCard } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface UserProfile {
   full_name: string;
   email: string;
   phone: string;
+  national_id_type: string;
+  national_id: string;
+  date_of_birth: string;
+  nationality: string;
+  preferred_language: string;
 }
 
 export const ProfileEditor = () => {
@@ -22,7 +28,12 @@ export const ProfileEditor = () => {
   const [profile, setProfile] = useState<UserProfile>({
     full_name: "",
     email: "",
-    phone: ""
+    phone: "",
+    national_id_type: "passport",
+    national_id: "",
+    date_of_birth: "",
+    nationality: "Equatorial Guinea",
+    preferred_language: "es"
   });
   const [passwords, setPasswords] = useState({
     current: "",
@@ -51,7 +62,12 @@ export const ProfileEditor = () => {
           setProfile({
             full_name: data.full_name || "",
             email: data.email || user.email || "",
-            phone: data.phone || ""
+            phone: data.phone || "",
+            national_id_type: data.national_id_type || "passport",
+            national_id: data.national_id || "",
+            date_of_birth: data.date_of_birth || "",
+            nationality: data.nationality || "Equatorial Guinea",
+            preferred_language: data.preferred_language || "es"
           });
         } else {
           // Set defaults from auth user
@@ -82,7 +98,12 @@ export const ProfileEditor = () => {
           user_id: user.id,
           full_name: profile.full_name,
           email: profile.email,
-          phone: profile.phone
+          phone: profile.phone,
+          national_id_type: profile.national_id_type,
+          national_id: profile.national_id,
+          date_of_birth: profile.date_of_birth,
+          nationality: profile.nationality,
+          preferred_language: profile.preferred_language
         });
 
       if (profileError) throw profileError;
@@ -194,6 +215,87 @@ export const ProfileEditor = () => {
                   placeholder={t('enterPhoneNumber')}
                 />
               </div>
+            </div>
+
+            <Separator className="my-6" />
+
+            <div className="space-y-2">
+              <Label htmlFor="nationalIdType">{t('nationalIdType')}</Label>
+              <Select
+                value={profile.national_id_type}
+                onValueChange={(value) => setProfile(prev => ({ ...prev, national_id_type: value }))}
+              >
+                <SelectTrigger id="nationalIdType">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="passport">{t('passport')}</SelectItem>
+                  <SelectItem value="national_id">{t('nationalId')}</SelectItem>
+                  <SelectItem value="residence_permit">{t('residencePermit')}</SelectItem>
+                  <SelectItem value="drivers_license">{t('driversLicense')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="nationalId">{t('nationalIdNumber')}</Label>
+              <div className="relative">
+                <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="nationalId"
+                  type="text"
+                  className="pl-10"
+                  value={profile.national_id}
+                  onChange={(e) => setProfile(prev => ({ ...prev, national_id: e.target.value }))}
+                  placeholder={t('enterNationalId')}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="dateOfBirth">{t('dateOfBirth')}</Label>
+              <div className="relative">
+                <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="dateOfBirth"
+                  type="date"
+                  className="pl-10"
+                  value={profile.date_of_birth}
+                  onChange={(e) => setProfile(prev => ({ ...prev, date_of_birth: e.target.value }))}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="nationality">{t('nationality')}</Label>
+              <div className="relative">
+                <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="nationality"
+                  type="text"
+                  className="pl-10"
+                  value={profile.nationality}
+                  onChange={(e) => setProfile(prev => ({ ...prev, nationality: e.target.value }))}
+                  placeholder={t('enterNationality')}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="preferredLanguage">{t('preferredLanguage')}</Label>
+              <Select
+                value={profile.preferred_language}
+                onValueChange={(value) => setProfile(prev => ({ ...prev, preferred_language: value }))}
+              >
+                <SelectTrigger id="preferredLanguage">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="es">{t('spanish')}</SelectItem>
+                  <SelectItem value="en">{t('english')}</SelectItem>
+                  <SelectItem value="fr">{t('french')}</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <Button type="submit" disabled={loading} className="w-full">
