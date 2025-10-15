@@ -404,7 +404,54 @@ export const RegistrarDashboardView = () => {
         </TabsContent>
 
         <TabsContent value="analytics" className="space-y-6">
-          <AnalyticsReports />
+          <Tabs defaultValue="nar-analytics" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="nar-analytics">{t('dashboard:narAnalytics')}</TabsTrigger>
+              <TabsTrigger value="car-analytics">{t('dashboard:carAnalytics')}</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="nar-analytics" className="space-y-4">
+              <AnalyticsReports />
+            </TabsContent>
+            
+            <TabsContent value="car-analytics" className="space-y-4">
+              <Tabs defaultValue="overview" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="overview">{t('dashboard:overview')}</TabsTrigger>
+                  <TabsTrigger value="quality-metrics">{t('dashboard:qualityMetrics')}</TabsTrigger>
+                  <TabsTrigger value="coverage">{t('dashboard:coverage')}</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="overview" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>{t('dashboard:carSystemOverview')}</CardTitle>
+                      <CardDescription>{t('dashboard:carSystemOverviewDesc')}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">{t('dashboard:carOverviewComingSoon')}</p>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                
+                <TabsContent value="quality-metrics" className="space-y-4">
+                  <QualityDashboard />
+                </TabsContent>
+                
+                <TabsContent value="coverage" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>{t('dashboard:coverageMetrics')}</CardTitle>
+                      <CardDescription>{t('dashboard:coverageMetricsDesc')}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">{t('dashboard:coverageComingSoon')}</p>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            </TabsContent>
+          </Tabs>
         </TabsContent>
 
         <TabsContent value="provinces" className="space-y-6">
