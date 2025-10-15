@@ -63,7 +63,7 @@ export const ProfileEditor = () => {
             full_name: data.full_name || "",
             email: data.email || user.email || "",
             phone: data.phone || "",
-            national_id_type: data.national_id_type || "passport",
+            national_id_type: (data.national_id_type && ['passport','id_card'].includes(data.national_id_type)) ? data.national_id_type : "passport",
             national_id: data.national_id || "",
             date_of_birth: data.date_of_birth || "",
             nationality: data.nationality || "Equatorial Guinea",
@@ -91,19 +91,24 @@ export const ProfileEditor = () => {
 
     setLoading(true);
     try {
+      // Sanitize values to satisfy DB constraints
+      const allowedIdTypes = ['passport', 'id_card'] as const;
+      const nationalIdType = allowedIdTypes.includes(profile.national_id_type as any) ? profile.national_id_type : 'passport';
+      const dob = profile.date_of_birth && profile.date_of_birth.trim() !== '' ? profile.date_of_birth : null;
+
       // Update profile in profiles table
       const { error: profileError } = await supabase
         .from('profiles')
         .upsert({
           user_id: user.id,
-          full_name: profile.full_name,
-          email: profile.email,
-          phone: profile.phone,
-          national_id_type: profile.national_id_type,
-          national_id: profile.national_id,
-          date_of_birth: profile.date_of_birth,
-          nationality: profile.nationality,
-          preferred_language: profile.preferred_language
+          full_name: profile.full_name?.trim() || '',
+          email: profile.email?.trim() || '',
+          phone: profile.phone?.trim() || '',
+          national_id_type: nationalIdType,
+          national_id: profile.national_id?.trim() || null,
+          date_of_birth: dob,
+          nationality: profile.nationality?.trim() || null,
+          preferred_language: profile.preferred_language || 'es'
         });
 
       if (profileError) throw profileError;
