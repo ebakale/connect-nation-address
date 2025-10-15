@@ -186,7 +186,7 @@ export function CARQualityMetrics() {
         <div>
           <h3 className="text-lg font-semibold">{t('admin:quality.carQualityMetrics')}</h3>
           <p className="text-sm text-muted-foreground">
-            {t('admin:quality.lastUpdated')}: {new Date(metrics.dateMeasured).toLocaleDateString()}
+            {t('admin:quality.lastUpdated')}: {new Intl.DateTimeFormat(i18n.language).format(new Date(metrics.dateMeasured))}
           </p>
         </div>
         <Button 
@@ -196,7 +196,7 @@ export function CARQualityMetrics() {
           size="sm"
         >
           <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-          {t('dashboard:refreshData')}
+          {t('common:buttons.refresh')}
         </Button>
       </div>
 

@@ -57,7 +57,8 @@ i18n
   .init({
     resources,
     fallbackLng: 'en',
-    lng: 'en', // default language
+    supportedLngs: ['en', 'es', 'fr'],
+    nonExplicitSupportedLngs: true,
     
     // Language detection options
     detection: {
