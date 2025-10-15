@@ -222,7 +222,7 @@ export const ProfileEditor = () => {
             <div className="space-y-2">
               <Label htmlFor="nationalIdType">{t('nationalIdType')}</Label>
               <Select
-                value={profile.national_id_type}
+                value={profile.national_id_type || "passport"}
                 onValueChange={(value) => setProfile(prev => ({ ...prev, national_id_type: value }))}
               >
                 <SelectTrigger id="nationalIdType">
@@ -232,7 +232,7 @@ export const ProfileEditor = () => {
                   <SelectItem value="passport">{t('passport')}</SelectItem>
                   <SelectItem value="national_id">{t('nationalId')}</SelectItem>
                   <SelectItem value="residence_permit">{t('residencePermit')}</SelectItem>
-                  <SelectItem value="drivers_license">{t('driversLicense')}</SelectItem>
+                  <SelectItem value="driver_license">{t('driversLicense')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
