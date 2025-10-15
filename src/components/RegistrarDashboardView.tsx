@@ -25,6 +25,7 @@ import { RejectedAddressesPanel } from "./RejectedAddressesPanel";
 import { QualityDashboard } from "./QualityDashboard";
 import { AnalyticsReports } from "./AnalyticsReports";
 import { ProvinceManagement } from "./ProvinceManagement";
+import { CARQualityMetrics } from "./CARQualityMetrics";
 
 interface RegistrarStats {
   totalAddresses: number;
@@ -435,7 +436,7 @@ export const RegistrarDashboardView = () => {
                 </TabsContent>
                 
                 <TabsContent value="quality-metrics" className="space-y-4">
-                  <QualityDashboard />
+                  <CARQualityMetrics />
                 </TabsContent>
                 
                 <TabsContent value="coverage" className="space-y-4">
