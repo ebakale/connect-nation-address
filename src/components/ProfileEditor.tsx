@@ -230,9 +230,7 @@ export const ProfileEditor = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="passport">{t('passport')}</SelectItem>
-                  <SelectItem value="national_id">{t('nationalId')}</SelectItem>
-                  <SelectItem value="residence_permit">{t('residencePermit')}</SelectItem>
-                  <SelectItem value="driver_license">{t('driversLicense')}</SelectItem>
+                  <SelectItem value="id_card">{t('nationalId')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
