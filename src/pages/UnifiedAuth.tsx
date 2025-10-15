@@ -19,7 +19,9 @@ const UnifiedAuth = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    fullName: '',
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
     confirmPassword: '',
     role: 'citizen' as 'admin' | 'police_officer' | 'emergency_operator' | 'citizen' | 'field_agent' | 'registrar' | 'verifier',
     badgeNumber: '',
@@ -62,10 +64,23 @@ const UnifiedAuth = () => {
     setLoading(true);
     
     if (isOnlineMode) {
-      const { error } = await signUp(formData.email, formData.password, formData.fullName);
+      const { error } = await signUp(
+        formData.email, 
+        formData.password, 
+        formData.firstName,
+        formData.lastName,
+        formData.phoneNumber
+      );
     } else {
       // For offline mode, pass additional profile data
-      const { error } = await signUp(formData.email, formData.password, formData.fullName, formData.role);
+      const { error } = await signUp(
+        formData.email, 
+        formData.password, 
+        formData.firstName,
+        formData.lastName,
+        formData.phoneNumber,
+        formData.role
+      );
     }
     
     setLoading(false);
@@ -188,13 +203,37 @@ const UnifiedAuth = () => {
                 
                 <TabsContent value="signup" className="space-y-6 mt-6">
                   <form onSubmit={handleSignUp} className="space-y-6">
+                     <div className="grid grid-cols-2 gap-4">
+                       <div className="space-y-3">
+                         <label className="text-sm font-semibold text-foreground">{t('auth:firstName')}</label>
+                         <Input
+                           placeholder={t('auth:enterFirstName')}
+                           className="h-12 text-base border-2 focus:border-primary transition-colors"
+                           value={formData.firstName}
+                           onChange={(e) => handleInputChange('firstName', e.target.value)}
+                           required
+                         />
+                       </div>
+                       <div className="space-y-3">
+                         <label className="text-sm font-semibold text-foreground">{t('auth:lastName')}</label>
+                         <Input
+                           placeholder={t('auth:enterLastName')}
+                           className="h-12 text-base border-2 focus:border-primary transition-colors"
+                           value={formData.lastName}
+                           onChange={(e) => handleInputChange('lastName', e.target.value)}
+                           required
+                         />
+                       </div>
+                     </div>
+                     
                      <div className="space-y-3">
-                       <label className="text-sm font-semibold text-foreground">{t('auth:fullName')}</label>
+                       <label className="text-sm font-semibold text-foreground">{t('auth:phoneNumber')}</label>
                        <Input
-                         placeholder={t('auth:enterFullName')}
+                         type="tel"
+                         placeholder={t('auth:enterPhoneNumber')}
                          className="h-12 text-base border-2 focus:border-primary transition-colors"
-                         value={formData.fullName}
-                         onChange={(e) => handleInputChange('fullName', e.target.value)}
+                         value={formData.phoneNumber}
+                         onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                          required
                        />
                      </div>

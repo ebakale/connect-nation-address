@@ -168,14 +168,26 @@ export const UnifiedAuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const signUp = async (email: string, password: string, fullName?: string, role?: string) => {
+  const signUp = async (
+    email: string, 
+    password: string, 
+    firstName: string,
+    lastName: string,
+    phoneNumber: string,
+    role?: string
+  ) => {
     try {
       if (isOnlineMode) {
-        await onlineAuth.signUp(email, password, fullName);
+        await onlineAuth.signUp(email, password, firstName, lastName, phoneNumber);
         return { error: null };
       } else {
         const localRole = role || 'citizen';
-        const profile = { display_name: fullName };
+        const profile = { 
+          display_name: `${firstName} ${lastName}`,
+          first_name: firstName,
+          last_name: lastName,
+          phone: phoneNumber
+        };
         const result = await offlineAuth.signUp(
           email, 
           password, 
