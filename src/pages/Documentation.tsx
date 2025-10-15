@@ -253,6 +253,12 @@ const Documentation: React.FC = () => {
                     </a>
                   </Button>
                   <Button variant="outline" className="justify-start" asChild>
+                    <a href="/docs/portal-functionalities-comparison.md" target="_blank">
+                      <FileText className="h-4 w-4 mr-2" />
+                      Portal Functionalities Comparison
+                    </a>
+                  </Button>
+                  <Button variant="outline" className="justify-start" asChild>
                     <a href="/docs/security-overview.md" target="_blank">
                       <FileText className="h-4 w-4 mr-2" />
                       Security Overview
