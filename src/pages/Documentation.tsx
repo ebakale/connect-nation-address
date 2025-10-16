@@ -60,13 +60,14 @@ const Documentation: React.FC = () => {
                     Process Flow Diagrams (English)
                   </CardTitle>
                   <CardDescription>
-                    Complete workflow documentation for NAR, CAR, and Emergency Management - verified against actual implementation (updated Jan 2025)
+                    Complete workflow documentation for NAR, CAR, and Emergency Management - verified against actual implementation. Note: Address requests require Citizen Portal authentication.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <h4 className="font-semibold">Includes:</h4>
                     <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                      <li><strong>⚠️ Important:</strong> Address requests require Citizen Portal authentication</li>
                       <li>NAR Process - Verifier sets verified=true, Registrar sets public=true</li>
                       <li>CAR Process - Auto-approval via trigger for verified NAR links</li>
                       <li>Emergency Management - Auto-status to 'dispatched' on unit assignment</li>
@@ -95,6 +96,7 @@ const Documentation: React.FC = () => {
                   <div className="space-y-2">
                     <h4 className="font-semibold">Incluye:</h4>
                     <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                      <li><strong>⚠️ Importante:</strong> Las solicitudes de dirección requieren autenticación en Portal Ciudadano</li>
                       <li>Proceso NAR - Registro Nacional de Direcciones</li>
                       <li>Proceso CAR - Repositorio de Direcciones Ciudadanas</li>
                       <li>Proceso de Gestión de Emergencias</li>
@@ -121,7 +123,8 @@ const Documentation: React.FC = () => {
                 <CardContent>
                   <div className="flex flex-col gap-2">
                     {[
-                      { title: 'START', desc: 'Citizen/authority submits address request', icon: '🚀' },
+                      { title: 'START', desc: 'Citizen logs in to Citizen Portal (authentication required)', icon: '🚀' },
+                      { title: 'ADDRESS REQUEST', desc: 'Submits request via authenticated Citizen Portal only', icon: '📋' },
                       { title: 'DATA CAPTURE', desc: 'GPS coordinates, photos, justification, documents', icon: '📸' },
                       { title: 'AUTO-VERIFICATION', desc: 'Coordinate validation, photo quality, duplicates', icon: '🤖' },
                       { title: 'FLAGGING', desc: 'System flags for standard or manual review', icon: '🚩' },
