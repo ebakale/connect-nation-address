@@ -55,12 +55,14 @@ The official government-maintained registry of all verified addresses in Equator
 3. **Approval** - Registrars review and approve
 4. **Publication** - Addresses become publicly searchable
 
-**Pathway 2: Citizen Request Workflow**
-1. **Citizen Request** - Citizens submit address creation requests
+**Pathway 2: Citizen Request Workflow (Authenticated Only)**
+1. **Citizen Request** - Citizens submit address creation requests via authenticated Citizen Portal
 2. **Auto-Verification** - System performs automated quality checks
 3. **Manual Review** - Verifiers review flagged or complex requests
 4. **Approval** - Registrars approve and publish to NAR
 5. **Publication** - Addresses become publicly searchable
+   
+**⚠️ Important**: Address request submission requires authentication and is only available in the Citizen Portal, not the Public Portal.
 
 ### 2. CAR (Citizen Address Repository) Module
 Citizen-managed address declarations where residents can register their home and work addresses.
@@ -175,16 +177,18 @@ Real-time incident management and dispatch coordination for police and emergency
 ### CAR (Citizen Address Repository) Roles
 
 #### 5. Citizen
-**Purpose**: Personal address management
+**Purpose**: Personal address management and address request submission
 
 **Permissions**:
+- ✅ **Submit address creation requests** (via authenticated Citizen Portal only)
 - ✅ Declare residence addresses
 - ✅ Request address verification
 - ✅ Manage address book (primary/secondary)
-- ✅ Search verified NAR addresses
+- ✅ Search verified NAR addresses (via Public or Citizen Portal)
 - ✅ Generate QR codes for addresses
 - ✅ View verification status
 - ❌ Cannot access other citizens' data
+- ❌ Cannot submit address requests via Public Portal (authentication required)
 
 **Geographic Scope**: Own addresses only
 **Primary Portal**: Citizen Portal (`/citizen-portal`)
@@ -297,9 +301,10 @@ Real-time incident management and dispatch coordination for police and emergency
 
 #### Pathway 2: Citizen Address Request
 ```
-1. CITIZEN REQUEST SUBMISSION
+1. CITIZEN REQUEST SUBMISSION (Authenticated Citizen Portal Only)
    ↓
-   - Citizen logs into system
+   - Citizen logs into Citizen Portal (authentication required)
+   - Accesses authenticated-only address request form
    - Fills address creation form
    - Provides GPS coordinates or address details
    - Uploads optional documentation
