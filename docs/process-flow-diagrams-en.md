@@ -7,7 +7,9 @@
 ```
 Start
   ↓
-Citizen submits address request via Public Portal
+Citizen logs in to Citizen Portal
+  ↓
+Citizen submits address request via authenticated Citizen Portal
   ├── Fills address request form with location details
   ├── Provides justification for address creation
   ├── Uploads property photos and ownership documents

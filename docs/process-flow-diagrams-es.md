@@ -7,7 +7,9 @@
 ```
 Inicio
   ↓
-Ciudadano envía solicitud de dirección via Portal Público
+Ciudadano inicia sesión en el Portal Ciudadano
+  ↓
+Ciudadano envía solicitud de dirección via Portal Ciudadano autenticado
   ├── Completa formulario de solicitud con detalles de ubicación
   ├── Proporciona justificación para creación de dirección
   ├── Sube fotos de propiedad y documentos de propiedad

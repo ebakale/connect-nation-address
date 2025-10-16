@@ -125,8 +125,10 @@ The Citizen Portal requires user authentication and provides comprehensive addre
 
 ### Address Request System
 
+**⚠️ IMPORTANT**: Address request submission is **ONLY** available in the Citizen Portal. Authentication is required to submit address requests. The Public Portal provides read-only access to verified addresses only.
+
 #### 1. Submit New Address Requests
-- **Request Creation**:
+- **Request Creation** (Authenticated Citizen Portal Only):
   - Request addition of new addresses to national database
   - Provide detailed address information
   - Upload supporting documents/photos
@@ -261,9 +263,9 @@ The Citizen Portal requires user authentication and provides comprehensive addre
 | | Manage secondary addresses | ❌ | ✅ |
 | | Save favorite locations | ❌ | ✅ |
 | | Address history tracking | ❌ | ✅ |
-| **Requests** | Submit address requests | ❌ | ✅ |
-| | Track request status | ❌ | ✅ |
-| | Resubmit rejected requests | ❌ | ✅ |
+| **Requests** | Submit address requests | ❌ (Authentication required) | ✅ |
+| | Track request status | ❌ (Authentication required) | ✅ |
+| | Resubmit rejected requests | ❌ (Authentication required) | ✅ |
 | **Verification** | Request residency verification | ❌ | ✅ |
 | | Upload documents | ❌ | ✅ |
 | | Track verification status | ❌ | ✅ |
@@ -305,16 +307,18 @@ The Citizen Portal requires user authentication and provides comprehensive addre
 ## When to Use Each Portal
 
 ### Use Public Portal When:
-- You need to look up a public address quickly
+- You need to look up a public address quickly (read-only)
 - You want to share an address with someone
 - You need directions to a verified location
 - You're a visitor or temporary user
-- You don't need to manage personal addresses
+- You don't need to manage personal addresses or submit requests
 - You want to access emergency contacts
+- **Note**: Cannot submit address requests or manage personal data
 
 ### Use Citizen Portal When:
 - You need to manage your residential addresses
-- You want to register a new address
+- **You want to submit a new address request** (REQUIRED - not available in Public Portal)
+- **You want to register a new address** (REQUIRED - authentication mandatory)
 - You need to verify your residency
 - You want to track your address requests
 - You need to receive emergency notifications
