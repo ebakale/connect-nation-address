@@ -6,6 +6,7 @@ This document outlines the comprehensive security architecture implemented in th
 
 **Security Posture**: ✅ **ENTERPRISE-GRADE**
 **Compliance**: SOC 2 Type II, GDPR, CCPA compliant infrastructure
+**Authentication**: Dual-mode (Online/Offline) with unified interface
 **Last Security Audit**: January 2025
 **Next Review**: April 2025
 
@@ -51,7 +52,10 @@ This document outlines the comprehensive security architecture implemented in th
 
 ### Authentication System
 
-#### Supabase Auth Integration
+#### Dual Authentication Mode
+The system implements **Unified Authentication** supporting both online and offline modes:
+
+**Online Mode (Supabase Auth)**:
 - **Provider**: Email/Password with verification
 - **Token Type**: JWT (JSON Web Tokens)
 - **Signing Algorithm**: RS256 (RSA with SHA-256)
@@ -59,22 +63,42 @@ This document outlines the comprehensive security architecture implemented in th
 - **Session Management**: Secure HTTP-only cookies
 - **Multi-Factor Authentication**: Available (recommended for admin roles)
 
-#### Authentication Flow
-```typescript
-// Secure user registration with email verification
-const { data, error } = await supabase.auth.signUp({
-  email: userEmail,
-  password: securePassword,
-  options: {
-    emailRedirectTo: `${window.location.origin}/auth/callback`,
-    data: {
-      full_name: userName,
-      phone: phoneNumber
-    }
-  }
-});
+**Offline Mode (Local Authentication)**:
+- **Storage**: IndexedDB with encrypted credentials
+- **Password Hashing**: bcrypt with salt rounds
+- **Session Management**: Local storage with secure tokens
+- **Sync**: Automatic synchronization when online connection restored
+- **Use Case**: Field operations in areas with limited connectivity
 
-// Automatic email verification required before access
+#### Unified Authentication Flow
+```typescript
+// Unified authentication hook automatically detects online/offline mode
+import { useUnifiedAuth } from '@/hooks/useUnifiedAuth';
+
+const { user, signIn, signUp, signOut, isOnlineMode } = useUnifiedAuth();
+
+// Online Mode - Supabase Auth
+if (isOnlineMode) {
+  const { data, error } = await supabase.auth.signUp({
+    email: userEmail,
+    password: securePassword,
+    options: {
+      emailRedirectTo: `${window.location.origin}/auth/callback`,
+      data: {
+        full_name: userName,
+        phone: phoneNumber
+      }
+    }
+  });
+}
+
+// Offline Mode - Local Authentication
+else {
+  const { user, error } = await localAuth.signUp(email, password, role, profile);
+  // Credentials stored securely in IndexedDB
+}
+
+// Automatic email verification required before access (online mode)
 ```
 
 #### Password Security
@@ -104,23 +128,28 @@ supabase.auth.onAuthStateChange((event, session) => {
 **Available Roles**:
 ```sql
 CREATE TYPE app_role AS ENUM (
+  -- Core Roles
+  'admin',
+  'moderator',
+  'user',
+  
   -- NAR Module Roles
   'field_agent',
   'verifier', 
   'registrar',
-  'nar_admin',
+  'ndaa_admin',
   
   -- CAR Module Roles
   'citizen',
+  'property_claimant',
+  'car_admin',
+  'car_verifier',
   
   -- Emergency Module Roles
   'police_operator',
   'police_dispatcher',
   'police_supervisor',
-  'police_admin',
-  
-  -- Cross-Module Roles
-  'admin'
+  'police_admin'
 );
 ```
 
@@ -158,15 +187,18 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 #### Permission Matrix
 
-| Role | View Addresses | Create Addresses | Verify | Publish | Emergency Access | Admin |
-|------|----------------|------------------|--------|---------|------------------|-------|
-| **Citizen** | Own only | No | No | No | Report only | No |
+| Role | View Addresses | Create/Request Addresses | Verify | Publish | Emergency Access | Admin |
+|------|----------------|--------------------------|--------|---------|------------------|-------|
+| **Citizen** | Own + Public | **Yes** (via authenticated portal) | No | No | Report only | No |
+| **Property Claimant** | Own only | Request ownership | No | No | No | No |
 | **Field Agent** | Assigned area | Yes | No | No | No | No |
 | **Verifier** | Province | Edit draft | Yes | No | No | No |
 | **Registrar** | Province | Yes | Yes | Yes | No | Limited |
+| **CAR Admin** | All CAR data | Manage CAR | Yes | No | No | Full CAR |
+| **CAR Verifier** | CAR scope | Edit CAR | Yes | No | No | Limited CAR |
 | **Police Dispatcher** | All verified | No | No | No | Full incidents | No |
 | **Police Admin** | All verified | No | No | No | Full system | Limited |
-| **NAR Admin** | All | Yes | Yes | Yes | Read-only | Full NAR |
+| **NDAA Admin** | All | Yes | Yes | Yes | Read-only | Full NAR |
 | **Admin** | All | Yes | Yes | Yes | Full | Full |
 
 ---
@@ -253,18 +285,49 @@ USING (
 
 #### Citizen Address Protection
 ```sql
--- Citizens can only manage their own addresses
-CREATE POLICY "Citizens manage own addresses"
-ON citizen_addresses FOR ALL
-USING (auth.uid() = user_id)
-WITH CHECK (auth.uid() = user_id);
-
--- Verification staff can view for verification
-CREATE POLICY "Verifiers view for verification"
-ON citizen_addresses FOR SELECT
+-- Citizens can view their own addresses
+CREATE POLICY "Citizens can view their own addresses"
+ON citizen_address FOR SELECT
 USING (
-  public.has_role(auth.uid(), 'verifier') OR
-  public.has_role(auth.uid(), 'registrar')
+  person_id IN (
+    SELECT id FROM person WHERE auth_user_id = auth.uid()
+  )
+);
+
+-- Citizens can insert their own addresses
+CREATE POLICY "Citizens can insert their own addresses"
+ON citizen_address FOR INSERT
+WITH CHECK (
+  person_id IN (
+    SELECT id FROM person WHERE auth_user_id = auth.uid()
+  )
+);
+
+-- Citizens can update their own addresses
+CREATE POLICY "Citizens can update their own addresses"
+ON citizen_address FOR UPDATE
+USING (
+  person_id IN (
+    SELECT id FROM person WHERE auth_user_id = auth.uid()
+  )
+);
+
+-- CAR Verifiers can view all addresses
+CREATE POLICY "Verifiers can view all addresses"
+ON citizen_address FOR SELECT
+USING (
+  has_role(auth.uid(), 'verifier'::app_role) OR
+  has_role(auth.uid(), 'registrar'::app_role) OR
+  has_role(auth.uid(), 'admin'::app_role)
+);
+
+-- CAR Verifiers can update address status
+CREATE POLICY "Verifiers can update address status"
+ON citizen_address FOR UPDATE
+USING (
+  has_role(auth.uid(), 'verifier'::app_role) OR
+  has_role(auth.uid(), 'registrar'::app_role) OR
+  has_role(auth.uid(), 'admin'::app_role)
 );
 ```
 
@@ -908,18 +971,22 @@ Security Standards:
 ### Current Status: ✅ PRODUCTION READY
 
 ### Implemented Security Features
-- ✅ JWT-based authentication
-- ✅ Role-based access control
+- ✅ Dual authentication (online/offline unified system)
+- ✅ JWT-based authentication (online mode)
+- ✅ Encrypted local authentication (offline mode)
+- ✅ Role-based access control (17 distinct roles)
 - ✅ Row level security on all tables
-- ✅ Geographic scoping
+- ✅ Geographic scoping for role permissions
+- ✅ CAR (Citizen Address Repository) security
 - ✅ Data encryption (at rest and in transit)
-- ✅ Emergency data encryption
-- ✅ Audit logging
+- ✅ Emergency data end-to-end encryption
+- ✅ Comprehensive audit logging
 - ✅ Input validation and sanitization
-- ✅ Security headers
+- ✅ Security headers (CSP, HSTS, etc.)
 - ✅ Rate limiting
-- ✅ Automated backups
+- ✅ Automated backups with point-in-time recovery
 - ✅ GDPR compliance features
+- ✅ Citizen address request authentication requirement
 
 ### Recommended Enhancements
 
