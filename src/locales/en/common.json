@@ -540,5 +540,14 @@
   },
   "loading": "Loading...",
   "logout": "Logout",
-  "address": "Address"
+  "address": "Address",
+  "addressType": "Address Type",
+  "commaSeparated": "Comma separated values",
+  "visibility": "Visibility",
+  "fillRequired": "Please fill all required fields",
+  "pleaseLogin": "Please login to continue",
+  "street": "Street",
+  "building": "Building",
+  "city": "City",
+  "region": "Region"
 }

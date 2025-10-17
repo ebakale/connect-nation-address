@@ -538,5 +538,14 @@
     "bulletImmediateSearch": "Acceso inmediato a funciones de búsqueda",
     "bulletSubmitRequests": "Enviar solicitudes de registro de direcciones"
   },
-  "address": "Dirección"
+  "address": "Dirección",
+  "addressType": "Tipo de Dirección",
+  "commaSeparated": "Valores separados por comas",
+  "visibility": "Visibilidad",
+  "fillRequired": "Complete todos los campos requeridos",
+  "pleaseLogin": "Inicie sesión para continuar",
+  "street": "Calle",
+  "building": "Edificio",
+  "city": "Ciudad",
+  "region": "Región"
 }

@@ -259,6 +259,9 @@ export type Database = {
           address_type: string
           authority_type: string | null
           building: string | null
+          business_address_type:
+            | Database["public"]["Enums"]["business_address_type"]
+            | null
           city: string
           completeness_score: number | null
           country: string
@@ -293,6 +296,9 @@ export type Database = {
           address_type?: string
           authority_type?: string | null
           building?: string | null
+          business_address_type?:
+            | Database["public"]["Enums"]["business_address_type"]
+            | null
           city: string
           completeness_score?: number | null
           country: string
@@ -327,6 +333,9 @@ export type Database = {
           address_type?: string
           authority_type?: string | null
           building?: string | null
+          business_address_type?:
+            | Database["public"]["Enums"]["business_address_type"]
+            | null
           city?: string
           completeness_score?: number | null
           country?: string
@@ -1764,6 +1773,144 @@ export type Database = {
           },
         ]
       }
+      organization_addresses: {
+        Row: {
+          address_id: string | null
+          appointment_required: boolean | null
+          authority_type: string | null
+          business_category: Database["public"]["Enums"]["business_category"]
+          business_registration_number: string | null
+          business_status: string | null
+          closure_date: string | null
+          created_at: string | null
+          created_by: string | null
+          customer_capacity: number | null
+          employee_count: number | null
+          id: string
+          is_public_service: boolean | null
+          languages_spoken: string[] | null
+          license_expiry_date: string | null
+          operating_hours: Json | null
+          organization_name: string
+          parking_available: boolean | null
+          parking_capacity: number | null
+          primary_contact_email: string | null
+          primary_contact_name: string | null
+          primary_contact_phone: string | null
+          public_transport_access: string[] | null
+          publicly_visible: boolean | null
+          relocation_address_id: string | null
+          seasonal_hours: Json | null
+          seasonal_operation: boolean | null
+          secondary_contact_phone: string | null
+          services_offered: string[] | null
+          show_contact_info: boolean | null
+          show_on_maps: boolean | null
+          tax_identification_number: string | null
+          updated_at: string | null
+          verification_document_url: string | null
+          verified_at: string | null
+          verified_by_authority: string | null
+          website_url: string | null
+          wheelchair_accessible: boolean | null
+        }
+        Insert: {
+          address_id?: string | null
+          appointment_required?: boolean | null
+          authority_type?: string | null
+          business_category: Database["public"]["Enums"]["business_category"]
+          business_registration_number?: string | null
+          business_status?: string | null
+          closure_date?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          customer_capacity?: number | null
+          employee_count?: number | null
+          id?: string
+          is_public_service?: boolean | null
+          languages_spoken?: string[] | null
+          license_expiry_date?: string | null
+          operating_hours?: Json | null
+          organization_name: string
+          parking_available?: boolean | null
+          parking_capacity?: number | null
+          primary_contact_email?: string | null
+          primary_contact_name?: string | null
+          primary_contact_phone?: string | null
+          public_transport_access?: string[] | null
+          publicly_visible?: boolean | null
+          relocation_address_id?: string | null
+          seasonal_hours?: Json | null
+          seasonal_operation?: boolean | null
+          secondary_contact_phone?: string | null
+          services_offered?: string[] | null
+          show_contact_info?: boolean | null
+          show_on_maps?: boolean | null
+          tax_identification_number?: string | null
+          updated_at?: string | null
+          verification_document_url?: string | null
+          verified_at?: string | null
+          verified_by_authority?: string | null
+          website_url?: string | null
+          wheelchair_accessible?: boolean | null
+        }
+        Update: {
+          address_id?: string | null
+          appointment_required?: boolean | null
+          authority_type?: string | null
+          business_category?: Database["public"]["Enums"]["business_category"]
+          business_registration_number?: string | null
+          business_status?: string | null
+          closure_date?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          customer_capacity?: number | null
+          employee_count?: number | null
+          id?: string
+          is_public_service?: boolean | null
+          languages_spoken?: string[] | null
+          license_expiry_date?: string | null
+          operating_hours?: Json | null
+          organization_name?: string
+          parking_available?: boolean | null
+          parking_capacity?: number | null
+          primary_contact_email?: string | null
+          primary_contact_name?: string | null
+          primary_contact_phone?: string | null
+          public_transport_access?: string[] | null
+          publicly_visible?: boolean | null
+          relocation_address_id?: string | null
+          seasonal_hours?: Json | null
+          seasonal_operation?: boolean | null
+          secondary_contact_phone?: string | null
+          services_offered?: string[] | null
+          show_contact_info?: boolean | null
+          show_on_maps?: boolean | null
+          tax_identification_number?: string | null
+          updated_at?: string | null
+          verification_document_url?: string | null
+          verified_at?: string | null
+          verified_by_authority?: string | null
+          website_url?: string | null
+          wheelchair_accessible?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_addresses_address_id_fkey"
+            columns: ["address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organization_addresses_relocation_address_id_fkey"
+            columns: ["relocation_address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       person: {
         Row: {
           auth_user_id: string | null
@@ -3038,6 +3185,39 @@ export type Database = {
         | "car_admin"
         | "car_verifier"
         | "residency_verifier"
+      business_address_type:
+        | "RESIDENTIAL"
+        | "COMMERCIAL"
+        | "GOVERNMENT"
+        | "INDUSTRIAL"
+        | "INSTITUTIONAL"
+        | "PUBLIC_FACILITY"
+        | "AGRICULTURAL"
+        | "MIXED_USE"
+      business_category:
+        | "RETAIL"
+        | "OFFICE"
+        | "RESTAURANT"
+        | "HOTEL"
+        | "HOSPITAL"
+        | "SCHOOL"
+        | "UNIVERSITY"
+        | "GOVERNMENT_OFFICE"
+        | "POLICE_STATION"
+        | "FIRE_STATION"
+        | "EMBASSY"
+        | "BANK"
+        | "FACTORY"
+        | "WAREHOUSE"
+        | "FARM"
+        | "CHURCH"
+        | "MOSQUE"
+        | "MARKET"
+        | "SHOPPING_CENTER"
+        | "GAS_STATION"
+        | "AIRPORT"
+        | "PORT"
+        | "OTHER"
       custody_type_enum: "FULL" | "SHARED" | "PARTIAL" | "TEMPORARY"
       dependent_relationship:
         | "CHILD"
@@ -3260,6 +3440,41 @@ export const Constants = {
         "car_admin",
         "car_verifier",
         "residency_verifier",
+      ],
+      business_address_type: [
+        "RESIDENTIAL",
+        "COMMERCIAL",
+        "GOVERNMENT",
+        "INDUSTRIAL",
+        "INSTITUTIONAL",
+        "PUBLIC_FACILITY",
+        "AGRICULTURAL",
+        "MIXED_USE",
+      ],
+      business_category: [
+        "RETAIL",
+        "OFFICE",
+        "RESTAURANT",
+        "HOTEL",
+        "HOSPITAL",
+        "SCHOOL",
+        "UNIVERSITY",
+        "GOVERNMENT_OFFICE",
+        "POLICE_STATION",
+        "FIRE_STATION",
+        "EMBASSY",
+        "BANK",
+        "FACTORY",
+        "WAREHOUSE",
+        "FARM",
+        "CHURCH",
+        "MOSQUE",
+        "MARKET",
+        "SHOPPING_CENTER",
+        "GAS_STATION",
+        "AIRPORT",
+        "PORT",
+        "OTHER",
       ],
       custody_type_enum: ["FULL", "SHARED", "PARTIAL", "TEMPORARY"],
       dependent_relationship: [

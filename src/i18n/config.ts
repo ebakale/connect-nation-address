@@ -30,6 +30,10 @@ import adminFR from '../locales/fr/admin.json';
 import countriesFR from '../locales/fr/countries.json';
 import carFR from '../locales/fr/car.json';
 
+import businessEN from '../locales/en/business.json';
+import businessES from '../locales/es/business.json';
+import businessFR from '../locales/fr/business.json';
+
 const resources = {
   en: {
     common: commonEN,
@@ -40,6 +44,7 @@ const resources = {
     admin: adminEN,
     countries: countriesEN,
     car: carEN,
+    business: businessEN,
   },
   es: {
     common: commonES,
@@ -50,6 +55,7 @@ const resources = {
     admin: adminES,
     countries: countriesES,
     car: carES,
+    business: businessES,
   },
   fr: {
     common: commonFR,
@@ -60,6 +66,7 @@ const resources = {
     admin: adminFR,
     countries: countriesFR,
     car: carFR,
+    business: businessFR,
   },
 };
 
@@ -84,7 +91,7 @@ i18n
     },
 
     // Namespace and key separator
-    ns: ['common', 'auth', 'dashboard', 'address', 'emergency', 'admin', 'countries', 'car'],
+    ns: ['common', 'auth', 'dashboard', 'address', 'emergency', 'admin', 'countries', 'car', 'business'],
     defaultNS: 'common',
     
     // Pluralization
