@@ -46,69 +46,81 @@ serve(async (req) => {
       throw new Error('Failed to generate UAC');
     }
 
-    // Create NAR address
+    // Create address request for verification
     const { data: addressData, error: addressError } = await supabaseClient
-      .from('addresses')
+      .from('address_requests')
       .insert({
         uac: uacData,
         latitude: requestData.latitude,
         longitude: requestData.longitude,
-        street: requestData.street,
-        city: requestData.city,
-        region: requestData.region,
+        street_name: requestData.street,
+        province: requestData.region,
         country: requestData.country,
-        building: requestData.building || null,
-        business_address_type: requestData.businessAddressType,
-        verified: false,
-        public: requestData.publiclyVisible,
+        building_name: requestData.building || null,
+        address_type: 'business',
+        requested_by: user.id,
+        status: 'pending',
+        metadata: {
+          businessAddressType: requestData.businessAddressType,
+          publiclyVisible: requestData.publiclyVisible,
+        }
       })
       .select()
       .single();
 
     if (addressError) {
-      console.error('Address creation error:', addressError);
+      console.error('Address request creation error:', addressError);
       throw addressError;
     }
 
-    // Create organization address
-    const { error: orgError } = await supabaseClient
-      .from('organization_addresses')
-      .insert({
-        address_id: addressData.id,
-        organization_name: requestData.organizationName,
-        business_category: requestData.businessCategory,
-        business_registration_number: requestData.registrationNumber || null,
-        tax_identification_number: requestData.taxId || null,
-        primary_contact_name: requestData.primaryContactName || null,
-        primary_contact_phone: requestData.primaryContactPhone || null,
-        primary_contact_email: requestData.primaryContactEmail || null,
-        secondary_contact_phone: requestData.secondaryContactPhone || null,
-        website_url: requestData.websiteUrl || null,
-        employee_count: requestData.employeeCount || null,
-        customer_capacity: requestData.customerCapacity || null,
-        parking_available: requestData.parkingAvailable,
-        parking_capacity: requestData.parkingCapacity || null,
-        wheelchair_accessible: requestData.wheelchairAccessible,
-        is_public_service: requestData.publicService,
-        appointment_required: requestData.appointmentRequired,
-        services_offered: requestData.servicesOffered || null,
-        languages_spoken: requestData.languagesSpoken || ['Spanish'],
-        publicly_visible: requestData.publiclyVisible,
-        show_on_maps: requestData.showOnMaps,
-        show_contact_info: requestData.showContactInfo,
-        created_by: user.id,
-      });
+    // Store organization details in metadata for now
+    // Will be inserted into organization_addresses table upon approval
+    const organizationMetadata = {
+      organization_name: requestData.organizationName,
+      business_category: requestData.businessCategory,
+      business_registration_number: requestData.registrationNumber || null,
+      tax_identification_number: requestData.taxId || null,
+      primary_contact_name: requestData.primaryContactName || null,
+      primary_contact_phone: requestData.primaryContactPhone || null,
+      primary_contact_email: requestData.primaryContactEmail || null,
+      secondary_contact_phone: requestData.secondaryContactPhone || null,
+      website_url: requestData.websiteUrl || null,
+      employee_count: requestData.employeeCount || null,
+      customer_capacity: requestData.customerCapacity || null,
+      parking_available: requestData.parkingAvailable,
+      parking_capacity: requestData.parkingCapacity || null,
+      wheelchair_accessible: requestData.wheelchairAccessible,
+      is_public_service: requestData.publicService,
+      appointment_required: requestData.appointmentRequired,
+      services_offered: requestData.servicesOffered || null,
+      languages_spoken: requestData.languagesSpoken || ['Spanish'],
+      publicly_visible: requestData.publiclyVisible,
+      show_on_maps: requestData.showOnMaps,
+      show_contact_info: requestData.showContactInfo,
+    };
 
-    if (orgError) {
-      console.error('Organization creation error:', orgError);
-      throw orgError;
+    // Update the address request with organization metadata
+    const { error: metadataError } = await supabaseClient
+      .from('address_requests')
+      .update({ 
+        metadata: {
+          ...addressData.metadata,
+          organization: organizationMetadata
+        }
+      })
+      .eq('id', addressData.id);
+
+    if (metadataError) {
+      console.error('Metadata update error:', metadataError);
     }
 
     return new Response(
       JSON.stringify({ 
         success: true,
-        addressId: addressData.id,
-        uac: uacData
+        requestId: addressData.id,
+        uac: uacData,
+        status: 'pending',
+        message: 'Business address registration submitted for verification'
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
