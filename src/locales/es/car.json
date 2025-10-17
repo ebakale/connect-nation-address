@@ -1,0 +1,144 @@
+{
+  "dependents": {
+    "title": "Mis Dependientes",
+    "register": "Registrar Dependiente",
+    "editDependent": "Editar Dependiente",
+    "deactivateDependent": "Desactivar Dependiente",
+    "noDocumentRequired": "Acta de nacimiento no requerida",
+    "guardianIdRequired": "Su documento de identidad del gobierno es suficiente",
+    "ageRequirement": "El dependiente debe ser menor de 18 años",
+    "noDependents": "No hay dependientes registrados",
+    "activeCount": "{{count}} dependiente(s) activo(s)",
+    "transitionedCount": "{{count}} cumplió(eron) 18 años",
+    "relationships": {
+      "CHILD": "Hijo/a",
+      "ADOPTED_CHILD": "Hijo/a Adoptivo/a",
+      "STEPCHILD": "Hijastro/a",
+      "WARD": "Pupilo/a Legal",
+      "GRANDCHILD": "Nieto/a",
+      "NIECE_NEPHEW": "Sobrino/a",
+      "OTHER_RELATIVE": "Otro Familiar"
+    },
+    "form": {
+      "fullName": "Nombre Completo del Dependiente",
+      "fullNamePlaceholder": "Ingrese el nombre completo",
+      "dateOfBirth": "Fecha de Nacimiento",
+      "relationship": "Relación con Usted",
+      "selectRelationship": "Seleccione relación",
+      "gender": "Género (Opcional)",
+      "genderOptions": {
+        "male": "Masculino",
+        "female": "Femenino",
+        "other": "Otro",
+        "prefer_not_to_say": "Prefiero no decir"
+      },
+      "birthCertificate": "Número de Acta de Nacimiento (Opcional)",
+      "birthCertificatePlaceholder": "Ingrese si está disponible",
+      "healthCard": "Número de Tarjeta de Salud (Opcional)",
+      "healthCardPlaceholder": "Ingrese si está disponible",
+      "schoolId": "Número de ID Escolar (Opcional)",
+      "schoolIdPlaceholder": "Ingrese si está disponible",
+      "notes": "Notas (Opcional)",
+      "notesPlaceholder": "Información adicional"
+    },
+    "addresses": {
+      "title": "Direcciones de {{name}}",
+      "setPrimary": "Establecer Dirección Principal",
+      "addSecondary": "Agregar Dirección Secundaria",
+      "noPrimary": "No hay dirección principal establecida",
+      "noSecondary": "No hay direcciones secundarias",
+      "current": "Direcciones Actuales",
+      "history": "Historial de Direcciones"
+    },
+    "messages": {
+      "registered": "Dependiente registrado exitosamente",
+      "updated": "Información del dependiente actualizada",
+      "deactivated": "Dependiente desactivado",
+      "addressSet": "Dirección establecida para el dependiente",
+      "addressAdded": "Dirección secundaria agregada",
+      "turned18": "{{name}} cumplió 18 años y ahora puede crear su propia cuenta",
+      "cannotModifyClaimed": "No se puede modificar - el dependiente ha reclamado su propia cuenta",
+      "invalidAge": "El dependiente debe ser menor de 18 años",
+      "loadError": "Error al cargar dependientes"
+    },
+    "status": {
+      "active": "Activo",
+      "reachedAdulthood": "Alcanzó la Mayoría de Edad",
+      "claimed": "Cuenta Reclamada",
+      "hasPrimaryAddress": "Tiene Dirección Principal",
+      "yearsOld": "{{age}} años"
+    }
+  },
+  "household": {
+    "title": "Mi Hogar",
+    "createGroup": "Crear Grupo Familiar",
+    "editGroup": "Editar Grupo Familiar",
+    "manageMembers": "Gestionar Miembros",
+    "addMember": "Agregar Miembro",
+    "removeMember": "Eliminar Miembro",
+    "noHousehold": "No hay grupo familiar creado",
+    "verified": "Verificado por CAR",
+    "unverified": "No Verificado",
+    "memberCount": "{{count}} miembro(s)",
+    "roles": {
+      "HEAD": "Jefe de Familia",
+      "SPOUSE": "Cónyuge",
+      "CHILD": "Hijo/a",
+      "PARENT": "Padre/Madre",
+      "GRANDPARENT": "Abuelo/a",
+      "GRANDCHILD": "Nieto/a",
+      "SIBLING": "Hermano/a",
+      "OTHER_RELATIVE": "Otro Familiar",
+      "NON_RELATIVE": "No Familiar"
+    },
+    "form": {
+      "householdName": "Nombre del Hogar",
+      "householdNamePlaceholder": "ej., Familia González",
+      "primaryAddress": "Dirección Principal (UAC)",
+      "primaryAddressPlaceholder": "Ingrese UAC",
+      "unitUac": "UAC de Unidad (si aplica)",
+      "unitUacPlaceholder": "Ingrese UAC de unidad",
+      "description": "Descripción (Opcional)",
+      "descriptionPlaceholder": "Información adicional del hogar",
+      "selectPerson": "Seleccionar Persona",
+      "selectDependent": "Seleccionar Dependiente",
+      "relationshipToHead": "Relación con el Jefe",
+      "selectRelationship": "Seleccione relación",
+      "isPrimaryResident": "Residente Principal",
+      "movedInDate": "Fecha de Mudanza",
+      "movedOutDate": "Fecha de Salida (si aplica)",
+      "memberNotes": "Notas (Opcional)"
+    },
+    "members": {
+      "title": "Miembros del Hogar",
+      "noMembers": "No hay miembros agregados",
+      "addFirst": "Agregue su primer miembro del hogar",
+      "type": {
+        "person": "Miembro Adulto",
+        "dependent": "Dependiente"
+      },
+      "primaryResident": "Residente Principal",
+      "movedIn": "Se mudó: {{date}}",
+      "movedOut": "Se fue: {{date}}"
+    },
+    "messages": {
+      "created": "Grupo familiar creado exitosamente",
+      "updated": "Grupo familiar actualizado",
+      "memberAdded": "Miembro agregado al hogar",
+      "memberRemoved": "Miembro eliminado del hogar",
+      "verificationRequested": "Verificación solicitada",
+      "loadError": "Error al cargar el hogar",
+      "duplicateMember": "Esta persona ya es miembro del hogar",
+      "cannotRemoveHead": "No se puede eliminar al jefe de familia"
+    },
+    "status": {
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "pendingVerification": "Verificación CAR Pendiente"
+    },
+    "addresses": {
+      "linkedAddresses": "Vinculado al Hogar",
+      "viewAll": "Ver Todos los Miembros del Hogar"
+    }
+  }
+}

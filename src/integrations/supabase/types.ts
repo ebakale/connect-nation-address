@@ -490,8 +490,12 @@ export type Database = {
           address_kind: Database["public"]["Enums"]["address_kind"]
           created_at: string | null
           created_by: string | null
+          declared_by_guardian: boolean
+          dependent_id: string | null
           effective_from: string
           effective_to: string | null
+          guardian_person_id: string | null
+          household_group_id: string | null
           id: string
           notes: string | null
           occupant: Database["public"]["Enums"]["occupant_type"] | null
@@ -507,8 +511,12 @@ export type Database = {
           address_kind?: Database["public"]["Enums"]["address_kind"]
           created_at?: string | null
           created_by?: string | null
+          declared_by_guardian?: boolean
+          dependent_id?: string | null
           effective_from?: string
           effective_to?: string | null
+          guardian_person_id?: string | null
+          household_group_id?: string | null
           id?: string
           notes?: string | null
           occupant?: Database["public"]["Enums"]["occupant_type"] | null
@@ -524,8 +532,12 @@ export type Database = {
           address_kind?: Database["public"]["Enums"]["address_kind"]
           created_at?: string | null
           created_by?: string | null
+          declared_by_guardian?: boolean
+          dependent_id?: string | null
           effective_from?: string
           effective_to?: string | null
+          guardian_person_id?: string | null
+          household_group_id?: string | null
           id?: string
           notes?: string | null
           occupant?: Database["public"]["Enums"]["occupant_type"] | null
@@ -538,6 +550,34 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "citizen_address_dependent_id_fkey"
+            columns: ["dependent_id"]
+            isOneToOne: false
+            referencedRelation: "household_dependents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "citizen_address_guardian_person_id_fkey"
+            columns: ["guardian_person_id"]
+            isOneToOne: false
+            referencedRelation: "my_person"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "citizen_address_guardian_person_id_fkey"
+            columns: ["guardian_person_id"]
+            isOneToOne: false
+            referencedRelation: "person"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "citizen_address_household_group_id_fkey"
+            columns: ["household_group_id"]
+            isOneToOne: false
+            referencedRelation: "household_groups"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "citizen_address_person_id_fkey"
             columns: ["person_id"]
@@ -674,6 +714,47 @@ export type Database = {
           verification_rate?: number | null
         }
         Relationships: []
+      }
+      dependent_authorization_audit: {
+        Row: {
+          action: string
+          dependent_id: string
+          details: Json | null
+          id: string
+          ip_address: string | null
+          performed_by: string
+          timestamp: string
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          dependent_id: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          performed_by: string
+          timestamp?: string
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          dependent_id?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          performed_by?: string
+          timestamp?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dependent_authorization_audit_dependent_id_fkey"
+            columns: ["dependent_id"]
+            isOneToOne: false
+            referencedRelation: "household_dependents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       document_verification_audit: {
         Row: {
@@ -1111,6 +1192,259 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      household_activity_audit: {
+        Row: {
+          action: string
+          details: Json | null
+          household_group_id: string
+          id: string
+          performed_by: string
+          timestamp: string
+        }
+        Insert: {
+          action: string
+          details?: Json | null
+          household_group_id: string
+          id?: string
+          performed_by: string
+          timestamp?: string
+        }
+        Update: {
+          action?: string
+          details?: Json | null
+          household_group_id?: string
+          id?: string
+          performed_by?: string
+          timestamp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "household_activity_audit_household_group_id_fkey"
+            columns: ["household_group_id"]
+            isOneToOne: false
+            referencedRelation: "household_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      household_dependents: {
+        Row: {
+          birth_certificate_number: string | null
+          claimed_account_user_id: string | null
+          claimed_own_account: boolean
+          created_at: string
+          created_by: string
+          date_of_birth: string
+          full_name: string
+          gender: string | null
+          guardian_person_id: string
+          guardian_user_id: string
+          health_card_number: string | null
+          id: string
+          is_active: boolean
+          notes: string | null
+          notified_at_18: string | null
+          reached_majority_age: boolean
+          relationship_to_guardian: Database["public"]["Enums"]["dependent_relationship"]
+          school_id_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          birth_certificate_number?: string | null
+          claimed_account_user_id?: string | null
+          claimed_own_account?: boolean
+          created_at?: string
+          created_by: string
+          date_of_birth: string
+          full_name: string
+          gender?: string | null
+          guardian_person_id: string
+          guardian_user_id: string
+          health_card_number?: string | null
+          id?: string
+          is_active?: boolean
+          notes?: string | null
+          notified_at_18?: string | null
+          reached_majority_age?: boolean
+          relationship_to_guardian: Database["public"]["Enums"]["dependent_relationship"]
+          school_id_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          birth_certificate_number?: string | null
+          claimed_account_user_id?: string | null
+          claimed_own_account?: boolean
+          created_at?: string
+          created_by?: string
+          date_of_birth?: string
+          full_name?: string
+          gender?: string | null
+          guardian_person_id?: string
+          guardian_user_id?: string
+          health_card_number?: string | null
+          id?: string
+          is_active?: boolean
+          notes?: string | null
+          notified_at_18?: string | null
+          reached_majority_age?: boolean
+          relationship_to_guardian?: Database["public"]["Enums"]["dependent_relationship"]
+          school_id_number?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "household_dependents_guardian_person_id_fkey"
+            columns: ["guardian_person_id"]
+            isOneToOne: false
+            referencedRelation: "my_person"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "household_dependents_guardian_person_id_fkey"
+            columns: ["guardian_person_id"]
+            isOneToOne: false
+            referencedRelation: "person"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      household_groups: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          household_head_person_id: string
+          household_head_user_id: string
+          household_name: string
+          id: string
+          is_active: boolean
+          primary_uac: string
+          primary_unit_uac: string | null
+          updated_at: string
+          verified_at: string | null
+          verified_by: string | null
+          verified_by_car: boolean
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          household_head_person_id: string
+          household_head_user_id: string
+          household_name: string
+          id?: string
+          is_active?: boolean
+          primary_uac: string
+          primary_unit_uac?: string | null
+          updated_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
+          verified_by_car?: boolean
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          household_head_person_id?: string
+          household_head_user_id?: string
+          household_name?: string
+          id?: string
+          is_active?: boolean
+          primary_uac?: string
+          primary_unit_uac?: string | null
+          updated_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
+          verified_by_car?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "household_groups_household_head_person_id_fkey"
+            columns: ["household_head_person_id"]
+            isOneToOne: false
+            referencedRelation: "my_person"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "household_groups_household_head_person_id_fkey"
+            columns: ["household_head_person_id"]
+            isOneToOne: false
+            referencedRelation: "person"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      household_members: {
+        Row: {
+          added_at: string
+          added_by: string
+          dependent_id: string | null
+          household_group_id: string
+          id: string
+          is_primary_resident: boolean
+          moved_in_date: string | null
+          moved_out_date: string | null
+          notes: string | null
+          person_id: string | null
+          relationship_to_head: Database["public"]["Enums"]["household_member_role"]
+        }
+        Insert: {
+          added_at?: string
+          added_by: string
+          dependent_id?: string | null
+          household_group_id: string
+          id?: string
+          is_primary_resident?: boolean
+          moved_in_date?: string | null
+          moved_out_date?: string | null
+          notes?: string | null
+          person_id?: string | null
+          relationship_to_head: Database["public"]["Enums"]["household_member_role"]
+        }
+        Update: {
+          added_at?: string
+          added_by?: string
+          dependent_id?: string | null
+          household_group_id?: string
+          id?: string
+          is_primary_resident?: boolean
+          moved_in_date?: string | null
+          moved_out_date?: string | null
+          notes?: string | null
+          person_id?: string | null
+          relationship_to_head?: Database["public"]["Enums"]["household_member_role"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "household_members_dependent_id_fkey"
+            columns: ["dependent_id"]
+            isOneToOne: false
+            referencedRelation: "household_dependents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "household_members_household_group_id_fkey"
+            columns: ["household_group_id"]
+            isOneToOne: false
+            referencedRelation: "household_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "household_members_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "my_person"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "household_members_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "person"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       integration_api_keys: {
         Row: {
@@ -2568,6 +2902,24 @@ export type Database = {
         | "car_admin"
         | "car_verifier"
         | "residency_verifier"
+      dependent_relationship:
+        | "CHILD"
+        | "ADOPTED_CHILD"
+        | "STEPCHILD"
+        | "WARD"
+        | "GRANDCHILD"
+        | "NIECE_NEPHEW"
+        | "OTHER_RELATIVE"
+      household_member_role:
+        | "HEAD"
+        | "SPOUSE"
+        | "CHILD"
+        | "PARENT"
+        | "GRANDPARENT"
+        | "GRANDCHILD"
+        | "SIBLING"
+        | "OTHER_RELATIVE"
+        | "NON_RELATIVE"
       legal_document_type:
         | "property_deed"
         | "land_certificate"
@@ -2749,6 +3101,26 @@ export const Constants = {
         "car_admin",
         "car_verifier",
         "residency_verifier",
+      ],
+      dependent_relationship: [
+        "CHILD",
+        "ADOPTED_CHILD",
+        "STEPCHILD",
+        "WARD",
+        "GRANDCHILD",
+        "NIECE_NEPHEW",
+        "OTHER_RELATIVE",
+      ],
+      household_member_role: [
+        "HEAD",
+        "SPOUSE",
+        "CHILD",
+        "PARENT",
+        "GRANDPARENT",
+        "GRANDCHILD",
+        "SIBLING",
+        "OTHER_RELATIVE",
+        "NON_RELATIVE",
       ],
       legal_document_type: [
         "property_deed",

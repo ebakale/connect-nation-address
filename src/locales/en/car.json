@@ -1,0 +1,144 @@
+{
+  "dependents": {
+    "title": "My Dependents",
+    "register": "Register Dependent",
+    "editDependent": "Edit Dependent",
+    "deactivateDependent": "Deactivate Dependent",
+    "noDocumentRequired": "Birth certificate not required",
+    "guardianIdRequired": "Your government ID is sufficient",
+    "ageRequirement": "Dependent must be under 18 years old",
+    "noDependents": "No dependents registered",
+    "activeCount": "{{count}} active dependent(s)",
+    "transitionedCount": "{{count}} turned 18",
+    "relationships": {
+      "CHILD": "Child",
+      "ADOPTED_CHILD": "Adopted Child",
+      "STEPCHILD": "Stepchild",
+      "WARD": "Legal Ward",
+      "GRANDCHILD": "Grandchild",
+      "NIECE_NEPHEW": "Niece/Nephew",
+      "OTHER_RELATIVE": "Other Relative"
+    },
+    "form": {
+      "fullName": "Dependent's Full Name",
+      "fullNamePlaceholder": "Enter full name",
+      "dateOfBirth": "Date of Birth",
+      "relationship": "Relationship to You",
+      "selectRelationship": "Select relationship",
+      "gender": "Gender (Optional)",
+      "genderOptions": {
+        "male": "Male",
+        "female": "Female",
+        "other": "Other",
+        "prefer_not_to_say": "Prefer not to say"
+      },
+      "birthCertificate": "Birth Certificate Number (Optional)",
+      "birthCertificatePlaceholder": "Enter if available",
+      "healthCard": "Health Card Number (Optional)",
+      "healthCardPlaceholder": "Enter if available",
+      "schoolId": "School ID Number (Optional)",
+      "schoolIdPlaceholder": "Enter if available",
+      "notes": "Notes (Optional)",
+      "notesPlaceholder": "Additional information"
+    },
+    "addresses": {
+      "title": "{{name}}'s Addresses",
+      "setPrimary": "Set Primary Address",
+      "addSecondary": "Add Secondary Address",
+      "noPrimary": "No primary address set",
+      "noSecondary": "No secondary addresses",
+      "current": "Current Addresses",
+      "history": "Address History"
+    },
+    "messages": {
+      "registered": "Dependent registered successfully",
+      "updated": "Dependent information updated",
+      "deactivated": "Dependent deactivated",
+      "addressSet": "Address set for dependent",
+      "addressAdded": "Secondary address added",
+      "turned18": "{{name}} has turned 18 and can now create their own account",
+      "cannotModifyClaimed": "Cannot modify - dependent has claimed their own account",
+      "invalidAge": "Dependent must be under 18 years old",
+      "loadError": "Failed to load dependents"
+    },
+    "status": {
+      "active": "Active",
+      "reachedAdulthood": "Reached Adulthood",
+      "claimed": "Account Claimed",
+      "hasPrimaryAddress": "Has Primary Address",
+      "yearsOld": "{{age}} years old"
+    }
+  },
+  "household": {
+    "title": "My Household",
+    "createGroup": "Create Household Group",
+    "editGroup": "Edit Household Group",
+    "manageMembers": "Manage Members",
+    "addMember": "Add Member",
+    "removeMember": "Remove Member",
+    "noHousehold": "No household group created",
+    "verified": "Verified by CAR",
+    "unverified": "Not Verified",
+    "memberCount": "{{count}} member(s)",
+    "roles": {
+      "HEAD": "Head of Household",
+      "SPOUSE": "Spouse",
+      "CHILD": "Child",
+      "PARENT": "Parent",
+      "GRANDPARENT": "Grandparent",
+      "GRANDCHILD": "Grandchild",
+      "SIBLING": "Sibling",
+      "OTHER_RELATIVE": "Other Relative",
+      "NON_RELATIVE": "Non-Relative"
+    },
+    "form": {
+      "householdName": "Household Name",
+      "householdNamePlaceholder": "e.g., Smith Family Household",
+      "primaryAddress": "Primary Address (UAC)",
+      "primaryAddressPlaceholder": "Enter UAC",
+      "unitUac": "Unit UAC (if applicable)",
+      "unitUacPlaceholder": "Enter unit UAC",
+      "description": "Description (Optional)",
+      "descriptionPlaceholder": "Additional household information",
+      "selectPerson": "Select Person",
+      "selectDependent": "Select Dependent",
+      "relationshipToHead": "Relationship to Head",
+      "selectRelationship": "Select relationship",
+      "isPrimaryResident": "Primary Resident",
+      "movedInDate": "Moved In Date",
+      "movedOutDate": "Moved Out Date (if applicable)",
+      "memberNotes": "Notes (Optional)"
+    },
+    "members": {
+      "title": "Household Members",
+      "noMembers": "No members added",
+      "addFirst": "Add your first household member",
+      "type": {
+        "person": "Adult Member",
+        "dependent": "Dependent"
+      },
+      "primaryResident": "Primary Resident",
+      "movedIn": "Moved in: {{date}}",
+      "movedOut": "Moved out: {{date}}"
+    },
+    "messages": {
+      "created": "Household group created successfully",
+      "updated": "Household group updated",
+      "memberAdded": "Member added to household",
+      "memberRemoved": "Member removed from household",
+      "verificationRequested": "Verification requested",
+      "loadError": "Failed to load household",
+      "duplicateMember": "This person is already a household member",
+      "cannotRemoveHead": "Cannot remove head of household"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pendingVerification": "Pending CAR Verification"
+    },
+    "addresses": {
+      "linkedAddresses": "Linked to Household",
+      "viewAll": "View All Household Members"
+    }
+  }
+}

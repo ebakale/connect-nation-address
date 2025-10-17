@@ -1,0 +1,144 @@
+{
+  "dependents": {
+    "title": "Mes Personnes à Charge",
+    "register": "Enregistrer une Personne à Charge",
+    "editDependent": "Modifier la Personne à Charge",
+    "deactivateDependent": "Désactiver la Personne à Charge",
+    "noDocumentRequired": "Acte de naissance non requis",
+    "guardianIdRequired": "Votre pièce d'identité gouvernementale suffit",
+    "ageRequirement": "La personne à charge doit avoir moins de 18 ans",
+    "noDependents": "Aucune personne à charge enregistrée",
+    "activeCount": "{{count}} personne(s) à charge active(s)",
+    "transitionedCount": "{{count}} a/ont atteint 18 ans",
+    "relationships": {
+      "CHILD": "Enfant",
+      "ADOPTED_CHILD": "Enfant Adopté",
+      "STEPCHILD": "Beau-fils/Belle-fille",
+      "WARD": "Pupille Légal",
+      "GRANDCHILD": "Petit-enfant",
+      "NIECE_NEPHEW": "Neveu/Nièce",
+      "OTHER_RELATIVE": "Autre Parent"
+    },
+    "form": {
+      "fullName": "Nom Complet de la Personne à Charge",
+      "fullNamePlaceholder": "Entrez le nom complet",
+      "dateOfBirth": "Date de Naissance",
+      "relationship": "Relation avec Vous",
+      "selectRelationship": "Sélectionnez la relation",
+      "gender": "Genre (Optionnel)",
+      "genderOptions": {
+        "male": "Masculin",
+        "female": "Féminin",
+        "other": "Autre",
+        "prefer_not_to_say": "Préfère ne pas dire"
+      },
+      "birthCertificate": "Numéro d'Acte de Naissance (Optionnel)",
+      "birthCertificatePlaceholder": "Entrez si disponible",
+      "healthCard": "Numéro de Carte de Santé (Optionnel)",
+      "healthCardPlaceholder": "Entrez si disponible",
+      "schoolId": "Numéro d'ID Scolaire (Optionnel)",
+      "schoolIdPlaceholder": "Entrez si disponible",
+      "notes": "Notes (Optionnel)",
+      "notesPlaceholder": "Informations supplémentaires"
+    },
+    "addresses": {
+      "title": "Adresses de {{name}}",
+      "setPrimary": "Définir l'Adresse Principale",
+      "addSecondary": "Ajouter une Adresse Secondaire",
+      "noPrimary": "Aucune adresse principale définie",
+      "noSecondary": "Aucune adresse secondaire",
+      "current": "Adresses Actuelles",
+      "history": "Historique des Adresses"
+    },
+    "messages": {
+      "registered": "Personne à charge enregistrée avec succès",
+      "updated": "Informations de la personne à charge mises à jour",
+      "deactivated": "Personne à charge désactivée",
+      "addressSet": "Adresse définie pour la personne à charge",
+      "addressAdded": "Adresse secondaire ajoutée",
+      "turned18": "{{name}} a atteint 18 ans et peut maintenant créer son propre compte",
+      "cannotModifyClaimed": "Impossible de modifier - la personne à charge a réclamé son propre compte",
+      "invalidAge": "La personne à charge doit avoir moins de 18 ans",
+      "loadError": "Échec du chargement des personnes à charge"
+    },
+    "status": {
+      "active": "Actif",
+      "reachedAdulthood": "Majorité Atteinte",
+      "claimed": "Compte Réclamé",
+      "hasPrimaryAddress": "A une Adresse Principale",
+      "yearsOld": "{{age}} ans"
+    }
+  },
+  "household": {
+    "title": "Mon Ménage",
+    "createGroup": "Créer un Groupe Familial",
+    "editGroup": "Modifier le Groupe Familial",
+    "manageMembers": "Gérer les Membres",
+    "addMember": "Ajouter un Membre",
+    "removeMember": "Retirer un Membre",
+    "noHousehold": "Aucun groupe familial créé",
+    "verified": "Vérifié par CAR",
+    "unverified": "Non Vérifié",
+    "memberCount": "{{count}} membre(s)",
+    "roles": {
+      "HEAD": "Chef de Famille",
+      "SPOUSE": "Conjoint(e)",
+      "CHILD": "Enfant",
+      "PARENT": "Parent",
+      "GRANDPARENT": "Grand-parent",
+      "GRANDCHILD": "Petit-enfant",
+      "SIBLING": "Frère/Sœur",
+      "OTHER_RELATIVE": "Autre Parent",
+      "NON_RELATIVE": "Non-Parent"
+    },
+    "form": {
+      "householdName": "Nom du Ménage",
+      "householdNamePlaceholder": "ex., Famille Dupont",
+      "primaryAddress": "Adresse Principale (UAC)",
+      "primaryAddressPlaceholder": "Entrez l'UAC",
+      "unitUac": "UAC de l'Unité (si applicable)",
+      "unitUacPlaceholder": "Entrez l'UAC de l'unité",
+      "description": "Description (Optionnel)",
+      "descriptionPlaceholder": "Informations supplémentaires sur le ménage",
+      "selectPerson": "Sélectionner une Personne",
+      "selectDependent": "Sélectionner une Personne à Charge",
+      "relationshipToHead": "Relation avec le Chef",
+      "selectRelationship": "Sélectionnez la relation",
+      "isPrimaryResident": "Résident Principal",
+      "movedInDate": "Date d'Emménagement",
+      "movedOutDate": "Date de Déménagement (si applicable)",
+      "memberNotes": "Notes (Optionnel)"
+    },
+    "members": {
+      "title": "Membres du Ménage",
+      "noMembers": "Aucun membre ajouté",
+      "addFirst": "Ajoutez votre premier membre du ménage",
+      "type": {
+        "person": "Membre Adulte",
+        "dependent": "Personne à Charge"
+      },
+      "primaryResident": "Résident Principal",
+      "movedIn": "Emménagé : {{date}}",
+      "movedOut": "Déménagé : {{date}}"
+    },
+    "messages": {
+      "created": "Groupe familial créé avec succès",
+      "updated": "Groupe familial mis à jour",
+      "memberAdded": "Membre ajouté au ménage",
+      "memberRemoved": "Membre retiré du ménage",
+      "verificationRequested": "Vérification demandée",
+      "loadError": "Échec du chargement du ménage",
+      "duplicateMember": "Cette personne est déjà membre du ménage",
+      "cannotRemoveHead": "Impossible de retirer le chef de famille"
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif",
+      "pendingVerification": "Vérification CAR en Attente"
+    },
+    "addresses": {
+      "linkedAddresses": "Lié au Ménage",
+      "viewAll": "Voir Tous les Membres du Ménage"
+    }
+  }
+}
