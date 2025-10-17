@@ -421,7 +421,7 @@ export function HouseholdManagement() {
                           setIsEditDependentDialogOpen(true);
                         }}
                       >
-                        {t('common:edit')}
+                        {t('common:buttons.edit')}
                       </Button>
                     </div>
                   </div>
@@ -562,7 +562,7 @@ export function HouseholdManagement() {
                           setIsEditHouseholdDialogOpen(true);
                         }}
                       >
-                        {t('common:edit')}
+                        {t('common:buttons.edit')}
                       </Button>
                       <Dialog open={isAddMemberDialogOpen && selectedHouseholdId === household.id} onOpenChange={(open) => {
                         setIsAddMemberDialogOpen(open);
@@ -748,7 +748,7 @@ export function HouseholdManagement() {
             </div>
 
             <Button type="submit" className="w-full">
-              {t('common:save')}
+              {t('common:buttons.save')}
             </Button>
           </form>
         </DialogContent>
@@ -823,7 +823,7 @@ export function HouseholdManagement() {
             </div>
 
             <Button type="submit" className="w-full">
-              {t('common:save')}
+              {t('common:buttons.save')}
             </Button>
           </form>
         </DialogContent>
