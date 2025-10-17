@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Users, Home, Plus, UserPlus, Loader2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,6 +24,31 @@ export function HouseholdManagement() {
   const [isCreating, setIsCreating] = useState(false);
   const [households, setHouseholds] = useState<any[]>([]);
   const [loadingHouseholds, setLoadingHouseholds] = useState(true);
+  const [selectedHouseholdId, setSelectedHouseholdId] = useState<string | null>(null);
+  const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
+  const [dependents, setDependents] = useState<any[]>([]);
+  const [selectedDependentId, setSelectedDependentId] = useState('');
+  const [memberRelationship, setMemberRelationship] = useState('');
+  const [isAddingMember, setIsAddingMember] = useState(false);
+
+  // Fetch user's dependents
+  const fetchDependents = async () => {
+    if (!person?.id) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('household_dependents')
+        .select('*')
+        .eq('guardian_person_id', person.id)
+        .eq('is_active', true)
+        .eq('claimed_own_account', false);
+
+      if (error) throw error;
+      setDependents(data || []);
+    } catch (error) {
+      console.error('Error fetching dependents:', error);
+    }
+  };
 
   // Fetch user's households
   const fetchHouseholds = async () => {
@@ -46,8 +73,56 @@ export function HouseholdManagement() {
   useEffect(() => {
     if (person?.id) {
       fetchHouseholds();
+      fetchDependents();
     }
   }, [person?.id]);
+
+  const handleAddMember = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!selectedHouseholdId || !selectedDependentId || !person?.auth_user_id) {
+      toast({
+        title: t('common:error'),
+        description: "Please fill all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsAddingMember(true);
+
+      const { error } = await supabase
+        .from('household_members')
+        .insert([{
+          household_group_id: selectedHouseholdId,
+          dependent_id: selectedDependentId,
+          relationship_to_head: memberRelationship as "CHILD" | "GRANDCHILD" | "GRANDPARENT" | "HEAD" | "NON_RELATIVE" | "OTHER_RELATIVE" | "PARENT" | "SIBLING" | "SPOUSE",
+          is_primary_resident: false,
+          added_by: person.auth_user_id,
+        }]);
+
+      if (error) throw error;
+
+      toast({
+        title: t('common:success'),
+        description: "Member added to household successfully",
+      });
+
+      setIsAddMemberDialogOpen(false);
+      setSelectedDependentId('');
+      setMemberRelationship('');
+    } catch (error: any) {
+      console.error('Error adding member:', error);
+      toast({
+        title: t('common:error'),
+        description: error.message || "Failed to add member",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAddingMember(false);
+    }
+  };
 
   const handleCreateHousehold = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,10 +225,64 @@ export function HouseholdManagement() {
                       )}
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    {t('address:addMember')}
-                  </Button>
+                  <Dialog open={isAddMemberDialogOpen && selectedHouseholdId === household.id} onOpenChange={(open) => {
+                    setIsAddMemberDialogOpen(open);
+                    if (open) setSelectedHouseholdId(household.id);
+                  }}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        <UserPlus className="h-4 w-4 mr-2" />
+                        {t('address:addMember')}
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>{t('address:addMember')}</DialogTitle>
+                        <DialogDescription>
+                          Add a dependent to this household
+                        </DialogDescription>
+                      </DialogHeader>
+                      <form onSubmit={handleAddMember} className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="dependent">{t('address:selectDependent')}</Label>
+                          <Select value={selectedDependentId} onValueChange={setSelectedDependentId} required>
+                            <SelectTrigger>
+                              <SelectValue placeholder={t('address:selectDependentPlaceholder')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {dependents.map((dependent) => (
+                                <SelectItem key={dependent.id} value={dependent.id}>
+                                  {dependent.full_name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="relationship">{t('address:relationshipToHead')}</Label>
+                          <Select value={memberRelationship} onValueChange={setMemberRelationship} required>
+                            <SelectTrigger>
+                              <SelectValue placeholder={t('address:selectRelationship')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="CHILD">Child</SelectItem>
+                              <SelectItem value="SPOUSE">Spouse</SelectItem>
+                              <SelectItem value="PARENT">Parent</SelectItem>
+                              <SelectItem value="SIBLING">Sibling</SelectItem>
+                              <SelectItem value="OTHER_RELATIVE">Other Relative</SelectItem>
+                              <SelectItem value="NON_RELATIVE">Non-Relative</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <Button type="submit" className="w-full" disabled={isAddingMember}>
+                          {isAddingMember && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                          {t('address:addMember')}
+                        </Button>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               ))}
             </div>
