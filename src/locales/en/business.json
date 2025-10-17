@@ -38,7 +38,10 @@
     "cancel": "Cancel",
     "next": "Next",
     "previous": "Previous",
-    "finish": "Finish"
+    "finish": "Finish",
+    "selectProvinceFirst": "Select a province first",
+    "selectProvince": "Select Province",
+    "selectCity": "Select City"
   },
   "categories": {
     "RETAIL": "Retail Store",
@@ -134,7 +137,6 @@
     "documentReview": "Document Review",
     "approveAndVerify": "Approve and Verify",
     "reject": "Reject",
-    "successMessage": "Business registration request submitted successfully!",
-    "selectProvinceFirst": "Select a province first"
+    "successMessage": "Business registration request submitted successfully!"
   }
 }

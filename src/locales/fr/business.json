@@ -38,7 +38,10 @@
     "cancel": "Annuler",
     "next": "Suivant",
     "previous": "Précédent",
-    "finish": "Terminer"
+    "finish": "Terminer",
+    "selectProvinceFirst": "Sélectionnez d'abord une province",
+    "selectProvince": "Sélectionner la Province",
+    "selectCity": "Sélectionner la Ville"
   },
   "categories": {
     "RETAIL": "Magasin de Détail",

@@ -38,7 +38,10 @@
     "cancel": "Cancelar",
     "next": "Siguiente",
     "previous": "Anterior",
-    "finish": "Finalizar"
+    "finish": "Finalizar",
+    "selectProvinceFirst": "Seleccione una provincia primero",
+    "selectProvince": "Seleccionar Provincia",
+    "selectCity": "Seleccionar Ciudad"
   },
   "categories": {
     "RETAIL": "Tienda Minorista",
