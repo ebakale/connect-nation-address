@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -34,6 +34,9 @@ export const BusinessAddressRegistrationForm = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [currentTab, setCurrentTab] = useState("organization");
+  const [provinces, setProvinces] = useState<{ id: string; name: string }[]>([]);
+  const [cities, setCities] = useState<{ id: string; name: string; province_id: string }[]>([]);
+  const [availableCities, setAvailableCities] = useState<{ id: string; name: string }[]>([]);
 
   const [formData, setFormData] = useState({
     // Organization Details
@@ -77,6 +80,51 @@ export const BusinessAddressRegistrationForm = () => {
     showOnMaps: true,
     showContactInfo: true,
   });
+
+  // Fetch provinces and cities on mount
+  useEffect(() => {
+    const fetchLocationData = async () => {
+      try {
+        // Fetch provinces directly
+        const provincesResponse = await supabase
+          .from('provinces' as any)
+          .select('id, name')
+          .order('name');
+
+        if (provincesResponse.error) throw provincesResponse.error;
+        setProvinces((provincesResponse.data as any) || []);
+
+        // Fetch cities directly
+        const citiesResponse = await supabase
+          .from('cities' as any)
+          .select('id, name, province_id')
+          .order('name');
+
+        if (citiesResponse.error) throw citiesResponse.error;
+        setCities((citiesResponse.data as any) || []);
+      } catch (error) {
+        console.error('Error fetching location data:', error);
+        toast.error(t('common:error'));
+      }
+    };
+
+    fetchLocationData();
+  }, [t]);
+
+  // Update available cities when region changes
+  useEffect(() => {
+    if (formData.region) {
+      const selectedProvince = provinces.find(p => p.name === formData.region);
+      if (selectedProvince) {
+        const filteredCities = cities.filter(c => c.province_id === selectedProvince.id);
+        setAvailableCities(filteredCities);
+      } else {
+        setAvailableCities([]);
+      }
+    } else {
+      setAvailableCities([]);
+    }
+  }, [formData.region, provinces, cities]);
 
   const handleLocationSelect = (lat: number, lng: number, address: any) => {
     setFormData(prev => ({
@@ -278,20 +326,43 @@ export const BusinessAddressRegistrationForm = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="city">{t('common:city')}</Label>
-                <Input
-                  id="city"
-                  value={formData.city}
-                  onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
-                />
+                <Label htmlFor="region">{t('common:region')} *</Label>
+                <Select 
+                  value={formData.region} 
+                  onValueChange={(value) => {
+                    setFormData(prev => ({ ...prev, region: value, city: "" }));
+                  }}
+                >
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder={t('common:select') + "..."} />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background z-50">
+                    {provinces.map(province => (
+                      <SelectItem key={province.id} value={province.name}>
+                        {province.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
-                <Label htmlFor="region">{t('common:region')}</Label>
-                <Input
-                  id="region"
-                  value={formData.region}
-                  onChange={(e) => setFormData(prev => ({ ...prev, region: e.target.value }))}
-                />
+                <Label htmlFor="city">{t('common:city')} *</Label>
+                <Select 
+                  value={formData.city} 
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, city: value }))}
+                  disabled={!formData.region}
+                >
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder={formData.region ? t('common:select') + "..." : t('business:registration.selectProvinceFirst')} />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background z-50">
+                    {availableCities.map(city => (
+                      <SelectItem key={city.id} value={city.name}>
+                        {city.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </TabsContent>

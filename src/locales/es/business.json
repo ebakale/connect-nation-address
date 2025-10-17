@@ -133,6 +133,8 @@
     "verificationNotes": "Notas de Verificación",
     "documentReview": "Revisión de Documentos",
     "approveAndVerify": "Aprobar y Verificar",
-    "reject": "Rechazar"
+    "reject": "Rechazar",
+    "successMessage": "¡Solicitud de registro de negocio enviada exitosamente!",
+    "selectProvinceFirst": "Selecciona una provincia primero"
   }
 }

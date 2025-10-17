@@ -133,6 +133,8 @@
     "verificationNotes": "Verification Notes",
     "documentReview": "Document Review",
     "approveAndVerify": "Approve and Verify",
-    "reject": "Reject"
+    "reject": "Reject",
+    "successMessage": "Business registration request submitted successfully!",
+    "selectProvinceFirst": "Select a province first"
   }
 }

@@ -133,6 +133,8 @@
     "verificationNotes": "Notes de Vérification",
     "documentReview": "Révision des Documents",
     "approveAndVerify": "Approuver et Vérifier",
-    "reject": "Rejeter"
+    "reject": "Rejeter",
+    "successMessage": "Demande d'enregistrement d'entreprise soumise avec succès!",
+    "selectProvinceFirst": "Sélectionnez d'abord une province"
   }
 }
