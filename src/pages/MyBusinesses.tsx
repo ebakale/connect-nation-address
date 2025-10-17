@@ -23,6 +23,7 @@ import {
   AlertCircle
 } from "lucide-react";
 import { Database } from "@/integrations/supabase/types";
+import { BreadcrumbNavigation } from "@/components/BreadcrumbNavigation";
 
 type OrganizationAddress = Database["public"]["Tables"]["organization_addresses"]["Row"] & {
   addresses?: {
@@ -137,6 +138,14 @@ export default function MyBusinesses() {
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">
+      <BreadcrumbNavigation 
+        items={[
+          { label: t('common:dashboard'), onClick: () => navigate('/dashboard') },
+          { label: t('business:dashboard.myBusinesses'), isActive: true }
+        ]}
+        className="mb-4"
+      />
+      
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">

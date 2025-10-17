@@ -14,6 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { BusinessMapLocationPicker } from "./BusinessMapLocationPicker";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building2, MapPin, Phone, Clock, Accessibility } from "lucide-react";
+import { BreadcrumbNavigation } from "@/components/BreadcrumbNavigation";
 
 const BUSINESS_CATEGORIES = [
   "RETAIL", "OFFICE", "RESTAURANT", "HOTEL", "HOSPITAL", "SCHOOL", 
@@ -155,6 +156,15 @@ export const BusinessAddressRegistrationForm = () => {
 
   return (
     <div className="container mx-auto p-6 max-w-4xl">
+      <BreadcrumbNavigation 
+        items={[
+          { label: t('common:dashboard'), onClick: () => navigate('/dashboard') },
+          { label: t('business:dashboard.myBusinesses'), onClick: () => navigate('/my-businesses') },
+          { label: t('business:registration.title'), isActive: true }
+        ]}
+        className="mb-4"
+      />
+      
       <Card className="p-6">
         <h1 className="text-3xl font-bold mb-6 flex items-center gap-2">
           <Building2 className="h-8 w-8" />
