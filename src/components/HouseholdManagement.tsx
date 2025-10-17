@@ -38,6 +38,11 @@ export function HouseholdManagement() {
     relationship_to_guardian: '',
     birth_certificate_number: '',
   });
+  const [householdMembers, setHouseholdMembers] = useState<Record<string, any[]>>({});
+  const [isEditHouseholdDialogOpen, setIsEditHouseholdDialogOpen] = useState(false);
+  const [isEditDependentDialogOpen, setIsEditDependentDialogOpen] = useState(false);
+  const [editingHousehold, setEditingHousehold] = useState<any>(null);
+  const [editingDependent, setEditingDependent] = useState<any>(null);
 
   // Fetch user's dependents
   const fetchDependents = async () => {
@@ -58,6 +63,26 @@ export function HouseholdManagement() {
     }
   };
 
+  // Fetch household members for a specific household
+  const fetchHouseholdMembers = async (householdId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('household_members')
+        .select(`
+          *,
+          dependent:household_dependents(full_name, relationship_to_guardian),
+          person(id)
+        `)
+        .eq('household_group_id', householdId);
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching household members:', error);
+      return [];
+    }
+  };
+
   // Fetch user's households
   const fetchHouseholds = async () => {
     if (!person?.id) return;
@@ -71,6 +96,15 @@ export function HouseholdManagement() {
 
       if (error) throw error;
       setHouseholds(data || []);
+
+      // Fetch members for each household
+      if (data && data.length > 0) {
+        const membersMap: Record<string, any[]> = {};
+        for (const household of data) {
+          membersMap[household.id] = await fetchHouseholdMembers(household.id);
+        }
+        setHouseholdMembers(membersMap);
+      }
     } catch (error) {
       console.error('Error fetching households:', error);
     } finally {
@@ -139,6 +173,83 @@ export function HouseholdManagement() {
       });
     } finally {
       setIsCreatingDependent(false);
+    }
+  };
+
+  const handleUpdateDependent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!editingDependent) return;
+
+    try {
+      const { error } = await supabase
+        .from('household_dependents')
+        .update({
+          full_name: dependentForm.full_name,
+          date_of_birth: dependentForm.date_of_birth,
+          gender: dependentForm.gender || null,
+          relationship_to_guardian: dependentForm.relationship_to_guardian as "CHILD" | "GRANDCHILD" | "OTHER_RELATIVE",
+          birth_certificate_number: dependentForm.birth_certificate_number || null,
+        })
+        .eq('id', editingDependent.id);
+
+      if (error) throw error;
+
+      toast({
+        title: t('common:success'),
+        description: "Dependent updated successfully",
+      });
+
+      setIsEditDependentDialogOpen(false);
+      setEditingDependent(null);
+      fetchDependents();
+    } catch (error: any) {
+      console.error('Error updating dependent:', error);
+      toast({
+        title: t('common:error'),
+        description: error.message || "Failed to update dependent",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdateHousehold = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!editingHousehold) return;
+
+    try {
+      const { error } = await supabase
+        .from('household_groups')
+        .update({
+          household_name: householdName,
+          description: householdDescription,
+          primary_uac: primaryUac,
+          primary_unit_uac: unitUac || null,
+        })
+        .eq('id', editingHousehold.id);
+
+      if (error) throw error;
+
+      toast({
+        title: t('common:success'),
+        description: "Household updated successfully",
+      });
+
+      setIsEditHouseholdDialogOpen(false);
+      setEditingHousehold(null);
+      setHouseholdName('');
+      setHouseholdDescription('');
+      setPrimaryUac('');
+      setUnitUac('');
+      fetchHouseholds();
+    } catch (error: any) {
+      console.error('Error updating household:', error);
+      toast({
+        title: t('common:error'),
+        description: error.message || "Failed to update household",
+        variant: "destructive",
+      });
     }
   };
 
@@ -287,13 +398,32 @@ export function HouseholdManagement() {
                     key={dependent.id}
                     className="flex items-center justify-between p-3 border rounded-lg"
                   >
-                    <div>
+                    <div className="flex-1">
                       <p className="font-medium">{dependent.full_name}</p>
                       <p className="text-sm text-muted-foreground">
                         {new Date(dependent.date_of_birth).toLocaleDateString()}
                       </p>
                     </div>
-                    <Badge variant="outline">{dependent.relationship_to_guardian}</Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline">{dependent.relationship_to_guardian}</Badge>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setEditingDependent(dependent);
+                          setDependentForm({
+                            full_name: dependent.full_name,
+                            date_of_birth: dependent.date_of_birth,
+                            gender: dependent.gender || '',
+                            relationship_to_guardian: dependent.relationship_to_guardian,
+                            birth_certificate_number: dependent.birth_certificate_number || '',
+                          });
+                          setIsEditDependentDialogOpen(true);
+                        }}
+                      >
+                        {t('common:edit')}
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -400,34 +530,50 @@ export function HouseholdManagement() {
               {households.map((household) => (
                 <div
                   key={household.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
+                  className="p-4 border rounded-lg space-y-3"
                 >
-                  <div>
-                    <h3 className="font-semibold">{household.household_name}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {household.description}
-                    </p>
-                    <div className="flex gap-2 mt-2">
-                      <Badge variant="outline" className="font-mono">
-                        {household.primary_uac}
-                      </Badge>
-                      {household.primary_unit_uac && (
-                        <Badge variant="secondary" className="font-mono">
-                          {t('address:unitLabel')}: {household.primary_unit_uac}
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h3 className="font-semibold">{household.household_name}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {household.description}
+                      </p>
+                      <div className="flex gap-2 mt-2">
+                        <Badge variant="outline" className="font-mono">
+                          {household.primary_uac}
                         </Badge>
-                      )}
+                        {household.primary_unit_uac && (
+                          <Badge variant="secondary" className="font-mono">
+                            {t('address:unitLabel')}: {household.primary_unit_uac}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <Dialog open={isAddMemberDialogOpen && selectedHouseholdId === household.id} onOpenChange={(open) => {
-                    setIsAddMemberDialogOpen(open);
-                    if (open) setSelectedHouseholdId(household.id);
-                  }}>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" size="sm">
-                        <UserPlus className="h-4 w-4 mr-2" />
-                        {t('address:addMember')}
+                    <div className="flex gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setEditingHousehold(household);
+                          setHouseholdName(household.household_name);
+                          setHouseholdDescription(household.description || '');
+                          setPrimaryUac(household.primary_uac);
+                          setUnitUac(household.primary_unit_uac || '');
+                          setIsEditHouseholdDialogOpen(true);
+                        }}
+                      >
+                        {t('common:edit')}
                       </Button>
-                    </DialogTrigger>
+                      <Dialog open={isAddMemberDialogOpen && selectedHouseholdId === household.id} onOpenChange={(open) => {
+                        setIsAddMemberDialogOpen(open);
+                        if (open) setSelectedHouseholdId(household.id);
+                      }}>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <UserPlus className="h-4 w-4 mr-2" />
+                            {t('address:addMember')}
+                          </Button>
+                        </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
                         <DialogTitle>{t('address:addMember')}</DialogTitle>
@@ -459,6 +605,22 @@ export function HouseholdManagement() {
                       </form>
                     </DialogContent>
                   </Dialog>
+                    </div>
+                  </div>
+
+                  {/* Household Members List */}
+                  {householdMembers[household.id] && householdMembers[household.id].length > 0 && (
+                    <div className="pt-3 border-t">
+                      <p className="text-sm font-medium mb-2">{t('address:members')}:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {householdMembers[household.id].map((member) => (
+                          <Badge key={member.id} variant="secondary">
+                            {member.dependent?.full_name}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -534,6 +696,138 @@ export function HouseholdManagement() {
           </form>
         </CardContent>
       </Card>
+
+      {/* Edit Household Dialog */}
+      <Dialog open={isEditHouseholdDialogOpen} onOpenChange={setIsEditHouseholdDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('address:editHousehold')}</DialogTitle>
+            <DialogDescription>
+              {t('address:editHouseholdDescription')}
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleUpdateHousehold} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="editHouseholdName">{t('address:householdName')}</Label>
+              <Input
+                id="editHouseholdName"
+                value={householdName}
+                onChange={(e) => setHouseholdName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="editDescription">{t('common:description')}</Label>
+              <Textarea
+                id="editDescription"
+                value={householdDescription}
+                onChange={(e) => setHouseholdDescription(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="editPrimaryUac">{t('address:primaryUac')}</Label>
+              <Input
+                id="editPrimaryUac"
+                value={primaryUac}
+                onChange={(e) => setPrimaryUac(e.target.value)}
+                className="font-mono"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="editUnitUac">{t('address:unitUac')} ({t('common:optional')})</Label>
+              <Input
+                id="editUnitUac"
+                value={unitUac}
+                onChange={(e) => setUnitUac(e.target.value)}
+                className="font-mono"
+              />
+            </div>
+
+            <Button type="submit" className="w-full">
+              {t('common:save')}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Dependent Dialog */}
+      <Dialog open={isEditDependentDialogOpen} onOpenChange={setIsEditDependentDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('address:editDependent')}</DialogTitle>
+            <DialogDescription>
+              {t('address:editDependentDescription')}
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleUpdateDependent} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="editFullName">{t('address:fullName')}</Label>
+              <Input
+                id="editFullName"
+                value={dependentForm.full_name}
+                onChange={(e) => setDependentForm({...dependentForm, full_name: e.target.value})}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="editDateOfBirth">{t('address:dateOfBirth')}</Label>
+              <Input
+                id="editDateOfBirth"
+                type="date"
+                value={dependentForm.date_of_birth}
+                onChange={(e) => setDependentForm({...dependentForm, date_of_birth: e.target.value})}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="editGender">{t('address:gender')} ({t('common:optional')})</Label>
+              <Select value={dependentForm.gender} onValueChange={(value) => setDependentForm({...dependentForm, gender: value})}>
+                <SelectTrigger>
+                  <SelectValue placeholder={t('address:selectGender')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="editRelationship">{t('address:relationshipToGuardian')}</Label>
+              <Select value={dependentForm.relationship_to_guardian} onValueChange={(value) => setDependentForm({...dependentForm, relationship_to_guardian: value})} required>
+                <SelectTrigger>
+                  <SelectValue placeholder={t('address:selectRelationship')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="CHILD">{t('address:relationshipChild')}</SelectItem>
+                  <SelectItem value="GRANDCHILD">{t('address:relationshipGrandchild')}</SelectItem>
+                  <SelectItem value="OTHER_RELATIVE">{t('address:relationshipOtherRelative')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="editBirthCert">{t('address:birthCertificate')} ({t('common:optional')})</Label>
+              <Input
+                id="editBirthCert"
+                value={dependentForm.birth_certificate_number}
+                onChange={(e) => setDependentForm({...dependentForm, birth_certificate_number: e.target.value})}
+              />
+            </div>
+
+            <Button type="submit" className="w-full">
+              {t('common:save')}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

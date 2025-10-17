@@ -650,5 +650,10 @@
   "removeAll": "Remove All",
   "noPublishedAddressesFound": "No published addresses found",
   "removeFromPublicRegistry": "Remove from Public Registry",
-  "remove": "Remove"
+  "remove": "Remove",
+  "editDependent": "Edit Dependent",
+  "editDependentDescription": "Update dependent information",
+  "editHousehold": "Edit Household",
+  "editHouseholdDescription": "Update household information",
+  "members": "Members"
 }

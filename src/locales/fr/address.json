@@ -999,5 +999,10 @@
   "importGoogleMapsDescription": "Importer des adresses depuis l'API Google Maps pour remplir la base de données d'adresses",
   "importNotice": "Cela importera des adresses depuis Google Maps. Les adresses existantes ne seront pas dupliquées.",
   "importingAddresses": "Importation des Adresses...",
-  "importGoogleMapsAddresses": "Importer les Adresses Google Maps"
+  "importGoogleMapsAddresses": "Importer les Adresses Google Maps",
+  "editDependent": "Modifier le dépendant",
+  "editDependentDescription": "Mettre à jour les informations du dépendant",
+  "editHousehold": "Modifier le ménage",
+  "editHouseholdDescription": "Mettre à jour les informations du ménage",
+  "members": "Membres"
 }
