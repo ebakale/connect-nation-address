@@ -6,7 +6,15 @@
     "deactivateDependent": "Deactivate Dependent",
     "noDocumentRequired": "Birth certificate not required",
     "guardianIdRequired": "Your government ID is sufficient",
-    "ageRequirement": "Dependent must be under 18 years old",
+    "ageRequirement": "Dependent can be any age with valid reason",
+    "adultDependentSupport": "Adult dependents are now supported",
+    "dependentTypes": {
+      "MINOR": "Minor (Under 18)",
+      "ADULT_STUDENT": "Adult Student",
+      "ADULT_DISABLED": "Adult with Disability",
+      "ELDERLY_PARENT": "Elderly Parent",
+      "OTHER_ADULT": "Other Adult Dependent"
+    },
     "noDependents": "No dependents registered",
     "activeCount": "{{count}} active dependent(s)",
     "transitionedCount": "{{count}} turned 18",
@@ -25,6 +33,16 @@
       "dateOfBirth": "Date of Birth",
       "relationship": "Relationship to You",
       "selectRelationship": "Select relationship",
+      "dependentType": "Dependent Type",
+      "selectDependentType": "Select dependent type",
+      "dependencyReason": "Reason for Dependency",
+      "dependencyReasonPlaceholder": "Explain why this person is dependent on you",
+      "dependencyReasonRequired": "Dependency reason is required for adult dependents",
+      "expectedEndDate": "Expected End Date",
+      "expectedEndDateHelper": "When will this dependency end? (e.g., graduation date)",
+      "disabilityCertificate": "Disability Certificate Number",
+      "studentEnrollment": "Student Enrollment Number",
+      "universityName": "University/School Name",
       "gender": "Gender (Optional)",
       "genderOptions": {
         "male": "Male",
@@ -40,6 +58,11 @@
       "schoolIdPlaceholder": "Enter if available",
       "notes": "Notes (Optional)",
       "notesPlaceholder": "Additional information"
+    },
+    "validation": {
+      "adultsRequireReason": "Adult dependents must have a dependency reason",
+      "studentsRequireEndDate": "Student dependents must have an expected end date",
+      "studentsRequireEnrollment": "Student dependents should provide enrollment information"
     },
     "addresses": {
       "title": "{{name}}'s Addresses",
@@ -58,7 +81,7 @@
       "addressAdded": "Secondary address added",
       "turned18": "{{name}} has turned 18 and can now create their own account",
       "cannotModifyClaimed": "Cannot modify - dependent has claimed their own account",
-      "invalidAge": "Dependent must be under 18 years old",
+      "invalidAge": "Please verify the dependent's age and type",
       "loadError": "Failed to load dependents"
     },
     "status": {
@@ -80,16 +103,22 @@
     "verified": "Verified by CAR",
     "unverified": "Not Verified",
     "memberCount": "{{count}} member(s)",
+    "uacConflict": "Another household already exists at this address",
+    "uacConflictUnit": "Consider specifying a unit UAC if this is an apartment building",
+    "primaryHousehold": "Primary Household",
+    "secondaryHousehold": "Secondary Household",
+    "custodyTypes": {
+      "FULL": "Full Custody",
+      "SHARED": "Shared Custody",
+      "PARTIAL": "Partial Custody",
+      "TEMPORARY": "Temporary Custody"
+    },
     "roles": {
       "HEAD": "Head of Household",
-      "SPOUSE": "Spouse",
-      "CHILD": "Child",
-      "PARENT": "Parent",
-      "GRANDPARENT": "Grandparent",
-      "GRANDCHILD": "Grandchild",
-      "SIBLING": "Sibling",
-      "OTHER_RELATIVE": "Other Relative",
-      "NON_RELATIVE": "Non-Relative"
+      "CO_HEAD": "Co-Head",
+      "MEMBER": "Member",
+      "DEPENDENT": "Dependent",
+      "TEMPORARY_RESIDENT": "Temporary Resident"
     },
     "form": {
       "householdName": "Household Name",
@@ -105,9 +134,21 @@
       "relationshipToHead": "Relationship to Head",
       "selectRelationship": "Select relationship",
       "isPrimaryResident": "Primary Resident",
+      "isPrimaryHousehold": "Primary Household for this Member",
+      "residencePercentage": "Residence Percentage",
+      "residencePercentageHelper": "What percentage of time does this member live here?",
+      "custodyType": "Custody Type",
+      "selectCustodyType": "Select custody arrangement",
+      "custodySchedule": "Custody Schedule Details",
       "movedInDate": "Moved In Date",
       "movedOutDate": "Moved Out Date (if applicable)",
       "memberNotes": "Notes (Optional)"
+    },
+    "validation": {
+      "residenceSum": "Total residence percentage across all households must equal 100%",
+      "onlyOnePrimary": "A member can only have one primary household",
+      "headRequired": "Every household must have a head",
+      "cannotRemoveHead": "Transfer headship before removing the current head"
     },
     "members": {
       "title": "Household Members",
@@ -132,9 +173,16 @@
       "cannotRemoveHead": "Cannot remove head of household"
     },
     "status": {
-      "active": "Active",
-      "inactive": "Inactive",
-      "pendingVerification": "Pending CAR Verification"
+      "ACTIVE": "Active",
+      "TRANSFERRED": "Transferred",
+      "DISSOLVED": "Dissolved",
+      "MERGED": "Merged"
+    },
+    "memberStatus": {
+      "ACTIVE": "Active",
+      "MOVED_OUT": "Moved Out",
+      "TEMPORARY": "Temporary",
+      "VISITING": "Visiting"
     },
     "addresses": {
       "linkedAddresses": "Linked to Household",

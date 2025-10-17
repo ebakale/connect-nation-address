@@ -499,7 +499,7 @@ export type Database = {
           id: string
           notes: string | null
           occupant: Database["public"]["Enums"]["occupant_type"] | null
-          person_id: string
+          person_id: string | null
           scope: Database["public"]["Enums"]["address_scope"]
           source: string | null
           status: Database["public"]["Enums"]["address_status"] | null
@@ -520,7 +520,7 @@ export type Database = {
           id?: string
           notes?: string | null
           occupant?: Database["public"]["Enums"]["occupant_type"] | null
-          person_id: string
+          person_id?: string | null
           scope: Database["public"]["Enums"]["address_scope"]
           source?: string | null
           status?: Database["public"]["Enums"]["address_status"] | null
@@ -541,7 +541,7 @@ export type Database = {
           id?: string
           notes?: string | null
           occupant?: Database["public"]["Enums"]["occupant_type"] | null
-          person_id?: string
+          person_id?: string | null
           scope?: Database["public"]["Enums"]["address_scope"]
           source?: string | null
           status?: Database["public"]["Enums"]["address_status"] | null
@@ -1236,6 +1236,10 @@ export type Database = {
           created_at: string
           created_by: string
           date_of_birth: string
+          dependency_reason: string | null
+          dependent_type: Database["public"]["Enums"]["dependent_type_enum"]
+          disability_certificate_number: string | null
+          expected_dependency_end_date: string | null
           full_name: string
           gender: string | null
           guardian_person_id: string
@@ -1248,6 +1252,8 @@ export type Database = {
           reached_majority_age: boolean
           relationship_to_guardian: Database["public"]["Enums"]["dependent_relationship"]
           school_id_number: string | null
+          student_enrollment_number: string | null
+          university_name: string | null
           updated_at: string
         }
         Insert: {
@@ -1257,6 +1263,10 @@ export type Database = {
           created_at?: string
           created_by: string
           date_of_birth: string
+          dependency_reason?: string | null
+          dependent_type?: Database["public"]["Enums"]["dependent_type_enum"]
+          disability_certificate_number?: string | null
+          expected_dependency_end_date?: string | null
           full_name: string
           gender?: string | null
           guardian_person_id: string
@@ -1269,6 +1279,8 @@ export type Database = {
           reached_majority_age?: boolean
           relationship_to_guardian: Database["public"]["Enums"]["dependent_relationship"]
           school_id_number?: string | null
+          student_enrollment_number?: string | null
+          university_name?: string | null
           updated_at?: string
         }
         Update: {
@@ -1278,6 +1290,10 @@ export type Database = {
           created_at?: string
           created_by?: string
           date_of_birth?: string
+          dependency_reason?: string | null
+          dependent_type?: Database["public"]["Enums"]["dependent_type_enum"]
+          disability_certificate_number?: string | null
+          expected_dependency_end_date?: string | null
           full_name?: string
           gender?: string | null
           guardian_person_id?: string
@@ -1290,6 +1306,8 @@ export type Database = {
           reached_majority_age?: boolean
           relationship_to_guardian?: Database["public"]["Enums"]["dependent_relationship"]
           school_id_number?: string | null
+          student_enrollment_number?: string | null
+          university_name?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -1317,8 +1335,11 @@ export type Database = {
           household_head_person_id: string
           household_head_user_id: string
           household_name: string
+          household_status: Database["public"]["Enums"]["household_status_enum"]
+          household_succession_date: string | null
           id: string
           is_active: boolean
+          previous_household_id: string | null
           primary_uac: string
           primary_unit_uac: string | null
           updated_at: string
@@ -1333,8 +1354,11 @@ export type Database = {
           household_head_person_id: string
           household_head_user_id: string
           household_name: string
+          household_status?: Database["public"]["Enums"]["household_status_enum"]
+          household_succession_date?: string | null
           id?: string
           is_active?: boolean
+          previous_household_id?: string | null
           primary_uac: string
           primary_unit_uac?: string | null
           updated_at?: string
@@ -1349,8 +1373,11 @@ export type Database = {
           household_head_person_id?: string
           household_head_user_id?: string
           household_name?: string
+          household_status?: Database["public"]["Enums"]["household_status_enum"]
+          household_succession_date?: string | null
           id?: string
           is_active?: boolean
+          previous_household_id?: string | null
           primary_uac?: string
           primary_unit_uac?: string | null
           updated_at?: string
@@ -1373,47 +1400,72 @@ export type Database = {
             referencedRelation: "person"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "household_groups_previous_household_id_fkey"
+            columns: ["previous_household_id"]
+            isOneToOne: false
+            referencedRelation: "household_groups"
+            referencedColumns: ["id"]
+          },
         ]
       }
       household_members: {
         Row: {
           added_at: string
           added_by: string
+          custody_schedule: Json | null
+          custody_type: Database["public"]["Enums"]["custody_type_enum"] | null
           dependent_id: string | null
           household_group_id: string
+          household_role: Database["public"]["Enums"]["household_role_enum"]
           id: string
+          is_primary_household: boolean
           is_primary_resident: boolean
+          membership_status: Database["public"]["Enums"]["membership_status_enum"]
           moved_in_date: string | null
           moved_out_date: string | null
           notes: string | null
           person_id: string | null
           relationship_to_head: Database["public"]["Enums"]["household_member_role"]
+          residence_percentage: number | null
         }
         Insert: {
           added_at?: string
           added_by: string
+          custody_schedule?: Json | null
+          custody_type?: Database["public"]["Enums"]["custody_type_enum"] | null
           dependent_id?: string | null
           household_group_id: string
+          household_role?: Database["public"]["Enums"]["household_role_enum"]
           id?: string
+          is_primary_household?: boolean
           is_primary_resident?: boolean
+          membership_status?: Database["public"]["Enums"]["membership_status_enum"]
           moved_in_date?: string | null
           moved_out_date?: string | null
           notes?: string | null
           person_id?: string | null
           relationship_to_head: Database["public"]["Enums"]["household_member_role"]
+          residence_percentage?: number | null
         }
         Update: {
           added_at?: string
           added_by?: string
+          custody_schedule?: Json | null
+          custody_type?: Database["public"]["Enums"]["custody_type_enum"] | null
           dependent_id?: string | null
           household_group_id?: string
+          household_role?: Database["public"]["Enums"]["household_role_enum"]
           id?: string
+          is_primary_household?: boolean
           is_primary_resident?: boolean
+          membership_status?: Database["public"]["Enums"]["membership_status_enum"]
           moved_in_date?: string | null
           moved_out_date?: string | null
           notes?: string | null
           person_id?: string | null
           relationship_to_head?: Database["public"]["Enums"]["household_member_role"]
+          residence_percentage?: number | null
         }
         Relationships: [
           {
@@ -2910,6 +2962,7 @@ export type Database = {
         | "car_admin"
         | "car_verifier"
         | "residency_verifier"
+      custody_type_enum: "FULL" | "SHARED" | "PARTIAL" | "TEMPORARY"
       dependent_relationship:
         | "CHILD"
         | "ADOPTED_CHILD"
@@ -2918,6 +2971,12 @@ export type Database = {
         | "GRANDCHILD"
         | "NIECE_NEPHEW"
         | "OTHER_RELATIVE"
+      dependent_type_enum:
+        | "MINOR"
+        | "ADULT_STUDENT"
+        | "ADULT_DISABLED"
+        | "ELDERLY_PARENT"
+        | "OTHER_ADULT"
       household_member_role:
         | "HEAD"
         | "SPOUSE"
@@ -2928,6 +2987,13 @@ export type Database = {
         | "SIBLING"
         | "OTHER_RELATIVE"
         | "NON_RELATIVE"
+      household_role_enum:
+        | "HEAD"
+        | "CO_HEAD"
+        | "MEMBER"
+        | "DEPENDENT"
+        | "TEMPORARY_RESIDENT"
+      household_status_enum: "ACTIVE" | "TRANSFERRED" | "DISSOLVED" | "MERGED"
       legal_document_type:
         | "property_deed"
         | "land_certificate"
@@ -2943,6 +3009,7 @@ export type Database = {
         | "birth_certificate"
         | "marriage_certificate"
         | "other_legal_document"
+      membership_status_enum: "ACTIVE" | "MOVED_OUT" | "TEMPORARY" | "VISITING"
       occupant_type: "OWNER" | "TENANT" | "FAMILY" | "OTHER"
       privacy_access_level:
         | "public"
@@ -3110,6 +3177,7 @@ export const Constants = {
         "car_verifier",
         "residency_verifier",
       ],
+      custody_type_enum: ["FULL", "SHARED", "PARTIAL", "TEMPORARY"],
       dependent_relationship: [
         "CHILD",
         "ADOPTED_CHILD",
@@ -3118,6 +3186,13 @@ export const Constants = {
         "GRANDCHILD",
         "NIECE_NEPHEW",
         "OTHER_RELATIVE",
+      ],
+      dependent_type_enum: [
+        "MINOR",
+        "ADULT_STUDENT",
+        "ADULT_DISABLED",
+        "ELDERLY_PARENT",
+        "OTHER_ADULT",
       ],
       household_member_role: [
         "HEAD",
@@ -3130,6 +3205,14 @@ export const Constants = {
         "OTHER_RELATIVE",
         "NON_RELATIVE",
       ],
+      household_role_enum: [
+        "HEAD",
+        "CO_HEAD",
+        "MEMBER",
+        "DEPENDENT",
+        "TEMPORARY_RESIDENT",
+      ],
+      household_status_enum: ["ACTIVE", "TRANSFERRED", "DISSOLVED", "MERGED"],
       legal_document_type: [
         "property_deed",
         "land_certificate",
@@ -3146,6 +3229,7 @@ export const Constants = {
         "marriage_certificate",
         "other_legal_document",
       ],
+      membership_status_enum: ["ACTIVE", "MOVED_OUT", "TEMPORARY", "VISITING"],
       occupant_type: ["OWNER", "TENANT", "FAMILY", "OTHER"],
       privacy_access_level: [
         "public",
