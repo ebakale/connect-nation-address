@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3, Building } from 'lucide-react';
+import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3 } from 'lucide-react';
 import { ValuePropositionPDF } from '@/components/ValuePropositionPDF';
 import StoryboardsPDF from '@/components/StoryboardsPDF';
 import BusinessModelCanvasPDF from '@/components/BusinessModelCanvasPDF';
@@ -195,26 +195,15 @@ const Index = () => {
                    
                    {/* CTA Buttons */}
                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-4 sm:pt-6 mobile-container">
-                        <Button 
-                          onClick={() => navigate('/auth')} 
-                          className="touch-target px-8 py-4 text-base sm:text-lg font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-blue transition-all duration-200"
-                          size="lg"
-                        >
+                       <Button 
+                         onClick={() => navigate('/auth')} 
+                         className="touch-target px-8 py-4 text-base sm:text-lg font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-blue transition-all duration-200"
+                         size="lg"
+                       >
                          <Shield className="h-5 w-5 sm:h-6 sm:w-6 mr-3" />
                          <div className="flex flex-col items-start">
                            <span>{t('common:platform.accessPlatform')}</span>
                            <span className="text-xs text-white/80 font-normal">{t('common:platform.accessSubtitle')}</span>
-                         </div>
-                       </Button>
-                       <Button 
-                         onClick={() => navigate('/business/register')}
-                         className="touch-target px-8 py-4 text-base sm:text-lg font-semibold bg-gradient-to-r from-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-lg transition-all duration-200"
-                         size="lg"
-                       >
-                         <Building className="h-5 w-5 sm:h-6 sm:w-6 mr-3" />
-                         <div className="flex flex-col items-start">
-                           <span>{t('business:registration.title')}</span>
-                           <span className="text-xs text-white/80 font-normal">{t('business:registration.subtitle')}</span>
                          </div>
                        </Button>
                        <Button 
