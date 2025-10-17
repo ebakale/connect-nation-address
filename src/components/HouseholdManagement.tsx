@@ -836,36 +836,6 @@ export function HouseholdManagement() {
                         />
                       </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="healthCard">{t('car:dependents.form.healthCard')}</Label>
-                        <Input
-                          id="healthCard"
-                          value={dependentForm.health_card_number}
-                          onChange={(e) => setDependentForm({...dependentForm, health_card_number: e.target.value})}
-                          placeholder={t('car:dependents.form.healthCardPlaceholder')}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="schoolId">{t('car:dependents.form.schoolId')}</Label>
-                        <Input
-                          id="schoolId"
-                          value={dependentForm.school_id_number}
-                          onChange={(e) => setDependentForm({...dependentForm, school_id_number: e.target.value})}
-                          placeholder={t('car:dependents.form.schoolIdPlaceholder')}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="notes">{t('car:dependents.form.notes')}</Label>
-                        <Textarea
-                          id="notes"
-                          value={dependentForm.notes}
-                          onChange={(e) => setDependentForm({...dependentForm, notes: e.target.value})}
-                          placeholder={t('car:dependents.form.notesPlaceholder')}
-                        />
-                      </div>
-
                       <Button type="submit" className="w-full" disabled={isCreatingDependent}>
                         {isCreatingDependent && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         {t('car:dependents.register')}
