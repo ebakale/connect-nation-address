@@ -8,6 +8,7 @@
     "officerProfilesPerformance": "Perfiles y Rendimiento de Oficiales",
     "accessDeniedMessage": "Necesitas privilegios de supervisor o administrador para acceder a la gestión de unidades y perfiles de oficiales."
   },
+  "registerBusiness": "Registrar Negocio",
   "unitManagement": {
     "title": "Gestión de Unidades",
     "description": "Gestionar unidades de emergencia y asignaciones de oficiales",

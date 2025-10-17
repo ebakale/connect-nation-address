@@ -8,6 +8,7 @@
     "officerProfilesPerformance": "Profils et Performance des Officiers",
     "accessDeniedMessage": "Vous avez besoin de privilèges de superviseur ou d'administrateur pour accéder à la gestion des unités et aux profils d'officiers."
   },
+  "registerBusiness": "Enregistrer une Entreprise",
   "unitManagement": {
     "title": "Gestion des Unités",
     "description": "Gérer les unités d'urgence et les affectations d'officiers",

@@ -21,7 +21,8 @@ import {
   Crown,
   UserCheck,
   Star,
-  Globe
+  Globe,
+  Building
 } from 'lucide-react';
 import {
   Sidebar,
@@ -189,6 +190,13 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       title: t('dashboardOverview'),
       icon: Home,
       onClick: () => handleItemClick('overview'),
+      visible: true
+    },
+    {
+      id: 'business-register',
+      title: t('registerBusiness'),
+      icon: Building,
+      onClick: () => window.location.href = '/business/register',
       visible: true
     },
     {
