@@ -1,0 +1,304 @@
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { CheckCircle, XCircle, MapPin, Building2, Phone, Mail, Users, Clock, Accessibility } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { useTranslation } from 'react-i18next';
+
+interface BusinessAddressRequest {
+  id: string;
+  requester_id?: string;
+  latitude: number;
+  longitude: number;
+  street: string;
+  city: string;
+  region: string;
+  country: string;
+  building?: string;
+  address_type: string;
+  description?: string;
+  photo_url?: string;
+  justification: string;
+  created_at: string;
+  verification_analysis?: any;
+}
+
+interface BusinessAddressRequestCardProps {
+  request: BusinessAddressRequest;
+  onUpdate: () => void;
+}
+
+export function BusinessAddressRequestCard({ request, onUpdate }: BusinessAddressRequestCardProps) {
+  const { t } = useTranslation('address');
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [showRejectDialog, setShowRejectDialog] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+
+  const orgData = request.verification_analysis?.organization || {};
+
+  const handleApprove = async () => {
+    setIsProcessing(true);
+    try {
+      const { data, error } = await supabase.rpc('approve_business_address_request', {
+        p_request_id: request.id
+      });
+
+      if (error) throw error;
+
+      const result = data as { success: boolean; error?: string; address_id?: string };
+      
+      if (result?.success) {
+        toast.success(t('businessAddressApproved'));
+        onUpdate();
+      } else {
+        toast.error(result?.error || t('approvalFailed'));
+      }
+    } catch (error) {
+      console.error('Error approving business address:', error);
+      toast.error(t('approvalError'));
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleReject = async () => {
+    if (!rejectionReason.trim()) {
+      toast.error(t('pleaseProvideReason'));
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      const { error } = await supabase.rpc('reject_address_request_with_feedback', {
+        p_request_id: request.id,
+        p_rejection_reason: rejectionReason
+      });
+
+      if (error) throw error;
+
+      toast.success(t('requestRejected'));
+      setShowRejectDialog(false);
+      onUpdate();
+    } catch (error) {
+      console.error('Error rejecting request:', error);
+      toast.error(t('rejectionError'));
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <>
+      <Card className="border-l-4 border-l-purple-500">
+        <CardHeader>
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-2">
+                <Building2 className="h-5 w-5 text-purple-600" />
+                <CardTitle className="text-lg break-words">
+                  {orgData.organization_name || t('unknownBusiness')}
+                </CardTitle>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                  {t('business')}
+                </Badge>
+                {orgData.business_category && (
+                  <Badge variant="outline">{orgData.business_category}</Badge>
+                )}
+                {orgData.is_public_service && (
+                  <Badge variant="default">{t('publicService')}</Badge>
+                )}
+              </div>
+            </div>
+          </div>
+        </CardHeader>
+        
+        <CardContent className="space-y-4">
+          {/* Location */}
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <MapPin className="h-4 w-4 mt-1 flex-shrink-0 text-muted-foreground" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm break-words">
+                  {request.street}, {request.city}, {request.region}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {request.latitude.toFixed(6)}, {request.longitude.toFixed(6)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Business Details Grid */}
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            {orgData.primary_contact_phone && (
+              <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4 text-muted-foreground" />
+                <span className="truncate">{orgData.primary_contact_phone}</span>
+              </div>
+            )}
+            {orgData.primary_contact_email && (
+              <div className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-muted-foreground" />
+                <span className="truncate">{orgData.primary_contact_email}</span>
+              </div>
+            )}
+            {orgData.employee_count && (
+              <div className="flex items-center gap-2">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <span>{orgData.employee_count} {t('employees')}</span>
+              </div>
+            )}
+            {orgData.customer_capacity && (
+              <div className="flex items-center gap-2">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <span>{t('capacity')}: {orgData.customer_capacity}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Features */}
+          <div className="flex flex-wrap gap-2">
+            {orgData.parking_available && (
+              <Badge variant="outline" className="text-xs">
+                🅿️ {t('parking')} {orgData.parking_capacity && `(${orgData.parking_capacity})`}
+              </Badge>
+            )}
+            {orgData.wheelchair_accessible && (
+              <Badge variant="outline" className="text-xs">
+                <Accessibility className="h-3 w-3 mr-1" />
+                {t('accessible')}
+              </Badge>
+            )}
+            {orgData.appointment_required && (
+              <Badge variant="outline" className="text-xs">
+                <Clock className="h-3 w-3 mr-1" />
+                {t('appointmentRequired')}
+              </Badge>
+            )}
+          </div>
+
+          {/* Services */}
+          {orgData.services_offered && orgData.services_offered.length > 0 && (
+            <div className="space-y-1">
+              <p className="text-sm font-medium">{t('servicesOffered')}:</p>
+              <div className="flex flex-wrap gap-1">
+                {orgData.services_offered.map((service: string, idx: number) => (
+                  <Badge key={idx} variant="secondary" className="text-xs">
+                    {service}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Justification */}
+          {request.justification && (
+            <div className="p-3 bg-muted rounded-md">
+              <p className="text-sm font-medium mb-1">{t('justification')}:</p>
+              <p className="text-sm text-muted-foreground break-words">{request.justification}</p>
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex flex-col sm:flex-row gap-2 pt-2">
+            <Button
+              onClick={handleApprove}
+              disabled={isProcessing}
+              className="flex-1 bg-purple-600 hover:bg-purple-700"
+            >
+              <CheckCircle className="h-4 w-4 mr-2" />
+              {t('approveBusiness')}
+            </Button>
+            <Button
+              onClick={() => setShowRejectDialog(true)}
+              disabled={isProcessing}
+              variant="destructive"
+              className="flex-1"
+            >
+              <XCircle className="h-4 w-4 mr-2" />
+              {t('reject')}
+            </Button>
+            <Button
+              onClick={() => setShowDetails(true)}
+              variant="outline"
+            >
+              {t('viewDetails')}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Reject Dialog */}
+      <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('rejectBusinessRequest')}</DialogTitle>
+            <DialogDescription>{t('provideReasonForRejection')}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Textarea
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              placeholder={t('enterRejectionReason')}
+              rows={4}
+            />
+            <div className="flex gap-2 justify-end">
+              <Button onClick={() => setShowRejectDialog(false)} variant="outline">
+                {t('cancel')}
+              </Button>
+              <Button onClick={handleReject} disabled={isProcessing} variant="destructive">
+                {t('confirmReject')}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Details Dialog */}
+      <Dialog open={showDetails} onOpenChange={setShowDetails}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{t('businessDetails')}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-semibold mb-2">{t('organizationInfo')}</h4>
+              <dl className="grid grid-cols-2 gap-2 text-sm">
+                <dt className="text-muted-foreground">{t('name')}:</dt>
+                <dd>{orgData.organization_name}</dd>
+                <dt className="text-muted-foreground">{t('category')}:</dt>
+                <dd>{orgData.business_category}</dd>
+                {orgData.business_registration_number && (
+                  <>
+                    <dt className="text-muted-foreground">{t('registrationNumber')}:</dt>
+                    <dd>{orgData.business_registration_number}</dd>
+                  </>
+                )}
+                {orgData.tax_identification_number && (
+                  <>
+                    <dt className="text-muted-foreground">{t('taxId')}:</dt>
+                    <dd>{orgData.tax_identification_number}</dd>
+                  </>
+                )}
+              </dl>
+            </div>
+            
+            {request.photo_url && (
+              <div>
+                <h4 className="font-semibold mb-2">{t('photo')}</h4>
+                <img src={request.photo_url} alt="Business" className="w-full rounded-md" />
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}

@@ -1807,6 +1807,7 @@ export type Database = {
           address_id: string | null
           appointment_required: boolean | null
           authority_type: string | null
+          business_address_type: Database["public"]["Enums"]["business_address_type"]
           business_category: Database["public"]["Enums"]["business_category"]
           business_registration_number: string | null
           business_status: string | null
@@ -1847,6 +1848,7 @@ export type Database = {
           address_id?: string | null
           appointment_required?: boolean | null
           authority_type?: string | null
+          business_address_type?: Database["public"]["Enums"]["business_address_type"]
           business_category: Database["public"]["Enums"]["business_category"]
           business_registration_number?: string | null
           business_status?: string | null
@@ -1887,6 +1889,7 @@ export type Database = {
           address_id?: string | null
           appointment_required?: boolean | null
           authority_type?: string | null
+          business_address_type?: Database["public"]["Enums"]["business_address_type"]
           business_category?: Database["public"]["Enums"]["business_category"]
           business_registration_number?: string | null
           business_status?: string | null
@@ -2816,6 +2819,10 @@ export type Database = {
           p_ignore_duplicates?: boolean
           p_request_id: string
         }
+        Returns: Json
+      }
+      approve_business_address_request: {
+        Args: { p_approved_by?: string; p_request_id: string }
         Returns: Json
       }
       auto_approve_verified_citizen_addresses: {

@@ -96,7 +96,14 @@
     "getDirections": "Obtenir l'Itinéraire",
     "viewDetails": "Voir les Détails",
     "noResults": "Aucune entreprise trouvée",
-    "searchPlaceholder": "Rechercher par nom, catégorie ou services"
+    "searchPlaceholder": "Rechercher par nom, catégorie ou services",
+    "loading": "Chargement des entreprises...",
+    "fetchError": "Échec du chargement des entreprises",
+    "noBusinessesFound": "Aucune entreprise trouvée",
+    "viewOnMap": "Voir sur la Carte",
+    "publicService": "Service Public",
+    "appointmentRequired": "Rendez-vous Requis",
+    "accessible": "Accessible"
   },
   "dashboard": {
     "myBusinesses": "Mes Entreprises",

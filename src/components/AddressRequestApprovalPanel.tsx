@@ -6,8 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { AddressRequestApproval } from "./AddressRequestApproval";
 import { AutoVerificationTools } from "./AutoVerificationTools";
 import { RejectedAddressesPanel } from "./RejectedAddressesPanel";
+import { BusinessAddressRequestCard } from "./BusinessAddressRequestCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckSquare, Zap, XCircle, AlertTriangle } from "lucide-react";
+import { CheckSquare, Zap, XCircle, AlertTriangle, Building2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from 'react-i18next';
 
@@ -40,6 +41,7 @@ export function AddressRequestApprovalPanel() {
   const { roleMetadata, loading: roleLoading } = useUserRole();
   const [addressRequests, setAddressRequests] = useState<AddressRequest[]>([]);
   const [manualReviewRequests, setManualReviewRequests] = useState<AddressRequest[]>([]);
+  const [businessRequests, setBusinessRequests] = useState<AddressRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Get geographical scope from role metadata
@@ -81,15 +83,28 @@ export function AddressRequestApprovalPanel() {
       
       // Filter requests for different tabs
       const allRequests = (data || []) as AddressRequest[];
-      const filteredRequests = allRequests.filter((request) => 
-        !request.flagged && !request.requires_manual_review
+      
+      // Separate business requests
+      const businessData = allRequests.filter((request) => 
+        request.address_type === 'business'
       );
+      
+      // Regular address requests (non-business, not flagged/manual review)
+      const filteredRequests = allRequests.filter((request) => 
+        request.address_type !== 'business' &&
+        !request.flagged && 
+        !request.requires_manual_review
+      );
+      
+      // Manual review requests (non-business)
       const manualReviewData = allRequests.filter((request) => 
-        request.flagged || request.requires_manual_review
+        request.address_type !== 'business' &&
+        (request.flagged || request.requires_manual_review)
       );
       
       setAddressRequests(filteredRequests);
       setManualReviewRequests(manualReviewData);
+      setBusinessRequests(businessData);
     } catch (error) {
       console.error('Error fetching address requests:', error);
       toast.error(t('failedToLoadRequests'));
@@ -120,7 +135,7 @@ export function AddressRequestApprovalPanel() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="requests" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 gap-1">
               <TabsTrigger value="requests" className="relative flex-col sm:flex-row text-xs sm:text-sm">
                 <CheckSquare className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">{t('pendingRequests')}</span>
@@ -152,6 +167,19 @@ export function AddressRequestApprovalPanel() {
                 <span className="hidden sm:inline">{t('autoVerification')}</span>
                 <span className="sm:hidden">{t('autoShort')}</span>
               </TabsTrigger>
+              <TabsTrigger value="business" className="relative flex-col sm:flex-row text-xs sm:text-sm">
+                <Building2 className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">{t('businessRequests')}</span>
+                <span className="sm:hidden">{t('business')}</span>
+                {businessRequests.length > 0 && (
+                  <Badge 
+                    variant="secondary" 
+                    className="ml-0 sm:ml-2 mt-1 sm:mt-0 h-4 w-4 sm:h-5 sm:w-5 rounded-full p-0 text-xs bg-purple-100 text-purple-800"
+                  >
+                    {businessRequests.length}
+                  </Badge>
+                )}
+              </TabsTrigger>
               <TabsTrigger value="rejected" className="flex-col sm:flex-row text-xs sm:text-sm">
                 <XCircle className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">{t('rejected')}</span>
@@ -175,6 +203,25 @@ export function AddressRequestApprovalPanel() {
             
             <TabsContent value="auto-verify" className="mt-6">
               <AutoVerificationTools onUpdate={fetchData} />
+            </TabsContent>
+            
+            <TabsContent value="business" className="mt-6">
+              {businessRequests.length === 0 ? (
+                <div className="text-center py-12 text-muted-foreground">
+                  <Building2 className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>{t('noBusinessRequests')}</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {businessRequests.map((request) => (
+                    <BusinessAddressRequestCard
+                      key={request.id}
+                      request={request}
+                      onUpdate={fetchAddressRequests}
+                    />
+                  ))}
+                </div>
+              )}
             </TabsContent>
             
             <TabsContent value="rejected" className="mt-6">

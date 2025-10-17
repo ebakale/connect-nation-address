@@ -96,7 +96,14 @@
     "getDirections": "Get Directions",
     "viewDetails": "View Details",
     "noResults": "No businesses found",
-    "searchPlaceholder": "Search by business name, category, or services"
+    "searchPlaceholder": "Search by business name, category, or services",
+    "loading": "Loading businesses...",
+    "fetchError": "Failed to load businesses",
+    "noBusinessesFound": "No businesses found",
+    "viewOnMap": "View on Map",
+    "publicService": "Public Service",
+    "appointmentRequired": "Appointment Required",
+    "accessible": "Accessible"
   },
   "dashboard": {
     "myBusinesses": "My Businesses",

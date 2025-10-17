@@ -96,7 +96,14 @@
     "getDirections": "Obtener Direcciones",
     "viewDetails": "Ver Detalles",
     "noResults": "No se encontraron negocios",
-    "searchPlaceholder": "Buscar por nombre, categoría o servicios"
+    "searchPlaceholder": "Buscar por nombre, categoría o servicios",
+    "loading": "Cargando negocios...",
+    "fetchError": "Error al cargar negocios",
+    "noBusinessesFound": "No se encontraron negocios",
+    "viewOnMap": "Ver en el Mapa",
+    "publicService": "Servicio Público",
+    "appointmentRequired": "Requiere Cita",
+    "accessible": "Accesible"
   },
   "dashboard": {
     "myBusinesses": "Mis Negocios",
