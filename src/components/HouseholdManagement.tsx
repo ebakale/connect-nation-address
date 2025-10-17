@@ -163,17 +163,24 @@ export function HouseholdManagement() {
         throw new Error("Dependent not found");
       }
 
+      // Map relationship_to_guardian to relationship_to_head
+      // Both enums share these values: CHILD, GRANDCHILD, OTHER_RELATIVE
+      const relationshipToHead = dependent.relationship_to_guardian;
+
       const { error } = await supabase
         .from('household_members')
         .insert([{
           household_group_id: selectedHouseholdId,
           dependent_id: selectedDependentId,
-          relationship_to_head: dependent.relationship_to_guardian,
+          relationship_to_head: relationshipToHead,
           is_primary_resident: false,
           added_by: person.auth_user_id,
         }]);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database error:', error);
+        throw error;
+      }
 
       toast({
         title: t('common:success'),
@@ -186,7 +193,7 @@ export function HouseholdManagement() {
       console.error('Error adding member:', error);
       toast({
         title: t('common:error'),
-        description: error.message || "Failed to add member",
+        description: error.message || "Failed to add member. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -351,10 +358,6 @@ export function HouseholdManagement() {
                       <SelectContent>
                         <SelectItem value="CHILD">{t('address:relationshipChild')}</SelectItem>
                         <SelectItem value="GRANDCHILD">{t('address:relationshipGrandchild')}</SelectItem>
-                        <SelectItem value="SIBLING">{t('address:relationshipSibling')}</SelectItem>
-                        <SelectItem value="PARENT">{t('address:relationshipParent')}</SelectItem>
-                        <SelectItem value="GRANDPARENT">{t('address:relationshipGrandparent')}</SelectItem>
-                        <SelectItem value="SPOUSE">{t('address:relationshipSpouse')}</SelectItem>
                         <SelectItem value="OTHER_RELATIVE">{t('address:relationshipOtherRelative')}</SelectItem>
                       </SelectContent>
                     </Select>
