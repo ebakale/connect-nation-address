@@ -30,6 +30,15 @@ export function HouseholdManagement() {
   const [selectedDependentId, setSelectedDependentId] = useState('');
   const [memberRelationship, setMemberRelationship] = useState('');
   const [isAddingMember, setIsAddingMember] = useState(false);
+  const [isCreateDependentDialogOpen, setIsCreateDependentDialogOpen] = useState(false);
+  const [isCreatingDependent, setIsCreatingDependent] = useState(false);
+  const [dependentForm, setDependentForm] = useState({
+    full_name: '',
+    date_of_birth: '',
+    gender: '',
+    relationship_to_guardian: '',
+    birth_certificate_number: '',
+  });
 
   // Fetch user's dependents
   const fetchDependents = async () => {
@@ -76,6 +85,63 @@ export function HouseholdManagement() {
       fetchDependents();
     }
   }, [person?.id]);
+
+  const handleCreateDependent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!person?.id || !person?.auth_user_id) {
+      toast({
+        title: t('common:error'),
+        description: "User information not found",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsCreatingDependent(true);
+
+      const { error } = await supabase
+        .from('household_dependents')
+        .insert([{
+          guardian_person_id: person.id,
+          guardian_user_id: person.auth_user_id,
+          full_name: dependentForm.full_name,
+          date_of_birth: dependentForm.date_of_birth,
+          gender: dependentForm.gender || null,
+          relationship_to_guardian: dependentForm.relationship_to_guardian as "CHILD" | "GRANDCHILD" | "OTHER_RELATIVE",
+          birth_certificate_number: dependentForm.birth_certificate_number || null,
+          created_by: person.auth_user_id,
+        }]);
+
+      if (error) throw error;
+
+      toast({
+        title: t('common:success'),
+        description: "Dependent created successfully",
+      });
+
+      setIsCreateDependentDialogOpen(false);
+      setDependentForm({
+        full_name: '',
+        date_of_birth: '',
+        gender: '',
+        relationship_to_guardian: '',
+        birth_certificate_number: '',
+      });
+      
+      fetchDependents();
+    } catch (error: any) {
+      console.error('Error creating dependent:', error);
+      toast({
+        title: t('common:error'),
+        description: error.message || "Failed to create dependent",
+        variant: "destructive",
+      });
+    } finally {
+      setIsCreatingDependent(false);
+    }
+  };
 
   const handleAddMember = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -190,6 +256,122 @@ export function HouseholdManagement() {
 
   return (
     <div className="space-y-6">
+      {/* Manage Dependents */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5" />
+            {t('address:manageDependents')}
+          </CardTitle>
+          <CardDescription>
+            {t('address:manageDependentsDescription')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {dependents.length > 0 && (
+              <div className="space-y-2">
+                {dependents.map((dependent) => (
+                  <div
+                    key={dependent.id}
+                    className="flex items-center justify-between p-3 border rounded-lg"
+                  >
+                    <div>
+                      <p className="font-medium">{dependent.full_name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {new Date(dependent.date_of_birth).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <Badge variant="outline">{dependent.relationship_to_guardian}</Badge>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            <Dialog open={isCreateDependentDialogOpen} onOpenChange={setIsCreateDependentDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="w-full">
+                  <Plus className="h-4 w-4 mr-2" />
+                  {t('address:createDependent')}
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>{t('address:createDependent')}</DialogTitle>
+                  <DialogDescription>
+                    {t('address:createDependentDescription')}
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleCreateDependent} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="fullName">{t('address:fullName')}</Label>
+                    <Input
+                      id="fullName"
+                      value={dependentForm.full_name}
+                      onChange={(e) => setDependentForm({...dependentForm, full_name: e.target.value})}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="dateOfBirth">{t('address:dateOfBirth')}</Label>
+                    <Input
+                      id="dateOfBirth"
+                      type="date"
+                      value={dependentForm.date_of_birth}
+                      onChange={(e) => setDependentForm({...dependentForm, date_of_birth: e.target.value})}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="gender">{t('address:gender')} ({t('common:optional')})</Label>
+                    <Select value={dependentForm.gender} onValueChange={(value) => setDependentForm({...dependentForm, gender: value})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder={t('address:selectGender')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="relationship">{t('address:relationshipToGuardian')}</Label>
+                    <Select value={dependentForm.relationship_to_guardian} onValueChange={(value) => setDependentForm({...dependentForm, relationship_to_guardian: value})} required>
+                      <SelectTrigger>
+                        <SelectValue placeholder={t('address:selectRelationship')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="CHILD">Child</SelectItem>
+                        <SelectItem value="GRANDCHILD">Grandchild</SelectItem>
+                        <SelectItem value="OTHER_RELATIVE">Other Relative</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="birthCert">{t('address:birthCertificate')} ({t('common:optional')})</Label>
+                    <Input
+                      id="birthCert"
+                      value={dependentForm.birth_certificate_number}
+                      onChange={(e) => setDependentForm({...dependentForm, birth_certificate_number: e.target.value})}
+                    />
+                  </div>
+
+                  <Button type="submit" className="w-full" disabled={isCreatingDependent}>
+                    {isCreatingDependent && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {t('address:createDependent')}
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Existing Households */}
       {households.length > 0 && (
         <Card>
