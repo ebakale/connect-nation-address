@@ -145,7 +145,7 @@ export function HouseholdManagement() {
     try {
       setIsCreatingDependent(true);
 
-      const { error } = await supabase
+      const { data: newDependent, error } = await supabase
         .from('household_dependents')
         .insert([{
           guardian_person_id: person.id,
@@ -165,13 +165,53 @@ export function HouseholdManagement() {
           school_id_number: dependentForm.school_id_number || null,
           notes: dependentForm.notes || null,
           created_by: person.auth_user_id,
-        }]);
+        }])
+        .select()
+        .single();
 
       if (error) throw error;
 
+      // Auto-assign guardian's primary address to the dependent
+      let addressAssigned = false;
+      try {
+        const { data: guardianAddress } = await supabase
+          .from('citizen_address')
+          .select('*')
+          .eq('person_id', person.id)
+          .eq('address_kind', 'PRIMARY')
+          .is('effective_to', null)
+          .maybeSingle();
+
+        if (guardianAddress && newDependent) {
+          const { error: addressError } = await supabase
+            .from('citizen_address')
+            .insert({
+              dependent_id: newDependent.id,
+              declared_by_guardian: true,
+              guardian_person_id: person.id,
+              address_kind: 'PRIMARY',
+              scope: guardianAddress.scope,
+              uac: guardianAddress.uac,
+              unit_uac: guardianAddress.unit_uac || null,
+              source: 'GUARDIAN_DECLARED',
+              effective_from: new Date().toISOString().split('T')[0],
+              status: 'SELF_DECLARED',
+              created_by: person.auth_user_id
+            });
+
+          if (!addressError) {
+            addressAssigned = true;
+          }
+        }
+      } catch (addressError) {
+        console.error('Error assigning address to dependent:', addressError);
+      }
+
       toast({
         title: t('common:success'),
-        description: "Dependent created successfully",
+        description: addressAssigned 
+          ? "Dependent created and address assigned successfully"
+          : "Dependent created successfully. No guardian address found to assign.",
       });
 
       setIsCreateDependentDialogOpen(false);
