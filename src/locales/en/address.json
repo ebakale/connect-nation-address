@@ -655,5 +655,6 @@
   "editDependentDescription": "Update dependent information",
   "editHousehold": "Edit Household",
   "editHouseholdDescription": "Update household information",
-  "members": "Members"
+  "members": "Members",
+  "noHouseholds": "No households created yet. Create your first household to get started."
 }

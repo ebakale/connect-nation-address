@@ -1004,5 +1004,6 @@
   "editDependentDescription": "Mettre à jour les informations du dépendant",
   "editHousehold": "Modifier le ménage",
   "editHouseholdDescription": "Mettre à jour les informations du ménage",
-  "members": "Membres"
+  "members": "Membres",
+  "noHouseholds": "Aucun ménage créé pour le moment. Créez votre premier ménage pour commencer."
 }

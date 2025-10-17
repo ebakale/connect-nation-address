@@ -1160,5 +1160,6 @@
   "editDependentDescription": "Actualizar información del dependiente",
   "editHousehold": "Editar Hogar",
   "editHouseholdDescription": "Actualizar información del hogar",
-  "members": "Miembros"
+  "members": "Miembros",
+  "noHouseholds": "No se han creado hogares aún. Crea tu primer hogar para comenzar."
 }

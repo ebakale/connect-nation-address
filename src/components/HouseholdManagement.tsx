@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, Home, Plus, UserPlus, Loader2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -378,324 +379,345 @@ export function HouseholdManagement() {
 
   return (
     <div className="space-y-6">
-      {/* Manage Dependents */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5" />
+      <Tabs defaultValue="my-households" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="my-households">
+            <Home className="h-4 w-4 mr-2" />
+            {t('address:myHouseholds')}
+          </TabsTrigger>
+          <TabsTrigger value="create-household">
+            <Plus className="h-4 w-4 mr-2" />
+            {t('address:createHousehold')}
+          </TabsTrigger>
+          <TabsTrigger value="manage-dependents">
+            <Users className="h-4 w-4 mr-2" />
             {t('address:manageDependents')}
-          </CardTitle>
-          <CardDescription>
-            {t('address:manageDependentsDescription')}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {dependents.length > 0 && (
-              <div className="space-y-2">
-                {dependents.map((dependent) => (
-                  <div
-                    key={dependent.id}
-                    className="flex items-center justify-between p-3 border rounded-lg"
-                  >
-                    <div className="flex-1">
-                      <p className="font-medium">{dependent.full_name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {new Date(dependent.date_of_birth).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline">{dependent.relationship_to_guardian}</Badge>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setEditingDependent(dependent);
-                          setDependentForm({
-                            full_name: dependent.full_name,
-                            date_of_birth: dependent.date_of_birth,
-                            gender: dependent.gender || '',
-                            relationship_to_guardian: dependent.relationship_to_guardian,
-                            birth_certificate_number: dependent.birth_certificate_number || '',
-                          });
-                          setIsEditDependentDialogOpen(true);
-                        }}
-                      >
-                        {t('common:buttons.edit')}
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            <Dialog open={isCreateDependentDialogOpen} onOpenChange={setIsCreateDependentDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="w-full">
-                  <Plus className="h-4 w-4 mr-2" />
-                  {t('address:createDependent')}
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>{t('address:createDependent')}</DialogTitle>
-                  <DialogDescription>
-                    {t('address:createDependentDescription')}
-                  </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleCreateDependent} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="fullName">{t('address:fullName')}</Label>
-                    <Input
-                      id="fullName"
-                      value={dependentForm.full_name}
-                      onChange={(e) => setDependentForm({...dependentForm, full_name: e.target.value})}
-                      required
-                    />
-                  </div>
+          </TabsTrigger>
+        </TabsList>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="dateOfBirth">{t('address:dateOfBirth')}</Label>
-                    <Input
-                      id="dateOfBirth"
-                      type="date"
-                      value={dependentForm.date_of_birth}
-                      onChange={(e) => setDependentForm({...dependentForm, date_of_birth: e.target.value})}
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="gender">{t('address:gender')} ({t('common:optional')})</Label>
-                    <Select value={dependentForm.gender} onValueChange={(value) => setDependentForm({...dependentForm, gender: value})}>
-                      <SelectTrigger>
-                        <SelectValue placeholder={t('address:selectGender')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="female">Female</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="relationship">{t('address:relationshipToGuardian')}</Label>
-                    <Select value={dependentForm.relationship_to_guardian} onValueChange={(value) => setDependentForm({...dependentForm, relationship_to_guardian: value})} required>
-                      <SelectTrigger>
-                        <SelectValue placeholder={t('address:selectRelationship')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="CHILD">{t('address:relationshipChild')}</SelectItem>
-                        <SelectItem value="GRANDCHILD">{t('address:relationshipGrandchild')}</SelectItem>
-                        <SelectItem value="OTHER_RELATIVE">{t('address:relationshipOtherRelative')}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="birthCert">{t('address:birthCertificate')} ({t('common:optional')})</Label>
-                    <Input
-                      id="birthCert"
-                      value={dependentForm.birth_certificate_number}
-                      onChange={(e) => setDependentForm({...dependentForm, birth_certificate_number: e.target.value})}
-                    />
-                  </div>
-
-                  <Button type="submit" className="w-full" disabled={isCreatingDependent}>
-                    {isCreatingDependent && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    {t('address:createDependent')}
-                  </Button>
-                </form>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Existing Households */}
-      {households.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              {t('address:myHouseholds')}
-            </CardTitle>
-            <CardDescription>
-              {t('address:householdsDescription')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        {/* My Households Tab */}
+        <TabsContent value="my-households" className="space-y-4 mt-6">
+          {households.length === 0 ? (
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-center text-muted-foreground">
+                  {t('address:noHouseholds')}
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
             <div className="space-y-4">
               {households.map((household) => (
-                <div
-                  key={household.id}
-                  className="p-4 border rounded-lg space-y-3"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="font-semibold">{household.household_name}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {household.description}
-                      </p>
-                      <div className="flex gap-2 mt-2">
-                        <Badge variant="outline" className="font-mono">
-                          {household.primary_uac}
-                        </Badge>
-                        {household.primary_unit_uac && (
-                          <Badge variant="secondary" className="font-mono">
-                            {t('address:unitLabel')}: {household.primary_unit_uac}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setEditingHousehold(household);
-                          setHouseholdName(household.household_name);
-                          setHouseholdDescription(household.description || '');
-                          setPrimaryUac(household.primary_uac);
-                          setUnitUac(household.primary_unit_uac || '');
-                          setIsEditHouseholdDialogOpen(true);
-                        }}
-                      >
-                        {t('common:buttons.edit')}
-                      </Button>
-                      <Dialog open={isAddMemberDialogOpen && selectedHouseholdId === household.id} onOpenChange={(open) => {
-                        setIsAddMemberDialogOpen(open);
-                        if (open) setSelectedHouseholdId(household.id);
-                      }}>
-                        <DialogTrigger asChild>
-                          <Button variant="outline" size="sm">
-                            <UserPlus className="h-4 w-4 mr-2" />
-                            {t('address:addMember')}
-                          </Button>
-                        </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>{t('address:addMember')}</DialogTitle>
-                        <DialogDescription>
-                          Add a dependent to this household
-                        </DialogDescription>
-                      </DialogHeader>
-                      <form onSubmit={handleAddMember} className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="dependent">{t('address:selectDependent')}</Label>
-                          <Select value={selectedDependentId} onValueChange={setSelectedDependentId} required>
-                            <SelectTrigger>
-                              <SelectValue placeholder={t('address:selectDependentPlaceholder')} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {dependents.map((dependent) => (
-                                <SelectItem key={dependent.id} value={dependent.id}>
-                                  {dependent.full_name} ({dependent.relationship_to_guardian})
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                <Card key={household.id}>
+                  <CardContent className="pt-6">
+                    <div className="p-4 border rounded-lg space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-semibold">{household.household_name}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {household.description}
+                          </p>
+                          <div className="flex gap-2 mt-2">
+                            <Badge variant="outline" className="font-mono">
+                              {household.primary_uac}
+                            </Badge>
+                            {household.primary_unit_uac && (
+                              <Badge variant="secondary" className="font-mono">
+                                {t('address:unitLabel')}: {household.primary_unit_uac}
+                              </Badge>
+                            )}
+                          </div>
                         </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setEditingHousehold(household);
+                              setHouseholdName(household.household_name);
+                              setHouseholdDescription(household.description || '');
+                              setPrimaryUac(household.primary_uac);
+                              setUnitUac(household.primary_unit_uac || '');
+                              setIsEditHouseholdDialogOpen(true);
+                            }}
+                          >
+                            {t('common:buttons.edit')}
+                          </Button>
+                          <Dialog open={isAddMemberDialogOpen && selectedHouseholdId === household.id} onOpenChange={(open) => {
+                            setIsAddMemberDialogOpen(open);
+                            if (open) setSelectedHouseholdId(household.id);
+                          }}>
+                            <DialogTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                <UserPlus className="h-4 w-4 mr-2" />
+                                {t('address:addMember')}
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>{t('address:addMember')}</DialogTitle>
+                                <DialogDescription>
+                                  Add a dependent to this household
+                                </DialogDescription>
+                              </DialogHeader>
+                              <form onSubmit={handleAddMember} className="space-y-4">
+                                <div className="space-y-2">
+                                  <Label htmlFor="dependent">{t('address:selectDependent')}</Label>
+                                  <Select value={selectedDependentId} onValueChange={setSelectedDependentId} required>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder={t('address:selectDependentPlaceholder')} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {dependents.map((dependent) => (
+                                        <SelectItem key={dependent.id} value={dependent.id}>
+                                          {dependent.full_name} ({dependent.relationship_to_guardian})
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
 
-                        <Button type="submit" className="w-full" disabled={isAddingMember}>
-                          {isAddingMember && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                          {t('address:addMember')}
-                        </Button>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
-                    </div>
-                  </div>
-
-                  {/* Household Members List */}
-                  {householdMembers[household.id] && householdMembers[household.id].length > 0 && (
-                    <div className="pt-3 border-t">
-                      <p className="text-sm font-medium mb-2">{t('address:members')}:</p>
-                      <div className="flex flex-wrap gap-2">
-                        {householdMembers[household.id].map((member) => (
-                          <Badge key={member.id} variant="secondary">
-                            {member.dependent?.full_name}
-                          </Badge>
-                        ))}
+                                <Button type="submit" className="w-full" disabled={isAddingMember}>
+                                  {isAddingMember && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                  {t('address:addMember')}
+                                </Button>
+                              </form>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
                       </div>
+
+                      {/* Household Members List */}
+                      {householdMembers[household.id] && householdMembers[household.id].length > 0 && (
+                        <div className="pt-3 border-t">
+                          <p className="text-sm font-medium mb-2">{t('address:members')}:</p>
+                          <div className="flex flex-wrap gap-2">
+                            {householdMembers[household.id].map((member) => (
+                              <Badge key={member.id} variant="secondary">
+                                {member.dependent?.full_name}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
-          </CardContent>
-        </Card>
-      )}
+          )}
+        </TabsContent>
 
-      {/* Create New Household */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Plus className="h-5 w-5" />
-            {t('address:createHousehold')}
-          </CardTitle>
-          <CardDescription>
-            {t('address:createHouseholdDescription')}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleCreateHousehold} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="householdName">{t('address:householdName')}</Label>
-              <Input
-                id="householdName"
-                value={householdName}
-                onChange={(e) => setHouseholdName(e.target.value)}
-                placeholder={t('address:householdNamePlaceholder')}
-                required
-              />
-            </div>
+        {/* Create Household Tab */}
+        <TabsContent value="create-household" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Plus className="h-5 w-5" />
+                {t('address:createHousehold')}
+              </CardTitle>
+              <CardDescription>
+                {t('address:createHouseholdDescription')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleCreateHousehold} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="householdName">{t('address:householdName')}</Label>
+                  <Input
+                    id="householdName"
+                    value={householdName}
+                    onChange={(e) => setHouseholdName(e.target.value)}
+                    placeholder={t('address:householdNamePlaceholder')}
+                    required
+                  />
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="description">{t('common:description')}</Label>
-              <Textarea
-                id="description"
-                value={householdDescription}
-                onChange={(e) => setHouseholdDescription(e.target.value)}
-                placeholder={t('address:householdDescriptionPlaceholder')}
-              />
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="description">{t('common:description')}</Label>
+                  <Textarea
+                    id="description"
+                    value={householdDescription}
+                    onChange={(e) => setHouseholdDescription(e.target.value)}
+                    placeholder={t('address:householdDescriptionPlaceholder')}
+                  />
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="primaryUac">{t('address:primaryUac')}</Label>
-              <Input
-                id="primaryUac"
-                value={primaryUac}
-                onChange={(e) => setPrimaryUac(e.target.value)}
-                placeholder={t('address:uacPlaceholder')}
-                className="font-mono"
-                required
-              />
-              <p className="text-sm text-muted-foreground">
-                {t('address:householdUacDescription')}
-              </p>
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="primaryUac">{t('address:primaryUac')}</Label>
+                  <Input
+                    id="primaryUac"
+                    value={primaryUac}
+                    onChange={(e) => setPrimaryUac(e.target.value)}
+                    placeholder={t('address:uacPlaceholder')}
+                    className="font-mono"
+                    required
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    {t('address:householdUacDescription')}
+                  </p>
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="unitUac">{t('address:unitUac')} ({t('common:optional')})</Label>
-              <Input
-                id="unitUac"
-                value={unitUac}
-                onChange={(e) => setUnitUac(e.target.value)}
-                placeholder={t('address:unitUacPlaceholder')}
-                className="font-mono"
-              />
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="unitUac">{t('address:unitUac')} ({t('common:optional')})</Label>
+                  <Input
+                    id="unitUac"
+                    value={unitUac}
+                    onChange={(e) => setUnitUac(e.target.value)}
+                    placeholder={t('address:unitUacPlaceholder')}
+                    className="font-mono"
+                  />
+                </div>
 
-            <Button type="submit" className="w-full" disabled={isCreating}>
-              {isCreating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              <Home className="mr-2 h-4 w-4" />
-              {t('address:createHousehold')}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+                <Button type="submit" className="w-full" disabled={isCreating}>
+                  {isCreating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  <Home className="mr-2 h-4 w-4" />
+                  {t('address:createHousehold')}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Manage Dependents Tab */}
+        <TabsContent value="manage-dependents" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                {t('address:manageDependents')}
+              </CardTitle>
+              <CardDescription>
+                {t('address:manageDependentsDescription')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {dependents.length > 0 && (
+                  <div className="space-y-2">
+                    {dependents.map((dependent) => (
+                      <div
+                        key={dependent.id}
+                        className="flex items-center justify-between p-3 border rounded-lg"
+                      >
+                        <div className="flex-1">
+                          <p className="font-medium">{dependent.full_name}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(dependent.date_of_birth).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">{dependent.relationship_to_guardian}</Badge>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setEditingDependent(dependent);
+                              setDependentForm({
+                                full_name: dependent.full_name,
+                                date_of_birth: dependent.date_of_birth,
+                                gender: dependent.gender || '',
+                                relationship_to_guardian: dependent.relationship_to_guardian,
+                                birth_certificate_number: dependent.birth_certificate_number || '',
+                              });
+                              setIsEditDependentDialogOpen(true);
+                            }}
+                          >
+                            {t('common:buttons.edit')}
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                <Dialog open={isCreateDependentDialogOpen} onOpenChange={setIsCreateDependentDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="w-full">
+                      <Plus className="h-4 w-4 mr-2" />
+                      {t('address:createDependent')}
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>{t('address:createDependent')}</DialogTitle>
+                      <DialogDescription>
+                        {t('address:createDependentDescription')}
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleCreateDependent} className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="fullName">{t('address:fullName')}</Label>
+                        <Input
+                          id="fullName"
+                          value={dependentForm.full_name}
+                          onChange={(e) => setDependentForm({...dependentForm, full_name: e.target.value})}
+                          placeholder={t('address:fullNamePlaceholder')}
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="dateOfBirth">{t('address:dateOfBirth')}</Label>
+                        <Input
+                          id="dateOfBirth"
+                          type="date"
+                          value={dependentForm.date_of_birth}
+                          onChange={(e) => setDependentForm({...dependentForm, date_of_birth: e.target.value})}
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="gender">{t('address:gender')} ({t('common:optional')})</Label>
+                        <Select value={dependentForm.gender} onValueChange={(value) => setDependentForm({...dependentForm, gender: value})}>
+                          <SelectTrigger>
+                            <SelectValue placeholder={t('address:selectGender')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="male">Male</SelectItem>
+                            <SelectItem value="female">Female</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="relationship">{t('address:relationshipToGuardian')}</Label>
+                        <Select value={dependentForm.relationship_to_guardian} onValueChange={(value) => setDependentForm({...dependentForm, relationship_to_guardian: value})} required>
+                          <SelectTrigger>
+                            <SelectValue placeholder={t('address:selectRelationship')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="CHILD">{t('address:relationshipChild')}</SelectItem>
+                            <SelectItem value="GRANDCHILD">{t('address:relationshipGrandchild')}</SelectItem>
+                            <SelectItem value="OTHER_RELATIVE">{t('address:relationshipOtherRelative')}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="birthCertificate">{t('address:birthCertificate')} ({t('common:optional')})</Label>
+                        <Input
+                          id="birthCertificate"
+                          value={dependentForm.birth_certificate_number}
+                          onChange={(e) => setDependentForm({...dependentForm, birth_certificate_number: e.target.value})}
+                          placeholder={t('address:birthCertificatePlaceholder')}
+                        />
+                      </div>
+
+                      <Button type="submit" className="w-full" disabled={isCreatingDependent}>
+                        {isCreatingDependent && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        {t('address:createDependent')}
+                      </Button>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       {/* Edit Household Dialog */}
       <Dialog open={isEditHouseholdDialogOpen} onOpenChange={setIsEditHouseholdDialogOpen}>
