@@ -542,6 +542,35 @@ export type Database = {
         }
         Relationships: []
       }
+      cities: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          province_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          province_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          province_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cities_province_id_fkey"
+            columns: ["province_id"]
+            isOneToOne: false
+            referencedRelation: "provinces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       citizen_address: {
         Row: {
           address_kind: Database["public"]["Enums"]["address_kind"]
