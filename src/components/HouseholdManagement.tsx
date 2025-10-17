@@ -18,6 +18,7 @@ export function HouseholdManagement() {
   const { t } = useTranslation(['common', 'address']);
   const { toast } = useToast();
   const { person, loading: personLoading } = usePerson();
+  const [activeTab, setActiveTab] = useState('my-households');
   const [householdName, setHouseholdName] = useState('');
   const [householdDescription, setHouseholdDescription] = useState('');
   const [primaryUac, setPrimaryUac] = useState('');
@@ -356,7 +357,10 @@ export function HouseholdManagement() {
       setUnitUac('');
       
       // Refresh households list
-      fetchHouseholds();
+      await fetchHouseholds();
+      
+      // Switch to My Households tab to show the new household
+      setActiveTab('my-households');
     } catch (error: any) {
       console.error('Error creating household:', error);
       toast({
@@ -379,7 +383,7 @@ export function HouseholdManagement() {
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="my-households" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="my-households">
             <Home className="h-4 w-4 mr-2" />
