@@ -6,10 +6,18 @@
     "deactivateDependent": "Desactivar Dependiente",
     "noDocumentRequired": "Acta de nacimiento no requerida",
     "guardianIdRequired": "Su documento de identidad del gobierno es suficiente",
-    "ageRequirement": "El dependiente debe ser menor de 18 años",
+    "ageRequirement": "Los adultos pueden registrarse como dependientes con razón válida",
+    "adultDependentSupport": "Dependientes adultos (estudiantes, discapacitados, ancianos) ahora soportados",
     "noDependents": "No hay dependientes registrados",
     "activeCount": "{{count}} dependiente(s) activo(s)",
     "transitionedCount": "{{count}} cumplió(eron) 18 años",
+    "dependentTypes": {
+      "MINOR": "Menor (Menos de 18)",
+      "ADULT_STUDENT": "Estudiante Adulto",
+      "ADULT_DISABLED": "Adulto con Discapacidad",
+      "ELDERLY_PARENT": "Padre Anciano",
+      "OTHER_ADULT": "Otro Dependiente Adulto"
+    },
     "relationships": {
       "CHILD": "Hijo/a",
       "ADOPTED_CHILD": "Hijo/a Adoptivo/a",
@@ -23,6 +31,14 @@
       "fullName": "Nombre Completo del Dependiente",
       "fullNamePlaceholder": "Ingrese el nombre completo",
       "dateOfBirth": "Fecha de Nacimiento",
+      "dependentType": "Tipo de Dependiente",
+      "selectDependentType": "Seleccionar tipo de dependiente",
+      "dependencyReason": "Razón de Dependencia",
+      "dependencyReasonPlaceholder": "Explicar por qué esta persona es dependiente",
+      "expectedEndDate": "Fecha de Fin Esperada",
+      "disabilityCertificate": "Número de Certificado de Discapacidad",
+      "studentEnrollment": "Número de Matrícula Estudiantil",
+      "universityName": "Nombre de Universidad/Escuela",
       "relationship": "Relación con Usted",
       "selectRelationship": "Seleccione relación",
       "gender": "Género (Opcional)",
@@ -40,6 +56,11 @@
       "schoolIdPlaceholder": "Ingrese si está disponible",
       "notes": "Notas (Opcional)",
       "notesPlaceholder": "Información adicional"
+    },
+    "validation": {
+      "adultsRequireReason": "Dependientes adultos deben tener razón de dependencia",
+      "studentsRequireEndDate": "Dependientes estudiantes deben tener fecha de fin",
+      "invalidAge": "Menores deben usar tipo MENOR; adultos no pueden usar tipo MENOR"
     },
     "addresses": {
       "title": "Direcciones de {{name}}",
@@ -80,8 +101,20 @@
     "verified": "Verificado por CAR",
     "unverified": "No Verificado",
     "memberCount": "{{count}} miembro(s)",
+    "uacConflict": "Otro hogar ya existe en esta dirección",
+    "primaryHousehold": "Hogar Principal",
+    "custodyTypes": {
+      "FULL": "Custodia Completa",
+      "SHARED": "Custodia Compartida",
+      "PARTIAL": "Custodia Parcial",
+      "TEMPORARY": "Custodia Temporal"
+    },
     "roles": {
       "HEAD": "Jefe de Familia",
+      "CO_HEAD": "Co-Jefe",
+      "MEMBER": "Miembro",
+      "DEPENDENT": "Dependiente",
+      "TEMPORARY_RESIDENT": "Residente Temporal",
       "SPOUSE": "Cónyuge",
       "CHILD": "Hijo/a",
       "PARENT": "Padre/Madre",
@@ -105,9 +138,17 @@
       "relationshipToHead": "Relación con el Jefe",
       "selectRelationship": "Seleccione relación",
       "isPrimaryResident": "Residente Principal",
+      "isPrimaryHousehold": "Hogar Principal para este Miembro",
+      "residencePercentage": "Porcentaje de Residencia",
+      "custodyType": "Tipo de Custodia",
       "movedInDate": "Fecha de Mudanza",
       "movedOutDate": "Fecha de Salida (si aplica)",
       "memberNotes": "Notas (Opcional)"
+    },
+    "validation": {
+      "residenceSum": "El porcentaje total debe ser igual al 100%",
+      "onlyOnePrimary": "Solo puede tener un hogar principal",
+      "cannotRemoveHead": "Transferir jefatura antes de eliminar"
     },
     "members": {
       "title": "Miembros del Hogar",
@@ -132,13 +173,24 @@
       "cannotRemoveHead": "No se puede eliminar al jefe de familia"
     },
     "status": {
+      "ACTIVE": "Activo",
+      "TRANSFERRED": "Transferido",
+      "DISSOLVED": "Disuelto",
+      "MERGED": "Fusionado",
       "active": "Activo",
       "inactive": "Inactivo",
       "pendingVerification": "Verificación CAR Pendiente"
     },
+    "memberStatus": {
+      "ACTIVE": "Activo",
+      "MOVED_OUT": "Se Mudó",
+      "TEMPORARY": "Temporal",
+      "VISITING": "Visitante"
+    },
     "addresses": {
       "linkedAddresses": "Vinculado al Hogar",
-      "viewAll": "Ver Todos los Miembros del Hogar"
+      "viewAll": "Ver Todos los Miembros del Hogar",
+      "syncedFromHousehold": "Sincronizado desde el hogar"
     }
   }
 }

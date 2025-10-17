@@ -20,13 +20,80 @@ export interface Person {
   updated_at: string;
 }
 
+export interface HouseholdDependent {
+  id: string;
+  guardian_person_id: string;
+  guardian_user_id: string;
+  full_name: string;
+  date_of_birth: string;
+  relationship_to_guardian: string;
+  gender?: string;
+  birth_certificate_number?: string;
+  health_card_number?: string;
+  school_id_number?: string;
+  dependent_type: DependentType;
+  dependency_reason?: string;
+  expected_dependency_end_date?: string;
+  disability_certificate_number?: string;
+  student_enrollment_number?: string;
+  university_name?: string;
+  is_active: boolean;
+  reached_majority_age: boolean;
+  notified_at_18?: string;
+  claimed_own_account: boolean;
+  claimed_account_user_id?: string;
+  created_at: string;
+  updated_at: string;
+  created_by: string;
+  notes?: string;
+}
+
+export interface HouseholdMember {
+  id: string;
+  household_group_id: string;
+  person_id?: string;
+  dependent_id?: string;
+  relationship_to_head: string;
+  is_primary_household: boolean;
+  residence_percentage?: number;
+  custody_type?: CustodyType;
+  custody_schedule?: any;
+  membership_status: MembershipStatus;
+  household_role: HouseholdRole;
+  moved_in_date?: string;
+  moved_out_date?: string;
+  added_at: string;
+  added_by: string;
+  notes?: string;
+}
+
+export interface HouseholdGroup {
+  id: string;
+  household_head_person_id: string;
+  household_head_user_id: string;
+  household_name: string;
+  primary_uac: string;
+  primary_unit_uac?: string;
+  description?: string;
+  is_active: boolean;
+  verified_by_car: boolean;
+  verified_at?: string;
+  verified_by?: string;
+  household_status: HouseholdStatus;
+  previous_household_id?: string;
+  household_succession_date?: string;
+  created_at: string;
+  updated_at: string;
+  created_by: string;
+}
+
 export interface CitizenAddress {
   id: string;
-  person_id: string | null;
-  dependent_id?: string | null;
+  person_id?: string;
+  dependent_id?: string;
   declared_by_guardian?: boolean;
-  guardian_person_id?: string | null;
-  household_group_id?: string | null;
+  guardian_person_id?: string;
+  household_group_id?: string;
   address_kind: AddressKind;
   scope: AddressScope;
   uac: string;
@@ -59,76 +126,6 @@ export interface CitizenAddress {
   nar_public?: boolean;
   // Manual review queue fields
   verification_status?: 'UAC_NOT_FOUND' | 'UAC_UNVERIFIED' | 'UAC_VERIFIED';
-}
-
-export interface HouseholdDependent {
-  id: string;
-  guardian_person_id: string;
-  guardian_user_id: string;
-  full_name: string;
-  date_of_birth: string;
-  relationship_to_guardian: string;
-  gender?: string;
-  birth_certificate_number?: string;
-  health_card_number?: string;
-  school_id_number?: string;
-  // New adult dependent fields
-  dependent_type: DependentType;
-  dependency_reason?: string;
-  expected_dependency_end_date?: string;
-  disability_certificate_number?: string;
-  student_enrollment_number?: string;
-  university_name?: string;
-  is_active: boolean;
-  reached_majority_age: boolean;
-  notified_at_18?: string;
-  claimed_own_account: boolean;
-  claimed_account_user_id?: string;
-  created_at: string;
-  updated_at: string;
-  created_by: string;
-  notes?: string;
-}
-
-export interface HouseholdMember {
-  id: string;
-  household_group_id: string;
-  person_id?: string;
-  dependent_id?: string;
-  relationship_to_head: string;
-  // New multi-household support fields
-  is_primary_household: boolean;
-  residence_percentage?: number;
-  custody_type?: CustodyType;
-  custody_schedule?: any;
-  membership_status: MembershipStatus;
-  household_role: HouseholdRole;
-  moved_in_date?: string;
-  moved_out_date?: string;
-  added_at: string;
-  added_by: string;
-  notes?: string;
-}
-
-export interface HouseholdGroup {
-  id: string;
-  household_head_person_id: string;
-  household_head_user_id: string;
-  household_name: string;
-  primary_uac: string;
-  primary_unit_uac?: string;
-  description?: string;
-  is_active: boolean;
-  verified_by_car: boolean;
-  verified_at?: string;
-  verified_by?: string;
-  // New succession tracking fields
-  household_status: HouseholdStatus;
-  previous_household_id?: string;
-  household_succession_date?: string;
-  created_at: string;
-  updated_at: string;
-  created_by: string;
 }
 
 export interface AddressInput {

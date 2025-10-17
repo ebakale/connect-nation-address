@@ -6,8 +6,11 @@
     "deactivateDependent": "Deactivate Dependent",
     "noDocumentRequired": "Birth certificate not required",
     "guardianIdRequired": "Your government ID is sufficient",
-    "ageRequirement": "Dependent can be any age with valid reason",
-    "adultDependentSupport": "Adult dependents are now supported",
+    "ageRequirement": "Adults can be registered as dependents with valid reason",
+    "adultDependentSupport": "Adult dependents (students, disabled, elderly) now supported",
+    "noDependents": "No dependents registered",
+    "activeCount": "{{count}} active dependent(s)",
+    "transitionedCount": "{{count}} turned 18",
     "dependentTypes": {
       "MINOR": "Minor (Under 18)",
       "ADULT_STUDENT": "Adult Student",
@@ -15,9 +18,6 @@
       "ELDERLY_PARENT": "Elderly Parent",
       "OTHER_ADULT": "Other Adult Dependent"
     },
-    "noDependents": "No dependents registered",
-    "activeCount": "{{count}} active dependent(s)",
-    "transitionedCount": "{{count}} turned 18",
     "relationships": {
       "CHILD": "Child",
       "ADOPTED_CHILD": "Adopted Child",
@@ -31,18 +31,18 @@
       "fullName": "Dependent's Full Name",
       "fullNamePlaceholder": "Enter full name",
       "dateOfBirth": "Date of Birth",
-      "relationship": "Relationship to You",
-      "selectRelationship": "Select relationship",
       "dependentType": "Dependent Type",
       "selectDependentType": "Select dependent type",
       "dependencyReason": "Reason for Dependency",
-      "dependencyReasonPlaceholder": "Explain why this person is dependent on you",
-      "dependencyReasonRequired": "Dependency reason is required for adult dependents",
+      "dependencyReasonPlaceholder": "Explain why this person is a dependent",
+      "dependencyReasonRequired": "Reason required for adult dependents",
       "expectedEndDate": "Expected End Date",
       "expectedEndDateHelper": "When will this dependency end? (e.g., graduation date)",
       "disabilityCertificate": "Disability Certificate Number",
       "studentEnrollment": "Student Enrollment Number",
       "universityName": "University/School Name",
+      "relationship": "Relationship to You",
+      "selectRelationship": "Select relationship",
       "gender": "Gender (Optional)",
       "genderOptions": {
         "male": "Male",
@@ -62,7 +62,8 @@
     "validation": {
       "adultsRequireReason": "Adult dependents must have a dependency reason",
       "studentsRequireEndDate": "Student dependents must have an expected end date",
-      "studentsRequireEnrollment": "Student dependents should provide enrollment information"
+      "studentsRequireEnrollment": "Student dependents should provide enrollment information",
+      "invalidAge": "Minors must use MINOR type; adults cannot use MINOR type"
     },
     "addresses": {
       "title": "{{name}}'s Addresses",
@@ -81,7 +82,7 @@
       "addressAdded": "Secondary address added",
       "turned18": "{{name}} has turned 18 and can now create their own account",
       "cannotModifyClaimed": "Cannot modify - dependent has claimed their own account",
-      "invalidAge": "Please verify the dependent's age and type",
+      "invalidAge": "Dependent must be under 18 years old",
       "loadError": "Failed to load dependents"
     },
     "status": {
@@ -136,7 +137,7 @@
       "isPrimaryResident": "Primary Resident",
       "isPrimaryHousehold": "Primary Household for this Member",
       "residencePercentage": "Residence Percentage",
-      "residencePercentageHelper": "What percentage of time does this member live here?",
+      "residencePercentageHelper": "What % of time does this member live here?",
       "custodyType": "Custody Type",
       "selectCustodyType": "Select custody arrangement",
       "custodySchedule": "Custody Schedule Details",
@@ -176,7 +177,10 @@
       "ACTIVE": "Active",
       "TRANSFERRED": "Transferred",
       "DISSOLVED": "Dissolved",
-      "MERGED": "Merged"
+      "MERGED": "Merged",
+      "active": "Active",
+      "inactive": "Inactive",
+      "pendingVerification": "Pending CAR Verification"
     },
     "memberStatus": {
       "ACTIVE": "Active",
@@ -186,7 +190,8 @@
     },
     "addresses": {
       "linkedAddresses": "Linked to Household",
-      "viewAll": "View All Household Members"
+      "viewAll": "View All Household Members",
+      "syncedFromHousehold": "Synchronized from household"
     }
   }
 }
