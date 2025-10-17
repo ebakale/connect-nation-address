@@ -15,7 +15,7 @@ import { usePerson } from '@/hooks/useCAR';
 import { useTranslation } from 'react-i18next';
 
 export function HouseholdManagement() {
-  const { t } = useTranslation(['common', 'address']);
+  const { t } = useTranslation(['common', 'address', 'car']);
   const { toast } = useToast();
   const { person, loading: personLoading } = usePerson();
   const [activeTab, setActiveTab] = useState('my-households');

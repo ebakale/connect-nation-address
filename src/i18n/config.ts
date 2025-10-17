@@ -10,6 +10,7 @@ import addressEN from '../locales/en/address.json';
 import emergencyEN from '../locales/en/emergency.json';
 import adminEN from '../locales/en/admin.json';
 import countriesEN from '../locales/en/countries.json';
+import carEN from '../locales/en/car.json';
 
 import commonES from '../locales/es/common.json';
 import authES from '../locales/es/auth.json';
@@ -18,6 +19,7 @@ import addressES from '../locales/es/address.json';
 import emergencyES from '../locales/es/emergency.json';
 import adminES from '../locales/es/admin.json';
 import countriesES from '../locales/es/countries.json';
+import carES from '../locales/es/car.json';
 
 import commonFR from '../locales/fr/common.json';
 import authFR from '../locales/fr/auth.json';
@@ -26,6 +28,7 @@ import addressFR from '../locales/fr/address.json';
 import emergencyFR from '../locales/fr/emergency.json';
 import adminFR from '../locales/fr/admin.json';
 import countriesFR from '../locales/fr/countries.json';
+import carFR from '../locales/fr/car.json';
 
 const resources = {
   en: {
@@ -36,6 +39,7 @@ const resources = {
     emergency: emergencyEN,
     admin: adminEN,
     countries: countriesEN,
+    car: carEN,
   },
   es: {
     common: commonES,
@@ -45,6 +49,7 @@ const resources = {
     emergency: emergencyES,
     admin: adminES,
     countries: countriesES,
+    car: carES,
   },
   fr: {
     common: commonFR,
@@ -54,6 +59,7 @@ const resources = {
     emergency: emergencyFR,
     admin: adminFR,
     countries: countriesFR,
+    car: carFR,
   },
 };
 
@@ -78,7 +84,7 @@ i18n
     },
 
     // Namespace and key separator
-    ns: ['common', 'auth', 'dashboard', 'address', 'emergency', 'admin', 'countries'],
+    ns: ['common', 'auth', 'dashboard', 'address', 'emergency', 'admin', 'countries', 'car'],
     defaultNS: 'common',
     
     // Pluralization
