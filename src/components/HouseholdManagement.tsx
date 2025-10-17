@@ -28,7 +28,6 @@ export function HouseholdManagement() {
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
   const [dependents, setDependents] = useState<any[]>([]);
   const [selectedDependentId, setSelectedDependentId] = useState('');
-  const [memberRelationship, setMemberRelationship] = useState('');
   const [isAddingMember, setIsAddingMember] = useState(false);
   const [isCreateDependentDialogOpen, setIsCreateDependentDialogOpen] = useState(false);
   const [isCreatingDependent, setIsCreatingDependent] = useState(false);
@@ -158,12 +157,18 @@ export function HouseholdManagement() {
     try {
       setIsAddingMember(true);
 
+      // Get the dependent's relationship to use it
+      const dependent = dependents.find(d => d.id === selectedDependentId);
+      if (!dependent) {
+        throw new Error("Dependent not found");
+      }
+
       const { error } = await supabase
         .from('household_members')
         .insert([{
           household_group_id: selectedHouseholdId,
           dependent_id: selectedDependentId,
-          relationship_to_head: memberRelationship as "CHILD" | "GRANDCHILD" | "GRANDPARENT" | "HEAD" | "NON_RELATIVE" | "OTHER_RELATIVE" | "PARENT" | "SIBLING" | "SPOUSE",
+          relationship_to_head: dependent.relationship_to_guardian,
           is_primary_resident: false,
           added_by: person.auth_user_id,
         }]);
@@ -177,7 +182,6 @@ export function HouseholdManagement() {
 
       setIsAddMemberDialogOpen(false);
       setSelectedDependentId('');
-      setMemberRelationship('');
     } catch (error: any) {
       console.error('Error adding member:', error);
       toast({
@@ -345,9 +349,13 @@ export function HouseholdManagement() {
                         <SelectValue placeholder={t('address:selectRelationship')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="CHILD">Child</SelectItem>
-                        <SelectItem value="GRANDCHILD">Grandchild</SelectItem>
-                        <SelectItem value="OTHER_RELATIVE">Other Relative</SelectItem>
+                        <SelectItem value="CHILD">{t('address:relationshipChild')}</SelectItem>
+                        <SelectItem value="GRANDCHILD">{t('address:relationshipGrandchild')}</SelectItem>
+                        <SelectItem value="SIBLING">{t('address:relationshipSibling')}</SelectItem>
+                        <SelectItem value="PARENT">{t('address:relationshipParent')}</SelectItem>
+                        <SelectItem value="GRANDPARENT">{t('address:relationshipGrandparent')}</SelectItem>
+                        <SelectItem value="SPOUSE">{t('address:relationshipSpouse')}</SelectItem>
+                        <SelectItem value="OTHER_RELATIVE">{t('address:relationshipOtherRelative')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -434,26 +442,9 @@ export function HouseholdManagement() {
                             <SelectContent>
                               {dependents.map((dependent) => (
                                 <SelectItem key={dependent.id} value={dependent.id}>
-                                  {dependent.full_name}
+                                  {dependent.full_name} ({dependent.relationship_to_guardian})
                                 </SelectItem>
                               ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="relationship">{t('address:relationshipToHead')}</Label>
-                          <Select value={memberRelationship} onValueChange={setMemberRelationship} required>
-                            <SelectTrigger>
-                              <SelectValue placeholder={t('address:selectRelationship')} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="CHILD">Child</SelectItem>
-                              <SelectItem value="SPOUSE">Spouse</SelectItem>
-                              <SelectItem value="PARENT">Parent</SelectItem>
-                              <SelectItem value="SIBLING">Sibling</SelectItem>
-                              <SelectItem value="OTHER_RELATIVE">Other Relative</SelectItem>
-                              <SelectItem value="NON_RELATIVE">Non-Relative</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
