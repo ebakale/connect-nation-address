@@ -206,6 +206,54 @@ export type Database = {
           },
         ]
       }
+      address_search_audit: {
+        Row: {
+          accessed_person_ids: string[] | null
+          accessed_uacs: string[] | null
+          id: string
+          ip_address: unknown | null
+          metadata: Json | null
+          purpose_details: string | null
+          results_count: number
+          search_purpose: Database["public"]["Enums"]["search_purpose_type"]
+          search_query: string
+          searched_at: string
+          searcher_user_id: string
+          session_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          accessed_person_ids?: string[] | null
+          accessed_uacs?: string[] | null
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          purpose_details?: string | null
+          results_count?: number
+          search_purpose: Database["public"]["Enums"]["search_purpose_type"]
+          search_query: string
+          searched_at?: string
+          searcher_user_id: string
+          session_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          accessed_person_ids?: string[] | null
+          accessed_uacs?: string[] | null
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          purpose_details?: string | null
+          results_count?: number
+          search_purpose?: Database["public"]["Enums"]["search_purpose_type"]
+          search_query?: string
+          searched_at?: string
+          searcher_user_id?: string
+          session_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       addresses: {
         Row: {
           address_type: string
@@ -500,7 +548,11 @@ export type Database = {
           notes: string | null
           occupant: Database["public"]["Enums"]["occupant_type"] | null
           person_id: string | null
+          privacy_level: Database["public"]["Enums"]["address_privacy_level"]
+          privacy_updated_at: string | null
+          privacy_updated_by: string | null
           scope: Database["public"]["Enums"]["address_scope"]
+          searchable_by_public: boolean
           source: string | null
           status: Database["public"]["Enums"]["address_status"] | null
           uac: string
@@ -521,7 +573,11 @@ export type Database = {
           notes?: string | null
           occupant?: Database["public"]["Enums"]["occupant_type"] | null
           person_id?: string | null
+          privacy_level?: Database["public"]["Enums"]["address_privacy_level"]
+          privacy_updated_at?: string | null
+          privacy_updated_by?: string | null
           scope: Database["public"]["Enums"]["address_scope"]
+          searchable_by_public?: boolean
           source?: string | null
           status?: Database["public"]["Enums"]["address_status"] | null
           uac: string
@@ -542,7 +598,11 @@ export type Database = {
           notes?: string | null
           occupant?: Database["public"]["Enums"]["occupant_type"] | null
           person_id?: string | null
+          privacy_level?: Database["public"]["Enums"]["address_privacy_level"]
+          privacy_updated_at?: string | null
+          privacy_updated_by?: string | null
           scope?: Database["public"]["Enums"]["address_scope"]
+          searchable_by_public?: boolean
           source?: string | null
           status?: Database["public"]["Enums"]["address_status"] | null
           uac?: string
@@ -1709,21 +1769,27 @@ export type Database = {
           auth_user_id: string | null
           created_at: string | null
           id: string
+          is_protected_class: boolean
           national_id: string | null
+          protection_reason: string | null
           updated_at: string | null
         }
         Insert: {
           auth_user_id?: string | null
           created_at?: string | null
           id?: string
+          is_protected_class?: boolean
           national_id?: string | null
+          protection_reason?: string | null
           updated_at?: string | null
         }
         Update: {
           auth_user_id?: string | null
           created_at?: string | null
           id?: string
+          is_protected_class?: boolean
           national_id?: string | null
+          protection_reason?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -2598,6 +2664,15 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      can_view_citizen_address: {
+        Args: {
+          p_privacy_level: Database["public"]["Enums"]["address_privacy_level"]
+          p_searchable_by_public: boolean
+          p_searcher_id: string
+          p_target_person_id: string
+        }
+        Returns: boolean
+      }
       check_address_duplicates: {
         Args: {
           p_city: string
@@ -2939,6 +3014,7 @@ export type Database = {
     }
     Enums: {
       address_kind: "PRIMARY" | "SECONDARY" | "OTHER"
+      address_privacy_level: "PRIVATE" | "REGION_ONLY" | "PUBLIC"
       address_scope: "BUILDING" | "UNIT"
       address_status: "SELF_DECLARED" | "CONFIRMED" | "REJECTED"
       app_role:
@@ -3016,6 +3092,13 @@ export type Database = {
         | "restricted"
         | "confidential"
         | "classified"
+      search_purpose_type:
+        | "DELIVERY"
+        | "EMERGENCY_CONTACT"
+        | "GOVERNMENT_SERVICE"
+        | "BUSINESS_CONTACT"
+        | "PERSONAL"
+        | "OTHER"
       verification_status:
         | "pending"
         | "document_review"
@@ -3153,6 +3236,7 @@ export const Constants = {
   public: {
     Enums: {
       address_kind: ["PRIMARY", "SECONDARY", "OTHER"],
+      address_privacy_level: ["PRIVATE", "REGION_ONLY", "PUBLIC"],
       address_scope: ["BUILDING", "UNIT"],
       address_status: ["SELF_DECLARED", "CONFIRMED", "REJECTED"],
       app_role: [
@@ -3236,6 +3320,14 @@ export const Constants = {
         "restricted",
         "confidential",
         "classified",
+      ],
+      search_purpose_type: [
+        "DELIVERY",
+        "EMERGENCY_CONTACT",
+        "GOVERNMENT_SERVICE",
+        "BUSINESS_CONTACT",
+        "PERSONAL",
+        "OTHER",
       ],
       verification_status: [
         "pending",

@@ -1,179 +1,96 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Separator } from "@/components/ui/separator";
-import { Search, User, MapPin, Calendar, CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Search, User, MapPin, Shield, AlertTriangle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from 'react-i18next';
 
-interface CitizenSearchResult {
-  person: {
-    id: string;
-    auth_user_id: string | null;
-    national_id: string | null;
-    created_at: string;
-  };
-  profile: {
-    full_name: string | null;
-    email: string | null;
-    phone: string | null;
-  } | null;
+interface SearchResult {
+  person_id: string;
+  full_name: string;
+  email?: string;
+  is_protected: boolean;
   addresses: Array<{
-    id: string;
-    address_kind: string;
-    scope: string;
-    status: string;
     uac: string;
-    unit_uac: string | null;
-    effective_from: string;
-    effective_to: string | null;
-    street: string | null;
-    city: string | null;
-    region: string | null;
-    country: string | null;
-    building: string | null;
-    latitude: number | null;
-    longitude: number | null;
-    nar_verified: boolean | null;
-    nar_public: boolean | null;
-    created_at: string;
-    source: string | null;
-    notes: string | null;
+    unit_uac?: string;
+    street?: string;
+    city?: string;
+    region?: string;
+    country?: string;
+    building?: string;
+    privacy_level: string;
+    status: string;
   }>;
+  address_count: number;
 }
 
 export const CitizenAddressSearch = () => {
   const { toast } = useToast();
   const { t } = useTranslation(['address', 'common']);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<CitizenSearchResult[]>([]);
+  const [searchPurpose, setSearchPurpose] = useState<string>('');
+  const [purposeDetails, setPurposeDetails] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) {
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!searchQuery.trim() || searchQuery.trim().length < 2) {
       toast({
         title: t('common:status.error'),
-        description: t('address:searchError'),
+        description: "Search query must be at least 2 characters",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!searchPurpose) {
+      toast({
+        title: t('common:status.error'),
+        description: "Please select a search purpose",
         variant: "destructive"
       });
       return;
     }
 
     setLoading(true);
-    setHasSearched(true);
+    setHasSearched(false);
 
     try {
-      // Search strategy:
-      // 1. If query looks like an ID (numbers/alphanumeric), search by national_id
-      // 2. Otherwise search by name in profiles table
-      // 3. Join with citizen addresses and address details
-
-      let personResults: any[] = [];
-
-      // Check if query looks like an ID (contains numbers or is alphanumeric)
-      const looksLikeId = /\d/.test(searchQuery) || /^[A-Za-z0-9]+$/.test(searchQuery);
-
-      if (looksLikeId) {
-        // Search by national ID
-        const { data: personsByID, error: idError } = await supabase
-          .from('person')
-          .select('*')
-          .ilike('national_id', `%${searchQuery.trim()}%`);
-
-        if (idError) throw idError;
-        personResults = personsByID || [];
-      }
-
-      // Also search by name in profiles (always do this as names can contain numbers)
-      const { data: profilesByName, error: nameError } = await supabase
-        .from('profiles')
-        .select('user_id, full_name, email, phone')
-        .ilike('full_name', `%${searchQuery.trim()}%`);
-
-      if (nameError) throw nameError;
-
-      // Get person records for profile matches
-      if (profilesByName && profilesByName.length > 0) {
-        const userIds = profilesByName.map(p => p.user_id);
-        const { data: personsByName, error: personError } = await supabase
-          .from('person')
-          .select('*')
-          .in('auth_user_id', userIds);
-
-        if (personError) throw personError;
-        
-        // Merge results, avoiding duplicates
-        const existingPersonIds = new Set(personResults.map(p => p.id));
-        const newPersons = (personsByName || []).filter(p => !existingPersonIds.has(p.id));
-        personResults = [...personResults, ...newPersons];
-      }
-
-      if (personResults.length === 0) {
-        // Fallback: show profile hits even if person linkage is missing
-        const results: CitizenSearchResult[] = (profilesByName || []).map((p: any) => ({
-          person: {
-            id: '',
-            auth_user_id: p.user_id || null,
-            national_id: null,
-            created_at: ''
-          },
-          profile: {
-            full_name: p.full_name || null,
-            email: p.email || null,
-            phone: p.phone || null
-          },
-          addresses: []
-        }));
-        setSearchResults(results);
-        return;
-      }
-
-      // Get profiles for all found persons
-      const authUserIds = personResults
-        .map(p => p.auth_user_id)
-        .filter(id => id !== null);
-
-      const { data: profiles, error: profileError } = await supabase
-        .from('profiles')
-        .select('user_id, full_name, email, phone')
-        .in('user_id', authUserIds);
-
-      if (profileError) throw profileError;
-
-      // Get addresses for all found persons
-      const personIds = personResults.map(p => p.id);
-      const { data: addresses, error: addressError } = await supabase
-        .from('citizen_address_with_details')
-        .select('*')
-        .in('person_id', personIds)
-        .order('created_at', { ascending: false });
-
-      if (addressError) throw addressError;
-
-      // Combine the data
-      const results: CitizenSearchResult[] = personResults.map(person => {
-        const profile = profiles?.find(p => p.user_id === person.auth_user_id) || null;
-        const personAddresses = addresses?.filter(a => a.person_id === person.id) || [];
-
-        return {
-          person,
-          profile,
-          addresses: personAddresses
-        };
+      const { data, error } = await supabase.functions.invoke('search-citizen-addresses', {
+        body: {
+          query: searchQuery,
+          purpose: searchPurpose,
+          purposeDetails: purposeDetails || undefined,
+          limit: 20,
+        },
       });
 
-      setSearchResults(results);
+      if (error) throw error;
 
-    } catch (error) {
-      console.error('Error searching citizens:', error);
+      setSearchResults(data.results || []);
+      setHasSearched(true);
+
+      if (data.results?.length === 0) {
+        toast({
+          title: "No results found",
+          description: "No searchable addresses match your query",
+        });
+      }
+    } catch (error: any) {
+      console.error('Search error:', error);
       toast({
         title: t('common:status.error'),
-        description: t('common:messages.loadingError'),
+        description: error.message || "Failed to search addresses",
         variant: "destructive"
       });
     } finally {
@@ -181,232 +98,163 @@ export const CitizenAddressSearch = () => {
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'CONFIRMED':
-        return <CheckCircle className="w-4 h-4 text-green-500" />;
-      case 'REJECTED':
-        return <XCircle className="w-4 h-4 text-red-500" />;
-      case 'SELF_DECLARED':
-        return <Clock className="w-4 h-4 text-yellow-500" />;
-      default:
-        return <AlertTriangle className="w-4 h-4 text-orange-500" />;
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'CONFIRMED':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'REJECTED':
-        return 'bg-red-100 text-red-800 border-red-200';
-      case 'SELF_DECLARED':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      default:
-        return 'bg-orange-100 text-orange-800 border-orange-200';
-    }
-  };
-
-  const formatAddress = (address: any) => {
-    const parts = [
-      address.building,
-      address.street,
-      address.city,
-      address.region,
-      address.country
-    ].filter(Boolean);
-    
-    return parts.length > 0 ? parts.join(', ') : t('address:addressDetailsNotAvailable');
-  };
-
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Search className="h-5 w-5" />
-            {t('address:searchCitizenAddresses')}
-          </CardTitle>
+          <div className="flex items-center gap-2">
+            <Search className="h-5 w-5 text-primary" />
+            <CardTitle>{t('address:searchCitizenAddresses')}</CardTitle>
+          </div>
           <CardDescription>
             {t('address:searchCitizenDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-2">
-            <Input
-              placeholder={t('address:searchCitizenPlaceholder')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-              className="flex-1"
-            />
-            <Button onClick={handleSearch} disabled={loading}>
-              {loading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              ) : (
-                <Search className="h-4 w-4" />
-              )}
+          <Alert className="mb-6">
+            <Shield className="h-4 w-4" />
+            <AlertTitle>Privacy & Security</AlertTitle>
+            <AlertDescription>
+              All searches are logged for security. Only public or region-visible addresses will appear. 
+              Protected individuals (minors, etc.) are excluded from search results.
+            </AlertDescription>
+          </Alert>
+
+          <form onSubmit={handleSearch} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="search">Search by Name</Label>
+              <Input
+                id="search"
+                placeholder={t('address:searchCitizenPlaceholder')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="purpose">Search Purpose *</Label>
+              <Select value={searchPurpose} onValueChange={setSearchPurpose} disabled={loading}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select purpose..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="DELIVERY">Package/Mail Delivery</SelectItem>
+                  <SelectItem value="EMERGENCY_CONTACT">Emergency Contact</SelectItem>
+                  <SelectItem value="GOVERNMENT_SERVICE">Government Service</SelectItem>
+                  <SelectItem value="BUSINESS_CONTACT">Business Contact</SelectItem>
+                  <SelectItem value="PERSONAL">Personal/Social</SelectItem>
+                  <SelectItem value="OTHER">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="details">Additional Details (Optional)</Label>
+              <Textarea
+                id="details"
+                placeholder="Provide additional context for this search..."
+                value={purposeDetails}
+                onChange={(e) => setPurposeDetails(e.target.value)}
+                disabled={loading}
+                rows={2}
+              />
+            </div>
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? t('address:searchingCitizens') : t('common:buttons.search')}
             </Button>
-          </div>
+          </form>
         </CardContent>
       </Card>
 
       {hasSearched && (
-        <div className="space-y-4">
-          {loading ? (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                </div>
-              </CardContent>
-            </Card>
-          ) : searchResults.length === 0 ? (
-            <Alert>
-              <Search className="h-4 w-4" />
-              <AlertDescription>
-                {t('address:noMatchingCitizens', { query: searchQuery })}
-              </AlertDescription>
-            </Alert>
-          ) : (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <User className="h-5 w-5" />
-                <h3 className="text-lg font-semibold">
-                  {searchResults.length === 1 
-                    ? t('address:searchResultsSingle', { count: 1 })
-                    : t('address:searchResultsMultiple', { count: searchResults.length })
-                  }
-                </h3>
+        <Card>
+          <CardHeader>
+            <CardTitle>Search Results ({searchResults.length})</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {searchResults.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <AlertTriangle className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                <p>No searchable addresses found for "{searchQuery}"</p>
+                <p className="text-sm mt-2">
+                  Citizens must opt-in to make their addresses searchable
+                </p>
               </div>
-
-              {searchResults.map((result, index) => (
-                <Card key={result.person.id} className="border-l-4 border-l-primary">
-                  <CardHeader className="pb-3">
+            ) : (
+              <div className="space-y-4">
+                {searchResults.map((result, idx) => (
+                  <div key={idx} className="border rounded-lg p-4 space-y-3">
                     <div className="flex items-start justify-between">
-                      <div className="space-y-1">
-                        <CardTitle className="text-lg">
-                          {result.profile?.full_name || t('address:nameNotAvailable')}
-                        </CardTitle>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          {result.person.national_id && (
-                            <span>{t('address:citizenId', { id: result.person.national_id })}</span>
-                          )}
-                          {result.profile?.email && (
-                            <span>{t('address:citizenEmail', { email: result.profile.email })}</span>
-                          )}
-                          {result.profile?.phone && (
-                            <span>{t('address:citizenPhone', { phone: result.profile.phone })}</span>
-                          )}
-                        </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">{result.full_name}</h3>
+                        {result.email && (
+                          <p className="text-sm text-muted-foreground">{result.email}</p>
+                        )}
                       </div>
-                      <Badge variant="outline" className="shrink-0">
-                        {t('address:addressCountLabel', { 
-                          count: result.addresses.length,
-                          plural: result.addresses.length !== 1 ? t('address:addressesPlural') : t('address:addressesSingular')
-                        })}
-                      </Badge>
+                      {result.is_protected && (
+                        <Badge variant="destructive">
+                          <Shield className="h-3 w-3 mr-1" />
+                          Protected
+                        </Badge>
+                      )}
                     </div>
-                  </CardHeader>
 
-                  <CardContent className="space-y-4">
-                    {result.addresses.length === 0 ? (
-                      <Alert>
-                        <MapPin className="h-4 w-4" />
-                        <AlertDescription>
-                          {t('address:noAddressesForCitizen')}
-                        </AlertDescription>
-                      </Alert>
-                    ) : (
-                      <div className="space-y-3">
-                        <h4 className="font-medium flex items-center gap-2">
-                          <MapPin className="h-4 w-4" />
-                          {t('address:registeredAddresses')}
-                        </h4>
-                        
-                        {result.addresses.map((address, addrIndex) => (
-                          <div key={address.id} className="border rounded-lg p-3 space-y-2">
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="space-y-2 flex-1">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <Badge variant={address.address_kind === 'PRIMARY' ? 'default' : 'secondary'}>
-                                    {t(`address:${address.address_kind === 'PRIMARY' ? 'primaryAddress' : 'secondaryAddress'}`)}
-                                  </Badge>
-                                  <Badge variant="outline">
-                                    {t(`address:scope_${address.scope?.toLowerCase() || 'unknown'}`)}
-                                  </Badge>
-                                  <Badge 
-                                    variant="outline" 
-                                    className={getStatusColor(address.status)}
-                                  >
-                                    {getStatusIcon(address.status)}
-                                    <span className="ml-1">{t(`address:${address.status.toLowerCase()}Status`)}</span>
-                                  </Badge>
-                                  {address.nar_verified && (
-                                    <Badge variant="default" className="bg-blue-100 text-blue-800 border-blue-200">
-                                      {t('address:narVerifiedBadge')}
-                                    </Badge>
-                                  )}
-                                  {address.nar_public && (
-                                    <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
-                                      {t('address:publicBadge')}
-                                    </Badge>
-                                  )}
+                    <div className="space-y-2">
+                      {result.addresses.map((address, addrIdx) => (
+                        <div key={addrIdx} className="bg-muted/50 rounded p-3 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <Badge variant="outline" className="font-mono">
+                              {address.uac}
+                            </Badge>
+                            <Badge 
+                              variant={address.privacy_level === 'PUBLIC' ? 'default' : 'secondary'}
+                            >
+                              {address.privacy_level}
+                            </Badge>
+                          </div>
+
+                          {address.street && (
+                            <div className="flex items-start gap-2">
+                              <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground" />
+                              <div className="text-sm">
+                                {address.building && <div className="font-medium">{address.building}</div>}
+                                <div>{address.street}</div>
+                                <div className="text-muted-foreground">
+                                  {address.city}, {address.region}
                                 </div>
-
-                                <div className="space-y-1">
-                                  <p className="font-mono text-sm text-primary">
-                                    {t('address:uac')}: {address.uac}
-                                    {address.unit_uac && ` | ${t('address:unitLabel')}: ${address.unit_uac}`}
-                                  </p>
-                                  <p className="text-sm">
-                                    {formatAddress(address)}
-                                  </p>
-                                  {address.latitude && address.longitude && (
-                                    <p className="text-xs text-muted-foreground">
-                                      {t('address:coordinates')}: {address.latitude.toFixed(6)}, {address.longitude.toFixed(6)}
-                                    </p>
-                                  )}
-                                </div>
-
-                                <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                                  <span className="flex items-center gap-1">
-                                    <Calendar className="h-3 w-3" />
-                                    {t('address:addedOn', { date: new Date(address.created_at).toLocaleDateString() })}
-                                  </span>
-                                  <span>
-                                    {t('address:validFromDate', { date: new Date(address.effective_from).toLocaleDateString() })}
-                                  </span>
-                                  {address.effective_to && (
-                                    <span>
-                                      {t('address:validUntilDate', { date: new Date(address.effective_to).toLocaleDateString() })}
-                                    </span>
-                                  )}
-                                  {address.source && (
-                                    <span>{t('address:sourceLabel', { source: address.source })}</span>
-                                  )}
-                                </div>
-
-                                {address.notes && (
-                                  <div className="text-xs bg-muted p-2 rounded">
-                                    <span className="font-medium">{t('address:addressNotes')}</span> {address.notes}
-                                  </div>
-                                )}
+                                <div className="text-muted-foreground">{address.country}</div>
                               </div>
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                          )}
 
-                    {index < searchResults.length - 1 && <Separator className="mt-4" />}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </div>
+                          {!address.street && address.city && (
+                            <div className="flex items-start gap-2">
+                              <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground" />
+                              <div className="text-sm text-muted-foreground">
+                                <div>{address.city}, {address.region}</div>
+                                <div>{address.country}</div>
+                                <div className="text-xs italic mt-1">
+                                  Full address hidden (Region-only privacy)
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          <Badge variant="outline" className="text-xs">
+                            Status: {address.status}
+                          </Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       )}
     </div>
   );
