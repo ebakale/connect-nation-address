@@ -39,6 +39,15 @@ export function HouseholdManagement() {
     gender: '',
     relationship_to_guardian: '',
     birth_certificate_number: '',
+    dependent_type: 'MINOR',
+    dependency_reason: '',
+    expected_dependency_end_date: '',
+    disability_certificate_number: '',
+    student_enrollment_number: '',
+    university_name: '',
+    health_card_number: '',
+    school_id_number: '',
+    notes: '',
   });
   const [householdMembers, setHouseholdMembers] = useState<Record<string, any[]>>({});
   const [isEditHouseholdDialogOpen, setIsEditHouseholdDialogOpen] = useState(false);
@@ -146,6 +155,15 @@ export function HouseholdManagement() {
           gender: dependentForm.gender || null,
           relationship_to_guardian: dependentForm.relationship_to_guardian as "CHILD" | "GRANDCHILD" | "OTHER_RELATIVE",
           birth_certificate_number: dependentForm.birth_certificate_number || null,
+          dependent_type: dependentForm.dependent_type as "MINOR" | "ADULT_STUDENT" | "ADULT_DISABLED" | "ELDERLY_PARENT" | "OTHER_ADULT",
+          dependency_reason: dependentForm.dependency_reason || null,
+          expected_dependency_end_date: dependentForm.expected_dependency_end_date || null,
+          disability_certificate_number: dependentForm.disability_certificate_number || null,
+          student_enrollment_number: dependentForm.student_enrollment_number || null,
+          university_name: dependentForm.university_name || null,
+          health_card_number: dependentForm.health_card_number || null,
+          school_id_number: dependentForm.school_id_number || null,
+          notes: dependentForm.notes || null,
           created_by: person.auth_user_id,
         }]);
 
@@ -163,6 +181,15 @@ export function HouseholdManagement() {
         gender: '',
         relationship_to_guardian: '',
         birth_certificate_number: '',
+        dependent_type: 'MINOR',
+        dependency_reason: '',
+        expected_dependency_end_date: '',
+        disability_certificate_number: '',
+        student_enrollment_number: '',
+        university_name: '',
+        health_card_number: '',
+        school_id_number: '',
+        notes: '',
       });
       
       fetchDependents();
@@ -192,6 +219,15 @@ export function HouseholdManagement() {
           gender: dependentForm.gender || null,
           relationship_to_guardian: dependentForm.relationship_to_guardian as "CHILD" | "GRANDCHILD" | "OTHER_RELATIVE",
           birth_certificate_number: dependentForm.birth_certificate_number || null,
+          dependent_type: dependentForm.dependent_type as "MINOR" | "ADULT_STUDENT" | "ADULT_DISABLED" | "ELDERLY_PARENT" | "OTHER_ADULT",
+          dependency_reason: dependentForm.dependency_reason || null,
+          expected_dependency_end_date: dependentForm.expected_dependency_end_date || null,
+          disability_certificate_number: dependentForm.disability_certificate_number || null,
+          student_enrollment_number: dependentForm.student_enrollment_number || null,
+          university_name: dependentForm.university_name || null,
+          health_card_number: dependentForm.health_card_number || null,
+          school_id_number: dependentForm.school_id_number || null,
+          notes: dependentForm.notes || null,
         })
         .eq('id', editingDependent.id);
 
@@ -287,6 +323,9 @@ export function HouseholdManagement() {
           dependent_id: selectedDependentId,
           relationship_to_head: relationshipToHead,
           is_primary_resident: false,
+          is_primary_household: false,
+          membership_status: 'ACTIVE',
+          household_role: 'DEPENDENT',
           added_by: person.auth_user_id,
         }]);
 
@@ -611,7 +650,7 @@ export function HouseholdManagement() {
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Badge variant="outline">{dependent.relationship_to_guardian}</Badge>
+                          <Badge variant="outline">{t(`car:dependents.dependentTypes.${dependent.dependent_type}`)}</Badge>
                           <Button
                             variant="ghost"
                             size="sm"
@@ -623,6 +662,15 @@ export function HouseholdManagement() {
                                 gender: dependent.gender || '',
                                 relationship_to_guardian: dependent.relationship_to_guardian,
                                 birth_certificate_number: dependent.birth_certificate_number || '',
+                                dependent_type: dependent.dependent_type || 'MINOR',
+                                dependency_reason: dependent.dependency_reason || '',
+                                expected_dependency_end_date: dependent.expected_dependency_end_date || '',
+                                disability_certificate_number: dependent.disability_certificate_number || '',
+                                student_enrollment_number: dependent.student_enrollment_number || '',
+                                university_name: dependent.university_name || '',
+                                health_card_number: dependent.health_card_number || '',
+                                school_id_number: dependent.school_id_number || '',
+                                notes: dependent.notes || '',
                               });
                               setIsEditDependentDialogOpen(true);
                             }}
@@ -651,18 +699,18 @@ export function HouseholdManagement() {
                     </DialogHeader>
                     <form onSubmit={handleCreateDependent} className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="fullName">{t('address:fullName')}</Label>
+                        <Label htmlFor="fullName">{t('car:dependents.form.fullName')}</Label>
                         <Input
                           id="fullName"
                           value={dependentForm.full_name}
                           onChange={(e) => setDependentForm({...dependentForm, full_name: e.target.value})}
-                          placeholder={t('address:fullNamePlaceholder')}
+                          placeholder={t('car:dependents.form.fullNamePlaceholder')}
                           required
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="dateOfBirth">{t('address:dateOfBirth')}</Label>
+                        <Label htmlFor="dateOfBirth">{t('car:dependents.form.dateOfBirth')}</Label>
                         <Input
                           id="dateOfBirth"
                           type="date"
@@ -673,46 +721,154 @@ export function HouseholdManagement() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="gender">{t('address:gender')} ({t('common:optional')})</Label>
+                        <Label htmlFor="dependentType">{t('car:dependents.form.dependentType')}</Label>
+                        <Select value={dependentForm.dependent_type} onValueChange={(value) => setDependentForm({...dependentForm, dependent_type: value})} required>
+                          <SelectTrigger>
+                            <SelectValue placeholder={t('car:dependents.form.selectDependentType')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="MINOR">{t('car:dependents.dependentTypes.MINOR')}</SelectItem>
+                            <SelectItem value="ADULT_STUDENT">{t('car:dependents.dependentTypes.ADULT_STUDENT')}</SelectItem>
+                            <SelectItem value="ADULT_DISABLED">{t('car:dependents.dependentTypes.ADULT_DISABLED')}</SelectItem>
+                            <SelectItem value="ELDERLY_PARENT">{t('car:dependents.dependentTypes.ELDERLY_PARENT')}</SelectItem>
+                            <SelectItem value="OTHER_ADULT">{t('car:dependents.dependentTypes.OTHER_ADULT')}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {['ADULT_STUDENT', 'ADULT_DISABLED', 'ELDERLY_PARENT', 'OTHER_ADULT'].includes(dependentForm.dependent_type) && (
+                        <div className="space-y-2">
+                          <Label htmlFor="dependencyReason">{t('car:dependents.form.dependencyReason')}</Label>
+                          <Textarea
+                            id="dependencyReason"
+                            value={dependentForm.dependency_reason}
+                            onChange={(e) => setDependentForm({...dependentForm, dependency_reason: e.target.value})}
+                            placeholder={t('car:dependents.form.dependencyReasonPlaceholder')}
+                            required
+                          />
+                          <p className="text-xs text-muted-foreground">{t('car:dependents.form.dependencyReasonRequired')}</p>
+                        </div>
+                      )}
+
+                      {dependentForm.dependent_type === 'ADULT_STUDENT' && (
+                        <>
+                          <div className="space-y-2">
+                            <Label htmlFor="expectedEndDate">{t('car:dependents.form.expectedEndDate')}</Label>
+                            <Input
+                              id="expectedEndDate"
+                              type="date"
+                              value={dependentForm.expected_dependency_end_date}
+                              onChange={(e) => setDependentForm({...dependentForm, expected_dependency_end_date: e.target.value})}
+                              required
+                            />
+                            <p className="text-xs text-muted-foreground">{t('car:dependents.form.expectedEndDateHelper')}</p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="studentEnrollment">{t('car:dependents.form.studentEnrollment')}</Label>
+                            <Input
+                              id="studentEnrollment"
+                              value={dependentForm.student_enrollment_number}
+                              onChange={(e) => setDependentForm({...dependentForm, student_enrollment_number: e.target.value})}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="universityName">{t('car:dependents.form.universityName')}</Label>
+                            <Input
+                              id="universityName"
+                              value={dependentForm.university_name}
+                              onChange={(e) => setDependentForm({...dependentForm, university_name: e.target.value})}
+                            />
+                          </div>
+                        </>
+                      )}
+
+                      {dependentForm.dependent_type === 'ADULT_DISABLED' && (
+                        <div className="space-y-2">
+                          <Label htmlFor="disabilityCertificate">{t('car:dependents.form.disabilityCertificate')}</Label>
+                          <Input
+                            id="disabilityCertificate"
+                            value={dependentForm.disability_certificate_number}
+                            onChange={(e) => setDependentForm({...dependentForm, disability_certificate_number: e.target.value})}
+                          />
+                        </div>
+                      )}
+
+                      <div className="space-y-2">
+                        <Label htmlFor="relationship">{t('car:dependents.form.relationship')}</Label>
+                        <Select value={dependentForm.relationship_to_guardian} onValueChange={(value) => setDependentForm({...dependentForm, relationship_to_guardian: value})} required>
+                          <SelectTrigger>
+                            <SelectValue placeholder={t('car:dependents.form.selectRelationship')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="CHILD">{t('car:dependents.relationships.CHILD')}</SelectItem>
+                            <SelectItem value="ADOPTED_CHILD">{t('car:dependents.relationships.ADOPTED_CHILD')}</SelectItem>
+                            <SelectItem value="STEPCHILD">{t('car:dependents.relationships.STEPCHILD')}</SelectItem>
+                            <SelectItem value="WARD">{t('car:dependents.relationships.WARD')}</SelectItem>
+                            <SelectItem value="GRANDCHILD">{t('car:dependents.relationships.GRANDCHILD')}</SelectItem>
+                            <SelectItem value="NIECE_NEPHEW">{t('car:dependents.relationships.NIECE_NEPHEW')}</SelectItem>
+                            <SelectItem value="OTHER_RELATIVE">{t('car:dependents.relationships.OTHER_RELATIVE')}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="gender">{t('car:dependents.form.gender')}</Label>
                         <Select value={dependentForm.gender} onValueChange={(value) => setDependentForm({...dependentForm, gender: value})}>
                           <SelectTrigger>
                             <SelectValue placeholder={t('address:selectGender')} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="male">Male</SelectItem>
-                            <SelectItem value="female">Female</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
+                            <SelectItem value="male">{t('car:dependents.form.genderOptions.male')}</SelectItem>
+                            <SelectItem value="female">{t('car:dependents.form.genderOptions.female')}</SelectItem>
+                            <SelectItem value="other">{t('car:dependents.form.genderOptions.other')}</SelectItem>
+                            <SelectItem value="prefer_not_to_say">{t('car:dependents.form.genderOptions.prefer_not_to_say')}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="relationship">{t('address:relationshipToGuardian')}</Label>
-                        <Select value={dependentForm.relationship_to_guardian} onValueChange={(value) => setDependentForm({...dependentForm, relationship_to_guardian: value})} required>
-                          <SelectTrigger>
-                            <SelectValue placeholder={t('address:selectRelationship')} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="CHILD">{t('address:relationshipChild')}</SelectItem>
-                            <SelectItem value="GRANDCHILD">{t('address:relationshipGrandchild')}</SelectItem>
-                            <SelectItem value="OTHER_RELATIVE">{t('address:relationshipOtherRelative')}</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="birthCertificate">{t('address:birthCertificate')} ({t('common:optional')})</Label>
+                        <Label htmlFor="birthCertificate">{t('car:dependents.form.birthCertificate')}</Label>
                         <Input
                           id="birthCertificate"
                           value={dependentForm.birth_certificate_number}
                           onChange={(e) => setDependentForm({...dependentForm, birth_certificate_number: e.target.value})}
-                          placeholder={t('address:birthCertificatePlaceholder')}
+                          placeholder={t('car:dependents.form.birthCertificatePlaceholder')}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="healthCard">{t('car:dependents.form.healthCard')}</Label>
+                        <Input
+                          id="healthCard"
+                          value={dependentForm.health_card_number}
+                          onChange={(e) => setDependentForm({...dependentForm, health_card_number: e.target.value})}
+                          placeholder={t('car:dependents.form.healthCardPlaceholder')}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="schoolId">{t('car:dependents.form.schoolId')}</Label>
+                        <Input
+                          id="schoolId"
+                          value={dependentForm.school_id_number}
+                          onChange={(e) => setDependentForm({...dependentForm, school_id_number: e.target.value})}
+                          placeholder={t('car:dependents.form.schoolIdPlaceholder')}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="notes">{t('car:dependents.form.notes')}</Label>
+                        <Textarea
+                          id="notes"
+                          value={dependentForm.notes}
+                          onChange={(e) => setDependentForm({...dependentForm, notes: e.target.value})}
+                          placeholder={t('car:dependents.form.notesPlaceholder')}
                         />
                       </div>
 
                       <Button type="submit" className="w-full" disabled={isCreatingDependent}>
                         {isCreatingDependent && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        {t('address:createDependent')}
+                        {t('car:dependents.register')}
                       </Button>
                     </form>
                   </DialogContent>
