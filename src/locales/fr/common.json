@@ -47,6 +47,10 @@
   "yes": "Oui",
   "no": "Non",
   "loading": "Chargement",
+  "optional": "Optionnel",
+  "description": "Description",
+  "success": "Succès",
+  "error": "Erreur",
   "copied": "Copié",
   "copiedToClipboard": "copié dans le presse-papiers",
   "navigation": {

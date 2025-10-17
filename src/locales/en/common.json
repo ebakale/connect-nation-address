@@ -47,6 +47,10 @@
   "yes": "Yes",
   "no": "No",
   "loading": "Loading",
+  "optional": "Optional",
+  "description": "Description",
+  "success": "Success",
+  "error": "Error",
   "copied": "Copied",
   "copiedToClipboard": "copied to clipboard",
   "navigation": {

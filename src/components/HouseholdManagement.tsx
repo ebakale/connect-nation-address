@@ -145,7 +145,7 @@ export function HouseholdManagement() {
                       </Badge>
                       {household.primary_unit_uac && (
                         <Badge variant="secondary" className="font-mono">
-                          Unit: {household.primary_unit_uac}
+                          {t('address:unitLabel')}: {household.primary_unit_uac}
                         </Badge>
                       )}
                     </div>
