@@ -2783,6 +2783,10 @@ export type Database = {
         }
         Returns: string
       }
+      is_household_member: {
+        Args: { _household_id: string; _user_id: string }
+        Returns: boolean
+      }
       record_privacy_consent: {
         Args: {
           p_consent_details?: Json
