@@ -1,6 +1,7 @@
 {
   "registration": {
     "title": "Register Business Address",
+    "subtitle": "For Businesses & Organizations",
     "organizationDetails": "Organization Details",
     "contactInformation": "Contact Information",
     "operatingInformation": "Operating Information",

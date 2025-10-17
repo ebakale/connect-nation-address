@@ -1,6 +1,7 @@
 {
   "registration": {
     "title": "Enregistrer une Adresse Professionnelle",
+    "subtitle": "Pour Entreprises et Organisations",
     "organizationDetails": "Détails de l'Organisation",
     "contactInformation": "Informations de Contact",
     "operatingInformation": "Informations d'Exploitation",

@@ -193,13 +193,6 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: true
     },
     {
-      id: 'business-register',
-      title: t('registerBusiness'),
-      icon: Building,
-      onClick: () => window.location.href = '/business/register',
-      visible: true
-    },
-    {
       id: 'unified-address-dashboard',
       title: t('addressManagement'),
       icon: MapPin,
