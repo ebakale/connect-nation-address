@@ -29,6 +29,7 @@ import Footer from '@/components/Footer';
 import { SetPrimaryAddressForm } from "@/components/SetPrimaryAddressForm";
 import { SavedLocationsManager } from "@/components/SavedLocationsManager";
 import { AddSecondaryAddressForm } from "@/components/AddSecondaryAddressForm";
+import { AddressPrivacySettings } from "@/components/AddressPrivacySettings";
 
 interface SearchResult {
   uac: string;
@@ -148,7 +149,7 @@ const CitizenPortalUnified = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
             <TabsTrigger value="public" className="flex items-center gap-2">
               <Search className="h-4 w-4" />
               <span className="hidden sm:inline">Search</span>
@@ -162,6 +163,10 @@ const CitizenPortalUnified = () => {
                 <TabsTrigger value="addresses" className="flex items-center gap-2">
                   <Home className="h-4 w-4" />
                   <span className="hidden sm:inline">My Addresses</span>
+                </TabsTrigger>
+                <TabsTrigger value="privacy" className="flex items-center gap-2">
+                  <Settings className="h-4 w-4" />
+                  <span className="hidden sm:inline">Privacy</span>
                 </TabsTrigger>
                 <TabsTrigger value="saved" className="flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
@@ -471,6 +476,13 @@ const CitizenPortalUnified = () => {
           {isAuthenticated && (
             <TabsContent value="notifications" className="space-y-6">
               <ReporterNotifications />
+            </TabsContent>
+          )}
+
+          {/* Privacy Settings Tab */}
+          {isAuthenticated && (
+            <TabsContent value="privacy" className="space-y-6">
+              <AddressPrivacySettings />
             </TabsContent>
           )}
 
