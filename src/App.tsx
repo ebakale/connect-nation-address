@@ -21,6 +21,7 @@ import { UnitsAndProfilesPage } from "./pages/UnitsAndProfilesPage";
 import CitizenPortalUnified from "./pages/CitizenPortalUnified";
 import { DemoPresentationPage } from "./pages/DemoPresentationPage";
 import { BusinessAddressRegistrationForm } from "./components/BusinessAddressRegistrationForm";
+import MyBusinesses from "./pages/MyBusinesses";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +73,7 @@ const AppRoutes = () => {
       <Route path="/police" element={<ProtectedRoute><PoliceDashboard /></ProtectedRoute>} />
       <Route path="/units-profiles" element={<ProtectedRoute><UnitsAndProfilesPage /></ProtectedRoute>} />
       <Route path="/business/register" element={<ProtectedRoute><BusinessAddressRegistrationForm /></ProtectedRoute>} />
+      <Route path="/my-businesses" element={<ProtectedRoute><MyBusinesses /></ProtectedRoute>} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>

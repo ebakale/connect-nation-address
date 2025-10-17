@@ -143,8 +143,8 @@ export const BusinessAddressRegistrationForm = () => {
 
       if (error) throw error;
 
-      toast.success(t('common:success'));
-      navigate('/dashboard');
+      toast.success(t('business:registration.successMessage'));
+      navigate('/my-businesses');
     } catch (error: any) {
       console.error('Error registering business:', error);
       toast.error(error.message || t('common:error'));

@@ -201,6 +201,13 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: true
     },
     {
+      id: 'my-businesses',
+      title: t('myBusinesses'),
+      icon: Building,
+      onClick: () => navigate('/my-businesses'),
+      visible: isCitizen
+    },
+    {
       id: 'unified-address-dashboard',
       title: t('addressManagement'),
       icon: MapPin,
@@ -512,7 +519,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
 
   // Standard groups for other users
   const mainItems = visibleItems.filter(item => 
-    ['overview', 'business-register', 'unified-address-dashboard', 'registrar-dashboard'].includes(item.id)
+    ['overview', 'business-register', 'my-businesses', 'unified-address-dashboard', 'registrar-dashboard'].includes(item.id)
   );
 
   const fieldItems = visibleItems.filter(item => 
