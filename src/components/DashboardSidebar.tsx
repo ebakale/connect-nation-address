@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Home,
   Search, 
@@ -59,6 +59,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   const collapsed = state === 'collapsed';
   const isMobile = useIsMobile();
   const location = useLocation();
+  const navigate = useNavigate();
   
   const { 
     isCitizen, 
@@ -196,7 +197,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       id: 'business-register',
       title: t('registerBusiness'),
       icon: Building,
-      onClick: () => window.location.href = '/business/register',
+      onClick: () => navigate('/business/register'),
       visible: true
     },
     {
