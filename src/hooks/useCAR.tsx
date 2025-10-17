@@ -9,7 +9,15 @@ import type {
   AddressInput,
   AddressKind,
   AddressScope,
-  AddressStatus 
+  AddressStatus,
+  HouseholdDependent,
+  HouseholdGroup,
+  HouseholdMember,
+  DependentType,
+  CustodyType,
+  HouseholdStatus,
+  MembershipStatus,
+  HouseholdRole
 } from '@/types/car';
 
 export const usePerson = () => {
@@ -311,5 +319,156 @@ export const useAddressReviewQueue = () => {
     loading,
     refetch: fetchQueue,
     updateAddressStatus
+  };
+};
+
+// Household hooks
+export const useHouseholdGroups = () => {
+  const [households, setHouseholds] = useState<HouseholdGroup[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { person } = usePerson();
+  const { toast } = useToast();
+
+  const fetchHouseholds = async () => {
+    if (!person) {
+      setHouseholds([]);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('household_groups')
+        .select('*')
+        .eq('household_head_person_id', person.id)
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      setHouseholds(data || []);
+    } catch (error: any) {
+      console.error('Error fetching households:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load households',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchHouseholds();
+  }, [person]);
+
+  return {
+    households,
+    loading,
+    refetch: fetchHouseholds
+  };
+};
+
+export const useHouseholdMembers = (householdId: string) => {
+  const [members, setMembers] = useState<HouseholdMember[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  const fetchMembers = async () => {
+    if (!householdId) {
+      setMembers([]);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('household_members')
+        .select(`
+          *,
+          dependent:household_dependents(
+            full_name,
+            date_of_birth,
+            relationship_to_guardian,
+            dependent_type
+          )
+        `)
+        .eq('household_group_id', householdId)
+        .order('added_at', { ascending: false });
+
+      if (error) throw error;
+
+      setMembers(data || []);
+    } catch (error: any) {
+      console.error('Error fetching household members:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load household members',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMembers();
+  }, [householdId]);
+
+  return {
+    members,
+    loading,
+    refetch: fetchMembers
+  };
+};
+
+export const useDependents = () => {
+  const [dependents, setDependents] = useState<HouseholdDependent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { person } = usePerson();
+  const { toast } = useToast();
+
+  const fetchDependents = async () => {
+    if (!person) {
+      setDependents([]);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('household_dependents')
+        .select('*')
+        .eq('guardian_person_id', person.id)
+        .eq('is_active', true)
+        .order('date_of_birth', { ascending: false });
+
+      if (error) throw error;
+
+      setDependents(data || []);
+    } catch (error: any) {
+      console.error('Error fetching dependents:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load dependents',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDependents();
+  }, [person]);
+
+  return {
+    dependents,
+    loading,
+    refetch: fetchDependents
   };
 };
