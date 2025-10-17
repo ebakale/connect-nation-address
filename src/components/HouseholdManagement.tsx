@@ -818,10 +818,10 @@ export function HouseholdManagement() {
                             <SelectValue placeholder={t('car:dependents.form.selectGender')} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="male">{t('common:gender.male')}</SelectItem>
-                            <SelectItem value="female">{t('common:gender.female')}</SelectItem>
-                            <SelectItem value="other">{t('common:gender.other')}</SelectItem>
-                            <SelectItem value="prefer_not_to_say">{t('common:gender.preferNotToSay')}</SelectItem>
+                            <SelectItem value="male">{t('car:dependents.form.genderOptions.male')}</SelectItem>
+                            <SelectItem value="female">{t('car:dependents.form.genderOptions.female')}</SelectItem>
+                            <SelectItem value="other">{t('car:dependents.form.genderOptions.other')}</SelectItem>
+                            <SelectItem value="prefer_not_to_say">{t('car:dependents.form.genderOptions.prefer_not_to_say')}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>

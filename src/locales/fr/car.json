@@ -42,6 +42,7 @@
       "relationship": "Relation avec Vous",
       "selectRelationship": "Sélectionnez la relation",
       "gender": "Genre (Optionnel)",
+      "selectGender": "Sélectionner le genre",
       "genderOptions": {
         "male": "Masculin",
         "female": "Féminin",
