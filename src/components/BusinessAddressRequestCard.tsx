@@ -4,10 +4,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle, XCircle, MapPin, Building2, Phone, Mail, Users, Clock, Accessibility } from "lucide-react";
+import { CheckCircle, XCircle, MapPin, Building2, Phone, Mail, Users, Clock, Accessibility, Eye, Edit } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useTranslation } from 'react-i18next';
+import { DuplicateAddressDialog } from "./DuplicateAddressDialog";
+import { AddressMapDialog } from "./AddressMapDialog";
 
 interface BusinessAddressRequest {
   id: string;
@@ -33,37 +35,59 @@ interface BusinessAddressRequestCardProps {
 }
 
 export function BusinessAddressRequestCard({ request, onUpdate }: BusinessAddressRequestCardProps) {
-  const { t } = useTranslation('address');
+  const { t } = useTranslation(['address', 'business']);
   const [rejectionReason, setRejectionReason] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
+  const [duplicateAnalysis, setDuplicateAnalysis] = useState<any>(null);
+  const [showMapDialog, setShowMapDialog] = useState(false);
 
   const orgData = request.verification_analysis?.organization || {};
 
-  const handleApprove = async () => {
+  const handleApprove = async (ignoreDuplicates = false) => {
     setIsProcessing(true);
     try {
       const { data, error } = await supabase.rpc('approve_business_address_request', {
-        p_request_id: request.id
+        p_request_id: request.id,
+        p_ignore_duplicates: ignoreDuplicates
       });
 
       if (error) throw error;
 
-      const result = data as { success: boolean; error?: string; address_id?: string };
+      const result = data as { 
+        success: boolean; 
+        error?: string; 
+        address_id?: string;
+        requires_review?: boolean;
+        duplicate_analysis?: any;
+      };
       
+      if (result?.requires_review && result?.duplicate_analysis) {
+        setDuplicateAnalysis(result.duplicate_analysis);
+        setShowDuplicateDialog(true);
+        setIsProcessing(false);
+        return;
+      }
+
       if (result?.success) {
-        toast.success(t('businessAddressApproved'));
+        toast.success(t('business:approvalSuccess'));
         onUpdate();
       } else {
-        toast.error(result?.error || t('approvalFailed'));
+        toast.error(result?.error || t('address:approvalFailed'));
       }
     } catch (error) {
       console.error('Error approving business address:', error);
-      toast.error(t('approvalError'));
+      toast.error(t('address:approvalError'));
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleProceedWithDuplicates = () => {
+    setShowDuplicateDialog(false);
+    handleApprove(true);
   };
 
   const handleReject = async () => {
@@ -206,55 +230,110 @@ export function BusinessAddressRequestCard({ request, onUpdate }: BusinessAddres
             </div>
           )}
 
+          {/* Verification Analysis */}
+          {request.verification_analysis && Object.keys(request.verification_analysis).length > 0 && (
+            <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-md border border-blue-200 dark:border-blue-800">
+              <p className="text-sm font-medium mb-1 text-blue-900 dark:text-blue-100">
+                {t('address:verificationAnalysis')}
+              </p>
+              <div className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
+                {request.verification_analysis.confidence_score && (
+                  <p>{t('address:confidenceScore')}: {(request.verification_analysis.confidence_score * 100).toFixed(0)}%</p>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-2 pt-2">
-            <Button
-              onClick={handleApprove}
-              disabled={isProcessing}
-              className="flex-1 bg-purple-600 hover:bg-purple-700"
-            >
-              <CheckCircle className="h-4 w-4 mr-2" />
-              {t('approveBusiness')}
-            </Button>
-            <Button
-              onClick={() => setShowRejectDialog(true)}
-              disabled={isProcessing}
-              variant="destructive"
-              className="flex-1"
-            >
-              <XCircle className="h-4 w-4 mr-2" />
-              {t('reject')}
-            </Button>
-            <Button
-              onClick={() => setShowDetails(true)}
-              variant="outline"
-            >
-              {t('viewDetails')}
-            </Button>
+          <div className="flex flex-col gap-2 pt-2">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button
+                onClick={() => handleApprove(false)}
+                disabled={isProcessing}
+                className="flex-1 bg-purple-600 hover:bg-purple-700"
+              >
+                <CheckCircle className="h-4 w-4 mr-2" />
+                {t('business:approveBusiness')}
+              </Button>
+              <Button
+                onClick={() => setShowRejectDialog(true)}
+                disabled={isProcessing}
+                variant="destructive"
+                className="flex-1"
+              >
+                <XCircle className="h-4 w-4 mr-2" />
+                {t('address:reject')}
+              </Button>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button
+                onClick={() => setShowMapDialog(true)}
+                variant="outline"
+                className="flex-1"
+              >
+                <MapPin className="h-4 w-4 mr-2" />
+                {t('address:viewOnMap')}
+              </Button>
+              <Button
+                onClick={() => setShowDetails(true)}
+                variant="outline"
+                className="flex-1"
+              >
+                <Eye className="h-4 w-4 mr-2" />
+                {t('business:viewDetails')}
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
+
+      {/* Duplicate Dialog */}
+      {duplicateAnalysis && (
+        <DuplicateAddressDialog
+          isOpen={showDuplicateDialog}
+          onClose={() => setShowDuplicateDialog(false)}
+          duplicateAnalysis={duplicateAnalysis}
+          onProceedAnyway={handleProceedWithDuplicates}
+          actionLabel={t('address:proceedAnyway')}
+        />
+      )}
+
+      {/* Map Dialog */}
+      <AddressMapDialog
+        isOpen={showMapDialog}
+        onClose={() => setShowMapDialog(false)}
+        address={{
+          id: request.id,
+          latitude: request.latitude,
+          longitude: request.longitude,
+          street: request.street,
+          city: request.city,
+          region: request.region,
+          country: request.country,
+          building: request.building
+        }}
+      />
 
       {/* Reject Dialog */}
       <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('rejectBusinessRequest')}</DialogTitle>
-            <DialogDescription>{t('provideReasonForRejection')}</DialogDescription>
+            <DialogTitle>{t('business:rejectBusinessRequest')}</DialogTitle>
+            <DialogDescription>{t('address:provideReasonForRejection')}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <Textarea
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
-              placeholder={t('enterRejectionReason')}
+              placeholder={t('address:enterRejectionReason')}
               rows={4}
             />
             <div className="flex gap-2 justify-end">
               <Button onClick={() => setShowRejectDialog(false)} variant="outline">
-                {t('cancel')}
+                {t('address:cancel')}
               </Button>
               <Button onClick={handleReject} disabled={isProcessing} variant="destructive">
-                {t('confirmReject')}
+                {t('address:confirmReject')}
               </Button>
             </div>
           </div>
@@ -265,25 +344,25 @@ export function BusinessAddressRequestCard({ request, onUpdate }: BusinessAddres
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{t('businessDetails')}</DialogTitle>
+            <DialogTitle>{t('business:businessDetails')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <h4 className="font-semibold mb-2">{t('organizationInfo')}</h4>
+              <h4 className="font-semibold mb-2">{t('business:organizationInfo')}</h4>
               <dl className="grid grid-cols-2 gap-2 text-sm">
-                <dt className="text-muted-foreground">{t('name')}:</dt>
+                <dt className="text-muted-foreground">{t('business:name')}:</dt>
                 <dd>{orgData.organization_name}</dd>
-                <dt className="text-muted-foreground">{t('category')}:</dt>
+                <dt className="text-muted-foreground">{t('business:category')}:</dt>
                 <dd>{orgData.business_category}</dd>
                 {orgData.business_registration_number && (
                   <>
-                    <dt className="text-muted-foreground">{t('registrationNumber')}:</dt>
+                    <dt className="text-muted-foreground">{t('business:registrationNumber')}:</dt>
                     <dd>{orgData.business_registration_number}</dd>
                   </>
                 )}
                 {orgData.tax_identification_number && (
                   <>
-                    <dt className="text-muted-foreground">{t('taxId')}:</dt>
+                    <dt className="text-muted-foreground">{t('business:taxId')}:</dt>
                     <dd>{orgData.tax_identification_number}</dd>
                   </>
                 )}
@@ -292,7 +371,7 @@ export function BusinessAddressRequestCard({ request, onUpdate }: BusinessAddres
             
             {request.photo_url && (
               <div>
-                <h4 className="font-semibold mb-2">{t('photo')}</h4>
+                <h4 className="font-semibold mb-2">{t('address:photo')}</h4>
                 <img src={request.photo_url} alt="Business" className="w-full rounded-md" />
               </div>
             )}

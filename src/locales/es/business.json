@@ -146,5 +146,26 @@
     "reject": "Rechazar",
     "successMessage": "¡Solicitud de registro de negocio enviada exitosamente!",
     "selectProvinceFirst": "Selecciona una provincia primero"
+  },
+  "approval": {
+    "approveBusiness": "Aprobar Negocio",
+    "approvalSuccess": "Dirección de negocio aprobada exitosamente",
+    "rejectBusinessRequest": "Rechazar Solicitud de Negocio",
+    "viewDetails": "Ver Detalles",
+    "businessDetails": "Detalles del Negocio",
+    "organizationInfo": "Información de la Organización",
+    "name": "Nombre",
+    "category": "Categoría",
+    "registrationNumber": "Número de Registro",
+    "taxId": "ID Fiscal",
+    "employees": "empleados",
+    "capacity": "Capacidad",
+    "parking": "Estacionamiento",
+    "accessible": "Accesible",
+    "appointmentRequired": "Requiere Cita",
+    "servicesOffered": "Servicios Ofrecidos",
+    "unknownBusiness": "Negocio Desconocido",
+    "business": "Negocio",
+    "publicService": "Servicio Público"
   }
 }

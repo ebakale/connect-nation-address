@@ -2822,7 +2822,13 @@ export type Database = {
         Returns: Json
       }
       approve_business_address_request: {
-        Args: { p_approved_by?: string; p_request_id: string }
+        Args:
+          | {
+              p_approved_by?: string
+              p_ignore_duplicates?: boolean
+              p_request_id: string
+            }
+          | { p_approved_by?: string; p_request_id: string }
         Returns: Json
       }
       auto_approve_verified_citizen_addresses: {

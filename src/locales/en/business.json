@@ -145,5 +145,26 @@
     "approveAndVerify": "Approve and Verify",
     "reject": "Reject",
     "successMessage": "Business registration request submitted successfully!"
+  },
+  "approval": {
+    "approveBusiness": "Approve Business",
+    "approvalSuccess": "Business address approved successfully",
+    "rejectBusinessRequest": "Reject Business Request",
+    "viewDetails": "View Details",
+    "businessDetails": "Business Details",
+    "organizationInfo": "Organization Information",
+    "name": "Name",
+    "category": "Category",
+    "registrationNumber": "Registration Number",
+    "taxId": "Tax ID",
+    "employees": "employees",
+    "capacity": "Capacity",
+    "parking": "Parking",
+    "accessible": "Accessible",
+    "appointmentRequired": "Appointment Required",
+    "servicesOffered": "Services Offered",
+    "unknownBusiness": "Unknown Business",
+    "business": "Business",
+    "publicService": "Public Service"
   }
 }

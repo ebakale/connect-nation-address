@@ -146,5 +146,26 @@
     "reject": "Rejeter",
     "successMessage": "Demande d'enregistrement d'entreprise soumise avec succès!",
     "selectProvinceFirst": "Sélectionnez d'abord une province"
+  },
+  "approval": {
+    "approveBusiness": "Approuver l'Entreprise",
+    "approvalSuccess": "Adresse commerciale approuvée avec succès",
+    "rejectBusinessRequest": "Rejeter la Demande d'Entreprise",
+    "viewDetails": "Voir les Détails",
+    "businessDetails": "Détails de l'Entreprise",
+    "organizationInfo": "Informations sur l'Organisation",
+    "name": "Nom",
+    "category": "Catégorie",
+    "registrationNumber": "Numéro d'Enregistrement",
+    "taxId": "Numéro Fiscal",
+    "employees": "employés",
+    "capacity": "Capacité",
+    "parking": "Stationnement",
+    "accessible": "Accessible",
+    "appointmentRequired": "Rendez-vous Requis",
+    "servicesOffered": "Services Offerts",
+    "unknownBusiness": "Entreprise Inconnue",
+    "business": "Entreprise",
+    "publicService": "Service Public"
   }
 }
