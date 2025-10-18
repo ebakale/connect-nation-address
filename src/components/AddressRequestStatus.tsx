@@ -3,14 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { CalendarDays, MapPin, MessageSquare, RefreshCw, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, FileText } from 'lucide-react';
+import { CalendarDays, MapPin, MessageSquare, RefreshCw, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, FileText, AlertTriangle } from 'lucide-react';
 import { format } from 'date-fns';
+import { AddressResubmissionDialog } from '@/components/AddressResubmissionDialog';
 
 interface AddressRequestData {
   id: string;
+  requester_id?: string;
   country: string;
   region: string;
   city: string;
@@ -23,6 +26,11 @@ interface AddressRequestData {
   justification: string;
   status: string;
   reviewer_notes?: string;
+  rejection_reason?: string;
+  rejection_notes?: string;
+  rejected_by?: string;
+  rejected_at?: string;
+  photo_url?: string;
   created_at: string;
   updated_at: string;
 }
@@ -40,10 +48,15 @@ export const AddressRequestStatus = () => {
   const [requests, setRequests] = useState<AddressRequestData[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [activeTab, setActiveTab] = useState<'all' | 'rejected'>('all');
   const requestsPerPage = 5;
   const { user } = useAuth();
   const { toast } = useToast();
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+  const [resubmissionDialog, setResubmissionDialog] = useState<{
+    open: boolean;
+    address: AddressRequestData | null;
+  }>({ open: false, address: null });
 
   const fetchRequests = async () => {
     if (!user) return;
@@ -52,7 +65,7 @@ export const AddressRequestStatus = () => {
     try {
       const { data, error } = await supabase
         .from('address_requests')
-        .select('id, country, region, city, street, building, latitude, longitude, address_type, description, justification, status, reviewer_notes, created_at, updated_at')
+        .select('id, requester_id, country, region, city, street, building, latitude, longitude, address_type, description, justification, status, reviewer_notes, rejection_reason, rejection_notes, rejected_by, rejected_at, photo_url, created_at, updated_at')
         .eq('requester_id', user.id)
         .order('created_at', { ascending: false });
       
@@ -119,6 +132,23 @@ export const AddressRequestStatus = () => {
     }
   };
 
+  const handleResubmit = (request: AddressRequestData) => {
+    setResubmissionDialog({ open: true, address: request });
+  };
+
+  const handleResubmissionSuccess = () => {
+    setResubmissionDialog({ open: false, address: null });
+    fetchRequests();
+    toast({
+      title: t('success'),
+      description: t('resubmissionSuccessful'),
+    });
+  };
+
+  // Filter requests
+  const allRequests = requests;
+  const rejectedRequests = requests.filter(r => r.status === 'rejected');
+
   if (loading) {
     return (
       <div className="flex justify-center items-center py-8">
@@ -142,6 +172,12 @@ export const AddressRequestStatus = () => {
     );
   }
 
+  const displayRequests = activeTab === 'all' ? allRequests : rejectedRequests;
+  const totalPagesForTab = Math.ceil(displayRequests.length / requestsPerPage);
+  const startIndexForTab = (currentPage - 1) * requestsPerPage;
+  const endIndexForTab = startIndexForTab + requestsPerPage;
+  const currentDisplayRequests = displayRequests.slice(startIndexForTab, endIndexForTab);
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -157,8 +193,19 @@ export const AddressRequestStatus = () => {
         </Button>
       </div>
 
-      <div className="space-y-4">
-        {currentRequests.map((request) => {
+      <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v as 'all' | 'rejected'); setCurrentPage(1); }}>
+        <TabsList>
+          <TabsTrigger value="all">{t('allRequests')}</TabsTrigger>
+          <TabsTrigger value="rejected">
+            {t('rejectedOnly')}
+            {rejectedRequests.length > 0 && (
+              <Badge variant="destructive" className="ml-2">{rejectedRequests.length}</Badge>
+            )}
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="all" className="space-y-4 mt-4">
+          {currentDisplayRequests.map((request) => {
           const isExpanded = expandedCards.has(request.id);
           
           return (
@@ -249,10 +296,116 @@ export const AddressRequestStatus = () => {
             </Card>
           );
         })}
-      </div>
+        </TabsContent>
+
+        <TabsContent value="rejected" className="space-y-4 mt-4">
+          {currentDisplayRequests.map((request) => {
+            const isExpanded = expandedCards.has(request.id);
+            
+            return (
+              <Card key={request.id} className="border-l-4 border-l-destructive">
+                <CardHeader className="pb-3">
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-1 flex-1">
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <MapPin className="h-4 w-4" />
+                        {formatAddress(request)}
+                      </CardTitle>
+                      <CardDescription className="flex items-center gap-4 text-sm">
+                        <span className="flex items-center gap-1">
+                          <CalendarDays className="h-3 w-3" />
+                          {format(new Date(request.created_at), 'MMM d, yyyy')}
+                        </span>
+                        <span className="capitalize">{request.address_type}</span>
+                      </CardDescription>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {getStatusBadge(request.status)}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleCardExpansion(request.id)}
+                      >
+                        {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Rejection Alert */}
+                  {request.rejection_reason && (
+                    <div className="mt-3 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+                      <div className="flex items-start gap-2">
+                        <AlertTriangle className="h-4 w-4 text-destructive mt-0.5" />
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-sm text-destructive mb-1">{t('rejectionDetails')}</h4>
+                          <p className="text-sm text-destructive/90">{request.rejection_reason}</p>
+                          {request.rejection_notes && (
+                            <p className="text-sm text-muted-foreground mt-2">{request.rejection_notes}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardHeader>
+
+                {isExpanded && (
+                  <CardContent className="pt-0">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <h4 className="font-medium mb-2">{t('requestDetails')}</h4>
+                        <dl className="space-y-1">
+                          <div className="flex justify-between">
+                            <dt className="text-muted-foreground">{t('status')}:</dt>
+                            <dd className="capitalize">{request.status}</dd>
+                          </div>
+                          <div className="flex justify-between">
+                            <dt className="text-muted-foreground">{t('type')}:</dt>
+                            <dd className="capitalize">{request.address_type}</dd>
+                          </div>
+                          {request.latitude && request.longitude && (
+                            <div className="flex justify-between">
+                              <dt className="text-muted-foreground">{t('coordinates')}:</dt>
+                              <dd>{request.latitude.toFixed(6)}, {request.longitude.toFixed(6)}</dd>
+                            </div>
+                          )}
+                        </dl>
+                      </div>
+
+                      <div>
+                        <h4 className="font-medium mb-2">{t('justification')}</h4>
+                        <p className="text-muted-foreground text-sm">{request.justification}</p>
+                        
+                        {request.description && (
+                          <>
+                            <h4 className="font-medium mb-2 mt-4">{t('description')}</h4>
+                            <p className="text-muted-foreground text-sm">{request.description}</p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="mt-4 pt-4 border-t flex justify-between items-center">
+                      <p className="text-xs text-muted-foreground">
+                        {t('lastUpdated')}: {format(new Date(request.updated_at), 'MMM d, yyyy HH:mm')}
+                      </p>
+                      <Button
+                        onClick={() => handleResubmit(request)}
+                        className="flex items-center gap-2"
+                      >
+                        <RefreshCw className="h-4 w-4" />
+                        {t('guidedResubmission')}
+                      </Button>
+                    </div>
+                  </CardContent>
+                )}
+              </Card>
+            );
+          })}
+        </TabsContent>
+      </Tabs>
 
       {/* Pagination */}
-      {totalPages > 1 && (
+      {totalPagesForTab > 1 && (
         <div className="flex justify-center items-center gap-2">
           <Button
             variant="outline"
@@ -264,18 +417,35 @@ export const AddressRequestStatus = () => {
           </Button>
           
           <span className="text-sm text-muted-foreground px-4">
-            {t('pageXOfY', { current: currentPage, total: totalPages })}
+            {t('pageXOfY', { current: currentPage, total: totalPagesForTab })}
           </span>
           
           <Button
             variant="outline"
             size="sm"
             onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
+            disabled={currentPage === totalPagesForTab}
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
+      )}
+
+      {/* Resubmission Dialog */}
+      {resubmissionDialog.address && resubmissionDialog.address.latitude !== undefined && resubmissionDialog.address.longitude !== undefined && (
+        <AddressResubmissionDialog
+          open={resubmissionDialog.open}
+          onOpenChange={(open) => setResubmissionDialog({ open, address: open ? resubmissionDialog.address : null })}
+          rejectedAddress={{
+            ...resubmissionDialog.address,
+            latitude: resubmissionDialog.address.latitude,
+            longitude: resubmissionDialog.address.longitude,
+            rejected_by: resubmissionDialog.address.rejected_by || '',
+            rejected_at: resubmissionDialog.address.rejected_at || new Date().toISOString(),
+            rejection_reason: resubmissionDialog.address.rejection_reason || '',
+          }}
+          onSuccess={handleResubmissionSuccess}
+        />
       )}
     </div>
   );

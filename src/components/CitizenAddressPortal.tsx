@@ -2,14 +2,13 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Home, MapPin, History, Plus, Shield, Users, XCircle } from 'lucide-react';
+import { Home, MapPin, History, Plus, Shield, Users } from 'lucide-react';
 import { useCitizenAddresses } from '@/hooks/useCAR';
 import { SetPrimaryAddressForm } from './SetPrimaryAddressForm';
 import { AddSecondaryAddressForm } from './AddSecondaryAddressForm';
 import { CurrentAddressesPanel } from './CurrentAddressesPanel';
 import { AddressHistoryPanel } from './AddressHistoryPanel';
 import { HouseholdManagement } from './HouseholdManagement';
-import { RejectedAddressesPanel } from './RejectedAddressesPanel';
 import { useTranslation } from 'react-i18next';
 
 export function CitizenAddressPortal() {
@@ -47,7 +46,7 @@ export function CitizenAddressPortal() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="current" className="flex items-center gap-2">
             <Home className="h-4 w-4" />
             {t('address:current')}
@@ -67,10 +66,6 @@ export function CitizenAddressPortal() {
           <TabsTrigger value="history" className="flex items-center gap-2">
             <History className="h-4 w-4" />
             {t('address:history')}
-          </TabsTrigger>
-          <TabsTrigger value="rejected" className="flex items-center gap-2">
-            <XCircle className="h-4 w-4" />
-            {t('address:rejected')}
           </TabsTrigger>
         </TabsList>
 
@@ -123,23 +118,6 @@ export function CitizenAddressPortal() {
 
         <TabsContent value="history" className="space-y-4">
           <AddressHistoryPanel addressHistory={addressHistory} />
-        </TabsContent>
-
-        <TabsContent value="rejected" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <XCircle className="h-5 w-5" />
-                {t('address:rejectedRequests')}
-              </CardTitle>
-              <CardDescription>
-                {t('address:rejectedRequestsDescription')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <RejectedAddressesPanel citizenView={true} />
-            </CardContent>
-          </Card>
         </TabsContent>
       </Tabs>
     </div>
