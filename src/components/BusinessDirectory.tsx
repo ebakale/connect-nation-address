@@ -158,12 +158,14 @@ export function BusinessDirectory() {
               </CardHeader>
               
               <CardContent className="space-y-3">
-                <div className="flex items-start gap-2 text-sm">
-                  <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground flex-shrink-0" />
-                  <span className="break-words">
-                    {business.addresses.street}, {business.addresses.city}
-                  </span>
-                </div>
+                {business.addresses && (
+                  <div className="flex items-start gap-2 text-sm">
+                    <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground flex-shrink-0" />
+                    <span className="break-words">
+                      {business.addresses.street}, {business.addresses.city}
+                    </span>
+                  </div>
+                )}
 
                 {business.show_contact_info && (
                   <>
@@ -221,18 +223,20 @@ export function BusinessDirectory() {
                   )}
                 </div>
 
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full mt-2"
-                  onClick={() => window.open(
-                    `https://www.google.com/maps/search/?api=1&query=${business.addresses.latitude},${business.addresses.longitude}`,
-                    '_blank'
-                  )}
-                >
-                  <MapPin className="h-4 w-4 mr-2" />
-                  {t('search.viewOnMap')}
-                </Button>
+                {business.addresses && (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full mt-2"
+                    onClick={() => window.open(
+                      `https://www.google.com/maps/search/?api=1&query=${business.addresses.latitude},${business.addresses.longitude}`,
+                      '_blank'
+                    )}
+                  >
+                    <MapPin className="h-4 w-4 mr-2" />
+                    {t('search.viewOnMap')}
+                  </Button>
+                )}
               </CardContent>
             </Card>
           ))}
