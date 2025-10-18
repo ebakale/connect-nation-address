@@ -24,6 +24,9 @@ import { QRCodeGenerator } from "@/components/QRCodeGenerator";
 import { useSearchAnalytics } from "@/hooks/useSearchAnalytics";
 import { useEnhancedGeolocation } from "@/hooks/useEnhancedGeolocation";
 import { useTranslation } from "react-i18next";
+import { BusinessDirectory } from "@/components/BusinessDirectory";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Building2 } from "lucide-react";
 
 interface PublicAddress {
   uac: string;
@@ -314,6 +317,21 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
             </span>
           </div>
         </div>
+
+        {/* Tabs for Addresses and Businesses */}
+        <Tabs defaultValue="addresses" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="addresses" className="flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              {t('address:publicPortal.addresses', { defaultValue: 'Addresses' })}
+            </TabsTrigger>
+            <TabsTrigger value="businesses" className="flex items-center gap-2">
+              <Building2 className="h-4 w-4" />
+              {t('business:directory.title', { defaultValue: 'Businesses' })}
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="addresses" className="space-y-4">
 
         {/* Mobile-optimized Search Section */}
         <Card className="mb-4 sm:mb-6">
@@ -739,7 +757,12 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
             )}
           </div>
         )}
+          </TabsContent>
 
+          <TabsContent value="businesses">
+            <BusinessDirectory />
+          </TabsContent>
+        </Tabs>
 
         {/* Footer */}
         <div className="text-center mt-8 text-sm text-muted-foreground px-4">

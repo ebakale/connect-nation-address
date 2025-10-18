@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { 
   Shield, Users, Settings, BarChart3, LogOut, Search, FileText, Clock, AlertCircle,
   Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map, User, Phone,
-  Database, Network, Home
+  Database, Network, Home, Building2
 } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
@@ -55,6 +55,7 @@ import { CARAdministrativeOverview } from '@/components/CARAdministrativeOvervie
 import { CARQualityMetrics } from '@/components/CARQualityMetrics';
 import { CARBulkOperations } from '@/components/CARBulkOperations';
 import { NARAuthorityDashboard } from '@/components/NARAuthorityDashboard';
+import { BusinessDirectory } from '@/components/BusinessDirectory';
 
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
 import { UnifiedAddressDashboard } from "@/components/UnifiedAddressDashboard";
@@ -718,6 +719,22 @@ const UnifiedDashboard = () => {
                           onAddressSearched={setSelectedAddress}
                         />
                       </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Business Directory */}
+                  <Card className="shadow-card w-full">
+                    <CardHeader className="pb-4">
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <Building2 className="h-5 w-5" />
+                        {t('business:directory.title', { defaultValue: 'Business Directory' })}
+                      </CardTitle>
+                      <CardDescription className="text-sm">
+                        {t('business:directory.description', { defaultValue: 'Find registered businesses and services' })}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <BusinessDirectory />
                     </CardContent>
                   </Card>
 
