@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle, XCircle, MapPin, Building2, Phone, Mail, Users, Clock, Accessibility, Eye, Edit } from "lucide-react";
+import { CheckCircle, XCircle, MapPin, Building2, Phone, Mail, Users, Clock, Accessibility, Eye, Edit, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useTranslation } from 'react-i18next';
@@ -43,6 +43,7 @@ export function BusinessAddressRequestCard({ request, onUpdate }: BusinessAddres
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [duplicateAnalysis, setDuplicateAnalysis] = useState<any>(null);
   const [showMapDialog, setShowMapDialog] = useState(false);
+  const [isAutoVerifying, setIsAutoVerifying] = useState(false);
 
   const orgData = request.verification_analysis?.organization || {};
 
@@ -113,6 +114,25 @@ export function BusinessAddressRequestCard({ request, onUpdate }: BusinessAddres
       toast.error(t('rejectionError'));
     } finally {
       setIsProcessing(false);
+    }
+  };
+
+  const handleAutoVerify = async () => {
+    setIsAutoVerifying(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('auto-verify-address', {
+        body: { requestId: request.id, mode: 'single' }
+      });
+
+      if (error) throw error;
+
+      toast.success(t('address:autoVerificationComplete'));
+      onUpdate(); // Refresh to show updated analysis
+    } catch (error) {
+      console.error('Error auto-verifying:', error);
+      toast.error(t('address:autoVerificationError'));
+    } finally {
+      setIsAutoVerifying(false);
     }
   };
 
@@ -266,6 +286,15 @@ export function BusinessAddressRequestCard({ request, onUpdate }: BusinessAddres
               </Button>
             </div>
             <div className="flex flex-col sm:flex-row gap-2">
+              <Button
+                onClick={handleAutoVerify}
+                disabled={isProcessing || isAutoVerifying}
+                variant="outline"
+                className="flex-1"
+              >
+                <Zap className="h-4 w-4 mr-2" />
+                {isAutoVerifying ? t('address:autoVerifying') : t('address:autoVerify')}
+              </Button>
               <Button
                 onClick={() => setShowMapDialog(true)}
                 variant="outline"

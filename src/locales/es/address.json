@@ -403,6 +403,8 @@
   "autoVerify": "Verificación Automática",
   "autoVerifying": "Verificando Automáticamente...",
   "verifying": "Verificando...",
+  "autoVerificationComplete": "Auto-verificación completa. Revise el análisis a continuación.",
+  "autoVerificationError": "Error al realizar la auto-verificación",
   "previous": "Anterior",
   "next": "Siguiente",
   "editAddressRequest": "Editar Solicitud de Dirección",

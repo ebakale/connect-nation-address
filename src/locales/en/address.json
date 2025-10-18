@@ -573,6 +573,8 @@
   "autoVerifying": "Auto Verifying...",
   "verifying": "Verifying...",
   "autoVerify": "Auto Verify",
+  "autoVerificationComplete": "Auto-verification complete. Review the analysis below.",
+  "autoVerificationError": "Failed to perform auto-verification",
   "reject": "Reject",
   "rejectionFeedback": "Rejection Feedback",
   "resubmissionGuidance": "Please review the rejection feedback above and make necessary corrections to your address information. Ensure all details are accurate and complete before resubmitting.",
