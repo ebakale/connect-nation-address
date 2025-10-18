@@ -20,10 +20,13 @@ import {
   Eye,
   CheckCircle,
   XCircle,
-  AlertCircle
+  AlertCircle,
+  TrendingUp
 } from "lucide-react";
 import { Database } from "@/integrations/supabase/types";
 import { BreadcrumbNavigation } from "@/components/BreadcrumbNavigation";
+import { BusinessViewDialog } from "@/components/BusinessViewDialog";
+import { BusinessEditDialog } from "@/components/BusinessEditDialog";
 
 type OrganizationAddress = Database["public"]["Tables"]["organization_addresses"]["Row"] & {
   addresses?: {
@@ -44,6 +47,15 @@ export default function MyBusinesses() {
   const navigate = useNavigate();
   const [businesses, setBusinesses] = useState<OrganizationAddress[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedBusiness, setSelectedBusiness] = useState<OrganizationAddress | null>(null);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [stats, setStats] = useState({
+    total: 0,
+    active: 0,
+    verified: 0,
+    pending: 0
+  });
 
   useEffect(() => {
     if (user) {
@@ -65,7 +77,8 @@ export default function MyBusinesses() {
             country,
             latitude,
             longitude,
-            verified
+            verified,
+            building
           )
         `)
         .eq('created_by', user?.id)
@@ -73,12 +86,34 @@ export default function MyBusinesses() {
 
       if (error) throw error;
       setBusinesses(data || []);
+      
+      // Calculate statistics
+      const total = data?.length || 0;
+      const active = data?.filter(b => b.business_status === 'active').length || 0;
+      const verified = data?.filter(b => b.addresses?.verified).length || 0;
+      const pending = data?.filter(b => !b.addresses?.verified).length || 0;
+      
+      setStats({ total, active, verified, pending });
     } catch (error: any) {
       console.error('Error loading businesses:', error);
       toast.error(error.message);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleViewBusiness = (business: OrganizationAddress) => {
+    setSelectedBusiness(business);
+    setViewDialogOpen(true);
+  };
+
+  const handleEditBusiness = (business: OrganizationAddress) => {
+    setSelectedBusiness(business);
+    setEditDialogOpen(true);
+  };
+
+  const handleEditSuccess = () => {
+    loadBusinesses();
   };
 
   const getStatusBadge = (status: string | null, verified: boolean) => {
@@ -162,6 +197,51 @@ export default function MyBusinesses() {
         </Button>
       </div>
 
+      {/* Statistics Cards */}
+      {businesses.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <Card className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">{t('business:dashboard.total')}</p>
+                <p className="text-2xl font-bold">{stats.total}</p>
+              </div>
+              <Building2 className="h-8 w-8 text-muted-foreground" />
+            </div>
+          </Card>
+          
+          <Card className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">{t('business:dashboard.active')}</p>
+                <p className="text-2xl font-bold text-green-600">{stats.active}</p>
+              </div>
+              <TrendingUp className="h-8 w-8 text-green-600" />
+            </div>
+          </Card>
+          
+          <Card className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">{t('business:dashboard.verified')}</p>
+                <p className="text-2xl font-bold text-blue-600">{stats.verified}</p>
+              </div>
+              <CheckCircle className="h-8 w-8 text-blue-600" />
+            </div>
+          </Card>
+          
+          <Card className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">{t('business:dashboard.pending')}</p>
+                <p className="text-2xl font-bold text-orange-600">{stats.pending}</p>
+              </div>
+              <AlertCircle className="h-8 w-8 text-orange-600" />
+            </div>
+          </Card>
+        </div>
+      )}
+
       {businesses.length === 0 ? (
         <Card className="p-12 text-center">
           <Building2 className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
@@ -239,7 +319,7 @@ export default function MyBusinesses() {
                   variant="outline" 
                   size="sm" 
                   className="flex-1"
-                  onClick={() => toast.info(t('common:comingSoon'))}
+                  onClick={() => handleViewBusiness(business)}
                 >
                   <Eye className="h-4 w-4 mr-2" />
                   {t('common:view')}
@@ -248,7 +328,7 @@ export default function MyBusinesses() {
                   variant="outline" 
                   size="sm" 
                   className="flex-1"
-                  onClick={() => toast.info(t('common:comingSoon'))}
+                  onClick={() => handleEditBusiness(business)}
                 >
                   <Edit className="h-4 w-4 mr-2" />
                   {t('common:edit')}
@@ -262,6 +342,21 @@ export default function MyBusinesses() {
           ))}
         </div>
       )}
+
+      {/* View Dialog */}
+      <BusinessViewDialog
+        business={selectedBusiness}
+        open={viewDialogOpen}
+        onOpenChange={setViewDialogOpen}
+      />
+
+      {/* Edit Dialog */}
+      <BusinessEditDialog
+        business={selectedBusiness}
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        onSuccess={handleEditSuccess}
+      />
     </div>
   );
 }
