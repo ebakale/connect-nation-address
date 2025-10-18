@@ -288,6 +288,7 @@ export type Database = {
           street: string
           uac: string
           updated_at: string
+          user_id: string | null
           verification_analysis: Json | null
           verification_recommendations: string[] | null
           verified: boolean
@@ -325,6 +326,7 @@ export type Database = {
           street: string
           uac: string
           updated_at?: string
+          user_id?: string | null
           verification_analysis?: Json | null
           verification_recommendations?: string[] | null
           verified?: boolean
@@ -362,6 +364,7 @@ export type Database = {
           street?: string
           uac?: string
           updated_at?: string
+          user_id?: string | null
           verification_analysis?: Json | null
           verification_recommendations?: string[] | null
           verified?: boolean
