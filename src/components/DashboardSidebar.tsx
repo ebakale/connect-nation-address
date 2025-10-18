@@ -530,7 +530,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   );
 
   const fieldItems = visibleItems.filter(item => 
-    ['submit-request', 'capture-address', 'field-drafts', 'field-map'].includes(item.id)
+    ['submit-request', 'request-status', 'capture-address', 'field-drafts', 'field-map'].includes(item.id)
   );
   
   const adminItems = visibleItems.filter(item => 
