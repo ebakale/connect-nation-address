@@ -253,14 +253,66 @@ export function BusinessAddressRequestCard({ request, onUpdate }: BusinessAddres
           {/* Verification Analysis */}
           {request.verification_analysis && Object.keys(request.verification_analysis).length > 0 && (
             <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-md border border-blue-200 dark:border-blue-800">
-              <p className="text-sm font-medium mb-1 text-blue-900 dark:text-blue-100">
+              <p className="text-sm font-medium mb-2 text-blue-900 dark:text-blue-100">
                 {t('address:verificationAnalysis')}
               </p>
-              <div className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
-                {request.verification_analysis.confidence_score && (
-                  <p>{t('address:confidenceScore')}: {(request.verification_analysis.confidence_score * 100).toFixed(0)}%</p>
-                )}
-              </div>
+              
+              {/* Overall Score */}
+              {request.verification_analysis.overallScore !== undefined && (
+                <div className="mb-2">
+                  <Badge 
+                    variant={
+                      request.verification_analysis.overallScore >= 80 ? 'default' :
+                      request.verification_analysis.overallScore >= 50 ? 'secondary' : 'destructive'
+                    }
+                  >
+                    {t('address:score')}: {request.verification_analysis.overallScore.toFixed(0)}%
+                  </Badge>
+                </div>
+              )}
+
+              {/* Quality Metrics */}
+              {(request.verification_analysis.coordinateValidity !== undefined || 
+                request.verification_analysis.addressConsistency !== undefined ||
+                request.verification_analysis.completeness !== undefined) && (
+                <div className="text-xs text-blue-700 dark:text-blue-300 space-y-1 mb-2">
+                  {request.verification_analysis.coordinateValidity !== undefined && (
+                    <p>{t('address:coordinateValidity')}: {request.verification_analysis.coordinateValidity}%</p>
+                  )}
+                  {request.verification_analysis.addressConsistency !== undefined && (
+                    <p>{t('address:addressConsistency')}: {request.verification_analysis.addressConsistency}%</p>
+                  )}
+                  {request.verification_analysis.completeness !== undefined && (
+                    <p>{t('address:completeness')}: {request.verification_analysis.completeness}%</p>
+                  )}
+                  {request.verification_analysis.fraudRisk !== undefined && (
+                    <p>{t('address:fraudRisk')}: {request.verification_analysis.fraudRisk}%</p>
+                  )}
+                </div>
+              )}
+
+              {/* Duplicate Check */}
+              {request.verification_analysis.duplicateCheck?.has_duplicates && (
+                <div className="text-xs text-amber-700 dark:text-amber-300 space-y-1 mb-2">
+                  <p className="font-medium">{t('address:duplicateCheck')}:</p>
+                  {request.verification_analysis.duplicateCheck.coordinate_duplicates?.count > 0 && (
+                    <p>• {request.verification_analysis.duplicateCheck.coordinate_duplicates.count} {t('address:coordinateDuplicates')}</p>
+                  )}
+                  {request.verification_analysis.duplicateCheck.address_duplicates?.count > 0 && (
+                    <p>• {request.verification_analysis.duplicateCheck.address_duplicates.count} {t('address:addressDuplicates')}</p>
+                  )}
+                </div>
+              )}
+
+              {/* Recommendations */}
+              {request.verification_analysis.recommendations && request.verification_analysis.recommendations.length > 0 && (
+                <div className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
+                  <p className="font-medium">{t('address:recommendations')}:</p>
+                  {request.verification_analysis.recommendations.map((rec: string, idx: number) => (
+                    <p key={idx}>• {rec}</p>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
