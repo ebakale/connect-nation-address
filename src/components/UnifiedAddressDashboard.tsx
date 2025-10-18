@@ -134,7 +134,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
     }
 
     // Citizens get a simplified interface
-    if (currentRole === 'citizen' && !hasCarAccess) {
+    if (currentRole === 'citizen') {
       tabs.push({ 
         id: 'search', 
         label: t('address:searchAddresses'), 
