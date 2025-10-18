@@ -31,6 +31,7 @@ interface RejectedAddress {
 
 interface RejectedAddressesPanelProps {
   onUpdate?: () => void;
+  citizenView?: boolean;
 }
 
 // Helper function to translate AI analysis comments
@@ -86,7 +87,7 @@ const translateAIComment = (comment: string, t: any): string => {
   return comment;
 };
 
-export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps) {
+export function RejectedAddressesPanel({ onUpdate, citizenView = false }: RejectedAddressesPanelProps) {
   const { t } = useTranslation('address');
   const { roleMetadata, loading: roleLoading } = useUserRole();
   const [rejectedAddresses, setRejectedAddresses] = useState<RejectedAddress[]>([]);
@@ -110,14 +111,22 @@ export function RejectedAddressesPanel({ onUpdate }: RejectedAddressesPanelProps
         .select('*')
         .eq('status', 'rejected');
 
-      // Apply geographical scope filter
-      if (geographicScope) {
-        if (geographicScope.scope_type === 'city') {
-          query = query.ilike('city', geographicScope.scope_value);
-        } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
-          query = query.ilike('region', geographicScope.scope_value);
-        } else if (geographicScope.scope_type === 'geographic') {
-          query = query.or(`city.ilike.${geographicScope.scope_value},region.ilike.${geographicScope.scope_value}`);
+      // For citizen view, filter by current user
+      if (citizenView) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          query = query.eq('requester_id', user.id);
+        }
+      } else {
+        // Apply geographical scope filter for admin view
+        if (geographicScope) {
+          if (geographicScope.scope_type === 'city') {
+            query = query.ilike('city', geographicScope.scope_value);
+          } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+            query = query.ilike('region', geographicScope.scope_value);
+          } else if (geographicScope.scope_type === 'geographic') {
+            query = query.or(`city.ilike.${geographicScope.scope_value},region.ilike.${geographicScope.scope_value}`);
+          }
         }
       }
 
