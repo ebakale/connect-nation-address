@@ -222,6 +222,13 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: isCitizen || isFieldAgent || isPropertyClaimant
     },
     {
+      id: 'request-status',
+      title: t('requestStatus'),
+      icon: Clock,
+      onClick: () => handleItemClick('request-status'),
+      visible: isCitizen || isFieldAgent || isPropertyClaimant
+    },
+    {
       id: 'capture-address',
       title: t('captureAddress'),
       icon: Camera,
