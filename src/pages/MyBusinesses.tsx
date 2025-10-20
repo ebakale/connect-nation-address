@@ -336,7 +336,7 @@ export default function MyBusinesses() {
               </div>
 
               <div className="mt-3 pt-3 border-t text-xs text-muted-foreground">
-                {t('common:registered')}: {new Date(business.created_at || '').toLocaleDateString()}
+                {t('common:buttons.registered')}: {new Date(business.created_at || '').toLocaleDateString()}
               </div>
             </Card>
           ))}
