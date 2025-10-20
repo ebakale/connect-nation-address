@@ -126,7 +126,9 @@
     "temporarilyClosed": "Fermé Temporairement",
     "permanentlyClosed": "Fermé Définitivement",
     "relocated": "Relocalisé",
-    "employees": "employés"
+    "employees": "employés",
+    "total": "Total",
+    "totalBusinesses": "Total des Entreprises"
   },
   "directory": {
     "title": "Répertoire d'Entreprises",

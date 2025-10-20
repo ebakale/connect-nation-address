@@ -126,7 +126,9 @@
     "temporarilyClosed": "Temporarily Closed",
     "permanentlyClosed": "Permanently Closed",
     "relocated": "Relocated",
-    "employees": "employees"
+    "employees": "employees",
+    "total": "Total",
+    "totalBusinesses": "Total Businesses"
   },
   "directory": {
     "title": "Business Directory",
