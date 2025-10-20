@@ -322,7 +322,7 @@ export default function MyBusinesses() {
                   onClick={() => handleViewBusiness(business)}
                 >
                   <Eye className="h-4 w-4 mr-2" />
-                  {t('common:view')}
+                  {t('common:buttons.view')}
                 </Button>
                 <Button 
                   variant="outline" 
@@ -331,7 +331,7 @@ export default function MyBusinesses() {
                   onClick={() => handleEditBusiness(business)}
                 >
                   <Edit className="h-4 w-4 mr-2" />
-                  {t('common:edit')}
+                  {t('common:buttons.edit')}
                 </Button>
               </div>
 
