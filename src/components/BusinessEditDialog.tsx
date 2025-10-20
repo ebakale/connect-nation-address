@@ -27,8 +27,6 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
   const [formData, setFormData] = useState({
     organization_name: '',
     business_category: '',
-    registration_number: '',
-    tax_id: '',
     primary_contact_name: '',
     primary_contact_phone: '',
     primary_contact_email: '',
@@ -54,8 +52,6 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
       setFormData({
         organization_name: business.organization_name || '',
         business_category: business.business_category || '',
-        registration_number: (business as any).registration_number || '',
-        tax_id: (business as any).tax_id || '',
         primary_contact_name: business.primary_contact_name || '',
         primary_contact_phone: business.primary_contact_phone || '',
         primary_contact_email: business.primary_contact_email || '',
@@ -109,14 +105,6 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
         show_contact_info: formData.show_contact_info,
         updated_at: new Date().toISOString(),
       };
-
-      // Add optional fields that may not be in the schema
-      if (formData.registration_number) {
-        updateData.registration_number = formData.registration_number;
-      }
-      if (formData.tax_id) {
-        updateData.tax_id = formData.tax_id;
-      }
 
       const { error } = await supabase
         .from('organization_addresses')
@@ -181,24 +169,6 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="registration_number">{t('business:registration.registrationNumber')}</Label>
-              <Input
-                id="registration_number"
-                value={formData.registration_number}
-                onChange={(e) => setFormData({ ...formData, registration_number: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="tax_id">{t('business:registration.taxId')}</Label>
-              <Input
-                id="tax_id"
-                value={formData.tax_id}
-                onChange={(e) => setFormData({ ...formData, tax_id: e.target.value })}
-              />
             </div>
 
             <div>

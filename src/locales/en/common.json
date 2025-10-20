@@ -29,6 +29,8 @@
     "share": "Share",
     "print": "Print",
     "registered": "Registered",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes",
     "open": "Open",
     "configure": "Configure",
     "loading": "Loading...",
