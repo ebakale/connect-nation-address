@@ -26,6 +26,9 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     organization_name: '',
+    business_category: '',
+    registration_number: '',
+    tax_id: '',
     primary_contact_name: '',
     primary_contact_phone: '',
     primary_contact_email: '',
@@ -33,9 +36,12 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
     website_url: '',
     employee_count: '',
     customer_capacity: '',
+    services_offered: [] as string[],
+    languages_spoken: [] as string[],
     parking_available: false,
     parking_capacity: '',
     wheelchair_accessible: false,
+    public_service: false,
     appointment_required: false,
     business_status: 'active',
     publicly_visible: true,
@@ -47,6 +53,9 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
     if (business && open) {
       setFormData({
         organization_name: business.organization_name || '',
+        business_category: business.business_category || '',
+        registration_number: (business as any).registration_number || '',
+        tax_id: (business as any).tax_id || '',
         primary_contact_name: business.primary_contact_name || '',
         primary_contact_phone: business.primary_contact_phone || '',
         primary_contact_email: business.primary_contact_email || '',
@@ -54,9 +63,12 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
         website_url: business.website_url || '',
         employee_count: business.employee_count?.toString() || '',
         customer_capacity: business.customer_capacity?.toString() || '',
+        services_offered: business.services_offered || [],
+        languages_spoken: business.languages_spoken || [],
         parking_available: business.parking_available || false,
         parking_capacity: business.parking_capacity?.toString() || '',
         wheelchair_accessible: business.wheelchair_accessible || false,
+        public_service: business.is_public_service || false,
         appointment_required: business.appointment_required || false,
         business_status: business.business_status || 'active',
         publicly_visible: business.publicly_visible ?? true,
@@ -74,6 +86,7 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
     try {
       const updateData: any = {
         organization_name: formData.organization_name,
+        business_category: formData.business_category || null,
         primary_contact_name: formData.primary_contact_name || null,
         primary_contact_phone: formData.primary_contact_phone || null,
         primary_contact_email: formData.primary_contact_email || null,
@@ -81,11 +94,14 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
         website_url: formData.website_url || null,
         employee_count: formData.employee_count ? parseInt(formData.employee_count) : null,
         customer_capacity: formData.customer_capacity ? parseInt(formData.customer_capacity) : null,
+        services_offered: formData.services_offered,
+        languages_spoken: formData.languages_spoken,
         parking_available: formData.parking_available,
         parking_capacity: formData.parking_available && formData.parking_capacity 
           ? parseInt(formData.parking_capacity) 
           : null,
         wheelchair_accessible: formData.wheelchair_accessible,
+        is_public_service: formData.public_service,
         appointment_required: formData.appointment_required,
         business_status: formData.business_status,
         publicly_visible: formData.publicly_visible,
@@ -93,6 +109,14 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
         show_contact_info: formData.show_contact_info,
         updated_at: new Date().toISOString(),
       };
+
+      // Add optional fields that may not be in the schema
+      if (formData.registration_number) {
+        updateData.registration_number = formData.registration_number;
+      }
+      if (formData.tax_id) {
+        updateData.tax_id = formData.tax_id;
+      }
 
       const { error } = await supabase
         .from('organization_addresses')
@@ -114,6 +138,13 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
 
   if (!business) return null;
 
+  const BUSINESS_CATEGORIES = [
+    "RETAIL", "OFFICE", "RESTAURANT", "HOTEL", "HOSPITAL", "SCHOOL", 
+    "UNIVERSITY", "GOVERNMENT_OFFICE", "POLICE_STATION", "FIRE_STATION",
+    "EMBASSY", "BANK", "FACTORY", "WAREHOUSE", "FARM", "CHURCH",
+    "MOSQUE", "MARKET", "SHOPPING_CENTER", "GAS_STATION", "AIRPORT", "PORT", "OTHER"
+  ];
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -124,6 +155,8 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
           <div className="space-y-4">
+            <h3 className="font-semibold">{t('business:registration.organizationDetails')}</h3>
+            
             <div>
               <Label htmlFor="organization_name">{t('business:registration.organizationName')} *</Label>
               <Input
@@ -131,6 +164,40 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
                 value={formData.organization_name}
                 onChange={(e) => setFormData({ ...formData, organization_name: e.target.value })}
                 required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="business_category">{t('business:registration.businessCategory')}</Label>
+              <Select value={formData.business_category} onValueChange={(value) => setFormData({ ...formData, business_category: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder={t('business:search.allCategories')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {BUSINESS_CATEGORIES.map(cat => (
+                    <SelectItem key={cat} value={cat}>
+                      {t(`business:categories.${cat}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="registration_number">{t('business:registration.registrationNumber')}</Label>
+              <Input
+                id="registration_number"
+                value={formData.registration_number}
+                onChange={(e) => setFormData({ ...formData, registration_number: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="tax_id">{t('business:registration.taxId')}</Label>
+              <Input
+                id="tax_id"
+                value={formData.tax_id}
+                onChange={(e) => setFormData({ ...formData, tax_id: e.target.value })}
               />
             </div>
 
@@ -233,6 +300,26 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
                 />
               </div>
             </div>
+
+            <div>
+              <Label htmlFor="services_offered">{t('business:registration.servicesOffered')}</Label>
+              <Textarea
+                id="services_offered"
+                placeholder={t('common:commaSeparated')}
+                value={formData.services_offered.join(', ')}
+                onChange={(e) => setFormData({ ...formData, services_offered: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="languages_spoken">{t('business:registration.languagesSpoken')}</Label>
+              <Input
+                id="languages_spoken"
+                placeholder={t('common:commaSeparated')}
+                value={formData.languages_spoken.join(', ')}
+                onChange={(e) => setFormData({ ...formData, languages_spoken: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
+              />
+            </div>
           </div>
 
           {/* Amenities */}
@@ -276,6 +363,15 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
                 id="appointment_required"
                 checked={formData.appointment_required}
                 onCheckedChange={(checked) => setFormData({ ...formData, appointment_required: checked })}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <Label htmlFor="public_service">{t('business:registration.publicService')}</Label>
+              <Switch
+                id="public_service"
+                checked={formData.public_service}
+                onCheckedChange={(checked) => setFormData({ ...formData, public_service: checked })}
               />
             </div>
           </div>
