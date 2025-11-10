@@ -21,6 +21,7 @@ import { Shield, Hash } from 'lucide-react';
 import { NARAuthorityManager } from './NARAuthorityManager';
 import { CARPermissionsManager } from './CARPermissionsManager';
 import { TranslationAuditTool } from './TranslationAuditTool';
+import { TranslationBulkFixer } from './TranslationBulkFixer';
 
 const AdminPanel: React.FC = () => {
   const { t } = useTranslation('admin');
@@ -65,6 +66,7 @@ const AdminPanel: React.FC = () => {
           <TabsTrigger value="quality" className="text-xs sm:text-sm px-2 sm:px-3 whitespace-normal">{t('admin:quality.title')}</TabsTrigger>
           <TabsTrigger value="system-tools" className="text-xs sm:text-sm px-2 sm:px-3 whitespace-normal">{t('admin:systemTools')}</TabsTrigger>
           <TabsTrigger value="translations" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:translations')}</TabsTrigger>
+          <TabsTrigger value="bulk-fixer" className="text-xs sm:text-sm px-2 sm:px-3">Bulk Fixer</TabsTrigger>
           <TabsTrigger value="documentation" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:documentation')}</TabsTrigger>
           {hasNDAAAccess && (
             <TabsTrigger value="api-webhooks" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:apiWebhooks')}</TabsTrigger>
@@ -120,6 +122,10 @@ const AdminPanel: React.FC = () => {
         
         <TabsContent value="translations">
           <TranslationAuditTool />
+        </TabsContent>
+
+        <TabsContent value="bulk-fixer">
+          <TranslationBulkFixer />
         </TabsContent>
         
         <TabsContent value="documentation">
