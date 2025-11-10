@@ -46,8 +46,22 @@ export function BusinessAddressRequestCard({ request, onUpdate }: BusinessAddres
   const [isAutoVerifying, setIsAutoVerifying] = useState(false);
 
   const orgData = request.verification_analysis?.organization || {};
+  
+  // Check if business metadata is complete
+  const hasCompleteMetadata = 
+    orgData && 
+    orgData.organization_name && 
+    orgData.organization_name.trim() !== '' &&
+    orgData.business_category &&
+    orgData.business_category.trim() !== '';
 
   const handleApprove = async (ignoreDuplicates = false) => {
+    // Validate metadata before attempting approval
+    if (!hasCompleteMetadata) {
+      toast.error(t('business:incompleteBusinessMetadata'));
+      return;
+    }
+    
     setIsProcessing(true);
     try {
       const { data, error } = await supabase.rpc('approve_business_address_request', {
@@ -317,12 +331,25 @@ export function BusinessAddressRequestCard({ request, onUpdate }: BusinessAddres
           )}
 
           {/* Actions */}
+          {/* Warning if metadata is incomplete */}
+          {!hasCompleteMetadata && (
+            <div className="p-3 bg-amber-50 dark:bg-amber-950 rounded-md border border-amber-200 dark:border-amber-800">
+              <p className="text-sm font-medium text-amber-900 dark:text-amber-100 mb-1">
+                ⚠️ {t('business:incompleteMetadataWarning')}
+              </p>
+              <p className="text-xs text-amber-700 dark:text-amber-300">
+                {t('business:incompleteMetadataMessage')}
+              </p>
+            </div>
+          )}
+
           <div className="flex flex-col gap-2 pt-2">
             <div className="flex flex-col sm:flex-row gap-2">
               <Button
                 onClick={() => handleApprove(false)}
-                disabled={isProcessing}
+                disabled={isProcessing || !hasCompleteMetadata}
                 className="flex-1 bg-purple-600 hover:bg-purple-700"
+                title={!hasCompleteMetadata ? t('business:cannotApproveIncomplete') : ''}
               >
                 <CheckCircle className="h-4 w-4 mr-2" />
                 {t('business:approveBusiness')}

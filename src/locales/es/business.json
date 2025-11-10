@@ -132,7 +132,10 @@
     "relocated": "Reubicado",
     "employees": "empleados",
     "total": "Total",
-    "totalBusinesses": "Total de Negocios"
+    "totalBusinesses": "Total de Negocios",
+    "confirmDeleteBusiness": "¿Está seguro de que desea eliminar este negocio? Esta acción no se puede deshacer.",
+    "deleteSuccess": "Negocio eliminado exitosamente",
+    "deleteFailed": "Error al eliminar el negocio"
   },
   "directory": {
     "title": "Directorio de Negocios",
@@ -172,6 +175,10 @@
     "servicesOffered": "Servicios Ofrecidos",
     "unknownBusiness": "Negocio Desconocido",
     "business": "Negocio",
-    "publicService": "Servicio Público"
+    "publicService": "Servicio Público",
+    "incompleteBusinessMetadata": "No se puede aprobar: La información del negocio está incompleta. Se requiere el nombre de la organización y la categoría.",
+    "incompleteMetadataWarning": "Información de Negocio Incompleta",
+    "incompleteMetadataMessage": "Esta solicitud de negocio carece de información requerida (nombre de organización o categoría de negocio). No se puede aprobar. Por favor rechace esta solicitud y pida al usuario que la vuelva a enviar con los detalles completos.",
+    "cannotApproveIncomplete": "No se puede aprobar sin información completa del negocio"
   }
 }

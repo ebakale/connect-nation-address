@@ -21,7 +21,8 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
-  TrendingUp
+  TrendingUp,
+  Trash2
 } from "lucide-react";
 import { Database } from "@/integrations/supabase/types";
 import { BreadcrumbNavigation } from "@/components/BreadcrumbNavigation";
@@ -114,6 +115,33 @@ export default function MyBusinesses() {
 
   const handleEditSuccess = () => {
     loadBusinesses();
+  };
+
+  const handleDeleteBusiness = async (business: OrganizationAddress) => {
+    if (!confirm(t('business:confirmDeleteBusiness'))) {
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.rpc('delete_business_record', {
+        p_organization_id: business.id,
+        p_user_id: user?.id
+      });
+
+      if (error) throw error;
+
+      const result = data as { success: boolean; error?: string; message?: string };
+      
+      if (result?.success) {
+        toast.success(t('business:deleteSuccess'));
+        loadBusinesses();
+      } else {
+        toast.error(result?.error || t('business:deleteFailed'));
+      }
+    } catch (error: any) {
+      console.error('Error deleting business:', error);
+      toast.error(error.message);
+    }
   };
 
   const getStatusBadge = (status: string | null, verified: boolean) => {
@@ -333,6 +361,17 @@ export default function MyBusinesses() {
                   <Edit className="h-4 w-4 mr-2" />
                   {t('common:buttons.edit')}
                 </Button>
+                {business.organization_name === 'Unknown Organization' && (
+                  <Button 
+                    variant="destructive" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => handleDeleteBusiness(business)}
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    {t('common:buttons.delete')}
+                  </Button>
+                )}
               </div>
 
               <div className="mt-3 pt-3 border-t text-xs text-muted-foreground">

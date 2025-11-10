@@ -211,7 +211,7 @@ export type Database = {
           accessed_person_ids: string[] | null
           accessed_uacs: string[] | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           metadata: Json | null
           purpose_details: string | null
           results_count: number
@@ -226,7 +226,7 @@ export type Database = {
           accessed_person_ids?: string[] | null
           accessed_uacs?: string[] | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           purpose_details?: string | null
           results_count?: number
@@ -241,7 +241,7 @@ export type Database = {
           accessed_person_ids?: string[] | null
           accessed_uacs?: string[] | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           purpose_details?: string | null
           results_count?: number
@@ -2824,18 +2824,21 @@ export type Database = {
         }
         Returns: Json
       }
-      approve_business_address_request: {
-        Args:
-          | {
+      approve_business_address_request:
+        | {
+            Args: { p_approved_by?: string; p_request_id: string }
+            Returns: Json
+          }
+        | {
+            Args: {
               p_approved_by?: string
               p_ignore_duplicates?: boolean
               p_request_id: string
             }
-          | { p_approved_by?: string; p_request_id: string }
-        Returns: Json
-      }
+            Returns: Json
+          }
       auto_approve_verified_citizen_addresses: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: undefined
       }
       calculate_completeness_score: {
@@ -2852,10 +2855,7 @@ export type Database = {
         }
         Returns: number
       }
-      calculate_coverage_analytics: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      calculate_coverage_analytics: { Args: never; Returns: undefined }
       can_view_citizen_address: {
         Args: {
           p_privacy_level: Database["public"]["Enums"]["address_privacy_level"]
@@ -2877,36 +2877,38 @@ export type Database = {
         }
         Returns: Json
       }
-      close_current_primary: {
-        Args:
-          | { p_person_id: string; p_until: string }
-          | { p_person_id: string; p_until: string }
-        Returns: undefined
-      }
-      debug_verification_access: {
-        Args: Record<PropertyKey, never>
+      close_current_primary:
+        | { Args: { p_person_id: string; p_until: string }; Returns: undefined }
+        | { Args: { p_person_id: string; p_until: string }; Returns: undefined }
+      debug_verification_access: { Args: never; Returns: Json }
+      delete_business_record: {
+        Args: { p_organization_id: string; p_user_id?: string }
         Returns: Json
       }
-      flag_address_for_review: {
-        Args:
-          | {
+      flag_address_for_review:
+        | {
+            Args: {
               p_address_id: string
               p_analysis?: Json
               p_flagged_by?: string
               p_reason: string
               p_recommendations?: string[]
             }
-          | { p_address_id: string; p_flagged_by?: string; p_reason: string }
-        Returns: boolean
-      }
+            Returns: boolean
+          }
+        | {
+            Args: {
+              p_address_id: string
+              p_flagged_by?: string
+              p_reason: string
+            }
+            Returns: boolean
+          }
       flag_address_request_for_review: {
         Args: { p_flagged_by?: string; p_reason: string; p_request_id: string }
         Returns: boolean
       }
-      generate_incident_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_incident_number: { Args: never; Returns: string }
       generate_incident_uac: {
         Args: {
           p_city: string
@@ -2926,7 +2928,7 @@ export type Database = {
         Returns: string
       }
       get_available_officers: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           assignment_status: string
           current_unit: string
@@ -2936,7 +2938,7 @@ export type Database = {
         }[]
       }
       get_flagged_addresses_queue: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           address_type: string
           building: string
@@ -2974,10 +2976,7 @@ export type Database = {
         }
         Returns: string
       }
-      get_pending_verifications_count: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
+      get_pending_verifications_count: { Args: never; Returns: number }
       get_registrar_scope: {
         Args: { _user_id: string }
         Returns: {
@@ -2986,7 +2985,7 @@ export type Database = {
         }[]
       }
       get_rejected_addresses_queue: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           address_type: string
           building: string
@@ -3022,7 +3021,7 @@ export type Database = {
         }[]
       }
       get_review_queue: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           address_type: string
           building: string
@@ -3082,7 +3081,7 @@ export type Database = {
         Returns: boolean
       }
       import_google_maps_addresses: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           details: Json
           error_count: number
@@ -3199,10 +3198,7 @@ export type Database = {
         Args: { p_address_id: string; p_unflagged_by?: string }
         Returns: boolean
       }
-      update_car_quality_metrics: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      update_car_quality_metrics: { Args: never; Returns: undefined }
     }
     Enums: {
       address_kind: "PRIMARY" | "SECONDARY" | "OTHER"
