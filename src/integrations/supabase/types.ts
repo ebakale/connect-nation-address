@@ -2395,6 +2395,42 @@ export type Database = {
         }
         Relationships: []
       }
+      translation_fixes: {
+        Row: {
+          fixed_at: string
+          fixed_by: string | null
+          id: string
+          key: string
+          namespace: string
+          status: string | null
+          translation_en: string
+          translation_es: string
+          translation_fr: string
+        }
+        Insert: {
+          fixed_at?: string
+          fixed_by?: string | null
+          id?: string
+          key: string
+          namespace: string
+          status?: string | null
+          translation_en: string
+          translation_es: string
+          translation_fr: string
+        }
+        Update: {
+          fixed_at?: string
+          fixed_by?: string | null
+          id?: string
+          key?: string
+          namespace?: string
+          status?: string | null
+          translation_en?: string
+          translation_es?: string
+          translation_fr?: string
+        }
+        Relationships: []
+      }
       uac_sequence_counters: {
         Row: {
           city_code: string

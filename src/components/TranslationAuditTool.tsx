@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -7,8 +7,10 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Search, AlertTriangle, CheckCircle2, XCircle, FileText, Globe } from 'lucide-react';
+import { Search, AlertTriangle, CheckCircle2, XCircle, FileText, Globe, Wrench } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { TranslationFixDialog } from './TranslationFixDialog';
+import { supabase } from '@/integrations/supabase/client';
 
 // Import all translation files
 import commonEN from '../locales/en/common.json';
@@ -78,6 +80,24 @@ export function TranslationAuditTool() {
   const { t, i18n } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedNamespace, setSelectedNamespace] = useState<string>('all');
+  const [editingIssue, setEditingIssue] = useState<TranslationIssue | null>(null);
+  const [fixedCount, setFixedCount] = useState(0);
+
+  // Load applied fixes count on mount
+  useEffect(() => {
+    const loadFixedCount = async () => {
+      const { count } = await supabase
+        .from('translation_fixes')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'applied');
+      
+      if (count) {
+        setFixedCount(count);
+      }
+    };
+    
+    loadFixedCount();
+  }, []);
 
   const auditResults = useMemo(() => {
     const issues: TranslationIssue[] = [];
@@ -310,7 +330,7 @@ export function TranslationAuditTool() {
                       <Card key={idx} className="border-l-4" style={{
                         borderLeftColor: issue.type === 'missing' ? '#ef4444' : issue.type === 'incomplete' ? '#f59e0b' : '#3b82f6'
                       }}>
-                        <CardHeader className="pb-3">
+                         <CardHeader className="pb-3">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
                               <CardTitle className="text-sm font-mono">{issue.namespace}:{issue.key}</CardTitle>
@@ -323,6 +343,15 @@ export function TranslationAuditTool() {
                                 ))}
                               </div>
                             </div>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => setEditingIssue(issue)}
+                              className="ml-2"
+                            >
+                              <Wrench className="w-4 h-4 mr-1" />
+                              Fix
+                            </Button>
                           </div>
                         </CardHeader>
                         <CardContent>
@@ -510,6 +539,25 @@ export function TranslationAuditTool() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <TranslationFixDialog 
+        issue={editingIssue}
+        open={!!editingIssue}
+        onOpenChange={(open) => !open && setEditingIssue(null)}
+        onSuccess={() => {
+          setFixedCount(prev => prev + 1);
+        }}
+      />
+
+      {fixedCount > 0 && (
+        <Alert>
+          <CheckCircle2 className="h-4 w-4" />
+          <AlertTitle>Active Translation Fixes</AlertTitle>
+          <AlertDescription>
+            {fixedCount} translation fix{fixedCount !== 1 ? 'es are' : ' is'} currently applied to the application. These overrides will persist until removed.
+          </AlertDescription>
+        </Alert>
+      )}
     </div>
   );
 }

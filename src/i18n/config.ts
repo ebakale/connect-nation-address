@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { supabase } from '@/integrations/supabase/client';
 
 // Import translation files
 import commonEN from '../locales/en/common.json';
@@ -70,6 +71,97 @@ const resources = {
   },
 };
 
+// Helper function to set nested value in an object
+function setNestedValue(obj: any, path: string, value: any) {
+  const keys = path.split('.');
+  let current = obj;
+  
+  for (let i = 0; i < keys.length - 1; i++) {
+    const key = keys[i];
+    if (!current[key]) {
+      current[key] = {};
+    }
+    current = current[key];
+  }
+  
+  current[keys[keys.length - 1]] = value;
+}
+
+// Load and apply translation fixes from database
+async function loadTranslationFixes() {
+  try {
+    const { data: fixes, error } = await supabase
+      .from('translation_fixes')
+      .select('*')
+      .eq('status', 'applied');
+    
+    if (error) {
+      console.error('Error loading translation fixes:', error);
+      return;
+    }
+
+    if (!fixes || fixes.length === 0) {
+      return;
+    }
+
+    console.log(`Loading ${fixes.length} translation fixes...`);
+
+    // Apply fixes to the resources
+    fixes.forEach(fix => {
+      try {
+        // Apply English translation
+        setNestedValue(resources.en[fix.namespace as keyof typeof resources.en], fix.key, fix.translation_en);
+        
+        // Apply Spanish translation
+        setNestedValue(resources.es[fix.namespace as keyof typeof resources.es], fix.key, fix.translation_es);
+        
+        // Apply French translation
+        setNestedValue(resources.fr[fix.namespace as keyof typeof resources.fr], fix.key, fix.translation_fr);
+        
+        console.log(`Applied fix for ${fix.namespace}:${fix.key}`);
+      } catch (err) {
+        console.error(`Error applying fix for ${fix.namespace}:${fix.key}:`, err);
+      }
+    });
+
+    // Re-initialize i18n with updated resources
+    i18n.init({
+      resources,
+      fallbackLng: 'en',
+      supportedLngs: ['en', 'es', 'fr'],
+      nonExplicitSupportedLngs: true,
+      
+      detection: {
+        order: ['localStorage', 'navigator', 'htmlTag'],
+        caches: ['localStorage'],
+        lookupLocalStorage: 'i18nextLng',
+      },
+
+      interpolation: {
+        escapeValue: false,
+      },
+
+      ns: ['common', 'auth', 'dashboard', 'address', 'emergency', 'admin', 'countries', 'car', 'business'],
+      defaultNS: 'common',
+      
+      pluralSeparator: '_',
+      
+      debug: process.env.NODE_ENV === 'development',
+      
+      saveMissing: process.env.NODE_ENV === 'development',
+      missingKeyHandler: (lng, ns, key) => {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(`Missing translation key: ${lng}:${ns}:${key}`);
+        }
+      },
+    });
+
+    console.log('Translation fixes applied successfully');
+  } catch (error) {
+    console.error('Error in loadTranslationFixes:', error);
+  }
+}
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -108,5 +200,8 @@ i18n
       }
     },
   });
+
+// Load translation fixes after initial setup
+loadTranslationFixes();
 
 export default i18n;
