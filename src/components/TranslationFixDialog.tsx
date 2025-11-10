@@ -66,8 +66,8 @@ export function TranslationFixDialog({ issue, open, onOpenChange, onSuccess }: T
 
       if (error) throw error;
 
-      if (!data.success) {
-        throw new Error(data.error || 'Failed to generate translations');
+      if (!data?.success || !data?.translations) {
+        throw new Error(data?.error || 'Failed to generate translations');
       }
 
       const { translations } = data;
