@@ -84,22 +84,27 @@ export function AddressRequestApprovalPanel() {
       // Filter requests for different tabs
       const allRequests = (data || []) as AddressRequest[];
       
-      // Separate business requests
+      // Separate business requests (including commercial and institutional)
       const businessData = allRequests.filter((request) => 
-        request.address_type === 'business'
+        request.address_type === 'business' || 
+        request.address_type === 'commercial' || 
+        request.address_type === 'institutional'
       );
       
-      // Regular address requests (non-business, not flagged/manual review)
+      // Regular address requests (non-business, not flagged)
       const filteredRequests = allRequests.filter((request) => 
         request.address_type !== 'business' &&
-        !request.flagged && 
-        !request.requires_manual_review
+        request.address_type !== 'commercial' &&
+        request.address_type !== 'institutional' &&
+        !request.flagged
       );
       
-      // Manual review requests (non-business)
+      // Manual review requests (non-business, flagged only)
       const manualReviewData = allRequests.filter((request) => 
         request.address_type !== 'business' &&
-        (request.flagged || request.requires_manual_review)
+        request.address_type !== 'commercial' &&
+        request.address_type !== 'institutional' &&
+        request.flagged
       );
       
       setAddressRequests(filteredRequests);
