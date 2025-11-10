@@ -75,6 +75,7 @@ export function AddressRequestApprovalPanel() {
         console.error('No geographical scope defined for registrar');
         setAddressRequests([]);
         setManualReviewRequests([]);
+        setBusinessRequests([]);
         return;
       }
 
@@ -83,6 +84,8 @@ export function AddressRequestApprovalPanel() {
       
       // Filter requests for different tabs
       const allRequests = (data || []) as AddressRequest[];
+      
+      console.log(`Fetched ${allRequests.length} pending requests for scope:`, geographicScope?.scope_value || 'national');
       
       // Separate business requests (including commercial and institutional)
       const businessData = allRequests.filter((request) => 
@@ -106,6 +109,8 @@ export function AddressRequestApprovalPanel() {
         request.address_type !== 'institutional' &&
         request.flagged
       );
+      
+      console.log(`Categorized: ${filteredRequests.length} regular, ${manualReviewData.length} manual review, ${businessData.length} business`);
       
       setAddressRequests(filteredRequests);
       setManualReviewRequests(manualReviewData);
