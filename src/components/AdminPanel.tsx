@@ -20,6 +20,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield, Hash } from 'lucide-react';
 import { NARAuthorityManager } from './NARAuthorityManager';
 import { CARPermissionsManager } from './CARPermissionsManager';
+import { TranslationAuditTool } from './TranslationAuditTool';
 
 const AdminPanel: React.FC = () => {
   const { t } = useTranslation('admin');
@@ -55,7 +56,7 @@ const AdminPanel: React.FC = () => {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="users" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 grid-rows-2 gap-1">
+        <TabsList className="grid w-full grid-cols-4 grid-rows-3 gap-1">
           <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:userManagement')}</TabsTrigger>
           <TabsTrigger value="permissions" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:permissions')}</TabsTrigger>
           <TabsTrigger value="workflows" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:workflows')}</TabsTrigger>
@@ -63,6 +64,7 @@ const AdminPanel: React.FC = () => {
           <TabsTrigger value="uac" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:uacSystem')}</TabsTrigger>
           <TabsTrigger value="quality" className="text-xs sm:text-sm px-2 sm:px-3 whitespace-normal">{t('admin:quality.title')}</TabsTrigger>
           <TabsTrigger value="system-tools" className="text-xs sm:text-sm px-2 sm:px-3 whitespace-normal">{t('admin:systemTools')}</TabsTrigger>
+          <TabsTrigger value="translations" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:translations')}</TabsTrigger>
           <TabsTrigger value="documentation" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:documentation')}</TabsTrigger>
           {hasNDAAAccess && (
             <TabsTrigger value="api-webhooks" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:apiWebhooks')}</TabsTrigger>
@@ -114,6 +116,10 @@ const AdminPanel: React.FC = () => {
         
         <TabsContent value="quality">
           <QualityDashboard />
+        </TabsContent>
+        
+        <TabsContent value="translations">
+          <TranslationAuditTool />
         </TabsContent>
         
         <TabsContent value="documentation">

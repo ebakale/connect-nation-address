@@ -189,6 +189,7 @@
   "quality": "Calidad",
   "systemTools": "Herramientas del Sistema",
   "systemToolsDescription": "Importar direcciones y probar integración del sistema",
+  "translations": "Traducciones",
   "documentGenerators": "Generadores de Documentos",
   "documentGeneratorsDescription": "Generar documentación del sistema e informes",
   "systemRolesDocumentation": "Documentación de Roles del Sistema",
