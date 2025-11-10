@@ -110,7 +110,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     if (error) {
-      toast.error("Sign In Error: " + error.message);
+      // Provide more specific error messages
+      if (error.message.includes('Invalid login credentials')) {
+        toast.error("Invalid email or password. Please check your credentials and try again.");
+      } else if (error.message.includes('Email not confirmed')) {
+        toast.error("Please confirm your email address before signing in. Check your inbox for the confirmation link.");
+      } else if (error.message.includes('User not found')) {
+        toast.error("No account found with this email address. Please sign up first.");
+      } else {
+        toast.error("Sign In Error: " + error.message);
+      }
+    } else {
+      toast.success("Successfully signed in!");
     }
 
     return { error };
