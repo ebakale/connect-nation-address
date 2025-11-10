@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Sparkles } from 'lucide-react';
 
 interface TranslationIssue {
   key: string;
@@ -26,6 +26,7 @@ interface TranslationFixDialogProps {
 export function TranslationFixDialog({ issue, open, onOpenChange, onSuccess }: TranslationFixDialogProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [suggesting, setSuggesting] = useState(false);
   const [values, setValues] = useState({
     en: '',
     es: '',
@@ -33,7 +34,7 @@ export function TranslationFixDialog({ issue, open, onOpenChange, onSuccess }: T
   });
 
   // Pre-fill existing values when issue changes
-  useState(() => {
+  useEffect(() => {
     if (issue) {
       setValues({
         en: issue.values.en || '',
@@ -41,7 +42,71 @@ export function TranslationFixDialog({ issue, open, onOpenChange, onSuccess }: T
         fr: issue.values.fr || ''
       });
     }
-  });
+  }, [issue]);
+
+  const handleSuggestTranslations = async () => {
+    if (!issue || !values.en.trim()) {
+      toast({
+        title: 'English text required',
+        description: 'Please enter the English translation first',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setSuggesting(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('suggest-translation', {
+        body: {
+          text: values.en.trim(),
+          targetLanguages: ['es', 'fr']
+        }
+      });
+
+      if (error) throw error;
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to generate translations');
+      }
+
+      const { translations } = data;
+
+      // Update values with AI suggestions
+      setValues(prev => ({
+        ...prev,
+        es: translations.es || prev.es,
+        fr: translations.fr || prev.fr
+      }));
+
+      toast({
+        title: 'Translations suggested!',
+        description: 'AI-generated translations have been filled in. Review and adjust as needed.',
+      });
+
+    } catch (error) {
+      console.error('Error suggesting translations:', error);
+      
+      let errorMessage = 'Failed to generate translation suggestions';
+      if (error instanceof Error) {
+        if (error.message.includes('Rate limit')) {
+          errorMessage = 'Rate limit exceeded. Please try again in a moment.';
+        } else if (error.message.includes('credits')) {
+          errorMessage = 'AI credits exhausted. Please add credits to your workspace.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      toast({
+        title: 'Error generating suggestions',
+        description: errorMessage,
+        variant: 'destructive'
+      });
+    } finally {
+      setSuggesting(false);
+    }
+  };
 
   const handleSave = async () => {
     if (!issue) return;
@@ -142,6 +207,21 @@ export function TranslationFixDialog({ issue, open, onOpenChange, onSuccess }: T
               placeholder="Enter English translation..."
               className="min-h-[80px]"
             />
+          </div>
+
+          <div className="flex items-center justify-between py-2">
+            <p className="text-sm text-muted-foreground">Need help translating?</p>
+            <Button 
+              type="button"
+              variant="outline" 
+              size="sm"
+              onClick={handleSuggestTranslations}
+              disabled={suggesting || !values.en.trim()}
+            >
+              {suggesting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              {!suggesting && <Sparkles className="w-4 h-4 mr-2" />}
+              Suggest Translations
+            </Button>
           </div>
 
           <div className="space-y-2">

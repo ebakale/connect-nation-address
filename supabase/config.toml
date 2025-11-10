@@ -3,6 +3,9 @@ project_id = "calegudnfdbeznyiebbh"
 [functions.save-translation-fix]
 verify_jwt = true
 
+[functions.suggest-translation]
+verify_jwt = true
+
 [functions.get-google-maps-token]
 verify_jwt = false
 
