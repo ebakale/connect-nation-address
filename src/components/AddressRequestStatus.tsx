@@ -222,7 +222,7 @@ export const AddressRequestStatus = () => {
                         <CalendarDays className="h-3 w-3" />
                         {format(new Date(request.created_at), 'MMM d, yyyy')}
                       </span>
-                      <span className="capitalize">{request.address_type}</span>
+                      <span>{t(`addressType.${request.address_type.toLowerCase()}`)}</span>
                     </CardDescription>
                   </div>
                   <div className="flex items-center gap-2">
@@ -250,7 +250,7 @@ export const AddressRequestStatus = () => {
                         </div>
                         <div className="flex justify-between">
                           <dt className="text-muted-foreground">{t('type')}:</dt>
-                          <dd className="capitalize">{request.address_type}</dd>
+                          <dd>{t(`addressType.${request.address_type.toLowerCase()}`)}</dd>
                         </div>
                         {request.latitude && request.longitude && (
                           <div className="flex justify-between">
@@ -316,7 +316,7 @@ export const AddressRequestStatus = () => {
                           <CalendarDays className="h-3 w-3" />
                           {format(new Date(request.created_at), 'MMM d, yyyy')}
                         </span>
-                        <span className="capitalize">{request.address_type}</span>
+                        <span>{t(`addressType.${request.address_type.toLowerCase()}`)}</span>
                       </CardDescription>
                     </div>
                     <div className="flex items-center gap-2">
@@ -360,7 +360,7 @@ export const AddressRequestStatus = () => {
                           </div>
                           <div className="flex justify-between">
                             <dt className="text-muted-foreground">{t('type')}:</dt>
-                            <dd className="capitalize">{request.address_type}</dd>
+                            <dd>{t(`addressType.${request.address_type.toLowerCase()}`)}</dd>
                           </div>
                           {request.latitude && request.longitude && (
                             <div className="flex justify-between">
