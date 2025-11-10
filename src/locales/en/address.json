@@ -211,6 +211,10 @@
     "family": "👨‍👩‍👧‍👦",
     "other": "📍"
   },
+  "effectivePeriod": "Effective Period",
+  "scopeAndOccupant": "Scope & Occupant",
+  "source": "Source",
+  "notes": "Notes",
   "kind": {
     "primary": "Primary",
     "secondary": "Secondary"

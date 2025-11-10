@@ -123,7 +123,7 @@ export function CurrentAddressesPanel({
           {address.address_type && (
             <div className="text-sm">
               <span className="text-muted-foreground">{t('address:type')}: </span>
-              <span className="capitalize">{t(`address:addressType.${address.address_type}`)}</span>
+              <span>{t(`address:addressType.${address.address_type.toLowerCase()}`)}</span>
             </div>
           )}
           
