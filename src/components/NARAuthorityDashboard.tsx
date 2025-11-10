@@ -64,7 +64,7 @@ interface NARStats {
 }
 
 export const NARAuthorityDashboard = () => {
-  const { narAuthorityData } = useUserRole();
+  const { narAuthorityData, roleMetadata } = useUserRole();
   const { user } = useAuth();
   const { t } = useTranslation(['dashboard', 'common']);
   const [addresses, setAddresses] = useState<NARAddress[]>([]);
@@ -90,7 +90,24 @@ export const NARAuthorityDashboard = () => {
     
     setLoading(true);
     try {
-      // Fetch all NAR addresses (national scope)
+      // Determine geographic scope
+      const geographicScope = roleMetadata.find(m => m.scope_type === 'city' || m.scope_type === 'region' || m.scope_type === 'province');
+      
+      // Build pending requests query with geographic filtering
+      let pendingQuery = supabase
+        .from('address_requests')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'pending');
+      
+      if (geographicScope) {
+        if (geographicScope.scope_type === 'city') {
+          pendingQuery = pendingQuery.ilike('city', `%${geographicScope.scope_value}%`);
+        } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+          pendingQuery = pendingQuery.ilike('region', `%${geographicScope.scope_value}%`);
+        }
+      }
+      
+      // Fetch all NAR addresses with scope filtering
       const [
         addressesResult,
         verifiedResult,
@@ -102,7 +119,7 @@ export const NARAuthorityDashboard = () => {
         supabase.from('addresses').select('id', { count: 'exact', head: true }),
         supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true),
         supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('public', true).eq('verified', true),
-        supabase.from('address_requests').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
+        pendingQuery,
         supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('flagged', true),
         supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true).eq('public', false)
       ]);
@@ -148,10 +165,23 @@ export const NARAuthorityDashboard = () => {
 
   const fetchRecentRequests = async () => {
     try {
-      const { data, error } = await supabase
+      // Apply geographic scope filtering
+      const geographicScope = roleMetadata.find(m => m.scope_type === 'city' || m.scope_type === 'region' || m.scope_type === 'province');
+      
+      let query = supabase
         .from('address_requests')
         .select('id, street, city, region, created_at')
-        .eq('status', 'pending')
+        .eq('status', 'pending');
+      
+      if (geographicScope) {
+        if (geographicScope.scope_type === 'city') {
+          query = query.ilike('city', `%${geographicScope.scope_value}%`);
+        } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+          query = query.ilike('region', `%${geographicScope.scope_value}%`);
+        }
+      }
+      
+      const { data, error } = await query
         .order('created_at', { ascending: false })
         .limit(5);
 
