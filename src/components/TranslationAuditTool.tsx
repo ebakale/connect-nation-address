@@ -120,7 +120,11 @@ export function TranslationAuditTool() {
           missingIn,
           values,
         });
-      } else if (!enValue?.trim() || !esValue?.trim() || !frValue?.trim()) {
+      } else if (
+        (typeof enValue === 'string' && !enValue.trim()) || 
+        (typeof esValue === 'string' && !esValue.trim()) || 
+        (typeof frValue === 'string' && !frValue.trim())
+      ) {
         issues.push({
           key,
           namespace,
@@ -138,7 +142,9 @@ export function TranslationAuditTool() {
     return auditResults.filter(issue => {
       const matchesSearch = !searchTerm || 
         issue.key.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        Object.values(issue.values).some(v => v?.toLowerCase().includes(searchTerm.toLowerCase()));
+        Object.values(issue.values).some(v => 
+          typeof v === 'string' && v.toLowerCase().includes(searchTerm.toLowerCase())
+        );
       const matchesNamespace = selectedNamespace === 'all' || issue.namespace === selectedNamespace;
       return matchesSearch && matchesNamespace;
     });
