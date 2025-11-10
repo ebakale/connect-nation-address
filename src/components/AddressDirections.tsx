@@ -58,10 +58,10 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      setLocationError('Geolocation is not supported by this browser');
+      setLocationError(t('address:directions.locationNotSupportedDesc'));
       toast({
-        title: "Location not supported",
-        description: "Your browser doesn't support location services",
+        title: t('address:directions.locationNotSupported'),
+        description: t('address:directions.locationNotSupportedDesc'),
         variant: "destructive",
       });
       return;
@@ -79,27 +79,27 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
         setCurrentLocation(coords);
         setIsGettingLocation(false);
         toast({
-          title: "Location found",
-          description: `Using your current location: ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`,
+          title: t('address:directions.locationFound'),
+          description: t('address:directions.locationFoundDesc') + `: ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`,
         });
       },
       (error) => {
-        let errorMessage = 'Unable to get your location';
+        let errorMessage = t('common:errors.locationError');
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = t('locationAccessDenied');
+            errorMessage = t('common:location.accessDenied');
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage = t('locationUnavailable');
+            errorMessage = t('common:location.unavailable');
             break;
           case error.TIMEOUT:
-            errorMessage = 'Location request timed out.';
+            errorMessage = t('common:location.timeout');
             break;
         }
         setLocationError(errorMessage);
         setIsGettingLocation(false);
         toast({
-          title: "Location error",
+          title: t('address:directions.locationError'),
           description: errorMessage,
           variant: "destructive",
         });
@@ -115,8 +115,8 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
     toast({
-      title: "Copied to clipboard",
-      description: `${label} has been copied to your clipboard`,
+      title: t('address:directions.copyCoordinates'),
+      description: t('address:directions.coordinatesCopied'),
     });
   };
 
@@ -143,8 +143,8 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
       setSearchResults(formattedResults);
     } catch (error) {
       toast({
-        title: "Search failed",
-        description: "Failed to search for address",
+        title: t('address:directions.searchFailed'),
+        description: t('address:directions.searchFailedDesc'),
         variant: "destructive",
       });
       setSearchResults([]);
@@ -158,8 +158,8 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
     setUacQuery(address.uac);
     setSearchResults([]);
     toast({
-      title: "Origin address selected",
-      description: `Using ${address.uac} as starting point`,
+      title: t('address:directions.originSelected'),
+      description: t('address:directions.originSelectedDesc', { uac: address.uac }),
     });
   };
 
@@ -181,8 +181,8 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
     // Validate coordinates
     if (!destLat || !destLng || isNaN(destLat) || isNaN(destLng)) {
       toast({
-        title: "Invalid coordinates",
-        description: "Invalid destination coordinates",
+        title: t('address:directions.invalidCoordinates'),
+        description: t('address:directions.invalidDestCoordinates'),
         variant: "destructive",
       });
       return;
@@ -197,8 +197,8 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
       
       if (!originLat || !originLng || isNaN(originLat) || isNaN(originLng)) {
         toast({
-          title: "Invalid coordinates",
-          description: "Invalid origin coordinates",
+          title: t('address:directions.invalidCoordinates'),
+          description: t('address:directions.invalidOriginCoordinates'),
           variant: "destructive",
         });
         return;
@@ -265,8 +265,8 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
       }
     } else {
       toast({
-        title: "Navigation error",
-        description: "Unable to generate directions URL",
+        title: t('address:directions.navigationError'),
+        description: t('address:directions.navigationErrorDesc'),
         variant: "destructive",
       });
     }
@@ -277,13 +277,13 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Navigation className="h-5 w-5 text-primary" />
-          Get Directions
+          {t('address:directions.title')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Destination Info */}
         <div className="space-y-2">
-          <Label className="text-sm font-medium">Destination</Label>
+          <Label className="text-sm font-medium">{t('address:directions.destination')}</Label>
           <div className="p-3 bg-muted rounded-lg">
             <div className="flex items-start justify-between">
               <div className="flex-1">
@@ -293,7 +293,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
                   </span>
                   {destination.verified && (
                     <Badge variant="secondary" className="text-xs">
-                      Verified
+                      {t('address:directions.verified')}
                     </Badge>
                   )}
                 </div>
@@ -304,7 +304,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
                     {destination.coordinates.lat.toFixed(4)}, {destination.coordinates.lng.toFixed(4)}
                   </span>
                   <Badge variant="outline" className="text-xs">
-                    {destination.type}
+                    {t(`address:addressTypes.${destination.type.toLowerCase()}`)}
                   </Badge>
                 </div>
               </div>
@@ -313,7 +313,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
                 size="sm"
                 onClick={() => copyToClipboard(
                   `${destination.coordinates.lat},${destination.coordinates.lng}`, 
-                  "Coordinates"
+                  t('address:googleMaps.coordinates')
                 )}
               >
                 <Copy className="h-4 w-4" />
@@ -326,7 +326,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
 
         {/* Origin Selection */}
         <div className="space-y-4">
-          <Label className="text-sm font-medium">Starting Point</Label>
+          <Label className="text-sm font-medium">{t('address:directions.startingPoint')}</Label>
           
           <div className="grid grid-cols-2 gap-2">
             <Button 
@@ -342,7 +342,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
               ) : (
                 <Target className="h-5 w-5" />
               )}
-              <span className="text-sm">Current Location</span>
+              <span className="text-sm">{t('address:directions.currentLocation')}</span>
             </Button>
             <Button 
               variant={originType === 'uac' ? 'default' : 'outline'}
@@ -350,7 +350,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
               className="h-auto p-3 flex flex-col items-center gap-2"
             >
               <Search className="h-5 w-5" />
-              <span className="text-sm">Address/UAC</span>
+              <span className="text-sm">{t('address:directions.addressUAC')}</span>
             </Button>
           </div>
 
@@ -359,7 +359,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
               {isGettingLocation && (
                 <div className="p-3 bg-muted rounded-lg flex items-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                  <span className="text-sm text-muted-foreground">Getting your location...</span>
+                  <span className="text-sm text-muted-foreground">{t('address:directions.gettingLocation')}</span>
                 </div>
               )}
               
@@ -367,7 +367,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
                 <div className="p-3 bg-muted rounded-lg">
                   <div className="flex items-center gap-2 mb-1">
                     <CheckCircle className="h-4 w-4 text-green-500" />
-                    <span className="text-sm font-medium text-foreground">Current Location</span>
+                    <span className="text-sm font-medium text-foreground">{t('address:directions.currentLocation')}</span>
                   </div>
                   <span className="text-xs text-muted-foreground flex items-center gap-1">
                     <MapPin className="h-3 w-3" />
@@ -385,7 +385,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
                     onClick={getCurrentLocation}
                     className="mt-2"
                   >
-                    Try Again
+                    {t('address:directions.tryAgain')}
                   </Button>
                 </div>
               )}
@@ -396,7 +396,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
             <div className="space-y-3">
               <div className="relative">
                 <Input
-                  placeholder="Enter UAC code or search address..."
+                  placeholder={t('address:directions.enterUACPlaceholder')}
                   value={uacQuery}
                   onChange={(e) => setUacQuery(e.target.value)}
                 />
@@ -410,7 +410,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
               {/* Search Results */}
               {searchResults.length > 0 && !originAddress && (
                 <div className="space-y-2 max-h-60 overflow-y-auto">
-                  <Label className="text-xs text-muted-foreground">Search Results</Label>
+                  <Label className="text-xs text-muted-foreground">{t('address:directions.searchResults')}</Label>
                   {searchResults.map((result, index) => (
                     <div 
                       key={index}
@@ -423,11 +423,11 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
                         </span>
                         {result.verified && (
                           <Badge variant="secondary" className="text-xs">
-                            Verified
+                            {t('address:directions.verified')}
                           </Badge>
                         )}
                         <Badge variant="outline" className="text-xs">
-                          {result.type}
+                          {t(`address:addressTypes.${result.type.toLowerCase()}`)}
                         </Badge>
                       </div>
                       <p className="text-sm text-foreground">{result.readable}</p>
@@ -450,7 +450,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
                       </span>
                       {originAddress.verified && (
                         <Badge variant="secondary" className="text-xs">
-                          Verified
+                          {t('address:directions.verified')}
                         </Badge>
                       )}
                     </div>
@@ -463,7 +463,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
                         setSearchResults([]);
                       }}
                     >
-                      Change
+                      {t('address:directions.change')}
                     </Button>
                   </div>
                   <p className="text-sm text-foreground">{originAddress.readable}</p>
@@ -477,7 +477,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
               {/* No Results Message */}
               {uacQuery.trim() && !isSearching && searchResults.length === 0 && !originAddress && (
                 <div className="p-3 bg-muted/50 rounded-lg text-center">
-                  <p className="text-sm text-muted-foreground">No addresses found matching "{uacQuery}"</p>
+                  <p className="text-sm text-muted-foreground">{t('address:directions.noResultsMessage')}</p>
                 </div>
               )}
             </div>
@@ -496,31 +496,31 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
           >
             <Navigation className="h-5 w-5" />
             <span className="font-semibold">
-              Navigate to {destination.uac}
+              {t('address:directions.navigate')}
             </span>
           </Button>
 
           <div className="grid grid-cols-2 gap-2">
             <Button 
               variant="outline"
-              onClick={() => copyToClipboard(destination.uac, "UAC Code")}
+              onClick={() => copyToClipboard(destination.uac, t('address:uacCode'))}
               className="flex items-center gap-2"
             >
               <Copy className="h-4 w-4" />
-              {t('copyUAC')}
+              {t('address:copyUAC')}
             </Button>
             <Button 
               variant="outline"
-              onClick={() => copyToClipboard(destination.readable, "Full Address")}
+              onClick={() => copyToClipboard(destination.readable, t('address:fullAddress'))}
               className="flex items-center gap-2"
             >
               <Copy className="h-4 w-4" />
-              Copy Address
+              {t('address:copyAddress')}
             </Button>
           </div>
 
           <Button variant="secondary" onClick={onClose}>
-            Close
+            {t('common:actions.close')}
           </Button>
         </div>
 

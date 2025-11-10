@@ -163,6 +163,11 @@
     "enterAddress": "Enter address...",
     "enterPhone": "Enter phone number..."
   },
+  "location": {
+    "accessDenied": "Location access denied",
+    "unavailable": "Location unavailable",
+    "timeout": "Location request timed out"
+  },
   "footer": {
     "copyright": "© 2025 BIAKAM - ConEG Platform for the Republic of Equatorial Guinea",
     "description": "Unified Digital Addressing and Emergency Management • Connecting Citizens, Services, and Safety"

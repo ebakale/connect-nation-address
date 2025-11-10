@@ -163,6 +163,11 @@
     "enterAddress": "Saisir l'adresse...",
     "enterPhone": "Saisir le numéro de téléphone..."
   },
+  "location": {
+    "accessDenied": "Accès à la localisation refusé",
+    "unavailable": "Localisation non disponible",
+    "timeout": "Délai de demande de localisation expiré"
+  },
   "footer": {
     "copyright": "© 2025 BIAKAM - Plateforme ConEG pour la République de Guinée Équatoriale",
     "description": "Gestion Unifiée des Adresses Numériques et des Urgences • Connecter Citoyens, Services et Sécurité"

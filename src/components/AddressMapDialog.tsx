@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { MapPin, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader } from '@googlemaps/js-api-loader';
+import { useTranslation } from 'react-i18next';
 
 interface AddressMapDialogProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ interface AddressMapDialogProps {
 }
 
 export function AddressMapDialog({ isOpen, onClose, address }: AddressMapDialogProps) {
+  const { t } = useTranslation(['address', 'common']);
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<google.maps.Map | null>(null);
   const [googleMapsApiKey, setGoogleMapsApiKey] = useState<string>("");
@@ -151,7 +153,7 @@ export function AddressMapDialog({ isOpen, onClose, address }: AddressMapDialogP
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-sm sm:text-base">
             <MapPin className="h-4 w-4 sm:h-5 sm:w-5" />
-            Address Location on Google Maps
+            {t('address:googleMaps.locationOnMaps')}
           </DialogTitle>
         </DialogHeader>
 
@@ -167,7 +169,7 @@ export function AddressMapDialog({ isOpen, onClose, address }: AddressMapDialogP
                 {address.city}, {address.region}, {address.country}
               </p>
               <p className="text-xs text-muted-foreground break-all">
-                Coordinates: {address.latitude}, {address.longitude}
+                {t('address:googleMaps.coordinates')}: {address.latitude}, {address.longitude}
               </p>
             </div>
           )}
@@ -175,7 +177,7 @@ export function AddressMapDialog({ isOpen, onClose, address }: AddressMapDialogP
           {!address && (
             <div className="mb-3 p-2 sm:p-3 bg-muted rounded-lg">
               <p className="text-xs sm:text-sm text-muted-foreground">
-                No address data available
+                {t('address:googleMaps.noAddressData')}
               </p>
             </div>
           )}
@@ -186,7 +188,7 @@ export function AddressMapDialog({ isOpen, onClose, address }: AddressMapDialogP
               <div className="absolute inset-0 flex items-center justify-center bg-muted rounded-lg">
                 <div className="text-center">
                   <div className="animate-spin h-6 w-6 sm:h-8 sm:w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Loading Google Maps...</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{t('address:googleMaps.loadingMaps')}</p>
                 </div>
               </div>
             ) : showApiKeyInput ? (
@@ -194,15 +196,14 @@ export function AddressMapDialog({ isOpen, onClose, address }: AddressMapDialogP
                 <div className="text-center space-y-3 sm:space-y-4 p-4 sm:p-6 max-w-sm w-full mx-2">
                   <AlertCircle className="h-8 w-8 sm:h-12 sm:w-12 text-yellow-600 mx-auto" />
                   <div>
-                    <h3 className="font-medium mb-2 text-sm sm:text-base">Google Maps API Key Required</h3>
+                    <h3 className="font-medium mb-2 text-sm sm:text-base">{t('address:googleMaps.apiKeyRequired')}</h3>
                     <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
-                      To view the map, please enter your Google Maps API key. 
-                      You can get one from <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" className="text-primary underline">Google Cloud Console</a>
+                      {t('address:googleMaps.apiKeyDescription')} <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" className="text-primary underline">Google Cloud Console</a>
                     </p>
                   </div>
                   <div className="space-y-2 sm:space-y-3">
                     <div>
-                      <Label htmlFor="google-maps-key" className="text-xs sm:text-sm">Google Maps API Key</Label>
+                      <Label htmlFor="google-maps-key" className="text-xs sm:text-sm">{t('address:googleMaps.apiKeyLabel')}</Label>
                       <Input
                         id="google-maps-key"
                         value={apiKeyInput}
@@ -212,7 +213,7 @@ export function AddressMapDialog({ isOpen, onClose, address }: AddressMapDialogP
                       />
                     </div>
                     <Button onClick={handleApiKeySubmit} disabled={!apiKeyInput.trim()} className="w-full text-xs sm:text-sm">
-                      Load Map
+                      {t('address:googleMaps.loadMap')}
                     </Button>
                   </div>
                 </div>
