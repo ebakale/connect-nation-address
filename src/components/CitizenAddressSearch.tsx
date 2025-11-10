@@ -47,7 +47,7 @@ export const CitizenAddressSearch = () => {
     if (!searchQuery.trim() || searchQuery.trim().length < 2) {
       toast({
         title: t('common:status.error'),
-        description: "Search query must be at least 2 characters",
+        description: t('address:searchCitizenPlaceholder'),
         variant: "destructive"
       });
       return;
@@ -56,7 +56,7 @@ export const CitizenAddressSearch = () => {
     if (!searchPurpose) {
       toast({
         title: t('common:status.error'),
-        description: "Please select a search purpose",
+        description: t('address:labels.searchPurpose'),
         variant: "destructive"
       });
       return;
@@ -82,15 +82,15 @@ export const CitizenAddressSearch = () => {
 
       if (data.results?.length === 0) {
         toast({
-          title: "No results found",
-          description: "No searchable addresses match your query",
+          title: t('common:search.noResults'),
+          description: t('common:search.noResultsDescription'),
         });
       }
     } catch (error: any) {
       console.error('Search error:', error);
       toast({
         title: t('common:status.error'),
-        description: error.message || "Failed to search addresses",
+        description: error.message || t('common:search.searchError'),
         variant: "destructive"
       });
     } finally {
@@ -113,16 +113,15 @@ export const CitizenAddressSearch = () => {
         <CardContent>
           <Alert className="mb-6">
             <Shield className="h-4 w-4" />
-            <AlertTitle>Privacy & Security</AlertTitle>
+            <AlertTitle>{t('common:security.privacy')}</AlertTitle>
             <AlertDescription>
-              All searches are logged for security. Only public or region-visible addresses will appear. 
-              Protected individuals (minors, etc.) are excluded from search results.
+              {t('common:security.searchLogged')}
             </AlertDescription>
           </Alert>
 
           <form onSubmit={handleSearch} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="search">Search by Name</Label>
+              <Label htmlFor="search">{t('address:labels.searchByName')}</Label>
               <Input
                 id="search"
                 placeholder={t('address:searchCitizenPlaceholder')}
@@ -133,27 +132,27 @@ export const CitizenAddressSearch = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="purpose">Search Purpose *</Label>
+              <Label htmlFor="purpose">{t('address:labels.searchPurpose')} *</Label>
               <Select value={searchPurpose} onValueChange={setSearchPurpose} disabled={loading}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select purpose..." />
+                  <SelectValue placeholder={t('address:placeholders.selectPurpose')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="DELIVERY">Package/Mail Delivery</SelectItem>
-                  <SelectItem value="EMERGENCY_CONTACT">Emergency Contact</SelectItem>
-                  <SelectItem value="GOVERNMENT_SERVICE">Government Service</SelectItem>
-                  <SelectItem value="BUSINESS_CONTACT">Business Contact</SelectItem>
-                  <SelectItem value="PERSONAL">Personal/Social</SelectItem>
-                  <SelectItem value="OTHER">Other</SelectItem>
+                  <SelectItem value="DELIVERY">{t('common:searchPurpose.delivery')}</SelectItem>
+                  <SelectItem value="EMERGENCY_CONTACT">{t('common:searchPurpose.emergency')}</SelectItem>
+                  <SelectItem value="GOVERNMENT_SERVICE">{t('common:searchPurpose.government')}</SelectItem>
+                  <SelectItem value="BUSINESS_CONTACT">{t('common:searchPurpose.business')}</SelectItem>
+                  <SelectItem value="PERSONAL">{t('common:searchPurpose.personal')}</SelectItem>
+                  <SelectItem value="OTHER">{t('common:searchPurpose.other')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="details">Additional Details (Optional)</Label>
+              <Label htmlFor="details">{t('address:labels.additionalDetails')}</Label>
               <Textarea
                 id="details"
-                placeholder="Provide additional context for this search..."
+                placeholder={t('address:placeholders.provideContext')}
                 value={purposeDetails}
                 onChange={(e) => setPurposeDetails(e.target.value)}
                 disabled={loading}
@@ -172,15 +171,15 @@ export const CitizenAddressSearch = () => {
       {hasSearched && (
         <Card>
           <CardHeader>
-            <CardTitle>Search Results ({searchResults.length})</CardTitle>
+            <CardTitle>{t('common:search.results')} ({searchResults.length})</CardTitle>
           </CardHeader>
           <CardContent>
             {searchResults.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <AlertTriangle className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                <p>No searchable addresses found for "{searchQuery}"</p>
+                <p>{t('common:search.noResults')}</p>
                 <p className="text-sm mt-2">
-                  Citizens must opt-in to make their addresses searchable
+                  {t('common:search.optInRequired')}
                 </p>
               </div>
             ) : (
@@ -197,7 +196,7 @@ export const CitizenAddressSearch = () => {
                       {result.is_protected && (
                         <Badge variant="destructive">
                           <Shield className="h-3 w-3 mr-1" />
-                          Protected
+                          {t('common:security.protected')}
                         </Badge>
                       )}
                     </div>
@@ -237,14 +236,14 @@ export const CitizenAddressSearch = () => {
                                 <div>{address.city}, {address.region}</div>
                                 <div>{address.country}</div>
                                 <div className="text-xs italic mt-1">
-                                  Full address hidden (Region-only privacy)
+                                  {t('common:privacy.regionOnly')}
                                 </div>
                               </div>
                             </div>
                           )}
 
                           <Badge variant="outline" className="text-xs">
-                            Status: {address.status}
+                            {t('common:status.label')}: {t(`common:status.${address.status.toLowerCase()}`)}
                           </Badge>
                         </div>
                       ))}

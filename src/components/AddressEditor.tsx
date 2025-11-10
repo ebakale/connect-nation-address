@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Save, MapPin, CheckCircle, XCircle } from 'lucide-react';
 import { Address, useAddresses } from '@/hooks/useAddresses';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 
 interface AddressEditorProps {
   address?: Address | null;
@@ -30,6 +31,7 @@ interface EditableAddressData {
 const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }) => {
   const { updateAddressStatus } = useAddresses();
   const { toast } = useToast();
+  const { t } = useTranslation(['address', 'common']);
   const [loading, setLoading] = useState(false);
   
   const [formData, setFormData] = useState<EditableAddressData>({
@@ -71,8 +73,8 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
     // Validate required fields
     if (!formData.country || !formData.region || !formData.city || !formData.street || !formData.latitude || !formData.longitude) {
       toast({
-        title: "Validation Error",
-        description: "Please fill in all required fields",
+        title: t('address:messages.validationError'),
+        description: t('address:messages.fillRequired'),
         variant: "destructive",
       });
       return;
@@ -90,8 +92,8 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
       // For now, we're only updating the status fields that are supported by the hook
       
       toast({
-        title: "Success",
-        description: "Address updated successfully",
+        title: t('common:status.success'),
+        description: t('address:messages.updateSuccess'),
       });
 
       // Create updated address object for callback
@@ -105,8 +107,8 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
       onSave?.(updatedAddress);
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to update address",
+        title: t('common:status.error'),
+        description: t('address:messages.updateError'),
         variant: "destructive",
       });
     } finally {
@@ -118,10 +120,10 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
     return (
       <Card>
         <CardContent className="p-8 text-center">
-          <p className="text-muted-foreground">No address selected for editing</p>
+          <p className="text-muted-foreground">{t('address:messages.noAddressSelected')}</p>
           <Button onClick={onBack} className="mt-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to List
+            {t('address:buttons.backToList')}
           </Button>
         </CardContent>
       </Card>
@@ -134,11 +136,11 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
       <div className="flex items-center gap-4">
         <Button variant="ghost" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to List
+          {t('address:buttons.backToList')}
         </Button>
         <div>
-          <h2 className="text-2xl font-bold">Edit Address</h2>
-          <p className="text-muted-foreground">Modify address details and status</p>
+          <h2 className="text-2xl font-bold">{t('address:headers.editAddress')}</h2>
+          <p className="text-muted-foreground">{t('address:headers.modifyDetails')}</p>
         </div>
       </div>
 
@@ -169,12 +171,12 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
             {address.verified ? (
               <Badge variant="outline" className="border-success text-success">
                 <CheckCircle className="h-3 w-3 mr-1" />
-                Verified
+                {t('address:verified')}
               </Badge>
             ) : (
               <Badge variant="outline" className="border-warning text-warning">
                 <XCircle className="h-3 w-3 mr-1" />
-                Unverified
+                {t('address:unverified')}
               </Badge>
             )}
           </div>
@@ -184,68 +186,68 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
       {/* Edit Form */}
       <Card>
         <CardHeader>
-          <CardTitle>Address Details</CardTitle>
+          <CardTitle>{t('address:headers.addressDetails')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium">Country *</label>
+              <label className="text-sm font-medium">{t('address:labels.country')} *</label>
               <Input 
                 value={formData.country}
                 onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
-                placeholder="Equatorial Guinea"
+                placeholder={t('address:placeholders.selectCountry')}
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Region/Province *</label>
+              <label className="text-sm font-medium">{t('address:labels.region')} *</label>
               <Input 
                 value={formData.region}
                 onChange={(e) => setFormData(prev => ({ ...prev, region: e.target.value }))}
-                placeholder="Bioko Norte"
+                placeholder={t('address:placeholders.selectRegion')}
               />
             </div>
             <div>
-              <label className="text-sm font-medium">City/District *</label>
+              <label className="text-sm font-medium">{t('address:labels.city')} *</label>
               <Input 
                 value={formData.city}
                 onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
-                placeholder="Malabo"
+                placeholder={t('address:placeholders.selectCity')}
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Street/Area *</label>
+              <label className="text-sm font-medium">{t('address:labels.street')} *</label>
               <Input 
                 value={formData.street}
                 onChange={(e) => setFormData(prev => ({ ...prev, street: e.target.value }))}
-                placeholder="Avenida de la Independencia"
+                placeholder={t('address:placeholders.enterStreet')}
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Building/House Number</label>
+              <label className="text-sm font-medium">{t('address:labels.building')}</label>
               <Input 
                 value={formData.building}
                 onChange={(e) => setFormData(prev => ({ ...prev, building: e.target.value }))}
-                placeholder="House #42"
+                placeholder={t('address:placeholders.enterBuilding')}
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Property Type</label>
+              <label className="text-sm font-medium">{t('address:labels.propertyType')}</label>
               <select
                 value={formData.address_type}
                 onChange={(e) => setFormData(prev => ({ ...prev, address_type: e.target.value }))}
                 className="border rounded-md px-3 py-2 w-full text-sm"
               >
-                <option value="residential">Residential</option>
-                <option value="commercial">Commercial</option>
-                <option value="government">Government</option>
-                <option value="landmark">Landmark</option>
+                <option value="residential">{t('address:propertyTypes.residential')}</option>
+                <option value="commercial">{t('address:propertyTypes.commercial')}</option>
+                <option value="government">{t('address:propertyTypes.government')}</option>
+                <option value="landmark">{t('address:propertyTypes.landmark')}</option>
               </select>
             </div>
           </div>
           
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium">Latitude *</label>
+              <label className="text-sm font-medium">{t('address:labels.latitude')} *</label>
               <Input 
                 value={formData.latitude}
                 onChange={(e) => setFormData(prev => ({ ...prev, latitude: e.target.value }))}
@@ -255,7 +257,7 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Longitude *</label>
+              <label className="text-sm font-medium">{t('address:labels.longitude')} *</label>
               <Input 
                 value={formData.longitude}
                 onChange={(e) => setFormData(prev => ({ ...prev, longitude: e.target.value }))}
@@ -267,17 +269,17 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
           </div>
 
           <div>
-            <label className="text-sm font-medium">Description</label>
+            <label className="text-sm font-medium">{t('address:labels.description')}</label>
             <Input 
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              placeholder="Additional details about the location"
+              placeholder={t('address:placeholders.additionalDetails')}
             />
           </div>
 
           {/* Status Controls */}
           <div className="space-y-3 pt-4 border-t">
-            <h4 className="font-medium">Address Status</h4>
+            <h4 className="font-medium">{t('address:labels.addressStatus')}</h4>
             
             <div className="flex items-center gap-3">
               <input
@@ -288,7 +290,7 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
                 className="rounded border-gray-300"
               />
               <label htmlFor="verified" className="text-sm font-medium">
-                Verified Address (Address has been confirmed and validated)
+                {t('address:statusLabels.verifiedAddress')} ({t('address:statusLabels.verifiedDescription')})
               </label>
             </div>
 
@@ -301,7 +303,7 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
                 className="rounded border-gray-300"
               />
               <label htmlFor="public" className="text-sm font-medium">
-                Public Address (Visible in public searches - for businesses, landmarks, etc.)
+                {t('address:statusLabels.publicAddress')} ({t('address:statusLabels.publicDescription')})
               </label>
             </div>
           </div>
@@ -310,10 +312,10 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
           <div className="flex gap-3 pt-4 border-t">
             <Button onClick={handleSave} disabled={loading} className="flex-1">
               <Save className="h-4 w-4 mr-2" />
-              {loading ? 'Saving...' : 'Save Changes'}
+              {loading ? t('address:buttons.saving') : t('address:buttons.saveChanges')}
             </Button>
             <Button variant="outline" onClick={onBack} disabled={loading}>
-              Cancel
+              {t('address:buttons.cancel')}
             </Button>
           </div>
         </CardContent>
@@ -322,13 +324,13 @@ const AddressEditor: React.FC<AddressEditorProps> = ({ address, onBack, onSave }
       {/* Current Address Info */}
       <Card>
         <CardHeader>
-          <CardTitle>Current Address Information</CardTitle>
+          <CardTitle>{t('address:headers.currentInfo')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-sm space-y-2">
-            <p><strong>Created:</strong> {new Date(address.created_at).toLocaleString()}</p>
-            <p><strong>Last Updated:</strong> {new Date(address.updated_at).toLocaleString()}</p>
-            <p><strong>Coordinates:</strong> {address.latitude.toFixed(6)}, {address.longitude.toFixed(6)}</p>
+            <p><strong>{t('address:info.created')}:</strong> {new Date(address.created_at).toLocaleString()}</p>
+            <p><strong>{t('address:info.lastUpdated')}:</strong> {new Date(address.updated_at).toLocaleString()}</p>
+            <p><strong>{t('address:info.coordinates')}:</strong> {address.latitude.toFixed(6)}, {address.longitude.toFixed(6)}</p>
           </div>
         </CardContent>
       </Card>
