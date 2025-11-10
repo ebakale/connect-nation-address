@@ -124,8 +124,7 @@ export default function MyBusinesses() {
 
     try {
       const { data, error } = await supabase.rpc('delete_business_record', {
-        p_organization_id: business.id,
-        p_user_id: user?.id
+        p_organization_id: business.id
       });
 
       if (error) throw error;
@@ -133,16 +132,17 @@ export default function MyBusinesses() {
       const result = data as { success: boolean; error?: string; message?: string };
       
       if (result?.success) {
-        toast.success(t('business:deleteSuccess'));
+        toast.success(t('business:businessDeletedSuccessfully'));
         loadBusinesses();
       } else {
         toast.error(result?.error || t('business:deleteFailed'));
       }
     } catch (error: any) {
       console.error('Error deleting business:', error);
-      toast.error(error.message);
+      toast.error(error.message || t('business:deleteError'));
     }
   };
+
 
   const getStatusBadge = (status: string | null, verified: boolean) => {
     if (!verified) {
