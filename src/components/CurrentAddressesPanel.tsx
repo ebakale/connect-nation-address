@@ -42,13 +42,21 @@ export function CurrentAddressesPanel({
     }
   };
 
+  const getStatusKey = (status: string | null | undefined) => {
+    if (!status) return 'unknown';
+    const normalized = status.toLowerCase();
+    const lastSegment = normalized.split('.').pop() || normalized;
+    return lastSegment;
+  };
+
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'CONFIRMED':
+    const key = getStatusKey(status);
+    switch (key) {
+      case 'confirmed':
         return 'bg-green-100 text-green-800 border-green-200';
-      case 'SELF_DECLARED':
+      case 'self_declared':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'REJECTED':
+      case 'rejected':
         return 'bg-red-100 text-red-800 border-red-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
@@ -99,7 +107,7 @@ export function CurrentAddressesPanel({
           </div>
           <div className="flex flex-col gap-2 items-end">
             <Badge className={getStatusColor(address.status)}>
-              {t(`address:status.${address.status?.toLowerCase() || 'unknown'}`)}
+              {t(`address:status.${getStatusKey(address.status)}`)}
             </Badge>
             <Badge variant="outline">
               {getOccupantIcon(address.occupant)} {t(`address:occupant.${address.occupant.toLowerCase()}`)}
