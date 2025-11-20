@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Home, MapPin, History, Plus, Shield, Users } from 'lucide-react';
 import { useCitizenAddresses } from '@/hooks/useCAR';
 import { SetPrimaryAddressForm } from './SetPrimaryAddressForm';
@@ -11,8 +12,12 @@ import { AddressHistoryPanel } from './AddressHistoryPanel';
 import { HouseholdManagement } from './HouseholdManagement';
 import { useTranslation } from 'react-i18next';
 
-export function CitizenAddressPortal() {
-  const { t } = useTranslation(['common', 'address']);
+interface CitizenAddressPortalProps {
+  onNavigateToRegister?: () => void;
+}
+
+export function CitizenAddressPortal({ onNavigateToRegister }: CitizenAddressPortalProps = {}) {
+  const { t } = useTranslation(['common', 'address', 'dashboard']);
   const [activeTab, setActiveTab] = useState('current');
   const { 
     currentAddresses, 
@@ -43,6 +48,12 @@ export function CitizenAddressPortal() {
             {secondaryAddresses.length} {t('address:secondary')}
           </Badge>
         </div>
+        {onNavigateToRegister && (
+          <Button onClick={onNavigateToRegister} size="sm" className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            {t('dashboard:addNewAddress')}
+          </Button>
+        )}
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
