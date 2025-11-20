@@ -611,8 +611,8 @@ const UnifiedDashboard = () => {
                     onClick={() => setActiveView('unified-address-request')}
                   >
                     <Plus className="h-6 w-6 shrink-0" />
-                    <div className="text-center w-full overflow-hidden px-1">
-                      <div className="font-semibold break-words leading-tight">{t('dashboard:registerAddress')}</div>
+                    <div className="text-center w-full px-1">
+                      <div className="font-semibold break-words text-sm leading-tight">{t('dashboard:registerAddress')}</div>
                       <div className="text-xs text-muted-foreground mt-1 break-words leading-tight">{t('dashboard:registerResidentialBusiness')}</div>
                     </div>
                   </Button>
