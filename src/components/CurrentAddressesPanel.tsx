@@ -99,7 +99,7 @@ export function CurrentAddressesPanel({
           </div>
           <div className="flex flex-col gap-2 items-end">
             <Badge className={getStatusColor(address.status)}>
-              {t(`address:status.${address.status.toLowerCase()}`)}
+              {t(`address:status.${address.status?.toLowerCase() || 'unknown'}`)}
             </Badge>
             <Badge variant="outline">
               {getOccupantIcon(address.occupant)} {t(`address:occupant.${address.occupant.toLowerCase()}`)}
