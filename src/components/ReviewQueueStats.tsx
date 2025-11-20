@@ -12,7 +12,7 @@ export function ReviewQueueStats({ totalRequests, pendingRequests, flaggedReques
   const completionRate = totalRequests > 0 ? (processedRequests / totalRequests) * 100 : 0;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <Card>
         <CardHeader className="pb-2">
           <CardDescription>Total Requests</CardDescription>

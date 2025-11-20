@@ -194,17 +194,17 @@ export function BusinessAddressRequestCard({ request, onUpdate }: BusinessAddres
           </div>
 
           {/* Business Details Grid */}
-          <div className="grid grid-cols-2 gap-3 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             {orgData.primary_contact_phone && (
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-muted-foreground" />
-                <span className="truncate">{orgData.primary_contact_phone}</span>
+              <div className="flex items-center gap-2 min-w-0">
+                <Phone className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                <span className="break-all">{orgData.primary_contact_phone}</span>
               </div>
             )}
             {orgData.primary_contact_email && (
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-muted-foreground" />
-                <span className="truncate">{orgData.primary_contact_email}</span>
+              <div className="flex items-center gap-2 min-w-0">
+                <Mail className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                <span className="break-all">{orgData.primary_contact_email}</span>
               </div>
             )}
             {orgData.employee_count && (

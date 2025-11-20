@@ -183,7 +183,7 @@ export function AddressRequestReviewCard({
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="font-medium">UAC</label>
                       <p className="font-mono text-sm">{address.uac}</p>

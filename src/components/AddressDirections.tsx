@@ -328,7 +328,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
         <div className="space-y-4">
           <Label className="text-sm font-medium">{t('address:directions.startingPoint')}</Label>
           
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <Button 
               variant={originType === 'current' ? 'default' : 'outline'}
               onClick={() => setOriginType('current')}
@@ -500,7 +500,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
             </span>
           </Button>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <Button 
               variant="outline"
               onClick={() => copyToClipboard(destination.uac, t('address:uacCode'))}

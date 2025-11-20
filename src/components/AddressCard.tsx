@@ -158,20 +158,22 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2 pt-2">
-          <Button variant="default" size="sm" onClick={onViewMap} className="flex-1">
-            <ExternalLink className="h-4 w-4" />
-            {t('viewOnMap')}
-          </Button>
-          <Button 
-            variant="hero" 
-            size="sm" 
-            onClick={getDirections}
-            className="flex-1"
-          >
-            <Navigation className="h-4 w-4" />
-            {t('directions')}
-          </Button>
+        <div className="flex flex-col sm:flex-row gap-2 pt-2">
+          <div className="flex gap-2 flex-1">
+            <Button variant="default" size="sm" onClick={onViewMap} className="flex-1">
+              <ExternalLink className="h-4 w-4" />
+              <span className="hidden sm:inline ml-2">{t('viewOnMap')}</span>
+            </Button>
+            <Button 
+              variant="hero" 
+              size="sm" 
+              onClick={getDirections}
+              className="flex-1"
+            >
+              <Navigation className="h-4 w-4" />
+              <span className="hidden sm:inline ml-2">{t('directions')}</span>
+            </Button>
+          </div>
           <QRCodeGenerator 
             uac={address.uac}
             addressText={`${address.street}, ${address.city}, ${address.region}, ${address.country}`}

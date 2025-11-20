@@ -155,7 +155,7 @@ const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack, au
                   {t('getTurnByTurnDirections')}
                 </Button>
                 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <Button 
                     variant="secondary"
                     onClick={() => copyToClipboard(address.uac, "UAC Code")}
