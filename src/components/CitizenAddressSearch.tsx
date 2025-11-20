@@ -31,6 +31,13 @@ interface SearchResult {
   address_count: number;
 }
 
+const getStatusKey = (status: string | null | undefined) => {
+  if (!status) return 'unknown';
+  const normalized = status.toLowerCase();
+  const lastSegment = normalized.split('.').pop() || normalized;
+  return lastSegment;
+};
+
 export const CitizenAddressSearch = () => {
   const { toast } = useToast();
   const { t } = useTranslation(['address', 'common']);
@@ -243,7 +250,7 @@ export const CitizenAddressSearch = () => {
                           )}
 
                           <Badge variant="outline" className="text-xs">
-                            {t('common:status.label')}: {t(`common:status.${address.status.toLowerCase()}`)}
+                            {t('common:status.label')}: {t(`common:status.${getStatusKey(address.status)}`)}
                           </Badge>
                         </div>
                       ))}
