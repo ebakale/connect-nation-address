@@ -211,6 +211,30 @@ export const useCitizenAddresses = () => {
     }
   };
 
+  // Lookup address by UAC
+  const lookupAddressByUAC = async (uac: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('addresses')
+        .select('*')
+        .eq('uac', uac)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          // No rows returned - address not found
+          return null;
+        }
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error looking up address:', error);
+      return null;
+    }
+  };
+
   // Helper functions
   const getCurrentAddresses = () => addresses.filter(addr => !addr.effective_to);
   const getPrimaryAddress = () => getCurrentAddresses().find(addr => addr.address_kind === 'PRIMARY');
@@ -224,6 +248,7 @@ export const useCitizenAddresses = () => {
     setPrimaryAddress,
     addSecondaryAddress,
     retireAddress,
+    lookupAddressByUAC,
     // Helper getters
     currentAddresses: getCurrentAddresses(),
     primaryAddress: getPrimaryAddress(),

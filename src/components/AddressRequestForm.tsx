@@ -14,8 +14,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import CameraCapture from '@/components/CameraCapture';
 import { ResidencyVerificationForm } from '@/components/ResidencyVerificationForm';
 interface AddressRequestFormProps {
+  mode?: 'standalone' | 'embedded';
   onCancel?: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (requestId?: string, uac?: string) => void;
 }
 
 const VERIFICATION_STEPS = {
@@ -24,7 +25,7 @@ const VERIFICATION_STEPS = {
   COMPLETE: 'complete'
 } as const;
 
-export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormProps) => {
+export const AddressRequestForm = ({ mode = 'standalone', onCancel, onSuccess }: AddressRequestFormProps) => {
   const { t } = useTranslation('address');
   const [formData, setFormData] = useState({
     country: 'Equatorial Guinea',
@@ -326,7 +327,13 @@ export const AddressRequestForm = ({ onCancel, onSuccess }: AddressRequestFormPr
         description: t('requestSubmittedToast')
       });
 
-      // Move to verification step instead of resetting form
+      // In embedded mode, call onSuccess immediately with requestId
+      if (mode === 'embedded') {
+        onSuccess?.(insertedData.id, undefined);
+        return;
+      }
+
+      // In standalone mode, move to verification step
       setCurrentStep(VERIFICATION_STEPS.RESIDENCY_VERIFICATION);
 
       // Don't reset form or call onSuccess yet - wait for verification step

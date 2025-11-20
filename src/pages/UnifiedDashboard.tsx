@@ -28,6 +28,7 @@ import { AddressDataManager } from "@/components/AddressDataManager";
 import AddressSearch from "@/components/AddressSearch";
 import AddressMapViewer from "@/components/AddressMapViewer";
 import { AddressRequestForm } from "@/components/AddressRequestForm";
+import { UnifiedAddressRequestFlow } from "@/components/UnifiedAddressRequestFlow";
 import { AddressRequestStatus } from "@/components/AddressRequestStatus";
 import { AddressCaptureForm } from "@/components/AddressCaptureForm";
 import { AddressVerificationQueue } from "@/components/AddressVerificationQueue";
@@ -842,11 +843,13 @@ const UnifiedDashboard = () => {
 
 
       case 'submit-request':
+      case 'unified-address-request':
         return (
           <div className="max-w-4xl">
-            <AddressRequestForm 
+            <UnifiedAddressRequestFlow
+              initialMode="citizen"
+              onComplete={() => setActiveView('overview')}
               onCancel={() => setActiveView('overview')}
-              onSuccess={() => setActiveView('overview')}
             />
           </div>
         );
