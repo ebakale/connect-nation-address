@@ -604,7 +604,7 @@ const UnifiedDashboard = () => {
                 <CardHeader>
                   <CardTitle>{t('dashboard:quickActions')}</CardTitle>
                 </CardHeader>
-                <CardContent className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Button
                     variant="outline"
                     className="h-auto min-h-[120px] flex flex-col items-center justify-center gap-2 p-4 w-full"
