@@ -109,6 +109,9 @@ export function CurrentAddressesPanel({
             <Badge className={getStatusColor(address.status)}>
               {t(`address:status.${getStatusKey(address.status)}`)}
             </Badge>
+            {/* DEBUG: */}
+            <div className="text-xs text-muted-foreground">
+              Raw: {String(address.status)} | Key: {getStatusKey(address.status)} | Translation: {t(`address:status.${getStatusKey(address.status)}`)}</div>
             <Badge variant="outline">
               {getOccupantIcon(address.occupant)} {t(`address:occupant.${address.occupant.toLowerCase()}`)}
             </Badge>
