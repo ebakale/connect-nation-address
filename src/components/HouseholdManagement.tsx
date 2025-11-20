@@ -136,7 +136,7 @@ export function HouseholdManagement() {
     if (!person?.id || !person?.auth_user_id) {
       toast({
         title: t('common:error'),
-        description: "User information not found",
+        description: t('common:userInfoNotFound'),
         variant: "destructive",
       });
       return;
@@ -210,8 +210,8 @@ export function HouseholdManagement() {
       toast({
         title: t('common:success'),
         description: addressAssigned 
-          ? "Dependent created and address assigned successfully"
-          : "Dependent created successfully. No guardian address found to assign.",
+          ? t('common:dependentCreatedWithAddress')
+          : t('common:dependentCreatedNoAddress'),
       });
 
       setIsCreateDependentDialogOpen(false);
@@ -237,7 +237,7 @@ export function HouseholdManagement() {
       console.error('Error creating dependent:', error);
       toast({
         title: t('common:error'),
-        description: error.message || "Failed to create dependent",
+        description: error.message || t('common:failedToCreateDependent'),
         variant: "destructive",
       });
     } finally {
@@ -275,7 +275,7 @@ export function HouseholdManagement() {
 
       toast({
         title: t('common:success'),
-        description: "Dependent updated successfully",
+        description: t('common:dependentUpdatedSuccessfully'),
       });
 
       setIsEditDependentDialogOpen(false);
@@ -285,7 +285,7 @@ export function HouseholdManagement() {
       console.error('Error updating dependent:', error);
       toast({
         title: t('common:error'),
-        description: error.message || "Failed to update dependent",
+        description: error.message || t('common:failedToUpdateDependent'),
         variant: "destructive",
       });
     }
@@ -311,7 +311,7 @@ export function HouseholdManagement() {
 
       toast({
         title: t('common:success'),
-        description: "Household updated successfully",
+        description: t('common:householdUpdatedSuccessfully'),
       });
 
       setIsEditHouseholdDialogOpen(false);
@@ -325,7 +325,7 @@ export function HouseholdManagement() {
       console.error('Error updating household:', error);
       toast({
         title: t('common:error'),
-        description: error.message || "Failed to update household",
+        description: error.message || t('common:failedToUpdateHousehold'),
         variant: "destructive",
       });
     }
@@ -337,7 +337,7 @@ export function HouseholdManagement() {
     if (!selectedHouseholdId || !selectedDependentId || !person?.auth_user_id) {
       toast({
         title: t('common:error'),
-        description: "Please fill all required fields",
+        description: t('common:pleaseFillAllFields'),
         variant: "destructive",
       });
       return;
@@ -349,7 +349,7 @@ export function HouseholdManagement() {
       // Get the dependent's relationship to use it
       const dependent = dependents.find(d => d.id === selectedDependentId);
       if (!dependent) {
-        throw new Error("Dependent not found");
+        throw new Error(t('common:dependentNotFound'));
       }
 
       // Map relationship_to_guardian to relationship_to_head
@@ -376,7 +376,7 @@ export function HouseholdManagement() {
 
       toast({
         title: t('common:success'),
-        description: "Member added to household successfully",
+        description: t('common:memberAddedSuccessfully'),
       });
 
       setIsAddMemberDialogOpen(false);
@@ -385,7 +385,7 @@ export function HouseholdManagement() {
       console.error('Error adding member:', error);
       toast({
         title: t('common:error'),
-        description: error.message || "Failed to add member. Please try again.",
+        description: error.message || t('common:failedToAddMember'),
         variant: "destructive",
       });
     } finally {
@@ -398,8 +398,8 @@ export function HouseholdManagement() {
     
     if (!person?.id || !person?.auth_user_id) {
       toast({
-        title: "Error",
-        description: "User information not found",
+        title: t('common:error'),
+        description: t('common:userInfoNotFound'),
         variant: "destructive",
       });
       return;
@@ -426,7 +426,7 @@ export function HouseholdManagement() {
 
       toast({
         title: t('common:success'),
-        description: "Household created successfully",
+        description: t('common:householdCreatedSuccessfully'),
       });
 
       // Reset form
@@ -444,7 +444,7 @@ export function HouseholdManagement() {
       console.error('Error creating household:', error);
       toast({
         title: t('common:error'),
-        description: error.message || "Failed to create household",
+        description: error.message || t('common:failedToCreateHousehold'),
         variant: "destructive",
       });
     } finally {
@@ -540,7 +540,7 @@ export function HouseholdManagement() {
                               <DialogHeader>
                                 <DialogTitle>{t('address:addMember')}</DialogTitle>
                                 <DialogDescription>
-                                  Add a dependent to this household
+                                  {t('address:chooseDependentToAdd')}
                                 </DialogDescription>
                               </DialogHeader>
                               <form onSubmit={handleAddMember} className="space-y-4">
