@@ -78,7 +78,7 @@ export const ProfileEditor = () => {
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
-        toast.error('Failed to load profile data');
+        toast.error(t('failedToUpdateProfile'));
       }
     };
 
@@ -120,13 +120,13 @@ export const ProfileEditor = () => {
         });
 
         if (emailError) throw emailError;
-        toast.success('Profile updated! Please check your email to confirm the new address.');
+        toast.success(t('profileUpdatedCheckEmail'));
       } else {
-        toast.success('Profile updated successfully!');
+        toast.success(t('profileUpdatedSuccessfully'));
       }
     } catch (error) {
       console.error('Error updating profile:', error);
-      toast.error('Failed to update profile');
+      toast.error(t('failedToUpdateProfile'));
     } finally {
       setLoading(false);
     }
@@ -136,12 +136,12 @@ export const ProfileEditor = () => {
     e.preventDefault();
     
     if (passwords.new !== passwords.confirm) {
-      toast.error('New passwords do not match');
+      toast.error(t('passwordsDoNotMatch'));
       return;
     }
 
     if (passwords.new.length < 6) {
-      toast.error('Password must be at least 6 characters long');
+      toast.error(t('passwordTooShort'));
       return;
     }
 
@@ -154,10 +154,10 @@ export const ProfileEditor = () => {
       if (error) throw error;
 
       setPasswords({ current: "", new: "", confirm: "" });
-      toast.success('Password updated successfully!');
+      toast.success(t('passwordUpdatedSuccessfully'));
     } catch (error) {
       console.error('Error updating password:', error);
-      toast.error('Failed to update password');
+      toast.error(t('failedToUpdatePassword'));
     } finally {
       setPasswordLoading(false);
     }

@@ -275,16 +275,16 @@ export const UserVerificationRequests = () => {
 
                 {verification.verification_notes && (
                   <div className="mt-4 p-3 bg-muted rounded-lg">
-                    <p className="text-sm font-medium mb-1">Reviewer Notes:</p>
+                    <p className="text-sm font-medium mb-1">{t('address:reviewerNotes')}:</p>
                     <p className="text-sm">{verification.verification_notes}</p>
                   </div>
                 )}
 
                 {verification.status === 'requires_additional_documents' && (
                   <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                    <p className="text-sm font-medium text-orange-800 mb-1">Action Required:</p>
+                    <p className="text-sm font-medium text-orange-800 mb-1">{t('address:actionRequired')}:</p>
                     <p className="text-sm text-orange-700">
-                      Please review the notes above and update your verification request with the requested changes.
+                      {t('address:additionalDocumentsRequired')}
                     </p>
                   </div>
                 )}
