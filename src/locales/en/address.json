@@ -788,6 +788,19 @@
     "dontHaveUAC": "Don't have a UAC code?",
     "createAddressFirst": "Create a New Address Request",
     "uacPrefilledDescription": "This UAC was automatically filled from your address lookup",
-    "addressKind": "Address Type"
+    "addressKind": "Address Type",
+    "selectAddressType": "Select Address Type",
+    "selectAddressTypeDescription": "Choose whether this is a residential or business address",
+    "selectAddressTypeHelp": "Select the type of address you want to create",
+    "residentialAddress": "Residential Address",
+    "residentialDescription": "For your home or personal residence",
+    "businessAddress": "Business Address",
+    "businessDescription": "For your company, organization, or commercial location",
+    "createResidentialAddress": "Create Residential Address",
+    "createResidentialDescription": "Register a new residential address",
+    "createResidentialHelp": "Provide details about your residential address for verification",
+    "createBusinessAddress": "Create Business Address",
+    "createBusinessDescription": "Register a new business address with complete details",
+    "createBusinessHelp": "Provide comprehensive business information and location details"
   }
 }
