@@ -10,7 +10,7 @@ interface AddressHistoryPanelProps {
 }
 
 export function AddressHistoryPanel({ addressHistory }: AddressHistoryPanelProps) {
-  const { t } = useTranslation(['address', 'common']);
+  const { t } = useTranslation('address');
  
   const getStatusKey = (status: string | null | undefined) => {
     if (!status) return 'unknown';
@@ -47,7 +47,7 @@ export function AddressHistoryPanel({ addressHistory }: AddressHistoryPanelProps
         <CardContent className="flex flex-col items-center justify-center py-12">
           <History className="h-12 w-12 text-muted-foreground mb-4" />
           <p className="text-muted-foreground text-center">
-            {t('address:noAddressHistoryMessage')}
+            {t('noAddressHistoryMessage')}
           </p>
         </CardContent>
       </Card>
@@ -58,8 +58,8 @@ export function AddressHistoryPanel({ addressHistory }: AddressHistoryPanelProps
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-6">
         <History className="h-5 w-5 text-primary" />
-        <h2 className="text-xl font-semibold">{t('address:addressHistory')}</h2>
-        <Badge variant="outline">{addressHistory.length} {t('address:records')}</Badge>
+        <h2 className="text-xl font-semibold">{t('addressHistory')}</h2>
+        <Badge variant="outline">{addressHistory.length} {t('records')}</Badge>
       </div>
 
       <div className="space-y-4">
@@ -79,7 +79,7 @@ export function AddressHistoryPanel({ addressHistory }: AddressHistoryPanelProps
                     <CardTitle className="text-lg font-mono">{address.uac}</CardTitle>
                     {address.unit_uac && (
                       <CardDescription className="font-mono text-sm">
-                        {t('address:unit')}: {address.unit_uac}
+                        {t('unit')}: {address.unit_uac}
                       </CardDescription>
                     )}
                   </div>
@@ -87,10 +87,10 @@ export function AddressHistoryPanel({ addressHistory }: AddressHistoryPanelProps
                 <div className="flex gap-2">
                   <Badge className={getKindColor(address.address_kind)}>
                     {getKindIcon(address.address_kind)}
-                    <span className="ml-1">{t(`address:kind.${address.address_kind.toLowerCase()}`)}</span>
+                    <span className="ml-1">{t(`kind.${address.address_kind.toLowerCase()}`)}</span>
                   </Badge>
                   <Badge className={getStatusColor(address.status)}>
-                    {t(`address:status.${getStatusKey(address.status)}`)}
+                    {t(`status.${getStatusKey(address.status)}`)}
                   </Badge>
                 </div>
               </div>
@@ -101,7 +101,7 @@ export function AddressHistoryPanel({ addressHistory }: AddressHistoryPanelProps
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="font-medium">{t('address:effectivePeriod')}</p>
+                    <p className="font-medium">{t('effectivePeriod')}</p>
                     <p className="text-muted-foreground">
                       {format(new Date(address.effective_from), 'MMM d, yyyy')}
                       {address.effective_to && (
@@ -117,9 +117,9 @@ export function AddressHistoryPanel({ addressHistory }: AddressHistoryPanelProps
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="font-medium">{t('address:scopeAndOccupant')}</p>
+                    <p className="font-medium">{t('scopeAndOccupant')}</p>
                     <p className="text-muted-foreground">
-                      {t(`address:scopeType.${address.scope.toLowerCase()}`)} - {t(`address:occupant.${address.occupant.toLowerCase()}`)}
+                      {t(`scopeType.${address.scope.toLowerCase()}`)} - {t(`occupant.${address.occupant.toLowerCase()}`)}
                     </p>
                   </div>
                 </div>
@@ -127,7 +127,7 @@ export function AddressHistoryPanel({ addressHistory }: AddressHistoryPanelProps
                 <div className="flex items-center gap-2">
                   <History className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="font-medium">{t('address:source')}</p>
+                    <p className="font-medium">{t('source')}</p>
                     <p className="text-muted-foreground">{address.source}</p>
                   </div>
                 </div>
@@ -136,7 +136,7 @@ export function AddressHistoryPanel({ addressHistory }: AddressHistoryPanelProps
               {address.notes && (
                 <div className="mt-4 p-3 bg-muted/50 rounded-md">
                   <p className="text-sm text-muted-foreground">
-                    <strong>{t('address:notes')}:</strong> {address.notes}
+                    <strong>{t('notes')}:</strong> {address.notes}
                   </p>
                 </div>
               )}

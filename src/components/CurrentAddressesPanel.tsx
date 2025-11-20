@@ -22,7 +22,7 @@ export function CurrentAddressesPanel({
   onAddSecondary, 
   onSetPrimary 
 }: CurrentAddressesPanelProps) {
-  const { t, i18n } = useTranslation(['address', 'common']);
+  const { t, i18n } = useTranslation('address');
   const { retireAddress } = useCitizenAddresses();
 
   // Get the appropriate locale for date formatting
