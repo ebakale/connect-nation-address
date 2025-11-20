@@ -11,13 +11,22 @@ interface AddressHistoryPanelProps {
 
 export function AddressHistoryPanel({ addressHistory }: AddressHistoryPanelProps) {
   const { t } = useTranslation(['address', 'common']);
+ 
+  const getStatusKey = (status: string | null | undefined) => {
+    if (!status) return 'unknown';
+    const normalized = status.toLowerCase();
+    const lastSegment = normalized.split('.').pop() || normalized;
+    return lastSegment;
+  };
+ 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'CONFIRMED':
+    const key = getStatusKey(status);
+    switch (key) {
+      case 'confirmed':
         return 'bg-green-100 text-green-800 border-green-200';
-      case 'SELF_DECLARED':
+      case 'self_declared':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'REJECTED':
+      case 'rejected':
         return 'bg-red-100 text-red-800 border-red-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
@@ -81,7 +90,7 @@ export function AddressHistoryPanel({ addressHistory }: AddressHistoryPanelProps
                     <span className="ml-1">{t(`address:kind.${address.address_kind.toLowerCase()}`)}</span>
                   </Badge>
                   <Badge className={getStatusColor(address.status)}>
-                    {t(`address:status.${address.status.toLowerCase()}`)}
+                    {t(`address:status.${getStatusKey(address.status)}`)}
                   </Badge>
                 </div>
               </div>
