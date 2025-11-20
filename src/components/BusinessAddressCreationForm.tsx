@@ -211,7 +211,7 @@ export function BusinessAddressCreationForm({ onSuccess, onCancel }: BusinessAdd
   return (
     <div className="space-y-6">
       <Tabs value={currentTab} onValueChange={setCurrentTab}>
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="w-full">{/* Removed grid-cols-5 to allow flex-wrap */}
           <TabsTrigger value="organization">
             <Building2 className="h-4 w-4 mr-2" />
             {t('business:registration.organizationDetails')}
