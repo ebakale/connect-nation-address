@@ -36,7 +36,7 @@ export function CurrentAddressesPanel({
 
   const handleRetireAddress = async (addressId: string) => {
     try {
-      await retireAddress(addressId, t('address:userRequestedRemoval'));
+      await retireAddress(addressId, t('userRequestedRemoval'));
     } catch (error) {
       // Error handling is done in the hook
     }
@@ -66,18 +66,18 @@ export function CurrentAddressesPanel({
   const getOccupantIcon = (occupant: string) => {
     switch (occupant) {
       case 'OWNER':
-        return t('address:occupantIcon.owner');
+        return t('occupantIcon.owner');
       case 'TENANT':
-        return t('address:occupantIcon.tenant');
+        return t('occupantIcon.tenant');
       case 'FAMILY':
-        return t('address:occupantIcon.family');
+        return t('occupantIcon.family');
       default:
-        return t('address:occupantIcon.other');
+        return t('occupantIcon.other');
     }
   };
 
   const getLocalizedLocation = (location: string) => {
-    const key = `address:locations.${location.toLowerCase().replace(/\s+/g, '_')}`;
+    const key = `locations.${location.toLowerCase().replace(/\s+/g, '_')}`;
     const translated = t(key);
     // If translation key doesn't exist, return original
     return translated === key ? location : translated;
@@ -107,24 +107,21 @@ export function CurrentAddressesPanel({
           </div>
           <div className="flex flex-col gap-2 items-end">
             <Badge className={getStatusColor(address.status)}>
-              {t(`address:status.${getStatusKey(address.status)}`)}
+              {t(`status.${getStatusKey(address.status)}`)}
             </Badge>
-            {/* DEBUG: */}
-            <div className="text-xs text-muted-foreground">
-              Raw: {String(address.status)} | Key: {getStatusKey(address.status)} | Translation: {t(`address:status.${getStatusKey(address.status)}`)}</div>
             <Badge variant="outline">
-              {getOccupantIcon(address.occupant)} {t(`address:occupant.${address.occupant.toLowerCase()}`)}
+              {getOccupantIcon(address.occupant)} {t(`occupant.${address.occupant.toLowerCase()}`)}
             </Badge>
             {address.nar_verified && (
               <Badge variant="secondary" className="text-xs">
-                ✓ {t('address:narVerified')}
+                ✓ {t('narVerified')}
               </Badge>
             )}
           </div>
         </div>
         {address.unit_uac && (
           <CardDescription className="font-mono text-sm mt-2">
-            {t('address:unit')}: {address.unit_uac}
+            {t('unit')}: {address.unit_uac}
           </CardDescription>
         )}
       </CardHeader>
@@ -133,14 +130,14 @@ export function CurrentAddressesPanel({
           {/* Additional address details */}
           {address.address_type && (
             <div className="text-sm">
-              <span className="text-muted-foreground">{t('address:type')}: </span>
-              <span>{t(`address:addressType.${address.address_type.toLowerCase()}`)}</span>
+              <span className="text-muted-foreground">{t('type')}: </span>
+              <span>{t(`addressType.${address.address_type.toLowerCase()}`)}</span>
             </div>
           )}
           
           {address.address_description && (
             <div className="text-sm">
-              <span className="text-muted-foreground">{t('address:description')}: </span>
+              <span className="text-muted-foreground">{t('description')}: </span>
               <span>{address.address_description}</span>
             </div>
           )}
@@ -150,42 +147,42 @@ export function CurrentAddressesPanel({
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
-                {isPrimary ? `${t('address:effectiveFrom')} ${format(new Date(address.effective_from), 'MMM d, yyyy', { locale: getDateLocale() })}` : `${t('address:added')} ${format(new Date(address.created_at), 'MMM d, yyyy', { locale: getDateLocale() })}`}
+                {isPrimary ? `${t('effectiveFrom')} ${format(new Date(address.effective_from), 'MMM d, yyyy', { locale: getDateLocale() })}` : `${t('added')} ${format(new Date(address.created_at), 'MMM d, yyyy', { locale: getDateLocale() })}`}
               </div>
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
-                {t(`address:scopeType.${address.scope.toLowerCase()}`)}
+                {t(`scopeType.${address.scope.toLowerCase()}`)}
               </div>
             </div>
             <div className="flex gap-2">
               {isPrimary && (
                 <Button onClick={onSetPrimary} variant="outline" size="sm">
-                  {t('address:updatePrimary')}
+                  {t('updatePrimary')}
                 </Button>
               )}
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
                     <Trash2 className="h-4 w-4" />
-                    {isPrimary ? '' : ` ${t('address:remove')}`}
+                    {isPrimary ? '' : ` ${t('remove')}`}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>
-                      {isPrimary ? t('address:retirePrimaryQuestion') : t('address:removeSecondaryQuestion')}
+                      {isPrimary ? t('retirePrimaryQuestion') : t('removeSecondaryQuestion')}
                     </AlertDialogTitle>
                     <AlertDialogDescription>
                       {isPrimary 
-                        ? t('address:retirePrimaryDescription')
-                        : t('address:removeSecondaryDescription')
+                        ? t('retirePrimaryDescription')
+                        : t('removeSecondaryDescription')
                       }
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>{t('common:buttons.cancel')}</AlertDialogCancel>
                     <AlertDialogAction onClick={() => handleRetireAddress(address.id)}>
-                      {isPrimary ? t('address:retireAddress') : t('address:removeAddress')}
+                      {isPrimary ? t('retireAddress') : t('removeAddress')}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -204,12 +201,12 @@ export function CurrentAddressesPanel({
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold flex items-center gap-2">
             <Home className="h-5 w-5 text-primary" />
-            {t('address:primaryAddress')}
+            {t('primaryAddress')}
           </h2>
           {!primaryAddress && (
             <Button onClick={onSetPrimary} variant="outline" size="sm">
               <Plus className="h-4 w-4 mr-2" />
-              {t('address:setPrimary')}
+              {t('setPrimary')}
             </Button>
           )}
         </div>
@@ -221,11 +218,11 @@ export function CurrentAddressesPanel({
             <CardContent className="flex flex-col items-center justify-center py-8">
               <Home className="h-12 w-12 text-muted-foreground mb-4" />
               <p className="text-muted-foreground text-center mb-4">
-                {t('address:noPrimaryAddressMessage')}
+                {t('noPrimaryAddressMessage')}
               </p>
               <Button onClick={onSetPrimary}>
                 <Plus className="h-4 w-4 mr-2" />
-                {t('address:setPrimaryAddress')}
+                {t('setPrimaryAddress')}
               </Button>
             </CardContent>
           </Card>
@@ -237,11 +234,11 @@ export function CurrentAddressesPanel({
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold flex items-center gap-2">
             <MapPin className="h-5 w-5 text-primary" />
-            {t('address:secondaryAddresses')} ({secondaryAddresses.length})
+            {t('secondaryAddresses')} ({secondaryAddresses.length})
           </h2>
           <Button onClick={onAddSecondary} variant="outline" size="sm">
             <Plus className="h-4 w-4 mr-2" />
-            {t('address:addSecondary')}
+            {t('addSecondary')}
           </Button>
         </div>
 
@@ -258,11 +255,11 @@ export function CurrentAddressesPanel({
             <CardContent className="flex flex-col items-center justify-center py-8">
               <MapPin className="h-12 w-12 text-muted-foreground mb-4" />
               <p className="text-muted-foreground text-center mb-4">
-                {t('address:noSecondaryAddressesMessage')}
+                {t('noSecondaryAddressesMessage')}
               </p>
               <Button onClick={onAddSecondary} variant="outline">
                 <Plus className="h-4 w-4 mr-2" />
-                {t('address:addSecondaryAddress')}
+                {t('addSecondaryAddress')}
               </Button>
             </CardContent>
           </Card>
