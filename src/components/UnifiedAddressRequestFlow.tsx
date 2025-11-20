@@ -255,29 +255,29 @@ export function UnifiedAddressRequestFlow({
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Button
                   variant="outline"
-                  className="h-auto flex-col gap-3 p-6"
+                  className="h-auto flex-col gap-3 p-6 min-h-[140px] w-full"
                   onClick={() => handleAddressTypeSelected('residential')}
                 >
-                  <Home className="h-8 w-8" />
-                  <div className="text-center">
-                    <div className="font-semibold">{t('address:unifiedFlow.residentialAddress')}</div>
-                    <div className="text-xs text-muted-foreground mt-1">
+                  <Home className="h-8 w-8 flex-shrink-0" />
+                  <div className="text-center w-full">
+                    <div className="font-semibold break-words">{t('address:unifiedFlow.residentialAddress')}</div>
+                    <div className="text-xs text-muted-foreground mt-1 break-words">
                       {t('address:unifiedFlow.residentialDescription')}
                     </div>
                   </div>
                 </Button>
                 <Button
                   variant="outline"
-                  className="h-auto flex-col gap-3 p-6"
+                  className="h-auto flex-col gap-3 p-6 min-h-[140px] w-full"
                   onClick={() => handleAddressTypeSelected('business')}
                 >
-                  <Building className="h-8 w-8" />
-                  <div className="text-center">
-                    <div className="font-semibold">{t('address:unifiedFlow.businessAddress')}</div>
-                    <div className="text-xs text-muted-foreground mt-1">
+                  <Building className="h-8 w-8 flex-shrink-0" />
+                  <div className="text-center w-full">
+                    <div className="font-semibold break-words">{t('address:unifiedFlow.businessAddress')}</div>
+                    <div className="text-xs text-muted-foreground mt-1 break-words">
                       {t('address:unifiedFlow.businessDescription')}
                     </div>
                   </div>
