@@ -152,6 +152,13 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: isFieldAgent
     },
     {
+      id: 'unified-address-request',
+      title: t('registerAddress'),
+      icon: Home,
+      onClick: () => handleItemClick('unified-address-request'),
+      visible: isCitizen || isNARAuthority
+    },
+    {
       id: 'address-search',
       title: t('addressSearch'),
       icon: Search,
