@@ -1,3 +1,9 @@
+/**
+ * @deprecated This component has been replaced by the unified address request flow.
+ * Use UnifiedAddressRequestFlow with business address type selection instead.
+ * This component is kept for backward compatibility only.
+ */
+
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";

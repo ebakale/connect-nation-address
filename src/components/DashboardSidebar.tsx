@@ -180,13 +180,6 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: isCitizen
     },
     {
-      id: 'business-register',
-      title: t('registerBusiness'),
-      icon: Building,
-      onClick: () => navigate('/business/register'),
-      visible: isCitizen || hasAdminAccess
-    },
-    {
       id: 'my-businesses',
       title: t('myBusinesses'),
       icon: Building,
@@ -260,9 +253,9 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     ['admin-panel', 'analytics', 'province-management'].includes(item.id)
   );
   
-    const toolsItems = visibleItems.filter(item => 
-      ['unified-address-request', 'address-search', 'saved-addresses', 'business-register', 'my-businesses'].includes(item.id)
-    );
+  const toolsItems = visibleItems.filter(item => 
+    ['unified-address-request', 'address-search', 'saved-addresses', 'my-businesses'].includes(item.id)
+  );
   
   const settingsItems = visibleItems.filter(item => 
     ['emergency-contacts', 'profile'].includes(item.id)

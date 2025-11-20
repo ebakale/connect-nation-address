@@ -9,15 +9,20 @@ import { AddressLookupStep } from './AddressLookupStep';
 import { AddressRequestForm } from './AddressRequestForm';
 import { CARDeclarationForm } from './CARDeclarationForm';
 import { BusinessDeclarationForm } from './BusinessDeclarationForm';
+import { BusinessAddressCreationForm } from './BusinessAddressCreationForm';
 import { useToast } from '@/hooks/use-toast';
 
 type FlowState = 
   | 'lookup' 
+  | 'address-type-selection'
   | 'nar-request' 
+  | 'business-nar-creation'
   | 'awaiting-approval' 
   | 'car-declaration' 
   | 'business-declaration' 
   | 'complete';
+
+type AddressCreationType = 'residential' | 'business' | null;
 
 interface UnifiedAddressRequestFlowProps {
   initialMode?: 'citizen' | 'business';
@@ -37,14 +42,17 @@ export function UnifiedAddressRequestFlow({
   const [addressDetails, setAddressDetails] = useState<any>(null);
   const [createdAddressId, setCreatedAddressId] = useState<string | null>(null);
   const [declarationMode, setDeclarationMode] = useState<'citizen' | 'business'>(initialMode);
+  const [addressCreationType, setAddressCreationType] = useState<AddressCreationType>(null);
 
   // Calculate progress percentage
   const progressSteps: Record<FlowState, number> = {
-    'lookup': 20,
-    'nar-request': 40,
-    'awaiting-approval': 60,
-    'car-declaration': 80,
-    'business-declaration': 80,
+    'lookup': 15,
+    'address-type-selection': 25,
+    'nar-request': 45,
+    'business-nar-creation': 45,
+    'awaiting-approval': 65,
+    'car-declaration': 85,
+    'business-declaration': 85,
     'complete': 100
   };
 
@@ -55,8 +63,12 @@ export function UnifiedAddressRequestFlow({
     switch (currentState) {
       case 'lookup':
         return t('address:unifiedFlow.step1');
+      case 'address-type-selection':
+        return t('address:unifiedFlow.selectAddressType');
       case 'nar-request':
-        return t('address:unifiedFlow.createAddress');
+        return t('address:unifiedFlow.createResidentialAddress');
+      case 'business-nar-creation':
+        return t('address:unifiedFlow.createBusinessAddress');
       case 'awaiting-approval':
         return t('address:unifiedFlow.awaitingApproval');
       case 'car-declaration':
@@ -74,8 +86,12 @@ export function UnifiedAddressRequestFlow({
     switch (currentState) {
       case 'lookup':
         return t('address:unifiedFlow.lookupDescription');
+      case 'address-type-selection':
+        return t('address:unifiedFlow.selectAddressTypeDescription');
       case 'nar-request':
-        return t('address:unifiedFlow.createAddressDescription');
+        return t('address:unifiedFlow.createResidentialDescription');
+      case 'business-nar-creation':
+        return t('address:unifiedFlow.createBusinessDescription');
       case 'awaiting-approval':
         return t('address:unifiedFlow.awaitingApprovalDescription');
       case 'car-declaration':
@@ -101,17 +117,26 @@ export function UnifiedAddressRequestFlow({
     }
   };
 
-  // Handle "address not found" - create new
+  // Handle "address not found" - prompt for address type
   const handleCreateNewAddress = () => {
-    setCurrentState('nar-request');
+    setCurrentState('address-type-selection');
   };
 
-  // Handle NAR request submission success
+  // Handle address type selection
+  const handleAddressTypeSelected = (type: 'residential' | 'business') => {
+    setAddressCreationType(type);
+    if (type === 'residential') {
+      setCurrentState('nar-request');
+    } else {
+      setCurrentState('business-nar-creation');
+    }
+  };
+
+  // Handle residential NAR request submission success
   const handleNARSuccess = (requestId: string, uac?: string) => {
     setCreatedAddressId(requestId);
     if (uac) {
       setSelectedUAC(uac);
-      // Auto-advance to declaration after approval
       toast({
         title: t('address:unifiedFlow.addressCreated'),
         description: t('address:unifiedFlow.readyToDeclare')
@@ -124,6 +149,17 @@ export function UnifiedAddressRequestFlow({
     } else {
       setCurrentState('awaiting-approval');
     }
+  };
+
+  // Handle business NAR creation success (with full metadata)
+  const handleBusinessNARSuccess = (requestId: string) => {
+    setCreatedAddressId(requestId);
+    // Business address with full metadata goes straight to completion
+    setCurrentState('complete');
+    toast({
+      title: t('common:success'),
+      description: t('business:registration.successMessage')
+    });
   };
 
   // Handle CAR declaration success
@@ -155,6 +191,7 @@ export function UnifiedAddressRequestFlow({
     setSelectedUAC('');
     setAddressDetails(null);
     setCreatedAddressId(null);
+    setAddressCreationType(null);
   };
 
   return (
@@ -166,7 +203,9 @@ export function UnifiedAddressRequestFlow({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {currentState === 'lookup' && <Search className="h-6 w-6 text-primary" />}
+                {currentState === 'address-type-selection' && <Building className="h-6 w-6 text-primary" />}
                 {currentState === 'nar-request' && <Home className="h-6 w-6 text-primary" />}
+                {currentState === 'business-nar-creation' && <Building className="h-6 w-6 text-primary" />}
                 {(currentState === 'car-declaration' || currentState === 'business-declaration') && 
                   <Building className="h-6 w-6 text-primary" />}
                 {currentState === 'complete' && <CheckCircle className="h-6 w-6 text-success" />}
@@ -207,19 +246,77 @@ export function UnifiedAddressRequestFlow({
           />
         )}
 
+        {currentState === 'address-type-selection' && (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('address:unifiedFlow.selectAddressType')}</CardTitle>
+              <CardDescription>
+                {t('address:unifiedFlow.selectAddressTypeHelp')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <Button
+                  variant="outline"
+                  className="h-auto flex-col gap-3 p-6"
+                  onClick={() => handleAddressTypeSelected('residential')}
+                >
+                  <Home className="h-8 w-8" />
+                  <div className="text-center">
+                    <div className="font-semibold">{t('address:unifiedFlow.residentialAddress')}</div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {t('address:unifiedFlow.residentialDescription')}
+                    </div>
+                  </div>
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-auto flex-col gap-3 p-6"
+                  onClick={() => handleAddressTypeSelected('business')}
+                >
+                  <Building className="h-8 w-8" />
+                  <div className="text-center">
+                    <div className="font-semibold">{t('address:unifiedFlow.businessAddress')}</div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {t('address:unifiedFlow.businessDescription')}
+                    </div>
+                  </div>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {currentState === 'nar-request' && (
           <Card>
             <CardHeader>
-              <CardTitle>{t('address:unifiedFlow.createAddress')}</CardTitle>
+              <CardTitle>{t('address:unifiedFlow.createResidentialAddress')}</CardTitle>
               <CardDescription>
-                {t('address:unifiedFlow.createAddressHelp')}
+                {t('address:unifiedFlow.createResidentialHelp')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <AddressRequestForm
                 mode="embedded"
                 onSuccess={(requestId, uac) => handleNARSuccess(requestId, uac)}
-                onCancel={() => setCurrentState('lookup')}
+                onCancel={() => setCurrentState('address-type-selection')}
+              />
+            </CardContent>
+          </Card>
+        )}
+
+        {currentState === 'business-nar-creation' && (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('address:unifiedFlow.createBusinessAddress')}</CardTitle>
+              <CardDescription>
+                {t('address:unifiedFlow.createBusinessHelp')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <BusinessAddressCreationForm
+                onSuccess={handleBusinessNARSuccess}
+                onCancel={() => setCurrentState('address-type-selection')}
               />
             </CardContent>
           </Card>
