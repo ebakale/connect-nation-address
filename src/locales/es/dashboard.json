@@ -9,6 +9,7 @@
     "accessDeniedMessage": "Necesitas privilegios de supervisor o administrador para acceder a la gestión de unidades y perfiles de oficiales."
   },
   "registerBusiness": "Registrar Negocio",
+  "myBusinesses": "Mis Negocios",
   "addressNotFound": "¿No encuentras tu dirección?",
   "registerItNow": "Regístrala ahora",
   "addNewAddress": "Agregar Nueva Dirección",
