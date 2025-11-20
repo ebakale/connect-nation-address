@@ -183,7 +183,7 @@ const UnifiedDashboard = () => {
         // Registrars go to their dedicated dashboard unless they're also admins
         setActiveView('registrar-dashboard');
       } else if (isResidencyVerifier) {
-        setActiveView('residency-verification-manager');
+        setActiveView('residency-verification');
       }
     }
   }, [loading, isNARAuthority, isCarAdmin, isRegistrar, hasAdminAccess, isResidencyVerifier]);
@@ -399,7 +399,7 @@ const UnifiedDashboard = () => {
       case 'analytics': return t('dashboard:analytics');
       case 'province-management': return t('dashboard:provinceManagement');
       case 'verification-tools': return t('dashboard:verificationTools');
-      case 'residency-verification-manager': return t('dashboard:residencyVerificationManager');
+      case 'residency-verification': return t('dashboard:residencyVerification');
       case 'residency-verification-dashboard': return t('dashboard:myVerificationRequests');
       case 'citizen-address-portal': return t('dashboard:myAddressesCar');
       case 'recent-searches': return t('dashboard:recentSearches');
@@ -426,7 +426,7 @@ const UnifiedDashboard = () => {
       case 'analytics': return t('dashboard:analyticsDescription');
       case 'province-management': return t('dashboard:provinceManagementDescription');
       case 'verification-tools': return t('dashboard:verificationToolsDescription');
-      case 'residency-verification-manager': return t('dashboard:residencyVerificationManagerDesc');
+      case 'residency-verification': return t('dashboard:manageResidencyVerifications');
       case 'residency-verification-dashboard': return t('dashboard:myVerificationRequestsDesc');
       case 'citizen-address-portal': return t('dashboard:myAddressesCarDesc');
       case 'recent-searches': return t('dashboard:recentSearchesDesc');
@@ -932,13 +932,6 @@ const UnifiedDashboard = () => {
         return (
           <div className="max-w-4xl">
             <ProfileEditor />
-          </div>
-        );
-
-      case 'residency-verification-manager':
-        return (
-          <div className="max-w-6xl">
-            <ResidencyVerificationManager />
           </div>
         );
 
