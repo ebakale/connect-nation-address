@@ -282,7 +282,7 @@ const AddressList: React.FC<AddressListProps> = ({ onEditAddress, onViewAddress,
                   {/* Action Buttons */}
                   <div className="flex flex-col gap-2 ml-4">
                     {/* Main Actions */}
-                    <div className="grid grid-cols-2 gap-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
                       <Button
                         variant="outline"
                         size="sm"

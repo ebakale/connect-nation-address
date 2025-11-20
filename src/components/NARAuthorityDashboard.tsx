@@ -281,7 +281,7 @@ export const NARAuthorityDashboard = () => {
 
       {/* Main Tabs with All Registrar Functionality */}
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1">
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
             <span className="hidden sm:inline">{t('dashboard:overview')}</span>
