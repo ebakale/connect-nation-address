@@ -151,7 +151,7 @@ export function BusinessDirectory() {
           <p>{t('search.noBusinessesFound')}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {filteredBusinesses.map((business) => (
             <Card key={business.id} className="hover:shadow-lg transition-shadow">
               <Collapsible open={expandedCards.has(business.id)} onOpenChange={() => toggleCard(business.id)}>
