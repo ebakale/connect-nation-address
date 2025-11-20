@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { 
   Shield, Users, Settings, BarChart3, LogOut, Search, FileText, Clock, AlertCircle,
   Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map, User, Phone,
-  Database, Network, Home, Building2
+  Database, Network, Home, Building2, Plus
 } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
@@ -598,7 +598,52 @@ const UnifiedDashboard = () => {
               </Card>
             )}
 
-            {/* CAR Admin Quick Stats */}
+            {/* Citizen Quick Actions */}
+            {isCitizen && (
+              <Card className="col-span-full">
+                <CardHeader>
+                  <CardTitle>{t('dashboard:quickActions')}</CardTitle>
+                </CardHeader>
+                <CardContent className="grid gap-4 md:grid-cols-4">
+                  <Button
+                    variant="outline"
+                    className="h-auto flex-col gap-2 p-4"
+                    onClick={() => setActiveView('unified-address-request')}
+                  >
+                    <Plus className="h-6 w-6" />
+                    <div className="text-center">
+                      <div className="font-semibold">{t('dashboard:registerAddress')}</div>
+                      <div className="text-xs text-muted-foreground mt-1">{t('dashboard:registerResidentialBusiness')}</div>
+                    </div>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-auto flex-col gap-2 p-4"
+                    onClick={() => setActiveView('address-search')}
+                  >
+                    <Search className="h-6 w-6" />
+                    <span>{t('dashboard:addressSearch')}</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-auto flex-col gap-2 p-4"
+                    onClick={() => setActiveView('citizen-address-portal')}
+                  >
+                    <Home className="h-6 w-6" />
+                    <span>{t('dashboard:myAddresses')}</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-auto flex-col gap-2 p-4"
+                    onClick={() => setActiveView('emergency-contacts')}
+                  >
+                    <Phone className="h-6 w-6" />
+                    <span>{t('dashboard:emergencyContacts')}</span>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
             {isCarAdmin && (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -829,7 +874,7 @@ const UnifiedDashboard = () => {
               </div>
               <Badge variant="outline">{t('dashboard:narPublicAccess')}</Badge>
             </div>
-            <AddressSearch />
+            <AddressSearch onRegisterAddress={() => setActiveView('unified-address-request')} />
           </div>
         );
 
@@ -955,7 +1000,7 @@ const UnifiedDashboard = () => {
       case 'citizen-address-portal':
         return (
           <div className="max-w-6xl">
-            <CitizenAddressPortal />
+            <CitizenAddressPortal onNavigateToRegister={() => setActiveView('unified-address-request')} />
           </div>
         );
 

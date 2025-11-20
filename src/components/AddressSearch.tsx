@@ -39,9 +39,10 @@ interface AddressData {
 interface AddressSearchProps {
   onSelectAddress?: (result: SearchResult) => void;
   className?: string;
+  onRegisterAddress?: () => void;
 }
 
-const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, className }) => {
+const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, className, onRegisterAddress }) => {
   const { t } = useTranslation('dashboard');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -290,6 +291,18 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
                 <Search className="h-6 w-6 sm:h-8 sm:w-8 mx-auto mb-2 opacity-50" />
                 <p className="text-sm sm:text-base">{t('noAddressesFound', { query })}</p>
                 <p className="text-xs sm:text-sm mt-1">{t('tryDifferentSearch')}</p>
+                {onRegisterAddress && (
+                  <div className="mt-4">
+                    <p className="text-xs sm:text-sm mb-2">{t('addressNotFound')}</p>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={onRegisterAddress}
+                    >
+                      {t('registerItNow')}
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
           </CardContent>

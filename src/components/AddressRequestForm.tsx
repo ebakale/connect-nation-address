@@ -1,3 +1,9 @@
+/**
+ * @deprecated This component is now embedded in UnifiedAddressRequestFlow.
+ * For new address requests, use UnifiedAddressRequestFlow instead.
+ * This component should not be used as a standalone form.
+ */
+
 import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

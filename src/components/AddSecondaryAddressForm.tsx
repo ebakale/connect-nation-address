@@ -1,3 +1,8 @@
+/**
+ * @deprecated Prefer using UnifiedAddressRequestFlow for new address declarations.
+ * This component is kept for backward compatibility only.
+ */
+
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
