@@ -607,38 +607,38 @@ const UnifiedDashboard = () => {
                 <CardContent className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                   <Button
                     variant="outline"
-                    className="h-auto flex-col gap-2 p-4"
+                    className="h-auto min-h-[120px] flex flex-col items-center justify-center gap-2 p-4 w-full"
                     onClick={() => setActiveView('unified-address-request')}
                   >
-                    <Plus className="h-6 w-6" />
-                    <div className="text-center">
-                      <div className="font-semibold">{t('dashboard:registerAddress')}</div>
-                      <div className="text-xs text-muted-foreground mt-1">{t('dashboard:registerResidentialBusiness')}</div>
+                    <Plus className="h-6 w-6 shrink-0" />
+                    <div className="text-center w-full">
+                      <div className="font-semibold break-words">{t('dashboard:registerAddress')}</div>
+                      <div className="text-xs text-muted-foreground mt-1 break-words">{t('dashboard:registerResidentialBusiness')}</div>
                     </div>
                   </Button>
                   <Button
                     variant="outline"
-                    className="h-auto flex-col gap-2 p-4"
+                    className="h-auto min-h-[120px] flex flex-col items-center justify-center gap-2 p-4 w-full"
                     onClick={() => setActiveView('address-search')}
                   >
-                    <Search className="h-6 w-6" />
-                    <span>{t('dashboard:addressSearch')}</span>
+                    <Search className="h-6 w-6 shrink-0" />
+                    <span className="break-words text-center">{t('dashboard:addressSearch')}</span>
                   </Button>
                   <Button
                     variant="outline"
-                    className="h-auto flex-col gap-2 p-4"
+                    className="h-auto min-h-[120px] flex flex-col items-center justify-center gap-2 p-4 w-full"
                     onClick={() => setActiveView('citizen-address-portal')}
                   >
-                    <Home className="h-6 w-6" />
-                    <span>{t('dashboard:myAddresses')}</span>
+                    <Home className="h-6 w-6 shrink-0" />
+                    <span className="break-words text-center">{t('dashboard:myAddresses')}</span>
                   </Button>
                   <Button
                     variant="outline"
-                    className="h-auto flex-col gap-2 p-4"
+                    className="h-auto min-h-[120px] flex flex-col items-center justify-center gap-2 p-4 w-full"
                     onClick={() => setActiveView('emergency-contacts')}
                   >
-                    <Phone className="h-6 w-6" />
-                    <span>{t('dashboard:emergencyContacts')}</span>
+                    <Phone className="h-6 w-6 shrink-0" />
+                    <span className="break-words text-center">{t('dashboard:emergencyContacts')}</span>
                   </Button>
                 </CardContent>
               </Card>
