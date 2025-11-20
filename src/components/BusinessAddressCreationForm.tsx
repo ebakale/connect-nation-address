@@ -550,7 +550,7 @@ export function BusinessAddressCreationForm({ onSuccess, onCancel }: BusinessAdd
 
       <div className="flex gap-2 pt-4">
         <Button onClick={onCancel} variant="outline" className="flex-1">
-          {t('common:cancel')}
+          {t('business:registration.cancel')}
         </Button>
         <Button onClick={handleSubmit} disabled={loading} className="flex-1">
           {loading ? t('common:buttons.loading') : t('business:registration.submitRegistration')}
