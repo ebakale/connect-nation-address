@@ -23,7 +23,7 @@ import { CARPermissionsManager } from './CARPermissionsManager';
 import { TranslationAuditTool } from './TranslationAuditTool';
 
 const AdminPanel: React.FC = () => {
-  const { t } = useTranslation('admin');
+  const { t, i18n } = useTranslation('admin');
   const { user } = useUnifiedAuth();
   const { loading, hasAdminAccess, hasNDAAAccess, hasSystemAdminAccess } = useUserRole();
 
@@ -114,7 +114,7 @@ const AdminPanel: React.FC = () => {
           </div>
         </TabsContent>
         
-        <TabsContent value="quality">
+        <TabsContent value="quality" key={i18n.resolvedLanguage || i18n.language}>
           <QualityDashboard />
         </TabsContent>
         

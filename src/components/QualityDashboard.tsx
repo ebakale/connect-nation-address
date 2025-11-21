@@ -68,7 +68,8 @@ interface CoverageAnalytics {
 }
 
 export function QualityDashboard() {
-  const { t } = useTranslation('admin');
+  const { t, i18n } = useTranslation('admin');
+  console.log('QualityDashboard language:', i18n.resolvedLanguage || i18n.language);
   const { roleMetadata, loading: roleLoading } = useUserRole();
   const [analytics, setAnalytics] = useState<CoverageAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
@@ -477,7 +478,7 @@ export function QualityDashboard() {
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      label={({ name, percent }) => `${name === 'Verified' ? t('admin:quality.verified') : t('admin:quality.unverified')} ${(percent * 100).toFixed(0)}%`}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
