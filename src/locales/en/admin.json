@@ -358,7 +358,14 @@
     "city": "City",
     "errorTitle": "Error",
     "failedToFetchAnalytics": "Failed to fetch coverage analytics",
-    "noAnalyticsData": "No analytics data available"
+    "noAnalyticsData": "No analytics data available",
+    "qualityScoreComponentsTitle": "Quality Score Components",
+    "qualityScoreComponentsDescription": "How the overall quality score is calculated",
+    "verificationSuccess": "Verification Success",
+    "weightLabel": "Weight: {{percent}}% of total score",
+    "rejectionControl": "Rejection Control",
+    "duplicateFree": "Duplicate-free Records",
+    "clean": "Clean"
   },
   "coverage": {
     "coverageAnalytics": "Coverage Analytics",

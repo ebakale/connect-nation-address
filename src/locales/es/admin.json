@@ -490,7 +490,14 @@
     "city": "Ciudad",
     "errorTitle": "Error",
     "failedToFetchAnalytics": "Error al obtener análisis de calidad",
-    "noAnalyticsData": "No hay datos de análisis disponibles"
+    "noAnalyticsData": "No hay datos de análisis disponibles",
+    "qualityScoreComponentsTitle": "Componentes de la Puntuación de Calidad",
+    "qualityScoreComponentsDescription": "Cómo se calcula la puntuación global de calidad",
+    "verificationSuccess": "Éxito de verificación",
+    "weightLabel": "Peso: {{percent}}% de la puntuación total",
+    "rejectionControl": "Control de rechazos",
+    "duplicateFree": "Registros sin duplicados",
+    "clean": "Limpio"
   },
   "coverage": {
     "coverageAnalytics": "Análisis de Cobertura",

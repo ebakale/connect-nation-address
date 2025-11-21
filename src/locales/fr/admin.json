@@ -337,7 +337,14 @@
     "city": "Ville",
     "errorTitle": "Erreur",
     "failedToFetchAnalytics": "Échec de la récupération des analyses de qualité",
-    "noAnalyticsData": "Aucune donnée analytique disponible."
+    "noAnalyticsData": "Aucune donnée analytique disponible.",
+    "qualityScoreComponentsTitle": "Composantes du score de qualité",
+    "qualityScoreComponentsDescription": "Comment le score global de qualité est calculé",
+    "verificationSuccess": "Succès de la vérification",
+    "weightLabel": "Poids : {{percent}} % du score total",
+    "rejectionControl": "Contrôle des rejets",
+    "duplicateFree": "Enregistrements sans doublons",
+    "clean": "Propre"
   },
   "coverage": {
     "coverageAnalytics": "Analyse de Couverture",
