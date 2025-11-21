@@ -599,7 +599,7 @@ export function QualityDashboard() {
                     onClick={() => setShowQualityIssues(!showQualityIssues)}
                   >
                     <Eye className="h-4 w-4 mr-2" />
-                    {showQualityIssues ? t('quality.hideQualityIssues') : t('quality.viewQualityIssues')}
+                    {showQualityIssues ? t('hideQualityIssues') : t('viewQualityIssues')}
                   </Button>
                   <Button 
                     onClick={() => setShowQualityFixer(true)}
@@ -607,22 +607,22 @@ export function QualityDashboard() {
                     className="w-full mt-2 bg-orange-600 hover:bg-orange-700"
                   >
                     <Settings className="h-4 w-4 mr-2" />
-                    {t('quality.fixIssues')}
+                    {t('fixIssues')}
                   </Button>
                 </div>
                 
                 {showQualityIssues && (
                   <div className="mt-4 space-y-3 border-t pt-4">
-                    <div className="text-sm font-medium text-foreground">{t('quality.qualityIssuesBreakdown')}</div>
+                    <div className="text-sm font-medium text-foreground">{t('qualityIssuesBreakdown')}</div>
                     
                     {realTimeQualityMetrics.lowQualityAddresses > 0 && (
                       <div className="p-3 border rounded-lg bg-destructive/5">
                         <div className="flex items-center gap-2 mb-2">
                           <AlertTriangle className="h-4 w-4 text-destructive" />
-                          <span className="font-medium text-sm">{t('quality.lowQualityAddresses')}</span>
+                          <span className="font-medium text-sm">{t('lowQualityAddresses')}</span>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          {realTimeQualityMetrics.lowQualityAddresses} {t('quality.lowQualityDescription')}
+                          {realTimeQualityMetrics.lowQualityAddresses} {t('lowQualityDescription')}
                         </p>
                       </div>
                     )}
@@ -631,10 +631,10 @@ export function QualityDashboard() {
                       <div className="p-3 border rounded-lg bg-amber-50 dark:bg-amber-950/20">
                         <div className="flex items-center gap-2 mb-2">
                           <AlertTriangle className="h-4 w-4 text-amber-600" />
-                          <span className="font-medium text-sm">{t('quality.duplicateAddresses')}</span>
+                          <span className="font-medium text-sm">{t('duplicateAddresses')}</span>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          {realTimeQualityMetrics.duplicateCount} {t('quality.duplicateGroupsIdentified')}
+                          {realTimeQualityMetrics.duplicateCount} {t('duplicateGroupsIdentified')}
                         </p>
                       </div>
                     )}
@@ -643,10 +643,10 @@ export function QualityDashboard() {
                       <div className="p-3 border rounded-lg bg-blue-50 dark:bg-blue-950/20">
                         <div className="flex items-center gap-2 mb-2">
                           <Clock className="h-4 w-4 text-blue-600" />
-                          <span className="font-medium text-sm">{t('quality.pendingVerification')}</span>
+                          <span className="font-medium text-sm">{t('pendingVerification')}</span>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          {realTimeQualityMetrics.pendingVerification} {t('quality.requestsAwaitingVerification')}
+                          {realTimeQualityMetrics.pendingVerification} {t('requestsAwaitingVerification')}
                         </p>
                       </div>
                     )}
@@ -657,10 +657,10 @@ export function QualityDashboard() {
                       <div className="p-3 border rounded-lg bg-green-50 dark:bg-green-950/20">
                         <div className="flex items-center gap-2">
                           <CheckCircle className="h-4 w-4 text-green-600" />
-                          <span className="font-medium text-sm">{t('quality.noQualityIssuesFound')}</span>
+                          <span className="font-medium text-sm">{t('noQualityIssuesFound')}</span>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          {t('quality.allAddressesMeetStandards')}
+                          {t('allAddressesMeetStandards')}
                         </p>
                       </div>
                     )}
