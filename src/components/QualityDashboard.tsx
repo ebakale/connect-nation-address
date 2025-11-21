@@ -362,7 +362,7 @@ export function QualityDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{carMetrics.totalCitizenAddresses.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              {t('admin:quality.confirmedPending', { confirmed: carMetrics.confirmedAddresses, pending: carMetrics.pendingVerificationAddresses })}
+              {carMetrics.confirmedAddresses.toLocaleString()} {t('admin:quality.confirmed')}, {carMetrics.pendingVerificationAddresses.toLocaleString()} {t('admin:quality.pending')}
             </p>
             {carMetrics.duplicatePersonRecords > 0 && (
               <Badge variant="destructive" className="mt-2">
@@ -397,7 +397,7 @@ export function QualityDashboard() {
             <div className="text-2xl font-bold">{nationalSummary.overallCoverage}%</div>
             <Progress value={nationalSummary.overallCoverage} className="mt-2" />
             <p className="text-xs text-muted-foreground mt-1">
-              {nationalSummary.verifiedAddresses.toLocaleString()} {t('admin:quality.addressesVerified')}
+              {nationalSummary.verifiedAddresses.toLocaleString()} {t('admin:quality.verified')}
             </p>
           </CardContent>
         </Card>
