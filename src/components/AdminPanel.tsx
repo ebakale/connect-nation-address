@@ -62,7 +62,7 @@ const AdminPanel: React.FC = () => {
           <TabsTrigger value="workflows" className="text-xs sm:text-sm px-2 sm:px-3">{t('workflows')}</TabsTrigger>
           <TabsTrigger value="nar-authorities" className="text-xs sm:text-sm px-2 sm:px-3">{t('narAuthorities')}</TabsTrigger>
           <TabsTrigger value="uac" className="text-xs sm:text-sm px-2 sm:px-3">{t('uacSystem')}</TabsTrigger>
-          <TabsTrigger value="quality" className="text-xs sm:text-sm px-2 sm:px-3 whitespace-normal">{t('quality.title')}</TabsTrigger>
+          <TabsTrigger value="quality" className="text-xs sm:text-sm px-2 sm:px-3 whitespace-normal">{t('quality')}</TabsTrigger>
           <TabsTrigger value="system-tools" className="text-xs sm:text-sm px-2 sm:px-3 whitespace-normal">{t('systemTools')}</TabsTrigger>
           <TabsTrigger value="translations" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:translations')}</TabsTrigger>
           <TabsTrigger value="documentation" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:documentation')}</TabsTrigger>

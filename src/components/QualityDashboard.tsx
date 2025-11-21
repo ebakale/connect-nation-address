@@ -68,20 +68,7 @@ interface CoverageAnalytics {
 }
 
 export function QualityDashboard() {
-  const { t, i18n } = useTranslation('admin');
-  
-  // Debug logs to verify runtime translations
-  const currentLang = i18n.resolvedLanguage || i18n.language;
-  console.log('=== Quality Dashboard i18n Debug ===');
-  console.log('Current language:', currentLang);
-  console.log('Title translation:', t('quality.title'));
-  console.log('Refresh button translation:', t('quality.refreshData'));
-  console.log('Full quality block:', i18n.getResource(currentLang, 'admin', 'quality'));
-  
-  // Warning if non-English language shows English text
-  if (currentLang !== 'en' && t('quality.title') === 'Quality Dashboard') {
-    console.warn('⚠️ Non-English language active but English title detected. Check deployed bundle or cache.');
-  }
+  const { t, i18n } = useTranslation('admin', { keyPrefix: 'quality' });
   const { roleMetadata, loading: roleLoading } = useUserRole();
   const [analytics, setAnalytics] = useState<CoverageAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
@@ -252,8 +239,8 @@ export function QualityDashboard() {
     } catch (error) {
       console.error('Error fetching analytics:', error);
       toast({
-        title: t('quality.errorTitle'),
-        description: t('quality.failedToFetchAnalytics'),
+        title: t('errorTitle'),
+        description: t('failedToFetchAnalytics'),
         variant: "destructive",
       });
     } finally {
@@ -294,7 +281,7 @@ export function QualityDashboard() {
     return (
       <Card>
         <CardContent className="p-6">
-          <p className="text-center text-muted-foreground">{t('quality.noAnalyticsData')}</p>
+          <p className="text-center text-muted-foreground">{t('noAnalyticsData')}</p>
         </CardContent>
       </Card>
     );
@@ -305,13 +292,13 @@ export function QualityDashboard() {
   const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--muted))'];
 
   const pieData = [
-    { name: t('quality.verified'), value: nationalSummary.verifiedAddresses, color: COLORS[0] },
-    { name: t('quality.unverified'), value: nationalSummary.totalAddresses - nationalSummary.verifiedAddresses, color: COLORS[1] },
+    { name: t('verified'), value: nationalSummary.verifiedAddresses, color: COLORS[0] },
+    { name: t('unverified'), value: nationalSummary.totalAddresses - nationalSummary.verifiedAddresses, color: COLORS[1] },
   ];
 
   const qualityPieData = [
-    { name: t('quality.highQuality'), value: nationalSummary.totalAddresses - realTimeQualityMetrics.lowQualityAddresses, color: COLORS[0] },
-    { name: t('quality.lowQualityBelow85'), value: realTimeQualityMetrics.lowQualityAddresses, color: COLORS[3] },
+    { name: t('highQuality'), value: nationalSummary.totalAddresses - realTimeQualityMetrics.lowQualityAddresses, color: COLORS[0] },
+    { name: t('lowQualityBelow85'), value: realTimeQualityMetrics.lowQualityAddresses, color: COLORS[3] },
   ];
   
   // Show Quality Issues Fixer if requested
@@ -329,12 +316,12 @@ export function QualityDashboard() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">{t('quality.title')}</h1>
-          <p className="text-muted-foreground">{t('quality.description')}</p>
+          <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
+          <p className="text-muted-foreground">{t('description')}</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button
             onClick={handleRefresh}
             disabled={refreshing}
@@ -342,11 +329,11 @@ export function QualityDashboard() {
             size="sm"
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            {t('quality.refreshData')}
+            {t('refreshData')}
           </Button>
           <Button variant="outline" size="sm">
             <Download className="h-4 w-4 mr-2" />
-            {t('quality.exportQualityReport')}
+            {t('exportQualityReport')}
           </Button>
         </div>
       </div>
@@ -355,13 +342,13 @@ export function QualityDashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('quality.totalAddresses')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('totalAddresses')}</CardTitle>
             <Database className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{nationalSummary.totalAddresses.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">
-              {t('quality.across')} {nationalSummary.totalRegions} {t('quality.regions')}, {nationalSummary.totalCities} {t('quality.cities')}
+            <p className="text-xs text-muted-foreground break-words">
+              {t('across')} {nationalSummary.totalRegions} {t('regions')}, {nationalSummary.totalCities} {t('cities')}
             </p>
           </CardContent>
         </Card>
@@ -369,17 +356,17 @@ export function QualityDashboard() {
         {/* CAR-specific metrics */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('quality.verifiedAddresses')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('verifiedAddresses')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{carMetrics.totalCitizenAddresses.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">
-              {carMetrics.confirmedAddresses.toLocaleString()} {t('quality.confirmed')}, {carMetrics.pendingVerificationAddresses.toLocaleString()} {t('quality.pending')}
+            <p className="text-xs text-muted-foreground break-words">
+              {carMetrics.confirmedAddresses.toLocaleString()} {t('confirmed')}, {carMetrics.pendingVerificationAddresses.toLocaleString()} {t('pending')}
             </p>
             {carMetrics.duplicatePersonRecords > 0 && (
-              <Badge variant="destructive" className="mt-2">
-                {carMetrics.duplicatePersonRecords} {t('quality.duplicatePersonsNeedMerging')}
+              <Badge variant="destructive" className="mt-2 break-words">
+                {carMetrics.duplicatePersonRecords} {t('duplicatePersonsNeedMerging')}
               </Badge>
             )}
           </CardContent>
@@ -387,60 +374,60 @@ export function QualityDashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('quality.carProcessingTime')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('carProcessingTime')}</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{carMetrics.averageVerificationTimeHours.toFixed(1)}h</div>
-            <p className="text-xs text-muted-foreground">
-              {t('quality.averageVerificationTime')}
+            <p className="text-xs text-muted-foreground break-words">
+              {t('averageVerificationTime')}
             </p>
             {carMetrics.averageVerificationTimeHours > 48 && (
-              <Badge variant="destructive" className="mt-2">{t('quality.slowProcessing')}</Badge>
+              <Badge variant="destructive" className="mt-2">{t('slowProcessing')}</Badge>
             )}
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('quality.qualityScore')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('qualityScore')}</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{nationalSummary.overallCoverage}%</div>
             <Progress value={nationalSummary.overallCoverage} className="mt-2" />
-            <p className="text-xs text-muted-foreground mt-1">
-              {nationalSummary.verifiedAddresses.toLocaleString()} {t('quality.verified')}
+            <p className="text-xs text-muted-foreground mt-1 break-words">
+              {nationalSummary.verifiedAddresses.toLocaleString()} {t('verified')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('quality.completenessRate')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('completenessRate')}</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{qualityMetrics.averageCompleteness}%</div>
             <Progress value={qualityMetrics.averageCompleteness} className="mt-2" />
-            <p className="text-xs text-muted-foreground mt-1">
-              {t('quality.averageCompletenessScore')}
+            <p className="text-xs text-muted-foreground mt-1 break-words">
+              {t('averageCompletenessScore')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('quality.pendingVerification')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('pendingVerification')}</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{realTimeQualityMetrics.pendingVerification}</div>
-            <p className="text-xs text-muted-foreground">
-              {t('quality.requestsAwaitingVerification')}
+            <p className="text-xs text-muted-foreground break-words">
+              {t('requestsAwaitingVerification')}
             </p>
             {realTimeQualityMetrics.pendingVerification > 50 && (
-              <Badge variant="destructive" className="mt-2">{t('quality.highBacklog')}</Badge>
+              <Badge variant="destructive" className="mt-2">{t('highBacklog')}</Badge>
             )}
           </CardContent>
         </Card>
@@ -449,10 +436,10 @@ export function QualityDashboard() {
       {/* Detailed Analytics */}
       <Tabs defaultValue="regional" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="regional">{t('quality.regionalOverview')}</TabsTrigger>
-          <TabsTrigger value="quality">{t('quality.qualityMetrics')}</TabsTrigger>
-          <TabsTrigger value="car">{t('quality.carAnalytics')}</TabsTrigger>
-          <TabsTrigger value="cities">{t('quality.cityBreakdown')}</TabsTrigger>
+          <TabsTrigger value="regional">{t('regionalOverview')}</TabsTrigger>
+          <TabsTrigger value="quality">{t('qualityMetrics')}</TabsTrigger>
+          <TabsTrigger value="car">{t('carAnalytics')}</TabsTrigger>
+          <TabsTrigger value="cities">{t('cityBreakdown')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="regional" className="space-y-4">
@@ -460,8 +447,8 @@ export function QualityDashboard() {
             {/* Regional Bar Chart */}
             <Card className="md:col-span-1">
               <CardHeader>
-                <CardTitle>{t('quality.addressesByRegion')}</CardTitle>
-                <CardDescription>{t('quality.totalRegisteredAddresses')}</CardDescription>
+                <CardTitle>{t('addressesByRegion')}</CardTitle>
+                <CardDescription>{t('totalRegisteredAddresses')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -479,8 +466,8 @@ export function QualityDashboard() {
             {/* Verification Status Pie Chart */}
             <Card className="md:col-span-1">
               <CardHeader>
-                <CardTitle>{t('quality.verificationStatus')}</CardTitle>
-                <CardDescription>{t('quality.distributionVerifiedVsUnverified')}</CardDescription>
+                <CardTitle>{t('verificationStatus')}</CardTitle>
+                <CardDescription>{t('distributionVerifiedVsUnverified')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -509,20 +496,20 @@ export function QualityDashboard() {
           {/* Regional Table */}
           <Card>
             <CardHeader>
-              <CardTitle>{t('quality.regionalPerformance')}</CardTitle>
-              <CardDescription>{t('quality.detailedMetricsByRegion')}</CardDescription>
+              <CardTitle>{t('regionalPerformance')}</CardTitle>
+              <CardDescription>{t('detailedMetricsByRegion')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left p-2">{t('quality.region')}</th>
-                      <th className="text-right p-2">{t('quality.cities')}</th>
-                      <th className="text-right p-2">{t('quality.addresses')}</th>
-                      <th className="text-right p-2">{t('quality.verified')}</th>
-                      <th className="text-right p-2">{t('quality.published')}</th>
-                      <th className="text-right p-2">{t('quality.qualityScore')}</th>
+                      <th className="text-left p-2">{t('region')}</th>
+                      <th className="text-right p-2">{t('cities')}</th>
+                      <th className="text-right p-2">{t('addresses')}</th>
+                      <th className="text-right p-2">{t('verified')}</th>
+                      <th className="text-right p-2">{t('published')}</th>
+                      <th className="text-right p-2">{t('qualityScore')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -560,8 +547,8 @@ export function QualityDashboard() {
             {/* Quality Distribution */}
             <Card>
               <CardHeader>
-                <CardTitle>{t('quality.dataQualityDistribution')}</CardTitle>
-                <CardDescription>{t('quality.addressCompletenessScores')}</CardDescription>
+                <CardTitle>{t('dataQualityDistribution')}</CardTitle>
+                <CardDescription>{t('addressCompletenessScores')}</CardDescription>
               </CardHeader>
               <CardContent className="p-6">
                 <ResponsiveContainer width="100%" height={350}>
@@ -589,20 +576,20 @@ export function QualityDashboard() {
             {/* Quality Issues */}
             <Card>
               <CardHeader>
-                <CardTitle>{t('quality.qualityIssues')}</CardTitle>
-                <CardDescription>{t('quality.itemsRequiringAttention')}</CardDescription>
+                <CardTitle>{t('qualityIssues')}</CardTitle>
+                <CardDescription>{t('itemsRequiringAttention')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm">{t('quality.lowQualityAddresses')}</span>
+                  <span className="text-sm">{t('lowQualityAddresses')}</span>
                   <Badge variant="destructive">{realTimeQualityMetrics.lowQualityAddresses}</Badge>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm">{t('quality.pendingVerification')}</span>
+                  <span className="text-sm">{t('pendingVerification')}</span>
                   <Badge variant="secondary">{realTimeQualityMetrics.pendingVerification}</Badge>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm">{t('quality.duplicateAddresses')}</span>
+                  <span className="text-sm">{t('duplicateAddresses')}</span>
                   <Badge variant="outline">{realTimeQualityMetrics.duplicateCount}</Badge>
                 </div>
                 <div className="pt-4">
@@ -689,7 +676,7 @@ export function QualityDashboard() {
           <div className="grid gap-4 md:grid-cols-3">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t('quality.overallSystemQuality')}</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('overallSystemQuality')}</CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -718,15 +705,15 @@ export function QualityDashboard() {
                   })()} 
                   className="mt-2" 
                 />
-                <p className="text-xs text-muted-foreground mt-2">
-                  {t('quality.basedOnVerificationRates')}
+                <p className="text-xs text-muted-foreground mt-2 break-words">
+                  {t('basedOnVerificationRates')}
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t('quality.dataCompleteness')}</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('dataCompleteness')}</CardTitle>
                 <CheckCircle className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -748,15 +735,15 @@ export function QualityDashboard() {
                   })()} 
                   className="mt-2" 
                 />
-                <p className="text-xs text-muted-foreground mt-2">
-                  {t('quality.recordsProcessed')}
+                <p className="text-xs text-muted-foreground mt-2 break-words">
+                  {t('recordsProcessed')}
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t('quality.dataIntegrity')}</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('dataIntegrity')}</CardTitle>
                 <Database className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -783,7 +770,7 @@ export function QualityDashboard() {
                   className="mt-2" 
                 />
                 <p className="text-xs text-muted-foreground mt-2">
-                  {t('quality.duplicatesFound', { count: carMetrics.duplicatePersonRecords })}
+                  {t('duplicatesFound', { count: carMetrics.duplicatePersonRecords })}
                 </p>
               </CardContent>
             </Card>
@@ -794,17 +781,17 @@ export function QualityDashboard() {
             {/* CAR Status Distribution Chart */}
             <Card>
               <CardHeader>
-                <CardTitle>{t('quality.carStatusDistribution')}</CardTitle>
-                <CardDescription>{t('quality.citizenAddressRecords')}</CardDescription>
+                <CardTitle>{t('carStatusDistribution')}</CardTitle>
+                <CardDescription>{t('citizenAddressRecords')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
                       data={[
-                        { name: t('quality.confirmed'), value: carMetrics.confirmedAddresses, color: COLORS[0] },
-                        { name: t('quality.pending'), value: carMetrics.pendingVerificationAddresses, color: COLORS[1] },
-                        { name: t('quality.rejected'), value: carMetrics.rejectedAddresses, color: COLORS[3] }
+                        { name: t('confirmed'), value: carMetrics.confirmedAddresses, color: COLORS[0] },
+                        { name: t('pending'), value: carMetrics.pendingVerificationAddresses, color: COLORS[1] },
+                        { name: t('rejected'), value: carMetrics.rejectedAddresses, color: COLORS[3] }
                       ]}
                       cx="50%"
                       cy="50%"
@@ -815,9 +802,9 @@ export function QualityDashboard() {
                       dataKey="value"
                     >
                       {[
-                        { name: t('quality.confirmed'), value: carMetrics.confirmedAddresses, color: COLORS[0] },
-                        { name: t('quality.pending'), value: carMetrics.pendingVerificationAddresses, color: COLORS[1] },
-                        { name: t('quality.rejected'), value: carMetrics.rejectedAddresses, color: COLORS[3] }
+                        { name: t('confirmed'), value: carMetrics.confirmedAddresses, color: COLORS[0] },
+                        { name: t('pending'), value: carMetrics.pendingVerificationAddresses, color: COLORS[1] },
+                        { name: t('rejected'), value: carMetrics.rejectedAddresses, color: COLORS[3] }
                       ].map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
@@ -828,11 +815,11 @@ export function QualityDashboard() {
                 </ResponsiveContainer>
                 <div className="mt-4 space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">{t('quality.totalRecordsLabel')}:</span>
+                    <span className="text-muted-foreground">{t('totalRecordsLabel')}:</span>
                     <span className="font-medium">{carMetrics.totalCitizenAddresses.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">{t('quality.verificationRate')}:</span>
+                    <span className="text-muted-foreground">{t('verificationRate')}:</span>
                     <span className="font-medium text-green-600">
                       {carMetrics.totalCitizenAddresses > 0 
                         ? Math.round((carMetrics.confirmedAddresses / carMetrics.totalCitizenAddresses) * 100)
@@ -846,13 +833,13 @@ export function QualityDashboard() {
             {/* Quality Score Breakdown */}
             <Card>
               <CardHeader>
-                <CardTitle>{t('quality.qualityScoreComponentsTitle')}</CardTitle>
-                <CardDescription>{t('quality.qualityScoreComponentsDescription')}</CardDescription>
+                <CardTitle>{t('qualityScoreComponentsTitle')}</CardTitle>
+                <CardDescription>{t('qualityScoreComponentsDescription')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>{t('quality.verificationSuccess')}</span>
+                    <span>{t('verificationSuccess')}</span>
                     <span className="font-medium">
                       {carMetrics.totalCitizenAddresses > 0 
                         ? Math.round((carMetrics.confirmedAddresses / carMetrics.totalCitizenAddresses) * 100)
@@ -865,12 +852,12 @@ export function QualityDashboard() {
                       : 0} 
                     className="h-2" 
                   />
-                  <p className="text-xs text-muted-foreground mt-1">{t('quality.weightLabel', { percent: 40 })}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t('weightLabel', { percent: 40 })}</p>
                 </div>
 
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>{t('quality.rejectionControl')}</span>
+                    <span>{t('rejectionControl')}</span>
                     <span className="font-medium">
                       {carMetrics.totalCitizenAddresses > 0 
                         ? Math.round((1 - (carMetrics.rejectedAddresses / carMetrics.totalCitizenAddresses)) * 100)
@@ -883,12 +870,12 @@ export function QualityDashboard() {
                       : 100} 
                     className="h-2" 
                   />
-                  <p className="text-xs text-muted-foreground mt-1">{t('quality.weightLabel', { percent: 30 })}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t('weightLabel', { percent: 30 })}</p>
                 </div>
 
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>{t('quality.duplicateFree')}</span>
+                    <span>{t('duplicateFree')}</span>
                     <span className="font-medium">
                       {Math.max(0, 100 - (carMetrics.duplicatePersonRecords * 5))}%
                     </span>
@@ -897,7 +884,7 @@ export function QualityDashboard() {
                     value={Math.max(0, 100 - (carMetrics.duplicatePersonRecords * 5))} 
                     className="h-2" 
                   />
-                  <p className="text-xs text-muted-foreground mt-1">{t('quality.weightLabel', { percent: 30 })}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t('weightLabel', { percent: 30 })}</p>
                 </div>
               </CardContent>
             </Card>
@@ -907,46 +894,46 @@ export function QualityDashboard() {
           <div className="grid gap-4 md:grid-cols-3">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t('quality.avgProcessingTime')}</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('avgProcessingTime')}</CardTitle>
                 <Clock className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
                   {carMetrics.averageVerificationTimeHours.toFixed(1)}h
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {t('quality.averageVerificationTime')}
+                <p className="text-xs text-muted-foreground mt-1 break-words">
+                  {t('averageVerificationTime')}
                 </p>
                 {carMetrics.averageVerificationTimeHours > 48 && (
-                  <Badge variant="destructive" className="mt-2">{t('quality.slowProcessing')}</Badge>
+                  <Badge variant="destructive" className="mt-2">{t('slowProcessing')}</Badge>
                 )}
                 {carMetrics.averageVerificationTimeHours <= 24 && (
-                  <Badge variant="default" className="mt-2">{t('quality.excellentSpeed')}</Badge>
+                  <Badge variant="default" className="mt-2">{t('excellentSpeed')}</Badge>
                 )}
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t('quality.processingBacklog')}</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('processingBacklog')}</CardTitle>
                 <AlertTriangle className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-yellow-600">
                   {carMetrics.pendingVerificationAddresses}
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {t('quality.awaitingVerification')}
+                <p className="text-xs text-muted-foreground mt-1 break-words">
+                  {t('awaitingVerification')}
                 </p>
                 {carMetrics.pendingVerificationAddresses > 100 && (
-                  <Badge variant="destructive" className="mt-2">{t('quality.highBacklog')}</Badge>
+                  <Badge variant="destructive" className="mt-2">{t('highBacklog')}</Badge>
                 )}
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t('quality.throughputRate')}</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('throughputRate')}</CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -959,8 +946,8 @@ export function QualityDashboard() {
                     return rate;
                   })()}
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {t('quality.recordsPerDay')}
+                <p className="text-xs text-muted-foreground mt-1 break-words">
+                  {t('recordsPerDay')}
                 </p>
               </CardContent>
             </Card>
@@ -969,17 +956,17 @@ export function QualityDashboard() {
           {/* Data Quality Issues */}
             <Card>
               <CardHeader>
-                <CardTitle>{t('quality.dataQualityIssuesCar')}</CardTitle>
-                <CardDescription>{t('quality.carSpecificQualityConcerns')}</CardDescription>
+                <CardTitle>{t('dataQualityIssuesCar')}</CardTitle>
+                <CardDescription>{t('carSpecificQualityConcerns')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border rounded-lg gap-3">
                   <div className="flex items-center gap-3">
-                    <AlertTriangle className="h-5 w-5 text-orange-600" />
+                    <AlertTriangle className="h-5 w-5 text-orange-600 flex-shrink-0" />
                     <div>
-                      <p className="font-medium">{t('quality.duplicatePersonRecords')}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {t('quality.duplicatePersonsDescription')}
+                      <p className="font-medium">{t('duplicatePersonRecords')}</p>
+                      <p className="text-sm text-muted-foreground break-words">
+                        {t('duplicatePersonsDescription')}
                       </p>
                     </div>
                   </div>
@@ -988,18 +975,18 @@ export function QualityDashboard() {
                       {carMetrics.duplicatePersonRecords}
                     </div>
                     <Badge variant={carMetrics.duplicatePersonRecords > 0 ? "destructive" : "default"}>
-                      {carMetrics.duplicatePersonRecords > 0 ? t('quality.actionRequired') : t('quality.clean')}
+                      {carMetrics.duplicatePersonRecords > 0 ? t('actionRequired') : t('clean')}
                     </Badge>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border rounded-lg gap-3">
                   <div className="flex items-center gap-3">
-                    <Clock className="h-5 w-5 text-yellow-600" />
+                    <Clock className="h-5 w-5 text-yellow-600 flex-shrink-0" />
                     <div>
-                      <p className="font-medium">{t('quality.pendingVerification')}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {t('quality.recordsAwaitingReview')}
+                      <p className="font-medium">{t('pendingVerification')}</p>
+                      <p className="text-sm text-muted-foreground break-words">
+                        {t('recordsAwaitingReview')}
                       </p>
                     </div>
                   </div>
@@ -1008,18 +995,18 @@ export function QualityDashboard() {
                       {carMetrics.pendingVerificationAddresses}
                     </div>
                     <Badge variant={carMetrics.pendingVerificationAddresses > 50 ? "destructive" : "secondary"}>
-                      {carMetrics.pendingVerificationAddresses > 50 ? t('quality.highBacklog') : t('quality.manageable')}
+                      {carMetrics.pendingVerificationAddresses > 50 ? t('highBacklog') : t('manageable')}
                     </Badge>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border rounded-lg gap-3">
                   <div className="flex items-center gap-3">
-                    <AlertTriangle className="h-5 w-5 text-red-600" />
+                    <AlertTriangle className="h-5 w-5 text-red-600 flex-shrink-0" />
                     <div>
-                      <p className="font-medium">{t('quality.rejectedAddresses')}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {t('quality.addressesFailedVerification')}
+                      <p className="font-medium">{t('rejectedAddresses')}</p>
+                      <p className="text-sm text-muted-foreground break-words">
+                        {t('addressesFailedVerification')}
                       </p>
                     </div>
                   </div>
@@ -1029,8 +1016,8 @@ export function QualityDashboard() {
                     </div>
                     <Badge variant={carMetrics.rejectedAddresses > carMetrics.confirmedAddresses * 0.2 ? "destructive" : "secondary"}>
                       {carMetrics.rejectedAddresses > carMetrics.confirmedAddresses * 0.2 
-                        ? t('quality.highRejectionRate')
-                        : t('quality.normal')}
+                        ? t('highRejectionRate')
+                        : t('normal')}
                     </Badge>
                   </div>
                 </div>
@@ -1040,24 +1027,24 @@ export function QualityDashboard() {
           {/* CAR Processing Trends */}
             <Card>
               <CardHeader>
-                <CardTitle>{t('quality.processingTrendsTitle')}</CardTitle>
-                <CardDescription>{t('quality.processingTrendsDescription')}</CardDescription>
+                <CardTitle>{t('processingTrendsTitle')}</CardTitle>
+                <CardDescription>{t('processingTrendsDescription')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={[
-                    { name: t('quality.weekLabel', { week: 1 }), confirmed: Math.round(carMetrics.confirmedAddresses * 0.7), pending: Math.round(carMetrics.pendingVerificationAddresses * 1.2) },
-                    { name: t('quality.weekLabel', { week: 2 }), confirmed: Math.round(carMetrics.confirmedAddresses * 0.8), pending: Math.round(carMetrics.pendingVerificationAddresses * 1.1) },
-                    { name: t('quality.weekLabel', { week: 3 }), confirmed: Math.round(carMetrics.confirmedAddresses * 0.9), pending: Math.round(carMetrics.pendingVerificationAddresses * 1.05) },
-                    { name: t('quality.currentLabel'), confirmed: carMetrics.confirmedAddresses, pending: carMetrics.pendingVerificationAddresses },
+                    { name: t('weekLabel', { week: 1 }), confirmed: Math.round(carMetrics.confirmedAddresses * 0.7), pending: Math.round(carMetrics.pendingVerificationAddresses * 1.2) },
+                    { name: t('weekLabel', { week: 2 }), confirmed: Math.round(carMetrics.confirmedAddresses * 0.8), pending: Math.round(carMetrics.pendingVerificationAddresses * 1.1) },
+                    { name: t('weekLabel', { week: 3 }), confirmed: Math.round(carMetrics.confirmedAddresses * 0.9), pending: Math.round(carMetrics.pendingVerificationAddresses * 1.05) },
+                    { name: t('currentLabel'), confirmed: carMetrics.confirmedAddresses, pending: carMetrics.pendingVerificationAddresses },
                   ]}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Line type="monotone" dataKey="confirmed" stroke="hsl(var(--primary))" name={t('quality.confirmed')} />
-                    <Line type="monotone" dataKey="pending" stroke="hsl(var(--secondary))" name={t('quality.pending')} />
+                    <Line type="monotone" dataKey="confirmed" stroke="hsl(var(--primary))" name={t('confirmed')} />
+                    <Line type="monotone" dataKey="pending" stroke="hsl(var(--secondary))" name={t('pending')} />
                   </LineChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -1067,21 +1054,21 @@ export function QualityDashboard() {
         <TabsContent value="cities" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>{t('quality.cityPerformanceTitle')}</CardTitle>
-              <CardDescription>{t('quality.cityPerformanceDescription')}</CardDescription>
+              <CardTitle>{t('cityPerformanceTitle')}</CardTitle>
+              <CardDescription>{t('cityPerformanceDescription')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left p-2">{t('quality.city')}</th>
-                      <th className="text-left p-2">{t('quality.region')}</th>
-                      <th className="text-right p-2">{t('quality.addresses')}</th>
-                      <th className="text-right p-2">{t('quality.verified')}</th>
-                      <th className="text-right p-2">{t('quality.published')}</th>
-                      <th className="text-right p-2">{t('quality.qualityScore')}</th>
-                      <th className="text-right p-2">{t('quality.lastUpdated')}</th>
+                      <th className="text-left p-2">{t('city')}</th>
+                      <th className="text-left p-2">{t('region')}</th>
+                      <th className="text-right p-2">{t('addresses')}</th>
+                      <th className="text-right p-2">{t('verified')}</th>
+                      <th className="text-right p-2">{t('published')}</th>
+                      <th className="text-right p-2">{t('qualityScore')}</th>
+                      <th className="text-right p-2">{t('lastUpdated')}</th>
                     </tr>
                   </thead>
                   <tbody>
