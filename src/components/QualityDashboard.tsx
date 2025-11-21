@@ -239,8 +239,8 @@ export function QualityDashboard() {
     } catch (error) {
       console.error('Error fetching analytics:', error);
       toast({
-        title: "Error",
-        description: "Failed to fetch coverage analytics",
+        title: t('admin:quality.errorTitle'),
+        description: t('admin:quality.failedToFetchAnalytics'),
         variant: "destructive",
       });
     } finally {
@@ -281,7 +281,7 @@ export function QualityDashboard() {
     return (
       <Card>
         <CardContent className="p-6">
-          <p className="text-center text-muted-foreground">No analytics data available</p>
+          <p className="text-center text-muted-foreground">{t('admin:quality.noAnalyticsData')}</p>
         </CardContent>
       </Card>
     );
