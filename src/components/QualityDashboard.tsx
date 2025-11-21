@@ -69,7 +69,19 @@ interface CoverageAnalytics {
 
 export function QualityDashboard() {
   const { t, i18n } = useTranslation('admin');
-  console.log('QualityDashboard language:', i18n.resolvedLanguage || i18n.language);
+  
+  // Debug logs to verify runtime translations
+  const currentLang = i18n.resolvedLanguage || i18n.language;
+  console.log('=== Quality Dashboard i18n Debug ===');
+  console.log('Current language:', currentLang);
+  console.log('Title translation:', t('quality.title'));
+  console.log('Refresh button translation:', t('quality.refreshData'));
+  console.log('Full quality block:', i18n.getResource(currentLang, 'admin', 'quality'));
+  
+  // Warning if non-English language shows English text
+  if (currentLang !== 'en' && t('quality.title') === 'Quality Dashboard') {
+    console.warn('⚠️ Non-English language active but English title detected. Check deployed bundle or cache.');
+  }
   const { roleMetadata, loading: roleLoading } = useUserRole();
   const [analytics, setAnalytics] = useState<CoverageAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
