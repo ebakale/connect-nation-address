@@ -276,7 +276,22 @@
     "failedToInitializeMap": "Échec de l'initialisation de la carte",
     "failedToLoadAddresses": "Échec du chargement des adresses",
     "draft": "Brouillon",
-    "createdOn": "Créé : {{date}}"
+    "createdOn": "Créé : {{date}}",
+    "locationFound": "Position trouvée",
+    "yourLocation": "Votre position"
+  },
+  "map": {
+    "legend": "Légende",
+    "usingOpenStreetMapFallback": "Utilisation d'OpenStreetMap (Google Maps indisponible)",
+    "googleMapsBillingError": "Facturation Google Maps non activée. Affichage d'OpenStreetMap à la place.",
+    "switchToGoogleMaps": "Passer à Google Maps",
+    "switchToOpenStreetMap": "Passer à OpenStreetMap",
+    "mapProviderError": "Erreur du fournisseur de carte",
+    "retryGoogleMaps": "Réessayer Google Maps",
+    "selectLocation": "Sélectionner un emplacement",
+    "selectedCoordinates": "Sélectionné",
+    "clickToSelect": "Cliquez sur la carte pour sélectionner un emplacement",
+    "confirmLocation": "Confirmer l'emplacement"
   },
   "systemIntegrationDesc": "Gérer les intégrations API, webhooks et connexions",
   "activeIntegrations": "Intégrations Actives",

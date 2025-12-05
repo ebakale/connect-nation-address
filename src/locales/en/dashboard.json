@@ -794,7 +794,22 @@
     "failedToInitializeMap": "Failed to initialize map",
     "failedToLoadAddresses": "Failed to load addresses",
     "draft": "Draft",
-    "createdOn": "Created: {{date}}"
+    "createdOn": "Created: {{date}}",
+    "locationFound": "Location found",
+    "yourLocation": "Your Location"
+  },
+  "map": {
+    "legend": "Legend",
+    "usingOpenStreetMapFallback": "Using OpenStreetMap (Google Maps unavailable)",
+    "googleMapsBillingError": "Google Maps billing not enabled. Showing OpenStreetMap instead.",
+    "switchToGoogleMaps": "Switch to Google Maps",
+    "switchToOpenStreetMap": "Switch to OpenStreetMap",
+    "mapProviderError": "Map provider error",
+    "retryGoogleMaps": "Retry Google Maps",
+    "selectLocation": "Select Location",
+    "selectedCoordinates": "Selected",
+    "clickToSelect": "Click on the map to select a location",
+    "confirmLocation": "Confirm Location"
   },
   "fieldWork": "Field Work",
   "residencyVerificationManager": "Residency Verification Manager",
