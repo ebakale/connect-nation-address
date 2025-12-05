@@ -40,7 +40,7 @@ import { VerificationTools } from "@/components/VerificationTools";
 import { ProfileEditor } from "@/components/ProfileEditor";
 import { AddressRequestApproval } from "@/components/AddressRequestApproval";
 import DraftManager from "@/components/DraftManager";
-import FieldMap from "@/components/FieldMap";
+import { UniversalFieldMap } from "@/components/UniversalFieldMap";
 import { SavedLocationsManager } from "@/components/SavedLocationsManager";
 import { RecentSearchesManager } from "@/components/RecentSearchesManager";
 import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
@@ -925,7 +925,7 @@ const UnifiedDashboard = () => {
       case 'field-map':
         return (
           <div className="max-w-7xl">
-            <FieldMap />
+            <UniversalFieldMap />
           </div>
         );
 

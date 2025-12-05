@@ -11,7 +11,7 @@ import { MapPin, Search, Image, MessageSquare, Clock, CheckCircle2, AlertTriangl
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { AddressLocationMap } from "@/components/AddressLocationMap";
+import { UniversalLocationMap } from "@/components/UniversalLocationMap";
 import { FlaggedAddressManager } from "@/components/FlaggedAddressManager";
 import { useTranslation } from 'react-i18next';
 
@@ -1140,7 +1140,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
               <div className="space-y-2">
                 <div className="text-sm font-medium">{t('admin:interactiveVerificationMap')}</div>
-                <AddressLocationMap
+                <UniversalLocationMap
                   latitude={selectedAddress.latitude}
                   longitude={selectedAddress.longitude}
                   address={{
@@ -1238,7 +1238,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
             </DialogTitle>
           </DialogHeader>
           {selectedAddress && (
-            <AddressLocationMap
+            <UniversalLocationMap
               latitude={selectedAddress.latitude}
               longitude={selectedAddress.longitude}
               address={{

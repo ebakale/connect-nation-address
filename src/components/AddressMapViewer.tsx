@@ -9,12 +9,16 @@ import {
   Copy, 
   ArrowLeft,
   ExternalLink,
-  Maximize2
+  Maximize2,
+  AlertTriangle,
+  RefreshCw
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
-import MapView from './MapView';
+import { OSMMapView } from './OSMMapView';
+import { useMapProvider } from '@/hooks/useMapProvider';
 import AddressDirections from './AddressDirections';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import AddressCard from './AddressCard';
 import { SaveLocationButton } from './SaveLocationButton';
 
@@ -71,6 +75,7 @@ const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack, au
 
   // Convert SearchResult to MapLocation format
   const mapLocation = {
+    id: address.uac,
     uac: address.uac,
     coordinates: [address.coordinates.lng, address.coordinates.lat] as [number, number],
     name: address.readable,
@@ -205,8 +210,8 @@ const AddressMapViewer: React.FC<AddressMapViewerProps> = ({ address, onBack, au
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <MapView
-              center={[address.coordinates.lng, address.coordinates.lat]}
+            <OSMMapView
+              center={[address.coordinates.lat, address.coordinates.lng]}
               zoom={15}
               locations={[mapLocation]}
               highlightUac={address.uac}
