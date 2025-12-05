@@ -6,152 +6,81 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  MapPin, TrendingUp, TrendingDown, Activity, Database, 
-  CheckCircle, AlertTriangle, Globe, RefreshCw, BarChart3
+  Users, Home, CheckCircle, Clock, AlertTriangle, 
+  RefreshCw, UserCheck, Users2, Baby, Shield, Eye, Lock
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from 'react-i18next';
-import { useUserRole } from "@/hooks/useUserRole";
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
-interface CoverageData {
-  id: string;
-  region: string;
-  city: string;
-  addresses_registered: number;
-  addresses_verified: number;
-  addresses_published: number;
-  verification_rate: number;
-  publication_rate: number;
-  coverage_percentage: number;
-  last_updated: string;
+interface CARStats {
+  totalCitizenAddresses: number;
+  selfDeclared: number;
+  confirmed: number;
+  rejected: number;
+  primaryAddresses: number;
+  secondaryAddresses: number;
+  privacyPrivate: number;
+  privacyHousehold: number;
+  privacyPublic: number;
 }
 
-interface RegionalSummary {
-  region: string;
-  total_addresses: number;
-  verified_addresses: number;
-  published_addresses: number;
-  cities_count: number;
-  avg_verification_rate: number;
-  avg_publication_rate: number;
+interface HouseholdStats {
+  totalHouseholds: number;
+  activeHouseholds: number;
+  verifiedHouseholds: number;
+  totalMembers: number;
+  totalDependents: number;
+  activeDependents: number;
+  membersByRelationship: Record<string, number>;
+  dependentsByType: Record<string, number>;
 }
+
+interface AdoptionStats {
+  totalUsers: number;
+  usersWithCAR: number;
+  adoptionRate: number;
+  verificationRate: number;
+}
+
+const CHART_COLORS = {
+  primary: 'hsl(var(--primary))',
+  confirmed: '#22c55e',
+  pending: '#eab308',
+  rejected: '#ef4444',
+  private: '#6366f1',
+  household: '#8b5cf6',
+  public: '#a855f7',
+};
 
 export function CARCoverageAnalytics() {
   const { toast } = useToast();
-  const { t, i18n } = useTranslation(['admin', 'dashboard', 'common']);
-  const { roleMetadata, role } = useUserRole();
+  const { t, i18n } = useTranslation('admin');
   
-  const [coverageData, setCoverageData] = useState<CoverageData[]>([]);
-  const [regionalSummary, setRegionalSummary] = useState<RegionalSummary[]>([]);
+  const [carStats, setCarStats] = useState<CARStats | null>(null);
+  const [householdStats, setHouseholdStats] = useState<HouseholdStats | null>(null);
+  const [adoptionStats, setAdoptionStats] = useState<AdoptionStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [nationalStats, setNationalStats] = useState({
-    totalAddresses: 0,
-    totalVerified: 0,
-    totalPublished: 0,
-    totalRegions: 0,
-    totalCities: 0,
-    avgVerificationRate: 0,
-    avgPublicationRate: 0
-  });
-
-  // Determine geographic scope from role metadata
-  const geographicMetadata = roleMetadata.find(m => 
-    m.scope_type === 'city' || m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'geographic'
-  );
-  
-  const scopeType = geographicMetadata?.scope_type || 'national';
-  const scopeValue = geographicMetadata?.scope_value || null;
 
   useEffect(() => {
-    fetchCoverageData();
+    fetchAllStats();
   }, []);
 
-  const fetchCoverageData = async () => {
+  const fetchAllStats = async () => {
     try {
       setLoading(true);
-
-      // Fetch coverage analytics data with geographic scoping
-      let query = supabase
-        .from('coverage_analytics')
-        .select('*');
-
-      // Apply geographic scoping based on user role
-      if (scopeType === 'city' && scopeValue) {
-        query = query.ilike('city', scopeValue);
-      } else if ((scopeType === 'region' || scopeType === 'province') && scopeValue) {
-        query = query.ilike('region', scopeValue);
-      }
-      // If national or no scope, no filter is applied
-
-      const { data: coverage, error: coverageError } = await query
-        .order('region', { ascending: true })
-        .order('city', { ascending: true });
-
-      if (coverageError) throw coverageError;
-
-      setCoverageData(coverage || []);
-
-      // Calculate regional summaries
-      if (coverage && coverage.length > 0) {
-        const regionalMap = new Map<string, RegionalSummary>();
-
-        coverage.forEach((item: CoverageData) => {
-          if (!regionalMap.has(item.region)) {
-            regionalMap.set(item.region, {
-              region: item.region,
-              total_addresses: 0,
-              verified_addresses: 0,
-              published_addresses: 0,
-              cities_count: 0,
-              avg_verification_rate: 0,
-              avg_publication_rate: 0
-            });
-          }
-
-          const summary = regionalMap.get(item.region)!;
-          summary.total_addresses += item.addresses_registered;
-          summary.verified_addresses += item.addresses_verified;
-          summary.published_addresses += item.addresses_published;
-          summary.cities_count += 1;
-        });
-
-        // Calculate averages
-        const summaries = Array.from(regionalMap.values()).map(summary => ({
-          ...summary,
-          avg_verification_rate: summary.total_addresses > 0 
-            ? Math.round((summary.verified_addresses / summary.total_addresses) * 100) 
-            : 0,
-          avg_publication_rate: summary.total_addresses > 0 
-            ? Math.round((summary.published_addresses / summary.total_addresses) * 100) 
-            : 0
-        }));
-
-        setRegionalSummary(summaries);
-
-        // Calculate national stats
-        const totalAddresses = coverage.reduce((sum, item) => sum + item.addresses_registered, 0);
-        const totalVerified = coverage.reduce((sum, item) => sum + item.addresses_verified, 0);
-        const totalPublished = coverage.reduce((sum, item) => sum + item.addresses_published, 0);
-        const uniqueRegions = new Set(coverage.map(item => item.region)).size;
-        const uniqueCities = coverage.length;
-
-        setNationalStats({
-          totalAddresses,
-          totalVerified,
-          totalPublished,
-          totalRegions: uniqueRegions,
-          totalCities: uniqueCities,
-          avgVerificationRate: totalAddresses > 0 ? Math.round((totalVerified / totalAddresses) * 100) : 0,
-          avgPublicationRate: totalAddresses > 0 ? Math.round((totalPublished / totalAddresses) * 100) : 0
-        });
-      }
+      await Promise.all([
+        fetchCARStats(),
+        fetchHouseholdStats(),
+        fetchAdoptionStats()
+      ]);
     } catch (error) {
-      console.error('Error fetching coverage data:', error);
+      console.error('Error fetching CAR insights:', error);
       toast({
-        title: t('admin:carAdministrativeOverview.errorTitle'),
-        description: t('admin:coverage.failedToLoadCoverage'),
+        title: t('quality.errorTitle'),
+        description: t('carInsights.fetchError'),
         variant: "destructive"
       });
     } finally {
@@ -159,55 +88,168 @@ export function CARCoverageAnalytics() {
     }
   };
 
-  const refreshCoverage = async () => {
-    try {
-      setRefreshing(true);
-      
-      // Call the function to recalculate coverage analytics
-      const { error } = await supabase.rpc('calculate_coverage_analytics');
-      
-      if (error) throw error;
-      
-      // Refresh the display
-      await fetchCoverageData();
-      
-      toast({
-        title: t('common:status.success'),
-        description: t('admin:coverage.coverageUpdated')
-      });
-    } catch (error) {
-      console.error('Error refreshing coverage:', error);
-      toast({
-        title: t('admin:carAdministrativeOverview.errorTitle'),
-        description: t('admin:coverage.failedToRefreshCoverage'),
-        variant: "destructive"
-      });
-    } finally {
-      setRefreshing(false);
-    }
+  const fetchCARStats = async () => {
+    const { data: addresses, error } = await supabase
+      .from('citizen_address')
+      .select('status, address_kind, scope, privacy_level');
+
+    if (error) throw error;
+
+    const stats: CARStats = {
+      totalCitizenAddresses: addresses?.length || 0,
+      selfDeclared: addresses?.filter(a => a.status === 'SELF_DECLARED').length || 0,
+      confirmed: addresses?.filter(a => a.status === 'CONFIRMED').length || 0,
+      rejected: addresses?.filter(a => a.status === 'REJECTED').length || 0,
+      primaryAddresses: addresses?.filter(a => a.address_kind === 'PRIMARY').length || 0,
+      secondaryAddresses: addresses?.filter(a => a.address_kind === 'SECONDARY').length || 0,
+      privacyPrivate: addresses?.filter(a => a.privacy_level === 'PRIVATE').length || 0,
+      privacyHousehold: addresses?.filter(a => a.privacy_level === 'REGION_ONLY').length || 0,
+      privacyPublic: addresses?.filter(a => a.privacy_level === 'PUBLIC').length || 0,
+    };
+
+    setCarStats(stats);
   };
 
-  const getCoverageColor = (percentage: number) => {
-    if (percentage >= 80) return "text-green-600";
-    if (percentage >= 50) return "text-yellow-600";
-    return "text-red-600";
+  const fetchHouseholdStats = async () => {
+    // Fetch households
+    const { data: households, error: householdsError } = await supabase
+      .from('household_groups')
+      .select('is_active, verified_by_car');
+
+    if (householdsError) throw householdsError;
+
+    // Fetch members
+    const { data: members, error: membersError } = await supabase
+      .from('household_members')
+      .select('relationship_to_head, membership_status');
+
+    if (membersError) throw membersError;
+
+    // Fetch dependents
+    const { data: dependents, error: dependentsError } = await supabase
+      .from('household_dependents')
+      .select('dependent_type, is_active');
+
+    if (dependentsError) throw dependentsError;
+
+    // Calculate member relationship distribution
+    const membersByRelationship: Record<string, number> = {};
+    members?.forEach(m => {
+      const rel = m.relationship_to_head || 'OTHER';
+      membersByRelationship[rel] = (membersByRelationship[rel] || 0) + 1;
+    });
+
+    // Calculate dependent type distribution
+    const dependentsByType: Record<string, number> = {};
+    dependents?.forEach(d => {
+      const type = d.dependent_type || 'OTHER';
+      dependentsByType[type] = (dependentsByType[type] || 0) + 1;
+    });
+
+    const stats: HouseholdStats = {
+      totalHouseholds: households?.length || 0,
+      activeHouseholds: households?.filter(h => h.is_active).length || 0,
+      verifiedHouseholds: households?.filter(h => h.verified_by_car).length || 0,
+      totalMembers: members?.length || 0,
+      totalDependents: dependents?.length || 0,
+      activeDependents: dependents?.filter(d => d.is_active).length || 0,
+      membersByRelationship,
+      dependentsByType,
+    };
+
+    setHouseholdStats(stats);
   };
 
-  const getCoverageLabel = (percentage: number) => {
-    if (percentage >= 80) return t('admin:quality.excellent');
-    if (percentage >= 50) return t('admin:quality.good');
-    return t('admin:quality.needsAttention');
+  const fetchAdoptionStats = async () => {
+    // Get total user count from profiles
+    const { count: totalUsers, error: profilesError } = await supabase
+      .from('profiles')
+      .select('*', { count: 'exact', head: true });
+
+    if (profilesError) throw profilesError;
+
+    // Get unique users with CAR addresses
+    const { data: carUsers, error: carError } = await supabase
+      .from('citizen_address')
+      .select('person_id');
+
+    if (carError) throw carError;
+
+    const uniqueCarUsers = new Set(carUsers?.map(c => c.person_id)).size;
+    
+    // Get confirmed addresses count
+    const { data: confirmedData, error: confirmedError } = await supabase
+      .from('citizen_address')
+      .select('status')
+      .eq('status', 'CONFIRMED');
+
+    if (confirmedError) throw confirmedError;
+
+    const totalCAR = carUsers?.length || 0;
+    const confirmedCount = confirmedData?.length || 0;
+
+    setAdoptionStats({
+      totalUsers: totalUsers || 0,
+      usersWithCAR: uniqueCarUsers,
+      adoptionRate: totalUsers ? Math.round((uniqueCarUsers / totalUsers) * 100) : 0,
+      verificationRate: totalCAR ? Math.round((confirmedCount / totalCAR) * 100) : 0,
+    });
   };
+
+  const refreshData = async () => {
+    setRefreshing(true);
+    await fetchAllStats();
+    setRefreshing(false);
+    toast({
+      title: t('quality.metricsUpdated'),
+    });
+  };
+
+  const avgHouseholdSize = householdStats && householdStats.activeHouseholds > 0
+    ? ((householdStats.totalMembers + householdStats.totalDependents) / householdStats.activeHouseholds).toFixed(1)
+    : '0';
+
+  // Chart data
+  const statusChartData = carStats ? [
+    { name: t('carInsights.selfDeclared'), value: carStats.selfDeclared, color: CHART_COLORS.pending },
+    { name: t('carInsights.confirmed'), value: carStats.confirmed, color: CHART_COLORS.confirmed },
+    { name: t('carInsights.rejected'), value: carStats.rejected, color: CHART_COLORS.rejected },
+  ] : [];
+
+  const privacyChartData = carStats ? [
+    { name: t('carInsights.private'), value: carStats.privacyPrivate, color: CHART_COLORS.private },
+    { name: t('carInsights.regionOnly'), value: carStats.privacyHousehold, color: CHART_COLORS.household },
+    { name: t('carInsights.public'), value: carStats.privacyPublic, color: CHART_COLORS.public },
+  ] : [];
+
+  const addressKindData = carStats ? [
+    { name: t('carInsights.primaryAddresses'), value: carStats.primaryAddresses },
+    { name: t('carInsights.secondaryAddresses'), value: carStats.secondaryAddresses },
+  ] : [];
+
+  const memberRelationshipData = householdStats 
+    ? Object.entries(householdStats.membersByRelationship).map(([key, value]) => ({
+        name: t(`carInsights.relationships.${key.toLowerCase()}`, { defaultValue: key }),
+        value
+      }))
+    : [];
+
+  const dependentTypeData = householdStats
+    ? Object.entries(householdStats.dependentsByType).map(([key, value]) => ({
+        name: t(`carInsights.dependentTypes.${key.toLowerCase()}`, { defaultValue: key }),
+        value
+      }))
+    : [];
 
   if (loading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6" key={i18n.resolvedLanguage}>
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">{t('admin:coverage.coverageAnalytics')}</h3>
-          <Badge variant="outline">{t('common:loading')}</Badge>
+          <h3 className="text-lg font-semibold">{t('carInsights.title')}</h3>
+          <Badge variant="outline">{t('common:loading', { defaultValue: 'Loading...' })}</Badge>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
             <Card key={i}>
               <CardContent className="p-6">
                 <div className="animate-pulse space-y-3">
@@ -222,20 +264,20 @@ export function CARCoverageAnalytics() {
     );
   }
 
-  if (coverageData.length === 0) {
+  if (!carStats || !householdStats || !adoptionStats) {
     return (
       <Alert>
         <AlertTriangle className="h-4 w-4" />
         <AlertDescription className="flex items-center justify-between">
-          <span>{t('admin:coverage.noCoverageData')}</span>
+          <span>{t('carInsights.noData')}</span>
           <Button 
-            onClick={refreshCoverage} 
+            onClick={refreshData} 
             disabled={refreshing}
             variant="outline"
             size="sm"
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            {t('dashboard:refreshData')}
+            {t('quality.refreshData')}
           </Button>
         </AlertDescription>
       </Alert>
@@ -243,223 +285,319 @@ export function CARCoverageAnalytics() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" key={i18n.resolvedLanguage}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h3 className="text-lg font-semibold">{t('admin:coverage.carCoverageAnalytics')}</h3>
-            {scopeType !== 'national' && scopeValue && (
-              <Badge variant="outline">
-                {scopeType === 'city' ? t('admin:coverage.city') : t('admin:coverage.regional')}: {scopeValue}
-              </Badge>
-            )}
-          </div>
-          <p className="text-sm text-muted-foreground">
-            {t('admin:quality.lastUpdated')}: {coverageData[0]?.last_updated 
-              ? new Date(coverageData[0].last_updated).toLocaleDateString() 
-              : t('admin:coverage.never')}
-            {scopeType !== 'national' && scopeValue && ` • ${t('admin:coverage.viewingDataOnly', { scope: scopeValue })}`}
-          </p>
+          <h3 className="text-lg font-semibold">{t('carInsights.title')}</h3>
+          <p className="text-sm text-muted-foreground">{t('carInsights.description')}</p>
         </div>
         <Button 
-          onClick={refreshCoverage} 
+          onClick={refreshData} 
           disabled={refreshing}
           variant="outline"
           size="sm"
         >
           <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-          {t('dashboard:refreshData')}
+          {t('quality.refreshData')}
         </Button>
       </div>
 
-      {/* National Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('admin:coverage.totalCoverage')}</CardTitle>
-            <Globe className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">{t('carInsights.citizenAdoption')}</CardTitle>
+            <UserCheck className="h-4 w-4 text-violet-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{nationalStats.totalAddresses.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-violet-600">{adoptionStats.adoptionRate}%</div>
             <p className="text-xs text-muted-foreground">
-              {t('admin:coverage.acrossRegionsCities', { regions: nationalStats.totalRegions, cities: nationalStats.totalCities })}
+              {adoptionStats.usersWithCAR} / {adoptionStats.totalUsers} {t('carInsights.usersWithAddresses')}
             </p>
+            <Progress value={adoptionStats.adoptionRate} className="h-2 mt-2" />
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('admin:coverage.verificationCoverage')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('carInsights.carVerificationRate')}</CardTitle>
             <CheckCircle className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              {nationalStats.avgVerificationRate}%
-            </div>
+            <div className="text-2xl font-bold text-green-600">{adoptionStats.verificationRate}%</div>
             <p className="text-xs text-muted-foreground">
-              {nationalStats.totalVerified.toLocaleString()} {t('admin:quality.verified')}
+              {carStats.confirmed} {t('carInsights.confirmedAddresses')}
+            </p>
+            <Progress value={adoptionStats.verificationRate} className="h-2 mt-2" />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">{t('carInsights.householdFormation')}</CardTitle>
+            <Home className="h-4 w-4 text-purple-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-purple-600">{householdStats.activeHouseholds}</div>
+            <p className="text-xs text-muted-foreground">
+              {householdStats.verifiedHouseholds} {t('carInsights.verifiedHouseholds')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('admin:coverage.publicationRate')}</CardTitle>
-            <Activity className="h-4 w-4 text-blue-600" />
+            <CardTitle className="text-sm font-medium">{t('carInsights.averageHouseholdSize')}</CardTitle>
+            <Users className="h-4 w-4 text-indigo-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
-              {nationalStats.avgPublicationRate}%
-            </div>
+            <div className="text-2xl font-bold text-indigo-600">{avgHouseholdSize}</div>
             <p className="text-xs text-muted-foreground">
-              {nationalStats.totalPublished.toLocaleString()} {t('admin:quality.published')}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('admin:coverage.geographicReach')}</CardTitle>
-            <MapPin className="h-4 w-4 text-purple-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-purple-600">
-              {nationalStats.totalCities}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {t('admin:coverage.citiesWithCoverage')}
+              {householdStats.totalMembers + householdStats.totalDependents} {t('carInsights.membersAndDependents')}
             </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Detailed Views */}
-      <Tabs defaultValue="regional" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="regional">{t('admin:coverage.regionalSummary')}</TabsTrigger>
-          <TabsTrigger value="city">{t('admin:coverage.cityDetails')}</TabsTrigger>
+      <Tabs defaultValue="status" className="space-y-4">
+        <TabsList className="flex flex-wrap h-auto gap-1">
+          <TabsTrigger value="status">{t('carInsights.addressStatus')}</TabsTrigger>
+          <TabsTrigger value="households">{t('carInsights.householdAnalytics')}</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="regional" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('admin:coverage.regionalCoverageOverview')}</CardTitle>
-              <CardDescription>{t('admin:coverage.addressCoverageAggregated')}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {regionalSummary.map((region) => (
-                  <div key={region.region} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-semibold">{region.region}</h4>
-                          <Badge variant="outline">{region.cities_count} {t('admin:coverage.cities')}</Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {region.total_addresses.toLocaleString()} {t('admin:coverage.totalAddresses')}
-                        </p>
-                      </div>
-                      <div className="flex gap-4 text-sm">
-                        <div className="text-right">
-                          <div className="font-medium text-green-600">{region.avg_verification_rate}%</div>
-                          <div className="text-muted-foreground">{t('admin:quality.verified')}</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="font-medium text-blue-600">{region.avg_publication_rate}%</div>
-                          <div className="text-muted-foreground">{t('admin:quality.published')}</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <div className="flex items-center justify-between text-xs mb-1">
-                          <span>{t('admin:coverage.verification')}</span>
-                          <span>{region.verified_addresses.toLocaleString()}</span>
-                        </div>
-                        <Progress value={region.avg_verification_rate} className="h-2" />
-                      </div>
-                      <div>
-                        <div className="flex items-center justify-between text-xs mb-1">
-                          <span>{t('admin:coverage.publication')}</span>
-                          <span>{region.published_addresses.toLocaleString()}</span>
-                        </div>
-                        <Progress value={region.avg_publication_rate} className="h-2" />
-                      </div>
-                    </div>
+        <TabsContent value="status" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Status Distribution */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-4 w-4" />
+                  {t('carInsights.statusDistribution')}
+                </CardTitle>
+                <CardDescription>{t('carInsights.statusDistributionDesc')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={statusChartData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                        label={({ name, value }) => `${name}: ${value}`}
+                      >
+                        {statusChartData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex flex-wrap justify-center gap-4 mt-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: CHART_COLORS.pending }}></div>
+                    <span className="text-sm">{t('carInsights.selfDeclared')}: {carStats.selfDeclared}</span>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: CHART_COLORS.confirmed }}></div>
+                    <span className="text-sm">{t('carInsights.confirmed')}: {carStats.confirmed}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: CHART_COLORS.rejected }}></div>
+                    <span className="text-sm">{t('carInsights.rejected')}: {carStats.rejected}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Privacy Distribution */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Eye className="h-4 w-4" />
+                  {t('carInsights.privacyDistribution')}
+                </CardTitle>
+                <CardDescription>{t('carInsights.privacyDistributionDesc')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={privacyChartData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                        label={({ name, value }) => `${name}: ${value}`}
+                      >
+                        {privacyChartData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex flex-wrap justify-center gap-4 mt-4">
+                  <div className="flex items-center gap-2">
+                    <Lock className="h-3 w-3 text-indigo-500" />
+                    <span className="text-sm">{t('carInsights.private')}: {carStats.privacyPrivate}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Home className="h-3 w-3 text-violet-500" />
+                    <span className="text-sm">{t('carInsights.regionOnly')}: {carStats.privacyHousehold}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Eye className="h-3 w-3 text-purple-500" />
+                    <span className="text-sm">{t('carInsights.public')}: {carStats.privacyPublic}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Address Kind Distribution */}
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <CardTitle>{t('carInsights.addressKindDistribution')}</CardTitle>
+                <CardDescription>{t('carInsights.addressKindDesc')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-48">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={addressKindData} layout="vertical">
+                      <XAxis type="number" />
+                      <YAxis dataKey="name" type="category" width={150} />
+                      <Tooltip />
+                      <Bar dataKey="value" fill="hsl(var(--primary))" radius={4} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
-        <TabsContent value="city" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('admin:coverage.cityLevelCoverage')}</CardTitle>
-              <CardDescription>{t('admin:coverage.detailedCoverageMetrics')}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {coverageData.map((city) => (
-                  <div key={city.id} className="border-b pb-4 last:border-0">
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <h4 className="font-semibold">{city.city}</h4>
-                        <p className="text-sm text-muted-foreground">{city.region}</p>
-                      </div>
-                      <Badge variant="outline">
-                        {city.addresses_registered.toLocaleString()} {t('dashboard:addresses')}
-                      </Badge>
-                    </div>
-                    
-                    <div className="grid grid-cols-3 gap-4 mt-3">
-                      <div>
-                        <div className="text-sm font-medium mb-1">{t('admin:coverage.verification')}</div>
-                        <div className="flex items-center gap-2">
-                          <Progress value={city.verification_rate} className="flex-1 h-2" />
-                          <span className="text-sm font-semibold text-green-600">
-                            {Math.round(city.verification_rate)}%
-                          </span>
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {city.addresses_verified.toLocaleString()} {t('admin:quality.verified')}
-                        </p>
-                      </div>
-                      
-                      <div>
-                        <div className="text-sm font-medium mb-1">{t('admin:coverage.publication')}</div>
-                        <div className="flex items-center gap-2">
-                          <Progress value={city.publication_rate} className="flex-1 h-2" />
-                          <span className="text-sm font-semibold text-blue-600">
-                            {Math.round(city.publication_rate)}%
-                          </span>
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {city.addresses_published.toLocaleString()} {t('admin:quality.published')}
-                        </p>
-                      </div>
-                      
-                      <div>
-                        <div className="text-sm font-medium mb-1">{t('dashboard:coverage')}</div>
-                        <div className="flex items-center gap-2">
-                          <Progress value={city.coverage_percentage} className="flex-1 h-2" />
-                          <span className={`text-sm font-semibold ${getCoverageColor(city.coverage_percentage)}`}>
-                            {Math.round(city.coverage_percentage)}%
-                          </span>
-                        </div>
-                        <p className={`text-xs mt-1 ${getCoverageColor(city.coverage_percentage)}`}>
-                          {getCoverageLabel(city.coverage_percentage)}
-                        </p>
-                      </div>
-                    </div>
+        <TabsContent value="households" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Household Summary */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Home className="h-4 w-4" />
+                  {t('carInsights.householdSummary')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">{t('carInsights.totalHouseholds')}</p>
+                    <p className="text-2xl font-bold">{householdStats.totalHouseholds}</p>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">{t('carInsights.activeHouseholds')}</p>
+                    <p className="text-2xl font-bold text-green-600">{householdStats.activeHouseholds}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">{t('carInsights.verifiedHouseholds')}</p>
+                    <p className="text-2xl font-bold text-blue-600">{householdStats.verifiedHouseholds}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">{t('carInsights.verificationRate')}</p>
+                    <p className="text-2xl font-bold text-purple-600">
+                      {householdStats.totalHouseholds > 0 
+                        ? Math.round((householdStats.verifiedHouseholds / householdStats.totalHouseholds) * 100) 
+                        : 0}%
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Members & Dependents */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users2 className="h-4 w-4" />
+                  {t('carInsights.membersAndDependentsTitle')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">{t('carInsights.totalMembers')}</p>
+                    <p className="text-2xl font-bold">{householdStats.totalMembers}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">{t('carInsights.totalDependents')}</p>
+                    <p className="text-2xl font-bold">{householdStats.totalDependents}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">{t('carInsights.activeDependents')}</p>
+                    <p className="text-2xl font-bold text-green-600">{householdStats.activeDependents}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">{t('carInsights.avgPerHousehold')}</p>
+                    <p className="text-2xl font-bold text-indigo-600">{avgHouseholdSize}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Members by Relationship */}
+            {memberRelationshipData.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('carInsights.membersByRelationship')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={memberRelationshipData}>
+                        <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="value" fill="hsl(var(--primary))" radius={4} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Dependents by Type */}
+            {dependentTypeData.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Baby className="h-4 w-4" />
+                    {t('carInsights.dependentsByType')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={dependentTypeData}>
+                        <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="value" fill="#8b5cf6" radius={4} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </TabsContent>
       </Tabs>
     </div>
