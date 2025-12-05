@@ -1151,5 +1151,16 @@
     "manageDependentsDescription": "Gérer les personnes à charge et les membres de la famille",
     "createDependent": "Créer une Personne à Charge",
     "createDependentDescription": "Ajouter une nouvelle personne à charge à votre compte"
-  }
+  },
+  "deleteRejectedRequest": "Supprimer la Demande",
+  "deleteConfirmationTitle": "Supprimer la Demande Rejetée ?",
+  "deleteConfirmation": "Êtes-vous sûr de vouloir supprimer définitivement cette demande rejetée ? Cette action ne peut pas être annulée.",
+  "deleteSuccess": "Demande rejetée supprimée avec succès",
+  "deleteFailed": "Échec de la suppression de la demande rejetée",
+  "deleting": "Suppression...",
+  "archivedRequests": "Demandes Archivées",
+  "anonymizedOn": "Anonymisé le {{date}}",
+  "retentionPolicy": "Les demandes rejetées sont automatiquement archivées après 6 mois et anonymisées après 24 mois pour la conformité à la vie privée.",
+  "requestLabel": "Demande",
+  "addressLabel": "Adresse"
 }

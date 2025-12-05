@@ -4,10 +4,20 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, User, FileText, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
+import { MapPin, Calendar, User, FileText, AlertTriangle, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from 'react-i18next';
 import { AddressResubmissionDialog } from "./AddressResubmissionDialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface RejectedAddress {
   id: string;
@@ -97,6 +107,11 @@ export function RejectedAddressesPanel({ onUpdate, citizenView = false }: Reject
     open: boolean;
     address: RejectedAddress | null;
   }>({ open: false, address: null });
+  const [deleteDialog, setDeleteDialog] = useState<{
+    open: boolean;
+    address: RejectedAddress | null;
+  }>({ open: false, address: null });
+  const [deleting, setDeleting] = useState(false);
 
   // Get geographical scope from role metadata
   const geographicScope = roleMetadata.find(m => 
@@ -150,6 +165,34 @@ export function RejectedAddressesPanel({ onUpdate, citizenView = false }: Reject
     await fetchRejectedAddresses();
     onUpdate?.();
     toast.success(t('resubmissionSuccessful'));
+  };
+
+  const handleDeleteRequest = async () => {
+    if (!deleteDialog.address) return;
+    
+    setDeleting(true);
+    try {
+      const { data, error } = await supabase.rpc('delete_rejected_request', {
+        p_request_id: deleteDialog.address.id
+      });
+      
+      if (error) throw error;
+      
+      const result = data as { success: boolean; error?: string; message?: string };
+      if (!result.success) {
+        throw new Error(result.error || t('deleteFailed'));
+      }
+      
+      toast.success(t('deleteSuccess'));
+      setDeleteDialog({ open: false, address: null });
+      await fetchRejectedAddresses();
+      onUpdate?.();
+    } catch (error) {
+      console.error('Error deleting rejected request:', error);
+      toast.error(error instanceof Error ? error.message : t('deleteFailed'));
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const toggleCardExpansion = (addressId: string) => {
@@ -296,15 +339,29 @@ export function RejectedAddressesPanel({ onUpdate, citizenView = false }: Reject
                   <Button 
                     variant="outline" 
                     size="sm"
-                     onClick={(e) => {
-                       e.stopPropagation();
-                       handleResubmit(address);
-                     }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleResubmit(address);
+                    }}
                     className="text-xs"
                   >
-                     <FileText className="h-3 w-3 mr-1" />
-                     {t('guideResubmission')}
-                   </Button>
+                    <FileText className="h-3 w-3 mr-1" />
+                    {t('guideResubmission')}
+                  </Button>
+                  {citizenView && (
+                    <Button 
+                      variant="destructive" 
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteDialog({ open: true, address });
+                      }}
+                      className="text-xs"
+                    >
+                      <Trash2 className="h-3 w-3 mr-1" />
+                      {t('deleteRejectedRequest')}
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             )}
@@ -318,6 +375,27 @@ export function RejectedAddressesPanel({ onUpdate, citizenView = false }: Reject
         rejectedAddress={resubmissionDialog.address}
         onSuccess={handleResubmissionSuccess}
       />
+
+      <AlertDialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ open, address: open ? deleteDialog.address : null })}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('deleteConfirmationTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('deleteConfirmation')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeleteRequest}
+              disabled={deleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleting ? t('deleting') : t('deleteRejectedRequest')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

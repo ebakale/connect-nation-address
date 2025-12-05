@@ -35,3 +35,6 @@ verify_jwt = false
 
 [functions.address-webhook-triggers]
 verify_jwt = false
+
+[functions.cleanup-rejected-items]
+verify_jwt = false
