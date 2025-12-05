@@ -276,7 +276,22 @@
     "failedToInitializeMap": "Error al inicializar el mapa",
     "failedToLoadAddresses": "Error al cargar direcciones",
     "draft": "Borrador",
-    "createdOn": "Creado: {{date}}"
+    "createdOn": "Creado: {{date}}",
+    "locationFound": "Ubicación encontrada",
+    "yourLocation": "Tu ubicación"
+  },
+  "map": {
+    "legend": "Leyenda",
+    "usingOpenStreetMapFallback": "Usando OpenStreetMap (Google Maps no disponible)",
+    "googleMapsBillingError": "Facturación de Google Maps no habilitada. Mostrando OpenStreetMap en su lugar.",
+    "switchToGoogleMaps": "Cambiar a Google Maps",
+    "switchToOpenStreetMap": "Cambiar a OpenStreetMap",
+    "mapProviderError": "Error del proveedor de mapas",
+    "retryGoogleMaps": "Reintentar Google Maps",
+    "selectLocation": "Seleccionar ubicación",
+    "selectedCoordinates": "Seleccionado",
+    "clickToSelect": "Haga clic en el mapa para seleccionar una ubicación",
+    "confirmLocation": "Confirmar ubicación"
   },
   "systemIntegrationDesc": "Gestionar integraciones API, webhooks y conexiones a sistemas externos",
   "activeIntegrations": "Integraciones Activas",
