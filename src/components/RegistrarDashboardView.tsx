@@ -364,31 +364,18 @@ export const RegistrarDashboardView = () => {
             </TabsContent>
             
             <TabsContent value="car-analytics" className="space-y-4">
-              <Tabs defaultValue="overview" className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="overview">{t('dashboard:overview')}</TabsTrigger>
+              <Tabs defaultValue="car-insights" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="car-insights">{t('admin:carInsights.title')}</TabsTrigger>
                   <TabsTrigger value="quality-metrics">{t('dashboard:qualityMetrics')}</TabsTrigger>
-                  <TabsTrigger value="coverage">{t('dashboard:coverage')}</TabsTrigger>
                 </TabsList>
                 
-                <TabsContent value="overview" className="space-y-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>{t('dashboard:carSystemOverview')}</CardTitle>
-                      <CardDescription>{t('dashboard:carSystemOverviewDesc')}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">{t('dashboard:carOverviewComingSoon')}</p>
-                    </CardContent>
-                  </Card>
+                <TabsContent value="car-insights" className="space-y-4">
+                  <CARCoverageAnalytics />
                 </TabsContent>
                 
                 <TabsContent value="quality-metrics" className="space-y-4">
                   <CARQualityMetrics />
-                </TabsContent>
-                
-                <TabsContent value="coverage" className="space-y-4">
-                  <CARCoverageAnalytics />
                 </TabsContent>
               </Tabs>
             </TabsContent>
