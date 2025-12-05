@@ -768,6 +768,39 @@ export type Database = {
           },
         ]
       }
+      cleanup_audit_log: {
+        Row: {
+          cleanup_type: string
+          details: Json | null
+          executed_at: string | null
+          executed_by: string | null
+          id: string
+          records_anonymized: number | null
+          records_archived: number | null
+          records_deleted: number | null
+        }
+        Insert: {
+          cleanup_type: string
+          details?: Json | null
+          executed_at?: string | null
+          executed_by?: string | null
+          id?: string
+          records_anonymized?: number | null
+          records_archived?: number | null
+          records_deleted?: number | null
+        }
+        Update: {
+          cleanup_type?: string
+          details?: Json | null
+          executed_at?: string | null
+          executed_by?: string | null
+          id?: string
+          records_anonymized?: number | null
+          records_archived?: number | null
+          records_deleted?: number | null
+        }
+        Relationships: []
+      }
       coverage_analytics: {
         Row: {
           addresses_published: number | null
@@ -2173,6 +2206,165 @@ export type Database = {
         }
         Relationships: []
       }
+      rejected_citizen_addresses_archive: {
+        Row: {
+          address_kind: Database["public"]["Enums"]["address_kind"] | null
+          anonymized_at: string | null
+          archived_at: string | null
+          id: string
+          notes: string | null
+          original_created_at: string | null
+          original_id: string
+          person_id: string | null
+          retention_metadata: Json | null
+          scope: Database["public"]["Enums"]["address_scope"] | null
+          uac: string | null
+          unit_uac: string | null
+        }
+        Insert: {
+          address_kind?: Database["public"]["Enums"]["address_kind"] | null
+          anonymized_at?: string | null
+          archived_at?: string | null
+          id?: string
+          notes?: string | null
+          original_created_at?: string | null
+          original_id: string
+          person_id?: string | null
+          retention_metadata?: Json | null
+          scope?: Database["public"]["Enums"]["address_scope"] | null
+          uac?: string | null
+          unit_uac?: string | null
+        }
+        Update: {
+          address_kind?: Database["public"]["Enums"]["address_kind"] | null
+          anonymized_at?: string | null
+          archived_at?: string | null
+          id?: string
+          notes?: string | null
+          original_created_at?: string | null
+          original_id?: string
+          person_id?: string | null
+          retention_metadata?: Json | null
+          scope?: Database["public"]["Enums"]["address_scope"] | null
+          uac?: string | null
+          unit_uac?: string | null
+        }
+        Relationships: []
+      }
+      rejected_requests_archive: {
+        Row: {
+          address_type: string | null
+          anonymized_at: string | null
+          archived_at: string | null
+          building: string | null
+          city: string | null
+          country: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          original_created_at: string | null
+          original_id: string
+          region: string | null
+          rejected_at: string | null
+          rejected_by: string | null
+          rejection_notes: string | null
+          rejection_reason: string | null
+          request_type: string | null
+          requester_id: string | null
+          retention_metadata: Json | null
+          street: string | null
+        }
+        Insert: {
+          address_type?: string | null
+          anonymized_at?: string | null
+          archived_at?: string | null
+          building?: string | null
+          city?: string | null
+          country?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          original_created_at?: string | null
+          original_id: string
+          region?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_notes?: string | null
+          rejection_reason?: string | null
+          request_type?: string | null
+          requester_id?: string | null
+          retention_metadata?: Json | null
+          street?: string | null
+        }
+        Update: {
+          address_type?: string | null
+          anonymized_at?: string | null
+          archived_at?: string | null
+          building?: string | null
+          city?: string | null
+          country?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          original_created_at?: string | null
+          original_id?: string
+          region?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_notes?: string | null
+          rejection_reason?: string | null
+          request_type?: string | null
+          requester_id?: string | null
+          retention_metadata?: Json | null
+          street?: string | null
+        }
+        Relationships: []
+      }
+      rejected_verifications_archive: {
+        Row: {
+          anonymized_at: string | null
+          archived_at: string | null
+          id: string
+          original_created_at: string | null
+          original_id: string
+          rejected_at: string | null
+          retention_metadata: Json | null
+          uac: string | null
+          user_id: string | null
+          verification_notes: string | null
+          verification_type: string | null
+          verifier_notes: string | null
+        }
+        Insert: {
+          anonymized_at?: string | null
+          archived_at?: string | null
+          id?: string
+          original_created_at?: string | null
+          original_id: string
+          rejected_at?: string | null
+          retention_metadata?: Json | null
+          uac?: string | null
+          user_id?: string | null
+          verification_notes?: string | null
+          verification_type?: string | null
+          verifier_notes?: string | null
+        }
+        Update: {
+          anonymized_at?: string | null
+          archived_at?: string | null
+          id?: string
+          original_created_at?: string | null
+          original_id?: string
+          rejected_at?: string | null
+          retention_metadata?: Json | null
+          uac?: string | null
+          user_id?: string | null
+          verification_notes?: string | null
+          verification_type?: string | null
+          verifier_notes?: string | null
+        }
+        Relationships: []
+      }
       residency_ownership_verifications: {
         Row: {
           address_request_id: string | null
@@ -2848,6 +3040,7 @@ export type Database = {
         }
         Returns: string
       }
+      anonymize_archived_records: { Args: never; Returns: Json }
       approve_address_request: {
         Args: { p_approved_by?: string; p_request_id: string }
         Returns: string
@@ -2873,6 +3066,9 @@ export type Database = {
             }
             Returns: Json
           }
+      archive_old_rejected_citizen_addresses: { Args: never; Returns: Json }
+      archive_old_rejected_requests: { Args: never; Returns: Json }
+      archive_old_rejected_verifications: { Args: never; Returns: Json }
       auto_approve_verified_citizen_addresses: {
         Args: never
         Returns: undefined
@@ -2921,6 +3117,11 @@ export type Database = {
         Args: { p_organization_id: string; p_user_id?: string }
         Returns: Json
       }
+      delete_rejected_citizen_address: {
+        Args: { p_address_id: string }
+        Returns: Json
+      }
+      delete_rejected_request: { Args: { p_request_id: string }; Returns: Json }
       flag_address_for_review:
         | {
             Args: {

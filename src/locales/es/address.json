@@ -1307,5 +1307,16 @@
     "manageDependentsDescription": "Gestiona dependientes y miembros de la familia",
     "createDependent": "Crear Dependiente",
     "createDependentDescription": "Agrega un nuevo dependiente a tu cuenta"
-  }
+  },
+  "deleteRejectedRequest": "Eliminar Solicitud",
+  "deleteConfirmationTitle": "¿Eliminar Solicitud Rechazada?",
+  "deleteConfirmation": "¿Estás seguro de que deseas eliminar permanentemente esta solicitud rechazada? Esta acción no se puede deshacer.",
+  "deleteSuccess": "Solicitud rechazada eliminada exitosamente",
+  "deleteFailed": "Error al eliminar la solicitud rechazada",
+  "deleting": "Eliminando...",
+  "archivedRequests": "Solicitudes Archivadas",
+  "anonymizedOn": "Anonimizado el {{date}}",
+  "retentionPolicy": "Las solicitudes rechazadas se archivan automáticamente después de 6 meses y se anonimizan después de 24 meses para cumplir con la privacidad.",
+  "requestLabel": "Solicitud",
+  "addressLabel": "Dirección"
 }

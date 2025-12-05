@@ -826,5 +826,16 @@
     "manageDependentsDescription": "Manage dependents and family members",
     "createDependent": "Create Dependent",
     "createDependentDescription": "Add a new dependent to your account"
-  }
+  },
+  "deleteRejectedRequest": "Delete Request",
+  "deleteConfirmationTitle": "Delete Rejected Request?",
+  "deleteConfirmation": "Are you sure you want to permanently delete this rejected request? This action cannot be undone.",
+  "deleteSuccess": "Rejected request deleted successfully",
+  "deleteFailed": "Failed to delete rejected request",
+  "deleting": "Deleting...",
+  "archivedRequests": "Archived Requests",
+  "anonymizedOn": "Anonymized on {{date}}",
+  "retentionPolicy": "Rejected requests are automatically archived after 6 months and anonymized after 24 months for privacy compliance.",
+  "requestLabel": "Request",
+  "addressLabel": "Address"
 }
