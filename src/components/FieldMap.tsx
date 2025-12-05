@@ -108,8 +108,21 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
           }
         },
         (error) => {
-          console.error('Error getting location:', error);
-          toast.error(t('dashboard:fieldMap.unableToGetLocation'));
+          console.error('Error getting location:', {
+            code: error.code,
+            message: error.message,
+            PERMISSION_DENIED: error.code === 1,
+            POSITION_UNAVAILABLE: error.code === 2,
+            TIMEOUT: error.code === 3
+          });
+          
+          let errorMessage = t('dashboard:fieldMap.unableToGetLocation');
+          if (error.code === 1) {
+            errorMessage = t('dashboard:fieldMap.locationPermissionDenied');
+          } else if (error.code === 3) {
+            errorMessage = t('dashboard:fieldMap.locationTimeout');
+          }
+          toast.error(errorMessage);
         }
       );
     } else {
