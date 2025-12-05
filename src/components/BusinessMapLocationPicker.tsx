@@ -1,5 +1,5 @@
 import { useState } from "react";
-import MapLocationPicker from "./MapLocationPicker";
+import { UniversalLocationPicker } from "./UniversalLocationPicker";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -182,7 +182,7 @@ export const BusinessMapLocationPicker = ({ onLocationSelect }: BusinessMapLocat
       </Dialog>
 
       {/* Map Picker */}
-      <MapLocationPicker
+      <UniversalLocationPicker
         open={showMapPicker}
         onOpenChange={setShowMapPicker}
         onConfirm={handleMapConfirm}

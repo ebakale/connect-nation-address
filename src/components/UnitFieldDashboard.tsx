@@ -22,7 +22,7 @@ import { IncidentStatusUpdateDialog } from './IncidentStatusUpdateDialog';
 import IncidentDetailDialog from './IncidentDetailDialog';
 import IncidentMap from './IncidentMap';
 import { useTranslation } from 'react-i18next';
-import MapLocationPicker from './MapLocationPicker';
+import { UniversalLocationPicker } from './UniversalLocationPicker';
 
 interface IncidentAssignment {
   id: string;
@@ -1647,10 +1647,10 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
       </Tabs>
 
       {/* Dialog Components */}
-      <MapLocationPicker
+      <UniversalLocationPicker
         open={showLocationPicker}
         onOpenChange={setShowLocationPicker}
-        initialCenter={unitInfo?.location_longitude && unitInfo?.location_latitude ? [unitInfo.location_longitude, unitInfo.location_latitude] : undefined}
+        initialCenter={unitInfo?.location_latitude && unitInfo?.location_longitude ? [unitInfo.location_latitude, unitInfo.location_longitude] : undefined}
         onConfirm={async (lat, lng) => {
           if (!unitInfo) return;
           const desc = `Manual: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
