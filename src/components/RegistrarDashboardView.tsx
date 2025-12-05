@@ -12,14 +12,11 @@ import {
   Clock, 
   AlertTriangle, 
   FileText, 
-  BarChart3,
-  TrendingUp
+  BarChart3
 } from "lucide-react";
 
 // Import the components we need
 import { AddressRequestApprovalPanel } from "./AddressRequestApprovalPanel";
-import { AddressPublishingQueue } from "./AddressPublishingQueue";
-import { AddressUnpublishingQueue } from "./AddressUnpublishingQueue";
 import { QualityIssuesFixer } from "./QualityIssuesFixer";
 import { RejectedAddressesPanel } from "./RejectedAddressesPanel";
 import { QualityDashboard } from "./QualityDashboard";
@@ -34,7 +31,6 @@ interface RegistrarStats {
   publishedAddresses: number;
   pendingApprovals: number;
   flaggedAddresses: number;
-  readyToPublish: number;
 }
 
 interface PendingRequest {
@@ -54,8 +50,7 @@ export const RegistrarDashboardView = () => {
     verifiedAddresses: 0,
     publishedAddresses: 0,
     pendingApprovals: 0,
-    flaggedAddresses: 0,
-    readyToPublish: 0
+    flaggedAddresses: 0
   });
   const [recentRequests, setRecentRequests] = useState<PendingRequest[]>([]);
 
@@ -88,15 +83,13 @@ export const RegistrarDashboardView = () => {
         verifiedResult,
         publicResult,
         pendingResult,
-        flaggedResult,
-        readyToPublishResult
+        flaggedResult
       ] = await Promise.all([
         buildQuery(supabase.from('addresses').select('id', { count: 'exact', head: true })),
         buildQuery(supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true)),
         buildQuery(supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('public', true).eq('verified', true)),
         buildQuery(supabase.from('address_requests').select('id', { count: 'exact', head: true }).eq('status', 'pending')),
-        buildQuery(supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('flagged', true)),
-        buildQuery(supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('verified', true).eq('public', false))
+        buildQuery(supabase.from('addresses').select('id', { count: 'exact', head: true }).eq('flagged', true))
       ]);
 
       const totalAddresses = addressesResult.count || 0;
@@ -104,15 +97,13 @@ export const RegistrarDashboardView = () => {
       const publishedAddresses = publicResult.count || 0;
       const pendingApprovals = pendingResult.count || 0;
       const flaggedAddresses = flaggedResult.count || 0;
-      const readyToPublish = readyToPublishResult.count || 0;
 
       setStats({
         totalAddresses,
         verifiedAddresses,
         publishedAddresses,
         pendingApprovals,
-        flaggedAddresses,
-        readyToPublish
+        flaggedAddresses
       });
     } catch (error) {
       console.error('Error fetching registrar stats:', error);
@@ -170,7 +161,7 @@ export const RegistrarDashboardView = () => {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1">
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
             <span className="hidden sm:inline">{t('dashboard:overview')}</span>
@@ -181,15 +172,6 @@ export const RegistrarDashboardView = () => {
             {stats.pendingApprovals > 0 && (
               <Badge variant="destructive" className="ml-1 h-5 w-5 rounded-full p-0 text-xs">
                 {stats.pendingApprovals}
-              </Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="publishing" className="flex items-center gap-2">
-            <Globe className="h-4 w-4" />
-            <span className="hidden sm:inline">{t('dashboard:publishing')}</span>
-            {stats.readyToPublish > 0 && (
-              <Badge variant="secondary" className="ml-1 h-5 w-5 rounded-full p-0 text-xs">
-                {stats.readyToPublish}
               </Badge>
             )}
           </TabsTrigger>
@@ -302,28 +284,25 @@ export const RegistrarDashboardView = () => {
                   <Globe className="h-5 w-5" />
                   {t('dashboard:publicationSummary')}
                 </CardTitle>
-                <CardDescription>{t('dashboard:publicationMetrics')}</CardDescription>
+                <CardDescription>{t('dashboard:autoPublishInfo')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">{t('dashboard:readyToPublish')}</span>
-                    <span className="text-sm font-medium">{stats.readyToPublish}</span>
-                  </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">{t('dashboard:totalPublished')}</span>
                     <span className="text-sm font-medium">{stats.publishedAddresses}</span>
                   </div>
                   <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">{t('dashboard:privateResidential')}</span>
+                    <span className="text-sm font-medium">{stats.verifiedAddresses - stats.publishedAddresses}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">{t('dashboard:flaggedIssues')}</span>
                     <span className="text-sm font-medium text-destructive">{stats.flaggedAddresses}</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">{t('dashboard:publicationRate')}</span>
-                    <span className="text-sm font-medium">
-                      {stats.verifiedAddresses > 0 ? Math.round((stats.publishedAddresses / stats.verifiedAddresses) * 100) : 0}%
-                    </span>
-                  </div>
+                  <p className="text-xs text-muted-foreground pt-2 border-t">
+                    {t('dashboard:autoPublishExplanation')}
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -334,38 +313,6 @@ export const RegistrarDashboardView = () => {
           <AddressRequestApprovalPanel />
         </TabsContent>
 
-        <TabsContent value="publishing" className="space-y-6">
-          <Tabs defaultValue="publish-queue" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="publish-queue">{t('dashboard:publishingQueue')}</TabsTrigger>
-              <TabsTrigger value="published-addresses">{t('dashboard:publishedAddresses')}</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="publish-queue" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>{t('dashboard:addressPublishingQueue')}</CardTitle>
-                  <CardDescription>{t('dashboard:publishVerifiedAddresses')}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <AddressPublishingQueue />
-                </CardContent>
-              </Card>
-            </TabsContent>
-            
-            <TabsContent value="published-addresses" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>{t('dashboard:managePublishedAddresses')}</CardTitle>
-                  <CardDescription>{t('dashboard:removeFromPublicRegistry')}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <AddressUnpublishingQueue />
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </TabsContent>
 
         <TabsContent value="quality" className="space-y-6">
           <Tabs defaultValue="flagged-addresses" className="w-full">
