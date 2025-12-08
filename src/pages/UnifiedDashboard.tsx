@@ -47,7 +47,7 @@ import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
 import { SystemManualPDF } from "@/components/SystemManualPDF";
 import EmergencyContacts from "@/components/EmergencyContacts";
 import { ReporterNotifications } from "@/components/ReporterNotifications";
-import DashboardLocationMap from "@/components/DashboardLocationMap";
+import UniversalDashboardLocationMap from "@/components/UniversalDashboardLocationMap";
 import { ResidencyVerificationManager } from "@/components/ResidencyVerificationManager";
 import { ResidencyVerificationDashboard } from "@/components/ResidencyVerificationDashboard";
 import { UserVerificationRequests } from "@/components/UserVerificationRequests";
@@ -760,7 +760,7 @@ const UnifiedDashboard = () => {
                     </CardHeader>
                     <CardContent className="p-0">
                       <div className="min-h-[400px] sm:min-h-[500px] w-full">
-                        <DashboardLocationMap 
+                        <UniversalDashboardLocationMap 
                           searchedAddress={selectedAddress}
                           onAddressSearched={setSelectedAddress}
                         />
