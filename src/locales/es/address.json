@@ -1318,5 +1318,30 @@
   "anonymizedOn": "Anonimizado el {{date}}",
   "retentionPolicy": "Las solicitudes rechazadas se archivan automáticamente después de 6 meses y se anonimizan después de 24 meses para cumplir con la privacidad.",
   "requestLabel": "Solicitud",
-  "addressLabel": "Dirección"
+  "addressLabel": "Dirección",
+  "submitForReview": "Enviar para Revisión",
+  "toasts": {
+    "locationCaptured": "Ubicación Capturada",
+    "gpsCoordinatesSet": "Las coordenadas GPS han sido establecidas",
+    "locationError": "Error de Ubicación",
+    "couldNotGetLocation": "No se pudo obtener su ubicación",
+    "fileTooLarge": "Archivo Demasiado Grande",
+    "selectSmallerImage": "Por favor seleccione una imagen menor a 5MB",
+    "invalidFileType": "Tipo de Archivo Inválido",
+    "selectImageFile": "Por favor seleccione un archivo de imagen válido",
+    "uploadFailed": "Carga Fallida",
+    "failedToUploadPhoto": "No se pudo cargar la foto",
+    "missingInformation": "Información Faltante",
+    "fillRequiredFields": "Por favor complete todos los campos requeridos",
+    "addressUpdated": "Dirección Actualizada",
+    "draftUpdatedSuccessfully": "Borrador actualizado correctamente",
+    "error": "Error",
+    "failedToUpdateAddress": "No se pudo actualizar la dirección",
+    "addressCreated": "Dirección Creada",
+    "addressCreatedInNAR": "Dirección creada en el Registro Nacional de Direcciones",
+    "failedToCreateAddress": "No se pudo crear la dirección",
+    "requestSubmitted": "Solicitud Enviada",
+    "addressSubmittedForReview": "Su dirección ha sido enviada para revisión por las autoridades",
+    "failedToSubmitRequest": "No se pudo enviar la solicitud de dirección"
+  }
 }

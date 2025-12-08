@@ -837,5 +837,30 @@
   "anonymizedOn": "Anonymized on {{date}}",
   "retentionPolicy": "Rejected requests are automatically archived after 6 months and anonymized after 24 months for privacy compliance.",
   "requestLabel": "Request",
-  "addressLabel": "Address"
+  "addressLabel": "Address",
+  "submitForReview": "Submit for Review",
+  "toasts": {
+    "locationCaptured": "Location Captured",
+    "gpsCoordinatesSet": "GPS coordinates have been set",
+    "locationError": "Location Error",
+    "couldNotGetLocation": "Could not get your location",
+    "fileTooLarge": "File Too Large",
+    "selectSmallerImage": "Please select an image smaller than 5MB",
+    "invalidFileType": "Invalid File Type",
+    "selectImageFile": "Please select a valid image file",
+    "uploadFailed": "Upload Failed",
+    "failedToUploadPhoto": "Failed to upload photo",
+    "missingInformation": "Missing Information",
+    "fillRequiredFields": "Please fill in all required fields",
+    "addressUpdated": "Address Updated",
+    "draftUpdatedSuccessfully": "Draft updated successfully",
+    "error": "Error",
+    "failedToUpdateAddress": "Failed to update address",
+    "addressCreated": "Address Created",
+    "addressCreatedInNAR": "Address created in the National Address Registry",
+    "failedToCreateAddress": "Failed to create address",
+    "requestSubmitted": "Request Submitted",
+    "addressSubmittedForReview": "Your address has been submitted for review by authorities",
+    "failedToSubmitRequest": "Failed to submit address request"
+  }
 }

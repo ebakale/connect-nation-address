@@ -1162,5 +1162,30 @@
   "anonymizedOn": "Anonymisé le {{date}}",
   "retentionPolicy": "Les demandes rejetées sont automatiquement archivées après 6 mois et anonymisées après 24 mois pour la conformité à la vie privée.",
   "requestLabel": "Demande",
-  "addressLabel": "Adresse"
+  "addressLabel": "Adresse",
+  "submitForReview": "Soumettre pour Révision",
+  "toasts": {
+    "locationCaptured": "Emplacement Capturé",
+    "gpsCoordinatesSet": "Les coordonnées GPS ont été définies",
+    "locationError": "Erreur de Localisation",
+    "couldNotGetLocation": "Impossible d'obtenir votre emplacement",
+    "fileTooLarge": "Fichier Trop Volumineux",
+    "selectSmallerImage": "Veuillez sélectionner une image de moins de 5 Mo",
+    "invalidFileType": "Type de Fichier Invalide",
+    "selectImageFile": "Veuillez sélectionner un fichier image valide",
+    "uploadFailed": "Échec du Téléversement",
+    "failedToUploadPhoto": "Échec du téléversement de la photo",
+    "missingInformation": "Informations Manquantes",
+    "fillRequiredFields": "Veuillez remplir tous les champs obligatoires",
+    "addressUpdated": "Adresse Mise à Jour",
+    "draftUpdatedSuccessfully": "Brouillon mis à jour avec succès",
+    "error": "Erreur",
+    "failedToUpdateAddress": "Échec de la mise à jour de l'adresse",
+    "addressCreated": "Adresse Créée",
+    "addressCreatedInNAR": "Adresse créée dans le Registre National des Adresses",
+    "failedToCreateAddress": "Échec de la création de l'adresse",
+    "requestSubmitted": "Demande Soumise",
+    "addressSubmittedForReview": "Votre adresse a été soumise pour révision par les autorités",
+    "failedToSubmitRequest": "Échec de la soumission de la demande d'adresse"
+  }
 }
