@@ -34,7 +34,7 @@
   "narAuthorities": "NAR Authorities",
   "carPermissions": "CAR Permissions",
   "carWorkflow": "CAR Workflow",
-  "quality": "Quality",
+  "qualityTab": "Quality",
   "systemTools": "System Tools",
   "systemToolsDescription": "Import addresses and test system integration",
   "translations": "Translations",
