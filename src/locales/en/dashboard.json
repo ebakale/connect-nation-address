@@ -782,6 +782,7 @@
     "region": "Region",
     "province": "Province",
     "national": "National",
+    "pending": "Pending",
     "yourArea": "Your Area",
     "viewAddressesInArea": "View addresses in your assigned area on Google Maps",
     "close": "Close",
