@@ -284,6 +284,7 @@
   "fieldMapNav": "Carte de Terrain",
   "fieldMap": {
     "fieldMap": "Carte de Terrain",
+    "loadingGoogleMaps": "Chargement de Google Maps...",
     "viewAddressesInArea": "Voir les adresses dans votre zone assignée sur Google Maps",
     "close": "Fermer",
     "mapNotConfigured": "Carte non configurée",

@@ -284,6 +284,7 @@
   "fieldMapNav": "Mapa de Campo",
   "fieldMap": {
     "fieldMap": "Mapa de Campo",
+    "loadingGoogleMaps": "Cargando Google Maps...",
     "viewAddressesInArea": "Ver direcciones en tu área asignada en Google Maps",
     "close": "Cerrar",
     "mapNotConfigured": "Mapa no configurado",

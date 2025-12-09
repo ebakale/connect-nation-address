@@ -777,6 +777,7 @@
   },
   "fieldMap": {
     "fieldMap": "Field Map",
+    "loadingGoogleMaps": "Loading Google Maps...",
     "viewAddressesInArea": "View addresses in your assigned area on Google Maps",
     "close": "Close",
     "mapNotConfigured": "Map not configured",
