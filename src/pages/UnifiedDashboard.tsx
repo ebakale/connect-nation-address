@@ -240,7 +240,15 @@ const UnifiedDashboard = () => {
 
     const fetchUnifiedStats = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('unified-address-statistics')
+        // Build request body with geographic scope if user has restricted access
+        const requestBody = (!hasAdminAccess && geographicScope) ? {
+          scope_type: geographicScope.scope_type,
+          scope_value: geographicScope.scope_value
+        } : {};
+
+        const { data, error } = await supabase.functions.invoke('unified-address-statistics', {
+          body: requestBody
+        })
         
         if (error) {
           console.error('Error fetching statistics:', error)
