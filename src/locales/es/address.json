@@ -47,6 +47,22 @@
     "mixed": "Mixto",
     "institutional": "Institucional"
   },
+  "addressTypes": {
+    "residential": "Residencial",
+    "commercial": "Comercial",
+    "government": "Gubernamental",
+    "industrial": "Industrial",
+    "business": "Negocio",
+    "institutional": "Institucional",
+    "public": "Público",
+    "landmark": "Punto de Referencia",
+    "recreational": "Recreativo",
+    "educational": "Educativo",
+    "healthcare": "Salud",
+    "mixed": "Mixto",
+    "other": "Otro",
+    "unknown": "Desconocido"
+  },
   "description": "Descripción",
   "effectiveFrom": "Efectivo desde",
   "added": "Agregado",
