@@ -296,25 +296,27 @@ export const OSMFieldMap: React.FC<OSMFieldMapProps> = ({ onClose }) => {
           />
           <MapController center={mapCenter} userLocation={userLocation} />
           
+          {/* User location circle */}
+          {userLocation && (
+            <Circle
+              center={userLocation}
+              radius={100}
+              pathOptions={{ 
+                color: OSM_CONFIG.markerColors.userLocation,
+                fillColor: OSM_CONFIG.markerColors.userLocation,
+                fillOpacity: 0.2
+              }}
+            />
+          )}
+          
           {/* User location marker */}
           {userLocation && (
-            <>
-              <Circle
-                center={userLocation}
-                radius={100}
-                pathOptions={{ 
-                  color: OSM_CONFIG.markerColors.userLocation,
-                  fillColor: OSM_CONFIG.markerColors.userLocation,
-                  fillOpacity: 0.2
-                }}
-              />
-              <Marker
-                position={userLocation}
-                icon={createLeafletIcon(OSM_CONFIG.markerColors.userLocation, 20)}
-              >
-                <Popup>{t('fieldMap.yourLocation', 'Your Location')}</Popup>
-              </Marker>
-            </>
+            <Marker
+              position={userLocation}
+              icon={createLeafletIcon(OSM_CONFIG.markerColors.userLocation, 20)}
+            >
+              <Popup>{t('fieldMap.yourLocation', 'Your Location')}</Popup>
+            </Marker>
           )}
           
           {/* Address markers */}
