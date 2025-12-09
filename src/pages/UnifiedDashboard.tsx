@@ -395,7 +395,7 @@ const UnifiedDashboard = () => {
       case 'request-status': return t('dashboard:requestStatus');
       case 'capture-address': return t('dashboard:captureAddress');
       case 'field-drafts': return t('dashboard:myDrafts');
-      case 'field-map': return t('dashboard:fieldMap');
+      case 'field-map': return t('dashboard:fieldMapNav');
       case 'verification-queue': return t('dashboard:verificationQueue');
       case 'analytics': return t('dashboard:analytics');
       case 'province-management': return t('dashboard:provinceManagement');

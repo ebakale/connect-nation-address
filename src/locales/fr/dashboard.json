@@ -281,6 +281,7 @@
   "reviewFlaggedAddresses": "Réviser et résoudre les adresses signalées",
   "rejectedAddressRequests": "Demandes d'Adresses Rejetées",
   "manageRejectedRequests": "Réviser et gérer les demandes rejetées",
+  "fieldMapNav": "Carte de Terrain",
   "fieldMap": {
     "fieldMap": "Carte de Terrain",
     "viewAddressesInArea": "Voir les adresses dans votre zone assignée sur Google Maps",
