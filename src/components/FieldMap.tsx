@@ -39,6 +39,7 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<google.maps.Map | null>(null);
   const [addresses, setAddresses] = useState<FieldAddress[]>([]);
+  const [pendingRequests, setPendingRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDrafts, setShowDrafts] = useState(true);
   const [showVerified, setShowVerified] = useState(true);
@@ -91,6 +92,34 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
       toast.error(t('dashboard:fieldMap.failedToLoadAddresses'));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchPendingRequests = async () => {
+    if (!user) return;
+
+    try {
+      let query = supabase
+        .from('address_requests')
+        .select('*')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false });
+
+      // Filter by geographic scope
+      if (geographicScope) {
+        if (geographicScope.scope_type === 'city') {
+          query = query.ilike('city', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+          query = query.ilike('region', geographicScope.scope_value);
+        }
+      }
+
+      const { data, error } = await query;
+
+      if (error) throw error;
+      setPendingRequests(data || []);
+    } catch (error) {
+      console.error('Error fetching pending requests:', error);
     }
   };
 
@@ -189,6 +218,7 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
       return true;
     });
 
+    // Add verified address markers
     filteredAddresses.forEach((address) => {
       const isDraft = !address.verified || !address.public;
       
@@ -252,6 +282,73 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
 
       markers.current.push(marker);
     });
+
+    // Add pending request markers (orange color)
+    if (showDrafts) {
+      pendingRequests.forEach((request) => {
+        if (!request.latitude || !request.longitude) return;
+        
+        const marker = new google.maps.Marker({
+          position: { lat: Number(request.latitude), lng: Number(request.longitude) },
+          map: map.current,
+          title: `${request.street}${request.building ? `, ${request.building}` : ''} (${t('dashboard:fieldMap.pending')})`,
+          icon: {
+            url: `data:image/svg+xml,${encodeURIComponent(`
+              <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="15" cy="15" r="12" fill="#ea580c" stroke="white" stroke-width="3"/>
+                <circle cx="15" cy="15" r="6" fill="white"/>
+              </svg>
+            `)}`,
+            scaledSize: new google.maps.Size(30, 30),
+            anchor: new google.maps.Point(15, 15)
+          }
+        });
+
+        const infoWindow = new google.maps.InfoWindow({
+          content: `
+            <div style="padding: 8px;">
+              <h3 style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">
+                ${request.street}${request.building ? `, ${request.building}` : ''}
+              </h3>
+              <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
+                ${request.city}, ${request.region}
+              </p>
+              <div style="display: flex; gap: 4px; margin-bottom: 4px;">
+                <span style="
+                  display: inline-block; 
+                  padding: 2px 6px; 
+                  font-size: 10px; 
+                  border-radius: 4px;
+                  background: #fed7aa;
+                  color: #9a3412;
+                ">
+                  ${t('dashboard:fieldMap.pending')}
+                </span>
+                <span style="
+                  display: inline-block; 
+                  padding: 2px 6px; 
+                  font-size: 10px; 
+                  border-radius: 4px;
+                  background: #dbeafe;
+                  color: #1e40af;
+                ">
+                  ${request.address_type || 'unknown'}
+                </span>
+              </div>
+              <p style="font-size: 10px; color: #999; margin: 0;">
+                ${t('dashboard:fieldMap.createdOn', { date: new Date(request.created_at).toLocaleDateString() })}
+              </p>
+            </div>
+          `
+        });
+
+        marker.addListener('click', () => {
+          infoWindow.open(map.current, marker);
+        });
+
+        markers.current.push(marker);
+      });
+    }
   };
 
   const refreshMap = () => {
@@ -261,7 +358,8 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
   useEffect(() => {
     fetchGoogleMapsApiKey();
     fetchAddresses();
-  }, [user]);
+    fetchPendingRequests();
+  }, [user, geographicScope]);
 
   useEffect(() => {
     // Initialize map if either:
@@ -275,7 +373,7 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
 
   useEffect(() => {
     refreshMap();
-  }, [addresses, showDrafts, showVerified]);
+  }, [addresses, pendingRequests, showDrafts, showVerified]);
 
   if (loading) {
     return (
@@ -391,10 +489,10 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-yellow-600">
-                {addresses.filter(a => !a.verified || !a.public).length}
+              <div className="text-2xl font-bold text-orange-600">
+                {pendingRequests.length}
               </div>
-              <div className="text-sm text-muted-foreground">{t('dashboard:fieldMap.drafts')}</div>
+              <div className="text-sm text-muted-foreground">{t('dashboard:fieldMap.pending')}</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-green-600">
