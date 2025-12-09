@@ -85,7 +85,7 @@ Maria Garcia,maria@example.com,City Hall,+240555666777,verifier,city,Bata,SafePa
     const validRoles = [
       'citizen', 'property_claimant', 'field_agent', 'verifier', 
       'registrar', 'ndaa_admin', 'partner', 'auditor', 'data_steward', 'support',
-      'car_admin', 'residency_verifier',
+      'car_admin',
       'police_admin', 'police_operator', 'police_supervisor', 'police_dispatcher'
     ];
 

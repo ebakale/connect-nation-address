@@ -62,7 +62,8 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     isFieldAgent, 
     isRegistrar,
     isCarAdmin,
-    isResidencyVerifier,
+    canVerifyNAR,
+    canVerifyCAR,
     hasAdminAccess,
     isAdmin,
     hasNDAAAccess,
@@ -99,7 +100,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       title: t('verificationQueue'),
       icon: CheckCircle,
       onClick: () => handleItemClick('verification-queue'),
-      visible: (isNARAuthority && narAuthorityData?.can_verify_addresses) || (canVerifyAddresses && !isResidencyVerifier && !isRegistrar && !isAdmin && !hasNDAAAccess),
+      visible: (isNARAuthority && narAuthorityData?.can_verify_addresses) || (canVerifyNAR && !isRegistrar && !isAdmin && !hasNDAAAccess),
       badge: pendingCount
     },
     {
@@ -107,7 +108,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       title: t('verificationTools'),
       icon: isNARAuthority ? FileCheck : AlertCircle,
       onClick: () => handleItemClick('verification-tools'),
-      visible: (isNARAuthority && narAuthorityData?.can_verify_addresses) || (canVerifyAddresses && !isResidencyVerifier && !isAdmin && !hasNDAAAccess)
+      visible: (isNARAuthority && narAuthorityData?.can_verify_addresses) || (canVerifyNAR && !isAdmin && !hasNDAAAccess)
     },
     {
       id: 'registrar-dashboard',
@@ -128,7 +129,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       title: t('residencyVerification'),
       icon: Shield,
       onClick: () => handleItemClick('residency-verification'),
-      visible: isCarAdmin || isResidencyVerifier || isRegistrar
+      visible: isCarAdmin || canVerifyCAR || isRegistrar
     },
     {
       id: 'capture-address',
@@ -301,7 +302,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     <Sidebar className={cn("border-r bg-background", collapsed ? "w-16" : "w-60")}>
       <SidebarContent className="gap-0">
         {/* Header for special roles */}
-        {!collapsed && (isNARAuthority || isCarAdmin) && (
+        {!collapsed && (isNARAuthority || isCarAdmin || canVerifyCAR) && (
           <div className="p-4 border-b">
             <div className="flex items-center gap-2">
               <div className="p-1.5 bg-primary/10 rounded-lg">
@@ -325,7 +326,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
                        narAuthorityData?.authority_level === 'regional' ? t('regionalLevel') :
                        narAuthorityData?.authority_level === 'municipal' ? t('municipalLevel') :
                        t('localLevel'))
-                    : (isCarAdmin ? t('carAdmin') : t('carVerifier'))
+                    : (isCarAdmin ? t('carAdmin') : canVerifyCAR ? t('carVerifier') : '')
                   }
                 </p>
               </div>
@@ -343,7 +344,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
         )}
 
         {/* Standard header for other users */}
-        {!collapsed && !isNARAuthority && !isCarAdmin && (
+        {!collapsed && !isNARAuthority && !isCarAdmin && !canVerifyCAR && (
           <div className="p-4 border-b">
             <div className="flex items-center gap-2">
               <div className="p-1.5 bg-primary/10 rounded-lg">
