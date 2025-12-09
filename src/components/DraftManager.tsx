@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Edit, Trash2, Send, MapPin, Clock, X } from "lucide-react";
+import { Edit, Trash2, Send, MapPin, Clock, X, Eye } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useUserRole } from "@/hooks/useUserRole";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AddressCaptureForm } from "./AddressCaptureForm";
@@ -29,31 +30,68 @@ interface DraftAddress {
   updated_at: string;
 }
 
+interface AddressRequest {
+  id: string;
+  country: string;
+  region: string;
+  city: string;
+  street: string;
+  building?: string;
+  address_type: string;
+  latitude: number | null;
+  longitude: number | null;
+  description?: string;
+  photo_url?: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
 interface DraftManagerProps {
   onClose?: () => void;
 }
 
 const DraftManager = ({ onClose }: DraftManagerProps) => {
   const { user } = useAuth();
-  const { t } = useTranslation(['dashboard']);
+  const { role, loading: roleLoading } = useUserRole();
+  const { t } = useTranslation(['dashboard', 'address']);
   const [drafts, setDrafts] = useState<DraftAddress[]>([]);
+  const [pendingRequests, setPendingRequests] = useState<AddressRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingDraft, setEditingDraft] = useState<DraftAddress | null>(null);
   const [submitting, setSubmitting] = useState<string | null>(null);
+
+  const isFieldAgent = role === 'field_agent';
 
   const fetchDrafts = async () => {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
-        .from('addresses')
-        .select('id, uac, country, region, city, street, building, latitude, longitude, address_type, description, verified, public, photo_url, created_at, updated_at')
-        .eq('created_by_authority', user.id)
-        .or('verified.is.false,public.is.false')
-        .order('created_at', { ascending: false });
+      if (isFieldAgent) {
+        // Field agents see their pending address requests
+        const { data, error } = await supabase
+          .from('address_requests')
+          .select('id, country, region, city, street, building, latitude, longitude, address_type, description, photo_url, status, created_at, updated_at')
+          .eq('requester_id', user.id)
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setDrafts(data || []);
+        if (error) throw error;
+        setPendingRequests(data || []);
+        setDrafts([]);
+      } else {
+        // NAR authorities see their draft addresses
+        const { data, error } = await supabase
+          .from('addresses')
+          .select('id, uac, country, region, city, street, building, latitude, longitude, address_type, description, verified, public, photo_url, created_at, updated_at')
+          .eq('created_by_authority', user.id)
+          .or('verified.is.false,public.is.false')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        setDrafts(data || []);
+        setPendingRequests([]);
+      }
     } catch (error) {
       console.error('Error fetching drafts:', error);
       toast.error(t('dashboard:drafts.failedToLoadDrafts'));
@@ -126,10 +164,12 @@ const DraftManager = ({ onClose }: DraftManagerProps) => {
   };
 
   useEffect(() => {
-    fetchDrafts();
-  }, [user]);
+    if (!roleLoading) {
+      fetchDrafts();
+    }
+  }, [user, role, roleLoading]);
 
-  if (loading) {
+  if (loading || roleLoading) {
     return (
       <div className="flex items-center justify-center py-8">
         <div className="text-lg">{t('dashboard:drafts.loadingDrafts')}</div>
@@ -137,17 +177,27 @@ const DraftManager = ({ onClose }: DraftManagerProps) => {
     );
   }
 
+  const itemCount = isFieldAgent ? pendingRequests.length : drafts.length;
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold">{t('dashboard:drafts.myDrafts')}</h2>
+          <h2 className="text-2xl font-bold">
+            {isFieldAgent ? t('dashboard:drafts.pendingSubmissions') : t('dashboard:drafts.myDrafts')}
+          </h2>
           <p className="text-muted-foreground">
-            {t('dashboard:drafts.manageDraftAddresses')}
+            {isFieldAgent 
+              ? t('dashboard:drafts.pendingSubmissionsDescription')
+              : t('dashboard:drafts.manageDraftAddresses')}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="secondary">{t('dashboard:drafts.draftsCount', { count: drafts.length })}</Badge>
+          <Badge variant="secondary">
+            {isFieldAgent 
+              ? t('dashboard:drafts.pendingCount', { count: itemCount })
+              : t('dashboard:drafts.draftsCount', { count: itemCount })}
+          </Badge>
           {onClose && (
             <Button variant="outline" size="sm" onClick={onClose}>
               <X className="h-4 w-4 mr-2" />
@@ -157,17 +207,69 @@ const DraftManager = ({ onClose }: DraftManagerProps) => {
         </div>
       </div>
 
-      {drafts.length === 0 ? (
+      {itemCount === 0 ? (
         <Card>
           <CardContent className="text-center py-8">
             <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">{t('dashboard:drafts.noDraftsYet')}</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              {isFieldAgent ? t('dashboard:drafts.noPendingSubmissions') : t('dashboard:drafts.noDraftsYet')}
+            </h3>
             <p className="text-muted-foreground">
               {t('dashboard:drafts.startCapturingAddresses')}
             </p>
           </CardContent>
         </Card>
+      ) : isFieldAgent ? (
+        // Field Agent view - pending requests
+        <div className="grid gap-4">
+          {pendingRequests.map((request) => (
+            <Card key={request.id}>
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-lg">
+                      {request.street}{request.building && `, ${request.building}`}
+                    </CardTitle>
+                    <CardDescription>
+                      {request.city}, {request.region}, {request.country}
+                    </CardDescription>
+                  </div>
+                  <div className="flex gap-2">
+                    <Badge variant="secondary">
+                      {t(`address:addressTypes.${request.address_type?.toLowerCase()}`, request.address_type)}
+                    </Badge>
+                    <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-300">
+                      {t('dashboard:drafts.pendingReview')}
+                    </Badge>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Clock className="h-4 w-4" />
+                    {t('dashboard:drafts.submitted', { date: new Date(request.created_at).toLocaleDateString() })}
+                  </div>
+                  
+                  {request.description && (
+                    <p className="text-sm text-muted-foreground">
+                      {request.description}
+                    </p>
+                  )}
+
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" disabled>
+                      <Eye className="h-4 w-4 mr-2" />
+                      {t('dashboard:drafts.awaitingReview')}
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       ) : (
+        // NAR Authority view - draft addresses
         <div className="grid gap-4">
           {drafts.map((draft) => (
             <Card key={draft.id}>
@@ -182,13 +284,7 @@ const DraftManager = ({ onClose }: DraftManagerProps) => {
                     </CardDescription>
                   </div>
                   <Badge variant="outline">
-                    {(() => {
-                      const v = draft.address_type as string | undefined;
-                      const hasBraces = v ? v.includes('{{') || v.includes('}}') : false;
-                      const cleaned = v ? v.replace(/[{}]/g, '').trim() : '';
-                      const safe = !v || hasBraces || cleaned.toLowerCase() === 'type' || cleaned === '' ? 'unknown' : cleaned;
-                      return safe;
-                    })()}
+                    {t(`address:addressTypes.${draft.address_type?.toLowerCase()}`, draft.address_type)}
                   </Badge>
                 </div>
               </CardHeader>
@@ -205,7 +301,7 @@ const DraftManager = ({ onClose }: DraftManagerProps) => {
                     </p>
                   )}
 
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap">
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button variant="outline" size="sm" onClick={() => setEditingDraft(draft)}>
