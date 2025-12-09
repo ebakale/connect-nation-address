@@ -281,6 +281,7 @@
   "reviewFlaggedAddresses": "Revisar y resolver direcciones marcadas",
   "rejectedAddressRequests": "Solicitudes de Direcciones Rechazadas",
   "manageRejectedRequests": "Revisar y gestionar solicitudes rechazadas",
+  "fieldMapNav": "Mapa de Campo",
   "fieldMap": {
     "fieldMap": "Mapa de Campo",
     "viewAddressesInArea": "Ver direcciones en tu área asignada en Google Maps",
