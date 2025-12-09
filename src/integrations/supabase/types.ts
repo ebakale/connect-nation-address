@@ -3155,6 +3155,16 @@ export type Database = {
         }
         Returns: string
       }
+      generate_uac: {
+        Args: {
+          p_city: string
+          p_country: string
+          p_latitude: number
+          p_longitude: number
+          p_region: string
+        }
+        Returns: string
+      }
       generate_unified_uac_unique: {
         Args: {
           p_address_id: string
