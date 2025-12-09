@@ -262,7 +262,7 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
 
 
       case 'residency-verification':
-        // This should only be accessible to users with residency_verifier role
+        // This is accessible to users with verifier role and CAR verification_domain scope
         // or users in the authorized_verifiers table with proper verification_scope
         return (
           <div className="space-y-6">

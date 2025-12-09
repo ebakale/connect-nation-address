@@ -115,7 +115,7 @@
   "verifier": "Vérificateur",
   "registrar": "Registraire",
   "carAdmin": "Administrateur CAR",
-  "residencyVerifier": "Vérificateur de Résidence",
+  "residencyVerifier": "Vérificateur (NAR/CAR)",
   "fieldAgentRole": "Agent de Terrain",
   "citizen": "Citoyen",
   "registrarDashboard": "Tableau de Bord du Registraire",
