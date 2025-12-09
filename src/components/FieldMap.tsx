@@ -359,29 +359,33 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
     fetchGoogleMapsApiKey();
     fetchAddresses();
     fetchPendingRequests();
+    // Auto-request location on mount
+    getCurrentLocation();
   }, [user, geographicScope]);
 
+  // Delayed map initialization to ensure container is mounted
   useEffect(() => {
-    // Initialize map if either:
-    // 1. Google Maps is already loaded globally (from useMapProvider)
-    // 2. API key is ready and we need to load it ourselves
-    const googleMapsAvailable = typeof google !== 'undefined' && google.maps && google.maps.Map;
-    if (googleMapsAvailable || isApiReady) {
-      initializeMap();
+    const timer = setTimeout(() => {
+      const googleMapsAvailable = typeof google !== 'undefined' && google.maps && google.maps.Map;
+      if ((googleMapsAvailable || isApiReady) && mapContainer.current && !map.current) {
+        initializeMap();
+      }
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [isApiReady, loading]);
+
+  // Re-initialize map if user location changes and map exists
+  useEffect(() => {
+    if (userLocation && map.current) {
+      map.current.panTo(userLocation);
+      map.current.setZoom(14);
     }
-  }, [isApiReady, userLocation]);
+  }, [userLocation]);
 
   useEffect(() => {
     refreshMap();
   }, [addresses, pendingRequests, showDrafts, showVerified]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <div className="text-lg">{t('dashboard:fieldMap.loadingGoogleMaps')}</div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-4">
@@ -473,7 +477,12 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
       </Card>
 
       <Card>
-        <CardContent className="p-0">
+        <CardContent className="p-0 relative">
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10 rounded-lg">
+              <div className="text-lg">{t('dashboard:fieldMap.loadingGoogleMaps')}</div>
+            </div>
+          )}
           <div 
             ref={mapContainer} 
             className="w-full h-96 md:h-[500px] rounded-lg"
