@@ -7,12 +7,12 @@ export type UserRole =
   | 'citizen' | 'property_claimant' | 'field_agent' 
   | 'verifier' | 'registrar' | 'ndaa_admin' 
   | 'partner' | 'auditor' | 'data_steward' | 'support'
-  | 'car_admin' | 'residency_verifier'
+  | 'car_admin'
   | 'police_operator' | 'police_supervisor' | 'police_dispatcher' | 'police_admin'
   | null;
 
 export interface RoleMetadata {
-  scope_type: 'geographic' | 'organization' | 'partner_type' | 'city' | 'region' | 'province';
+  scope_type: 'geographic' | 'organization' | 'partner_type' | 'city' | 'region' | 'province' | 'verification_domain';
   scope_value: string;
 }
 
@@ -81,7 +81,7 @@ export const useUserRole = () => {
             'admin', 'ndaa_admin', 'police_admin',
             'police_supervisor', 'police_dispatcher', 'police_operator',
             'car_admin',
-            'registrar', 'verifier', 'residency_verifier',
+            'registrar', 'verifier',
             'field_agent', 'property_claimant',
             'citizen', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user'
           ];
@@ -133,7 +133,22 @@ export const useUserRole = () => {
   
   // CAR role checks
   const isCARAdmin = role === 'car_admin';
-  const isResidencyVerifier = role === 'residency_verifier';
+  
+  // Verification domain checks (for unified verifier role)
+  const getVerificationDomains = () => {
+    return roleMetadata
+      .filter(m => m.scope_type === 'verification_domain')
+      .map(m => m.scope_value);
+  };
+  
+  const verificationDomains = getVerificationDomains();
+  const canVerifyNAR = role === 'verifier' && 
+    (verificationDomains.includes('nar') || verificationDomains.includes('both') || verificationDomains.length === 0);
+  const canVerifyCAR = role === 'verifier' && 
+    (verificationDomains.includes('car') || verificationDomains.includes('both'));
+  
+  // Backwards compatibility - isResidencyVerifier now checks verification domain
+  const isResidencyVerifier = canVerifyCAR;
   
   // Police role checks
   const isPoliceOperator = role === 'police_operator';
@@ -161,7 +176,7 @@ export const useUserRole = () => {
   const hasPoliceAdminAccess = isPoliceAdmin;
   
   // CAR access checks  
-  const hasCARAccess = isCARAdmin || isResidencyVerifier || isAdmin || hasSystemAdminAccess || hasRegistrarAccess;
+  const hasCARAccess = isCARAdmin || canVerifyCAR || isAdmin || hasSystemAdminAccess || hasRegistrarAccess;
   const hasCARManagementAccess = isCARAdmin || hasSystemAdminAccess || hasRegistrarAccess;
   const hasCARVerificationAccess = hasCARAccess || hasVerifierAccess;
   
@@ -261,7 +276,7 @@ export const useUserRole = () => {
   };
   
   // Verification and publishing permissions
-  const canVerifyAddresses = role === 'verifier' || role === 'residency_verifier' || hasRegistrarAccess || hasCARVerificationAccess;
+  const canVerifyAddresses = role === 'verifier' || hasRegistrarAccess || hasCARVerificationAccess;
   const canPublishAddresses = hasRegistrarAccess;
   const canRetireAddresses = hasRegistrarAccess;
   const canOverrideDecisions = hasNDAAAccess; // Only NDAA can override decisions
@@ -371,7 +386,9 @@ export const useUserRole = () => {
     // CAR role checks
     isCARAdmin,
     isCarAdmin: isCARAdmin, // Alias for compatibility
-    isResidencyVerifier,
+    isResidencyVerifier, // Now derived from verification_domain scope
+    canVerifyNAR,
+    canVerifyCAR,
     hasCARAccess,
     hasCarAccess: hasCARAccess, // Alias for compatibility
     // Police role checks
