@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useOfflineAddresses } from '@/hooks/useOfflineData';
 import { useOffline } from '@/hooks/useOffline';
 import { useGeolocation } from '@/hooks/useGeolocation';
@@ -14,6 +15,7 @@ import { MapPin, Save, Wifi, WifiOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const OfflineAddressCapture = () => {
+  const { t } = useTranslation('address');
   const { user } = useAuth();
   const { saveAddress } = useOfflineAddresses();
   const { isOnline } = useOffline();
@@ -39,17 +41,17 @@ export const OfflineAddressCapture = () => {
     e.preventDefault();
     
     if (!user) {
-      toast.error('Please login to save addresses');
+      toast.error(t('offlineCapture.pleaseLoginToSave'));
       return;
     }
 
     if (!latitude || !longitude) {
-      toast.error('Location is required. Please get your location first.');
+      toast.error(t('offlineCapture.locationRequired'));
       return;
     }
 
     if (!formData.street || !formData.city) {
-      toast.error('Street and city are required');
+      toast.error(t('offlineCapture.streetCityRequired'));
       return;
     }
 
@@ -75,14 +77,14 @@ export const OfflineAddressCapture = () => {
       });
 
       const message = isOnline 
-        ? 'Address saved successfully!'
-        : 'Address saved offline. Will sync when connection returns.';
+        ? t('offlineCapture.addressSavedSuccessfully')
+        : t('offlineCapture.addressSavedOffline');
       
       toast.success(message);
       
     } catch (error) {
       console.error('Failed to save address:', error);
-      toast.error('Failed to save address');
+      toast.error(t('offlineCapture.failedToSaveAddress'));
     } finally {
       setSaving(false);
     }
@@ -94,11 +96,11 @@ export const OfflineAddressCapture = () => {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <MapPin className="w-5 h-5" />
-            Capture Address
+            {t('offlineCapture.captureAddress')}
           </CardTitle>
           <Badge variant="outline" className={isOnline ? "text-green-700 border-green-200" : "text-orange-700 border-orange-200"}>
             {isOnline ? <Wifi className="w-3 h-3 mr-1" /> : <WifiOff className="w-3 h-3 mr-1" />}
-            {isOnline ? 'Online' : 'Offline Mode'}
+            {isOnline ? t('offlineCapture.online') : t('offlineCapture.offlineMode')}
           </Badge>
         </div>
       </CardHeader>
@@ -107,7 +109,7 @@ export const OfflineAddressCapture = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Location Section */}
           <div className="space-y-2">
-            <Label>Location</Label>
+            <Label>{t('offlineCapture.location')}</Label>
             <div className="flex gap-2">
               <Button
                 type="button"
@@ -117,7 +119,7 @@ export const OfflineAddressCapture = () => {
                 className="flex items-center gap-2"
               >
                 <MapPin className="w-4 h-4" />
-                {geoLoading ? 'Getting Location...' : 'Get Current Location'}
+                {geoLoading ? t('offlineCapture.gettingLocation') : t('offlineCapture.getCurrentLocation')}
               </Button>
               {latitude && longitude && (
                 <Badge variant="secondary">
@@ -130,45 +132,45 @@ export const OfflineAddressCapture = () => {
           {/* Address Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="street">Street Address *</Label>
+              <Label htmlFor="street">{t('offlineCapture.streetAddress')} *</Label>
               <Input
                 id="street"
                 value={formData.street}
                 onChange={(e) => handleInputChange('street', e.target.value)}
-                placeholder="123 Main Street"
+                placeholder={t('offlineCapture.streetPlaceholder')}
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="building">Building/House Number</Label>
+              <Label htmlFor="building">{t('offlineCapture.buildingNumber')}</Label>
               <Input
                 id="building"
                 value={formData.building}
                 onChange={(e) => handleInputChange('building', e.target.value)}
-                placeholder="Building A, Apt 101"
+                placeholder={t('offlineCapture.buildingPlaceholder')}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="city">City *</Label>
+              <Label htmlFor="city">{t('offlineCapture.city')} *</Label>
               <Input
                 id="city"
                 value={formData.city}
                 onChange={(e) => handleInputChange('city', e.target.value)}
-                placeholder="Malabo"
+                placeholder={t('offlineCapture.cityPlaceholder')}
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="region">Region</Label>
+              <Label htmlFor="region">{t('offlineCapture.region')}</Label>
               <Select
                 value={formData.region}
                 onValueChange={(value) => handleInputChange('region', value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select region" />
+                  <SelectValue placeholder={t('offlineCapture.selectRegion')} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Bioko Norte">Bioko Norte</SelectItem>
@@ -184,7 +186,7 @@ export const OfflineAddressCapture = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="country">Country</Label>
+              <Label htmlFor="country">{t('offlineCapture.country')}</Label>
               <Input
                 id="country"
                 value={formData.country}
@@ -194,7 +196,7 @@ export const OfflineAddressCapture = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="address_type">Address Type</Label>
+              <Label htmlFor="address_type">{t('offlineCapture.addressType')}</Label>
               <Select
                 value={formData.address_type}
                 onValueChange={(value) => handleInputChange('address_type', value)}
@@ -203,23 +205,23 @@ export const OfflineAddressCapture = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="residential">Residential</SelectItem>
-                  <SelectItem value="commercial">Commercial</SelectItem>
-                  <SelectItem value="industrial">Industrial</SelectItem>
-                  <SelectItem value="institutional">Institutional</SelectItem>
-                  <SelectItem value="recreational">Recreational</SelectItem>
+                  <SelectItem value="residential">{t('offlineCapture.residential')}</SelectItem>
+                  <SelectItem value="commercial">{t('offlineCapture.commercial')}</SelectItem>
+                  <SelectItem value="industrial">{t('offlineCapture.industrial')}</SelectItem>
+                  <SelectItem value="institutional">{t('offlineCapture.institutional')}</SelectItem>
+                  <SelectItem value="recreational">{t('offlineCapture.recreational')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t('offlineCapture.description')}</Label>
             <Textarea
               id="description"
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
-              placeholder="Additional details about this address..."
+              placeholder={t('offlineCapture.descriptionPlaceholder')}
               rows={3}
             />
           </div>
@@ -230,12 +232,12 @@ export const OfflineAddressCapture = () => {
             className="w-full flex items-center gap-2"
           >
             <Save className="w-4 h-4" />
-            {saving ? 'Saving...' : 'Save Address'}
+            {saving ? t('offlineCapture.saving') : t('offlineCapture.saveAddress')}
           </Button>
 
           {!isOnline && (
             <div className="text-sm text-muted-foreground text-center p-2 bg-orange-50 rounded-md">
-              📡 Working offline. Address will be synced when connection returns.
+              📡 {t('offlineCapture.workingOffline')}
             </div>
           )}
         </form>

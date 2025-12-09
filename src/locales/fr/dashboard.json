@@ -309,7 +309,11 @@
     "draft": "Brouillon",
     "createdOn": "Créé : {{date}}",
     "locationFound": "Position trouvée",
-    "yourLocation": "Votre position"
+    "yourLocation": "Votre position",
+    "showPending": "Mes En Attente",
+    "pending": "En Attente",
+    "pendingReview": "En Attente de Révision",
+    "title": "Carte de Terrain"
   },
   "map": {
     "legend": "Légende",

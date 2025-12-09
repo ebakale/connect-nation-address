@@ -827,7 +827,11 @@
     "draft": "Draft",
     "createdOn": "Created: {{date}}",
     "locationFound": "Location found",
-    "yourLocation": "Your Location"
+    "yourLocation": "Your Location",
+    "showPending": "My Pending",
+    "pending": "Pending",
+    "pendingReview": "Pending Review",
+    "title": "Field Map"
   },
   "map": {
     "legend": "Legend",
