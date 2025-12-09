@@ -309,7 +309,11 @@
     "draft": "Borrador",
     "createdOn": "Creado: {{date}}",
     "locationFound": "Ubicación encontrada",
-    "yourLocation": "Tu ubicación"
+    "yourLocation": "Tu ubicación",
+    "showPending": "Mis Pendientes",
+    "pending": "Pendiente",
+    "pendingReview": "Pendiente de Revisión",
+    "title": "Mapa de Campo"
   },
   "map": {
     "legend": "Leyenda",
