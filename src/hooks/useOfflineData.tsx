@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { offlineStorage, OfflineAddress, OfflineIncident, OfflineUser } from '@/lib/offlineStorage';
 import { useOffline } from './useOffline';
 import { useAuth } from './useAuth';
+import { useUserRole } from './useUserRole';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 export const useOfflineAddresses = () => {
@@ -11,6 +13,9 @@ export const useOfflineAddresses = () => {
   const [syncErrors, setSyncErrors] = useState<string[]>([]);
   const { user } = useAuth();
   const { isOnline } = useOffline();
+  const { role } = useUserRole();
+  
+  const isFieldAgent = role === 'field_agent';
 
   useEffect(() => {
     loadAddresses();
@@ -78,11 +83,51 @@ export const useOfflineAddresses = () => {
         try {
           setSyncProgress(prev => ({ ...prev, current: i + 1 }));
           
-          // Here you would normally sync with your backend
-          // Simulate network delay and potential failure
-          await new Promise(resolve => setTimeout(resolve, 100));
+          if (isFieldAgent) {
+            // Field agents submit to address_requests table for review
+            const { error: insertError } = await supabase
+              .from('address_requests')
+              .insert({
+                requester_id: user?.id,
+                country: address.country || 'Equatorial Guinea',
+                region: address.region || '',
+                city: address.city || '',
+                street: address.street || '',
+                building: address.building || null,
+                latitude: address.latitude,
+                longitude: address.longitude,
+                address_type: address.address_type || 'residential',
+                description: address.description || null,
+                status: 'pending',
+                request_type: 'create_address',
+                claimant_type: 'field_agent',
+                justification: 'Field agent offline address capture'
+              });
+            
+            if (insertError) throw insertError;
+          } else {
+            // NAR authorities insert directly to addresses table
+            const { error: insertError } = await supabase
+              .from('addresses')
+              .insert({
+                user_id: user?.id,
+                country: address.country || 'Equatorial Guinea',
+                region: address.region || '',
+                city: address.city || '',
+                street: address.street || '',
+                building: address.building || null,
+                latitude: address.latitude,
+                longitude: address.longitude,
+                address_type: address.address_type || 'residential',
+                description: address.description || null,
+                uac: `EQ-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                verified: false,
+                public: false
+              });
+            
+            if (insertError) throw insertError;
+          }
           
-          // For now, we'll just mark them as synced
           await offlineStorage.markAddressSynced(address.id);
           syncedCount++;
         } catch (error) {
