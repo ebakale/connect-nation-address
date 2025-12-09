@@ -26,6 +26,18 @@ interface FieldAddress {
   uac: string;
 }
 
+interface PendingSubmission {
+  id: string;
+  latitude: number;
+  longitude: number;
+  street: string;
+  city: string;
+  region: string;
+  country: string;
+  status: string;
+  address_type: string;
+}
+
 interface OSMFieldMapProps {
   onClose?: () => void;
 }
@@ -60,14 +72,18 @@ const createLeafletIcon = (color: string, size: number = 24) => {
 
 export const OSMFieldMap: React.FC<OSMFieldMapProps> = ({ onClose }) => {
   const { t } = useTranslation('dashboard');
-  const { roleMetadata } = useUserRole();
+  const { roleMetadata, role } = useUserRole();
   
   const [addresses, setAddresses] = useState<FieldAddress[]>([]);
+  const [pendingSubmissions, setPendingSubmissions] = useState<PendingSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDrafts, setShowDrafts] = useState(true);
   const [showVerified, setShowVerified] = useState(true);
+  const [showPending, setShowPending] = useState(true);
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [mapCenter, setMapCenter] = useState<[number, number]>(OSM_CONFIG.defaultCenter);
+  
+  const isFieldAgent = role === 'field_agent';
 
   // Get geographical scope from role metadata
   const geographicScope = roleMetadata.find(m => 
@@ -104,13 +120,35 @@ export const OSMFieldMap: React.FC<OSMFieldMapProps> = ({ onClose }) => {
       if (data && data.length > 0) {
         setMapCenter([data[0].latitude, data[0].longitude]);
       }
+      
+      // Fetch pending submissions for field agents
+      if (isFieldAgent) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: pendingData, error: pendingError } = await supabase
+            .from('address_requests')
+            .select('id, latitude, longitude, street, city, region, country, status, address_type')
+            .eq('requester_id', user.id)
+            .eq('status', 'pending')
+            .not('latitude', 'is', null)
+            .not('longitude', 'is', null);
+          
+          if (!pendingError && pendingData) {
+            setPendingSubmissions(pendingData);
+            // If no addresses but has pending, center on first pending
+            if ((!data || data.length === 0) && pendingData.length > 0) {
+              setMapCenter([pendingData[0].latitude, pendingData[0].longitude]);
+            }
+          }
+        }
+      }
     } catch (error) {
       console.error('Error fetching addresses:', error);
       toast.error(t('fieldMap.failedToLoadAddresses'));
     } finally {
       setLoading(false);
     }
-  }, [geographicScope, isNationalScope, t]);
+  }, [geographicScope, isNationalScope, isFieldAgent, t]);
 
   useEffect(() => {
     fetchAddresses();
@@ -160,7 +198,8 @@ export const OSMFieldMap: React.FC<OSMFieldMapProps> = ({ onClose }) => {
   const stats = {
     drafts: addresses.filter(a => !a.verified).length,
     verified: addresses.filter(a => a.verified).length,
-    total: addresses.length
+    pending: pendingSubmissions.length,
+    total: addresses.length + pendingSubmissions.length
   };
 
   if (loading) {
@@ -217,6 +256,18 @@ export const OSMFieldMap: React.FC<OSMFieldMapProps> = ({ onClose }) => {
                 {t('fieldMap.showVerified')}
               </Label>
             </div>
+            {isFieldAgent && (
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="show-pending"
+                  checked={showPending}
+                  onCheckedChange={setShowPending}
+                />
+                <Label htmlFor="show-pending" className="text-sm">
+                  {t('fieldMap.showPending', 'My Pending')}
+                </Label>
+              </div>
+            )}
             <div className="flex gap-2 ml-auto">
               <Button variant="outline" size="sm" onClick={getCurrentLocation}>
                 <Navigation className="h-4 w-4 mr-1" />
@@ -292,6 +343,27 @@ export const OSMFieldMap: React.FC<OSMFieldMapProps> = ({ onClose }) => {
               </Popup>
             </Marker>
           ))}
+          
+          {/* Pending submission markers for field agents */}
+          {isFieldAgent && showPending && pendingSubmissions.map((submission) => (
+            <Marker
+              key={`pending-${submission.id}`}
+              position={[submission.latitude, submission.longitude]}
+              icon={createLeafletIcon('#f59e0b', 24)}
+            >
+              <Popup>
+                <div className="p-1 min-w-[180px]">
+                  <p className="font-medium text-sm">{submission.street}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {submission.city}, {submission.region}
+                  </p>
+                  <Badge variant="outline" className="mt-2 border-amber-500 text-amber-600">
+                    {t('fieldMap.pendingReview', 'Pending Review')}
+                  </Badge>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
         </MapContainer>
 
         {/* Legend */}
@@ -311,6 +383,14 @@ export const OSMFieldMap: React.FC<OSMFieldMapProps> = ({ onClose }) => {
               />
               <span>{t('fieldMap.drafts')}</span>
             </div>
+            {isFieldAgent && (
+              <div className="flex items-center gap-2 text-xs">
+                <div 
+                  className="w-3 h-3 rounded-full bg-amber-500"
+                />
+                <span>{t('fieldMap.pending', 'Pending')}</span>
+              </div>
+            )}
             {userLocation && (
               <div className="flex items-center gap-2 text-xs">
                 <div 
@@ -336,6 +416,12 @@ export const OSMFieldMap: React.FC<OSMFieldMapProps> = ({ onClose }) => {
               <MapPin className="h-4 w-4 text-green-500" />
               <span>{t('fieldMap.verified')}: <strong>{stats.verified}</strong></span>
             </div>
+            {isFieldAgent && (
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-amber-500" />
+                <span>{t('fieldMap.pending', 'Pending')}: <strong>{stats.pending}</strong></span>
+              </div>
+            )}
             <div className="flex items-center gap-2">
               <span>{t('fieldMap.total')}: <strong>{stats.total}</strong></span>
             </div>
