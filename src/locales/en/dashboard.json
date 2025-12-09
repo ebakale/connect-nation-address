@@ -778,6 +778,11 @@
   "fieldMap": {
     "fieldMap": "Field Map",
     "loadingGoogleMaps": "Loading Google Maps...",
+    "city": "City",
+    "region": "Region",
+    "province": "Province",
+    "national": "National",
+    "yourArea": "Your Area",
     "viewAddressesInArea": "View addresses in your assigned area on Google Maps",
     "close": "Close",
     "mapNotConfigured": "Map not configured",

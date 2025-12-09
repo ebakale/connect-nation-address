@@ -285,6 +285,11 @@
   "fieldMap": {
     "fieldMap": "Carte de Terrain",
     "loadingGoogleMaps": "Chargement de Google Maps...",
+    "city": "Ville",
+    "region": "Région",
+    "province": "Province",
+    "national": "National",
+    "yourArea": "Votre Zone",
     "viewAddressesInArea": "Voir les adresses dans votre zone assignée sur Google Maps",
     "close": "Fermer",
     "mapNotConfigured": "Carte non configurée",
