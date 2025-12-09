@@ -53,7 +53,7 @@ interface DraftManagerProps {
 
 const DraftManager = ({ onClose }: DraftManagerProps) => {
   const { user } = useAuth();
-  const { role, loading: roleLoading } = useUserRole();
+  const { role, roleMetadata, loading: roleLoading } = useUserRole();
   const { t } = useTranslation(['dashboard', 'address']);
   const [drafts, setDrafts] = useState<DraftAddress[]>([]);
   const [pendingRequests, setPendingRequests] = useState<AddressRequest[]>([]);
@@ -63,30 +63,55 @@ const DraftManager = ({ onClose }: DraftManagerProps) => {
 
   const isFieldAgent = role === 'field_agent';
 
+  // Get geographic scope from role metadata
+  const geographicScope = roleMetadata?.find(m => 
+    m.scope_type === 'city' || m.scope_type === 'region' || m.scope_type === 'province'
+  );
+
   const fetchDrafts = async () => {
     if (!user) return;
 
     try {
       if (isFieldAgent) {
-        // Field agents see their pending address requests
-        const { data, error } = await supabase
+        // Field agents see their pending address requests within their scope
+        let query = supabase
           .from('address_requests')
           .select('id, country, region, city, street, building, latitude, longitude, address_type, description, photo_url, status, created_at, updated_at')
           .eq('requester_id', user.id)
-          .eq('status', 'pending')
-          .order('created_at', { ascending: false });
+          .eq('status', 'pending');
+
+        // Apply geographic scope filter
+        if (geographicScope) {
+          if (geographicScope.scope_type === 'city') {
+            query = query.ilike('city', geographicScope.scope_value);
+          } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+            query = query.ilike('region', geographicScope.scope_value);
+          }
+        }
+
+        const { data, error } = await query.order('created_at', { ascending: false });
 
         if (error) throw error;
         setPendingRequests(data || []);
         setDrafts([]);
       } else {
-        // NAR authorities see their draft addresses
-        const { data, error } = await supabase
+        // NAR authorities see their draft addresses within their scope
+        let query = supabase
           .from('addresses')
           .select('id, uac, country, region, city, street, building, latitude, longitude, address_type, description, verified, public, photo_url, created_at, updated_at')
           .eq('created_by_authority', user.id)
-          .or('verified.is.false,public.is.false')
-          .order('created_at', { ascending: false });
+          .or('verified.is.false,public.is.false');
+
+        // Apply geographic scope filter
+        if (geographicScope) {
+          if (geographicScope.scope_type === 'city') {
+            query = query.ilike('city', geographicScope.scope_value);
+          } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+            query = query.ilike('region', geographicScope.scope_value);
+          }
+        }
+
+        const { data, error } = await query.order('created_at', { ascending: false });
 
         if (error) throw error;
         setDrafts(data || []);
@@ -167,7 +192,7 @@ const DraftManager = ({ onClose }: DraftManagerProps) => {
     if (!roleLoading) {
       fetchDrafts();
     }
-  }, [user, role, roleLoading]);
+  }, [user, role, roleLoading, geographicScope?.scope_value]);
 
   if (loading || roleLoading) {
     return (
@@ -192,7 +217,15 @@ const DraftManager = ({ onClose }: DraftManagerProps) => {
               : t('dashboard:drafts.manageDraftAddresses')}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          {geographicScope && (
+            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+              <MapPin className="h-3 w-3 mr-1" />
+              {geographicScope.scope_type === 'city' 
+                ? t('dashboard:fieldMap.city') 
+                : t('dashboard:fieldMap.region')}: {geographicScope.scope_value}
+            </Badge>
+          )}
           <Badge variant="secondary">
             {isFieldAgent 
               ? t('dashboard:drafts.pendingCount', { count: itemCount })
