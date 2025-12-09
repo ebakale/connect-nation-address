@@ -11,6 +11,7 @@ import { MapPin, Search, Image, MessageSquare, Clock, CheckCircle2, AlertTriangl
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useUserRole } from "@/hooks/useUserRole";
 import { UniversalLocationMap } from "@/components/UniversalLocationMap";
 import { FlaggedAddressManager } from "@/components/FlaggedAddressManager";
 import { useTranslation } from 'react-i18next';
@@ -70,22 +71,45 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
   } | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { roleMetadata, loading: roleLoading } = useUserRole();
   const { t } = useTranslation(['admin', 'common']);
+
+  // Extract geographic scope from role metadata
+  const geographicScope = roleMetadata.find(m => 
+    m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city' || m.scope_type === 'geographic'
+  );
+  const hasNationalScope = roleMetadata.length === 0 || !geographicScope;
 
   // Load pending addresses and flagged addresses on component mount
   useEffect(() => {
-    loadPendingAddresses();
-    loadFlaggedAddresses();
-  }, []);
+    if (!roleLoading) {
+      loadPendingAddresses();
+      loadFlaggedAddresses();
+    }
+  }, [roleLoading, geographicScope?.scope_type, geographicScope?.scope_value]);
 
-  // Load all addresses in the system
+  // Load all addresses in the system (filtered by geographic scope)
   const loadPendingAddresses = async () => {
+    if (roleLoading) return;
+    
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('addresses')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('*');
+
+      // Apply geographical scope filter for non-national scope users
+      if (!hasNationalScope && geographicScope) {
+        if (geographicScope.scope_type === 'city') {
+          query = query.ilike('city', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+          query = query.ilike('region', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'geographic') {
+          query = query.or(`city.ilike.${geographicScope.scope_value},region.ilike.${geographicScope.scope_value}`);
+        }
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) throw error;
       setPendingAddresses(data || []);
@@ -101,11 +125,13 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
     }
   };
 
-  // Load flagged addresses for review
+  // Load flagged addresses for review (filtered by geographic scope)
   const loadFlaggedAddresses = async () => {
+    if (roleLoading) return;
+    
     setFlaggedLoading(true);
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('address_requests')
         .select(`
           id,
@@ -126,8 +152,20 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
           verification_analysis,
           verification_recommendations
         `)
-        .eq('flagged', true)
-        .order('flagged_at', { ascending: false });
+        .eq('flagged', true);
+
+      // Apply geographical scope filter for non-national scope users
+      if (!hasNationalScope && geographicScope) {
+        if (geographicScope.scope_type === 'city') {
+          query = query.ilike('city', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+          query = query.ilike('region', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'geographic') {
+          query = query.or(`city.ilike.${geographicScope.scope_value},region.ilike.${geographicScope.scope_value}`);
+        }
+      }
+
+      const { data, error } = await query.order('flagged_at', { ascending: false });
 
       if (error) throw error;
       setFlaggedAddresses(data || []);
@@ -143,16 +181,29 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
     }
   };
 
-  // Search addresses for verification
+  // Search addresses for verification (filtered by geographic scope)
   const searchAddresses = async () => {
     if (!searchQuery.trim()) return;
     
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('addresses')
         .select('*')
-        .or(`uac.ilike.%${searchQuery}%,street.ilike.%${searchQuery}%,city.ilike.%${searchQuery}%`)
+        .or(`uac.ilike.%${searchQuery}%,street.ilike.%${searchQuery}%,city.ilike.%${searchQuery}%`);
+
+      // Apply geographical scope filter for non-national scope users
+      if (!hasNationalScope && geographicScope) {
+        if (geographicScope.scope_type === 'city') {
+          query = query.ilike('city', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'region' || geographicScope.scope_type === 'province') {
+          query = query.ilike('region', geographicScope.scope_value);
+        } else if (geographicScope.scope_type === 'geographic') {
+          query = query.or(`city.ilike.${geographicScope.scope_value},region.ilike.${geographicScope.scope_value}`);
+        }
+      }
+
+      const { data, error } = await query
         .order('created_at', { ascending: false })
         .limit(10);
 
