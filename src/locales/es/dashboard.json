@@ -285,6 +285,11 @@
   "fieldMap": {
     "fieldMap": "Mapa de Campo",
     "loadingGoogleMaps": "Cargando Google Maps...",
+    "city": "Ciudad",
+    "region": "Región",
+    "province": "Provincia",
+    "national": "Nacional",
+    "yourArea": "Tu Área",
     "viewAddressesInArea": "Ver direcciones en tu área asignada en Google Maps",
     "close": "Cerrar",
     "mapNotConfigured": "Mapa no configurado",

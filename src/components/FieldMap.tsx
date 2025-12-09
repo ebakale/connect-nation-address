@@ -297,7 +297,7 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
         <div className="flex items-center gap-2">
           {geographicScope && (
             <Badge variant="secondary">
-              {geographicScope.scope_type === 'city' ? 'City' : 'Region'}: {geographicScope.scope_value}
+              {t(`dashboard:fieldMap.${geographicScope.scope_type}`)}: {geographicScope.scope_value}
             </Badge>
           )}
           {onClose && (
@@ -409,10 +409,14 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
               <div className="text-sm text-muted-foreground">{t('dashboard:fieldMap.total')}</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-purple-600">
-                {geographicScope ? 1 : 0}
+              <div className="text-2xl font-bold text-purple-600 truncate max-w-[120px]" title={geographicScope?.scope_value || t('dashboard:fieldMap.national')}>
+                {geographicScope ? geographicScope.scope_value : t('dashboard:fieldMap.national')}
               </div>
-              <div className="text-sm text-muted-foreground">{t('dashboard:fieldMap.scope')}</div>
+              <div className="text-sm text-muted-foreground">
+                {geographicScope 
+                  ? t(`dashboard:fieldMap.${geographicScope.scope_type}`) 
+                  : t('dashboard:fieldMap.scope')}
+              </div>
             </div>
           </div>
         </CardContent>
