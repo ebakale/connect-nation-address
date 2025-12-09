@@ -131,16 +131,27 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
   };
 
   const initializeMap = async () => {
-    if (!mapContainer.current || !googleMapsApiKey || map.current) return;
+    if (!mapContainer.current || map.current) return;
 
     try {
-      const loader = new Loader({
-        apiKey: googleMapsApiKey,
-        version: 'weekly',
-        libraries: ['places']
-      });
-
-      await loader.load();
+      // Check if Google Maps is already loaded (by useMapProvider hook or elsewhere)
+      const googleMapsAvailable = typeof google !== 'undefined' && google.maps && google.maps.Map;
+      
+      if (googleMapsAvailable) {
+        console.log('Using already loaded Google Maps');
+      } else if (googleMapsApiKey) {
+        // Load Google Maps via Loader if not already loaded
+        const loader = new Loader({
+          apiKey: googleMapsApiKey,
+          version: 'weekly',
+          libraries: ['places']
+        });
+        await loader.load();
+      } else {
+        // No API key and no pre-loaded Google Maps
+        console.warn('Google Maps not available');
+        return;
+      }
 
       // Default to Malabo, Equatorial Guinea if no user location
       const defaultCenter = { lat: 3.7518, lng: 8.7832 };
@@ -253,7 +264,11 @@ const FieldMap = ({ onClose }: FieldMapProps) => {
   }, [user]);
 
   useEffect(() => {
-    if (isApiReady) {
+    // Initialize map if either:
+    // 1. Google Maps is already loaded globally (from useMapProvider)
+    // 2. API key is ready and we need to load it ourselves
+    const googleMapsAvailable = typeof google !== 'undefined' && google.maps && google.maps.Map;
+    if (googleMapsAvailable || isApiReady) {
       initializeMap();
     }
   }, [isApiReady, userLocation]);
