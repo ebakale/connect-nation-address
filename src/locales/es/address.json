@@ -1,5 +1,14 @@
 {
   "title": "Mis Direcciones (CAR)",
+  "labels": {
+    "searchByName": "Buscar por Nombre",
+    "searchPurpose": "Propósito de Búsqueda",
+    "additionalDetails": "Detalles Adicionales"
+  },
+  "placeholders": {
+    "selectPurpose": "Seleccione el propósito de búsqueda",
+    "provideContext": "Proporcione contexto adicional para su búsqueda (opcional)"
+  },
   "manageYourAddresses": "Gestiona tus direcciones ciudadanas y verificaciones",
   "addressRegistrySystem": "Sistema de Registro de Direcciones",
   "digitalAddressingInfrastructure": "Infraestructura de Direccionamiento Digital",
