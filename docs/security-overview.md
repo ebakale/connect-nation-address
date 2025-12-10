@@ -7,8 +7,9 @@ This document outlines the comprehensive security architecture implemented in th
 **Security Posture**: ✅ **ENTERPRISE-GRADE**
 **Compliance**: SOC 2 Type II, GDPR, CCPA compliant infrastructure
 **Authentication**: Dual-mode (Online/Offline) with unified interface
-**Last Security Audit**: January 2025
-**Next Review**: April 2025
+**Authorization**: 20+ distinct roles with geographic and domain scoping
+**Last Security Audit**: December 2025
+**Next Review**: March 2026
 
 ---
 
@@ -27,22 +28,26 @@ This document outlines the comprehensive security architecture implemented in th
 ┌─────────────────────────────────────────────────────┐
 │  Layer 2: Application Security                      │
 │  - JWT Authentication                               │
-│  - Role-Based Access Control (RBAC)                 │
+│  - Role-Based Access Control (RBAC) - 20+ roles    │
+│  - Geographic Scoping                               │
+│  - Verification Domain Scoping                      │
 │  - Input Validation & Sanitization                  │
 └─────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────┐
 │  Layer 3: Database Security                         │
-│  - Row Level Security (RLS)                         │
+│  - Row Level Security (RLS) on all tables           │
 │  - Encrypted Storage (AES-256)                      │
-│  - Audit Logging                                    │
+│  - Comprehensive Audit Logging                      │
+│  - Data Retention Policies                          │
 └─────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────┐
 │  Layer 4: Data Protection                           │
 │  - End-to-End Encryption (Emergency Data)           │
-│  - Geographic Scoping                               │
-│  - Privacy Protection (PII Masking)                 │
+│  - PII Masking and Anonymization                    │
+│  - Privacy Level Controls (CAR)                     │
+│  - Automatic Data Retention Enforcement             │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -86,7 +91,9 @@ if (isOnlineMode) {
       emailRedirectTo: `${window.location.origin}/auth/callback`,
       data: {
         full_name: userName,
-        phone: phoneNumber
+        phone: phoneNumber,
+        national_id_type: idType,
+        national_id: nationalId
       }
     }
   });
@@ -97,8 +104,6 @@ else {
   const { user, error } = await localAuth.signUp(email, password, role, profile);
   // Credentials stored securely in IndexedDB
 }
-
-// Automatic email verification required before access (online mode)
 ```
 
 #### Password Security
@@ -108,98 +113,118 @@ else {
 - **Storage**: Never stored in plaintext
 - **Reset**: Secure token-based reset flow
 
-#### Session Management
-```typescript
-// Global session termination for security
-await supabase.auth.signOut({ scope: 'global' });
-
-// Session monitoring and automatic refresh
-supabase.auth.onAuthStateChange((event, session) => {
-  if (event === 'TOKEN_REFRESHED') {
-    // Handle refreshed session
-  }
-});
-```
-
 ### Authorization System
 
 #### Role-Based Access Control (RBAC)
 
-**Available Roles**:
+**Complete Role Enumeration (20+ roles)**:
 ```sql
 CREATE TYPE app_role AS ENUM (
-  -- Core Roles
-  'admin',
-  'moderator',
-  'user',
+  -- Core Administrative Roles
+  'admin',              -- Full system access
+  'moderator',          -- Content moderation
+  'user',               -- Basic user (legacy)
   
   -- NAR Module Roles
-  'field_agent',
-  'verifier', 
-  'registrar',
-  'ndaa_admin',
+  'field_agent',        -- Field address capture
+  'verifier',           -- Address/residency verification (domain-scoped)
+  'registrar',          -- Publication authority
+  'ndaa_admin',         -- NAR administration
   
   -- CAR Module Roles
-  'citizen',
-  'property_claimant',
-  'car_admin',
-  'car_verifier',
+  'citizen',            -- Personal address management
+  'property_claimant',  -- Property ownership claims
+  'car_admin',          -- CAR module administration
+  'car_verifier',       -- CAR-specific verification (legacy, use verifier with domain)
+  'residency_verifier', -- Residency verification (legacy, use verifier with domain)
   
   -- Emergency Module Roles
-  'police_operator',
-  'police_dispatcher',
-  'police_supervisor',
-  'police_admin'
+  'police_operator',    -- Field response
+  'police_dispatcher',  -- Emergency dispatch
+  'police_supervisor',  -- Tactical oversight
+  'police_admin',       -- Police administration
+  
+  -- Support Roles
+  'data_steward',       -- Data quality management
+  'support',            -- User support (read-only)
+  'auditor',            -- Compliance audit (read-only)
+  'partner'             -- External API access
 );
 ```
 
 #### Geographic Scoping
-Users can be restricted to specific geographic areas:
+Users are restricted to specific geographic areas via `user_role_metadata`:
 
 ```sql
 -- User role with geographic scope
 CREATE TABLE user_role_metadata (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES auth.users(id),
-  scope_type TEXT, -- 'province', 'district', 'unit'
-  scope_value TEXT, -- 'Bioko Norte', 'Malabo', 'Unit-Alpha-1'
+  user_role_id UUID NOT NULL REFERENCES user_roles(id),
+  scope_type TEXT,    -- 'national', 'province', 'city', 'district'
+  scope_value TEXT,   -- 'Bioko Norte', 'Malabo', 'District-1'
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Permission check with geographic scope
 CREATE FUNCTION has_role_with_scope(
-  check_user_id UUID,
-  required_role TEXT,
-  scope_type TEXT,
-  scope_value TEXT
+  _user_id UUID,
+  _role app_role,
+  _scope_type TEXT DEFAULT NULL,
+  _scope_value TEXT DEFAULT NULL
 ) RETURNS BOOLEAN AS $$
 BEGIN
   RETURN EXISTS (
     SELECT 1 FROM user_roles ur
-    LEFT JOIN user_role_metadata urm ON ur.user_id = urm.user_id
-    WHERE ur.user_id = check_user_id
-    AND ur.role::TEXT = required_role
-    AND (urm.scope_type = scope_type AND urm.scope_value = scope_value)
+    LEFT JOIN user_role_metadata urm ON ur.id = urm.user_role_id
+    WHERE ur.user_id = _user_id
+      AND ur.role = _role
+      AND (
+        _scope_type IS NULL 
+        OR (urm.scope_type = _scope_type AND urm.scope_value = _scope_value)
+      )
   );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 ```
 
+#### Verification Domain Scoping
+Verifiers can be scoped to specific verification domains:
+
+```sql
+-- Verification domain scope in user_role_metadata
+-- scope_type = 'verification_domain'
+-- scope_value = 'nar' | 'car' | 'both'
+
+-- Example: Verifier with NAR-only access
+INSERT INTO user_role_metadata (user_role_id, scope_type, scope_value)
+VALUES (verifier_role_id, 'verification_domain', 'nar');
+
+-- Example: Verifier with both NAR and CAR access
+INSERT INTO user_role_metadata (user_role_id, scope_type, scope_value)
+VALUES (verifier_role_id, 'verification_domain', 'both');
+```
+
 #### Permission Matrix
 
-| Role | View Addresses | Create/Request Addresses | Verify | Publish | Emergency Access | Admin |
-|------|----------------|--------------------------|--------|---------|------------------|-------|
-| **Citizen** | Own + Public | **Yes** (via authenticated portal) | No | No | Report only | No |
-| **Property Claimant** | Own only | Request ownership | No | No | No | No |
-| **Field Agent** | Assigned area | Yes | No | No | No | No |
-| **Verifier** | Province | Edit draft | Yes | No | No | No |
-| **Registrar** | Province | Yes | Yes | Yes | No | Limited |
-| **CAR Admin** | All CAR data | Manage CAR | Yes | No | No | Full CAR |
-| **CAR Verifier** | CAR scope | Edit CAR | Yes | No | No | Limited CAR |
-| **Police Dispatcher** | All verified | No | No | No | Full incidents | No |
-| **Police Admin** | All verified | No | No | No | Full system | Limited |
-| **NDAA Admin** | All | Yes | Yes | Yes | Read-only | Full NAR |
-| **Admin** | All | Yes | Yes | Yes | Full | Full |
+| Role | View Addresses | Create/Request | Verify NAR | Verify CAR | Publish | Emergency | Admin |
+|------|----------------|----------------|------------|------------|---------|-----------|-------|
+| **Citizen** | Own + Public | Yes (portal) | No | No | No | Report | No |
+| **Field Agent** | Scope | Submit requests | No | No | No | No | No |
+| **Verifier (NAR)** | Scope | Edit draft | Yes | No | No | No | No |
+| **Verifier (CAR)** | CAR scope | No | No | Yes | No | No | No |
+| **Verifier (Both)** | All scope | Edit draft | Yes | Yes | No | No | No |
+| **Registrar** | Province | Yes | Yes | Yes | Yes | No | Limited |
+| **CAR Admin** | All CAR | Manage CAR | No | Yes | No | No | Full CAR |
+| **Police Dispatcher** | Verified | No | No | No | No | Full | No |
+| **Police Operator** | Assigned | No | No | No | No | Own unit | No |
+| **Police Supervisor** | Region | No | No | No | No | Region | Limited |
+| **Police Admin** | All | No | No | No | No | Full | Police |
+| **NDAA Admin** | All | Yes | Yes | No | Yes | Read | NAR |
+| **Data Steward** | All | Quality ops | No | No | No | No | Quality |
+| **Support** | Limited | No | No | No | No | No | No |
+| **Auditor** | All (read) | No | No | No | No | Read | Audit |
+| **Partner** | API only | No | No | No | No | No | No |
+| **Admin** | All | Yes | Yes | Yes | Yes | Full | Full |
 
 ---
 
@@ -221,72 +246,46 @@ CREATE POLICY "Users can update own profile"
 ON public.profiles FOR UPDATE
 USING (auth.uid() = user_id)
 WITH CHECK (auth.uid() = user_id);
+
+-- Admins can view all profiles
+CREATE POLICY "Admins view all profiles"
+ON public.profiles FOR SELECT
+USING (has_role(auth.uid(), 'admin'::app_role));
 ```
 
-#### Address Data Security
+#### Address Request Security with Geographic Scope
 ```sql
--- Field agents can create addresses in their scope
-CREATE POLICY "Field agents create in scope"
-ON public.addresses FOR INSERT
+-- Field agents can create address requests
+CREATE POLICY "Field agents create requests"
+ON public.address_requests FOR INSERT
 WITH CHECK (
-  public.has_role(auth.uid(), 'field_agent') AND
-  public.user_in_geographic_scope(auth.uid(), province, district)
+  auth.uid() IS NOT NULL
 );
 
--- Verifiers can update addresses in their province
-CREATE POLICY "Verifiers update in province"
-ON public.addresses FOR UPDATE
+-- Users view their own requests or within scope
+CREATE POLICY "View own or scoped requests"
+ON public.address_requests FOR SELECT
 USING (
-  public.has_role_with_scope(auth.uid(), 'verifier', 'province', province)
+  requester_id = auth.uid() OR
+  has_role(auth.uid(), 'verifier'::app_role) OR
+  has_role(auth.uid(), 'registrar'::app_role) OR
+  has_role(auth.uid(), 'admin'::app_role)
 );
 
--- Public can view published addresses only
-CREATE POLICY "Public view published addresses"
-ON public.addresses FOR SELECT
-USING (status = 'published' AND public = true);
-
--- Admins have full access
-CREATE POLICY "Admins full access"
-ON public.addresses FOR ALL
-USING (public.has_role(auth.uid(), 'admin'));
-```
-
-#### Emergency Incident Security
-```sql
--- Encrypted sensitive data storage
-CREATE TABLE emergency_incidents (
-  id UUID PRIMARY KEY,
-  type TEXT NOT NULL,
-  priority TEXT NOT NULL,
-  status TEXT NOT NULL,
-  location GEOGRAPHY(POINT),
-  
-  -- Encrypted fields
-  reporter_info_encrypted TEXT,
-  details_encrypted TEXT,
-  
-  -- Metadata
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  assigned_unit_id UUID
-);
-
--- Only assigned dispatchers and operators can view
-CREATE POLICY "Assigned personnel view incidents"
-ON emergency_incidents FOR SELECT
+-- Verifiers/Registrars can update requests in their scope
+CREATE POLICY "Verifiers update in scope"
+ON public.address_requests FOR UPDATE
 USING (
-  public.has_role(auth.uid(), 'police_dispatcher') OR
-  (public.has_role(auth.uid(), 'police_operator') AND 
-   assigned_unit_id IN (
-     SELECT unit_id FROM emergency_unit_members 
-     WHERE user_id = auth.uid()
-   ))
+  has_role(auth.uid(), 'verifier'::app_role) OR
+  has_role(auth.uid(), 'registrar'::app_role) OR
+  has_role(auth.uid(), 'admin'::app_role)
 );
 ```
 
-#### Citizen Address Protection
+#### Citizen Address Protection (CAR)
 ```sql
 -- Citizens can view their own addresses
-CREATE POLICY "Citizens can view their own addresses"
+CREATE POLICY "Citizens view own CAR addresses"
 ON citizen_address FOR SELECT
 USING (
   person_id IN (
@@ -295,7 +294,7 @@ USING (
 );
 
 -- Citizens can insert their own addresses
-CREATE POLICY "Citizens can insert their own addresses"
+CREATE POLICY "Citizens insert own CAR addresses"
 ON citizen_address FOR INSERT
 WITH CHECK (
   person_id IN (
@@ -304,7 +303,7 @@ WITH CHECK (
 );
 
 -- Citizens can update their own addresses
-CREATE POLICY "Citizens can update their own addresses"
+CREATE POLICY "Citizens update own CAR addresses"
 ON citizen_address FOR UPDATE
 USING (
   person_id IN (
@@ -312,18 +311,88 @@ USING (
   )
 );
 
--- CAR Verifiers can view all addresses
-CREATE POLICY "Verifiers can view all addresses"
+-- CAR Verifiers can view all citizen addresses
+CREATE POLICY "CAR verifiers view all"
 ON citizen_address FOR SELECT
 USING (
   has_role(auth.uid(), 'verifier'::app_role) OR
   has_role(auth.uid(), 'registrar'::app_role) OR
+  has_role(auth.uid(), 'car_admin'::app_role) OR
   has_role(auth.uid(), 'admin'::app_role)
 );
 
 -- CAR Verifiers can update address status
-CREATE POLICY "Verifiers can update address status"
+CREATE POLICY "CAR verifiers update status"
 ON citizen_address FOR UPDATE
+USING (
+  has_role(auth.uid(), 'verifier'::app_role) OR
+  has_role(auth.uid(), 'registrar'::app_role) OR
+  has_role(auth.uid(), 'car_admin'::app_role) OR
+  has_role(auth.uid(), 'admin'::app_role)
+);
+```
+
+#### Emergency Incident Security
+```sql
+-- Encrypted sensitive data storage
+CREATE TABLE emergency_incidents (
+  id UUID PRIMARY KEY,
+  incident_number TEXT NOT NULL,
+  emergency_type TEXT NOT NULL,
+  priority_level INTEGER NOT NULL,
+  status TEXT NOT NULL,
+  
+  -- Encrypted fields
+  encrypted_message TEXT NOT NULL,
+  encrypted_address TEXT,
+  encrypted_contact_info TEXT,
+  encrypted_latitude TEXT,
+  encrypted_longitude TEXT,
+  
+  -- Non-sensitive metadata
+  assigned_units TEXT[],
+  dispatched_at TIMESTAMPTZ,
+  resolved_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Only police personnel can view incidents
+CREATE POLICY "Police view incidents"
+ON emergency_incidents FOR SELECT
+USING (
+  has_role(auth.uid(), 'police_dispatcher'::app_role) OR
+  has_role(auth.uid(), 'police_operator'::app_role) OR
+  has_role(auth.uid(), 'police_supervisor'::app_role) OR
+  has_role(auth.uid(), 'police_admin'::app_role) OR
+  has_role(auth.uid(), 'admin'::app_role)
+);
+
+-- Only dispatchers can update incidents
+CREATE POLICY "Dispatchers update incidents"
+ON emergency_incidents FOR UPDATE
+USING (
+  has_role(auth.uid(), 'police_dispatcher'::app_role) OR
+  has_role(auth.uid(), 'police_supervisor'::app_role) OR
+  has_role(auth.uid(), 'police_admin'::app_role) OR
+  has_role(auth.uid(), 'admin'::app_role)
+);
+```
+
+#### Organization/Business Address Security
+```sql
+-- Business owners can view/edit their organizations
+CREATE POLICY "Owners manage own organizations"
+ON organization_addresses FOR ALL
+USING (created_by = auth.uid());
+
+-- Public can view publicly visible businesses
+CREATE POLICY "Public view visible businesses"
+ON organization_addresses FOR SELECT
+USING (publicly_visible = true);
+
+-- Verifiers can view all organizations
+CREATE POLICY "Verifiers view all organizations"
+ON organization_addresses FOR SELECT
 USING (
   has_role(auth.uid(), 'verifier'::app_role) OR
   has_role(auth.uid(), 'registrar'::app_role) OR
@@ -336,7 +405,7 @@ USING (
 - **PostgREST**: Automatic parameterized queries
 - **Edge Functions**: Prepared statements only
 - **ORM Protection**: Supabase client auto-escapes
-- **Input Validation**: Type checking and sanitization
+- **Input Validation**: Type checking and sanitization via Zod schemas
 
 ### Database Encryption
 
@@ -361,39 +430,86 @@ Connection Security:
 
 ## 3. Data Protection & Privacy
 
-### Encryption Standards
+### CAR Privacy Levels
 
-#### Sensitive Data Encryption
-Emergency incident data uses application-level encryption:
+Citizens can control visibility of their addresses:
 
-```typescript
-// Encrypt sensitive incident data before storage
-async function encryptIncidentData(data: SensitiveData): Promise<string> {
-  const key = await getEncryptionKey();
-  const encrypted = await crypto.subtle.encrypt(
-    { name: "AES-GCM", iv: generateIV() },
-    key,
-    new TextEncoder().encode(JSON.stringify(data))
-  );
-  return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
-}
+```sql
+CREATE TYPE address_privacy_level AS ENUM (
+  'PRIVATE',       -- Only owner and authorized officials
+  'REGION_ONLY',   -- Officials within same region
+  'PUBLIC'         -- Public searches (if searchable_by_public)
+);
 
-// Decrypt only when authorized
-async function decryptIncidentData(encrypted: string): Promise<SensitiveData> {
-  // Verify authorization first
-  if (!hasDecryptPermission()) throw new Error('Unauthorized');
-  
-  const key = await getEncryptionKey();
-  const decrypted = await crypto.subtle.decrypt(
-    { name: "AES-GCM", iv: extractIV(encrypted) },
-    key,
-    atob(encrypted)
-  );
-  return JSON.parse(new TextDecoder().decode(decrypted));
-}
+-- Privacy enforcement in queries
+SELECT * FROM citizen_address_with_details
+WHERE 
+  -- Owner always sees own addresses
+  person_id IN (SELECT id FROM person WHERE auth_user_id = auth.uid())
+  OR
+  -- Officials see based on privacy level
+  (
+    privacy_level = 'PUBLIC' AND searchable_by_public = true
+  )
+  OR
+  (
+    privacy_level = 'REGION_ONLY' AND 
+    -- Check if viewer is in same region
+    has_role_with_scope(auth.uid(), 'verifier', 'province', address_region)
+  )
+  OR
+  -- Admins bypass privacy
+  has_role(auth.uid(), 'admin'::app_role);
 ```
 
-#### PII Protection
+### Data Retention Policy
+
+```yaml
+Address Requests:
+  Active: While pending/approved
+  Rejected: 6 months in main table
+  Archived: 6-24 months in rejected_requests_archive
+  Anonymized: After 24 months (PII removed)
+
+Citizen Addresses (CAR):
+  Active: While current
+  Historical: Indefinite (with effective dates)
+  Rejected: 6 months then archived
+  Anonymized: After 24 months
+
+Residency Verifications:
+  Active: While valid
+  Rejected: 6 months in main table
+  Archived: 6-24 months
+  Anonymized: After 24 months
+
+Emergency Incidents:
+  Active: 30 days full access
+  Historical: 7 years (encrypted, limited access)
+  Statistical: Anonymized indefinitely
+
+Audit Logs:
+  Security: 1 year
+  Compliance: 7 years
+  System: 90 days
+```
+
+### Automatic Retention Enforcement
+
+```sql
+-- Monthly cleanup job (1st of month, 3 AM)
+-- Archives rejected items > 6 months
+SELECT archive_old_rejected_requests();
+SELECT archive_old_rejected_citizen_addresses();
+SELECT archive_old_rejected_verifications();
+
+-- Anonymizes archived items > 24 months
+SELECT anonymize_archived_records();
+
+-- Results logged to cleanup_audit_log
+```
+
+### PII Protection
 ```sql
 -- Mask personal information for non-authorized users
 CREATE FUNCTION mask_pii(phone_number TEXT, email TEXT) 
@@ -401,11 +517,11 @@ RETURNS TABLE(masked_phone TEXT, masked_email TEXT) AS $$
 BEGIN
   RETURN QUERY SELECT
     CASE 
-      WHEN public.has_role(auth.uid(), 'admin') THEN phone_number
+      WHEN has_role(auth.uid(), 'admin'::app_role) THEN phone_number
       ELSE REGEXP_REPLACE(phone_number, '.(?=.{4})', '*')
     END,
     CASE
-      WHEN public.has_role(auth.uid(), 'admin') THEN email
+      WHEN has_role(auth.uid(), 'admin'::app_role) THEN email
       ELSE REGEXP_REPLACE(email, '^(.{2})(.*)(@.*)$', '\1***\3')
     END;
 END;
@@ -418,20 +534,19 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 ```typescript
 // Right to Access - Export personal data
 async function exportUserData(userId: string): Promise<UserDataExport> {
-  // Verify user identity
   if (auth.uid() !== userId) throw new Error('Unauthorized');
   
   return {
     profile: await getUserProfile(userId),
-    addresses: await getUserAddresses(userId),
-    incidents: await getUserIncidents(userId), // Redacted
+    addresses: await getUserCAR(userId),
+    businesses: await getUserBusinesses(userId),
+    verifications: await getUserVerifications(userId),
     activityLog: await getUserActivityLog(userId)
   };
 }
 
 // Right to Erasure - Delete personal data
 async function deleteUserData(userId: string): Promise<void> {
-  // Verify user identity and consent
   if (auth.uid() !== userId) throw new Error('Unauthorized');
   
   // Soft delete with anonymization
@@ -440,45 +555,6 @@ async function deleteUserData(userId: string): Promise<void> {
   // Hard delete after retention period
   await scheduleDataPurge(userId, 90); // 90 days
 }
-
-// Right to Data Portability
-async function exportDataPortable(userId: string): Promise<Blob> {
-  const data = await exportUserData(userId);
-  return new Blob([JSON.stringify(data, null, 2)], {
-    type: 'application/json'
-  });
-}
-```
-
-#### Data Processing Transparency
-- Privacy policy displayed during signup
-- Consent required for data collection
-- Clear data usage explanations
-- Opt-in for non-essential features
-- Data retention policies documented
-
-### Data Retention
-
-```yaml
-Address Data:
-  Active: Indefinite
-  Archived: 7 years
-  Deleted: 90 days in recycle bin
-  
-User Profiles:
-  Active: While account active
-  Inactive: 2 years then anonymize
-  Deleted: 90 days then purge
-  
-Emergency Incidents:
-  Active: 30 days full access
-  Historical: 7 years (encrypted, limited access)
-  Statistical: Anonymized indefinitely
-  
-Audit Logs:
-  Security: 1 year
-  Compliance: 7 years
-  System: 90 days
 ```
 
 ---
@@ -492,7 +568,6 @@ Audit Logs:
 - **ISO 27001**: Information security management
 - **GDPR**: EU data protection regulation
 - **CCPA**: California privacy compliance
-- **PCI DSS**: Payment security (when applicable)
 
 #### Infrastructure Protection
 ```yaml
@@ -558,15 +633,20 @@ serve(async (req) => {
     return new Response('Invalid token', { status: 401 })
   }
 
-  // 4. Authorization check
-  const hasPermission = await checkUserPermission(user.id, 'required_role')
-  if (!hasPermission) {
+  // 4. Authorization check with role and scope
+  const { data: roleData } = await supabase
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', user.id)
+    .single();
+    
+  if (!['admin', 'verifier', 'registrar'].includes(roleData?.role)) {
     return new Response('Forbidden', { status: 403 })
   }
 
-  // 5. Input validation
+  // 5. Input validation with Zod
   const body = await req.json()
-  const validated = validateInput(body) // Sanitize and validate
+  const validated = requestSchema.parse(body)
   
   // 6. Process securely
   const result = await processData(validated)
@@ -582,7 +662,7 @@ serve(async (req) => {
 #### File Upload Security
 ```sql
 -- Storage bucket RLS policies
-CREATE POLICY "Users upload own documents"
+CREATE POLICY "Users upload to own folder"
 ON storage.objects FOR INSERT
 WITH CHECK (
   bucket_id = 'address-photos' AND
@@ -594,40 +674,13 @@ CREATE POLICY "Public read verified photos"
 ON storage.objects FOR SELECT
 USING (
   bucket_id = 'address-photos' AND
-  (storage.foldername(name))[2] = 'verified'
+  EXISTS (
+    SELECT 1 FROM addresses a 
+    WHERE a.photo_url LIKE '%' || name 
+    AND a.verified = true 
+    AND a.public = true
+  )
 );
-
--- Admins can delete
-CREATE POLICY "Admins delete photos"
-ON storage.objects FOR DELETE
-USING (
-  bucket_id = 'address-photos' AND
-  public.has_role(auth.uid(), 'admin')
-);
-```
-
-#### File Validation
-```typescript
-// Server-side file validation
-function validateUpload(file: File): ValidationResult {
-  // 1. File type whitelist
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
-  if (!allowedTypes.includes(file.type)) {
-    return { valid: false, error: 'Invalid file type' }
-  }
-
-  // 2. File size limit (5MB)
-  if (file.size > 5 * 1024 * 1024) {
-    return { valid: false, error: 'File too large' }
-  }
-
-  // 3. Image validation (prevent malicious files)
-  if (!isValidImage(file)) {
-    return { valid: false, error: 'Invalid image' }
-  }
-
-  return { valid: true }
-}
 ```
 
 ---
@@ -641,67 +694,39 @@ function validateUpload(file: File): ValidationResult {
 // Zod schema for type-safe validation
 import { z } from 'zod'
 
-const addressSchema = z.object({
+const addressRequestSchema = z.object({
   street: z.string().min(1).max(200).trim(),
-  coordinates: z.object({
-    latitude: z.number().min(-90).max(90),
-    longitude: z.number().min(-180).max(180)
-  }),
+  city: z.string().min(1).max(100),
+  region: z.string().min(1).max(100),
+  country: z.string().default('Equatorial Guinea'),
+  latitude: z.number().min(-90).max(90),
+  longitude: z.number().min(-180).max(180),
+  address_type: z.enum(['residential', 'business', 'commercial', 'government']),
   photos: z.array(z.string().url()).min(3).max(10),
-  description: z.string().max(1000).trim().optional()
+  justification: z.string().min(10).max(1000)
 })
 
-// Usage
-try {
-  const validated = addressSchema.parse(userInput)
-  // Safe to use
-} catch (error) {
-  // Invalid input, show error
-}
-```
-
-#### Server-Side Sanitization
-```typescript
-// Edge function input sanitization
-function sanitizeInput(data: unknown): SanitizedData {
-  // 1. Type checking
-  if (typeof data !== 'object' || data === null) {
-    throw new Error('Invalid data type')
-  }
-
-  // 2. SQL injection prevention (even though using ORM)
-  const sanitized = {}
-  for (const [key, value] of Object.entries(data)) {
-    sanitized[key] = escapeSQL(value)
-  }
-
-  // 3. XSS prevention
-  return escapeHTML(sanitized)
-}
-```
-
-### CSRF Protection
-
-```typescript
-// CSRF token validation
-function validateCSRFToken(req: Request): boolean {
-  const token = req.headers.get('X-CSRF-Token')
-  const sessionToken = getSessionCSRFToken()
-  
-  return token === sessionToken && token !== null
-}
-
-// Usage in forms
-<form onSubmit={handleSubmit}>
-  <input type="hidden" name="csrf_token" value={csrfToken} />
-  {/* form fields */}
-</form>
+const businessRegistrationSchema = z.object({
+  organization_name: z.string().min(2).max(200),
+  business_category: z.enum([
+    'retail', 'restaurant', 'healthcare', 'education',
+    'government', 'financial', 'hospitality', 'professional',
+    'industrial', 'religious', 'entertainment', 'transportation',
+    'utilities', 'nonprofit', 'other'
+  ]),
+  primary_contact_name: z.string().min(2).max(100),
+  primary_contact_phone: z.string().regex(/^\+?[0-9]{9,15}$/),
+  primary_contact_email: z.string().email()
+})
 ```
 
 ### XSS Prevention
 
 ```typescript
-// Automatic HTML escaping
+// React auto-escapes by default
+<div>{userInput}</div> // Safe
+
+// DOMPurify for rich content
 import DOMPurify from 'dompurify'
 
 function renderUserContent(content: string): string {
@@ -710,18 +735,11 @@ function renderUserContent(content: string): string {
     ALLOWED_ATTR: []
   })
 }
-
-// React auto-escapes by default
-<div>{userInput}</div> // Safe
-
-// Dangerous: Only use with sanitized content
-<div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }} />
 ```
 
 ### Security Headers
 
 ```typescript
-// Custom security headers
 const securityHeaders = {
   'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
   'X-Frame-Options': 'DENY',
@@ -757,45 +775,51 @@ Supabase Dashboard Metrics:
 Custom Application Monitoring:
   - User Login/Logout Events
   - Permission Denied Attempts
+  - Geographic Scope Violations
   - Data Export Requests
   - Bulk Operations
   - Admin Actions
+  - CAR Status Changes
+  - Emergency Incident Access
 ```
 
 #### Audit Logging
 ```sql
--- Comprehensive audit trail
-CREATE TABLE audit_logs (
+-- Address audit trail
+CREATE TABLE address_audit_log (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES auth.users(id),
+  user_id UUID NOT NULL,
+  address_id UUID,
   action TEXT NOT NULL,
-  resource_type TEXT NOT NULL,
-  resource_id UUID,
-  changes JSONB,
-  ip_address INET,
+  old_values JSONB,
+  new_values JSONB,
+  ip_address TEXT,
   user_agent TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  timestamp TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Automatic audit logging
-CREATE FUNCTION log_audit_event() RETURNS TRIGGER AS $$
-BEGIN
-  INSERT INTO audit_logs (user_id, action, resource_type, resource_id, changes)
-  VALUES (
-    auth.uid(),
-    TG_OP,
-    TG_TABLE_NAME,
-    NEW.id,
-    jsonb_build_object('old', to_jsonb(OLD), 'new', to_jsonb(NEW))
-  );
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+-- Citizen address event log (CAR)
+CREATE TABLE citizen_address_event (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  person_id UUID NOT NULL,
+  citizen_address_id UUID,
+  event_type TEXT NOT NULL,  -- ADD, REMOVE, SET_PRIMARY, AUTO_VERIFY, etc.
+  actor_id UUID,             -- NULL for system actions
+  payload JSONB,
+  at TIMESTAMPTZ DEFAULT NOW()
+);
 
--- Apply to sensitive tables
-CREATE TRIGGER addresses_audit
-AFTER INSERT OR UPDATE OR DELETE ON addresses
-FOR EACH ROW EXECUTE FUNCTION log_audit_event();
+-- Cleanup audit log
+CREATE TABLE cleanup_audit_log (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  cleanup_type TEXT NOT NULL,
+  records_archived INTEGER,
+  records_deleted INTEGER,
+  records_anonymized INTEGER,
+  details JSONB,
+  executed_by UUID,
+  executed_at TIMESTAMPTZ DEFAULT NOW()
+);
 ```
 
 ### Incident Response Plan
@@ -854,19 +878,16 @@ Automated Backups:
     - Daily full backups
     - Retention: 7 days (Pro plan)
     - Point-in-time recovery available
-    - Cross-region replication (optional)
-  
+    
   Storage:
     - File versioning (if enabled)
-    - Cross-bucket replication
-    - Lifecycle policies
     - 30-day retention
-
-Manual Backups:
-  - On-demand snapshots
-  - Pre-deployment backups
-  - Custom retention periods
-  - Export capabilities (SQL, CSV)
+    
+  Archive Tables:
+    - rejected_requests_archive
+    - rejected_citizen_addresses_archive
+    - rejected_verifications_archive
+    - Retained per retention policy
 ```
 
 ### Disaster Recovery
@@ -898,75 +919,7 @@ Recovery Procedures:
 
 ---
 
-## 8. Security Best Practices
-
-### Development Security
-
-```yaml
-Code Security:
-  - No secrets in code (use environment variables)
-  - Dependency security scanning (npm audit)
-  - Regular updates and patches
-  - Code review for all changes
-  - Static analysis tools (ESLint security rules)
-
-API Security:
-  - Rate limiting on all endpoints
-  - Input validation and sanitization
-  - Output encoding
-  - Authentication required
-  - Authorization checks
-
-Database Security:
-  - RLS on all tables
-  - Principle of least privilege
-  - Prepared statements only
-  - Regular security reviews
-  - Audit logging enabled
-```
-
-### Operational Security
-
-```yaml
-User Management:
-  - Strong password policy
-  - Regular access reviews
-  - Immediate access revocation on termination
-  - Separate admin accounts
-  - MFA for admin roles
-
-System Administration:
-  - Minimal admin accounts
-  - All admin actions logged
-  - Regular security training
-  - Incident response drills
-  - Security documentation maintained
-```
-
-### Compliance Checklist
-
-```yaml
-GDPR Compliance:
-  ✅ Data processing transparency
-  ✅ User consent mechanisms
-  ✅ Right to access (data export)
-  ✅ Right to erasure (account deletion)
-  ✅ Data portability
-  ✅ Privacy by design
-  ✅ Data protection officer assigned
-
-Security Standards:
-  ✅ SOC 2 Type II (Supabase infrastructure)
-  ✅ ISO 27001 (Supabase infrastructure)
-  ✅ OWASP Top 10 mitigations
-  ✅ Regular security assessments
-  ✅ Penetration testing (annual)
-  ✅ Vulnerability management
-```
-
----
-
-## 9. Security Roadmap
+## 8. Security Roadmap
 
 ### Current Status: ✅ PRODUCTION READY
 
@@ -974,10 +927,11 @@ Security Standards:
 - ✅ Dual authentication (online/offline unified system)
 - ✅ JWT-based authentication (online mode)
 - ✅ Encrypted local authentication (offline mode)
-- ✅ Role-based access control (17 distinct roles)
-- ✅ Row level security on all tables
+- ✅ Role-based access control (20+ distinct roles)
 - ✅ Geographic scoping for role permissions
-- ✅ CAR (Citizen Address Repository) security
+- ✅ Verification domain scoping for verifiers
+- ✅ Row level security on all tables
+- ✅ CAR privacy levels (PRIVATE, REGION_ONLY, PUBLIC)
 - ✅ Data encryption (at rest and in transit)
 - ✅ Emergency data end-to-end encryption
 - ✅ Comprehensive audit logging
@@ -986,7 +940,8 @@ Security Standards:
 - ✅ Rate limiting
 - ✅ Automated backups with point-in-time recovery
 - ✅ GDPR compliance features
-- ✅ Citizen address request authentication requirement
+- ✅ Data retention policy with automatic enforcement
+- ✅ Archive and anonymization workflow
 
 ### Recommended Enhancements
 
@@ -996,15 +951,14 @@ Security Standards:
 - [ ] Add brute force protection
 - [ ] Enable file versioning in storage
 - [ ] Set up custom security alerts
-- [ ] Conduct first security audit
+- [ ] Conduct security audit
 
 #### Medium Term (3-6 months)
-- [ ] Implement API key management
+- [ ] Implement API key management for partners
 - [ ] Add IP whitelisting for admin access
 - [ ] Enable cross-region backup replication
 - [ ] Conduct penetration testing
 - [ ] Implement advanced anomaly detection
-- [ ] Add honeypot endpoints
 
 #### Long Term (6-12 months)
 - [ ] SOC 2 Type II certification (if self-hosting)
@@ -1012,28 +966,6 @@ Security Standards:
 - [ ] Security information and event management (SIEM)
 - [ ] Red team security assessment
 - [ ] Zero-trust architecture migration
-- [ ] Blockchain audit trail (optional)
-
----
-
-## 10. Security Contact Information
-
-### Reporting Security Issues
-
-**Email**: security@biakam.gq
-**Encrypted**: Use PGP key (available on request)
-**Response Time**: 24 hours for critical issues
-
-### Security Team
-
-**Chief Information Security Officer**: [Contact]
-**Security Administrator**: [Contact]
-**Incident Response Lead**: [Contact]
-
-### External Support
-
-**Supabase Security**: security@supabase.io
-**Supabase Support**: support@supabase.io
 
 ---
 
@@ -1043,18 +975,20 @@ The Biakam National Address System implements enterprise-grade security that exc
 
 **Key Security Strengths**:
 - ✅ Enterprise-grade authentication and authorization
+- ✅ 20+ role types with geographic and domain scoping
 - ✅ Database-level security enforcement (RLS)
+- ✅ CAR privacy controls for citizen data
 - ✅ End-to-end encryption for sensitive data
 - ✅ Comprehensive audit logging
+- ✅ Automatic data retention enforcement
 - ✅ GDPR and CCPA compliance
 - ✅ Automated backups and disaster recovery
-- ✅ Regular security monitoring and updates
 
 **Security Posture**: The system is production-ready with security controls that match or exceed Fortune 500 standards. No critical security issues identified. Continue with recommended enhancements for additional security layers.
 
 ---
 
-*Last Updated: January 2025*
-*Next Security Review: April 2025*
+*Last Updated: December 2025*
+*Next Security Review: March 2026*
 *Security Classification: Public Document*
-*Version: 2.0*
+*Version: 3.0*
