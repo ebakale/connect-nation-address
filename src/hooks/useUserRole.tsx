@@ -142,10 +142,11 @@ export const useUserRole = () => {
   };
   
   const verificationDomains = getVerificationDomains();
+  // Default verifiers to both NAR and CAR when no explicit verification_domain is set
   const canVerifyNAR = role === 'verifier' && 
     (verificationDomains.includes('nar') || verificationDomains.includes('both') || verificationDomains.length === 0);
   const canVerifyCAR = role === 'verifier' && 
-    (verificationDomains.includes('car') || verificationDomains.includes('both'));
+    (verificationDomains.includes('car') || verificationDomains.includes('both') || verificationDomains.length === 0);
   
   // Backwards compatibility - isResidencyVerifier now checks verification domain
   const isResidencyVerifier = canVerifyCAR;
