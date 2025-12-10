@@ -900,7 +900,6 @@ const Index = () => {
                   <Button 
                     onClick={() => navigate(isPoliceRole ? '/police' : '/portal')} 
                     className="w-full"
-                    variant="hero"
                   >
                     <LogIn className="h-4 w-4 mr-2" />
                     {t('common:goToDashboard')}
@@ -909,7 +908,6 @@ const Index = () => {
                   <Button 
                     onClick={() => navigate('/auth')} 
                     className="w-full"
-                    variant="hero"
                   >
                     <LogIn className="h-4 w-4 mr-2" />
                     {t('common:goToLoginPage')}

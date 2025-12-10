@@ -4,167 +4,221 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* ============================================
+   GOVERNMENT DIGITAL ADDRESS PLATFORM
+   Design System - Professional & Trustworthy
+   ============================================ */
 
 @layer base {
   :root {
-    /* Primary colors - Dark blue theme */
-    --primary: 240 100% 27%;
+    /* ========================================
+       PRIMARY PALETTE - Government Navy
+       Professional, trustworthy, official
+       ======================================== */
+    --primary: 215 85% 25%;
     --primary-foreground: 0 0% 100%;
+    --primary-light: 215 75% 35%;
+    --primary-glow: 215 65% 45%;
+    --primary-dark: 215 90% 18%;
     
-    /* Secondary colors - Dark green theme */
-    --secondary: 150 85% 10%;
+    /* ========================================
+       SECONDARY PALETTE - Muted Teal
+       Supportive, calm, professional
+       ======================================== */
+    --secondary: 175 45% 30%;
     --secondary-foreground: 0 0% 100%;
     
-    /* Accent colors */  
-    --accent: 214 100% 95%;
-    --accent-foreground: 214 100% 20%;
+    /* ========================================
+       ACCENT - Subtle Blue Highlight
+       ======================================== */
+    --accent: 210 40% 96%;
+    --accent-foreground: 215 85% 25%;
 
-    /* Success - Green */
-    --success: 142 76% 36%;
+    /* ========================================
+       SEMANTIC COLORS - Status & Feedback
+       ======================================== */
+    /* Success - Muted Green */
+    --success: 152 60% 32%;
     --success-foreground: 0 0% 100%;
+    --success-light: 152 50% 94%;
     
-    /* Destructive - Dark red */
-    --destructive: 0 100% 27%;
+    /* Warning - Amber (not bright orange) */
+    --warning: 38 92% 50%;
+    --warning-foreground: 38 92% 10%;
+    --warning-light: 38 92% 95%;
+    
+    /* Destructive - Reserved for errors/alerts ONLY */
+    --destructive: 0 72% 45%;
     --destructive-foreground: 0 0% 100%;
+    --destructive-light: 0 72% 95%;
+
+    /* Info - Calm blue */
+    --info: 210 80% 52%;
+    --info-foreground: 0 0% 100%;
+    --info-light: 210 80% 95%;
+
+    /* ========================================
+       CONTEXT COLORS - Public vs Admin
+       ======================================== */
+    /* Citizen/Public-facing areas */
+    --citizen-accent: 210 60% 50%;
+    --citizen-bg: 210 40% 98%;
     
-    /* Warning */
-    --warning: 45 93% 58%;
-    --warning-foreground: 26 83% 14%;
+    /* Admin/Operator areas */
+    --admin-accent: 215 85% 25%;
+    --admin-bg: 220 20% 97%;
+    
+    /* Emergency areas */
+    --emergency-accent: 0 72% 50%;
+    --emergency-bg: 0 50% 97%;
+    --emergency-border: 0 60% 85%;
 
-    /* System red */
-    --system-red: 0 100% 27%;
-    --system-red-light: 0 100% 95%;
-
-    /* Background colors - White */
+    /* ========================================
+       BACKGROUND & SURFACE COLORS
+       ======================================== */
     --background: 0 0% 100%;
-    --foreground: 214 32% 15%;
+    --foreground: 220 25% 15%;
 
-    /* Card colors */
     --card: 0 0% 100%;
-    --card-foreground: 214 32% 15%;
+    --card-foreground: 220 25% 15%;
 
-    /* Border and input colors */
-    --border: 214 32% 88%;
-    --input: 214 32% 88%;
-    --ring: 214 100% 50%;
-
-    /* Muted colors */
-    --muted: 214 32% 95%;
-    --muted-foreground: 214 16% 46%;
-
-    /* Popover */
     --popover: 0 0% 100%;
-    --popover-foreground: 214 32% 15%;
-    
-    /* System colors - Blue, Green, and Red */
-    --system-blue: 240 100% 27%;
-    --system-green: 150 85% 10%;
-    --system-red: 0 100% 27%;
-    --system-blue-light: 240 100% 85%;
-    --system-green-light: 150 85% 80%;
-    --system-red-light: 0 100% 95%;
-    
-    /* Chart colors for analytics */
-    --chart-1: 240 100% 50%;     /* Blue - Residential */
-    --chart-2: 142 76% 36%;      /* Green - Commercial */
-    --chart-3: 0 84% 60%;        /* Red - Industrial */
-    --chart-4: 45 93% 58%;       /* Orange - Public */
-    --chart-5: 280 80% 50%;      /* Purple - Other */
+    --popover-foreground: 220 25% 15%;
 
-    /* Gradient colors */
-    --gradient-primary: linear-gradient(135deg, hsl(240 100% 27%), hsl(150 85% 10%));
-    --gradient-secondary: linear-gradient(135deg, hsl(0 100% 27%), hsl(240 100% 27%));
-    --gradient-light: linear-gradient(135deg, hsl(240 100% 85%), hsl(150 85% 80%));
-    
-    /* Shadow effects */
-    --shadow-blue: 0 4px 20px hsl(214 100% 35% / 0.15);
-    --shadow-green: 0 4px 20px hsl(142 76% 36% / 0.15);
-    --shadow-red: 0 4px 20px hsl(0 84% 60% / 0.15);
-    --shadow-card: 0 2px 10px hsl(214 32% 50% / 0.1);
-    --shadow-elegant: 0 4px 25px -2px hsl(var(--primary) / 0.1), 0 8px 10px -6px hsl(var(--primary) / 0.1);
+    /* ========================================
+       NEUTRAL COLORS - Borders, Inputs, Muted
+       ======================================== */
+    --border: 220 15% 88%;
+    --input: 220 15% 88%;
+    --ring: 215 85% 45%;
 
-    /* Enhanced visual effects */
-    --overlay-gradient: linear-gradient(135deg, hsl(var(--primary) / 0.9), hsl(var(--secondary) / 0.8));
-    --glass-effect: backdrop-blur(10px) saturate(180%);
-    --image-overlay: linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.8) 50%, transparent 100%);
+    --muted: 220 15% 96%;
+    --muted-foreground: 220 10% 45%;
 
-    --radius: 0.75rem;
+    /* ========================================
+       CHART COLORS - Analytics
+       ======================================== */
+    --chart-1: 215 85% 45%;
+    --chart-2: 152 60% 40%;
+    --chart-3: 38 92% 55%;
+    --chart-4: 175 45% 40%;
+    --chart-5: 280 60% 50%;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* ========================================
+       STATUS BADGE COLORS
+       ======================================== */
+    --status-pending: 38 92% 50%;
+    --status-pending-bg: 38 92% 95%;
+    --status-approved: 152 60% 35%;
+    --status-approved-bg: 152 50% 94%;
+    --status-rejected: 0 72% 50%;
+    --status-rejected-bg: 0 72% 95%;
+    --status-inprogress: 210 80% 52%;
+    --status-inprogress-bg: 210 80% 95%;
+    --status-verified: 152 60% 35%;
+    --status-verified-bg: 152 50% 94%;
+
+    /* ========================================
+       GRADIENTS - Subtle, Professional
+       ======================================== */
+    --gradient-primary: linear-gradient(135deg, hsl(215 85% 25%), hsl(215 75% 35%));
+    --gradient-success: linear-gradient(135deg, hsl(152 60% 32%), hsl(152 50% 42%));
+    --gradient-hero: linear-gradient(135deg, hsl(215 85% 25%), hsl(175 45% 30%));
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(220 15% 98%));
+    --gradient-subtle: linear-gradient(180deg, hsl(220 15% 98%), hsl(220 15% 96%));
+
+    /* ========================================
+       SHADOWS - Subtle, Professional
+       ======================================== */
+    --shadow-elegant: 0 1px 3px hsl(220 25% 15% / 0.08), 0 4px 12px hsl(220 25% 15% / 0.05);
+    --shadow-card: 0 1px 2px hsl(220 25% 15% / 0.06), 0 2px 8px hsl(220 25% 15% / 0.04);
+    --shadow-glow: 0 0 20px hsl(215 85% 45% / 0.15);
+    --shadow-neon: 0 0 30px hsl(215 85% 45% / 0.25);
+    --shadow-elevated: 0 4px 16px hsl(220 25% 15% / 0.12);
+
+    /* ========================================
+       LAYOUT
+       ======================================== */
+    --radius: 0.5rem;
+
+    /* ========================================
+       SIDEBAR
+       ======================================== */
+    --sidebar-background: 220 20% 98%;
+    --sidebar-foreground: 220 25% 25%;
+    --sidebar-primary: 215 85% 25%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 215 85% 25%;
+    --sidebar-border: 220 15% 90%;
+    --sidebar-ring: 215 85% 45%;
   }
 
+  /* ========================================
+     LIGHT THEME (Default)
+     ======================================== */
   .light {
     --background: 0 0% 100%;
-    --foreground: 214 32% 15%;
+    --foreground: 220 25% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 214 32% 15%;
+    --card-foreground: 220 25% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 214 32% 15%;
+    --popover-foreground: 220 25% 15%;
 
-    --primary: 214 100% 50%;
+    --primary: 215 85% 25%;
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 142 76% 36%;
+    --secondary: 175 45% 30%;
     --secondary-foreground: 0 0% 100%;
 
-    --success: 142 76% 36%;
+    --success: 152 60% 32%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 45 93% 58%;
-    --warning-foreground: 26 83% 14%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 38 92% 10%;
 
-    --muted: 214 32% 95%;
-    --muted-foreground: 214 16% 46%;
+    --muted: 220 15% 96%;
+    --muted-foreground: 220 10% 45%;
 
-    --accent: 214 100% 95%;
-    --accent-foreground: 214 100% 20%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 215 85% 25%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 72% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 88%;
-    --input: 214 32% 88%;
-    --ring: 214 100% 50%;
+    --border: 220 15% 88%;
+    --input: 220 15% 88%;
+    --ring: 215 85% 45%;
 
-    /* Chart colors for analytics (light mode) */
-    --chart-1: 214 100% 50%;     /* Blue - Residential */
-    --chart-2: 142 76% 36%;      /* Green - Commercial */
-    --chart-3: 0 84% 60%;        /* Red - Industrial */
-    --chart-4: 45 93% 58%;       /* Orange - Public */
-    --chart-5: 280 80% 50%;      /* Purple - Other */
+    --chart-1: 215 85% 45%;
+    --chart-2: 152 60% 40%;
+    --chart-3: 38 92% 55%;
+    --chart-4: 175 45% 40%;
+    --chart-5: 280 60% 50%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(214 100% 35%), hsl(142 76% 36%));
-    --gradient-secondary: linear-gradient(135deg, hsl(0 84% 60%), hsl(214 100% 35%));
-    --gradient-light: linear-gradient(135deg, hsl(214 100% 85%), hsl(142 76% 90%));
+    --gradient-primary: linear-gradient(135deg, hsl(215 85% 25%), hsl(215 75% 35%));
+    --gradient-success: linear-gradient(135deg, hsl(152 60% 32%), hsl(152 50% 42%));
+    --gradient-hero: linear-gradient(135deg, hsl(215 85% 25%), hsl(175 45% 30%));
     
-    --shadow-blue: 0 4px 20px hsl(214 100% 35% / 0.15);
-    --shadow-green: 0 4px 20px hsl(142 76% 36% / 0.15);
-    --shadow-red: 0 4px 20px hsl(0 84% 60% / 0.15);
-    --shadow-card: 0 2px 10px hsl(214 32% 50% / 0.1);
+    --shadow-elegant: 0 1px 3px hsl(220 25% 15% / 0.08), 0 4px 12px hsl(220 25% 15% / 0.05);
+    --shadow-card: 0 1px 2px hsl(220 25% 15% / 0.06), 0 2px 8px hsl(220 25% 15% / 0.04);
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 220 20% 98%;
+    --sidebar-foreground: 220 25% 25%;
+    --sidebar-primary: 215 85% 25%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 215 85% 25%;
+    --sidebar-border: 220 15% 90%;
+    --sidebar-ring: 215 85% 45%;
   }
 }
 
+/* ============================================
+   BASE STYLES
+   ============================================ */
 @layer base {
   * {
     @apply border-border;
@@ -183,26 +237,141 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     padding-top: env(safe-area-inset-top);
     padding-right: env(safe-area-inset-right);
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
     overflow-x: hidden;
   }
+}
 
-  /* Professional Effects */
-  .card-hover {
-    transition: all 0.3s ease;
+/* ============================================
+   COMPONENT UTILITIES
+   ============================================ */
+@layer components {
+  /* ========================================
+     GOVERNMENT HEADER STYLES
+     ======================================== */
+  .gov-header {
+    @apply bg-primary text-primary-foreground;
+    box-shadow: var(--shadow-elegant);
   }
 
-  .card-hover:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-blue);
+  .gov-header-light {
+    @apply bg-background border-b border-border;
+    box-shadow: var(--shadow-card);
   }
 
+  /* ========================================
+     SECTION CONTEXT STYLES
+     ======================================== */
+  .citizen-section {
+    @apply bg-[hsl(var(--citizen-bg))];
+  }
+
+  .admin-section {
+    @apply bg-[hsl(var(--admin-bg))];
+  }
+
+  .emergency-section {
+    @apply bg-[hsl(var(--emergency-bg))] border-l-4 border-[hsl(var(--emergency-accent))];
+  }
+
+  /* ========================================
+     CARD STYLES
+     ======================================== */
+  .card-elevated {
+    @apply bg-card rounded-lg border border-border;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card-elevated:hover {
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .card-interactive {
+    @apply bg-card rounded-lg border border-border transition-all duration-200;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card-interactive:hover {
+    @apply border-primary/20;
+    box-shadow: var(--shadow-elevated);
+    transform: translateY(-1px);
+  }
+
+  /* ========================================
+     STATUS BADGE STYLES
+     ======================================== */
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .status-pending {
+    @apply bg-[hsl(var(--status-pending-bg))] text-[hsl(var(--status-pending))];
+  }
+
+  .status-approved,
+  .status-verified {
+    @apply bg-[hsl(var(--status-approved-bg))] text-[hsl(var(--status-approved))];
+  }
+
+  .status-rejected {
+    @apply bg-[hsl(var(--status-rejected-bg))] text-[hsl(var(--status-rejected))];
+  }
+
+  .status-inprogress {
+    @apply bg-[hsl(var(--status-inprogress-bg))] text-[hsl(var(--status-inprogress))];
+  }
+
+  /* ========================================
+     PRIORITY INDICATORS
+     ======================================== */
+  .priority-high {
+    @apply bg-destructive/10 text-destructive border-l-4 border-destructive;
+  }
+
+  .priority-medium {
+    @apply bg-warning/10 text-warning-foreground border-l-4 border-warning;
+  }
+
+  .priority-low {
+    @apply bg-success/10 text-success border-l-4 border-success;
+  }
+
+  /* ========================================
+     FORM STYLES
+     ======================================== */
+  .form-label {
+    @apply text-sm font-medium text-foreground mb-1.5 block;
+  }
+
+  .form-input {
+    @apply w-full rounded-md border border-input bg-background px-3 py-2 text-sm;
+    @apply ring-offset-background placeholder:text-muted-foreground;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .form-error {
+    @apply text-sm text-destructive mt-1.5;
+  }
+
+  .form-help {
+    @apply text-sm text-muted-foreground mt-1.5;
+  }
+
+  /* ========================================
+     GRADIENT UTILITIES
+     ======================================== */
   .gradient-bg {
     background: var(--gradient-primary);
+  }
+
+  .gradient-hero {
+    background: var(--gradient-hero);
   }
 
   .gradient-text {
@@ -212,47 +381,86 @@ All colors MUST be HSL.
     background-clip: text;
   }
 
-  .shadow-blue {
-    box-shadow: var(--shadow-blue);
-  }
-
-  .shadow-green {
-    box-shadow: var(--shadow-green);
+  /* ========================================
+     SHADOW UTILITIES
+     ======================================== */
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
   }
 
   .shadow-card {
     box-shadow: var(--shadow-card);
   }
 
-  .bg-system-blue {
-    background-color: hsl(var(--system-blue));
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
   }
 
-  .bg-system-green {
-    background-color: hsl(var(--system-green));
+  /* ========================================
+     EMPTY STATE
+     ======================================== */
+  .empty-state {
+    @apply flex flex-col items-center justify-center py-12 px-4 text-center;
   }
 
-  .text-system-blue {
-    color: hsl(var(--system-blue));
+  .empty-state-icon {
+    @apply w-12 h-12 text-muted-foreground mb-4;
   }
 
-  .text-system-green {
-    color: hsl(var(--system-green));
+  .empty-state-title {
+    @apply text-lg font-medium text-foreground mb-2;
   }
 
-  .bg-system-red {
-    background-color: hsl(var(--system-red));
+  .empty-state-description {
+    @apply text-sm text-muted-foreground max-w-sm;
   }
 
-  .text-system-red {
-    color: hsl(var(--system-red));
+  /* ========================================
+     PAGE CONTAINER
+     ======================================== */
+  .page-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  .shadow-red {
-    box-shadow: var(--shadow-red);
+  .page-header {
+    @apply mb-6 sm:mb-8;
   }
 
-  /* Mobile-specific utilities */
+  .page-title {
+    @apply text-xl sm:text-2xl lg:text-3xl font-semibold text-foreground;
+  }
+
+  .page-subtitle {
+    @apply text-sm sm:text-base text-muted-foreground mt-1;
+  }
+
+  /* ========================================
+     SECTION STYLES
+     ======================================== */
+  .section {
+    @apply py-6 sm:py-8 lg:py-12;
+  }
+
+  .section-header {
+    @apply mb-4 sm:mb-6;
+  }
+
+  .section-title {
+    @apply text-lg sm:text-xl font-semibold text-foreground;
+  }
+
+  .section-description {
+    @apply text-sm text-muted-foreground mt-1;
+  }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+@layer utilities {
+  /* ========================================
+     SAFE AREA INSETS
+     ======================================== */
   .safe-area-inset {
     padding-top: env(safe-area-inset-top);
     padding-right: env(safe-area-inset-right);
@@ -264,69 +472,20 @@ All colors MUST be HSL.
     padding-top: env(safe-area-inset-top);
   }
 
-  .safe-area-inset-right {
-    padding-right: env(safe-area-inset-right);
-  }
-
   .safe-area-inset-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
 
-  .safe-area-inset-left {
-    padding-left: env(safe-area-inset-left);
-  }
-
-  /* Prevent horizontal scroll on mobile */
-  .overflow-x-hidden {
-    overflow-x: hidden;
-  }
-
-  /* Touch targets - iOS Human Interface Guidelines */
+  /* ========================================
+     TOUCH TARGETS
+     ======================================== */
   .touch-target {
-    min-height: 44px;
-    min-width: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
   }
 
-  /* Mobile-first content constraints */
-  .mobile-container {
-    max-width: 100vw;
-    overflow-x: hidden;
-    word-wrap: break-word;
-    hyphens: auto;
-  }
-
-  /* Mobile typography scaling */
-  .mobile-text-responsive {
-    font-size: clamp(0.875rem, 2.5vw, 1.125rem);
-    line-height: 1.6;
-  }
-
-  /* Mobile-optimized spacing */
-  .mobile-spacing {
-    padding: max(env(safe-area-inset-top), 1rem) max(env(safe-area-inset-right), 1rem) max(env(safe-area-inset-bottom), 1rem) max(env(safe-area-inset-left), 1rem);
-  }
-
-  /* Prevent zoom on input focus */
-  input, select, textarea {
-    font-size: 16px !important;
-  }
-
-  /* Mobile-friendly scrollbars */
-  .mobile-scroll {
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-  }
-
-  /* Fix for content jumping on mobile keyboards */
-  .mobile-viewport-stable {
-    height: 100vh;
-    height: -webkit-fill-available;
-  }
-
-  /* Mobile-first responsive utilities for touch interfaces */
+  /* ========================================
+     MOBILE UTILITIES
+     ======================================== */
   .mobile-container {
     @apply px-4 sm:px-6 lg:px-8;
   }
@@ -339,10 +498,6 @@ All colors MUST be HSL.
     @apply text-sm sm:text-base;
   }
 
-  .touch-target {
-    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
-  }
-
   .mobile-viewport-stable {
     min-height: 100vh;
     min-height: 100dvh;
@@ -350,135 +505,61 @@ All colors MUST be HSL.
 
   .mobile-scroll {
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 
-  /* Emergency alert specific styles */
-  .emergency-alert-pulse {
-    animation: emergencyPulse 1.5s ease-in-out infinite;
-  }
-
-  @keyframes emergencyPulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.05); opacity: 0.8; }
-  }
-
-  /* Mobile responsiveness for police dashboard */
-  .police-dashboard-grid {
-    @apply grid-cols-1 gap-4;
-  }
-  
-  .police-dashboard-stats {
-    @apply grid-cols-2 gap-3;
-  }
-  
-  .incident-card {
-    @apply p-4;
-  }
-  
-  .incident-map {
-    @apply h-64;
-  }
-  
-  /* Mobile typography and spacing improvements */
-  @media (max-width: 640px) {
-    /* Typography scaling */
-    .text-4xl, .text-3xl { @apply text-xl; }
-    .text-2xl { @apply text-lg; }
-    .text-xl { @apply text-base; }
-    .text-lg { @apply text-sm; }
-    .text-base { @apply text-sm; }
-    
-    /* Spacing adjustments */
-    .p-8 { @apply p-3; }
-    .p-6 { @apply p-3; }
-    .p-4 { @apply p-2; }
-    .gap-8 { @apply gap-3; }
-    .gap-6 { @apply gap-3; }
-    .gap-4 { @apply gap-2; }
-    .space-y-8 > * + * { @apply mt-4; }
-    .space-y-6 > * + * { @apply mt-3; }
-    .space-y-4 > * + * { @apply mt-2; }
-    
-    /* Container responsive padding */
-    .container { @apply px-2; }
-    
-    /* Button responsiveness */
-    button { 
-      min-height: 40px; 
-      @apply text-sm px-3 py-2;
-    }
-    
-    /* Table responsiveness */
-    table { @apply text-xs; }
-    th, td { @apply px-2 py-1; }
-    
-    /* Card responsive sizing */
-    .card { @apply text-sm; }
-    .card-content { @apply p-3 text-sm; }
-    .card-header { @apply p-3 pb-2; }
-    .card-title { @apply text-base font-semibold; }
-    .card-description { @apply text-sm; }
-    
-    /* Badge sizing for mobile */
-    .badge { @apply text-xs px-2 py-0.5; }
-    
-    /* Grid responsiveness */
-    .grid-cols-4 { @apply grid-cols-2; }
-    .grid-cols-3 { @apply grid-cols-1; }
-    .lg\\:grid-cols-4 { @apply grid-cols-2; }
-    .lg\\:grid-cols-3 { @apply grid-cols-1; }
-    .sm\\:grid-cols-3 { @apply grid-cols-1; }
-    .sm\\:grid-cols-2 { @apply grid-cols-1; }
-    
-    /* Flex utilities for mobile */
-    .mobile-flex-col { @apply flex-col; }
-    .mobile-text-center { @apply text-center; }
-    .mobile-full-width { @apply w-full; }
-    
-    /* Dialog and modal adjustments */
-    .dialog-content { @apply max-w-[95vw] max-h-[90vh]; }
-    .popover-content { @apply max-w-[95vw]; }
-    
-    /* Form responsiveness */
-    .form-grid { @apply grid-cols-1 gap-2; }
-    input, select, textarea { 
-      @apply text-base px-3 py-2;
-      min-height: 40px;
-    }
-    
-    /* Navigation responsiveness */
-    .nav-item { @apply text-sm px-2 py-2; }
-    
-    /* Map and media responsiveness */
-    .map-container { @apply h-64; }
-    .image-container { @apply h-32; }
-    
-    /* Overflow handling */
-    .mobile-truncate { @apply truncate; }
-    .mobile-line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .mobile-line-clamp-3 {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-  }
-  
-  /* Mobile-first responsive grid utilities */
+  /* ========================================
+     RESPONSIVE GRIDS
+     ======================================== */
   .responsive-grid-1 { @apply grid-cols-1; }
   .responsive-grid-2 { @apply grid-cols-1 sm:grid-cols-2; }
   .responsive-grid-3 { @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3; }
   .responsive-grid-4 { @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-4; }
-  .responsive-grid-5 { @apply grid-cols-2 sm:grid-cols-3 lg:grid-cols-5; }
-  
-  /* Mobile-friendly text sizes */
-  .mobile-title { @apply text-lg sm:text-xl lg:text-2xl; }
-  .mobile-subtitle { @apply text-base sm:text-lg lg:text-xl; }
+
+  /* ========================================
+     RESPONSIVE TYPOGRAPHY
+     ======================================== */
+  .mobile-title { @apply text-lg sm:text-xl lg:text-2xl font-semibold; }
+  .mobile-subtitle { @apply text-base sm:text-lg font-medium; }
   .mobile-body { @apply text-sm sm:text-base; }
-  .mobile-caption { @apply text-xs sm:text-sm; }
+  .mobile-caption { @apply text-xs sm:text-sm text-muted-foreground; }
+
+  /* ========================================
+     TEXT CLAMP
+     ======================================== */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ========================================
+     EMERGENCY STYLES
+     ======================================== */
+  .emergency-pulse {
+    animation: emergencyPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes emergencyPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+}
+
+/* ============================================
+   RESPONSIVE OVERRIDES
+   ============================================ */
+@media (max-width: 640px) {
+  /* Prevent zoom on input focus */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
 }

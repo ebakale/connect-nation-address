@@ -165,7 +165,7 @@ const AddressCard: React.FC<AddressCardProps> = ({ address, onViewMap }) => {
               <span className="hidden sm:inline ml-2">{t('viewOnMap')}</span>
             </Button>
             <Button 
-              variant="hero" 
+              variant="secondary" 
               size="sm" 
               onClick={getDirections}
               className="flex-1"
