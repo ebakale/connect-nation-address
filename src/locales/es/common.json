@@ -168,6 +168,29 @@
     "unavailable": "Ubicación no disponible",
     "timeout": "Tiempo de espera de ubicación agotado"
   },
+  "searchPurpose": {
+    "delivery": "Entrega",
+    "emergency": "Contacto de Emergencia",
+    "government": "Servicio Gubernamental",
+    "business": "Contacto Comercial",
+    "personal": "Personal",
+    "other": "Otro"
+  },
+  "security": {
+    "privacy": "Aviso de Privacidad",
+    "searchLogged": "Todas las búsquedas se registran y auditan para cumplimiento de privacidad. Solo acceda a direcciones de ciudadanos para propósitos legítimos.",
+    "protected": "Protegido"
+  },
+  "search": {
+    "noResults": "No Se Encontraron Resultados",
+    "noResultsDescription": "No se encontraron ciudadanos que coincidan con sus criterios de búsqueda",
+    "searchError": "Ocurrió un error al buscar",
+    "optInRequired": "Solo se muestran ciudadanos que han optado por la búsqueda pública",
+    "results": "Resultados de Búsqueda"
+  },
+  "privacy": {
+    "regionOnly": "Ubicación limitada a nivel de región por privacidad"
+  },
   "footer": {
     "copyright": "© 2025 BIAKAM - Plataforma ConEG para la República de Guinea Ecuatorial",
     "description": "Gestión Unificada de Direcciones Digitales y Emergencias • Conectando Ciudadanos, Servicios y Seguridad"
