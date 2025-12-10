@@ -872,6 +872,29 @@
     "basedOnVerificationRates": "Based on verification, rejection & integrity"
   },
   "quality": {
-    "duplicateRecords": "Duplicate Records"
+    "duplicateRecords": "Duplicate Records",
+    "metricsUpdated": "Quality metrics updated successfully",
+    "failedToRefreshMetrics": "Failed to refresh quality metrics",
+    "excellent": "Excellent",
+    "good": "Good",
+    "needsAttention": "Needs Attention",
+    "qualityMetrics": "Quality Metrics",
+    "noMetricsAvailable": "No quality metrics available. Data will be generated automatically.",
+    "carQualityMetrics": "CAR Quality Metrics",
+    "lastUpdated": "Last Updated",
+    "overallSystemQuality": "Overall System Quality",
+    "basedOnVerificationRates": "Based on verification, rejection & integrity rates",
+    "citizenAddressRecords": "Citizen address records in the system",
+    "verificationRate": "Verification Rate",
+    "confirmed": "confirmed",
+    "pendingReview": "Pending Review",
+    "awaitingVerification": "Awaiting verification",
+    "rejectionRate": "Rejection Rate",
+    "rejected": "rejected",
+    "avgProcessingTime": "Avg. Processing Time",
+    "averageVerificationTime": "Average verification time",
+    "requireAttention": "Require attention",
+    "regionalAddressDistribution": "Regional Address Distribution",
+    "addressCoverageByRegion": "Address coverage by region"
   }
 }

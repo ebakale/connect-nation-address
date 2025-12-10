@@ -1304,6 +1304,29 @@
   "unknownUser": "Utilisateur Inconnu",
   "unknownEmail": "Email Inconnu",
   "quality": {
-    "duplicateRecords": "Enregistrements Dupliqués"
+    "duplicateRecords": "Enregistrements Dupliqués",
+    "metricsUpdated": "Métriques de qualité mises à jour avec succès",
+    "failedToRefreshMetrics": "Échec de l'actualisation des métriques de qualité",
+    "excellent": "Excellent",
+    "good": "Bon",
+    "needsAttention": "Nécessite Attention",
+    "qualityMetrics": "Métriques de Qualité",
+    "noMetricsAvailable": "Aucune métrique de qualité disponible. Les données seront générées automatiquement.",
+    "carQualityMetrics": "Métriques de Qualité CAR",
+    "lastUpdated": "Dernière Mise à Jour",
+    "overallSystemQuality": "Qualité Globale du Système",
+    "basedOnVerificationRates": "Basé sur les taux de vérification, de rejet et d'intégrité",
+    "citizenAddressRecords": "Enregistrements d'adresses de citoyens dans le système",
+    "verificationRate": "Taux de Vérification",
+    "confirmed": "confirmés",
+    "pendingReview": "En Attente de Révision",
+    "awaitingVerification": "En attente de vérification",
+    "rejectionRate": "Taux de Rejet",
+    "rejected": "rejetés",
+    "avgProcessingTime": "Temps de Traitement Moyen",
+    "averageVerificationTime": "Temps moyen de vérification",
+    "requireAttention": "Nécessitent attention",
+    "regionalAddressDistribution": "Distribution Régionale des Adresses",
+    "addressCoverageByRegion": "Couverture des adresses par région"
   }
 }

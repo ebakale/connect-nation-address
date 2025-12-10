@@ -1508,6 +1508,29 @@
   "unknownUser": "Usuario Desconocido",
   "unknownEmail": "Correo Desconocido",
   "quality": {
-    "duplicateRecords": "Registros Duplicados"
+    "duplicateRecords": "Registros Duplicados",
+    "metricsUpdated": "Métricas de calidad actualizadas correctamente",
+    "failedToRefreshMetrics": "Error al actualizar las métricas de calidad",
+    "excellent": "Excelente",
+    "good": "Bueno",
+    "needsAttention": "Necesita Atención",
+    "qualityMetrics": "Métricas de Calidad",
+    "noMetricsAvailable": "No hay métricas de calidad disponibles. Los datos se generarán automáticamente.",
+    "carQualityMetrics": "Métricas de Calidad CAR",
+    "lastUpdated": "Última Actualización",
+    "overallSystemQuality": "Calidad General del Sistema",
+    "basedOnVerificationRates": "Basado en tasas de verificación, rechazo e integridad",
+    "citizenAddressRecords": "Registros de direcciones de ciudadanos en el sistema",
+    "verificationRate": "Tasa de Verificación",
+    "confirmed": "confirmados",
+    "pendingReview": "Revisión Pendiente",
+    "awaitingVerification": "En espera de verificación",
+    "rejectionRate": "Tasa de Rechazo",
+    "rejected": "rechazados",
+    "avgProcessingTime": "Tiempo Promedio de Procesamiento",
+    "averageVerificationTime": "Tiempo promedio de verificación",
+    "requireAttention": "Requieren atención",
+    "regionalAddressDistribution": "Distribución Regional de Direcciones",
+    "addressCoverageByRegion": "Cobertura de direcciones por región"
   }
 }
