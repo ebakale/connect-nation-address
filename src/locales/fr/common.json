@@ -168,6 +168,29 @@
     "unavailable": "Localisation non disponible",
     "timeout": "Délai de demande de localisation expiré"
   },
+  "searchPurpose": {
+    "delivery": "Livraison",
+    "emergency": "Contact d'Urgence",
+    "government": "Service Gouvernemental",
+    "business": "Contact Commercial",
+    "personal": "Personnel",
+    "other": "Autre"
+  },
+  "security": {
+    "privacy": "Avis de Confidentialité",
+    "searchLogged": "Toutes les recherches sont enregistrées et auditées pour conformité à la confidentialité. N'accédez aux adresses des citoyens que pour des fins légitimes.",
+    "protected": "Protégé"
+  },
+  "search": {
+    "noResults": "Aucun Résultat Trouvé",
+    "noResultsDescription": "Aucun citoyen correspondant à vos critères de recherche n'a été trouvé",
+    "searchError": "Une erreur s'est produite lors de la recherche",
+    "optInRequired": "Seuls les citoyens ayant opté pour la recherche publique sont affichés",
+    "results": "Résultats de Recherche"
+  },
+  "privacy": {
+    "regionOnly": "Localisation limitée au niveau régional pour la confidentialité"
+  },
   "footer": {
     "copyright": "© 2025 BIAKAM - Plateforme ConEG pour la République de Guinée Équatoriale",
     "description": "Gestion Unifiée des Adresses Numériques et des Urgences • Connecter Citoyens, Services et Sécurité"

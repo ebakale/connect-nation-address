@@ -168,6 +168,29 @@
     "unavailable": "Location unavailable",
     "timeout": "Location request timed out"
   },
+  "searchPurpose": {
+    "delivery": "Delivery",
+    "emergency": "Emergency Contact",
+    "government": "Government Service",
+    "business": "Business Contact",
+    "personal": "Personal",
+    "other": "Other"
+  },
+  "security": {
+    "privacy": "Privacy Notice",
+    "searchLogged": "All searches are logged and audited for privacy compliance. Only access citizen addresses for legitimate purposes.",
+    "protected": "Protected"
+  },
+  "search": {
+    "noResults": "No Results Found",
+    "noResultsDescription": "No matching citizens found for your search criteria",
+    "searchError": "An error occurred while searching",
+    "optInRequired": "Only citizens who have opted into public search are displayed",
+    "results": "Search Results"
+  },
+  "privacy": {
+    "regionOnly": "Location limited to region level for privacy"
+  },
   "footer": {
     "copyright": "© 2025 BIAKAM - ConEG Platform for the Republic of Equatorial Guinea",
     "description": "Unified Digital Addressing and Emergency Management • Connecting Citizens, Services, and Safety"
