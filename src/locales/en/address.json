@@ -1,5 +1,14 @@
 {
   "title": "My Addresses (CAR)",
+  "labels": {
+    "searchByName": "Search by Name",
+    "searchPurpose": "Search Purpose",
+    "additionalDetails": "Additional Details"
+  },
+  "placeholders": {
+    "selectPurpose": "Select search purpose",
+    "provideContext": "Provide additional context for your search (optional)"
+  },
   "manageYourAddresses": "Manage your citizen addresses and verifications",
   "onePrimary": "1 Primary",
   "noPrimary": "No Primary", 

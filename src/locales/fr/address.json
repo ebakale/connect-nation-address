@@ -1,5 +1,14 @@
 {
   "title": "Mes Adresses (CAR)",
+  "labels": {
+    "searchByName": "Rechercher par Nom",
+    "searchPurpose": "Objectif de la Recherche",
+    "additionalDetails": "Détails Supplémentaires"
+  },
+  "placeholders": {
+    "selectPurpose": "Sélectionnez l'objectif de recherche",
+    "provideContext": "Fournissez un contexte supplémentaire pour votre recherche (optionnel)"
+  },
   "manageYourAddresses": "Gérez vos adresses citoyennes et vérifications",
   "onePrimary": "1 Principale",
   "noPrimary": "Aucune Principale",
