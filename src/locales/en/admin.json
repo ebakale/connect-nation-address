@@ -783,6 +783,7 @@
     "days": "days",
     "systemLoad": "System Load",
     "dataIntegrity": "Data Integrity",
+    "narLinkageHealth": "NAR Linkage Health",
     "administrativeTools": "Administrative tools for CAR system management",
     "dataManagement": "Data Management",
     "bulkOperationsDataManagement": "Bulk operations and data management",
