@@ -9,6 +9,7 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 **Hosting**: Lovable Cloud with Supabase backend
 **Region**: US-East (primary)
 **Status**: ✅ Production Ready
+**Last Updated**: December 2025
 
 ---
 
@@ -23,12 +24,13 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 │  - Vite build system                                │
 │  - Global CDN delivery                              │
 │  - Static asset hosting                             │
+│  - PWA capabilities                                 │
 └─────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────┐
 │  API & Edge Functions Layer (Supabase)              │
 │  - PostgREST API (auto-generated)                   │
-│  - Deno Edge Functions (40+ deployed)               │
+│  - Deno Edge Functions (42+ deployed)               │
 │  - Real-time subscriptions (WebSocket)              │
 │  - Authentication service (GoTrue)                  │
 └─────────────────────────────────────────────────────┘
@@ -39,6 +41,7 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 │  - Connection pooling (PgBouncer)                   │
 │  - Row Level Security (RLS)                         │
 │  - Automated backups                                │
+│  - 75+ tables                                       │
 └─────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────┐
@@ -56,9 +59,9 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 ### Active Services
 
 #### Core Infrastructure
-- **Supabase Project**: 1 production instance
+- **Supabase Project**: 1 production instance (calegudnfdbeznyiebbh)
 - **Database**: PostgreSQL 15+ (8GB included in Pro plan)
-- **Edge Functions**: 40+ deployed functions
+- **Edge Functions**: 42+ deployed functions
 - **Storage Buckets**: 1 bucket (address-photos)
 - **Authentication**: Email/password with JWT
 
@@ -66,62 +69,109 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 
 **Core Tables**:
 - `profiles` - User profiles and metadata
-- `user_roles` - Role assignments
-- `user_role_metadata` - Geographic and unit scoping
+- `user_roles` - Role assignments (20+ role types)
+- `user_role_metadata` - Geographic and domain scoping
+- `person` - Person records for CAR module
+- `provinces` - Geographic hierarchy (provinces)
+- `cities` - Geographic hierarchy (cities)
 
-**NAR Module** (10+ tables):
+**NAR Module** (15+ tables):
 - `addresses` - Main address registry
 - `address_requests` - Approval workflow
-- `address_photos` - Photo evidence
-- `provinces` - Geographic hierarchy
-- `address_history` - Change tracking
+- `address_audit_log` - Change tracking
+- `address_search_audit` - Search tracking
+- `organization_addresses` - Business directory
+- `authorized_verifiers` - Verifier credentials
+- `uac_sequence_counters` - UAC generation
+- `coverage_analytics` - Geographic coverage metrics
 
-**CAR Module** (5+ tables):
-- `citizen_addresses` - Citizen declarations
-- `residency_verifications` - Verification records
-- `saved_locations` - User saved places
-- `recent_searches` - Search history
+**CAR Module** (12+ tables):
+- `citizen_address` - Citizen address declarations
+- `citizen_address_event` - Address event log
+- `household_groups` - Household management
+- `household_members` - Household membership
+- `household_dependents` - Dependent management
+- `household_activity_audit` - Household changes
+- `dependent_authorization_audit` - Dependent actions
+- `residency_ownership_verifications` - Verification requests
+- `document_verification_audit` - Document verification
+- `privacy_consent_log` - GDPR consent tracking
+- `car_permissions` - CAR-specific permissions
+- `car_quality_metrics` - CAR analytics
 
-**Emergency Module** (15+ tables):
+**Emergency Module** (10+ tables):
 - `emergency_incidents` - Incident records
 - `emergency_units` - Police/fire units
 - `emergency_unit_members` - Unit assignments
-- `backup_requests` - Resource coordination
-- `incident_logs` - Activity tracking
+- `emergency_notifications` - Alert delivery
+- `emergency_operator_sessions` - Operator tracking
+- `emergency_incident_logs` - Incident activity
+- `backup_metadata` - Backup tracking
 
-#### Edge Functions (40+)
+**Archive Tables** (3 tables):
+- `rejected_requests_archive` - Archived NAR rejections
+- `rejected_citizen_addresses_archive` - Archived CAR rejections
+- `rejected_verifications_archive` - Archived verification rejections
+- `cleanup_audit_log` - Retention enforcement log
 
-**Address Management**:
+**External Integration** (3+ tables):
+- `external_systems` - Partner system registry
+- `saved_locations` - User saved places
+- `recent_searches` - Search history (per user)
+
+#### Edge Functions (42+)
+
+**Address Management** (12 functions):
 - `address-search-api` - Public search endpoint
 - `address-validation-api` - Coordinate validation
+- `address-webhook-triggers` - Partner notifications
 - `auto-verify-address` - Automated verification
 - `analyze-coordinates` - GPS accuracy check
 - `analyze-photo-quality` - Image quality analysis
+- `backfill-dependent-addresses` - Data migration
 - `generate-missing-uacs` - Batch UAC generation
-- `address-webhook-triggers` - Partner notifications
+- `import-google-maps-addresses` - Import from Google
+- `register-business-address` - Business registration
+- `search-citizen-addresses` - CAR search endpoint
+- `ml-address-validation` - ML-based validation
 
-**Emergency Management**:
+**Emergency Management** (10 functions):
 - `process-emergency-alert` - Alert processing
 - `notify-emergency-operators` - Dispatcher alerts
 - `notify-incident-reporter` - Citizen updates
 - `notify-unit-assignment` - Unit notifications
 - `decrypt-incident-data` - Secure data access
 - `police-incident-actions` - Incident operations
+- `police-operator-management` - Police user ops
 - `process-backup-request` - Backup coordination
 - `unit-communications` - Inter-unit messaging
+- `sms-fallback-service` - SMS notifications
 
-**Analytics & Reporting**:
+**Analytics & Reporting** (6 functions):
 - `unified-address-analytics` - System analytics
 - `unified-address-statistics` - Statistical reports
 - `coverage-analytics-api` - Coverage metrics
 - `track-search-analytics` - Search tracking
 - `advanced-analytics-api` - Advanced reporting
+- `government-integration-api` - Government data
 
-**Administration**:
+**Administration** (8 functions):
 - `admin-user-operations` - User management
 - `admin-address-requests` - Request handling
-- `police-operator-management` - Police user ops
 - `seed-police-users` - Initial data seeding
+- `cleanup-rejected-items` - Retention enforcement
+- `backup-system-api` - Backup operations
+- `external-api` - External partner API
+- `webhook-delivery-processor` - Webhook delivery
+- `webhook-events` - Webhook event handling
+
+**Utilities** (6 functions):
+- `get-google-maps-token` - Maps authentication
+- `get-mapbox-token` - Mapbox authentication
+- `get-distance-estimates` - Distance calculations
+- `save-translation-fix` - Translation management
+- `suggest-translation` - AI translation suggestions
+- `generate-platform-images` - Image generation
 
 ---
 
@@ -141,12 +191,12 @@ Includes:
   - Email support
 
 Current Usage Estimates:
-  Database: ~5GB (within plan)
-  Bandwidth: ~50GB/month (within plan)
-  Functions: ~50K invocations/month (within plan)
-  Storage: ~2GB photos (within plan)
+  Database: ~6GB (within plan)
+  Bandwidth: ~60GB/month (within plan)
+  Functions: ~75K invocations/month (within plan)
+  Storage: ~3GB photos (within plan)
   
-Estimated Monthly Cost: $25-35/month
+Estimated Monthly Cost: $25-40/month
 ```
 
 ### Scaling Cost Projections
@@ -159,15 +209,15 @@ Small Scale (5K users, 50K addresses):
 
 Medium Scale (50K users, 500K addresses):
   Plan: Pro ($25/mo)
-  Database: +5GB = $0.63/mo
-  Bandwidth: +100GB = $9/mo
-  Functions: +500K = $1/mo
-  Total: ~$40-50/month
+  Database: +8GB = $1.26/mo
+  Bandwidth: +150GB = $13.50/mo
+  Functions: +750K = $1.50/mo
+  Total: ~$45-55/month
 
 Large Scale (500K users, 5M addresses):
   Plan: Team ($599/mo) or Enterprise
   Includes: 100GB DB, 500GB bandwidth, 10M functions
-  Total: ~$600-800/month
+  Total: ~$600-900/month
 
 Enterprise Scale (5M+ users):
   Plan: Enterprise (custom pricing)
@@ -188,6 +238,8 @@ Database:
   Connection Pool: 60 connections (Pro)
   Concurrent Users: 500+ simultaneous
   Read/Write IOPS: Provisioned based on size
+  Tables: 75+
+  RLS Policies: 100+
 
 API Performance:
   REST API: <100ms response time
@@ -199,6 +251,7 @@ Edge Functions:
   Cold Start: 100-300ms
   Warm Execution: <10ms
   Concurrent Executions: 1000+
+  Functions Deployed: 42+
   Global Latency: <100ms (15+ edge locations)
 
 Storage:
@@ -236,16 +289,52 @@ Storage:
 ```yaml
 Monitoring:
   - Review Supabase dashboard metrics
-  - Check edge function error rates
+  - Check edge function error rates (<5% threshold)
   - Validate backup completion
   - Monitor active user count
   - Review incident response times
+  - Check retention job status
 
 Maintenance:
   - Process pending address verifications
   - Review emergency incident logs
   - Check system health alerts
   - Validate data integrity
+```
+
+### Weekly Operations
+
+```yaml
+Quality Assurance:
+  - Address quality review
+  - User activity analysis
+  - Performance metric reports
+  - Security review
+  - Translation audit
+
+Database:
+  - Review slow query logs
+  - Check index performance
+  - Validate RLS policy effectiveness
+  - Review geographic scope coverage
+```
+
+### Monthly Operations
+
+```yaml
+System Audit:
+  - Comprehensive system audit
+  - User role review
+  - Geographic coverage analysis
+  - Partner API usage review
+  - Disaster recovery testing
+
+Retention Enforcement:
+  - archive_old_rejected_requests() execution
+  - archive_old_rejected_citizen_addresses() execution
+  - archive_old_rejected_verifications() execution
+  - anonymize_archived_records() execution
+  - Review cleanup_audit_log results
 ```
 
 ### Backup & Recovery
@@ -280,17 +369,17 @@ Frontend Deployment:
   5. CDN cache invalidation
 
 Edge Function Deployment:
-  1. Function code updated
-  2. Local testing with Supabase CLI
-  3. Deploy via: supabase functions deploy [function-name]
-  4. Verify deployment logs
-  5. Test production endpoint
+  1. Function code updated in supabase/functions/
+  2. Automatic deployment on code push
+  3. Verify deployment in Supabase dashboard
+  4. Test production endpoint
+  5. Monitor function logs
 
 Database Migrations:
-  1. Create migration file
-  2. Test in development
-  3. Review schema changes
-  4. Execute via Supabase dashboard
+  1. Create migration file via Lovable migration tool
+  2. User approves migration
+  3. Migration executed automatically
+  4. Types regenerated
   5. Verify migration success
 ```
 
@@ -300,22 +389,27 @@ Database Migrations:
 
 ### Authentication & Authorization
 - JWT-based authentication (RS256)
-- Role-based access control (10+ roles)
+- Role-based access control (20+ roles)
 - Geographic scoping for field users
+- Verification domain scoping for verifiers
 - Session management with auto-refresh
+- Offline authentication support
 
 ### Database Security
-- Row Level Security on all tables
+- Row Level Security on all 75+ tables
+- Geographic scope enforcement
+- Privacy level enforcement (CAR)
 - Encrypted at rest (AES-256)
 - Encrypted in transit (TLS 1.3)
-- Audit logging enabled
+- Comprehensive audit logging
 
 ### Application Security
 - Input validation (Zod schemas)
-- XSS prevention (React auto-escape)
+- XSS prevention (React auto-escape + DOMPurify)
 - CSRF protection
 - Security headers configured
 - Rate limiting enabled
+- Map provider fallback (OSM when Google unavailable)
 
 ---
 
@@ -332,7 +426,12 @@ Database Migrations:
 - Application error boundaries
 - User activity tracking
 - Performance metrics (Web Vitals)
-- Business metrics (addresses created, incidents resolved)
+- Business metrics:
+  - Addresses created/verified/published
+  - CAR declarations (auto-approved vs manual)
+  - Incidents resolved
+  - Response times
+  - Business registrations
 
 ### Recommended Alerts
 - Database CPU > 80%
@@ -340,6 +439,8 @@ Database Migrations:
 - Edge function error rate > 5%
 - Storage approaching quota
 - Backup failure
+- Retention job failure
+- Emergency response SLA breach
 
 ---
 
@@ -388,29 +489,87 @@ Response Time: Immediate containment within 1 hour
 
 ```yaml
 Maps & Geolocation:
-  - Mapbox API (primary mapping)
-  - Google Maps API (geocoding backup)
-  - Capacitor Geolocation (mobile GPS)
+  Primary:
+    - Google Maps API (geocoding, places)
+    - Mapbox API (interactive maps)
+  Fallback:
+    - OpenStreetMap (via Leaflet)
+    - Automatic fallback when primary unavailable
+  Mobile:
+    - Capacitor Geolocation (GPS)
 
 AI & Analysis:
-  - OpenAI API (address validation)
-  - Custom ML models (photo quality)
+  - OpenAI API (address validation suggestions)
+  - Custom ML models (photo quality analysis)
+  - Translation suggestions
 
 Mobile:
   - Capacitor 7 (iOS/Android)
-  - Camera, Geolocation, QR Scanner plugins
+  - Camera plugin (photo capture)
+  - Geolocation plugin (GPS)
+  - QR Scanner plugin
 
 Notifications:
   - Email (Supabase Auth)
+  - In-app notifications (real-time)
   - SMS (planned integration)
   - Push notifications (via Capacitor)
 ```
 
 ---
 
+## Capacity Planning
+
+### Current Capacity
+
+```yaml
+Users:
+  Registered: Growing
+  Concurrent: 500+ supported
+  Peak: 200+ simultaneous
+
+Data:
+  Addresses: Growing (NAR registry)
+  CAR Declarations: Growing
+  Business Listings: Growing
+  Incidents: Monthly archives
+
+Storage:
+  Photos: ~3GB (compressed)
+  Documents: <1GB
+  Growth Rate: ~500MB/month
+```
+
+### Scaling Triggers
+
+```yaml
+Upgrade to Team Plan when:
+  - Database > 15GB
+  - Bandwidth > 400GB/month
+  - Functions > 4M invocations/month
+  - Need advanced features (PITR > 7 days)
+
+Upgrade to Enterprise when:
+  - Users > 500K
+  - Need custom SLA
+  - Require dedicated resources
+  - Need compliance certifications
+```
+
+---
+
 ## Conclusion
 
-The Biakam system is production-ready on a robust, scalable Supabase infrastructure. Current costs are minimal (~$25-35/month) with clear scaling paths to enterprise levels. The architecture supports 500+ concurrent users today with capacity to scale to millions.
+The Biakam National Address System is production-ready on a robust, scalable Supabase infrastructure. Current costs are minimal (~$25-40/month) with clear scaling paths to enterprise levels.
+
+**Current State (December 2025)**:
+- 75+ database tables
+- 42+ edge functions
+- 20+ user roles with geographic/domain scoping
+- Auto-publishing policy (eliminates manual publication)
+- CAR auto-approval workflow
+- Map fallback system (OSM when needed)
+- Automatic retention policy enforcement
 
 **Strengths**:
 - Enterprise-grade security and compliance
@@ -418,13 +577,16 @@ The Biakam system is production-ready on a robust, scalable Supabase infrastruct
 - Minimal operational overhead
 - Clear cost predictability
 - Excellent performance metrics
+- Comprehensive feature set
 
 **Next Steps**:
 - Monitor growth and optimize as needed
 - Plan Team tier upgrade at 50K users
 - Consider enterprise plan at 500K+ users
+- Implement SMS notifications
+- Add advanced analytics dashboard
 
 ---
 
-*Last Updated: January 2025*
-*Infrastructure Version: 2.0*
+*Last Updated: December 2025*
+*Infrastructure Version: 3.0*
