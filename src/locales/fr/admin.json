@@ -1302,5 +1302,8 @@
   "under_investigation": "Sous Enquête",
   "documentTypeLabel": "Type de Document",
   "unknownUser": "Utilisateur Inconnu",
-  "unknownEmail": "Email Inconnu"
+  "unknownEmail": "Email Inconnu",
+  "quality": {
+    "duplicateRecords": "Enregistrements Dupliqués"
+  }
 }
