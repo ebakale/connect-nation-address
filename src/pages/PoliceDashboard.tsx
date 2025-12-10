@@ -643,51 +643,55 @@ const PoliceDashboard = () => {
   return (
     <>
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 sm:gap-4 min-w-0">
-              <div className="flex items-center gap-2">
-                <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 flex-shrink-0" />
+      {/* Header - Government Emergency Styling */}
+      <header className="border-b bg-card shadow-sm">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-primary flex-shrink-0" />
+                </div>
                 <div className="min-w-0">
-                  <h1 className="text-sm sm:text-lg md:text-2xl font-bold truncate">{t('policeCommandCenter')}</h1>
+                  <h1 className="text-base sm:text-lg md:text-xl font-bold text-foreground truncate">
+                    {t('policeCommandCenter')}
+                  </h1>
                   <p className="text-xs text-muted-foreground hidden sm:block">
                     {t('emergencyResponse')}
                   </p>
                 </div>
               </div>
               
-              {/* Role Badges */}
-              <div className="hidden md:flex gap-2">
+              {/* Role Badges - Cleaner styling */}
+              <div className="hidden md:flex flex-wrap gap-1.5">
                 {isPoliceSupervisor && (
-              <Badge variant="default" className="bg-purple-100 text-purple-800 text-xs">
-                {t('supervisor')}
-              </Badge>
+                  <Badge variant="secondary" className="text-xs font-medium">
+                    {t('supervisor')}
+                  </Badge>
                 )}
-                 {isPoliceDispatcher && (
-                   <Badge variant="default" className="bg-blue-100 text-blue-800 text-xs">
-                     {t('dispatch')}
-                   </Badge>
-                 )}
-                  {isPoliceOperator && (
-                    <Badge variant="default" className="bg-green-100 text-green-800">
-                      {t('field')}
-                    </Badge>
-                  )}
-                 {isUnitLead && (
-                   <Badge variant="default" className="bg-yellow-100 text-yellow-800">
-                      {t('unitLead')}
-                   </Badge>
-                 )}
+                {isPoliceDispatcher && (
+                  <Badge variant="info" className="text-xs font-medium">
+                    {t('dispatch')}
+                  </Badge>
+                )}
+                {isPoliceOperator && (
+                  <Badge variant="success" className="text-xs font-medium">
+                    {t('field')}
+                  </Badge>
+                )}
+                {isUnitLead && (
+                  <Badge variant="warning" className="text-xs font-medium">
+                    {t('unitLead')}
+                  </Badge>
+                )}
               </div>
             </div>
 
-            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+            <div className="flex items-center gap-2 flex-shrink-0">
               <OfflineIndicator />
-              <Button variant="outline" onClick={handleSignOut} className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
-                <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">{t('common:logout')}</span>
+              <Button variant="outline" size="sm" onClick={handleSignOut} className="flex items-center gap-1.5">
+                <LogOut className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline text-sm">{t('common:logout')}</span>
               </Button>
             </div>
           </div>
@@ -820,29 +824,29 @@ const PoliceDashboard = () => {
                  </p>
               </div>
 
-              {/* Compact Key Metrics */}
-              <div className="grid grid-cols-4 gap-2">
-                <Card className="p-3">
+              {/* Compact Key Metrics - Improved styling */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+                <Card className="p-3 sm:p-4 border-l-4 border-l-destructive">
                   <div className="text-center">
-                    <p className="text-xl font-bold text-red-600">{dashboardStats.activeIncidents}</p>
+                    <p className="text-lg sm:text-2xl font-bold text-destructive">{dashboardStats.activeIncidents}</p>
                     <p className="text-xs text-muted-foreground">{t('active')}</p>
                   </div>
                 </Card>
-                <Card className="p-3">
+                <Card className="p-3 sm:p-4 border-l-4 border-l-emerald-500">
                   <div className="text-center">
-                    <p className="text-xl font-bold text-green-600">{dashboardStats.availableUnits}</p>
+                    <p className="text-lg sm:text-2xl font-bold text-emerald-600">{dashboardStats.availableUnits}</p>
                     <p className="text-xs text-muted-foreground">{t('units')}</p>
                   </div>
                 </Card>
-                <Card className="p-3">
+                <Card className="p-3 sm:p-4 border-l-4 border-l-blue-500">
                   <div className="text-center">
-                    <p className="text-xl font-bold text-blue-600">{dashboardStats.avgResponseTime}m</p>
+                    <p className="text-lg sm:text-2xl font-bold text-blue-600">{dashboardStats.avgResponseTime}m</p>
                     <p className="text-xs text-muted-foreground">{t('response')}</p>
                   </div>
                 </Card>
-                <Card className="p-3">
+                <Card className="p-3 sm:p-4 border-l-4 border-l-purple-500">
                   <div className="text-center">
-                    <p className="text-xl font-bold text-purple-600">{dashboardStats.operatorsOnline}</p>
+                    <p className="text-lg sm:text-2xl font-bold text-purple-600">{dashboardStats.operatorsOnline}</p>
                     <p className="text-xs text-muted-foreground">{t('online')}</p>
                   </div>
                 </Card>
