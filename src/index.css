@@ -555,11 +555,153 @@
 }
 
 /* ============================================
+   ACCESSIBILITY IMPROVEMENTS
+   ============================================ */
+
+/* Focus visible - clear focus indicators */
+@layer base {
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+
+  /* Skip link for keyboard users */
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50;
+    @apply bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium;
+  }
+
+  /* Ensure minimum touch target size */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    :root {
+      --border: 220 25% 50%;
+      --ring: 215 100% 40%;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ============================================
+   TYPOGRAPHY HIERARCHY
+   ============================================ */
+@layer utilities {
+  /* Page titles */
+  .text-page-title {
+    @apply text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground;
+  }
+
+  /* Section titles */
+  .text-section-title {
+    @apply text-lg sm:text-xl font-semibold text-foreground;
+  }
+
+  /* Card titles */
+  .text-card-title {
+    @apply text-base sm:text-lg font-semibold text-foreground;
+  }
+
+  /* Body text */
+  .text-body {
+    @apply text-sm sm:text-base text-foreground leading-relaxed;
+  }
+
+  /* Secondary/muted text */
+  .text-secondary {
+    @apply text-sm text-muted-foreground;
+  }
+
+  /* Caption/help text */
+  .text-caption {
+    @apply text-xs text-muted-foreground;
+  }
+
+  /* Label text */
+  .text-label {
+    @apply text-sm font-medium text-foreground;
+  }
+
+  /* ========================================
+     RESPONSIVE CONTAINER UTILITIES
+     ======================================== */
+  .container-page {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .container-narrow {
+    @apply max-w-3xl mx-auto px-4 sm:px-6;
+  }
+
+  .container-wide {
+    @apply max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* ========================================
+     SPACING UTILITIES
+     ======================================== */
+  .section-spacing {
+    @apply py-6 sm:py-8 lg:py-12;
+  }
+
+  .card-spacing {
+    @apply p-4 sm:p-6;
+  }
+
+  /* ========================================
+     GRID UTILITIES
+     ======================================== */
+  .grid-responsive-2 {
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-4;
+  }
+
+  .grid-responsive-3 {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
+  }
+
+  .grid-responsive-4 {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4;
+  }
+}
+
+/* ============================================
    RESPONSIVE OVERRIDES
    ============================================ */
 @media (max-width: 640px) {
   /* Prevent zoom on input focus */
   input, select, textarea {
     font-size: 16px !important;
+  }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .card, .Card {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
   }
 }
