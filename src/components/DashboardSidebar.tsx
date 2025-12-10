@@ -35,6 +35,7 @@ import {
 import { useUserRole } from '@/hooks/useUserRole';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 interface NavigationItem {
   id: string;
@@ -267,7 +268,11 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
     
     return (
       <SidebarGroup>
-        <SidebarGroupLabel>{!collapsed && label}</SidebarGroupLabel>
+        {!collapsed && (
+          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 py-2">
+            {label}
+          </SidebarGroupLabel>
+        )}
         <SidebarGroupContent>
           <SidebarMenu>
             {items.map((item) => (
@@ -275,19 +280,25 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
                 <SidebarMenuButton
                   onClick={item.onClick}
                   className={cn(
-                    "w-full justify-start transition-colors",
+                    "w-full justify-start h-10 rounded-md transition-colors",
                     "hover:bg-accent hover:text-accent-foreground",
-                    collapsed ? "px-2" : "px-3"
+                    "text-foreground",
+                    collapsed ? "px-2 justify-center" : "px-3"
                   )}
                 >
-                  <item.icon className={cn("shrink-0", collapsed ? "h-5 w-5" : "h-4 w-4 mr-2")} />
+                  <item.icon className={cn(
+                    "shrink-0 text-muted-foreground", 
+                    collapsed ? "h-5 w-5" : "h-4 w-4 mr-3"
+                  )} />
                   {!collapsed && (
-                    <span className="flex-1 text-left">{item.title}</span>
-                  )}
-                  {!collapsed && item.badge && item.badge > 0 && (
-                    <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                      {item.badge}
-                    </span>
+                    <>
+                      <span className="flex-1 text-left text-sm">{item.title}</span>
+                      {item.badge && item.badge > 0 && (
+                        <Badge variant="pending" className="ml-2 h-5 min-w-[20px] justify-center">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </>
                   )}
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -299,77 +310,65 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   };
 
   return (
-    <Sidebar className={cn("border-r bg-background", collapsed ? "w-16" : "w-60")}>
-      <SidebarContent className="gap-0">
-        {/* Header for special roles */}
-        {!collapsed && (isNARAuthority || isCarAdmin || canVerifyCAR) && (
-          <div className="p-4 border-b">
-            <div className="flex items-center gap-2">
+    <Sidebar className={cn(
+      "border-r border-border bg-card",
+      collapsed ? "w-16" : "w-64"
+    )}>
+      <SidebarContent className="gap-0 py-2">
+        {/* Header */}
+        {!collapsed && (
+          <div className="px-4 py-3 border-b border-border mb-2">
+            <div className="flex items-center gap-3">
               <div className="p-1.5 bg-primary/10 rounded-lg">
                 {isNARAuthority ? (
-                  <Shield className="h-6 w-6 text-primary" />
+                  <Shield className="h-5 w-5 text-primary" />
                 ) : (
                   <img 
                     src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" 
                     alt={t('biakamLogoAlt')} 
-                    className="h-6 w-auto" 
+                    className="h-5 w-auto" 
                   />
                 )}
               </div>
-              <div>
-                <h2 className="font-semibold text-sm">
-                  {isNARAuthority ? t('narAuthority') : t('carDashboard')}
+              <div className="min-w-0">
+                <h2 className="font-semibold text-sm text-foreground truncate">
+                  {isNARAuthority ? t('narAuthority') : 'ConEG'}
                 </h2>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground truncate">
                   {isNARAuthority 
                     ? (narAuthorityData?.authority_level === 'national' ? t('nationalLevel') :
                        narAuthorityData?.authority_level === 'regional' ? t('regionalLevel') :
                        narAuthorityData?.authority_level === 'municipal' ? t('municipalLevel') :
                        t('localLevel'))
-                    : (isCarAdmin ? t('carAdmin') : canVerifyCAR ? t('carVerifier') : '')
+                    : t('addressSystem')
                   }
                 </p>
               </div>
             </div>
-            {isNARAuthority && !collapsed && (
-              <div className="mt-3 p-2 bg-muted/50 rounded-lg">
-                <p className="text-xs font-medium text-muted-foreground mb-1">{t('jurisdiction')}</p>
-                <p className="text-xs flex items-center gap-1">
-                  <Globe className="h-3 w-3" />
-                  {t('nationalWide')}
-                </p>
+            
+            {/* Jurisdiction Badge for NAR Authority */}
+            {isNARAuthority && (
+              <div className="mt-3 p-2 bg-muted rounded-md">
+                <p className="text-xs text-muted-foreground mb-1">{t('jurisdiction')}</p>
+                <div className="flex items-center gap-1.5">
+                  <Globe className="h-3 w-3 text-primary" />
+                  <span className="text-xs font-medium text-foreground">{t('nationalWide')}</span>
+                </div>
               </div>
             )}
           </div>
         )}
 
-        {/* Standard header for other users */}
-        {!collapsed && !isNARAuthority && !isCarAdmin && !canVerifyCAR && (
-          <div className="p-4 border-b">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-primary/10 rounded-lg">
-                <img 
-                  src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" 
-                  alt={t('biakamLogoAlt')} 
-                  className="h-6 w-auto" 
-                />
-              </div>
-              <div>
-                <h2 className="font-semibold text-sm">{t('coneg')}</h2>
-                <p className="text-xs text-muted-foreground">{t('addressSystem')}</p>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Navigation Groups */}
-        {renderMenuGroup(mainItems, t('main'))}
-        {renderMenuGroup(verificationItems, t('verification'))}
-        {renderMenuGroup(carItems, t('citizenAddressRegistry'))}
-        {renderMenuGroup(fieldItems, t('fieldWork'))}
-        {renderMenuGroup(adminItems, t('administration'))}
-        {renderMenuGroup(toolsItems, t('tools'))}
-        {renderMenuGroup(settingsItems, t('settings'))}
+        <div className="flex-1 overflow-y-auto px-2">
+          {renderMenuGroup(mainItems, t('main'))}
+          {renderMenuGroup(verificationItems, t('verification'))}
+          {renderMenuGroup(carItems, t('citizenAddressRegistry'))}
+          {renderMenuGroup(fieldItems, t('fieldWork'))}
+          {renderMenuGroup(adminItems, t('administration'))}
+          {renderMenuGroup(toolsItems, t('tools'))}
+          {renderMenuGroup(settingsItems, t('settings'))}
+        </div>
       </SidebarContent>
     </Sidebar>
   );
