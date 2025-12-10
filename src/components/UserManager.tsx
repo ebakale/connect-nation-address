@@ -40,6 +40,35 @@ const UserManager: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 5;
+
+  // Helper function to format role display with verification domain
+  const formatRoleDisplay = (roleData: { role: string; metadata: Array<{ scope_type: string; scope_value: string }> }) => {
+    const roleName = roleData.role.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    
+    // Find verification domain and geographic scope
+    const verificationDomain = roleData.metadata.find(m => m.scope_type === 'verification_domain');
+    const geographicScope = roleData.metadata.filter(m => m.scope_type !== 'verification_domain');
+    
+    let displayParts: string[] = [];
+    
+    // Add verification domain for verifier role
+    if (roleData.role === 'verifier' && verificationDomain) {
+      const domainLabel = verificationDomain.scope_value === 'both' ? 'NAR+CAR' 
+        : verificationDomain.scope_value.toUpperCase();
+      displayParts.push(domainLabel);
+    }
+    
+    // Add geographic scope
+    if (geographicScope.length > 0) {
+      const scopeLabels = geographicScope.map(m => m.scope_value);
+      displayParts.push(...scopeLabels);
+    }
+    
+    return {
+      name: roleName,
+      details: displayParts.length > 0 ? displayParts.join(', ') : null
+    };
+  };
   const [selectedRole, setSelectedRole] = useState<string>('');
   const [selectedGeographicScope, setSelectedGeographicScope] = useState<string>('');
   const [selectedCity, setSelectedCity] = useState<string>('');
@@ -511,22 +540,25 @@ const UserManager: React.FC = () => {
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-wrap gap-1">
-                            {user.roles.map((roleData, index) => (
-                              <Badge 
-                                key={index} 
-                                variant="secondary"
-                                className="cursor-pointer"
-                                onClick={() => removeRole(user.user_id, roleData.role)}
-                                title={t('userManagement.tapToRemoveRole')}
-                              >
-                                {roleData.role}
-                                {roleData.metadata.length > 0 && (
-                                  <span className="ml-1 text-xs">
-                                    ({roleData.metadata.map(m => `${m.scope_type}:${m.scope_value}`).join(', ')})
-                                  </span>
-                                )}
-                              </Badge>
-                            ))}
+                            {user.roles.map((roleData, index) => {
+                              const display = formatRoleDisplay(roleData);
+                              return (
+                                <Badge 
+                                  key={index} 
+                                  variant="secondary"
+                                  className="cursor-pointer"
+                                  onClick={() => removeRole(user.user_id, roleData.role)}
+                                  title={t('userManagement.tapToRemoveRole')}
+                                >
+                                  {display.name}
+                                  {display.details && (
+                                    <span className="ml-1 text-xs opacity-75">
+                                      ({display.details})
+                                    </span>
+                                  )}
+                                </Badge>
+                              );
+                            })}
                             {user.roles.length === 0 && (
                               <span className="text-sm text-muted-foreground">{t('userManagement.noRolesAssigned')}</span>
                             )}
@@ -608,22 +640,25 @@ const UserManager: React.FC = () => {
                       <div>
                         <span className="font-medium text-sm">{t('userManagement.roles')}:</span>
                         <div className="flex flex-wrap gap-1 mt-1">
-                          {user.roles.map((roleData, index) => (
-                            <Badge 
-                              key={index} 
-                              variant="secondary"
-                              className="cursor-pointer text-xs"
-                              onClick={() => removeRole(user.user_id, roleData.role)}
-                              title={t('userManagement.tapToRemoveRole')}
-                            >
-                              {roleData.role}
-                              {roleData.metadata.length > 0 && (
-                                <span className="ml-1">
-                                  ({roleData.metadata.map(m => `${m.scope_type}:${m.scope_value}`).join(', ')})
-                                </span>
-                              )}
-                            </Badge>
-                          ))}
+                          {user.roles.map((roleData, index) => {
+                            const display = formatRoleDisplay(roleData);
+                            return (
+                              <Badge 
+                                key={index} 
+                                variant="secondary"
+                                className="cursor-pointer text-xs"
+                                onClick={() => removeRole(user.user_id, roleData.role)}
+                                title={t('userManagement.tapToRemoveRole')}
+                              >
+                                {display.name}
+                                {display.details && (
+                                  <span className="ml-1 opacity-75">
+                                    ({display.details})
+                                  </span>
+                                )}
+                              </Badge>
+                            );
+                          })}
                           {user.roles.length === 0 && (
                             <span className="text-sm text-muted-foreground">{t('userManagement.noRolesAssigned')}</span>
                           )}
