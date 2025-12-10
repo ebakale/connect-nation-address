@@ -56,20 +56,42 @@ const AdminPanel: React.FC = () => {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="users" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
-          <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">{t('userManagement')}</TabsTrigger>
-          <TabsTrigger value="permissions" className="text-xs sm:text-sm px-2 sm:px-3">{t('permissions')}</TabsTrigger>
-          <TabsTrigger value="workflows" className="text-xs sm:text-sm px-2 sm:px-3">{t('workflows')}</TabsTrigger>
-          <TabsTrigger value="nar-authorities" className="text-xs sm:text-sm px-2 sm:px-3">{t('narAuthorities')}</TabsTrigger>
-          <TabsTrigger value="uac" className="text-xs sm:text-sm px-2 sm:px-3">{t('uacSystem')}</TabsTrigger>
-          <TabsTrigger value="quality" className="text-xs sm:text-sm px-2 sm:px-3 whitespace-normal">{t('qualityTab')}</TabsTrigger>
-          <TabsTrigger value="system-tools" className="text-xs sm:text-sm px-2 sm:px-3 whitespace-normal">{t('systemTools')}</TabsTrigger>
-          <TabsTrigger value="translations" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:translations')}</TabsTrigger>
-          <TabsTrigger value="documentation" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:documentation')}</TabsTrigger>
-          {hasNDAAAccess && (
-            <TabsTrigger value="api-webhooks" className="text-xs sm:text-sm px-2 sm:px-3">{t('admin:apiWebhooks')}</TabsTrigger>
-          )}
-        </TabsList>
+        <div className="border-b">
+          <TabsList className="h-auto p-1 bg-muted/50 flex flex-wrap gap-1 rounded-lg">
+            <TabsTrigger value="users" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              {t('userManagement')}
+            </TabsTrigger>
+            <TabsTrigger value="permissions" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              {t('permissions')}
+            </TabsTrigger>
+            <TabsTrigger value="workflows" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              {t('workflows')}
+            </TabsTrigger>
+            <TabsTrigger value="nar-authorities" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              {t('narAuthorities')}
+            </TabsTrigger>
+            <TabsTrigger value="uac" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              {t('uacSystem')}
+            </TabsTrigger>
+            <TabsTrigger value="quality" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              {t('qualityTab')}
+            </TabsTrigger>
+            <TabsTrigger value="system-tools" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              {t('systemTools')}
+            </TabsTrigger>
+            <TabsTrigger value="translations" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              {t('admin:translations')}
+            </TabsTrigger>
+            <TabsTrigger value="documentation" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              {t('admin:documentation')}
+            </TabsTrigger>
+            {hasNDAAAccess && (
+              <TabsTrigger value="api-webhooks" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                {t('admin:apiWebhooks')}
+              </TabsTrigger>
+            )}
+          </TabsList>
+        </div>
         
         <TabsContent value="users">
           <UserManager />

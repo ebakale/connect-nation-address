@@ -454,79 +454,83 @@ const UnifiedDashboard = () => {
           <div className="space-y-6">
             {/* User greeting */}
             {userProfile && (
-              <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-4">
-                <h2 className="text-xl font-bold text-foreground mb-1">
-                  {t('dashboard:welcomeBack', { name: userProfile.full_name })}
-                </h2>
-                <p className="text-muted-foreground mb-3 text-sm">{t('dashboard:welcomeMessage')}</p>
-                
-                {/* User roles display */}
-                <div className="flex gap-2 mb-3">
-                  {userRoles.map((roleLabel) => (
-                    <Badge key={roleLabel} variant="default" className="text-xs">
-                      {roleLabel}
-                    </Badge>
-                  ))}
-                </div>
+              <div className="bg-gradient-to-r from-primary/5 via-background to-secondary/5 rounded-lg p-4 md:p-6 border border-border/50">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="space-y-2">
+                    <h2 className="text-lg md:text-xl font-bold text-foreground">
+                      {t('dashboard:welcomeBack', { name: userProfile.full_name })}
+                    </h2>
+                    <p className="text-sm text-muted-foreground">{t('dashboard:welcomeMessage')}</p>
+                    
+                    {/* User roles display */}
+                    <div className="flex flex-wrap gap-2">
+                      {userRoles.map((roleLabel) => (
+                        <Badge key={roleLabel} variant="default" className="text-xs">
+                          {roleLabel}
+                        </Badge>
+                      ))}
+                    </div>
 
-                {/* Geographic scope */}
-                {scopeFromMetadata.length > 0 && (
-                  <div className="flex gap-2">
-                    {scopeFromMetadata.map((scope) => (
-                      <Badge key={scope} variant="secondary" className="text-xs">
-                        {scope}
-                      </Badge>
-                    ))}
+                    {/* Geographic scope */}
+                    {scopeFromMetadata.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {scopeFromMetadata.map((scope) => (
+                          <Badge key={scope} variant="secondary" className="text-xs">
+                            {scope}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             )}
 
             {/* System Overview - Only for Operational Roles (not pure admin) */}
             {((isVerifier || isRegistrar) && !isAdmin) && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <Card>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <Card className="border-l-4 border-l-primary">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">{t('dashboard:narAddresses')}</CardTitle>
                       <Database className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{unifiedStats.totalNARAddresses}</div>
-                      <p className="text-xs text-muted-foreground">{t('dashboard:nationalRegistry')}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{t('dashboard:nationalRegistry')}</p>
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="border-l-4 border-l-secondary">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">{t('dashboard:carAddresses')}</CardTitle>
                       <Home className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{unifiedStats.totalCARAddresses}</div>
-                      <p className="text-xs text-muted-foreground">{t('dashboard:citizenAddresses')}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{t('dashboard:citizenAddresses')}</p>
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="border-l-4 border-l-amber-500">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">{t('dashboard:pendingVerifications')}</CardTitle>
-                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <Clock className="h-4 w-4 text-amber-600" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{unifiedStats.pendingCARVerifications + unifiedStats.pendingResidencyVerifications}</div>
-                      <p className="text-xs text-muted-foreground">{t('dashboard:requiresReview')}</p>
+                      <div className="text-2xl font-bold text-amber-600">{unifiedStats.pendingCARVerifications + unifiedStats.pendingResidencyVerifications}</div>
+                      <p className="text-xs text-muted-foreground mt-1">{t('dashboard:requiresReview')}</p>
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="border-l-4 border-l-emerald-500">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">{t('dashboard:integrationStatus')}</CardTitle>
-                      <Network className="h-4 w-4 text-muted-foreground" />
+                      <Network className="h-4 w-4 text-emerald-600" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-green-600">{t('dashboard:active')}</div>
-                      <p className="text-xs text-muted-foreground">{t('dashboard:narCarSync')}</p>
+                      <div className="text-2xl font-bold text-emerald-600">{t('dashboard:active')}</div>
+                      <p className="text-xs text-muted-foreground mt-1">{t('dashboard:narCarSync')}</p>
                     </CardContent>
                   </Card>
                 </div>
@@ -610,43 +614,58 @@ const UnifiedDashboard = () => {
             {isCitizen && (
               <Card className="col-span-full">
                 <CardHeader>
-                  <CardTitle>{t('dashboard:quickActions')}</CardTitle>
+                  <CardTitle className="text-lg">{t('dashboard:quickActions')}</CardTitle>
+                  <p className="text-sm text-muted-foreground">{t('dashboard:selectActionBelow')}</p>
                 </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   <Button
                     variant="outline"
-                    className="h-auto min-h-[120px] flex flex-col items-center justify-center gap-2 p-4 w-full"
+                    className="h-auto min-h-[100px] flex flex-col items-center justify-center gap-2 p-4 hover:bg-primary/5"
                     onClick={() => setActiveView('unified-address-request')}
                   >
-                    <Plus className="h-6 w-6 shrink-0" />
-                    <div className="text-center w-full px-1">
-                      <div className="font-semibold break-words text-sm leading-tight">{t('dashboard:registerAddress')}</div>
-                      <div className="text-xs text-muted-foreground mt-1 break-words leading-tight">{t('dashboard:registerResidentialBusiness')}</div>
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Plus className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="text-center">
+                      <div className="font-semibold text-sm">{t('dashboard:registerAddress')}</div>
+                      <div className="text-xs text-muted-foreground mt-1">{t('dashboard:registerResidentialBusiness')}</div>
                     </div>
                   </Button>
                   <Button
                     variant="outline"
-                    className="h-auto min-h-[120px] flex flex-col items-center justify-center gap-2 p-4 w-full"
+                    className="h-auto min-h-[100px] flex flex-col items-center justify-center gap-2 p-4 hover:bg-primary/5"
                     onClick={() => setActiveView('address-search')}
                   >
-                    <Search className="h-6 w-6 shrink-0" />
-                    <span className="break-words text-center">{t('dashboard:addressSearch')}</span>
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Search className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="text-center">
+                      <div className="font-semibold text-sm">{t('dashboard:addressSearch')}</div>
+                    </div>
                   </Button>
                   <Button
                     variant="outline"
-                    className="h-auto min-h-[120px] flex flex-col items-center justify-center gap-2 p-4 w-full"
+                    className="h-auto min-h-[100px] flex flex-col items-center justify-center gap-2 p-4 hover:bg-primary/5"
                     onClick={() => setActiveView('citizen-address-portal')}
                   >
-                    <Home className="h-6 w-6 shrink-0" />
-                    <span className="break-words text-center">{t('dashboard:myAddresses')}</span>
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Home className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="text-center">
+                      <div className="font-semibold text-sm">{t('dashboard:myAddresses')}</div>
+                    </div>
                   </Button>
                   <Button
                     variant="outline"
-                    className="h-auto min-h-[120px] flex flex-col items-center justify-center gap-2 p-4 w-full"
+                    className="h-auto min-h-[100px] flex flex-col items-center justify-center gap-2 p-4 hover:bg-primary/5"
                     onClick={() => setActiveView('emergency-contacts')}
                   >
-                    <Phone className="h-6 w-6 shrink-0" />
-                    <span className="break-words text-center">{t('dashboard:emergencyContacts')}</span>
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Phone className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="text-center">
+                      <div className="font-semibold text-sm">{t('dashboard:emergencyContacts')}</div>
+                    </div>
                   </Button>
                 </CardContent>
               </Card>
@@ -654,48 +673,48 @@ const UnifiedDashboard = () => {
 
             {isCarAdmin && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <Card>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <Card className="border-l-4 border-l-emerald-500">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">{t('dashboard:confirmedAddresses')}</CardTitle>
-                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <CheckCircle className="h-4 w-4 text-emerald-600" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-green-600">{unifiedStats.totalCARAddresses}</div>
-                      <p className="text-xs text-muted-foreground">{t('dashboard:verifiedCitizen')}</p>
+                      <div className="text-2xl font-bold text-emerald-600">{unifiedStats.totalCARAddresses}</div>
+                      <p className="text-xs text-muted-foreground mt-1">{t('dashboard:verifiedCitizen')}</p>
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="border-l-4 border-l-amber-500">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">{t('dashboard:pendingAddresses')}</CardTitle>
-                      <Clock className="h-4 w-4 text-yellow-600" />
+                      <Clock className="h-4 w-4 text-amber-600" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-yellow-600">{unifiedStats.pendingCARVerifications}</div>
-                      <p className="text-xs text-muted-foreground">{t('dashboard:awaitingYourReview')}</p>
+                      <div className="text-2xl font-bold text-amber-600">{unifiedStats.pendingCARVerifications}</div>
+                      <p className="text-xs text-muted-foreground mt-1">{t('dashboard:awaitingYourReview')}</p>
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="border-l-4 border-l-blue-500">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">{t('dashboard:residencyVerifications')}</CardTitle>
                       <Shield className="h-4 w-4 text-blue-600" />
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold text-blue-600">{unifiedStats.pendingResidencyVerifications}</div>
-                      <p className="text-xs text-muted-foreground">{t('dashboard:pendingDocuments')}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{t('dashboard:pendingDocuments')}</p>
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="border-l-4 border-l-primary">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">{t('dashboard:workloadStatus')}</CardTitle>
-                      <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                      <TrendingUp className="h-4 w-4 text-primary" />
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold text-primary">{t('dashboard:active')}</div>
-                      <p className="text-xs text-muted-foreground">{t('dashboard:carVerifierOnDuty')}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{t('dashboard:carVerifierOnDuty')}</p>
                     </CardContent>
                   </Card>
                 </div>
