@@ -870,5 +870,8 @@
     "awaitingVerification": "Awaiting verification",
     "highBacklog": "High Backlog",
     "basedOnVerificationRates": "Based on verification, rejection & integrity"
+  },
+  "quality": {
+    "duplicateRecords": "Duplicate Records"
   }
 }

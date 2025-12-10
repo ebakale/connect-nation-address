@@ -1506,5 +1506,8 @@
   "under_investigation": "Bajo Investigación",
   "documentTypeLabel": "Tipo de Documento",
   "unknownUser": "Usuario Desconocido",
-  "unknownEmail": "Correo Desconocido"
+  "unknownEmail": "Correo Desconocido",
+  "quality": {
+    "duplicateRecords": "Registros Duplicados"
+  }
 }
