@@ -3,17 +3,27 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
 }
 
 interface BackupRequestPayload {
-  incident_id: string
-  requesting_unit_code: string
-  requesting_unit_name: string
+  incident_id?: string
+  requesting_unit?: string
+  requesting_unit_code?: string
+  requesting_unit_name?: string
+  unit_id?: string
   reason: string
-  priority_level: number
-  location: string
-  incident_number: string
+  urgency_level?: number
+  priority_level?: number
+  location?: string
+  incident_number?: string
   requested_by_user_id?: string
+  backup_type?: string
+  additional_units?: number
+  medical_support?: boolean
+  supervisor_requested?: boolean
+  is_officer_down?: boolean
+  requested_by_supervisor?: boolean
 }
 
 Deno.serve(async (req) => {
@@ -38,132 +48,154 @@ Deno.serve(async (req) => {
       currentUserId = user?.id
     }
 
-    const { incident_id, requesting_unit_code, requesting_unit_name, reason, priority_level, location, incident_number, requested_by_user_id } = await req.json() as BackupRequestPayload
+    const payload = await req.json() as BackupRequestPayload
+    
+    // Handle both old and new parameter names
+    const requesting_unit_code = payload.requesting_unit_code || payload.requesting_unit || ''
+    const requesting_unit_name = payload.requesting_unit_name || payload.requesting_unit || ''
+    const incident_id = payload.incident_id || null
+    const priority_level = payload.priority_level || payload.urgency_level || 2
+    const location = payload.location || ''
+    const incident_number = payload.incident_number || ''
+    const reason = payload.reason || ''
+    const is_officer_down = payload.is_officer_down || false
+    const backup_type = payload.backup_type || 'general'
 
-    if (!currentUserId && requested_by_user_id) {
-      currentUserId = requested_by_user_id
+    if (!currentUserId && payload.requested_by_user_id) {
+      currentUserId = payload.requested_by_user_id
     }
 
-    console.log('Processing backup request:', { incident_id, requesting_unit_code, incident_number, user_id: currentUserId })
+    console.log('Processing backup request:', { 
+      incident_id, 
+      requesting_unit_code, 
+      incident_number, 
+      user_id: currentUserId,
+      is_officer_down,
+      backup_type 
+    })
 
-    // 1. Get incident data first to access assigned units
-    const { data: incident, error: incidentError } = await supabaseClient
-      .from('emergency_incidents')
-      .select('city, region, assigned_units')
-      .eq('id', incident_id)
-      .single()
+    // For officer down, use maximum priority
+    const effectivePriority = is_officer_down ? 0 : priority_level
 
-    if (incidentError) {
-      console.error('Error fetching incident:', incidentError)
-      throw new Error('Could not find incident')
+    // 1. Get incident data if incident_id provided
+    let incident = null
+    if (incident_id) {
+      const { data: incidentData, error: incidentError } = await supabaseClient
+        .from('emergency_incidents')
+        .select('city, region, assigned_units, incident_number')
+        .eq('id', incident_id)
+        .single()
+
+      if (!incidentError) {
+        incident = incidentData
+      }
     }
 
     // 2. First try to find the unit by unit_code, then by unit_name as fallback
     let requestingUnit = null
-    let unitError = null
 
     // Try to find by unit_code first
-    const { data: unitByCode, error: codeError } = await supabaseClient
-      .from('emergency_units')
-      .select('coverage_city, coverage_region')
-      .eq('unit_code', requesting_unit_code)
-      .maybeSingle()
-
-    if (unitByCode) {
-      requestingUnit = unitByCode
-    } else {
-      // If not found by code, try by unit_name
-      const { data: unitByName, error: nameError } = await supabaseClient
+    if (requesting_unit_code) {
+      const { data: unitByCode } = await supabaseClient
         .from('emergency_units')
-        .select('coverage_city, coverage_region')
+        .select('id, coverage_city, coverage_region')
+        .eq('unit_code', requesting_unit_code)
+        .maybeSingle()
+
+      if (unitByCode) {
+        requestingUnit = unitByCode
+      }
+    }
+    
+    if (!requestingUnit && requesting_unit_name) {
+      const { data: unitByName } = await supabaseClient
+        .from('emergency_units')
+        .select('id, coverage_city, coverage_region')
         .eq('unit_name', requesting_unit_name)
         .maybeSingle()
       
       if (unitByName) {
         requestingUnit = unitByName
-      } else {
-        console.error('Error fetching requesting unit by code:', codeError)
-        console.error('Error fetching requesting unit by name:', nameError)
-        console.log('Tried unit_code:', requesting_unit_code, 'and unit_name:', requesting_unit_name)
-        
-        // If we still can't find the unit, get the incident's city directly
-        const { data: incidentData, error: incidentError } = await supabaseClient
-          .from('emergency_incidents')
-          .select('city, region')
-          .eq('id', incident_id)
-          .maybeSingle()
-        
-        if (incidentData) {
-          requestingUnit = { coverage_city: incidentData.city, coverage_region: incidentData.region }
-          console.log('Using incident location as fallback:', incidentData)
-        } else {
-          console.error('Error fetching incident location:', incidentError)
-          throw new Error('Could not determine location for backup request')
-        }
       }
     }
 
-    // 2. Resolve recipients: supervisors/dispatchers scoped to the same city, plus police_admins
+    // If still no unit, use incident location or default
+    if (!requestingUnit && incident) {
+      requestingUnit = { coverage_city: incident.city, coverage_region: incident.region }
+    }
+
+    // 3. Resolve recipients based on officer_down vs normal backup
     const recipientsMap = new Map<string, any>()
 
-    // Fetch supervisors/dispatchers (all), then filter by city via role metadata
-    const { data: supRoles, error: supErr } = await supabaseClient
-      .from('user_roles')
-      .select('id, user_id, role')
-      .in('role', ['police_supervisor', 'police_dispatcher'])
+    if (is_officer_down) {
+      // OFFICER DOWN: Notify ALL police staff regardless of scope
+      const { data: allPoliceStaff } = await supabaseClient
+        .from('user_roles')
+        .select('user_id, role')
+        .in('role', ['police_operator', 'police_supervisor', 'police_dispatcher', 'police_admin'])
 
-    if (supErr) {
-      console.error('Error fetching supervisor roles:', supErr)
-    }
+      allPoliceStaff?.forEach((u: any) => recipientsMap.set(u.user_id, u))
+      console.log('Officer Down - notifying ALL police staff:', allPoliceStaff?.length || 0)
+    } else {
+      // Normal backup: Notify city-scoped supervisors/dispatchers + all admins
+      const { data: supRoles } = await supabaseClient
+        .from('user_roles')
+        .select('id, user_id, role')
+        .in('role', ['police_supervisor', 'police_dispatcher'])
 
-    let cityRoleIds: string[] = []
-    if (requestingUnit.coverage_city) {
-      const { data: metaCity, error: metaErr } = await supabaseClient
-        .from('user_role_metadata')
-        .select('user_role_id')
-        .eq('scope_type', 'city')
-        .eq('scope_value', requestingUnit.coverage_city)
+      let cityRoleIds: string[] = []
+      if (requestingUnit?.coverage_city) {
+        const { data: metaCity } = await supabaseClient
+          .from('user_role_metadata')
+          .select('user_role_id')
+          .eq('scope_type', 'city')
+          .eq('scope_value', requestingUnit.coverage_city)
 
-      if (metaErr) {
-        console.error('Error fetching role metadata (city):', metaErr)
-      } else {
         cityRoleIds = (metaCity || []).map((m: any) => m.user_role_id)
       }
+
+      const cityScopedUsers = (supRoles || []).filter((r: any) => cityRoleIds.includes(r.id))
+      cityScopedUsers.forEach((u: any) => recipientsMap.set(u.user_id, u))
+
+      // Include police_admins regardless of scope metadata
+      const { data: admins } = await supabaseClient
+        .from('user_roles')
+        .select('user_id, role')
+        .eq('role', 'police_admin')
+
+      admins?.forEach((u: any) => recipientsMap.set(u.user_id, u))
     }
 
-    const cityScopedUsers = (supRoles || []).filter((r: any) => cityRoleIds.includes(r.id))
-    cityScopedUsers.forEach((u: any) => recipientsMap.set(u.user_id, u))
-
-    // Include police_admins regardless of scope metadata
-    const { data: admins, error: adminErr } = await supabaseClient
-      .from('user_roles')
-      .select('user_id, role')
-      .eq('role', 'police_admin')
-
-    if (adminErr) console.error('Error fetching police admins:', adminErr)
-    admins?.forEach((u: any) => recipientsMap.set(u.user_id, u))
-
     const supervisors = Array.from(recipientsMap.values())
+    console.log('Found recipients:', supervisors.length)
 
-    console.log('Found recipients (supervisors/dispatchers/admins):', supervisors.length)
-
-    // 3. Create notifications for each supervisor/dispatcher
+    // 4. Create notifications
     const notifications = []
+    const notificationTitle = is_officer_down 
+      ? `🚨🚨 OFFICER DOWN - ${requesting_unit_code} 🚨🚨`
+      : `🚨 BACKUP REQUESTED - ${incident_number || 'N/A'}`
+
+    const notificationMessage = is_officer_down
+      ? `⚠️ EMERGENCY: Officer Down / Immediate Assistance Required\n\nUnit: ${requesting_unit_code} (${requesting_unit_name})\n📍 Location: ${location}\n💭 Situation: ${reason}\n\n🚨 ALL AVAILABLE UNITS RESPOND IMMEDIATELY 🚨`
+      : `Unit ${requesting_unit_code} (${requesting_unit_name}) has requested backup for ${incident_number || 'current incident'}.\n\n📍 Location: ${location}\n⚠️ Priority: ${effectivePriority}\n💭 Reason: ${reason}\n\nPlease review and assign additional units.`
+
     if (supervisors && supervisors.length > 0) {
       for (const supervisor of supervisors) {
         notifications.push({
           user_id: supervisor.user_id,
           incident_id: incident_id,
-          title: `🚨 BACKUP REQUESTED - ${incident_number}`,
-          message: `Unit ${requesting_unit_code} (${requesting_unit_name}) has requested immediate backup for ${incident_number}.\n\n📍 Location: ${location}\n⚠️ Priority: ${priority_level}\n💭 Reason: ${reason}\n\nPlease assign additional units to assist.`,
-          type: 'backup_request',
-          priority_level: priority_level,
+          title: notificationTitle,
+          message: notificationMessage,
+          type: is_officer_down ? 'officer_down' : 'backup_request',
+          priority_level: effectivePriority,
           metadata: {
             requesting_unit: requesting_unit_code,
             requesting_unit_name: requesting_unit_name,
-            incident_number: incident_number,
+            incident_number: incident_number || incident?.incident_number,
             location: location,
             reason: reason,
+            backup_type: backup_type,
+            is_officer_down: is_officer_down,
             request_timestamp: new Date().toISOString(),
             requested_by_user_id: currentUserId
           }
@@ -180,38 +212,51 @@ Deno.serve(async (req) => {
       }
     }
 
-    // 4. Update incident with backup request flag
-    const { error: incidentUpdateError } = await supabaseClient
-      .from('emergency_incidents')
-      .update({
+    // 5. Update incident with backup request flag
+    if (incident_id) {
+      const updateData: any = {
         backup_requested: true,
         backup_requested_at: new Date().toISOString(),
         backup_requesting_unit: requesting_unit_code,
+        backup_request_status: 'pending',
+        backup_urgency_level: effectivePriority,
         updated_at: new Date().toISOString()
-      })
-      .eq('id', incident_id)
+      }
 
-    if (incidentUpdateError) {
-      console.error('Error updating incident:', incidentUpdateError)
-      // Don't throw here as notifications were successful
+      if (is_officer_down) {
+        updateData.is_officer_down = true
+        updateData.officer_down_at = new Date().toISOString()
+        updateData.priority_level = 0 // Maximum priority
+      }
+
+      const { error: incidentUpdateError } = await supabaseClient
+        .from('emergency_incidents')
+        .update(updateData)
+        .eq('id', incident_id)
+
+      if (incidentUpdateError) {
+        console.error('Error updating incident:', incidentUpdateError)
+      }
     }
 
-    // 5. Log the backup request - use currentUserId if available, otherwise skip logging
-    if (currentUserId) {
+    // 6. Log the backup request
+    if (currentUserId && incident_id) {
       const { error: logError } = await supabaseClient
         .from('emergency_incident_logs')
         .insert({
           incident_id: incident_id,
           user_id: currentUserId,
-          action: 'backup_requested',
+          action: is_officer_down ? 'officer_down_alert' : 'backup_requested',
           details: {
             requesting_unit: requesting_unit_code,
             requesting_unit_name: requesting_unit_name,
             reason: reason,
-            priority_level: priority_level,
+            priority_level: effectivePriority,
             location: location,
+            backup_type: backup_type,
+            is_officer_down: is_officer_down,
             notifications_sent: notifications.length,
-            original_units: incident.assigned_units || [],
+            original_units: incident?.assigned_units || [],
             timestamp: new Date().toISOString()
           }
         })
@@ -219,17 +264,18 @@ Deno.serve(async (req) => {
       if (logError) {
         console.error('Error logging backup request:', logError)
       }
-    } else {
-      console.log('No user ID available for logging backup request')
     }
 
-    console.log(`Backup request processed successfully. Sent ${notifications.length} notifications.`)
+    console.log(`Backup request processed successfully. Sent ${notifications.length} notifications. Officer Down: ${is_officer_down}`)
 
     return new Response(
       JSON.stringify({
         success: true,
-        message: `Backup request sent to ${notifications.length} supervisors/dispatchers`,
-        notifications_sent: notifications.length
+        message: is_officer_down 
+          ? `OFFICER DOWN alert sent to ${notifications.length} personnel`
+          : `Backup request sent to ${notifications.length} supervisors/dispatchers`,
+        notifications_sent: notifications.length,
+        is_officer_down: is_officer_down
       }),
       { 
         headers: { 

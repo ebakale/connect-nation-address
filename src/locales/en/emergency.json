@@ -1806,5 +1806,83 @@
   "last180Days": "Last 180 days",
   "last360Days": "Last 360 days",
   "thisMonth": "This month",
-  "lastMonth": "Last month"
+  "lastMonth": "Last month",
+
+  "emergencyBackup": {
+    "officerDown": "OFFICER DOWN",
+    "emergencyBackupTitle": "Emergency Backup - Officer Down",
+    "emergencyDescription": "This will immediately broadcast an emergency alert to ALL available units in the system. Use only in life-threatening situations.",
+    "broadcastWarning": "IMMEDIATE BROADCAST",
+    "broadcastDescription": "This alert will be sent to all police operators, dispatchers, supervisors, and administrators regardless of geographic scope.",
+    "situationOptional": "Situation Description (Optional)",
+    "situationPlaceholder": "Briefly describe the emergency situation...",
+    "unitInfo": "Alert will be sent from Unit: {{unitCode}}",
+    "sending": "Sending Alert...",
+    "sendEmergencyAlert": "SEND EMERGENCY ALERT",
+    "alertSent": "Emergency Alert Sent",
+    "allUnitsNotified": "All available units have been notified",
+    "failedToSend": "Failed to send emergency alert"
+  },
+
+  "backupApproval": {
+    "status": "Request Status",
+    "pending": "Pending",
+    "acknowledged": "Acknowledged",
+    "approved": "Approved",
+    "denied": "Denied",
+    "fulfilled": "Fulfilled",
+    "acknowledgeReceipt": "Acknowledge Receipt",
+    "enRoute": "En Route",
+    "approve": "Approve Request",
+    "modifyPriority": "Modify Priority",
+    "deny": "Deny Request",
+    "acknowledgmentSent": "{{type}} acknowledgment sent",
+    "failedToAcknowledge": "Failed to send acknowledgment",
+    "requestApproved": "Backup Request Approved",
+    "backupApprovedMessage": "Your backup request has been approved. Additional units will be dispatched.",
+    "requestApprovedSuccess": "Backup request approved successfully",
+    "failedToApprove": "Failed to approve backup request",
+    "requestDenied": "Backup Request Denied",
+    "backupDeniedMessage": "Your backup request was denied. Reason: {{reason}}",
+    "requestDeniedSuccess": "Backup request denied",
+    "failedToDeny": "Failed to deny backup request",
+    "provideReason": "Please provide a reason for denial",
+    "denyBackupRequest": "Deny Backup Request",
+    "denyDescription": "Provide a reason for denying this backup request. The requesting unit will be notified.",
+    "reasonForDenial": "Reason for Denial",
+    "denyReasonPlaceholder": "Explain why backup cannot be provided...",
+    "confirmDeny": "Confirm Denial",
+    "modifyPriorityTitle": "Modify Backup Priority",
+    "modifyPriorityDescription": "Adjust the priority level of this backup request.",
+    "newPriority": "New Priority Level",
+    "priorities": {
+      "emergency": "P0 - EMERGENCY (Officer Down)",
+      "critical": "P1 - Critical (Immediate)",
+      "high": "P2 - High Priority",
+      "medium": "P3 - Medium Priority"
+    },
+    "priorityModified": "Backup priority modified successfully",
+    "failedToModify": "Failed to modify priority",
+    "updatePriority": "Update Priority",
+    "types": {
+      "receipt": "Receipt",
+      "en_route": "En Route",
+      "on_scene": "On Scene",
+      "all_clear": "All Clear"
+    }
+  },
+
+  "backupAcknowledgment": {
+    "title": "Response Acknowledgments",
+    "loading": "Loading acknowledgments...",
+    "noAcknowledgments": "No acknowledgments yet",
+    "unknownUser": "Unknown User",
+    "eta": "ETA: {{minutes}} min",
+    "types": {
+      "receipt": "Received",
+      "enRoute": "En Route",
+      "onScene": "On Scene",
+      "allClear": "All Clear"
+    }
+  }
 }

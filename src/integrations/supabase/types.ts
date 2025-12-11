@@ -419,6 +419,67 @@ export type Database = {
         }
         Relationships: []
       }
+      backup_acknowledgments: {
+        Row: {
+          acknowledged_at: string | null
+          acknowledged_by: string
+          acknowledgment_type: string
+          estimated_arrival_minutes: number | null
+          id: string
+          incident_id: string
+          metadata: Json | null
+          notes: string | null
+          notification_id: string | null
+          unit_id: string | null
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          acknowledged_by: string
+          acknowledgment_type: string
+          estimated_arrival_minutes?: number | null
+          id?: string
+          incident_id: string
+          metadata?: Json | null
+          notes?: string | null
+          notification_id?: string | null
+          unit_id?: string | null
+        }
+        Update: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string
+          acknowledgment_type?: string
+          estimated_arrival_minutes?: number | null
+          id?: string
+          incident_id?: string
+          metadata?: Json | null
+          notes?: string | null
+          notification_id?: string | null
+          unit_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "backup_acknowledgments_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "emergency_incidents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "backup_acknowledgments_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "emergency_notifications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "backup_acknowledgments_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "emergency_units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       backup_metadata: {
         Row: {
           backup_id: string
@@ -973,9 +1034,14 @@ export type Database = {
         Row: {
           assigned_operator_id: string | null
           assigned_units: string[] | null
+          backup_approved_at: string | null
+          backup_approved_by: string | null
+          backup_denied_reason: string | null
+          backup_request_status: string | null
           backup_requested: boolean | null
           backup_requested_at: string | null
           backup_requesting_unit: string | null
+          backup_urgency_level: number | null
           city: string | null
           closed_at: string | null
           country: string | null
@@ -995,11 +1061,13 @@ export type Database = {
           incident_message: string | null
           incident_number: string
           incident_uac: string | null
+          is_officer_down: boolean | null
           language_code: string | null
           location_accuracy: number | null
           location_address: string | null
           location_latitude: number | null
           location_longitude: number | null
+          officer_down_at: string | null
           priority_level: number
           region: string | null
           reported_at: string
@@ -1014,9 +1082,14 @@ export type Database = {
         Insert: {
           assigned_operator_id?: string | null
           assigned_units?: string[] | null
+          backup_approved_at?: string | null
+          backup_approved_by?: string | null
+          backup_denied_reason?: string | null
+          backup_request_status?: string | null
           backup_requested?: boolean | null
           backup_requested_at?: string | null
           backup_requesting_unit?: string | null
+          backup_urgency_level?: number | null
           city?: string | null
           closed_at?: string | null
           country?: string | null
@@ -1036,11 +1109,13 @@ export type Database = {
           incident_message?: string | null
           incident_number: string
           incident_uac?: string | null
+          is_officer_down?: boolean | null
           language_code?: string | null
           location_accuracy?: number | null
           location_address?: string | null
           location_latitude?: number | null
           location_longitude?: number | null
+          officer_down_at?: string | null
           priority_level?: number
           region?: string | null
           reported_at?: string
@@ -1055,9 +1130,14 @@ export type Database = {
         Update: {
           assigned_operator_id?: string | null
           assigned_units?: string[] | null
+          backup_approved_at?: string | null
+          backup_approved_by?: string | null
+          backup_denied_reason?: string | null
+          backup_request_status?: string | null
           backup_requested?: boolean | null
           backup_requested_at?: string | null
           backup_requesting_unit?: string | null
+          backup_urgency_level?: number | null
           city?: string | null
           closed_at?: string | null
           country?: string | null
@@ -1077,11 +1157,13 @@ export type Database = {
           incident_message?: string | null
           incident_number?: string
           incident_uac?: string | null
+          is_officer_down?: boolean | null
           language_code?: string | null
           location_accuracy?: number | null
           location_address?: string | null
           location_latitude?: number | null
           location_longitude?: number | null
+          officer_down_at?: string | null
           priority_level?: number
           region?: string | null
           reported_at?: string
