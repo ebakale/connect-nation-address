@@ -990,5 +990,341 @@
     "notificationMessage": "{{requester}} has requested a new CAR verifier assignment. Reason: {{reason}}",
     "readOnlyNotice": "Read-Only Directory",
     "readOnlyDescription": "Verifier assignments are managed by System Administrators. Use the 'Request Verifier' button to request changes."
+  },
+  "personRecordManager": {
+    "title": "Person Record Management",
+    "description": "View and manage person records in the CAR system",
+    "searchPlaceholder": "Search by name, email, or national ID...",
+    "unknownPerson": "Unknown Person",
+    "protected": "Protected",
+    "standard": "Standard",
+    "loading": "Loading person records...",
+    "emptyState": "No person records found",
+    "scopeRestriction": "Showing persons within your geographic scope",
+    "errorTitle": "Error",
+    "fetchError": "Failed to fetch person records",
+    "columns": {
+      "name": "Name",
+      "email": "Email",
+      "nationalId": "National ID",
+      "protectedStatus": "Protected",
+      "addressCount": "Addresses",
+      "createdAt": "Created",
+      "actions": "Actions"
+    },
+    "filters": {
+      "hasAddresses": "Has Addresses",
+      "protectedOnly": "Protected Only",
+      "duplicatesOnly": "Duplicates Only"
+    },
+    "pagination": {
+      "showing": "Showing {{start}} - {{end}} of {{total}}"
+    },
+    "actions": {
+      "viewDetails": "View Details",
+      "reportDuplicate": "Report Duplicate"
+    },
+    "personDetails": {
+      "title": "Person Details",
+      "basicInfo": "Basic Information",
+      "addresses": "Citizen Addresses",
+      "phone": "Phone",
+      "protectedClass": "Protected Class",
+      "protectionReason": "Protection Reason",
+      "noAddresses": "No addresses registered",
+      "effectiveFrom": "Effective from"
+    }
+  },
+  "privacyAnalytics": {
+    "title": "Privacy Analytics",
+    "readOnlyBadge": "Read-Only",
+    "description": "View citizen privacy preferences and trends. Citizens control their own privacy settings.",
+    "scopeRestriction": "Showing data within your geographic scope",
+    "errorTitle": "Error",
+    "fetchError": "Failed to fetch privacy statistics",
+    "noData": "No privacy data available",
+    "distribution": "Privacy Level Distribution",
+    "distributionDescription": "How citizens have configured their address privacy",
+    "searchability": "Searchability Status",
+    "searchabilityDescription": "Address visibility in public searches",
+    "regionalPreferences": "Regional Privacy Preferences",
+    "regionalPreferencesDescription": "Privacy level distribution by region",
+    "privacyByAddressKind": "Privacy by Address Type",
+    "privacyByAddressKindDescription": "Privacy preferences for primary vs secondary addresses",
+    "totalAddresses": "Total Addresses",
+    "citizenAddresses": "citizen address records",
+    "privateAddresses": "Private Addresses",
+    "searchableAddresses": "Searchable Addresses",
+    "regionOnlyAddresses": "Region-Only Addresses",
+    "searchable": "Publicly Searchable",
+    "nonSearchable": "Not Searchable",
+    "addresses": "addresses",
+    "privacyLevels": {
+      "private": "Private",
+      "regionOnly": "Region Only",
+      "public": "Public"
+    },
+    "insights": {
+      "privatePercentage": "{{percent}}% keep addresses private",
+      "publicSearchable": "{{count}} addresses allow public search",
+      "regionOnly": "{{count}} visible within region only"
+    }
+  },
+  "carAdminGuide": {
+    "title": "CAR Admin User Guide",
+    "subtitle": "Complete guide for administering the Citizen Address Repository",
+    "systemAdminNote": "For permission management and system configuration changes, contact the System Administrator.",
+    "gettingStarted": {
+      "title": "Getting Started",
+      "yourRole": "Your Role",
+      "roleDescription": "CAR administrators manage the Citizen Address Repository system, including household management, data quality oversight, analytics review, and verifier monitoring.",
+      "access": "Access",
+      "accessDescription": "Log in and navigate to the Unified Dashboard at /dashboard - full CAR administration tools will be available",
+      "keyPermissions": "Key Permissions",
+      "permissionsDescription": "View CAR analytics, monitor verifiers, manage person records, access all citizen declarations, oversee households"
+    },
+    "householdManagement": {
+      "title": "Household Management",
+      "description": "Oversee household groups, dependents, and family structures:",
+      "householdGroups": {
+        "title": "Household Groups",
+        "item1": "View all household groups in your jurisdiction",
+        "item2": "Each household has a designated head (linked to person record)",
+        "item3": "Primary UAC links household to physical address",
+        "item4": "Track household status: active, inactive, dissolved",
+        "item5": "Verify households for official recognition"
+      },
+      "dependentManagement": {
+        "title": "Dependent Management",
+        "item1": "View all dependents registered by guardians",
+        "item2": "Dependent types: minor, student, disabled_adult, elderly",
+        "item3": "Track majority age notifications (when minors turn 18)",
+        "item4": "Monitor claimed_own_account status",
+        "item5": "Verify documentation: birth certificates, student IDs, disability certificates"
+      },
+      "custodyTracking": {
+        "title": "Custody Tracking",
+        "item1": "Dependents can belong to multiple households (shared custody)",
+        "item2": "Custody types: sole, joint, primary, secondary",
+        "item3": "Residence percentage tracking for shared custody",
+        "item4": "Custody schedule documentation"
+      },
+      "succession": {
+        "title": "Household Succession",
+        "item1": "When household head changes, track succession",
+        "item2": "Previous household ID maintained for history",
+        "item3": "Succession date recorded for audit"
+      }
+    },
+    "carAnalytics": {
+      "title": "CAR Analytics",
+      "description": "Monitor citizen-focused metrics for the CAR system:",
+      "citizenMetrics": {
+        "title": "Citizen Adoption Metrics",
+        "adoptionRate": "Citizen Adoption Rate",
+        "adoptionRateDesc": "% of registered users with CAR addresses",
+        "verificationRate": "CAR Verification Rate",
+        "verificationRateDesc": "% of declarations confirmed vs pending",
+        "avgVerificationTime": "Average Verification Time",
+        "avgVerificationTimeDesc": "Hours from declaration to confirmation"
+      },
+      "addressStatus": {
+        "title": "Address Status Breakdown",
+        "item1": "Self-declared vs Confirmed vs Rejected counts",
+        "item2": "Primary vs Secondary address distribution",
+        "item3": "Privacy level distribution (PRIVATE, REGION_ONLY, PUBLIC)",
+        "item4": "Address scope distribution (BUILDING vs UNIT)"
+      },
+      "householdAnalytics": {
+        "title": "Household Analytics",
+        "formation": "Household Formation",
+        "formationDesc": "Total active households",
+        "avgSize": "Average Household Size",
+        "avgSizeDesc": "Members per household",
+        "verified": "Verified Households",
+        "verifiedDesc": "% verified by CAR",
+        "dependentDist": "Dependent Distribution",
+        "dependentDistDesc": "By type (minor, student, etc.)",
+        "memberRelations": "Member Relationships",
+        "memberRelationsDesc": "By relationship type (spouse, child, etc.)"
+      },
+      "dataSource": "Data Source",
+      "dataSourceDesc": "Analytics are pulled directly from citizen_address, household_groups, household_members, household_dependents, and profiles tables."
+    },
+    "privacyAnalytics": {
+      "title": "Privacy Analytics",
+      "readOnly": "Read-Only",
+      "description": "View privacy level distribution and trends across citizen addresses:",
+      "citizenControlNote": "Citizens control their own privacy settings. CAR Admins can view analytics but cannot modify individual privacy levels.",
+      "levels": {
+        "title": "Privacy Levels",
+        "private": "PRIVATE",
+        "privateDesc": "Only the citizen and authorized officials can see. Not searchable.",
+        "regionOnly": "REGION_ONLY",
+        "regionOnlyDesc": "Visible to users within the same region. Emergency services, local government.",
+        "public": "PUBLIC",
+        "publicDesc": "Fully searchable by all users. searchable_by_public=true."
+      },
+      "availableMetrics": {
+        "title": "Available Metrics",
+        "item1": "Privacy level distribution charts",
+        "item2": "Searchability status breakdown",
+        "item3": "Regional privacy preferences",
+        "item4": "Privacy trends by address type (primary vs secondary)"
+      }
+    },
+    "dataQuality": {
+      "title": "Data Quality Management",
+      "metrics": {
+        "title": "Quality Metrics",
+        "item1": "Total citizen addresses by status",
+        "item2": "Pending vs confirmed vs rejected breakdown",
+        "item3": "Duplicate person records detection",
+        "item4": "Address coverage by region",
+        "item5": "Average verification time"
+      },
+      "bulkOperations": {
+        "title": "Bulk Operations",
+        "item1": "Bulk approve verified declarations",
+        "item2": "Merge duplicate person records",
+        "item3": "Update address statuses in batch",
+        "item4": "Data cleanup operations"
+      },
+      "dataExport": {
+        "title": "Data Export",
+        "item1": "Export declarations to CSV/Excel",
+        "item2": "Generate compliance reports",
+        "item3": "Create analytics dashboards"
+      }
+    },
+    "verifierDirectory": {
+      "title": "Verifier Directory",
+      "readOnly": "Read-Only",
+      "description": "View all verifiers with CAR domain access and their activity:",
+      "availableInfo": {
+        "title": "Available Information",
+        "item1": "View all verifiers with CAR domain (verification_domain='car' or 'both')",
+        "item2": "Monitor verification activity and status",
+        "item3": "Review verifier jurisdiction and scope",
+        "item4": "See authority type and license information",
+        "item5": "Track active vs inactive verifiers"
+      },
+      "performanceTracking": {
+        "title": "Performance Tracking",
+        "item1": "Verifications per verifier",
+        "item2": "Average verification time",
+        "item3": "Approval/rejection rates",
+        "item4": "Quality of feedback provided"
+      },
+      "note": "Note",
+      "noteDesc": "To request a new verifier or adjust permissions, use the 'Request Verifier' button to notify System Administrators."
+    },
+    "personRecordManagement": {
+      "title": "Person Record Management",
+      "description": "View and manage person records linked to citizen addresses:",
+      "capabilities": {
+        "title": "Capabilities",
+        "item1": "Search and filter person records",
+        "item2": "View person details and linked addresses",
+        "item3": "Identify protected class individuals",
+        "item4": "Review address history timeline",
+        "item5": "Detect potential duplicate records"
+      },
+      "duplicateDetection": {
+        "title": "Duplicate Detection",
+        "item1": "System flags potential duplicate person records",
+        "item2": "Same auth_user_id with multiple person entries",
+        "item3": "Review and report duplicates for merging",
+        "item4": "Preserve address history when merging"
+      }
+    },
+    "bestPractices": {
+      "title": "Best Practices",
+      "systemHealth": {
+        "title": "For System Health",
+        "item1": "Run weekly quality metrics reviews",
+        "item2": "Monitor auto-verification success rates",
+        "item3": "Address duplicate person records promptly",
+        "item4": "Review verifier performance monthly",
+        "item5": "Keep verification SLAs realistic",
+        "item6": "Monitor household data quality"
+      },
+      "households": {
+        "title": "For Households",
+        "item1": "Verify household documentation when flagged",
+        "item2": "Monitor custody arrangements for conflicts",
+        "item3": "Track dependents approaching majority age",
+        "item4": "Ensure household heads are correctly assigned"
+      },
+      "security": {
+        "title": "Security",
+        "item1": "Monitor for suspicious declaration patterns",
+        "item2": "Maintain audit logs for compliance",
+        "item3": "Respect citizen privacy level choices",
+        "item4": "Report security concerns to System Admin"
+      }
+    },
+    "needHelp": {
+      "title": "Need Help?",
+      "description": "Contact System Administrators for technical issues, permission changes, or integrations with the NAR system."
+    }
+  },
+  "carAdministrativeOverview": {
+    "systemOverview": "Overview",
+    "citizenSearch": "Search",
+    "verifiers": "Verifiers",
+    "persons": "Persons",
+    "analytics": "Analytics",
+    "systemHealth": "Health",
+    "managementTools": "Management",
+    "privacy": "Privacy",
+    "errorTitle": "Error",
+    "failedToLoadStatistics": "Failed to load CAR statistics",
+    "excellent": "Excellent",
+    "good": "Good",
+    "needsAttention": "Needs Attention",
+    "totalCitizenAddresses": "Total Citizen Addresses",
+    "currentlyActive": "currently active",
+    "registeredPersons": "Registered Persons",
+    "inCarSystem": "in CAR system",
+    "pendingVerifications": "Pending Verifications",
+    "awaitingVerification": "awaiting verification",
+    "narVerificationRate": "NAR Verification Rate",
+    "linkedToNar": "linked to verified NAR",
+    "addressStatusDistribution": "Address Status Distribution",
+    "verifiedApproved": "Verified/Approved",
+    "unverifiedSelfDeclared": "Unverified/Self-declared",
+    "verificationRejected": "Verification Rejected",
+    "addressTypes": "Address Types",
+    "primaryAddresses": "Primary Addresses",
+    "secondaryAddresses": "Secondary Addresses",
+    "regionalDistribution": "Regional Distribution",
+    "topRegionsByAddressCount": "Top regions by address count",
+    "recentActivity": "Recent Activity",
+    "lastSevenDays": "Last 7 days",
+    "newAddressesAdded": "new addresses added",
+    "verificationRate": "Verification Rate",
+    "narLinkageSuccess": "NAR linkage success",
+    "activeRatio": "Active Ratio",
+    "activeVsTotalAddresses": "Active vs total addresses",
+    "systemHealthMonitoring": "System health monitoring shows real-time performance metrics for CAR operations.",
+    "systemPerformance": "System Performance",
+    "averageProcessingTime": "Average Processing Time",
+    "days": "days",
+    "systemLoad": "System Load",
+    "dataIntegrity": "Data Integrity",
+    "narLinkageHealth": "NAR Linkage Health",
+    "administrativeTools": "Administrative tools for CAR data management and system maintenance.",
+    "dataManagement": "Data Management",
+    "bulkOperationsDataManagement": "Bulk operations and data management",
+    "refreshStatistics": "Refresh Statistics",
+    "exportCarData": "Export CAR Data",
+    "systemMaintenance": "System Maintenance",
+    "systemMaintenanceOptimization": "System maintenance and optimization",
+    "runIntegrityCheck": "Run Integrity Check",
+    "optimizePerformance": "Optimize Performance",
+    "verificationTools": "Verification Tools",
+    "addressVerificationManagement": "Address verification management",
+    "bulkVerification": "Bulk Verification"
   }
 }

@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { 
   Users, Database, MapPin, CheckCircle, Clock, AlertTriangle,
-  TrendingUp, Activity, BarChart3, Shield, Building2
+  TrendingUp, Activity, BarChart3, Shield, Building2, Lock
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -15,6 +15,8 @@ import { CitizenAddressSearch } from "./CitizenAddressSearch";
 import { CARQualityMetrics } from "./CARQualityMetrics";
 import { CARCoverageAnalytics } from "./CARCoverageAnalytics";
 import { CARVerifierDirectory } from "./CARVerifierDirectory";
+import { CARPersonRecordManager } from "./CARPersonRecordManager";
+import { CARPrivacyAnalytics } from "./CARPrivacyAnalytics";
 import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 
@@ -228,10 +230,11 @@ export function CARAdministrativeOverview() {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-1">
           <TabsTrigger value="overview">{t('admin:carAdministrativeOverview.systemOverview')}</TabsTrigger>
           <TabsTrigger value="search">{t('admin:carAdministrativeOverview.citizenSearch')}</TabsTrigger>
           <TabsTrigger value="verifiers">{t('admin:carAdministrativeOverview.verifiers')}</TabsTrigger>
+          <TabsTrigger value="persons">{t('admin:carAdministrativeOverview.persons')}</TabsTrigger>
           <TabsTrigger value="analytics">{t('admin:carAdministrativeOverview.analytics')}</TabsTrigger>
           <TabsTrigger value="health">{t('admin:carAdministrativeOverview.systemHealth')}</TabsTrigger>
           <TabsTrigger value="management">{t('admin:carAdministrativeOverview.managementTools')}</TabsTrigger>
@@ -358,12 +361,20 @@ export function CARAdministrativeOverview() {
           <CARVerifierDirectory />
         </TabsContent>
 
+        <TabsContent value="persons">
+          <CARPersonRecordManager />
+        </TabsContent>
+
         <TabsContent value="analytics">
           <Tabs defaultValue="overview" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
               <TabsTrigger value="overview">{t('dashboard:overview')}</TabsTrigger>
               <TabsTrigger value="quality-metrics">{t('dashboard:qualityMetrics')}</TabsTrigger>
               <TabsTrigger value="coverage">{t('dashboard:coverage')}</TabsTrigger>
+              <TabsTrigger value="privacy" className="flex items-center gap-1">
+                <Lock className="h-3 w-3" />
+                {t('admin:carAdministrativeOverview.privacy')}
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview">
@@ -444,6 +455,10 @@ export function CARAdministrativeOverview() {
 
             <TabsContent value="coverage">
               <CARCoverageAnalytics />
+            </TabsContent>
+
+            <TabsContent value="privacy">
+              <CARPrivacyAnalytics />
             </TabsContent>
           </Tabs>
         </TabsContent>
