@@ -142,13 +142,13 @@ export const SystemManualPDF: React.FC = () => {
     addText('System administrators for police operations with comprehensive oversight and configuration authority. Can manage all police system users and role assignments, configure system-wide settings, access all incident data and analytics.');
     
     addText('Police Supervisor:', 12, true);
-    addText('Senior officers responsible for tactical oversight, unit management, and operational performance. Can monitor all incidents within assigned jurisdiction, assign units to incidents, access real-time unit status, and review officer performance metrics.');
+    addText('Senior officers with tactical oversight and backup request approval authority. Can monitor all incidents, access analytics, manage units, and have FULL AUTHORITY over backup requests: approve, deny (with reason), modify priority, plus all coordinator actions.');
     
     addText('Police Dispatcher:', 12, true);
-    addText('Emergency response coordinators managing real-time incident dispatch and communication. Can receive and process emergency calls, create and manage incident records, dispatch units using optimal assignment algorithms, and coordinate emergency response.');
+    addText('Emergency response coordinators managing incident dispatch and communication. Can receive/process calls, create incidents, dispatch units, and perform COORDINATOR ACTIONS on backup requests: acknowledge receipt, mark en route/on scene, escalate to supervisor. Cannot approve/deny backup requests.');
     
     addText('Police Operator:', 12, true);
-    addText('Field officers and operational personnel responsible for direct incident response and law enforcement. Can view assigned incidents, update incident status, request backup, submit field reports, and access incident history for patrol areas.');
+    addText('Field officers responsible for incident response. Can view assigned incidents, update status, request backup (including Officer Down emergency), submit field reports, capture evidence, and track backup request acknowledgments.');
 
     // 4. Core Workflows
     addHeading('4. Core Workflows');

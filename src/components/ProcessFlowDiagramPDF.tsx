@@ -212,10 +212,10 @@ const ProcessFlowDiagramPDF: React.FC = () => {
       'CITIZEN → Envía solicitudes direcciones, declara direcciones CAR',
       'CAR_ADMIN → Gestiona permisos CAR via tabla car_permissions',
       'CAR_VERIFIER → Revisa direcciones ciudadanos, verificaciones has_car_permission()',
-      'POLICE_ADMIN → Gestiona sistema policial y unidades',
-      'POLICE_SUPERVISOR → Gestiona unidades y cobertura geográfica',
-      'POLICE_OPERATOR → Responde incidentes, miembro unidad',
-      'POLICE_DISPATCHER → Asigna incidentes a unidades',
+      'POLICE_ADMIN → Gestiona sistema policial, autoridad APROBACIÓN respaldo',
+      'POLICE_SUPERVISOR → Autoridad APROBACIÓN respaldo: aprobar/denegar/modificar',
+      'POLICE_OPERATOR → Responde incidentes, solicita respaldo, alerta Oficial Caído',
+      'POLICE_DISPATCHER → COORDINADOR respaldo: reconocer/enrutar/escalar (sin aprobar)',
       'NAR_AUTHORITY → Puede crear/verificar direcciones (alcance regional)',
       'EMERGENCY_DISPATCHER → Rol despachador especializado para incidentes críticos'
     ];

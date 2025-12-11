@@ -29,10 +29,10 @@ export function PoliceAdminGuide() {
         <div className="space-y-3">
           <h3 className="font-semibold">Police Role Types:</h3>
           <ul className="space-y-2 ml-4">
-            <li><strong>Police Admin:</strong> Full system administration</li>
-            <li><strong>Police Dispatcher:</strong> Incident management and unit coordination</li>
-            <li><strong>Police Supervisor:</strong> Unit management within geographic scope</li>
-            <li><strong>Police Operator:</strong> Field response officers</li>
+            <li><strong>Police Admin:</strong> Full system administration + backup approval authority</li>
+            <li><strong>Police Dispatcher:</strong> Incident management, backup coordination (acknowledge/escalate only)</li>
+            <li><strong>Police Supervisor:</strong> Unit management + backup approval authority (approve/deny/modify)</li>
+            <li><strong>Police Operator:</strong> Field response officers (request backup)</li>
           </ul>
 
           <h3 className="font-semibold mt-4">Assigning Roles:</h3>
@@ -121,6 +121,46 @@ export function PoliceAdminGuide() {
             <li>Monitor response time trends</li>
             <li>Evaluate unit and personnel performance</li>
             <li>Generate reports for stakeholders</li>
+          </ul>
+        </div>
+      </Card>
+
+      <Card className="p-6 border-amber-500/30">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Shield className="h-5 w-5 text-amber-500" />
+          Backup Request Approval System
+        </h2>
+        <div className="space-y-3">
+          <p>As a Police Admin, you have full authority over backup request approvals.</p>
+          
+          <h3 className="font-semibold mt-4">Tiered Authorization Model:</h3>
+          <div className="bg-muted p-4 rounded-lg space-y-3">
+            <div>
+              <p className="font-semibold text-sm">Dispatchers (Coordinator Actions Only):</p>
+              <ul className="list-disc list-inside space-y-1 ml-4 text-sm">
+                <li>Acknowledge receipt of backup requests</li>
+                <li>Mark backup units as en route</li>
+                <li>Mark backup units as on scene</li>
+                <li>Escalate to supervisor when approval needed</li>
+              </ul>
+            </div>
+            <div>
+              <p className="font-semibold text-sm">Supervisors & Admins (Full Authority):</p>
+              <ul className="list-disc list-inside space-y-1 ml-4 text-sm">
+                <li>All coordinator actions above</li>
+                <li>Approve backup requests</li>
+                <li>Deny backup requests (with documented reason)</li>
+                <li>Modify backup request priority level</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3 className="font-semibold mt-4">Officer Down Protocol:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>Bypasses normal approval workflow</li>
+            <li>Broadcasts to ALL police personnel system-wide</li>
+            <li>Maximum priority (0) automatically set</li>
+            <li>Requires immediate response coordination</li>
           </ul>
         </div>
       </Card>

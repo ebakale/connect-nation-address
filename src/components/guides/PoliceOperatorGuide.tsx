@@ -283,15 +283,22 @@ export function PoliceOperatorGuide() {
           <h3 className="font-semibold mt-4">Tracking Your Request:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
             <li><strong>Pending:</strong> Request submitted, awaiting review</li>
-            <li><strong>Acknowledged:</strong> Supervisor has seen your request</li>
-            <li><strong>Approved:</strong> Backup unit being dispatched</li>
+            <li><strong>Acknowledged:</strong> Dispatcher has seen your request</li>
+            <li><strong>Escalated:</strong> Dispatcher has escalated to supervisor</li>
+            <li><strong>Approved:</strong> Supervisor approved - backup being dispatched</li>
             <li><strong>En Route:</strong> Backup unit on the way (ETA shown)</li>
             <li><strong>On Scene:</strong> Backup has arrived</li>
-            <li><strong>Denied:</strong> Request denied (reason provided)</li>
+            <li><strong>Denied:</strong> Supervisor denied (reason provided)</li>
           </ul>
 
+          <h3 className="font-semibold mt-4">Tiered Approval System:</h3>
+          <div className="bg-muted p-4 rounded-lg">
+            <p className="text-sm mb-2"><strong>Dispatchers</strong> can acknowledge, mark en route/on scene, and escalate to supervisor</p>
+            <p className="text-sm"><strong>Supervisors/Admins</strong> have approval authority: approve, deny, or modify priority</p>
+          </div>
+
           <h3 className="font-semibold mt-4">Acknowledgment Notifications:</h3>
-          <p className="text-sm text-muted-foreground">You'll receive real-time updates as your backup request progresses through the workflow, including who acknowledged it and their estimated arrival time.</p>
+          <p className="text-sm text-muted-foreground">You'll receive real-time updates as your backup request progresses through the tiered workflow, including who acknowledged it and their estimated arrival time.</p>
         </div>
       </Card>
 

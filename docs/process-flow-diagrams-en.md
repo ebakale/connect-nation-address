@@ -387,11 +387,22 @@ Unit arrives at scene
   ↓
 Backup request process (if needed)
   ├── Unit lead opens RequestBackupDialog
-  ├── Specifies backup requirements
+  ├── Specifies backup requirements and urgency level
   ├── process-backup-request edge function triggered
-  ├── Emergency notifications created for nearby units
+  ├── Emergency notifications sent to dispatchers/supervisors
   ├── Status updated to "backup_requested"
-  └── BackupNotificationManager handles coordination
+  └── Tiered Approval Workflow:
+      │
+      ├── DISPATCHER (Coordinator Actions):
+      │   ├── Acknowledge receipt of request
+      │   ├── Mark backup unit as en route
+      │   ├── Mark backup unit on scene
+      │   └── Escalate to supervisor (if needed)
+      │
+      └── SUPERVISOR/ADMIN (Approval Authority):
+          ├── Approve backup request
+          ├── Deny backup request (with reason)
+          └── Modify priority level
   ↓
 Incident resolution
   ├── Officer completes incident handling
