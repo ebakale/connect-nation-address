@@ -248,14 +248,50 @@ export function PoliceOperatorGuide() {
             <li>Coordinate response with backup units</li>
             <li>Share field observations</li>
           </ul>
+        </div>
+      </Card>
 
-          <h3 className="font-semibold mt-4">Requesting Backup:</h3>
+      {/* Enhanced Backup Request System - NEW */}
+      <Card className="p-6 border-red-500/30">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <AlertCircle className="h-5 w-5 text-red-500" />
+          Backup Request System
+        </h2>
+        <div className="space-y-4">
+          <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-lg">
+            <h3 className="font-semibold text-red-600 mb-2">🚨 OFFICER DOWN Emergency Button</h3>
+            <p className="text-sm mb-2">For life-threatening situations requiring immediate assistance:</p>
+            <ul className="list-disc list-inside space-y-1 ml-4 text-sm">
+              <li><strong>Location:</strong> Large red button at top of operator dashboard</li>
+              <li><strong>Action:</strong> Sends IMMEDIATE mass broadcast to ALL police personnel</li>
+              <li><strong>Priority:</strong> Maximum (0) - bypasses normal approval workflow</li>
+              <li><strong>Notification:</strong> All operators, supervisors, dispatchers, and admins alerted</li>
+              <li><strong>GPS:</strong> Your current location automatically included</li>
+            </ul>
+            <p className="text-sm mt-2 text-red-600"><strong>⚠️ Use ONLY in genuine emergencies</strong></p>
+          </div>
+
+          <h3 className="font-semibold mt-4">Standard Backup Request:</h3>
           <ol className="list-decimal list-inside space-y-2 ml-4">
-            <li>Click "Request Backup" on incident</li>
-            <li>Specify reason (need more officers, medical, K9, etc.)</li>
-            <li>Submit request - notifies dispatch and supervisor</li>
-            <li>Wait for backup assignment confirmation</li>
+            <li>Click "Request Backup" on active incident</li>
+            <li>Select backup type (additional officers, medical, K9, SWAT, etc.)</li>
+            <li>Set urgency level (1-5)</li>
+            <li>Add description of situation</li>
+            <li>Submit - notifies dispatch and supervisor</li>
           </ol>
+
+          <h3 className="font-semibold mt-4">Tracking Your Request:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li><strong>Pending:</strong> Request submitted, awaiting review</li>
+            <li><strong>Acknowledged:</strong> Supervisor has seen your request</li>
+            <li><strong>Approved:</strong> Backup unit being dispatched</li>
+            <li><strong>En Route:</strong> Backup unit on the way (ETA shown)</li>
+            <li><strong>On Scene:</strong> Backup has arrived</li>
+            <li><strong>Denied:</strong> Request denied (reason provided)</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Acknowledgment Notifications:</h3>
+          <p className="text-sm text-muted-foreground">You'll receive real-time updates as your backup request progresses through the workflow, including who acknowledged it and their estimated arrival time.</p>
         </div>
       </Card>
 

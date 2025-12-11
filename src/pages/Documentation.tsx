@@ -300,7 +300,7 @@ const Documentation: React.FC = () => {
                       { title: 'STATUS: responded', desc: 'Unit en route, responded_at timestamp set', icon: '🚗' },
                       { title: 'EVIDENCE CAPTURE', desc: 'Officer captures photos via EvidenceCaptureDialog with location', icon: '📸' },
                       { title: 'STATUS: resolved', desc: 'Incident handled, resolved_at timestamp', icon: '✅' },
-                      { title: 'BACKUP (if needed)', desc: 'process-backup-request via BackupNotificationManager', icon: '🆘' },
+                      { title: 'BACKUP (if needed)', desc: 'Enhanced backup workflow with approval/acknowledgment', icon: '🆘' },
                       { title: 'STATUS: closed', desc: 'Final documentation, closed_at timestamp', icon: '📊' },
                       { title: 'AUDIT LOGGED', desc: 'All actions recorded in emergency_incident_logs', icon: '📋' },
                       { title: 'END', desc: 'notify-incident-reporter notifies reporter', icon: '🎯' }
@@ -320,6 +320,54 @@ const Documentation: React.FC = () => {
                         )}
                       </div>
                     ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Backup Request Workflow - NEW */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-primary">Backup Request Workflow</CardTitle>
+                  <CardDescription>Enhanced backup request system with approval workflow and acknowledgments</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-2">
+                    {[
+                      { title: 'REQUEST INITIATION', desc: 'Officer clicks "Request Backup" or "OFFICER DOWN" emergency button', icon: '🆘' },
+                      { title: 'URGENCY ASSESSMENT', desc: 'System assigns urgency level (1-5) based on request type', icon: '⚡' },
+                      { title: 'OFFICER DOWN DETECTION', desc: 'If officer_down=true, bypasses normal workflow, max priority (0)', icon: '🚨' },
+                      { title: 'MASS NOTIFICATION', desc: 'Officer Down alerts ALL police staff regardless of scope', icon: '📢' },
+                      { title: 'SUPERVISOR NOTIFICATION', desc: 'Standard requests notify supervisors/dispatchers in jurisdiction', icon: '🔔' },
+                      { title: 'ACKNOWLEDGMENT: RECEIPT', desc: 'Dispatcher/supervisor acknowledges receipt of request', icon: '✓' },
+                      { title: 'REVIEW & DECISION', desc: 'Supervisor reviews request, can Approve, Modify Priority, or Deny', icon: '👁️' },
+                      { title: 'APPROVAL/DENIAL', desc: 'Decision recorded with notes; denial requires reason', icon: '📋' },
+                      { title: 'UNIT DISPATCH', desc: 'If approved, nearest available unit dispatched automatically', icon: '🚔' },
+                      { title: 'ACKNOWLEDGMENT: EN-ROUTE', desc: 'Backup unit acknowledges and provides ETA', icon: '🚗' },
+                      { title: 'ACKNOWLEDGMENT: ON-SCENE', desc: 'Backup unit arrives, notifies requesting officer', icon: '📍' },
+                      { title: 'ACKNOWLEDGMENT: ALL-CLEAR', desc: 'Supervisor confirms situation resolved', icon: '✅' },
+                      { title: 'AUDIT LOGGED', desc: 'Full trail in backup_acknowledgments and emergency_incident_logs', icon: '📊' }
+                    ].map((step, idx) => (
+                      <div key={idx}>
+                        <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-lg">
+                          <div className="text-2xl">{step.icon}</div>
+                          <div className="flex-1">
+                            <div className="font-semibold text-sm">{step.title}</div>
+                            <div className="text-xs text-muted-foreground">{step.desc}</div>
+                          </div>
+                        </div>
+                        {idx < 12 && (
+                          <div className="flex justify-center py-1">
+                            <div className="text-muted-foreground">↓</div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-lg mt-4">
+                    <p className="text-sm"><strong>🚨 OFFICER DOWN:</strong> This critical feature bypasses normal workflow. When activated, it immediately broadcasts to ALL police personnel (operators, supervisors, dispatchers, admins) regardless of geographic scope, ensuring maximum response.</p>
+                  </div>
+                  <div className="bg-muted p-4 rounded-lg mt-4">
+                    <p className="text-sm"><strong>📋 Acknowledgment Types:</strong> receipt (request received), en_route (backup coming), on_scene (backup arrived), all_clear (situation resolved)</p>
                   </div>
                 </CardContent>
               </Card>
