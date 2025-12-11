@@ -104,9 +104,13 @@ export const SystemManualPDF: React.FC = () => {
     addText('• Emergency Dispatch Coordination: Intelligent unit assignment and resource optimization');
     addText('• Field Operations Support: Mobile-friendly tools for officers and supervisors');
     addText('• Communication Hub: Secure messaging and broadcast systems');
-    addText('• Performance Analytics: Response time tracking and operational metrics');
+    addText('• Performance Analytics: Response time tracking and operational metrics from live database');
     addText('• Unit Management: Hierarchical team organization and status monitoring');
     addText('• Backup Coordination: Streamlined resource request and deployment process');
+    addText('• Evidence Capture: Field photo documentation with secure cloud storage and location metadata');
+    addText('• Navigation Integration: Direct maps app integration for turn-by-turn incident navigation');
+    addText('• Audit Logging: Comprehensive activity tracking for compliance and security monitoring');
+    addText('• Persistent Configuration: System settings saved to database across sessions');
 
     // 3. User Roles and Permissions
     addHeading('3. User Roles and Permissions');
@@ -175,7 +179,12 @@ export const SystemManualPDF: React.FC = () => {
     addHeading('5.2 Police Operations Features', 2);
     addText('Incident Management: End-to-end incident lifecycle management with real-time updates, priority classification, and automated workflow routing.');
     addText('Dispatch Operations: Intelligent unit assignment algorithms, real-time communication tools, and performance monitoring capabilities.');
-    addText('Analytics and Reporting: Comprehensive performance metrics, response time tracking, and operational intelligence dashboards.');
+    addText('Analytics and Reporting: Real-time performance metrics pulled from live database with configurable time ranges (7/30/90 days).');
+    addText('Evidence Capture: Field officers capture photos with descriptions, location coordinates, and timestamps. Photos stored securely in cloud storage with chain of custody preserved.');
+    addText('Navigation Integration: "Navigate" button opens device maps app (Apple Maps on iOS, Google Maps on Android/web) for turn-by-turn directions to incident location.');
+    addText('Distance Estimates: Real-time distance and estimated travel time calculations using Haversine formula, displayed for all incidents and units.');
+    addText('Audit Logs: Complete activity logging with filtering by action type, date range, and user. Export to CSV for compliance reporting.');
+    addText('Persistent Configuration: System settings stored in database, not session storage. Changes persist across sessions and affect all users.');
 
     // 6. Administrator Guide
     addHeading('6. Administrator Guide');
