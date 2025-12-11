@@ -1632,6 +1632,53 @@ export type Database = {
           },
         ]
       }
+      incident_evidence: {
+        Row: {
+          captured_at: string
+          created_at: string
+          description: string | null
+          file_path: string
+          file_type: string | null
+          id: string
+          incident_id: string
+          location_latitude: number | null
+          location_longitude: number | null
+          officer_id: string
+        }
+        Insert: {
+          captured_at?: string
+          created_at?: string
+          description?: string | null
+          file_path: string
+          file_type?: string | null
+          id?: string
+          incident_id: string
+          location_latitude?: number | null
+          location_longitude?: number | null
+          officer_id: string
+        }
+        Update: {
+          captured_at?: string
+          created_at?: string
+          description?: string | null
+          file_path?: string
+          file_type?: string | null
+          id?: string
+          incident_id?: string
+          location_latitude?: number | null
+          location_longitude?: number | null
+          officer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incident_evidence_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "emergency_incidents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       integration_api_keys: {
         Row: {
           created_at: string | null

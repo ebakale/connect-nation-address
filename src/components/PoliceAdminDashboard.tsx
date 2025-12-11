@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { 
   Users, Shield, Settings, Database, Activity, 
   UserCheck, Key, ChartBar, Clock,
-  AlertTriangle, CheckCircle, FileText, Radio
+  AlertTriangle, CheckCircle, FileText, Radio, ScrollText
 } from "lucide-react";
 import { toast } from "sonner";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -16,6 +16,7 @@ import UserManager from "./UserManager";
 import UnitManagement from "./UnitManagement";
 import SystemConfiguration from "./SystemConfiguration";
 import PoliceAnalytics from "./PoliceAnalytics";
+import AuditLogViewer from "./AuditLogViewer";
 
 interface PoliceStats {
   totalOfficers: number;
@@ -211,7 +212,7 @@ export const PoliceAdminDashboard = () => {
 
       {/* Admin Tabs */}
       <Tabs defaultValue="users" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-2 h-auto p-1">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 gap-2 h-auto p-1">
           <TabsTrigger value="users" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
             <span className="hidden sm:inline">{t('emergency:policeAdminDashboard.userManagement')}</span>
             <span className="sm:hidden">{t('emergency:policeAdminDashboard.users')}</span>
@@ -227,6 +228,10 @@ export const PoliceAdminDashboard = () => {
           <TabsTrigger value="analytics" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
             <span className="hidden sm:inline">{t('emergency:policeAdminDashboard.analytics')}</span>
             <span className="sm:hidden">{t('emergency:policeAdminDashboard.stats')}</span>
+          </TabsTrigger>
+          <TabsTrigger value="audit" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
+            <span className="hidden sm:inline">{t('emergency:policeAdminDashboard.auditLogs')}</span>
+            <span className="sm:hidden">{t('emergency:auditLog.logs')}</span>
           </TabsTrigger>
         </TabsList>
         
@@ -295,6 +300,23 @@ export const PoliceAdminDashboard = () => {
             </CardHeader>
             <CardContent>
               <PoliceAnalytics />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="audit" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ScrollText className="h-5 w-5" />
+                {t('emergency:auditLog.title')}
+              </CardTitle>
+              <CardDescription>
+                {t('emergency:auditLog.description')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AuditLogViewer />
             </CardContent>
           </Card>
         </TabsContent>

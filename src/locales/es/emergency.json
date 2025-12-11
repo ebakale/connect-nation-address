@@ -1720,5 +1720,63 @@
   "automatedPoliceDispatch": "Despacho policial automatizado con asignación inteligente de unidades basada en ubicación",
   "integratedCommunications": "Comunicaciones integradas entre operadores, despachadores y unidades de campo",
   "responseTimeTracking": "Seguimiento de tiempos de respuesta con análisis completo del ciclo de vida de incidentes",
-  "completeAddressIntegration": "Integración completa de direcciones usando códigos UAC para ubicación precisa"
+  "completeAddressIntegration": "Integración completa de direcciones usando códigos UAC para ubicación precisa",
+
+  "auditLog": {
+    "title": "Registro de Auditoría",
+    "description": "Ver actividad del sistema y registros de acciones",
+    "logs": "Registros",
+    "filters": "Filtros",
+    "searchPlaceholder": "Buscar registros...",
+    "filterByAction": "Filtrar por acción",
+    "allActions": "Todas las Acciones",
+    "dateRange": "Rango de Fechas",
+    "last24Hours": "Últimas 24 Horas",
+    "last7Days": "Últimos 7 Días",
+    "last30Days": "Últimos 30 Días",
+    "last90Days": "Últimos 90 Días",
+    "refresh": "Actualizar",
+    "export": "Exportar CSV",
+    "exportSuccess": "Registros exportados exitosamente",
+    "timestamp": "Fecha/Hora",
+    "user": "Usuario",
+    "action": "Acción",
+    "incidentNumber": "Incidente #",
+    "details": "Detalles",
+    "noLogsFound": "No se encontraron registros",
+    "showingLogs": "Mostrando {{count}} registros",
+    "failedToLoad": "Error al cargar registros",
+    "unknownUser": "Usuario Desconocido"
+  },
+
+  "evidence": {
+    "title": "Evidencia Fotográfica",
+    "description": "Evidencia capturada durante la respuesta",
+    "capture": "Evidencia",
+    "captureEvidence": "Capturar Evidencia",
+    "captureDescription": "Subir evidencia fotográfica para el incidente {{incident}}",
+    "takePhoto": "Tomar Foto",
+    "chooseFile": "Elegir Archivo",
+    "photoDescription": "Descripción (Opcional)",
+    "descriptionPlaceholder": "Describa lo que muestra esta foto...",
+    "uploadPhoto": "Subir Evidencia",
+    "uploading": "Subiendo...",
+    "uploadSuccess": "Evidencia subida exitosamente",
+    "uploadFailed": "Error al subir evidencia",
+    "selectPhoto": "Seleccione una foto",
+    "invalidFileType": "Seleccione un archivo de imagen",
+    "fileTooLarge": "El archivo debe ser menor a 10MB",
+    "noEvidenceYet": "No hay evidencia para este incidente",
+    "unknownOfficer": "Oficial Desconocido",
+    "loadFailed": "Error al cargar evidencia"
+  },
+
+  "navigation": {
+    "navigate": "Navegar",
+    "openInMaps": "Abrir en Mapas",
+    "openingMaps": "Abriendo aplicación de navegación...",
+    "distance": "Distancia",
+    "estimatedTime": "Tiempo Est.",
+    "gettingDirections": "Obteniendo direcciones..."
+  }
 }

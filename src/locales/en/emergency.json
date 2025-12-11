@@ -1712,5 +1712,63 @@
   "automatedPoliceDispatch": "Automated police dispatch with intelligent unit assignment based on location",
   "integratedCommunications": "Integrated communications between operators, dispatchers, and field units",
   "responseTimeTracking": "Response time tracking with complete incident lifecycle analytics",
-  "completeAddressIntegration": "Complete address integration using UAC codes for precise location"
+  "completeAddressIntegration": "Complete address integration using UAC codes for precise location",
+
+  "auditLog": {
+    "title": "Audit Logs",
+    "description": "View system activity and incident action logs",
+    "logs": "Logs",
+    "filters": "Filters",
+    "searchPlaceholder": "Search logs...",
+    "filterByAction": "Filter by action",
+    "allActions": "All Actions",
+    "dateRange": "Date Range",
+    "last24Hours": "Last 24 Hours",
+    "last7Days": "Last 7 Days",
+    "last30Days": "Last 30 Days",
+    "last90Days": "Last 90 Days",
+    "refresh": "Refresh",
+    "export": "Export CSV",
+    "exportSuccess": "Audit logs exported successfully",
+    "timestamp": "Timestamp",
+    "user": "User",
+    "action": "Action",
+    "incidentNumber": "Incident #",
+    "details": "Details",
+    "noLogsFound": "No audit logs found for the selected criteria",
+    "showingLogs": "Showing {{count}} logs",
+    "failedToLoad": "Failed to load audit logs",
+    "unknownUser": "Unknown User"
+  },
+
+  "evidence": {
+    "title": "Photo Evidence",
+    "description": "Evidence captured during incident response",
+    "capture": "Evidence",
+    "captureEvidence": "Capture Evidence",
+    "captureDescription": "Upload photo evidence for incident {{incident}}",
+    "takePhoto": "Take Photo",
+    "chooseFile": "Choose File",
+    "photoDescription": "Description (Optional)",
+    "descriptionPlaceholder": "Describe what this photo shows...",
+    "uploadPhoto": "Upload Evidence",
+    "uploading": "Uploading...",
+    "uploadSuccess": "Evidence uploaded successfully",
+    "uploadFailed": "Failed to upload evidence",
+    "selectPhoto": "Please select a photo",
+    "invalidFileType": "Please select an image file",
+    "fileTooLarge": "File size must be less than 10MB",
+    "noEvidenceYet": "No evidence uploaded for this incident",
+    "unknownOfficer": "Unknown Officer",
+    "loadFailed": "Failed to load evidence"
+  },
+
+  "navigation": {
+    "navigate": "Navigate",
+    "openInMaps": "Open in Maps",
+    "openingMaps": "Opening navigation app...",
+    "distance": "Distance",
+    "estimatedTime": "Est. Time",
+    "gettingDirections": "Getting directions..."
+  }
 }
