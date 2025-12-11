@@ -640,5 +640,12 @@
   "memberAddedSuccessfully": "Miembro agregado al hogar con éxito",
   "failedToAddMember": "Error al agregar miembro. Por favor, intenta de nuevo.",
   "householdCreatedSuccessfully": "Hogar creado con éxito",
-  "failedToCreateHousehold": "Error al crear hogar"
+  "failedToCreateHousehold": "Error al crear hogar",
+  "quickActions": "Acciones Rápidas",
+  "backupRequests": {
+    "requestBackup": "Solicitar Refuerzo"
+  },
+  "requestBackupDialog": {
+    "reasonPlaceholder": "Describe el motivo para solicitar refuerzo..."
+  }
 }
