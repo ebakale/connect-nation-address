@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CitizenAddressSearch } from "./CitizenAddressSearch";
 import { CARQualityMetrics } from "./CARQualityMetrics";
 import { CARCoverageAnalytics } from "./CARCoverageAnalytics";
+import { CARVerifierDirectory } from "./CARVerifierDirectory";
 import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 
@@ -227,9 +228,10 @@ export function CARAdministrativeOverview() {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1">
           <TabsTrigger value="overview">{t('admin:carAdministrativeOverview.systemOverview')}</TabsTrigger>
           <TabsTrigger value="search">{t('admin:carAdministrativeOverview.citizenSearch')}</TabsTrigger>
+          <TabsTrigger value="verifiers">{t('admin:carAdministrativeOverview.verifiers')}</TabsTrigger>
           <TabsTrigger value="analytics">{t('admin:carAdministrativeOverview.analytics')}</TabsTrigger>
           <TabsTrigger value="health">{t('admin:carAdministrativeOverview.systemHealth')}</TabsTrigger>
           <TabsTrigger value="management">{t('admin:carAdministrativeOverview.managementTools')}</TabsTrigger>
@@ -350,6 +352,10 @@ export function CARAdministrativeOverview() {
 
         <TabsContent value="search">
           <CitizenAddressSearch />
+        </TabsContent>
+
+        <TabsContent value="verifiers">
+          <CARVerifierDirectory />
         </TabsContent>
 
         <TabsContent value="analytics">
