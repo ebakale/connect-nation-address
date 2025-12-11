@@ -28,6 +28,12 @@ serve(async (req) => {
       case "90d":
         startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
         break;
+      case "180d":
+        startDate = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
+        break;
+      case "360d":
+        startDate = new Date(now.getTime() - 360 * 24 * 60 * 60 * 1000);
+        break;
       default:
         startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     }
