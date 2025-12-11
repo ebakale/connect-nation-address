@@ -2587,6 +2587,39 @@ export type Database = {
         }
         Relationships: []
       }
+      system_config: {
+        Row: {
+          category: string
+          config_key: string
+          config_value: string
+          created_at: string | null
+          description: string | null
+          id: string
+          is_encrypted: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          config_key: string
+          config_value: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_encrypted?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          config_key?: string
+          config_value?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_encrypted?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       translation_fixes: {
         Row: {
           fixed_at: string

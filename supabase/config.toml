@@ -38,3 +38,9 @@ verify_jwt = false
 
 [functions.cleanup-rejected-items]
 verify_jwt = false
+
+[functions.police-analytics-api]
+verify_jwt = false
+
+[functions.system-config-api]
+verify_jwt = false

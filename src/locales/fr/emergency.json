@@ -440,6 +440,10 @@
       "theft": "Vol",
       "domestic": "Domestique",
       "publicOrder": "Ordre Public",
+      "police": "Police",
+      "fire": "Incendie",
+      "medical": "Médical",
+      "rescue": "Sauvetage",
       "other": "Autre"
     },
     "priorities": {
@@ -447,7 +451,23 @@
       "medium": "Moyen",
       "high": "Haut",
       "critical": "Critique"
-    }
+    },
+    "liveData": "Données en Direct",
+    "dataLoaded": "Données d'analyse chargées depuis la base de données",
+    "lastUpdated": "Dernière mise à jour",
+    "criticalCount": "critiques",
+    "resolvedOf": "résolus sur",
+    "noData": "Aucune donnée",
+    "fromReportToResponse": "du rapport à la réponse",
+    "reported": "signalés",
+    "noTimelineData": "Aucune donnée de chronologie disponible",
+    "noTypeData": "Aucune donnée de type d'incident disponible",
+    "noUnitData": "Aucune donnée d'unité disponible",
+    "noRegionalData": "Aucune donnée régionale disponible",
+    "noCityData": "Aucune donnée de ville disponible",
+    "unitUtilization": "Utilisation des Unités",
+    "unitUtilizationDescription": "Pourcentage d'unités actuellement déployées",
+    "unitsCurrentlyDeployed": "unités actuellement déployées"
   },
   
   "systemConfiguration": {
@@ -532,8 +552,14 @@
       "failedToCreateBackup": "Échec de la création de sauvegarde système",
       "restoringSystemFromBackup": "Restauration système depuis sauvegarde...",
       "systemRestored": "Système restauré avec succès",
-      "failedToRestoreSystem": "Échec de la restauration du système"
-    }
+      "failedToRestoreSystem": "Échec de la restauration du système",
+      "configurationLoaded": "Configuration chargée depuis la base de données",
+      "loadingConfiguration": "Chargement de la configuration..."
+    },
+    "databasePersisted": "Persisté en BD",
+    "lastSaved": "Dernier enregistrement",
+    "reload": "Recharger",
+    "saving": "Enregistrement..."
   },
 
   "userManagement": {

@@ -29,16 +29,17 @@ interface SystemConfig {
 }
 
 const SystemConfiguration: React.FC = () => {
-  const { t } = useTranslation('emergency');
-  const [configs, setConfigs] = useState<SystemConfig[]>([]);
+  const { t, i18n } = useTranslation('emergency');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<string | null>(null);
   
   // General Settings
   const [systemName, setSystemName] = useState('Emergency Response System');
   const [systemDescription, setSystemDescription] = useState('');
   const [defaultLanguage, setDefaultLanguage] = useState('en');
   const [timezone, setTimezone] = useState('UTC');
+  const [defaultRegion, setDefaultRegion] = useState('Equatorial Guinea');
   
   // Emergency Settings
   const [emergencyResponseTime, setEmergencyResponseTime] = useState('5');
@@ -59,7 +60,6 @@ const SystemConfiguration: React.FC = () => {
   const [encryptionEnabled, setEncryptionEnabled] = useState(true);
   
   // Location Settings
-  const [defaultRegion, setDefaultRegion] = useState('Equatorial Guinea');
   const [locationAccuracy, setLocationAccuracy] = useState('10');
   const [gpsTrackingEnabled, setGpsTrackingEnabled] = useState(true);
   const [mapProvider, setMapProvider] = useState('mapbox');
@@ -92,9 +92,48 @@ const SystemConfiguration: React.FC = () => {
   const fetchConfigurations = async () => {
     try {
       setLoading(true);
-      // For now, we'll use default values since we don't have a system_config table
-      // In a real implementation, you would fetch from a system_config table
-      loadDefaultConfigurations();
+      console.log('Fetching system configurations from database');
+      
+      // Get auth session for the request
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        console.log('No session, loading defaults');
+        loadDefaultConfigurations();
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('system-config-api', {
+        method: 'GET'
+      });
+
+      if (error) {
+        console.error('Error fetching from edge function:', error);
+        // Try direct database query as fallback
+        const { data: dbData, error: dbError } = await supabase
+          .from('system_config')
+          .select('*');
+        
+        if (dbError) {
+          console.error('Database error:', dbError);
+          loadDefaultConfigurations();
+          return;
+        }
+        
+        if (dbData && dbData.length > 0) {
+          applyConfigurations(dbData);
+        } else {
+          loadDefaultConfigurations();
+        }
+        return;
+      }
+
+      if (data?.raw && data.raw.length > 0) {
+        applyConfigurations(data.raw);
+        toast.success(t('systemConfiguration.messages.configurationLoaded'));
+      } else {
+        loadDefaultConfigurations();
+      }
     } catch (error) {
       console.error('Error fetching configurations:', error);
       toast.error(t('systemConfiguration.messages.failedToLoadConfigurations'));
@@ -104,12 +143,44 @@ const SystemConfiguration: React.FC = () => {
     }
   };
 
+  const applyConfigurations = (configs: SystemConfig[]) => {
+    configs.forEach(config => {
+      const value = config.config_value;
+      switch (config.config_key) {
+        case 'system_name': setSystemName(value); break;
+        case 'system_description': setSystemDescription(value); break;
+        case 'default_language': setDefaultLanguage(value); break;
+        case 'timezone': setTimezone(value); break;
+        case 'default_region': setDefaultRegion(value); break;
+        case 'emergency_response_time': setEmergencyResponseTime(value); break;
+        case 'priority_levels': setPriorityLevels(value); break;
+        case 'auto_dispatch': setAutoDispatch(value === 'true'); break;
+        case 'backup_request_threshold': setBackupRequestThreshold(value); break;
+        case 'email_notifications': setEmailNotifications(value === 'true'); break;
+        case 'sms_notifications': setSmsNotifications(value === 'true'); break;
+        case 'push_notifications': setPushNotifications(value === 'true'); break;
+        case 'notification_retry_count': setNotificationRetryCount(value); break;
+        case 'session_timeout': setSessionTimeout(value); break;
+        case 'password_policy': setPasswordPolicy(value); break;
+        case 'two_factor_required': setTwoFactorRequired(value === 'true'); break;
+        case 'encryption_enabled': setEncryptionEnabled(value === 'true'); break;
+        case 'location_accuracy': setLocationAccuracy(value); break;
+        case 'gps_tracking_enabled': setGpsTrackingEnabled(value === 'true'); break;
+        case 'map_provider': setMapProvider(value); break;
+        case 'api_rate_limit': setApiRateLimit(value); break;
+        case 'webhook_timeout': setWebhookTimeout(value); break;
+        case 'api_logging_enabled': setApiLoggingEnabled(value === 'true'); break;
+        case 'cors_enabled': setCorsEnabled(value === 'true'); break;
+      }
+    });
+  };
+
   const loadDefaultConfigurations = () => {
-    // Load default configurations
     setSystemName('Police Emergency Response System');
     setSystemDescription('Comprehensive emergency response and incident management system for law enforcement');
     setDefaultLanguage('en');
     setTimezone('Africa/Malabo');
+    setDefaultRegion('Equatorial Guinea');
     setEmergencyResponseTime('5');
     setPriorityLevels('5');
     setAutoDispatch(false);
@@ -122,7 +193,6 @@ const SystemConfiguration: React.FC = () => {
     setPasswordPolicy('strict');
     setTwoFactorRequired(false);
     setEncryptionEnabled(true);
-    setDefaultRegion('Equatorial Guinea');
     setLocationAccuracy('10');
     setGpsTrackingEnabled(true);
     setMapProvider('mapbox');
@@ -135,11 +205,72 @@ const SystemConfiguration: React.FC = () => {
   const saveConfiguration = async (category: string) => {
     try {
       setSaving(true);
+      console.log(`Saving ${category} configuration to database`);
       
-      // Here you would save to a system_config table
-      // For now, we'll just show a success message
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      let configsToSave: Record<string, string> = {};
       
+      switch (category.toLowerCase()) {
+        case 'general':
+          configsToSave = {
+            system_name: systemName,
+            system_description: systemDescription,
+            default_language: defaultLanguage,
+            timezone: timezone,
+            default_region: defaultRegion
+          };
+          break;
+        case 'emergency':
+          configsToSave = {
+            emergency_response_time: emergencyResponseTime,
+            priority_levels: priorityLevels,
+            auto_dispatch: String(autoDispatch),
+            backup_request_threshold: backupRequestThreshold
+          };
+          break;
+        case 'notifications':
+          configsToSave = {
+            email_notifications: String(emailNotifications),
+            sms_notifications: String(smsNotifications),
+            push_notifications: String(pushNotifications),
+            notification_retry_count: notificationRetryCount
+          };
+          break;
+        case 'security':
+          configsToSave = {
+            session_timeout: sessionTimeout,
+            password_policy: passwordPolicy,
+            two_factor_required: String(twoFactorRequired),
+            encryption_enabled: String(encryptionEnabled)
+          };
+          break;
+        case 'location':
+          configsToSave = {
+            location_accuracy: locationAccuracy,
+            gps_tracking_enabled: String(gpsTrackingEnabled),
+            map_provider: mapProvider
+          };
+          break;
+        case 'api':
+          configsToSave = {
+            api_rate_limit: apiRateLimit,
+            webhook_timeout: webhookTimeout,
+            api_logging_enabled: String(apiLoggingEnabled),
+            cors_enabled: String(corsEnabled)
+          };
+          break;
+      }
+
+      const { data, error } = await supabase.functions.invoke('system-config-api', {
+        method: 'PUT',
+        body: { configs: configsToSave }
+      });
+
+      if (error) {
+        console.error('Error saving via edge function:', error);
+        throw error;
+      }
+
+      setLastSaved(new Date().toISOString());
       toast.success(`${category} ${t('systemConfiguration.messages.configurationSaved')}`);
     } catch (error) {
       console.error('Error saving configuration:', error);
@@ -152,7 +283,6 @@ const SystemConfiguration: React.FC = () => {
   const testNotifications = async () => {
     try {
       toast.info(t('systemConfiguration.messages.sendingTestNotifications'));
-      // Simulate test notification
       await new Promise(resolve => setTimeout(resolve, 2000));
       toast.success(t('systemConfiguration.messages.testNotificationsSent'));
     } catch (error) {
@@ -164,7 +294,6 @@ const SystemConfiguration: React.FC = () => {
   const backupSystem = async () => {
     try {
       toast.info(t('systemConfiguration.messages.creatingSystemBackup'));
-      // Simulate backup creation
       await new Promise(resolve => setTimeout(resolve, 3000));
       toast.success(t('systemConfiguration.messages.systemBackupCreated'));
     } catch (error) {
@@ -176,7 +305,6 @@ const SystemConfiguration: React.FC = () => {
   const restoreSystem = async () => {
     try {
       toast.info(t('systemConfiguration.messages.restoringSystemFromBackup'));
-      // Simulate restore process
       await new Promise(resolve => setTimeout(resolve, 3000));
       toast.success(t('systemConfiguration.messages.systemRestored'));
     } catch (error) {
@@ -185,23 +313,50 @@ const SystemConfiguration: React.FC = () => {
     }
   };
 
+  const formatLastSaved = () => {
+    if (!lastSaved) return '';
+    const date = new Date(lastSaved);
+    return date.toLocaleString(i18n.language === 'es' ? 'es-ES' : i18n.language === 'fr' ? 'fr-FR' : 'en-US', {
+      dateStyle: 'short',
+      timeStyle: 'short'
+    });
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <RefreshCw className="h-8 w-8 animate-spin mr-2" />
+        <span>{t('systemConfiguration.messages.loadingConfiguration')}</span>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-end">
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={backupSystem}>
+    <div className="space-y-6" key={i18n.resolvedLanguage || i18n.language}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="bg-green-500/10 text-green-700 border-green-500/30">
+              <Database className="h-3 w-3 mr-1" />
+              {t('systemConfiguration.databasePersisted')}
+            </Badge>
+          </div>
+          {lastSaved && (
+            <p className="text-xs text-muted-foreground mt-1">
+              {t('systemConfiguration.lastSaved')}: {formatLastSaved()}
+            </p>
+          )}
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button variant="outline" size="sm" onClick={fetchConfigurations}>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            {t('systemConfiguration.reload')}
+          </Button>
+          <Button variant="outline" size="sm" onClick={backupSystem}>
             <Download className="h-4 w-4 mr-2" />
             {t('systemConfiguration.backup')}
           </Button>
-          <Button variant="outline" onClick={restoreSystem}>
+          <Button variant="outline" size="sm" onClick={restoreSystem}>
             <Upload className="h-4 w-4 mr-2" />
             {t('systemConfiguration.restore')}
           </Button>
@@ -285,14 +440,13 @@ const SystemConfiguration: React.FC = () => {
                   value={systemDescription}
                   onChange={(e) => setSystemDescription(e.target.value)}
                   rows={3}
-                  autoResize
                   className="w-full text-sm break-words whitespace-pre-wrap leading-snug"
                 />
               </div>
               <div className="flex justify-end">
                 <Button onClick={() => saveConfiguration('General')} disabled={saving}>
                   <Save className="h-4 w-4 mr-2" />
-                  {t('systemConfiguration.saveGeneralSettings')}
+                  {saving ? t('systemConfiguration.saving') : t('systemConfiguration.saveGeneralSettings')}
                 </Button>
               </div>
             </CardContent>
@@ -352,7 +506,7 @@ const SystemConfiguration: React.FC = () => {
               <div className="flex justify-end">
                 <Button onClick={() => saveConfiguration('Emergency')} disabled={saving}>
                   <Save className="h-4 w-4 mr-2" />
-                  {t('systemConfiguration.saveEmergencySettings')}
+                  {saving ? t('systemConfiguration.saving') : t('systemConfiguration.saveEmergencySettings')}
                 </Button>
               </div>
             </CardContent>
@@ -415,7 +569,7 @@ const SystemConfiguration: React.FC = () => {
                 </Button>
                 <Button onClick={() => saveConfiguration('Notifications')} disabled={saving} className="text-sm px-3 py-2">
                   <Save className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">{t('systemConfiguration.saveNotificationSettings')}</span>
+                  <span className="hidden sm:inline">{saving ? t('systemConfiguration.saving') : t('systemConfiguration.saveNotificationSettings')}</span>
                   <span className="sm:hidden">{t('systemConfiguration.save')}</span>
                 </Button>
               </div>
@@ -477,7 +631,7 @@ const SystemConfiguration: React.FC = () => {
               <div className="flex justify-end">
                 <Button onClick={() => saveConfiguration('Security')} disabled={saving}>
                   <Save className="h-4 w-4 mr-2" />
-                  {t('systemConfiguration.saveSecuritySettings')}
+                  {saving ? t('systemConfiguration.saving') : t('systemConfiguration.saveSecuritySettings')}
                 </Button>
               </div>
             </CardContent>
@@ -530,7 +684,7 @@ const SystemConfiguration: React.FC = () => {
               <div className="flex justify-end">
                 <Button onClick={() => saveConfiguration('Location')} disabled={saving}>
                   <Save className="h-4 w-4 mr-2" />
-                  {t('systemConfiguration.saveLocationSettings')}
+                  {saving ? t('systemConfiguration.saving') : t('systemConfiguration.saveLocationSettings')}
                 </Button>
               </div>
             </CardContent>
@@ -588,7 +742,7 @@ const SystemConfiguration: React.FC = () => {
               <div className="flex justify-end">
                 <Button onClick={() => saveConfiguration('API')} disabled={saving}>
                   <Save className="h-4 w-4 mr-2" />
-                  {t('systemConfiguration.saveApiSettings')}
+                  {saving ? t('systemConfiguration.saving') : t('systemConfiguration.saveApiSettings')}
                 </Button>
               </div>
             </CardContent>
