@@ -178,16 +178,15 @@ const UnifiedDashboard = () => {
       if (isNARAuthority) {
         // NAR authorities get their dedicated dashboard
         setActiveView('nar-authority-dashboard');
-      } else if (isCarAdmin) {
-        setActiveView('car-verification');
       } else if (isRegistrar && !hasAdminAccess) {
         // Registrars go to their dedicated dashboard unless they're also admins
         setActiveView('registrar-dashboard');
       } else if (isResidencyVerifier) {
         setActiveView('residency-verification');
       }
+      // CAR Admin defaults to 'overview' which shows their role-specific stats
     }
-  }, [loading, isNARAuthority, isCarAdmin, isRegistrar, hasAdminAccess, isResidencyVerifier]);
+  }, [loading, isNARAuthority, isRegistrar, hasAdminAccess, isResidencyVerifier]);
 
   // Fetch dashboard statistics
   useEffect(() => {
