@@ -24,6 +24,7 @@ import IncidentMap from './IncidentMap';
 import { useTranslation } from 'react-i18next';
 import { UniversalLocationPicker } from './UniversalLocationPicker';
 import { RequestBackupDialog } from './RequestBackupDialog';
+import { RequestResourcesDialog } from './RequestResourcesDialog';
 
 interface IncidentAssignment {
   id: string;
@@ -145,8 +146,6 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
   const [recentMessages, setRecentMessages] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [quickMessage, setQuickMessage] = useState('');
-  const [resourceRequest, setResourceRequest] = useState('');
-  const [showResourceDialog, setShowResourceDialog] = useState(false);
   const [autoGPSAttempted, setAutoGPSAttempted] = useState(false);
   const [showLocationPicker, setShowLocationPicker] = useState(false);
 
@@ -628,31 +627,6 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
     };
   };
 
-  const requestResource = async () => {
-    if (!resourceRequest.trim() || !unitInfo) return;
-
-    try {
-      await supabase
-        .from('emergency_incident_logs')
-        .insert({
-          incident_id: '00000000-0000-0000-0000-000000000000', // System log
-          user_id: user?.id,
-          action: 'resource_request',
-          details: { 
-            unit_code: unitInfo.unit_code,
-            request: resourceRequest,
-            timestamp: new Date().toISOString()
-          }
-        });
-
-      setResourceRequest('');
-      setShowResourceDialog(false);
-      toast({ title: 'Resource requested', description: 'Request sent to dispatch' });
-    } catch (error) {
-      console.error('Error requesting resource:', error);
-      toast({ title: 'Error', description: 'Failed to send resource request', variant: 'destructive' });
-    }
-  };
 
   const handleEvidenceUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -1454,10 +1428,12 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
                     </Button>
                   </RequestBackupDialog>
                   
-                  <Button variant="outline" className="text-xs" onClick={() => setShowResourceDialog(true)}>
-                    <Car className="h-4 w-4 mr-2" />
-                    {t('fieldDashboard.requestResources')}
-                  </Button>
+                  <RequestResourcesDialog unitId={unitInfo?.id} unitCode={unitInfo?.unit_code}>
+                    <Button variant="outline" className="text-xs">
+                      <Car className="h-4 w-4 mr-2" />
+                      {t('fieldDashboard.requestResources')}
+                    </Button>
+                  </RequestResourcesDialog>
                   
                   <Button variant="outline" className="text-xs" onClick={() => setShowHistory(!showHistory)}>
                     <History className="h-4 w-4 mr-2" />
@@ -1637,24 +1613,6 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
         }}
       />
 
-      <Dialog open={showResourceDialog} onOpenChange={setShowResourceDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('fieldDashboard.requestResources')}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              value={resourceRequest}
-              onChange={(e) => setResourceRequest(e.target.value)}
-              placeholder={t('fieldDashboard.resourcesPlaceholder')}
-              rows={3}
-            />
-            <Button onClick={requestResource} disabled={!resourceRequest.trim()}>
-              {t('fieldDashboard.sendRequest')}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {actionDialog && (
         <Dialog open={!!actionDialog} onOpenChange={() => setActionDialog(null)}>

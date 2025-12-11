@@ -1705,5 +1705,41 @@
       "onScene": "Sur Place",
       "allClear": "Tout Dégagé"
     }
+  },
+
+  "requestResourcesDialog": {
+    "title": "Demander des Ressources",
+    "description": "Demander des équipements, véhicules ou personnel pour l'unité {{unitCode}}",
+    "resourceType": "Type de Ressource",
+    "selectResourceType": "Sélectionner le type de ressource",
+    "resourceTypes": {
+      "vehicle": "Véhicule",
+      "equipment": "Équipement",
+      "personnel": "Personnel",
+      "medical": "Fournitures Médicales",
+      "tactical": "Équipement Tactique",
+      "other": "Autre"
+    },
+    "urgencyLevel": "Niveau d'Urgence",
+    "selectUrgency": "Sélectionner l'urgence",
+    "urgencyOptions": {
+      "critical": "Critique - Immédiat",
+      "high": "Haute Priorité",
+      "standard": "Standard"
+    },
+    "quantity": "Quantité Nécessaire",
+    "selectQuantity": "Sélectionner la quantité",
+    "specificItems": "Articles/Équipements Spécifiques",
+    "specificItemsPlaceholder": "Décrivez exactement les ressources dont vous avez besoin (ex: 2 véhicules de patrouille, kit forensique, unité K9...)",
+    "deliveryLocation": "Lieu de Livraison",
+    "deliveryLocationPlaceholder": "Laisser vide pour la position actuelle, ou spécifier l'adresse/point de repère",
+    "additionalNotes": "Notes Supplémentaires",
+    "additionalNotesPlaceholder": "Tout contexte supplémentaire ou exigences spéciales...",
+    "cancel": "Annuler",
+    "sendRequest": "Envoyer la Demande",
+    "sending": "Envoi en cours...",
+    "requestSent": "Demande de ressources envoyée au dispatching",
+    "requestFailed": "Échec de l'envoi de la demande de ressources",
+    "specifyItems": "Veuillez spécifier les ressources dont vous avez besoin"
   }
 }
