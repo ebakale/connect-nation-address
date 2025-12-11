@@ -3,6 +3,10 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format, subDays, startOfMonth, endOfMonth, subMonths } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -388,11 +392,89 @@ export const UnitPerformanceAnalytics: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <label className="text-sm font-medium">{t('dateRange')}</label>
-              <div className="text-sm text-muted-foreground">
-                {dateRange?.from?.toLocaleDateString()} - {dateRange?.to?.toLocaleDateString()}
-              </div>
+            <div className="flex-1 min-w-[280px]">
+              <label className="text-sm font-medium block mb-1">{t('dateRange')}</label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !dateRange && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {dateRange?.from ? (
+                      dateRange.to ? (
+                        <>
+                          {format(dateRange.from, "LLL dd, y")} - {format(dateRange.to, "LLL dd, y")}
+                        </>
+                      ) : (
+                        format(dateRange.from, "LLL dd, y")
+                      )
+                    ) : (
+                      <span>{t('selectDateRange')}</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <div className="p-3 border-b space-y-2">
+                    <p className="text-sm font-medium">{t('quickRanges')}</p>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setDateRange({ from: subDays(new Date(), 7), to: new Date() })}
+                      >
+                        {t('last7Days')}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setDateRange({ from: subDays(new Date(), 30), to: new Date() })}
+                      >
+                        {t('last30Days')}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setDateRange({ from: subDays(new Date(), 90), to: new Date() })}
+                      >
+                        {t('last90Days')}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setDateRange({ 
+                          from: startOfMonth(new Date()), 
+                          to: endOfMonth(new Date()) 
+                        })}
+                      >
+                        {t('thisMonth')}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setDateRange({ 
+                          from: startOfMonth(subMonths(new Date(), 1)), 
+                          to: endOfMonth(subMonths(new Date(), 1)) 
+                        })}
+                      >
+                        {t('lastMonth')}
+                      </Button>
+                    </div>
+                  </div>
+                  <Calendar
+                    initialFocus
+                    mode="range"
+                    defaultMonth={dateRange?.from}
+                    selected={dateRange}
+                    onSelect={setDateRange}
+                    numberOfMonths={2}
+                    className="pointer-events-auto"
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <div>
               <label className="text-sm font-medium">{t('reportType')}</label>
