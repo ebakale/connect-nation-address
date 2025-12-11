@@ -60,7 +60,7 @@ const Documentation: React.FC = () => {
                     Process Flow Diagrams (English)
                   </CardTitle>
                   <CardDescription>
-                    Complete workflow documentation for NAR, CAR, and Emergency Management - verified against actual implementation. Note: Address requests require Citizen Portal authentication.
+                    Complete workflow documentation for NAR, CAR, Business, and Emergency Management - verified against actual implementation (Dec 2025)
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -68,12 +68,13 @@ const Documentation: React.FC = () => {
                     <h4 className="font-semibold">Includes:</h4>
                     <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
                       <li><strong>⚠️ Important:</strong> Address requests require Citizen Portal authentication</li>
-                      <li>NAR Process - Verifier sets verified=true, Registrar sets public=true</li>
+                      <li>Unified Address Request - Multi-purpose wizard for CAR/NAR/Business</li>
+                      <li>NAR Process - Auto-publishing: non-residential → public, residential → private</li>
+                      <li>Business Address Registration - Full business workflow</li>
                       <li>CAR Process - Auto-approval via trigger for verified NAR links</li>
                       <li>Emergency Management - Auto-status to 'dispatched' on unit assignment</li>
-                      <li>Module Integration Workflows</li>
-                      <li>Roles and Responsibilities (cross-referenced with RLS policies)</li>
-                      <li>Performance Metrics (SLA)</li>
+                      <li>Rejected Items Retention - 6mo archive, 24mo anonymization</li>
+                      <li>Map Fallback - OpenStreetMap when Google Maps unavailable</li>
                     </ul>
                   </div>
                   <div className="pt-4">
@@ -89,7 +90,7 @@ const Documentation: React.FC = () => {
                     Diagramas de Flujo de Procesos (Español)
                   </CardTitle>
                   <CardDescription>
-                    Documentación completa de flujos de trabajo para procesos NAR, CAR y Gestión de Emergencias en español
+                    Documentación completa de flujos de trabajo para procesos NAR, CAR, Negocio y Gestión de Emergencias en español
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -97,12 +98,12 @@ const Documentation: React.FC = () => {
                     <h4 className="font-semibold">Incluye:</h4>
                     <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
                       <li><strong>⚠️ Importante:</strong> Las solicitudes de dirección requieren autenticación en Portal Ciudadano</li>
-                      <li>Proceso NAR - Registro Nacional de Direcciones</li>
+                      <li>Solicitud Unificada de Direcciones - Asistente multipropósito</li>
+                      <li>Proceso NAR - Auto-publicación según tipo de dirección</li>
+                      <li>Registro de Direcciones de Negocio</li>
                       <li>Proceso CAR - Repositorio de Direcciones Ciudadanas</li>
                       <li>Proceso de Gestión de Emergencias</li>
-                      <li>Flujos de Integración de Módulos</li>
-                      <li>Roles y Responsabilidades</li>
-                      <li>Métricas de Rendimiento (SLA)</li>
+                      <li>Política de Retención de Elementos Rechazados</li>
                     </ul>
                   </div>
                   <div className="pt-4">
@@ -114,25 +115,24 @@ const Documentation: React.FC = () => {
 
             {/* Visual Process Flow Diagrams */}
             <div className="grid gap-6 mt-6">
-              {/* NAR Process Diagram */}
+              {/* Unified Address Request Flow - NEW */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-primary">NAR Process - National Address Registry</CardTitle>
-                  <CardDescription>Complete workflow from field capture to publication</CardDescription>
+                  <CardTitle className="text-primary">Unified Address Request Flow</CardTitle>
+                  <CardDescription>Multi-purpose wizard for CAR declarations, Business registration, and NAR requests</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-col gap-2">
                     {[
-                      { title: 'START', desc: 'Citizen logs in to Citizen Portal (authentication required)', icon: '🚀' },
-                      { title: 'ADDRESS REQUEST', desc: 'Submits request via authenticated Citizen Portal only', icon: '📋' },
-                      { title: 'DATA CAPTURE', desc: 'GPS coordinates, photos, justification, documents', icon: '📸' },
-                      { title: 'AUTO-VERIFICATION', desc: 'Coordinate validation, photo quality, duplicates', icon: '🤖' },
-                      { title: 'FLAGGING', desc: 'System flags for standard or manual review', icon: '🚩' },
-                      { title: 'VERIFIER REVIEW', desc: 'Verifier reviews, sets verified=true', icon: '👁️' },
-                      { title: 'UAC GENERATION', desc: 'UAC auto-generated via generate_unified_uac_unique()', icon: '🔢' },
-                      { title: 'REGISTRAR APPROVAL', desc: 'Registrar sets public=true to publish', icon: '✅' },
-                      { title: 'PUBLICATION', desc: 'Address now in public NAR, searchable', icon: '🌐' },
-                      { title: 'END', desc: 'Available for emergencies and CAR linking', icon: '🎯' }
+                      { title: 'START', desc: 'Citizen accesses Unified Address Request from dashboard', icon: '🚀' },
+                      { title: 'ADDRESS LOOKUP', desc: 'Search existing address by UAC or create new address request', icon: '🔍' },
+                      { title: 'EXISTING FOUND?', desc: 'If UAC found → proceed to declaration; if not → create NAR request first', icon: '❓' },
+                      { title: 'REQUEST TYPE', desc: 'Select: Declare as Residence (CAR) or Register Business', icon: '📋' },
+                      { title: 'CAR DECLARATION', desc: 'Set as primary/secondary address, select scope (BUILDING/UNIT), occupant type', icon: '🏠' },
+                      { title: 'BUSINESS REGISTRATION', desc: 'Enter organization name, category, contacts, services, operating hours', icon: '🏢' },
+                      { title: 'AUTO-APPROVAL CHECK', desc: 'CAR: auto-approved if UAC verified; Business: auto-published if non-residential', icon: '🤖' },
+                      { title: 'MANUAL REVIEW', desc: 'If not auto-approved, goes to verifier queue', icon: '👁️' },
+                      { title: 'END', desc: 'Address declaration/business active in citizen profile', icon: '🎯' }
                     ].map((step, idx) => (
                       <div key={idx}>
                         <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-lg">
@@ -153,6 +153,90 @@ const Documentation: React.FC = () => {
                 </CardContent>
               </Card>
 
+              {/* NAR Process Diagram - UPDATED */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-primary">NAR Process - National Address Registry</CardTitle>
+                  <CardDescription>Complete workflow from field capture to auto-publication</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-2">
+                    {[
+                      { title: 'START', desc: 'Citizen/Field Agent initiates address request', icon: '🚀' },
+                      { title: 'ADDRESS REQUEST', desc: 'Submits via Unified Address Request or Field Agent capture form', icon: '📋' },
+                      { title: 'DATA CAPTURE', desc: 'GPS coordinates, photos, justification, documents', icon: '📸' },
+                      { title: 'AUTO-VERIFICATION', desc: 'Coordinate validation, photo quality, duplicates (score threshold: 70)', icon: '🤖' },
+                      { title: 'FLAGGING', desc: 'System flags for standard or manual review based on score', icon: '🚩' },
+                      { title: 'VERIFIER REVIEW', desc: 'Verifier (NAR domain) reviews, sets verified=true', icon: '👁️' },
+                      { title: 'UAC GENERATION', desc: 'UAC auto-generated via generate_unified_uac_unique()', icon: '🔢' },
+                      { title: 'REGISTRAR APPROVAL', desc: 'Final approval - triggers auto-publishing policy', icon: '✅' },
+                      { title: 'AUTO-PUBLISHING', desc: 'Non-residential → public=true; Residential → public=false', icon: '🌐' },
+                      { title: 'END', desc: 'Available for emergencies and CAR linking', icon: '🎯' }
+                    ].map((step, idx) => (
+                      <div key={idx}>
+                        <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-lg">
+                          <div className="text-2xl">{step.icon}</div>
+                          <div className="flex-1">
+                            <div className="font-semibold text-sm">{step.title}</div>
+                            <div className="text-xs text-muted-foreground">{step.desc}</div>
+                          </div>
+                        </div>
+                        {idx < 9 && (
+                          <div className="flex justify-center py-1">
+                            <div className="text-muted-foreground">↓</div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="bg-muted p-4 rounded-lg mt-4">
+                    <p className="text-sm"><strong>Auto-Publishing Policy:</strong> Non-residential types (business, commercial, government, landmark, institutional, industrial, public) are automatically public. Residential addresses require explicit publication.</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Business Address Registration - NEW */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-primary">Business Address Registration</CardTitle>
+                  <CardDescription>Complete flow for registering business addresses</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-2">
+                    {[
+                      { title: 'START', desc: 'User selects "Register Business" in Unified Address Request', icon: '🚀' },
+                      { title: 'ADDRESS SELECTION', desc: 'Search existing NAR address by UAC or request new address creation', icon: '🔍' },
+                      { title: 'BUSINESS DETAILS', desc: 'Enter organization_name, business_category (required for approval)', icon: '📝' },
+                      { title: 'CONTACT INFO', desc: 'Add business phone, email, website, social media links', icon: '📞' },
+                      { title: 'SERVICES', desc: 'List services offered, business description, keywords', icon: '🛠️' },
+                      { title: 'OPERATING HOURS', desc: 'Set daily opening/closing times, special hours', icon: '🕐' },
+                      { title: 'VISIBILITY', desc: 'Choose directory listing preferences', icon: '👁️' },
+                      { title: 'VALIDATION', desc: 'System validates complete metadata before approval', icon: '✔️' },
+                      { title: 'AUTO-PUBLISH', desc: 'Business addresses auto-set to public=true on approval', icon: '🌐' },
+                      { title: 'END', desc: 'Business appears in public Business Directory', icon: '🎯' }
+                    ].map((step, idx) => (
+                      <div key={idx}>
+                        <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-lg">
+                          <div className="text-2xl">{step.icon}</div>
+                          <div className="flex-1">
+                            <div className="font-semibold text-sm">{step.title}</div>
+                            <div className="text-xs text-muted-foreground">{step.desc}</div>
+                          </div>
+                        </div>
+                        {idx < 9 && (
+                          <div className="flex justify-center py-1">
+                            <div className="text-muted-foreground">↓</div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-lg mt-4">
+                    <p className="text-sm"><strong>⚠️ Validation:</strong> Business requests with incomplete metadata (missing organization_name or business_category) cannot be approved. The system prevents "Unknown Organization" records.</p>
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* CAR Process Diagram */}
               <Card>
                 <CardHeader>
@@ -162,15 +246,16 @@ const Documentation: React.FC = () => {
                 <CardContent>
                   <div className="flex flex-col gap-2">
                     {[
-                      { title: 'START', desc: 'Citizen accesses CitizenAddressVerificationManager', icon: '🚀' },
+                      { title: 'START', desc: 'Citizen accesses Unified Address Request or My CAR Addresses', icon: '🚀' },
                       { title: 'PERSON RECORD', desc: 'System creates/loads person record linked to auth.uid()', icon: '👤' },
                       { title: 'ACTION SELECTION', desc: 'Set Primary/Add Secondary/Request Verification', icon: '📝' },
                       { title: 'UAC INPUT', desc: 'Citizen enters UAC from verified NAR address', icon: '🔍' },
                       { title: 'SCOPE SELECTION', desc: 'BUILDING (whole property) or UNIT (specific unit)', icon: '🏠' },
+                      { title: 'PRIVACY LEVEL', desc: 'Select: PRIVATE, REGION_ONLY, or PUBLIC', icon: '🔒' },
                       { title: 'RPC EXECUTION', desc: 'set_primary_address() or add_secondary_address()', icon: '⚙️' },
-                      { title: 'AUTO-APPROVAL CHECK', desc: 'trigger_auto_approve_citizen_address() trigger', icon: '🤖' },
-                      { title: 'STATUS: SELF_DECLARED', desc: 'If NAR UAC verified → Auto CONFIRMED', icon: '✅' },
-                      { title: 'MANUAL REVIEW', desc: 'CAR verifiers review non-auto-approved', icon: '👁️' },
+                      { title: 'AUTO-APPROVAL CHECK', desc: 'trigger_auto_approve_citizen_address() - if NAR verified → CONFIRMED', icon: '🤖' },
+                      { title: 'STATUS: SELF_DECLARED', desc: 'If not auto-approved → pending manual review', icon: '⏳' },
+                      { title: 'CAR VERIFIER REVIEW', desc: 'Verifiers (CAR domain) review pending declarations', icon: '👁️' },
                       { title: 'STATUS UPDATE', desc: 'set_citizen_address_status() to CONFIRMED/REJECTED', icon: '✔️' },
                       { title: 'END', desc: 'Active in citizen profile with effective dates', icon: '🎯' }
                     ].map((step, idx) => (
@@ -182,7 +267,7 @@ const Documentation: React.FC = () => {
                             <div className="text-xs text-muted-foreground">{step.desc}</div>
                           </div>
                         </div>
-                        {idx < 10 && (
+                        {idx < 11 && (
                           <div className="flex justify-center py-1">
                             <div className="text-muted-foreground">↓</div>
                           </div>
@@ -232,6 +317,60 @@ const Documentation: React.FC = () => {
                         )}
                       </div>
                     ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Rejected Items Retention - NEW */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-primary">Rejected Items Retention Policy</CardTitle>
+                  <CardDescription>Data lifecycle for rejected addresses and verifications</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-2">
+                    {[
+                      { title: 'REJECTION', desc: 'Item rejected (NAR request, CAR declaration, or verification)', icon: '❌' },
+                      { title: 'ACTIVE RETENTION', desc: '0-6 months: Full data in main tables, citizen can delete', icon: '📂' },
+                      { title: 'ARCHIVING', desc: '6-24 months: Moved to archive tables, PII preserved', icon: '📦' },
+                      { title: 'ANONYMIZATION', desc: '24+ months: PII removed, statistical data retained', icon: '🔒' },
+                      { title: 'MONTHLY CLEANUP', desc: 'Cron job runs 1st of month at 3 AM', icon: '🗓️' },
+                      { title: 'MANUAL DELETE', desc: 'Citizens can delete own rejected items anytime', icon: '🗑️' }
+                    ].map((step, idx) => (
+                      <div key={idx}>
+                        <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-lg">
+                          <div className="text-2xl">{step.icon}</div>
+                          <div className="flex-1">
+                            <div className="font-semibold text-sm">{step.title}</div>
+                            <div className="text-xs text-muted-foreground">{step.desc}</div>
+                          </div>
+                        </div>
+                        {idx < 5 && (
+                          <div className="flex justify-center py-1">
+                            <div className="text-muted-foreground">↓</div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Map Fallback Note */}
+              <Card className="bg-muted/50">
+                <CardHeader>
+                  <CardTitle className="text-primary">Map Provider Fallback</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <p className="text-sm">The system implements automatic OpenStreetMap/Leaflet fallback when Google Maps billing is not enabled or API errors occur.</p>
+                    <ul className="list-disc list-inside text-sm space-y-1">
+                      <li><strong>Primary:</strong> Google Maps (requires billing enabled)</li>
+                      <li><strong>Fallback:</strong> OpenStreetMap + Leaflet (free, automatic)</li>
+                      <li><strong>Detection:</strong> System automatically detects Google Maps failures</li>
+                      <li><strong>Components:</strong> UniversalFieldMap, UniversalLocationMap, UniversalLocationPicker</li>
+                    </ul>
+                    <p className="text-sm text-muted-foreground">Users see a warning banner when using OSM fallback. All map features continue working seamlessly.</p>
                   </div>
                 </CardContent>
               </Card>
