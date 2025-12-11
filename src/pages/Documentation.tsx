@@ -296,10 +296,13 @@ const Documentation: React.FC = () => {
                       { title: 'UNIT ASSIGNMENT', desc: 'Units assigned to incident (assigned_units[] array)', icon: '🚔' },
                       { title: 'AUTO-STATUS UPDATE', desc: 'Trigger sets status=dispatched when units assigned', icon: '⚡' },
                       { title: 'UNIT NOTIFICATION', desc: 'notify-unit-assignment edge function', icon: '📲' },
+                      { title: 'NAVIGATE TO SCENE', desc: 'Unit uses Navigate button for turn-by-turn directions', icon: '🗺️' },
                       { title: 'STATUS: responded', desc: 'Unit en route, responded_at timestamp set', icon: '🚗' },
+                      { title: 'EVIDENCE CAPTURE', desc: 'Officer captures photos via EvidenceCaptureDialog with location', icon: '📸' },
                       { title: 'STATUS: resolved', desc: 'Incident handled, resolved_at timestamp', icon: '✅' },
                       { title: 'BACKUP (if needed)', desc: 'process-backup-request via BackupNotificationManager', icon: '🆘' },
                       { title: 'STATUS: closed', desc: 'Final documentation, closed_at timestamp', icon: '📊' },
+                      { title: 'AUDIT LOGGED', desc: 'All actions recorded in emergency_incident_logs', icon: '📋' },
                       { title: 'END', desc: 'notify-incident-reporter notifies reporter', icon: '🎯' }
                     ].map((step, idx) => (
                       <div key={idx}>
@@ -310,7 +313,7 @@ const Documentation: React.FC = () => {
                             <div className="text-xs text-muted-foreground">{step.desc}</div>
                           </div>
                         </div>
-                        {idx < 13 && (
+                        {idx < 16 && (
                           <div className="flex justify-center py-1">
                             <div className="text-muted-foreground">↓</div>
                           </div>

@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Radio, MapPin, Camera, MessageSquare, AlertCircle } from "lucide-react";
+import { Radio, MapPin, Camera, MessageSquare, AlertCircle, Navigation, ImagePlus, Ruler } from "lucide-react";
 
 export function PoliceOperatorGuide() {
   return (
@@ -18,7 +18,7 @@ export function PoliceOperatorGuide() {
         <div className="space-y-3">
           <p><strong>Your Role:</strong> Police operators are field officers assigned to emergency units who respond to incidents on the ground.</p>
           <p><strong>Access:</strong> Police Dashboard at /police-dashboard or Units & Profiles page</p>
-          <p><strong>Key Permissions:</strong> View assigned incidents, update incident status, communicate with dispatch, report field notes, request backup</p>
+          <p><strong>Key Permissions:</strong> View assigned incidents, update incident status, communicate with dispatch, report field notes, request backup, capture evidence, navigate to incidents</p>
         </div>
       </Card>
 
@@ -87,14 +87,95 @@ export function PoliceOperatorGuide() {
         </div>
       </Card>
 
+      {/* Navigation Integration - NEW */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Navigation className="h-5 w-5" />
+          Navigation to Incident
+        </h2>
+        <div className="space-y-3">
+          <p>Use the integrated navigation feature to get turn-by-turn directions to the incident location.</p>
+          
+          <h3 className="font-semibold mt-4">How to Navigate:</h3>
+          <ol className="list-decimal list-inside space-y-2 ml-4">
+            <li>Open the incident details</li>
+            <li>Click the "Navigate" button</li>
+            <li>Your device's default maps app will open with directions</li>
+            <li>Follow turn-by-turn navigation to the scene</li>
+          </ol>
+
+          <h3 className="font-semibold mt-4">Platform Support:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li><strong>iOS:</strong> Opens Apple Maps by default</li>
+            <li><strong>Android:</strong> Opens Google Maps</li>
+            <li><strong>Web:</strong> Opens Google Maps in browser</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Distance & Time Estimates:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>View distance to incident from current location</li>
+            <li>Estimated travel time displayed (based on 40 km/h average)</li>
+            <li>Updates as you move closer to the scene</li>
+          </ul>
+
+          <div className="bg-muted p-4 rounded-lg mt-4">
+            <p className="text-sm"><strong>💡 Tip:</strong> Enable location services for accurate distance estimates and optimal routing</p>
+          </div>
+        </div>
+      </Card>
+
+      {/* Evidence Capture - NEW */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <ImagePlus className="h-5 w-5" />
+          Evidence Capture
+        </h2>
+        <div className="space-y-3">
+          <p>Document incident scenes with photos that are securely stored with location data.</p>
+          
+          <h3 className="font-semibold mt-4">Capturing Evidence:</h3>
+          <ol className="list-decimal list-inside space-y-2 ml-4">
+            <li>Open the incident details while on scene</li>
+            <li>Click "Capture Evidence" button</li>
+            <li>Take a photo using your device camera</li>
+            <li>Add a description of what the photo shows</li>
+            <li>Location coordinates are automatically captured</li>
+            <li>Submit - photo is securely uploaded</li>
+          </ol>
+
+          <h3 className="font-semibold mt-4">What to Document:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>Scene overview upon arrival</li>
+            <li>Damage or injuries (if appropriate)</li>
+            <li>Evidence at the scene</li>
+            <li>Relevant environmental conditions</li>
+            <li>Vehicle positions (traffic incidents)</li>
+            <li>Identifiable landmarks for location context</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Evidence Security:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>Photos stored in secure cloud storage</li>
+            <li>Linked to incident record automatically</li>
+            <li>Visible to supervisors and dispatchers</li>
+            <li>Location and timestamp metadata preserved</li>
+            <li>Cannot be edited after upload (chain of custody)</li>
+          </ul>
+
+          <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 mt-4">
+            <p className="text-sm text-yellow-800"><strong>⚠️ Privacy:</strong> Only capture evidence relevant to the incident. Respect privacy of uninvolved individuals.</p>
+          </div>
+        </div>
+      </Card>
+
       {/* Responding to Incidents */}
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Responding to Incidents</h2>
         <div className="space-y-4">
           <h3 className="font-semibold">Navigation:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>Use the map viewer to see incident location</li>
-            <li>Click "Get Directions" for turn-by-turn navigation</li>
+            <li>Use the "Navigate" button for turn-by-turn directions</li>
+            <li>View distance and estimated arrival time</li>
             <li>UAC helps identify exact building/location</li>
             <li>Look for QR codes on buildings to verify address</li>
           </ul>
@@ -136,11 +217,12 @@ export function PoliceOperatorGuide() {
             <li>Save notes - dispatcher and supervisors can see them</li>
           </ol>
 
-          <h3 className="font-semibold mt-4">Taking Photos:</h3>
+          <h3 className="font-semibold mt-4">Photo Evidence:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>Document scene with photos (if appropriate)</li>
-            <li>Photos are encrypted for security</li>
-            <li>Include in incident report</li>
+            <li>Use "Capture Evidence" for scene documentation</li>
+            <li>Photos are encrypted and securely stored</li>
+            <li>Include in incident report automatically</li>
+            <li>Viewable in Evidence tab of incident details</li>
           </ul>
         </div>
       </Card>
@@ -203,6 +285,39 @@ export function PoliceOperatorGuide() {
         </div>
       </Card>
 
+      {/* Distance Estimates - NEW */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Ruler className="h-5 w-5" />
+          Distance & Time Estimates
+        </h2>
+        <div className="space-y-3">
+          <p>View distance and estimated travel time to incidents from your current location.</p>
+          
+          <h3 className="font-semibold mt-4">Distance Display:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>Distances under 1 km shown in meters</li>
+            <li>Distances over 1 km shown in kilometers</li>
+            <li>Calculated using Haversine formula (straight-line)</li>
+            <li>Actual road distance may be slightly longer</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Time Estimates:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>Based on average urban speed of 40 km/h</li>
+            <li>Displayed as minutes or hours+minutes</li>
+            <li>Use as rough guide - actual time varies with traffic</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Requirements:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>Location services must be enabled</li>
+            <li>Incident must have valid coordinates</li>
+            <li>Updates when you refresh incident list</li>
+          </ul>
+        </div>
+      </Card>
+
       {/* Best Practices */}
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Best Practices</h2>
@@ -211,7 +326,8 @@ export function PoliceOperatorGuide() {
           <ul className="list-disc list-inside space-y-1 ml-4">
             <li>✅ Update status promptly at each stage</li>
             <li>✅ Review full incident details before responding</li>
-            <li>✅ Use UAC and map for accurate location</li>
+            <li>✅ Use "Navigate" button for fastest route</li>
+            <li>✅ Capture evidence upon arrival</li>
             <li>✅ Document thoroughly with field notes</li>
             <li>✅ Communicate clearly with dispatch</li>
             <li>✅ Request backup early if situation requires it</li>
@@ -229,6 +345,7 @@ export function PoliceOperatorGuide() {
           <ul className="list-disc list-inside space-y-1 ml-4">
             <li>❌ Not updating status (dispatch can't track you)</li>
             <li>❌ Incomplete field notes (poor documentation)</li>
+            <li>❌ Not capturing evidence at scene</li>
             <li>❌ Not requesting backup when needed</li>
             <li>❌ Forgetting to set "Available" after incident</li>
           </ul>
@@ -247,6 +364,7 @@ export function PoliceOperatorGuide() {
             <li><strong>Resolution Time:</strong> Time from on-scene to resolved</li>
             <li><strong>Incidents Handled:</strong> Total count per shift</li>
             <li><strong>Status Update Compliance:</strong> Timely status changes</li>
+            <li><strong>Evidence Captured:</strong> Documentation quality</li>
           </ul>
 
           <p className="mt-4 text-sm text-muted-foreground">View your performance statistics in the Unit Performance dashboard</p>

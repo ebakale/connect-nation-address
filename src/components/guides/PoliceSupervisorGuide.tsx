@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Shield, Users, BarChart, MapPin, Radio } from "lucide-react";
+import { Shield, Users, BarChart, MapPin, Radio, ImageIcon, Eye } from "lucide-react";
 
 export function PoliceSupervisorGuide() {
   return (
@@ -17,7 +17,7 @@ export function PoliceSupervisorGuide() {
         <div className="space-y-3">
           <p><strong>Your Role:</strong> Police supervisors oversee emergency units, monitor operations, and manage personnel within their jurisdiction.</p>
           <p><strong>Access:</strong> Police Dashboard with expanded supervisor controls</p>
-          <p><strong>Key Permissions:</strong> Manage units, view all incidents in jurisdiction, assign/reassign operators, approve backup requests, view performance analytics</p>
+          <p><strong>Key Permissions:</strong> Manage units, view all incidents in jurisdiction, assign/reassign operators, approve backup requests, view performance analytics, review field evidence</p>
         </div>
       </Card>
 
@@ -83,6 +83,42 @@ export function PoliceSupervisorGuide() {
         </div>
       </Card>
 
+      {/* Evidence Review - NEW */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <ImageIcon className="h-5 w-5" />
+          Evidence Review
+        </h2>
+        <div className="space-y-3">
+          <p>Review field evidence captured by operators during incident response.</p>
+          
+          <h3 className="font-semibold mt-4">Viewing Evidence:</h3>
+          <ol className="list-decimal list-inside space-y-2 ml-4">
+            <li>Open incident details</li>
+            <li>Navigate to the "Evidence" section</li>
+            <li>View photos captured by field officers</li>
+            <li>Review location data and timestamps</li>
+            <li>Read officer descriptions of evidence</li>
+          </ol>
+
+          <h3 className="font-semibold mt-4">Evidence Quality Assessment:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>Verify photos are clear and relevant</li>
+            <li>Check descriptions are adequate</li>
+            <li>Ensure proper documentation of scene</li>
+            <li>Identify any gaps in evidence collection</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Using Evidence for Oversight:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>Verify officers are following protocols</li>
+            <li>Assess incident handling quality</li>
+            <li>Identify training opportunities</li>
+            <li>Support investigation reviews</li>
+          </ul>
+        </div>
+      </Card>
+
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
           <Radio className="h-5 w-5" />
@@ -106,19 +142,30 @@ export function PoliceSupervisorGuide() {
         </div>
       </Card>
 
+      {/* Real-Time Analytics - UPDATED */}
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
           <BarChart className="h-5 w-5" />
-          Performance Analytics
+          Real-Time Performance Analytics
         </h2>
         <div className="space-y-3">
-          <h3 className="font-semibold">Unit Performance Metrics:</h3>
+          <p>Analytics are pulled directly from the database in real-time for accurate operational insights.</p>
+          
+          <h3 className="font-semibold mt-4">Unit Performance Metrics:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
             <li><strong>Response Times:</strong> Average time to reach incidents</li>
             <li><strong>Resolution Times:</strong> Time to handle incidents</li>
             <li><strong>Incidents Per Shift:</strong> Workload tracking</li>
             <li><strong>Status Compliance:</strong> Timely status updates</li>
             <li><strong>Backup Requests:</strong> Frequency and reasons</li>
+            <li><strong>Evidence Capture Rate:</strong> Documentation quality</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Time Range Options:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li><strong>7 days:</strong> Recent performance snapshot</li>
+            <li><strong>30 days:</strong> Monthly trends</li>
+            <li><strong>90 days:</strong> Quarterly analysis</li>
           </ul>
 
           <h3 className="font-semibold mt-4">Using Analytics:</h3>
@@ -177,6 +224,7 @@ export function PoliceSupervisorGuide() {
             <li>✅ Monitor unit locations and status regularly</li>
             <li>✅ Respond quickly to backup requests</li>
             <li>✅ Review daily performance metrics</li>
+            <li>✅ Check evidence quality from incidents</li>
             <li>✅ Ensure balanced unit coverage across jurisdiction</li>
             <li>✅ Communicate with dispatchers for coordination</li>
             <li>✅ Address performance issues promptly</li>
