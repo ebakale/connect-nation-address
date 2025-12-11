@@ -1778,5 +1778,12 @@
     "distance": "Distancia",
     "estimatedTime": "Tiempo Est.",
     "gettingDirections": "Obteniendo direcciones..."
-  }
+  },
+  "selectDateRange": "Seleccionar rango de fechas",
+  "quickRanges": "Rangos Rápidos",
+  "last7Days": "Últimos 7 días",
+  "last30Days": "Últimos 30 días",
+  "last90Days": "Últimos 90 días",
+  "thisMonth": "Este mes",
+  "lastMonth": "Mes anterior"
 }
