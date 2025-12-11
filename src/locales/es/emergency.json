@@ -1814,5 +1814,96 @@
   "last180Days": "Últimos 180 días",
   "last360Days": "Últimos 360 días",
   "thisMonth": "Este mes",
-  "lastMonth": "Mes anterior"
+  "lastMonth": "Mes anterior",
+
+  "emergencyBackup": {
+    "officerDown": "OFICIAL CAÍDO",
+    "emergencyBackupTitle": "Refuerzo de Emergencia - Oficial Caído",
+    "emergencyDescription": "Esto transmitirá inmediatamente una alerta de emergencia a TODAS las unidades disponibles en el sistema. Use solo en situaciones que amenazan la vida.",
+    "broadcastWarning": "TRANSMISIÓN INMEDIATA",
+    "broadcastDescription": "Esta alerta se enviará a todos los operadores, despachadores, supervisores y administradores de policía independientemente del ámbito geográfico.",
+    "situationOptional": "Descripción de la Situación (Opcional)",
+    "situationPlaceholder": "Describa brevemente la situación de emergencia...",
+    "unitInfo": "La alerta se enviará desde la Unidad: {{unitCode}}",
+    "sending": "Enviando Alerta...",
+    "sendEmergencyAlert": "ENVIAR ALERTA DE EMERGENCIA",
+    "alertSent": "Alerta de Emergencia Enviada",
+    "allUnitsNotified": "Todas las unidades disponibles han sido notificadas",
+    "failedToSend": "Error al enviar alerta de emergencia"
+  },
+
+  "backupApproval": {
+    "status": "Estado de la Solicitud",
+    "pending": "Pendiente",
+    "acknowledged": "Recibido",
+    "approved": "Aprobado",
+    "denied": "Denegado",
+    "fulfilled": "Cumplido",
+    "escalated": "Escalado",
+    "acknowledgeReceipt": "Confirmar Recepción",
+    "enRoute": "En Camino",
+    "approve": "Aprobar Solicitud",
+    "modifyPriority": "Modificar Prioridad",
+    "deny": "Denegar Solicitud",
+    "acknowledgmentSent": "Confirmación de {{type}} enviada",
+    "failedToAcknowledge": "Error al enviar confirmación",
+    "requestApproved": "Solicitud de Refuerzo Aprobada",
+    "backupApprovedMessage": "Su solicitud de refuerzo ha sido aprobada. Se despacharán unidades adicionales.",
+    "requestApprovedSuccess": "Solicitud de refuerzo aprobada exitosamente",
+    "failedToApprove": "Error al aprobar solicitud de refuerzo",
+    "requestDenied": "Solicitud de Refuerzo Denegada",
+    "backupDeniedMessage": "Su solicitud de refuerzo fue denegada. Razón: {{reason}}",
+    "requestDeniedSuccess": "Solicitud de refuerzo denegada",
+    "failedToDeny": "Error al denegar solicitud de refuerzo",
+    "provideReason": "Por favor proporcione una razón para la denegación",
+    "denyBackupRequest": "Denegar Solicitud de Refuerzo",
+    "denyDescription": "Proporcione una razón para denegar esta solicitud. La unidad solicitante será notificada.",
+    "reasonForDenial": "Razón de la Denegación",
+    "denyReasonPlaceholder": "Explique por qué no se puede proporcionar refuerzo...",
+    "confirmDeny": "Confirmar Denegación",
+    "modifyPriorityTitle": "Modificar Prioridad de Refuerzo",
+    "modifyPriorityDescription": "Ajuste el nivel de prioridad de esta solicitud de refuerzo.",
+    "newPriority": "Nuevo Nivel de Prioridad",
+    "priorities": {
+      "emergency": "P0 - EMERGENCIA (Oficial Caído)",
+      "critical": "P1 - Crítico (Inmediato)",
+      "high": "P2 - Alta Prioridad",
+      "medium": "P3 - Prioridad Media"
+    },
+    "priorityModified": "Prioridad de refuerzo modificada exitosamente",
+    "failedToModify": "Error al modificar prioridad",
+    "updatePriority": "Actualizar Prioridad",
+    "types": {
+      "receipt": "Recepción",
+      "en_route": "En Camino",
+      "on_scene": "En Escena",
+      "all_clear": "Todo Despejado"
+    },
+    "dispatcherActionsOnly": "Como despachador, puede confirmar y escalar solicitudes. La aprobación requiere autorización del supervisor.",
+    "escalateToSupervisor": "Escalar a Supervisor",
+    "escalateTitle": "Escalar a Supervisor",
+    "escalateDescription": "Esto notificará a todos los supervisores disponibles sobre esta solicitud de refuerzo para revisión y aprobación.",
+    "escalateNotes": "Notas para el Supervisor (Opcional)",
+    "escalateNotesPlaceholder": "Proporcione contexto o detalles de urgencia para el supervisor...",
+    "confirmEscalate": "Escalar Solicitud",
+    "escalationSent": "Solicitud escalada a supervisores",
+    "failedToEscalate": "Error al escalar solicitud",
+    "escalatedTitle": "Solicitud de Refuerzo Escalada",
+    "escalatedMessage": "La solicitud de refuerzo del incidente {{incident}} requiere su aprobación. Notas: {{notes}}",
+    "noNotesProvided": "Sin notas adicionales"
+  },
+
+  "backupAcknowledgment": {
+    "title": "Confirmaciones de Respuesta",
+    "loading": "Cargando confirmaciones...",
+    "noAcknowledgments": "Aún no hay confirmaciones",
+    "unknownUser": "Usuario Desconocido",
+    "eta": "ETA: {{minutes}} min",
+    "types": {
+      "receipt": "Recibido",
+      "enRoute": "En Camino",
+      "onScene": "En Escena",
+      "allClear": "Todo Despejado"
+    }
+  }
 }

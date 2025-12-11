@@ -119,13 +119,24 @@ export function PoliceSupervisorGuide() {
         </div>
       </Card>
 
-      {/* Enhanced Backup Management - UPDATED */}
-      <Card className="p-6 border-red-500/30">
+      {/* Enhanced Backup Management - UPDATED for Tiered Approval */}
+      <Card className="p-6 border-green-500/30">
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
           <Radio className="h-5 w-5" />
-          Backup Request Management
+          Backup Request Approval (Supervisor Authority)
         </h2>
         <div className="space-y-4">
+          <div className="bg-green-500/10 border border-green-500/20 p-4 rounded-lg">
+            <h3 className="font-semibold text-green-700 mb-2">✓ Supervisor Approval Authority</h3>
+            <p className="text-sm mb-2">As a supervisor, you have exclusive authority to:</p>
+            <ul className="list-disc list-inside space-y-1 ml-4 text-sm">
+              <li><strong>Approve</strong> backup requests - dispatches additional units</li>
+              <li><strong>Deny</strong> backup requests - requires providing a reason</li>
+              <li><strong>Modify Priority</strong> - adjust urgency level if assessment differs</li>
+            </ul>
+            <p className="text-sm mt-3 text-green-700">Dispatchers can acknowledge and escalate, but only supervisors can approve or deny.</p>
+          </div>
+
           <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-lg">
             <h3 className="font-semibold text-red-600 mb-2">🚨 Officer Down Alerts</h3>
             <p className="text-sm">When an officer activates the OFFICER DOWN button:</p>
@@ -137,20 +148,30 @@ export function PoliceSupervisorGuide() {
             </ul>
           </div>
 
-          <h3 className="font-semibold">Standard Backup Request Workflow:</h3>
+          <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-lg">
+            <h3 className="font-semibold text-amber-700 mb-2">⬆️ Escalated Requests</h3>
+            <p className="text-sm">When dispatchers escalate a request to you:</p>
+            <ul className="list-disc list-inside space-y-1 ml-4 text-sm mt-2">
+              <li>You receive notification with dispatcher's notes</li>
+              <li>Request status shows "Escalated"</li>
+              <li>Review context and make approval decision</li>
+              <li>Your decision notifies both dispatcher and requesting unit</li>
+            </ul>
+          </div>
+
+          <h3 className="font-semibold">Approval Workflow:</h3>
           <ol className="list-decimal list-inside space-y-2 ml-4">
             <li><strong>Receive Notification:</strong> Alert appears in Backup Requests panel</li>
             <li><strong>Acknowledge Receipt:</strong> Click "Acknowledge" to confirm you've seen the request</li>
             <li><strong>Review Details:</strong> Check incident info, requesting unit, urgency level, reason</li>
             <li><strong>Make Decision:</strong>
               <ul className="list-disc list-inside ml-4 mt-1">
-                <li><strong>Approve:</strong> Confirms backup, system dispatches nearest unit</li>
+                <li><strong>Approve:</strong> Confirms backup, notifies requesting unit</li>
                 <li><strong>Modify Priority:</strong> Adjust urgency level if assessment differs</li>
                 <li><strong>Deny:</strong> Must provide reason (e.g., no units available, not justified)</li>
               </ul>
             </li>
             <li><strong>Monitor Response:</strong> Track backup unit acknowledgments and arrival</li>
-            <li><strong>All-Clear:</strong> Mark situation resolved when backup complete</li>
           </ol>
 
           <h3 className="font-semibold mt-4">Acknowledgment Tracking:</h3>
@@ -164,13 +185,14 @@ export function PoliceSupervisorGuide() {
           <h3 className="font-semibold mt-4">Backup Request Statuses:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
             <li><span className="text-yellow-600 font-medium">Pending</span> - Awaiting supervisor review</li>
-            <li><span className="text-blue-600 font-medium">Acknowledged</span> - Supervisor has seen request</li>
+            <li><span className="text-blue-600 font-medium">Acknowledged</span> - Request has been seen</li>
+            <li><span className="text-amber-600 font-medium">Escalated</span> - Dispatcher escalated for approval</li>
             <li><span className="text-green-600 font-medium">Approved</span> - Backup dispatched</li>
             <li><span className="text-red-600 font-medium">Denied</span> - Request rejected with reason</li>
           </ul>
 
           <div className="bg-muted p-4 rounded-lg mt-4">
-            <p className="text-sm"><strong>💡 Best Practice:</strong> Always acknowledge receipt quickly so officers know their request was received. Prioritize officer safety situations above all else.</p>
+            <p className="text-sm"><strong>💡 Best Practice:</strong> Always acknowledge receipt quickly so officers know their request was received. Prioritize officer safety situations above all else. All decisions are logged for audit purposes.</p>
           </div>
         </div>
       </Card>

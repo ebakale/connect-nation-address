@@ -5,10 +5,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, Shield, Clock, Truck, AlertTriangle } from 'lucide-react';
+import { CheckCircle, XCircle, Shield, Clock, Truck, AlertTriangle, ArrowUpCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
+import { useUserRole } from '@/hooks/useUserRole';
 import { useTranslation } from 'react-i18next';
 
 interface BackupApprovalActionsProps {
@@ -29,12 +30,20 @@ export const BackupApprovalActions: React.FC<BackupApprovalActionsProps> = ({
   onStatusChange
 }) => {
   const { user } = useAuth();
+  const { isPoliceSupervisor, isPoliceAdmin, isAdmin, isPoliceDispatcher } = useUserRole();
   const { t } = useTranslation('emergency');
   const [loading, setLoading] = useState(false);
   const [denyDialogOpen, setDenyDialogOpen] = useState(false);
   const [denyReason, setDenyReason] = useState('');
   const [modifyDialogOpen, setModifyDialogOpen] = useState(false);
   const [newPriority, setNewPriority] = useState(priorityLevel.toString());
+  const [escalateDialogOpen, setEscalateDialogOpen] = useState(false);
+  const [escalateNotes, setEscalateNotes] = useState('');
+
+  // Role-based permissions
+  const canApprove = isPoliceSupervisor || isPoliceAdmin || isAdmin;
+  const canAcknowledge = isPoliceSupervisor || isPoliceAdmin || isAdmin || isPoliceDispatcher;
+  const canEscalate = isPoliceDispatcher && !canApprove;
 
   const handleAcknowledge = async (type: 'receipt' | 'en_route' | 'on_scene') => {
     if (!user) return;
@@ -92,8 +101,87 @@ export const BackupApprovalActions: React.FC<BackupApprovalActionsProps> = ({
     }
   };
 
-  const handleApprove = async () => {
+  const handleEscalate = async () => {
     if (!user) return;
+    setLoading(true);
+
+    try {
+      // Get incident details for context
+      const { data: incident } = await supabase
+        .from('emergency_incidents')
+        .select('incident_number, city, region')
+        .eq('id', incidentId)
+        .single();
+
+      // Find supervisors in the same geographic scope
+      const { data: supervisors } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .eq('role', 'police_supervisor');
+
+      if (supervisors && supervisors.length > 0) {
+        // Create escalation notifications for all supervisors
+        const notifications = supervisors.map(sup => ({
+          user_id: sup.user_id,
+          incident_id: incidentId,
+          title: t('backupApproval.escalatedTitle'),
+          message: t('backupApproval.escalatedMessage', { 
+            incident: incident?.incident_number,
+            notes: escalateNotes || t('backupApproval.noNotesProvided')
+          }),
+          type: 'backup_escalated',
+          priority_level: Math.max(0, priorityLevel - 1), // Increase priority
+          metadata: {
+            escalated_by: user.id,
+            escalated_at: new Date().toISOString(),
+            original_priority: priorityLevel,
+            escalation_notes: escalateNotes,
+            requesting_unit: requestingUnit
+          }
+        }));
+
+        await supabase.from('emergency_notifications').insert(notifications);
+      }
+
+      // Update incident to mark as escalated
+      await supabase
+        .from('emergency_incidents')
+        .update({ 
+          backup_request_status: 'escalated',
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', incidentId);
+
+      // Log the escalation
+      await supabase
+        .from('emergency_incident_logs')
+        .insert({
+          incident_id: incidentId,
+          user_id: user.id,
+          action: 'backup_escalated_to_supervisor',
+          details: {
+            notification_id: notificationId,
+            requesting_unit: requestingUnit,
+            escalation_notes: escalateNotes,
+            supervisors_notified: supervisors?.length || 0,
+            timestamp: new Date().toISOString()
+          }
+        });
+
+      toast.success(t('backupApproval.escalationSent'));
+      setEscalateDialogOpen(false);
+      setEscalateNotes('');
+      onStatusChange?.();
+    } catch (error) {
+      console.error('Error escalating backup:', error);
+      toast.error(t('backupApproval.failedToEscalate'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleApprove = async () => {
+    if (!user || !canApprove) return;
     setLoading(true);
 
     try {
@@ -159,7 +247,7 @@ export const BackupApprovalActions: React.FC<BackupApprovalActionsProps> = ({
   };
 
   const handleDeny = async () => {
-    if (!user || !denyReason.trim()) {
+    if (!user || !canApprove || !denyReason.trim()) {
       toast.error(t('backupApproval.provideReason'));
       return;
     }
@@ -231,7 +319,7 @@ export const BackupApprovalActions: React.FC<BackupApprovalActionsProps> = ({
   };
 
   const handleModifyPriority = async () => {
-    if (!user) return;
+    if (!user || !canApprove) return;
     setLoading(true);
 
     try {
@@ -283,6 +371,8 @@ export const BackupApprovalActions: React.FC<BackupApprovalActionsProps> = ({
         return <Badge className="bg-red-100 text-red-800"><XCircle className="h-3 w-3 mr-1" />{t('backupApproval.denied')}</Badge>;
       case 'acknowledged':
         return <Badge className="bg-blue-100 text-blue-800"><Clock className="h-3 w-3 mr-1" />{t('backupApproval.acknowledged')}</Badge>;
+      case 'escalated':
+        return <Badge className="bg-amber-100 text-amber-800"><ArrowUpCircle className="h-3 w-3 mr-1" />{t('backupApproval.escalated')}</Badge>;
       case 'fulfilled':
         return <Badge className="bg-green-100 text-green-800"><Shield className="h-3 w-3 mr-1" />{t('backupApproval.fulfilled')}</Badge>;
       default:
@@ -290,7 +380,7 @@ export const BackupApprovalActions: React.FC<BackupApprovalActionsProps> = ({
     }
   };
 
-  const isActionable = currentStatus === 'pending' || currentStatus === 'acknowledged';
+  const isActionable = currentStatus === 'pending' || currentStatus === 'acknowledged' || currentStatus === 'escalated';
 
   return (
     <div className="space-y-4">
@@ -299,9 +389,9 @@ export const BackupApprovalActions: React.FC<BackupApprovalActionsProps> = ({
         {getStatusBadge()}
       </div>
 
-      {isActionable && (
+      {isActionable && canAcknowledge && (
         <div className="space-y-3">
-          {/* Acknowledgment Actions */}
+          {/* Acknowledgment Actions - Available to Dispatchers and Supervisors */}
           <div className="flex flex-wrap gap-2">
             <Button
               variant="outline"
@@ -323,39 +413,92 @@ export const BackupApprovalActions: React.FC<BackupApprovalActionsProps> = ({
             </Button>
           </div>
 
-          {/* Approval/Denial Actions */}
-          <div className="flex flex-wrap gap-2 pt-2 border-t">
-            <Button
-              variant="default"
-              size="sm"
-              onClick={handleApprove}
-              disabled={loading}
-              className="bg-green-600 hover:bg-green-700"
-            >
-              <CheckCircle className="h-4 w-4 mr-1" />
-              {t('backupApproval.approve')}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setModifyDialogOpen(true)}
-              disabled={loading}
-            >
-              <AlertTriangle className="h-4 w-4 mr-1" />
-              {t('backupApproval.modifyPriority')}
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => setDenyDialogOpen(true)}
-              disabled={loading}
-            >
-              <XCircle className="h-4 w-4 mr-1" />
-              {t('backupApproval.deny')}
-            </Button>
-          </div>
+          {/* Escalation Action - Dispatchers Only (when they can't approve) */}
+          {canEscalate && currentStatus !== 'escalated' && (
+            <div className="pt-2 border-t">
+              <p className="text-xs text-muted-foreground mb-2">
+                {t('backupApproval.dispatcherActionsOnly')}
+              </p>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setEscalateDialogOpen(true)}
+                disabled={loading}
+              >
+                <ArrowUpCircle className="h-4 w-4 mr-1" />
+                {t('backupApproval.escalateToSupervisor')}
+              </Button>
+            </div>
+          )}
+
+          {/* Approval/Denial Actions - Supervisors and Admins Only */}
+          {canApprove && (
+            <div className="flex flex-wrap gap-2 pt-2 border-t">
+              <Button
+                variant="default"
+                size="sm"
+                onClick={handleApprove}
+                disabled={loading}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                <CheckCircle className="h-4 w-4 mr-1" />
+                {t('backupApproval.approve')}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setModifyDialogOpen(true)}
+                disabled={loading}
+              >
+                <AlertTriangle className="h-4 w-4 mr-1" />
+                {t('backupApproval.modifyPriority')}
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setDenyDialogOpen(true)}
+                disabled={loading}
+              >
+                <XCircle className="h-4 w-4 mr-1" />
+                {t('backupApproval.deny')}
+              </Button>
+            </div>
+          )}
         </div>
       )}
+
+      {/* Escalate Dialog */}
+      <Dialog open={escalateDialogOpen} onOpenChange={setEscalateDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('backupApproval.escalateTitle')}</DialogTitle>
+            <DialogDescription>
+              {t('backupApproval.escalateDescription')}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="escalate-notes">{t('backupApproval.escalateNotes')}</Label>
+              <Textarea
+                id="escalate-notes"
+                value={escalateNotes}
+                onChange={(e) => setEscalateNotes(e.target.value)}
+                placeholder={t('backupApproval.escalateNotesPlaceholder')}
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEscalateDialogOpen(false)}>
+              {t('cancel')}
+            </Button>
+            <Button onClick={handleEscalate} disabled={loading}>
+              <ArrowUpCircle className="h-4 w-4 mr-1" />
+              {t('backupApproval.confirmEscalate')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Deny Dialog */}
       <Dialog open={denyDialogOpen} onOpenChange={setDenyDialogOpen}>

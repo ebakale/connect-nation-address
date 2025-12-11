@@ -1831,6 +1831,7 @@
     "approved": "Approved",
     "denied": "Denied",
     "fulfilled": "Fulfilled",
+    "escalated": "Escalated",
     "acknowledgeReceipt": "Acknowledge Receipt",
     "enRoute": "En Route",
     "approve": "Approve Request",
@@ -1869,7 +1870,19 @@
       "en_route": "En Route",
       "on_scene": "On Scene",
       "all_clear": "All Clear"
-    }
+    },
+    "dispatcherActionsOnly": "As a dispatcher, you can acknowledge and escalate requests. Approval requires supervisor authorization.",
+    "escalateToSupervisor": "Escalate to Supervisor",
+    "escalateTitle": "Escalate to Supervisor",
+    "escalateDescription": "This will notify all available supervisors about this backup request for review and approval.",
+    "escalateNotes": "Notes for Supervisor (Optional)",
+    "escalateNotesPlaceholder": "Provide context or urgency details for the supervisor...",
+    "confirmEscalate": "Escalate Request",
+    "escalationSent": "Request escalated to supervisors",
+    "failedToEscalate": "Failed to escalate request",
+    "escalatedTitle": "Backup Request Escalated",
+    "escalatedMessage": "Incident {{incident}} backup request requires your approval. Notes: {{notes}}",
+    "noNotesProvided": "No additional notes"
   },
 
   "backupAcknowledgment": {

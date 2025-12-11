@@ -324,11 +324,11 @@ const Documentation: React.FC = () => {
                 </CardContent>
               </Card>
 
-              {/* Backup Request Workflow - NEW */}
+              {/* Backup Request Workflow - UPDATED for Tiered Approval */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-primary">Backup Request Workflow</CardTitle>
-                  <CardDescription>Enhanced backup request system with approval workflow and acknowledgments</CardDescription>
+                  <CardTitle className="text-primary">Backup Request Workflow (Tiered Approval)</CardTitle>
+                  <CardDescription>Role-based backup request system: Dispatchers acknowledge/escalate, Supervisors approve/deny</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-col gap-2">
@@ -337,11 +337,12 @@ const Documentation: React.FC = () => {
                       { title: 'URGENCY ASSESSMENT', desc: 'System assigns urgency level (1-5) based on request type', icon: '⚡' },
                       { title: 'OFFICER DOWN DETECTION', desc: 'If officer_down=true, bypasses normal workflow, max priority (0)', icon: '🚨' },
                       { title: 'MASS NOTIFICATION', desc: 'Officer Down alerts ALL police staff regardless of scope', icon: '📢' },
-                      { title: 'SUPERVISOR NOTIFICATION', desc: 'Standard requests notify supervisors/dispatchers in jurisdiction', icon: '🔔' },
-                      { title: 'ACKNOWLEDGMENT: RECEIPT', desc: 'Dispatcher/supervisor acknowledges receipt of request', icon: '✓' },
-                      { title: 'REVIEW & DECISION', desc: 'Supervisor reviews request, can Approve, Modify Priority, or Deny', icon: '👁️' },
-                      { title: 'APPROVAL/DENIAL', desc: 'Decision recorded with notes; denial requires reason', icon: '📋' },
-                      { title: 'UNIT DISPATCH', desc: 'If approved, nearest available unit dispatched automatically', icon: '🚔' },
+                      { title: 'DISPATCHER/SUPERVISOR NOTIFICATION', desc: 'Standard requests notify staff in jurisdiction', icon: '🔔' },
+                      { title: 'DISPATCHER: ACKNOWLEDGE', desc: 'Dispatcher acknowledges receipt (Receipt, En Route, On Scene)', icon: '✓' },
+                      { title: 'DISPATCHER: ESCALATE (if needed)', desc: 'Dispatcher escalates to supervisor with notes for approval decision', icon: '⬆️' },
+                      { title: 'SUPERVISOR: REVIEW', desc: 'Supervisor reviews request details and escalation notes', icon: '👁️' },
+                      { title: 'SUPERVISOR: DECISION', desc: 'Supervisor can Approve, Modify Priority, or Deny (with reason)', icon: '📋' },
+                      { title: 'UNIT DISPATCH', desc: 'If approved, nearest available unit dispatched', icon: '🚔' },
                       { title: 'ACKNOWLEDGMENT: EN-ROUTE', desc: 'Backup unit acknowledges and provides ETA', icon: '🚗' },
                       { title: 'ACKNOWLEDGMENT: ON-SCENE', desc: 'Backup unit arrives, notifies requesting officer', icon: '📍' },
                       { title: 'ACKNOWLEDGMENT: ALL-CLEAR', desc: 'Supervisor confirms situation resolved', icon: '✅' },
@@ -355,7 +356,7 @@ const Documentation: React.FC = () => {
                             <div className="text-xs text-muted-foreground">{step.desc}</div>
                           </div>
                         </div>
-                        {idx < 12 && (
+                        {idx < 13 && (
                           <div className="flex justify-center py-1">
                             <div className="text-muted-foreground">↓</div>
                           </div>
@@ -363,11 +364,17 @@ const Documentation: React.FC = () => {
                       </div>
                     ))}
                   </div>
+                  <div className="bg-green-500/10 border border-green-500/20 p-4 rounded-lg mt-4">
+                    <p className="text-sm"><strong>✓ TIERED APPROVAL:</strong> Dispatchers can acknowledge and escalate requests. Only Supervisors and Admins have authority to approve, deny, or modify priority of backup requests.</p>
+                  </div>
                   <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-lg mt-4">
                     <p className="text-sm"><strong>🚨 OFFICER DOWN:</strong> This critical feature bypasses normal workflow. When activated, it immediately broadcasts to ALL police personnel (operators, supervisors, dispatchers, admins) regardless of geographic scope, ensuring maximum response.</p>
                   </div>
+                  <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-lg mt-4">
+                    <p className="text-sm"><strong>⬆️ ESCALATION:</strong> When dispatchers escalate a request, all supervisors receive notification with the dispatcher's notes. Status changes to "Escalated" until supervisor takes action.</p>
+                  </div>
                   <div className="bg-muted p-4 rounded-lg mt-4">
-                    <p className="text-sm"><strong>📋 Acknowledgment Types:</strong> receipt (request received), en_route (backup coming), on_scene (backup arrived), all_clear (situation resolved)</p>
+                    <p className="text-sm"><strong>📋 Statuses:</strong> pending → acknowledged → escalated (optional) → approved/denied. Acknowledgment types: receipt, en_route, on_scene, all_clear</p>
                   </div>
                 </CardContent>
               </Card>
