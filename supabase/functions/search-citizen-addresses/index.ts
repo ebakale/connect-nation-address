@@ -12,6 +12,15 @@ interface SearchRequest {
   limit?: number;
 }
 
+// Extract first IP from x-forwarded-for header (may contain multiple comma-separated IPs)
+function getClientIp(req: Request): string | null {
+  const forwarded = req.headers.get('x-forwarded-for');
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+  return req.headers.get('x-real-ip');
+}
+
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -99,7 +108,7 @@ Deno.serve(async (req) => {
           search_purpose: purpose,
           purpose_details: purposeDetails || null,
           results_count: 0,
-          ip_address: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip'),
+          ip_address: getClientIp(req),
           user_agent: req.headers.get('user-agent'),
         });
 
@@ -193,7 +202,7 @@ Deno.serve(async (req) => {
         results_count: formattedResults.length,
         accessed_person_ids: formattedResults.map(r => r.person_id),
         accessed_uacs: formattedResults.flatMap(r => r.addresses.map(a => a.uac)),
-        ip_address: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip'),
+        ip_address: getClientIp(req),
         user_agent: req.headers.get('user-agent'),
       });
 
@@ -214,7 +223,7 @@ Deno.serve(async (req) => {
       search_purpose: purpose,
       purpose_details: purposeDetails || null,
       results_count: results?.length || 0,
-      ip_address: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip'),
+      ip_address: getClientIp(req),
       user_agent: req.headers.get('user-agent'),
     });
 
