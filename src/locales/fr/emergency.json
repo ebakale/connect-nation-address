@@ -1545,6 +1545,8 @@
     "last7Days": "7 Derniers Jours",
     "last30Days": "30 Derniers Jours",
     "last90Days": "90 Derniers Jours",
+    "last180Days": "180 Derniers Jours",
+    "last360Days": "360 Derniers Jours",
     "refresh": "Actualiser",
     "export": "Exporter CSV",
     "exportSuccess": "Journaux exportés avec succès",

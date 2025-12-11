@@ -57,6 +57,12 @@ const AuditLogViewer = () => {
         case '90d':
           startDate.setDate(now.getDate() - 90);
           break;
+        case '180d':
+          startDate.setDate(now.getDate() - 180);
+          break;
+        case '360d':
+          startDate.setDate(now.getDate() - 360);
+          break;
         default:
           startDate.setDate(now.getDate() - 7);
       }
@@ -208,6 +214,8 @@ const AuditLogViewer = () => {
                 <SelectItem value="7d">{t('auditLog.last7Days')}</SelectItem>
                 <SelectItem value="30d">{t('auditLog.last30Days')}</SelectItem>
                 <SelectItem value="90d">{t('auditLog.last90Days')}</SelectItem>
+                <SelectItem value="180d">{t('auditLog.last180Days')}</SelectItem>
+                <SelectItem value="360d">{t('auditLog.last360Days')}</SelectItem>
               </SelectContent>
             </Select>
 

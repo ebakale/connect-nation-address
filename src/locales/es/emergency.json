@@ -1737,6 +1737,8 @@
     "last7Days": "Últimos 7 Días",
     "last30Days": "Últimos 30 Días",
     "last90Days": "Últimos 90 Días",
+    "last180Days": "Últimos 180 Días",
+    "last360Days": "Últimos 360 Días",
     "refresh": "Actualizar",
     "export": "Exportar CSV",
     "exportSuccess": "Registros exportados exitosamente",
