@@ -679,6 +679,7 @@
   "carAdministrativeOverview": {
     "systemOverview": "Aperçu du Système",
     "citizenSearch": "Recherche de Citoyens",
+    "verifiers": "Vérificateurs",
     "analytics": "Analytique",
     "systemHealth": "Santé du Système",
     "managementTools": "Outils de Gestion",
@@ -1390,5 +1391,36 @@
       "elderly": "Personne Âgée",
       "other": "Autre"
     }
+  },
+  "verifierDirectory": {
+    "title": "Répertoire des Vérificateurs CAR",
+    "description": "Répertoire en lecture seule des vérificateurs avec accès au domaine CAR",
+    "fetchError": "Échec du chargement du répertoire des vérificateurs",
+    "searchPlaceholder": "Rechercher par nom, e-mail ou région...",
+    "totalVerifiers": "Total des Vérificateurs",
+    "totalApproved": "Total Approuvés",
+    "totalPending": "Total en Attente",
+    "totalRejected": "Total Rejetés",
+    "noVerifiers": "Aucun vérificateur CAR assigné",
+    "noMatchingVerifiers": "Aucun vérificateur ne correspond à votre recherche",
+    "requestVerifierHint": "Demandez une affectation de vérificateur à l'Administrateur Système",
+    "domainBoth": "NAR + CAR",
+    "domainCAR": "CAR Uniquement",
+    "scopeNational": "National",
+    "lastActive": "Dernière activité",
+    "noActivity": "Aucune activité",
+    "requestVerifier": "Demander un Vérificateur",
+    "requestDialogTitle": "Demander une Affectation de Vérificateur CAR",
+    "requestDialogDescription": "Soumettez une demande à l'Administrateur Système pour affecter un nouveau vérificateur avec accès au domaine CAR.",
+    "reasonLabel": "Motif de la Demande",
+    "reasonPlaceholder": "Expliquez pourquoi un nouveau vérificateur CAR est nécessaire (ex., charge de travail accrue, manque de couverture régionale)...",
+    "pleaseProvideReason": "Veuillez fournir un motif pour la demande",
+    "sendRequest": "Envoyer la Demande",
+    "requestSent": "Demande de vérificateur envoyée à l'Administrateur Système",
+    "requestError": "Échec de l'envoi de la demande de vérificateur",
+    "notificationTitle": "Demande de Vérificateur CAR",
+    "notificationMessage": "{{requester}} a demandé une nouvelle affectation de vérificateur CAR. Motif : {{reason}}",
+    "readOnlyNotice": "Répertoire en Lecture Seule",
+    "readOnlyDescription": "Les affectations de vérificateurs sont gérées par les Administrateurs Système. Utilisez le bouton 'Demander un Vérificateur' pour demander des modifications."
   }
 }

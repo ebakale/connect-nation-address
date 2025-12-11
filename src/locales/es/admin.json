@@ -871,6 +871,7 @@
   "carAdministrativeOverview": {
     "systemOverview": "Resumen del Sistema",
     "citizenSearch": "Búsqueda de Ciudadanos",
+    "verifiers": "Verificadores",
     "analytics": "Analíticas",
     "systemHealth": "Salud del Sistema",
     "managementTools": "Herramientas de Gestión",
@@ -1594,5 +1595,36 @@
       "elderly": "Anciano",
       "other": "Otro"
     }
+  },
+  "verifierDirectory": {
+    "title": "Directorio de Verificadores CAR",
+    "description": "Directorio de solo lectura de verificadores con acceso al dominio CAR",
+    "fetchError": "Error al cargar el directorio de verificadores",
+    "searchPlaceholder": "Buscar por nombre, correo electrónico o región...",
+    "totalVerifiers": "Total de Verificadores",
+    "totalApproved": "Total Aprobados",
+    "totalPending": "Total Pendientes",
+    "totalRejected": "Total Rechazados",
+    "noVerifiers": "No hay verificadores CAR asignados",
+    "noMatchingVerifiers": "Ningún verificador coincide con su búsqueda",
+    "requestVerifierHint": "Solicite una asignación de verificador al Administrador del Sistema",
+    "domainBoth": "NAR + CAR",
+    "domainCAR": "Solo CAR",
+    "scopeNational": "Nacional",
+    "lastActive": "Última actividad",
+    "noActivity": "Sin actividad aún",
+    "requestVerifier": "Solicitar Verificador",
+    "requestDialogTitle": "Solicitar Asignación de Verificador CAR",
+    "requestDialogDescription": "Envíe una solicitud al Administrador del Sistema para asignar un nuevo verificador con acceso al dominio CAR.",
+    "reasonLabel": "Motivo de la Solicitud",
+    "reasonPlaceholder": "Explique por qué se necesita un nuevo verificador CAR (ej., aumento de carga de trabajo, brecha de cobertura regional)...",
+    "pleaseProvideReason": "Por favor proporcione un motivo para la solicitud",
+    "sendRequest": "Enviar Solicitud",
+    "requestSent": "Solicitud de verificador enviada al Administrador del Sistema",
+    "requestError": "Error al enviar la solicitud de verificador",
+    "notificationTitle": "Solicitud de Verificador CAR",
+    "notificationMessage": "{{requester}} ha solicitado una nueva asignación de verificador CAR. Motivo: {{reason}}",
+    "readOnlyNotice": "Directorio de Solo Lectura",
+    "readOnlyDescription": "Las asignaciones de verificadores son gestionadas por los Administradores del Sistema. Use el botón 'Solicitar Verificador' para solicitar cambios."
   }
 }
