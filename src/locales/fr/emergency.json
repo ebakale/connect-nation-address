@@ -1614,5 +1614,96 @@
   "last180Days": "180 derniers jours",
   "last360Days": "360 derniers jours",
   "thisMonth": "Ce mois",
-  "lastMonth": "Mois dernier"
+  "lastMonth": "Mois dernier",
+
+  "emergencyBackup": {
+    "officerDown": "AGENT À TERRE",
+    "emergencyBackupTitle": "Renfort d'Urgence - Agent à Terre",
+    "emergencyDescription": "Ceci diffusera immédiatement une alerte d'urgence à TOUTES les unités disponibles du système. À utiliser uniquement en cas de danger de mort.",
+    "broadcastWarning": "DIFFUSION IMMÉDIATE",
+    "broadcastDescription": "Cette alerte sera envoyée à tous les opérateurs, répartiteurs, superviseurs et administrateurs de police quelle que soit leur zone géographique.",
+    "situationOptional": "Description de la Situation (Optionnel)",
+    "situationPlaceholder": "Décrivez brièvement la situation d'urgence...",
+    "unitInfo": "L'alerte sera envoyée depuis l'Unité: {{unitCode}}",
+    "sending": "Envoi de l'Alerte...",
+    "sendEmergencyAlert": "ENVOYER L'ALERTE D'URGENCE",
+    "alertSent": "Alerte d'Urgence Envoyée",
+    "allUnitsNotified": "Toutes les unités disponibles ont été notifiées",
+    "failedToSend": "Échec de l'envoi de l'alerte d'urgence"
+  },
+
+  "backupApproval": {
+    "status": "Statut de la Demande",
+    "pending": "En Attente",
+    "acknowledged": "Reçu",
+    "approved": "Approuvé",
+    "denied": "Refusé",
+    "fulfilled": "Accompli",
+    "escalated": "Escaladé",
+    "acknowledgeReceipt": "Confirmer Réception",
+    "enRoute": "En Route",
+    "approve": "Approuver la Demande",
+    "modifyPriority": "Modifier la Priorité",
+    "deny": "Refuser la Demande",
+    "acknowledgmentSent": "Confirmation {{type}} envoyée",
+    "failedToAcknowledge": "Échec de l'envoi de la confirmation",
+    "requestApproved": "Demande de Renfort Approuvée",
+    "backupApprovedMessage": "Votre demande de renfort a été approuvée. Des unités supplémentaires seront dépêchées.",
+    "requestApprovedSuccess": "Demande de renfort approuvée avec succès",
+    "failedToApprove": "Échec de l'approbation de la demande de renfort",
+    "requestDenied": "Demande de Renfort Refusée",
+    "backupDeniedMessage": "Votre demande de renfort a été refusée. Raison: {{reason}}",
+    "requestDeniedSuccess": "Demande de renfort refusée",
+    "failedToDeny": "Échec du refus de la demande de renfort",
+    "provideReason": "Veuillez fournir une raison pour le refus",
+    "denyBackupRequest": "Refuser la Demande de Renfort",
+    "denyDescription": "Fournissez une raison pour refuser cette demande. L'unité demandant sera notifiée.",
+    "reasonForDenial": "Raison du Refus",
+    "denyReasonPlaceholder": "Expliquez pourquoi le renfort ne peut pas être fourni...",
+    "confirmDeny": "Confirmer le Refus",
+    "modifyPriorityTitle": "Modifier la Priorité du Renfort",
+    "modifyPriorityDescription": "Ajustez le niveau de priorité de cette demande de renfort.",
+    "newPriority": "Nouveau Niveau de Priorité",
+    "priorities": {
+      "emergency": "P0 - URGENCE (Agent à Terre)",
+      "critical": "P1 - Critique (Immédiat)",
+      "high": "P2 - Haute Priorité",
+      "medium": "P3 - Priorité Moyenne"
+    },
+    "priorityModified": "Priorité de renfort modifiée avec succès",
+    "failedToModify": "Échec de la modification de la priorité",
+    "updatePriority": "Mettre à Jour la Priorité",
+    "types": {
+      "receipt": "Réception",
+      "en_route": "En Route",
+      "on_scene": "Sur Place",
+      "all_clear": "Tout Dégagé"
+    },
+    "dispatcherActionsOnly": "En tant que répartiteur, vous pouvez confirmer et escalader les demandes. L'approbation nécessite l'autorisation d'un superviseur.",
+    "escalateToSupervisor": "Escalader au Superviseur",
+    "escalateTitle": "Escalader au Superviseur",
+    "escalateDescription": "Ceci notifiera tous les superviseurs disponibles de cette demande de renfort pour examen et approbation.",
+    "escalateNotes": "Notes pour le Superviseur (Optionnel)",
+    "escalateNotesPlaceholder": "Fournissez le contexte ou les détails d'urgence pour le superviseur...",
+    "confirmEscalate": "Escalader la Demande",
+    "escalationSent": "Demande escaladée aux superviseurs",
+    "failedToEscalate": "Échec de l'escalade de la demande",
+    "escalatedTitle": "Demande de Renfort Escaladée",
+    "escalatedMessage": "La demande de renfort de l'incident {{incident}} nécessite votre approbation. Notes: {{notes}}",
+    "noNotesProvided": "Aucune note supplémentaire"
+  },
+
+  "backupAcknowledgment": {
+    "title": "Confirmations de Réponse",
+    "loading": "Chargement des confirmations...",
+    "noAcknowledgments": "Pas encore de confirmations",
+    "unknownUser": "Utilisateur Inconnu",
+    "eta": "ETA: {{minutes}} min",
+    "types": {
+      "receipt": "Reçu",
+      "enRoute": "En Route",
+      "onScene": "Sur Place",
+      "allClear": "Tout Dégagé"
+    }
+  }
 }

@@ -70,10 +70,10 @@ export function EmergencyDispatcherGuide() {
         </div>
       </Card>
 
-      {/* Backup Request Management - NEW */}
-      <Card className="p-6 border-red-500/30">
+      {/* Backup Request Management - UPDATED for Tiered Approval */}
+      <Card className="p-6 border-amber-500/30">
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <AlertTriangle className="h-5 w-5 text-red-500" />
+          <AlertTriangle className="h-5 w-5 text-amber-500" />
           Backup Request Management
         </h2>
         <div className="space-y-4">
@@ -81,21 +81,42 @@ export function EmergencyDispatcherGuide() {
             <h3 className="font-semibold text-red-600 mb-2">🚨 Officer Down Alerts</h3>
             <p className="text-sm">Critical alerts that bypass normal workflow:</p>
             <ul className="list-disc list-inside space-y-1 ml-4 text-sm mt-2">
-              <li>Immediate notification to ALL dispatchers</li>
-              <li>Maximum priority - requires immediate action</li>
+              <li>Immediate notification to ALL dispatchers and supervisors</li>
+              <li>Maximum priority - requires immediate coordination</li>
               <li>Officer location included in alert</li>
-              <li>Coordinate mass response</li>
+              <li>Coordinate mass response with available units</li>
             </ul>
+          </div>
+
+          <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-lg">
+            <h3 className="font-semibold text-amber-700 mb-2">📋 Dispatcher Capabilities</h3>
+            <p className="text-sm mb-2">As a dispatcher, you can:</p>
+            <ul className="list-disc list-inside space-y-1 ml-4 text-sm">
+              <li><strong>Acknowledge Receipt:</strong> Confirm you've received the request</li>
+              <li><strong>Mark En Route:</strong> Indicate backup unit is responding</li>
+              <li><strong>Mark On Scene:</strong> Confirm backup has arrived</li>
+              <li><strong>Escalate to Supervisor:</strong> Send for approval when needed</li>
+            </ul>
+            <p className="text-sm mt-3 text-amber-700"><strong>Note:</strong> Approval and denial of backup requests requires supervisor authorization.</p>
           </div>
 
           <h3 className="font-semibold">Handling Backup Requests:</h3>
           <ol className="list-decimal list-inside space-y-2 ml-4">
-            <li><strong>Acknowledge:</strong> Confirm you've received the request</li>
+            <li><strong>Acknowledge:</strong> Confirm you've received the request immediately</li>
             <li><strong>Review:</strong> Check incident details, urgency, requesting unit</li>
-            <li><strong>Approve/Deny:</strong> Make decision based on available resources</li>
-            <li><strong>Dispatch:</strong> If approved, assign nearest available unit</li>
-            <li><strong>Track:</strong> Monitor backup unit acknowledgments</li>
+            <li><strong>Coordinate:</strong> Identify nearest available backup unit</li>
+            <li><strong>Escalate:</strong> If approval needed, escalate to supervisor with notes</li>
+            <li><strong>Track:</strong> Monitor backup unit acknowledgments and status</li>
           </ol>
+
+          <h3 className="font-semibold mt-4">Escalating to Supervisor:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>Click "Escalate to Supervisor" button</li>
+            <li>Add notes explaining urgency or context</li>
+            <li>All supervisors in the area receive notification</li>
+            <li>Request status changes to "Escalated"</li>
+            <li>Supervisor can then approve, modify priority, or deny</li>
+          </ul>
 
           <h3 className="font-semibold mt-4">Acknowledgment System:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
@@ -106,7 +127,7 @@ export function EmergencyDispatcherGuide() {
           </ul>
 
           <div className="bg-muted p-4 rounded-lg mt-4">
-            <p className="text-sm"><strong>💡 Priority:</strong> Officer Down alerts and Priority 1 requests should be handled immediately. All acknowledgments are logged for audit purposes.</p>
+            <p className="text-sm"><strong>💡 Priority:</strong> Officer Down alerts should be immediately acknowledged and escalated if approval is needed. Quick acknowledgment lets officers know help is being coordinated.</p>
           </div>
         </div>
       </Card>
