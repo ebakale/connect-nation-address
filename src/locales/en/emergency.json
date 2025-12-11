@@ -569,6 +569,8 @@
     "config": "Config",
     "analytics": "Analytics",
     "stats": "Stats",
+    "auditLogs": "Audit Logs",
+    "audit": "Audit",
     "policeUserManagement": "Police User Management",
     "manageOfficersDescription": "Manage police officers, dispatchers, supervisors, and administrators",
     "policeUnitManagement": "Police Unit Management",

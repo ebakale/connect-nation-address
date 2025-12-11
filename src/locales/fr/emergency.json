@@ -385,6 +385,8 @@
     "config": "Configuration",
     "analytics": "Analytiques",
     "stats": "Statistiques",
+    "auditLogs": "Journaux d'Audit",
+    "audit": "Audit",
     "policeUserManagement": "Gestion des Utilisateurs de Police",
     "manageOfficersDescription": "Gérer les officiers de police, répartiteurs, superviseurs et administrateurs",
     "policeUnitManagement": "Gestion des Unités de Police",
