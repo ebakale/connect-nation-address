@@ -119,25 +119,58 @@ export function PoliceSupervisorGuide() {
         </div>
       </Card>
 
-      <Card className="p-6">
+      {/* Enhanced Backup Management - UPDATED */}
+      <Card className="p-6 border-red-500/30">
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
           <Radio className="h-5 w-5" />
-          Backup Management
+          Backup Request Management
         </h2>
-        <div className="space-y-3">
-          <p>When officers request backup:</p>
-          
+        <div className="space-y-4">
+          <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-lg">
+            <h3 className="font-semibold text-red-600 mb-2">🚨 Officer Down Alerts</h3>
+            <p className="text-sm">When an officer activates the OFFICER DOWN button:</p>
+            <ul className="list-disc list-inside space-y-1 ml-4 text-sm mt-2">
+              <li>You receive IMMEDIATE notification regardless of geographic scope</li>
+              <li>Alert includes officer location and unit information</li>
+              <li>Priority level is maximum (0) - requires immediate action</li>
+              <li>All available units should respond</li>
+            </ul>
+          </div>
+
+          <h3 className="font-semibold">Standard Backup Request Workflow:</h3>
           <ol className="list-decimal list-inside space-y-2 ml-4">
-            <li>Receive notification of backup request</li>
-            <li>Review incident details and reason</li>
-            <li>Check available units in area</li>
-            <li>Approve backup - system assigns nearest available unit</li>
-            <li>Or deny if resources unavailable (add reason)</li>
-            <li>Monitor backup unit response</li>
+            <li><strong>Receive Notification:</strong> Alert appears in Backup Requests panel</li>
+            <li><strong>Acknowledge Receipt:</strong> Click "Acknowledge" to confirm you've seen the request</li>
+            <li><strong>Review Details:</strong> Check incident info, requesting unit, urgency level, reason</li>
+            <li><strong>Make Decision:</strong>
+              <ul className="list-disc list-inside ml-4 mt-1">
+                <li><strong>Approve:</strong> Confirms backup, system dispatches nearest unit</li>
+                <li><strong>Modify Priority:</strong> Adjust urgency level if assessment differs</li>
+                <li><strong>Deny:</strong> Must provide reason (e.g., no units available, not justified)</li>
+              </ul>
+            </li>
+            <li><strong>Monitor Response:</strong> Track backup unit acknowledgments and arrival</li>
+            <li><strong>All-Clear:</strong> Mark situation resolved when backup complete</li>
           </ol>
 
+          <h3 className="font-semibold mt-4">Acknowledgment Tracking:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li><strong>Receipt:</strong> Your acknowledgment that request was received</li>
+            <li><strong>En Route:</strong> Backup unit confirms they're responding with ETA</li>
+            <li><strong>On Scene:</strong> Backup unit arrives at location</li>
+            <li><strong>All Clear:</strong> Situation resolved, backup complete</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Backup Request Statuses:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li><span className="text-yellow-600 font-medium">Pending</span> - Awaiting supervisor review</li>
+            <li><span className="text-blue-600 font-medium">Acknowledged</span> - Supervisor has seen request</li>
+            <li><span className="text-green-600 font-medium">Approved</span> - Backup dispatched</li>
+            <li><span className="text-red-600 font-medium">Denied</span> - Request rejected with reason</li>
+          </ul>
+
           <div className="bg-muted p-4 rounded-lg mt-4">
-            <p className="text-sm"><strong>💡 Tip:</strong> Prioritize backup for high-priority incidents and officer safety situations</p>
+            <p className="text-sm"><strong>💡 Best Practice:</strong> Always acknowledge receipt quickly so officers know their request was received. Prioritize officer safety situations above all else.</p>
           </div>
         </div>
       </Card>

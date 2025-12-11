@@ -70,6 +70,47 @@ export function EmergencyDispatcherGuide() {
         </div>
       </Card>
 
+      {/* Backup Request Management - NEW */}
+      <Card className="p-6 border-red-500/30">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <AlertTriangle className="h-5 w-5 text-red-500" />
+          Backup Request Management
+        </h2>
+        <div className="space-y-4">
+          <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-lg">
+            <h3 className="font-semibold text-red-600 mb-2">🚨 Officer Down Alerts</h3>
+            <p className="text-sm">Critical alerts that bypass normal workflow:</p>
+            <ul className="list-disc list-inside space-y-1 ml-4 text-sm mt-2">
+              <li>Immediate notification to ALL dispatchers</li>
+              <li>Maximum priority - requires immediate action</li>
+              <li>Officer location included in alert</li>
+              <li>Coordinate mass response</li>
+            </ul>
+          </div>
+
+          <h3 className="font-semibold">Handling Backup Requests:</h3>
+          <ol className="list-decimal list-inside space-y-2 ml-4">
+            <li><strong>Acknowledge:</strong> Confirm you've received the request</li>
+            <li><strong>Review:</strong> Check incident details, urgency, requesting unit</li>
+            <li><strong>Approve/Deny:</strong> Make decision based on available resources</li>
+            <li><strong>Dispatch:</strong> If approved, assign nearest available unit</li>
+            <li><strong>Track:</strong> Monitor backup unit acknowledgments</li>
+          </ol>
+
+          <h3 className="font-semibold mt-4">Acknowledgment System:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li><strong>Receipt:</strong> Mark request as seen/received</li>
+            <li><strong>En Route:</strong> Backup unit confirms response with ETA</li>
+            <li><strong>On Scene:</strong> Backup unit arrived</li>
+            <li><strong>All Clear:</strong> Situation resolved</li>
+          </ul>
+
+          <div className="bg-muted p-4 rounded-lg mt-4">
+            <p className="text-sm"><strong>💡 Priority:</strong> Officer Down alerts and Priority 1 requests should be handled immediately. All acknowledgments are logged for audit purposes.</p>
+          </div>
+        </div>
+      </Card>
+
       {/* Evidence Viewing - NEW */}
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
