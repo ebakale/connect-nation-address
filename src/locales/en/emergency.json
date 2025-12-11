@@ -50,6 +50,14 @@
   "messages": "Messages",
   "alerts": "Alerts",
   "notifications": "Notifications",
+  "soundSettings": {
+    "soundEnabled": "Sound alerts enabled",
+    "soundDisabled": "Sound alerts disabled",
+    "volume": "Volume",
+    "testSound": "Test Sound",
+    "incomingMessage": "Incoming Message",
+    "criticalAlert": "Critical Alert"
+  },
   "contacts": "Emergency Contacts",
   "operators": "Emergency Operators",
   "units": "Emergency Units",
@@ -1438,6 +1446,11 @@
     "failedToLoadCommunications": "Failed to load communications",
     "failedToAcknowledgeMessage": "Failed to acknowledge message",
     "failedToSendMessage": "Failed to send message",
+    "soundEnabled": "Sound alerts enabled",
+    "soundDisabled": "Sound alerts disabled",
+    "volume": "Volume",
+    "testSound": "Test Sound",
+    "incomingMessage": "Incoming Message",
     "priorityLabels": {
       "high": "High",
       "medium": "Medium", 

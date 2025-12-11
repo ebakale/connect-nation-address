@@ -58,6 +58,14 @@
   "messages": "Mensajes",
   "alerts": "Alertas",
   "notifications": "Notificaciones",
+  "soundSettings": {
+    "soundEnabled": "Alertas de sonido habilitadas",
+    "soundDisabled": "Alertas de sonido deshabilitadas",
+    "volume": "Volumen",
+    "testSound": "Probar Sonido",
+    "incomingMessage": "Mensaje Entrante",
+    "criticalAlert": "Alerta Crítica"
+  },
   "contacts": "Contactos de emergencia",
   "operators": "Operadores de emergencia",
   "units": "Unidades de emergencia",
@@ -1446,6 +1454,11 @@
     "failedToLoadCommunications": "Error al cargar comunicaciones",
     "failedToAcknowledgeMessage": "Error al confirmar mensaje",
     "failedToSendMessage": "Error al enviar mensaje",
+    "soundEnabled": "Alertas de sonido habilitadas",
+    "soundDisabled": "Alertas de sonido deshabilitadas",
+    "volume": "Volumen",
+    "testSound": "Probar Sonido",
+    "incomingMessage": "Mensaje Entrante",
     "priorityLabels": {
       "high": "Alta",
       "medium": "Media",

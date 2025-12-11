@@ -1254,6 +1254,11 @@
     "failedToLoadCommunications": "Échec du chargement des communications",
     "failedToAcknowledgeMessage": "Échec de la confirmation du message",
     "failedToSendMessage": "Échec de l'envoi du message",
+    "soundEnabled": "Alertes sonores activées",
+    "soundDisabled": "Alertes sonores désactivées",
+    "volume": "Volume",
+    "testSound": "Tester le Son",
+    "incomingMessage": "Message Entrant",
     "priorityLabels": {
       "high": "Haute",
       "medium": "Moyenne",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,13 +7,14 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { MessageSquare, Send, CheckCheck, Clock, Radio, Filter, AlertTriangle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useNotificationSound } from '@/hooks/useNotificationSound';
+import { MessageSquare, Send, CheckCheck, Clock, Radio, Filter, AlertTriangle, ChevronLeft, ChevronRight, Bell, BellOff, Volume2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-
 interface CommunicationMessage {
   id: string;
   from_user_id: string;
@@ -40,6 +41,9 @@ const DispatcherCommunications: React.FC = () => {
   const { session } = useAuth();
   const { toast } = useToast();
   const { t } = useTranslation('emergency');
+  const { soundEnabled, setSoundEnabled, volume, setVolume, playNotificationSound, testSound } = useNotificationSound();
+  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
+  const previousMessagesRef = useRef<Set<string>>(new Set());
 
   const RADIO_CODES = [
     { code: '10-4', message: t('communications.radioCodes.10-4') },
@@ -100,7 +104,29 @@ const DispatcherCommunications: React.FC = () => {
           schema: 'public',
           table: 'unit_communications'
         },
-        () => {
+        (payload) => {
+          const newMessage = payload.new as CommunicationMessage;
+          
+          // Only play sound for messages from other users (not sent by dispatcher)
+          if (newMessage.from_user_id !== session?.user?.id) {
+            // Check if this is a truly new message we haven't seen
+            if (!previousMessagesRef.current.has(newMessage.id)) {
+              previousMessagesRef.current.add(newMessage.id);
+              
+              // Play notification sound based on priority
+              playNotificationSound(newMessage.priority_level);
+              
+              // Show toast for critical/high priority messages
+              if (newMessage.priority_level <= 2) {
+                toast({
+                  title: t('communications.incomingMessage'),
+                  description: `${newMessage.message_content?.substring(0, 60)}...`,
+                  variant: newMessage.priority_level === 1 ? 'destructive' : 'default'
+                });
+              }
+            }
+          }
+          
           fetchMessages();
         }
       )
@@ -110,6 +136,13 @@ const DispatcherCommunications: React.FC = () => {
       supabase.removeChannel(channel);
     };
   };
+
+  // Initialize previous messages set when messages load
+  useEffect(() => {
+    if (messages.length > 0 && previousMessagesRef.current.size === 0) {
+      messages.forEach(m => previousMessagesRef.current.add(m.id));
+    }
+  }, [messages]);
 
   const acknowledgeMessage = async (messageId: string) => {
     try {
@@ -273,19 +306,71 @@ const DispatcherCommunications: React.FC = () => {
               )}
             </div>
           </CardTitle>
-          <div className="flex items-center gap-2 mt-2">
-            <Filter className="h-4 w-4" />
-            <Select value={filterPriority} onValueChange={setFilterPriority}>
-              <SelectTrigger className="w-32">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t('communications.allPriority')}</SelectItem>
-                <SelectItem value="1">{t('communications.highPriority')}</SelectItem>
-                <SelectItem value="2">{t('communications.mediumPriority')}</SelectItem>
-                <SelectItem value="3">{t('communications.lowPriority')}</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="flex flex-wrap items-center gap-3 mt-2">
+            {/* Priority Filter */}
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4" />
+              <Select value={filterPriority} onValueChange={setFilterPriority}>
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t('communications.allPriority')}</SelectItem>
+                  <SelectItem value="1">{t('communications.highPriority')}</SelectItem>
+                  <SelectItem value="2">{t('communications.mediumPriority')}</SelectItem>
+                  <SelectItem value="3">{t('communications.lowPriority')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Sound Controls */}
+            <div className="flex items-center gap-2 border-l pl-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSoundEnabled(!soundEnabled)}
+                className={`h-8 w-8 p-0 ${soundEnabled ? 'text-primary' : 'text-muted-foreground'}`}
+                title={soundEnabled ? t('communications.soundEnabled') : t('communications.soundDisabled')}
+              >
+                {soundEnabled ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
+              </Button>
+              
+              <div className="relative">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowVolumeSlider(!showVolumeSlider)}
+                  className="h-8 w-8 p-0"
+                  title={t('communications.volume')}
+                >
+                  <Volume2 className="h-4 w-4" />
+                </Button>
+                
+                {showVolumeSlider && (
+                  <div className="absolute top-full mt-2 right-0 bg-popover border rounded-lg shadow-lg p-3 z-50 w-40">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs text-muted-foreground">{t('communications.volume')}</span>
+                      <span className="text-xs font-medium ml-auto">{Math.round(volume * 100)}%</span>
+                    </div>
+                    <Slider
+                      value={[volume * 100]}
+                      onValueChange={([val]) => setVolume(val / 100)}
+                      max={100}
+                      step={5}
+                      className="w-full"
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => testSound('high')}
+                      className="w-full mt-2 text-xs"
+                    >
+                      {t('communications.testSound')}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
