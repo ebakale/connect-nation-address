@@ -1,208 +1,161 @@
 import { Card } from "@/components/ui/card";
-import { Shield, Users, Database, Settings, Home, BarChart3, Lock } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Shield, Users, Database, Home, BarChart3, Lock, Eye, Info, AlertTriangle } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 export function CARAdminGuide() {
+  const { t } = useTranslation('admin');
+
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-3xl font-bold mb-2">CAR Admin User Guide</h1>
-        <p className="text-muted-foreground">Complete guide for administering the Citizen Address Repository (Updated Dec 2025)</p>
+        <h1 className="text-3xl font-bold mb-2">{t('carAdminGuide.title')}</h1>
+        <p className="text-muted-foreground">{t('carAdminGuide.subtitle')}</p>
       </div>
+
+      {/* Important Note */}
+      <Alert>
+        <Info className="h-4 w-4" />
+        <AlertDescription>
+          {t('carAdminGuide.systemAdminNote')}
+        </AlertDescription>
+      </Alert>
 
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
           <Shield className="h-5 w-5" />
-          Getting Started
+          {t('carAdminGuide.gettingStarted.title')}
         </h2>
         <div className="space-y-3">
-          <p><strong>Your Role:</strong> CAR administrators manage the Citizen Address Repository system, including user permissions, household management, data quality, and system configuration.</p>
-          <p><strong>Access:</strong> Log in and navigate to the Unified Dashboard at /dashboard - full CAR administration tools will be available</p>
-          <p><strong>Key Permissions:</strong> Manage CAR verifiers, configure verification rules, access all citizen declarations, manage households, view CAR analytics</p>
+          <p><strong>{t('carAdminGuide.gettingStarted.yourRole')}:</strong> {t('carAdminGuide.gettingStarted.roleDescription')}</p>
+          <p><strong>{t('carAdminGuide.gettingStarted.access')}:</strong> {t('carAdminGuide.gettingStarted.accessDescription')}</p>
+          <p><strong>{t('carAdminGuide.gettingStarted.keyPermissions')}:</strong> {t('carAdminGuide.gettingStarted.permissionsDescription')}</p>
         </div>
       </Card>
 
-      <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <Users className="h-5 w-5" />
-          CAR Permission Management
-        </h2>
-        <div className="space-y-3">
-          <p><strong>CAR-Specific Permissions:</strong> Beyond role-based access, CAR uses granular permissions system</p>
-
-          <h3 className="font-semibold mt-4">Granting CAR Permissions:</h3>
-          <ol className="list-decimal list-inside space-y-2 ml-4">
-            <li>Navigate to "CAR Permissions Manager"</li>
-            <li>Select user to grant permissions</li>
-            <li>Configure permission settings:
-              <ul className="list-disc list-inside ml-4 mt-1">
-                <li><strong>Can review citizen addresses:</strong> Review declarations</li>
-                <li><strong>Can verify residency:</strong> Confirm/reject declarations</li>
-                <li><strong>Can manage person records:</strong> Edit person data</li>
-                <li><strong>Can access address history:</strong> View full history</li>
-                <li><strong>Can update address status:</strong> Change declaration status</li>
-                <li><strong>Can merge duplicate persons:</strong> Data cleanup</li>
-              </ul>
-            </li>
-            <li>Set geographic scope (optional):
-              <ul className="list-disc list-inside ml-4 mt-1">
-                <li>Limit to specific regions/cities</li>
-                <li>Or grant full access</li>
-              </ul>
-            </li>
-            <li>Define jurisdiction scope (national, regional, local)</li>
-            <li>Save - permissions active immediately</li>
-          </ol>
-
-          <div className="bg-muted p-4 rounded-lg mt-4">
-            <p className="text-sm"><strong>Unified Verifier Role:</strong> Verifiers now have a verification_domain scope: 'nar' (address verification), 'car' (residency verification), or 'both'. Configure this when assigning the verifier role.</p>
-          </div>
-        </div>
-      </Card>
-
-      {/* Household Management - NEW */}
+      {/* Household Management */}
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
           <Home className="h-5 w-5" />
-          Household Management
+          {t('carAdminGuide.householdManagement.title')}
         </h2>
         <div className="space-y-3">
-          <p>Oversee household groups, dependents, and family structures:</p>
+          <p>{t('carAdminGuide.householdManagement.description')}</p>
 
-          <h3 className="font-semibold mt-4">Household Groups:</h3>
+          <h3 className="font-semibold mt-4">{t('carAdminGuide.householdManagement.householdGroups.title')}:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>View all household groups in your jurisdiction</li>
-            <li>Each household has a designated head (linked to person record)</li>
-            <li>Primary UAC links household to physical address</li>
-            <li>Track household status: active, inactive, dissolved</li>
-            <li>Verify households for official recognition</li>
+            <li>{t('carAdminGuide.householdManagement.householdGroups.item1')}</li>
+            <li>{t('carAdminGuide.householdManagement.householdGroups.item2')}</li>
+            <li>{t('carAdminGuide.householdManagement.householdGroups.item3')}</li>
+            <li>{t('carAdminGuide.householdManagement.householdGroups.item4')}</li>
+            <li>{t('carAdminGuide.householdManagement.householdGroups.item5')}</li>
           </ul>
 
-          <h3 className="font-semibold mt-4">Dependent Management:</h3>
+          <h3 className="font-semibold mt-4">{t('carAdminGuide.householdManagement.dependentManagement.title')}:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>View all dependents registered by guardians</li>
-            <li>Dependent types: minor, student, disabled_adult, elderly</li>
-            <li>Track majority age notifications (when minors turn 18)</li>
-            <li>Monitor claimed_own_account status</li>
-            <li>Verify documentation: birth certificates, student IDs, disability certificates</li>
+            <li>{t('carAdminGuide.householdManagement.dependentManagement.item1')}</li>
+            <li>{t('carAdminGuide.householdManagement.dependentManagement.item2')}</li>
+            <li>{t('carAdminGuide.householdManagement.dependentManagement.item3')}</li>
+            <li>{t('carAdminGuide.householdManagement.dependentManagement.item4')}</li>
+            <li>{t('carAdminGuide.householdManagement.dependentManagement.item5')}</li>
           </ul>
 
-          <h3 className="font-semibold mt-4">Custody Tracking:</h3>
+          <h3 className="font-semibold mt-4">{t('carAdminGuide.householdManagement.custodyTracking.title')}:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>Dependents can belong to multiple households (shared custody)</li>
-            <li>Custody types: sole, joint, primary, secondary</li>
-            <li>Residence percentage tracking for shared custody</li>
-            <li>Custody schedule documentation</li>
+            <li>{t('carAdminGuide.householdManagement.custodyTracking.item1')}</li>
+            <li>{t('carAdminGuide.householdManagement.custodyTracking.item2')}</li>
+            <li>{t('carAdminGuide.householdManagement.custodyTracking.item3')}</li>
+            <li>{t('carAdminGuide.householdManagement.custodyTracking.item4')}</li>
           </ul>
 
-          <h3 className="font-semibold mt-4">Household Succession:</h3>
+          <h3 className="font-semibold mt-4">{t('carAdminGuide.householdManagement.succession.title')}:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>When household head changes, track succession</li>
-            <li>Previous household ID maintained for history</li>
-            <li>Succession date recorded for audit</li>
+            <li>{t('carAdminGuide.householdManagement.succession.item1')}</li>
+            <li>{t('carAdminGuide.householdManagement.succession.item2')}</li>
+            <li>{t('carAdminGuide.householdManagement.succession.item3')}</li>
           </ul>
         </div>
       </Card>
 
-      {/* CAR Analytics - NEW */}
+      {/* CAR Analytics */}
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
           <BarChart3 className="h-5 w-5" />
-          CAR Analytics
+          {t('carAdminGuide.carAnalytics.title')}
         </h2>
         <div className="space-y-3">
-          <p>Monitor citizen-focused metrics for the CAR system:</p>
+          <p>{t('carAdminGuide.carAnalytics.description')}</p>
 
-          <h3 className="font-semibold mt-4">Citizen Adoption Metrics:</h3>
+          <h3 className="font-semibold mt-4">{t('carAdminGuide.carAnalytics.citizenMetrics.title')}:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li><strong>Citizen Adoption Rate:</strong> % of registered users with CAR addresses</li>
-            <li><strong>CAR Verification Rate:</strong> % of declarations confirmed vs pending</li>
-            <li><strong>Average Verification Time:</strong> Hours from declaration to confirmation</li>
+            <li><strong>{t('carAdminGuide.carAnalytics.citizenMetrics.adoptionRate')}:</strong> {t('carAdminGuide.carAnalytics.citizenMetrics.adoptionRateDesc')}</li>
+            <li><strong>{t('carAdminGuide.carAnalytics.citizenMetrics.verificationRate')}:</strong> {t('carAdminGuide.carAnalytics.citizenMetrics.verificationRateDesc')}</li>
+            <li><strong>{t('carAdminGuide.carAnalytics.citizenMetrics.avgVerificationTime')}:</strong> {t('carAdminGuide.carAnalytics.citizenMetrics.avgVerificationTimeDesc')}</li>
           </ul>
 
-          <h3 className="font-semibold mt-4">Address Status Breakdown:</h3>
+          <h3 className="font-semibold mt-4">{t('carAdminGuide.carAnalytics.addressStatus.title')}:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>Self-declared vs Confirmed vs Rejected counts</li>
-            <li>Primary vs Secondary address distribution</li>
-            <li>Privacy level distribution (PRIVATE, REGION_ONLY, PUBLIC)</li>
-            <li>Address scope distribution (BUILDING vs UNIT)</li>
+            <li>{t('carAdminGuide.carAnalytics.addressStatus.item1')}</li>
+            <li>{t('carAdminGuide.carAnalytics.addressStatus.item2')}</li>
+            <li>{t('carAdminGuide.carAnalytics.addressStatus.item3')}</li>
+            <li>{t('carAdminGuide.carAnalytics.addressStatus.item4')}</li>
           </ul>
 
-          <h3 className="font-semibold mt-4">Household Analytics:</h3>
+          <h3 className="font-semibold mt-4">{t('carAdminGuide.carAnalytics.householdAnalytics.title')}:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li><strong>Household Formation:</strong> Total active households</li>
-            <li><strong>Average Household Size:</strong> Members per household</li>
-            <li><strong>Verified Households:</strong> % verified by CAR</li>
-            <li><strong>Dependent Distribution:</strong> By type (minor, student, etc.)</li>
-            <li><strong>Member Relationships:</strong> By relationship type (spouse, child, etc.)</li>
+            <li><strong>{t('carAdminGuide.carAnalytics.householdAnalytics.formation')}:</strong> {t('carAdminGuide.carAnalytics.householdAnalytics.formationDesc')}</li>
+            <li><strong>{t('carAdminGuide.carAnalytics.householdAnalytics.avgSize')}:</strong> {t('carAdminGuide.carAnalytics.householdAnalytics.avgSizeDesc')}</li>
+            <li><strong>{t('carAdminGuide.carAnalytics.householdAnalytics.verified')}:</strong> {t('carAdminGuide.carAnalytics.householdAnalytics.verifiedDesc')}</li>
+            <li><strong>{t('carAdminGuide.carAnalytics.householdAnalytics.dependentDist')}:</strong> {t('carAdminGuide.carAnalytics.householdAnalytics.dependentDistDesc')}</li>
+            <li><strong>{t('carAdminGuide.carAnalytics.householdAnalytics.memberRelations')}:</strong> {t('carAdminGuide.carAnalytics.householdAnalytics.memberRelationsDesc')}</li>
           </ul>
 
           <div className="bg-muted p-4 rounded-lg mt-4">
-            <p className="text-sm"><strong>Data Source:</strong> Analytics are pulled directly from citizen_address, household_groups, household_members, household_dependents, and profiles tables.</p>
+            <p className="text-sm"><strong>{t('carAdminGuide.carAnalytics.dataSource')}:</strong> {t('carAdminGuide.carAnalytics.dataSourceDesc')}</p>
           </div>
         </div>
       </Card>
 
-      {/* Privacy Levels - NEW */}
+      {/* Privacy Analytics (Read-Only) */}
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
           <Lock className="h-5 w-5" />
-          Privacy Level Management
+          {t('carAdminGuide.privacyAnalytics.title')}
+          <Badge variant="secondary">{t('carAdminGuide.privacyAnalytics.readOnly')}</Badge>
         </h2>
         <div className="space-y-3">
-          <p>Manage citizen address privacy settings:</p>
+          <p>{t('carAdminGuide.privacyAnalytics.description')}</p>
 
-          <h3 className="font-semibold mt-4">Privacy Levels:</h3>
+          <Alert variant="default" className="mt-4">
+            <Eye className="h-4 w-4" />
+            <AlertDescription>
+              {t('carAdminGuide.privacyAnalytics.citizenControlNote')}
+            </AlertDescription>
+          </Alert>
+
+          <h3 className="font-semibold mt-4">{t('carAdminGuide.privacyAnalytics.levels.title')}:</h3>
           <ul className="space-y-3 ml-4">
             <li>
-              <strong className="text-red-600">PRIVATE:</strong>
-              <p className="text-sm ml-4">Only the citizen and authorized officials can see. Not searchable.</p>
+              <strong className="text-destructive">{t('carAdminGuide.privacyAnalytics.levels.private')}:</strong>
+              <p className="text-sm ml-4">{t('carAdminGuide.privacyAnalytics.levels.privateDesc')}</p>
             </li>
             <li>
-              <strong className="text-yellow-600">REGION_ONLY:</strong>
-              <p className="text-sm ml-4">Visible to users within the same region. Emergency services, local government.</p>
+              <strong className="text-warning">{t('carAdminGuide.privacyAnalytics.levels.regionOnly')}:</strong>
+              <p className="text-sm ml-4">{t('carAdminGuide.privacyAnalytics.levels.regionOnlyDesc')}</p>
             </li>
             <li>
-              <strong className="text-green-600">PUBLIC:</strong>
-              <p className="text-sm ml-4">Fully searchable by all users. searchable_by_public=true.</p>
+              <strong className="text-primary">{t('carAdminGuide.privacyAnalytics.levels.public')}:</strong>
+              <p className="text-sm ml-4">{t('carAdminGuide.privacyAnalytics.levels.publicDesc')}</p>
             </li>
           </ul>
 
-          <h3 className="font-semibold mt-4">Admin Override:</h3>
+          <h3 className="font-semibold mt-4">{t('carAdminGuide.privacyAnalytics.availableMetrics.title')}:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>CAR admins can view all addresses regardless of privacy</li>
-            <li>Emergency services always have access during emergencies</li>
-            <li>Privacy changes are logged in citizen_address_event table</li>
-          </ul>
-        </div>
-      </Card>
-
-      <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <Settings className="h-5 w-5" />
-          System Configuration
-        </h2>
-        <div className="space-y-3">
-          <h3 className="font-semibold">Auto-Verification Rules:</h3>
-          <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>Enable/disable auto-confirmation for verified UACs</li>
-            <li>Trigger: trigger_auto_approve_citizen_address()</li>
-            <li>Auto-approves if UAC links to verified NAR address</li>
-            <li>Set manual review triggers for edge cases</li>
-          </ul>
-
-          <h3 className="font-semibold mt-4">Workflow Settings:</h3>
-          <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>Set verification SLA timelines</li>
-            <li>Configure notification rules</li>
-            <li>Define escalation procedures</li>
-            <li>Manage status workflow stages</li>
-          </ul>
-
-          <h3 className="font-semibold mt-4">Quality Thresholds:</h3>
-          <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>Configure duplicate detection sensitivity</li>
-            <li>Set quality score requirements</li>
-            <li>Define manual review triggers</li>
+            <li>{t('carAdminGuide.privacyAnalytics.availableMetrics.item1')}</li>
+            <li>{t('carAdminGuide.privacyAnalytics.availableMetrics.item2')}</li>
+            <li>{t('carAdminGuide.privacyAnalytics.availableMetrics.item3')}</li>
+            <li>{t('carAdminGuide.privacyAnalytics.availableMetrics.item4')}</li>
           </ul>
         </div>
       </Card>
@@ -210,115 +163,130 @@ export function CARAdminGuide() {
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
           <Database className="h-5 w-5" />
-          Data Quality Management
+          {t('carAdminGuide.dataQuality.title')}
         </h2>
         <div className="space-y-3">
-          <h3 className="font-semibold">Quality Metrics:</h3>
+          <h3 className="font-semibold">{t('carAdminGuide.dataQuality.metrics.title')}:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>Total citizen addresses by status</li>
-            <li>Pending vs confirmed vs rejected breakdown</li>
-            <li>Duplicate person records detection</li>
-            <li>Address coverage by region</li>
-            <li>Average verification time</li>
+            <li>{t('carAdminGuide.dataQuality.metrics.item1')}</li>
+            <li>{t('carAdminGuide.dataQuality.metrics.item2')}</li>
+            <li>{t('carAdminGuide.dataQuality.metrics.item3')}</li>
+            <li>{t('carAdminGuide.dataQuality.metrics.item4')}</li>
+            <li>{t('carAdminGuide.dataQuality.metrics.item5')}</li>
           </ul>
 
-          <h3 className="font-semibold mt-4">Bulk Operations:</h3>
+          <h3 className="font-semibold mt-4">{t('carAdminGuide.dataQuality.bulkOperations.title')}:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>Bulk approve verified declarations</li>
-            <li>Merge duplicate person records</li>
-            <li>Update address statuses in batch</li>
-            <li>Data cleanup operations</li>
+            <li>{t('carAdminGuide.dataQuality.bulkOperations.item1')}</li>
+            <li>{t('carAdminGuide.dataQuality.bulkOperations.item2')}</li>
+            <li>{t('carAdminGuide.dataQuality.bulkOperations.item3')}</li>
+            <li>{t('carAdminGuide.dataQuality.bulkOperations.item4')}</li>
           </ul>
 
-          <h3 className="font-semibold mt-4">Data Export:</h3>
+          <h3 className="font-semibold mt-4">{t('carAdminGuide.dataQuality.dataExport.title')}:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>Export declarations to CSV</li>
-            <li>Generate compliance reports</li>
-            <li>Create analytics dashboards</li>
+            <li>{t('carAdminGuide.dataQuality.dataExport.item1')}</li>
+            <li>{t('carAdminGuide.dataQuality.dataExport.item2')}</li>
+            <li>{t('carAdminGuide.dataQuality.dataExport.item3')}</li>
+          </ul>
+        </div>
+      </Card>
+
+      {/* Verifier Directory (Read-Only) */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Users className="h-5 w-5" />
+          {t('carAdminGuide.verifierDirectory.title')}
+          <Badge variant="secondary">{t('carAdminGuide.verifierDirectory.readOnly')}</Badge>
+        </h2>
+        <div className="space-y-3">
+          <p>{t('carAdminGuide.verifierDirectory.description')}</p>
+
+          <h3 className="font-semibold mt-4">{t('carAdminGuide.verifierDirectory.availableInfo.title')}:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>{t('carAdminGuide.verifierDirectory.availableInfo.item1')}</li>
+            <li>{t('carAdminGuide.verifierDirectory.availableInfo.item2')}</li>
+            <li>{t('carAdminGuide.verifierDirectory.availableInfo.item3')}</li>
+            <li>{t('carAdminGuide.verifierDirectory.availableInfo.item4')}</li>
+            <li>{t('carAdminGuide.verifierDirectory.availableInfo.item5')}</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">{t('carAdminGuide.verifierDirectory.performanceTracking.title')}:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>{t('carAdminGuide.verifierDirectory.performanceTracking.item1')}</li>
+            <li>{t('carAdminGuide.verifierDirectory.performanceTracking.item2')}</li>
+            <li>{t('carAdminGuide.verifierDirectory.performanceTracking.item3')}</li>
+            <li>{t('carAdminGuide.verifierDirectory.performanceTracking.item4')}</li>
+          </ul>
+
+          <div className="bg-muted p-4 rounded-lg mt-4">
+            <p className="text-sm"><strong>{t('carAdminGuide.verifierDirectory.note')}:</strong> {t('carAdminGuide.verifierDirectory.noteDesc')}</p>
+          </div>
+        </div>
+      </Card>
+
+      {/* Person Record Management */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Users className="h-5 w-5" />
+          {t('carAdminGuide.personRecordManagement.title')}
+        </h2>
+        <div className="space-y-3">
+          <p>{t('carAdminGuide.personRecordManagement.description')}</p>
+
+          <h3 className="font-semibold mt-4">{t('carAdminGuide.personRecordManagement.capabilities.title')}:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>{t('carAdminGuide.personRecordManagement.capabilities.item1')}</li>
+            <li>{t('carAdminGuide.personRecordManagement.capabilities.item2')}</li>
+            <li>{t('carAdminGuide.personRecordManagement.capabilities.item3')}</li>
+            <li>{t('carAdminGuide.personRecordManagement.capabilities.item4')}</li>
+            <li>{t('carAdminGuide.personRecordManagement.capabilities.item5')}</li>
+          </ul>
+
+          <h3 className="font-semibold">{t('carAdminGuide.personRecordManagement.duplicateDetection.title')}:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>{t('carAdminGuide.personRecordManagement.duplicateDetection.item1')}</li>
+            <li>{t('carAdminGuide.personRecordManagement.duplicateDetection.item2')}</li>
+            <li>{t('carAdminGuide.personRecordManagement.duplicateDetection.item3')}</li>
+            <li>{t('carAdminGuide.personRecordManagement.duplicateDetection.item4')}</li>
           </ul>
         </div>
       </Card>
 
       <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Managing Verifiers</h2>
+        <h2 className="text-xl font-semibold mb-4">{t('carAdminGuide.bestPractices.title')}</h2>
         <div className="space-y-3">
-          <h3 className="font-semibold">Verifier Oversight:</h3>
+          <h3 className="font-semibold">{t('carAdminGuide.bestPractices.systemHealth.title')}:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>View all verifiers with CAR domain (verification_domain='car' or 'both')</li>
-            <li>Monitor verification activity and performance</li>
-            <li>Review decisions for quality assurance</li>
-            <li>Adjust permissions based on performance</li>
-            <li>Provide training and guidance</li>
+            <li>✅ {t('carAdminGuide.bestPractices.systemHealth.item1')}</li>
+            <li>✅ {t('carAdminGuide.bestPractices.systemHealth.item2')}</li>
+            <li>✅ {t('carAdminGuide.bestPractices.systemHealth.item3')}</li>
+            <li>✅ {t('carAdminGuide.bestPractices.systemHealth.item4')}</li>
+            <li>✅ {t('carAdminGuide.bestPractices.systemHealth.item5')}</li>
+            <li>✅ {t('carAdminGuide.bestPractices.systemHealth.item6')}</li>
           </ul>
 
-          <h3 className="font-semibold mt-4">Performance Tracking:</h3>
+          <h3 className="font-semibold mt-4">{t('carAdminGuide.bestPractices.households.title')}:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>Verifications per verifier</li>
-            <li>Average verification time</li>
-            <li>Approval/rejection rates</li>
-            <li>Quality of feedback provided</li>
-          </ul>
-        </div>
-      </Card>
-
-      <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Person Record Management</h2>
-        <div className="space-y-3">
-          <h3 className="font-semibold">Duplicate Detection:</h3>
-          <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>System flags potential duplicate person records</li>
-            <li>Same auth_user_id with multiple person entries</li>
-            <li>Review and merge duplicates</li>
-            <li>Preserve address history when merging</li>
+            <li>✅ {t('carAdminGuide.bestPractices.households.item1')}</li>
+            <li>✅ {t('carAdminGuide.bestPractices.households.item2')}</li>
+            <li>✅ {t('carAdminGuide.bestPractices.households.item3')}</li>
+            <li>✅ {t('carAdminGuide.bestPractices.households.item4')}</li>
           </ul>
 
-          <h3 className="font-semibold mt-4">Merging Process:</h3>
-          <ol className="list-decimal list-inside space-y-2 ml-4">
-            <li>Identify duplicate person records</li>
-            <li>Review all addresses for each duplicate</li>
-            <li>Select primary person record to keep</li>
-            <li>Merge addresses from duplicate to primary</li>
-            <li>Archive duplicate record</li>
-            <li>Log merge event for audit trail</li>
-          </ol>
-        </div>
-      </Card>
-
-      <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Best Practices</h2>
-        <div className="space-y-3">
-          <h3 className="font-semibold">For System Health:</h3>
+          <h3 className="font-semibold mt-4">{t('carAdminGuide.bestPractices.security.title')}:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>✅ Run weekly quality metrics reviews</li>
-            <li>✅ Monitor auto-verification success rates</li>
-            <li>✅ Address duplicate person records promptly</li>
-            <li>✅ Review verifier performance monthly</li>
-            <li>✅ Keep verification SLAs realistic</li>
-            <li>✅ Monitor household data quality</li>
-          </ul>
-
-          <h3 className="font-semibold mt-4">For Households:</h3>
-          <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>✅ Verify household documentation when flagged</li>
-            <li>✅ Monitor custody arrangements for conflicts</li>
-            <li>✅ Track dependents approaching majority age</li>
-            <li>✅ Ensure household heads are correctly assigned</li>
-          </ul>
-
-          <h3 className="font-semibold mt-4">Security:</h3>
-          <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>🔒 Grant minimum necessary permissions</li>
-            <li>🔒 Review permission assignments regularly</li>
-            <li>🔒 Monitor for suspicious declaration patterns</li>
-            <li>🔒 Maintain audit logs for compliance</li>
-            <li>🔒 Respect citizen privacy level choices</li>
+            <li>🔒 {t('carAdminGuide.bestPractices.security.item1')}</li>
+            <li>🔒 {t('carAdminGuide.bestPractices.security.item2')}</li>
+            <li>🔒 {t('carAdminGuide.bestPractices.security.item3')}</li>
+            <li>🔒 {t('carAdminGuide.bestPractices.security.item4')}</li>
           </ul>
         </div>
       </Card>
 
       <Card className="p-6 bg-muted">
-        <h2 className="text-xl font-semibold mb-3">Need Help?</h2>
-        <p>Contact system administrators for technical issues or integrations with the NAR system.</p>
+        <h2 className="text-xl font-semibold mb-3">{t('carAdminGuide.needHelp.title')}</h2>
+        <p>{t('carAdminGuide.needHelp.description')}</p>
       </Card>
     </div>
   );
