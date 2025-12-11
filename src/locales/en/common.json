@@ -642,5 +642,12 @@
   "memberAddedSuccessfully": "Member added to household successfully",
   "failedToAddMember": "Failed to add member. Please try again.",
   "householdCreatedSuccessfully": "Household created successfully",
-  "failedToCreateHousehold": "Failed to create household"
+  "failedToCreateHousehold": "Failed to create household",
+  "quickActions": "Quick Actions",
+  "backupRequests": {
+    "requestBackup": "Request Backup"
+  },
+  "requestBackupDialog": {
+    "reasonPlaceholder": "Describe your reason for requesting backup..."
+  }
 }
