@@ -632,6 +632,10 @@
       "theft": "Robo",
       "domestic": "Doméstico",
       "publicOrder": "Orden Público",
+      "police": "Policía",
+      "fire": "Incendio",
+      "medical": "Médico",
+      "rescue": "Rescate",
       "other": "Otro"
     },
     "priorities": {
@@ -639,7 +643,23 @@
       "medium": "Medio",
       "high": "Alto",
       "critical": "Crítico"
-    }
+    },
+    "liveData": "Datos en Vivo",
+    "dataLoaded": "Datos de análisis cargados desde la base de datos",
+    "lastUpdated": "Última actualización",
+    "criticalCount": "críticos",
+    "resolvedOf": "resueltos de",
+    "noData": "Sin datos",
+    "fromReportToResponse": "del reporte a la respuesta",
+    "reported": "reportados",
+    "noTimelineData": "No hay datos de cronología disponibles",
+    "noTypeData": "No hay datos de tipos de incidente disponibles",
+    "noUnitData": "No hay datos de unidades disponibles",
+    "noRegionalData": "No hay datos regionales disponibles",
+    "noCityData": "No hay datos de ciudades disponibles",
+    "unitUtilization": "Utilización de Unidades",
+    "unitUtilizationDescription": "Porcentaje de unidades actualmente desplegadas",
+    "unitsCurrentlyDeployed": "unidades desplegadas actualmente"
   },
   
   "systemConfiguration": {
@@ -724,8 +744,14 @@
       "failedToCreateBackup": "Error al crear respaldo del sistema",
       "restoringSystemFromBackup": "Restaurando sistema desde respaldo...",
       "systemRestored": "Sistema restaurado exitosamente",
-      "failedToRestoreSystem": "Error al restaurar sistema"
-    }
+      "failedToRestoreSystem": "Error al restaurar sistema",
+      "configurationLoaded": "Configuración cargada desde la base de datos",
+      "loadingConfiguration": "Cargando configuración..."
+    },
+    "databasePersisted": "Persistido en BD",
+    "lastSaved": "Último guardado",
+    "reload": "Recargar",
+    "saving": "Guardando..."
   },
 
   "userManagement": {

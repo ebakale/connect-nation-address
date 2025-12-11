@@ -624,6 +624,10 @@
       "theft": "Theft", 
       "domestic": "Domestic",
       "publicOrder": "Public Order",
+      "police": "Police",
+      "fire": "Fire",
+      "medical": "Medical",
+      "rescue": "Rescue",
       "other": "Other"
     },
     "priorities": {
@@ -631,7 +635,23 @@
       "medium": "Medium",
       "high": "High",
       "critical": "Critical"
-    }
+    },
+    "liveData": "Live Data",
+    "dataLoaded": "Analytics data loaded from database",
+    "lastUpdated": "Last updated",
+    "criticalCount": "critical",
+    "resolvedOf": "resolved of",
+    "noData": "No data",
+    "fromReportToResponse": "from report to response",
+    "reported": "reported",
+    "noTimelineData": "No timeline data available",
+    "noTypeData": "No incident type data available",
+    "noUnitData": "No unit data available",
+    "noRegionalData": "No regional data available",
+    "noCityData": "No city data available",
+    "unitUtilization": "Unit Utilization",
+    "unitUtilizationDescription": "Percentage of units currently deployed",
+    "unitsCurrentlyDeployed": "units currently deployed"
   },
   
   "systemConfiguration": {
@@ -716,8 +736,14 @@
       "failedToCreateBackup": "Failed to create system backup",
       "restoringSystemFromBackup": "Restoring system from backup...",
       "systemRestored": "System restored successfully",
-      "failedToRestoreSystem": "Failed to restore system"
-    }
+      "failedToRestoreSystem": "Failed to restore system",
+      "configurationLoaded": "Configuration loaded from database",
+      "loadingConfiguration": "Loading configuration..."
+    },
+    "databasePersisted": "Database Persisted",
+    "lastSaved": "Last saved",
+    "reload": "Reload",
+    "saving": "Saving..."
   },
 
   "userManagement": {
