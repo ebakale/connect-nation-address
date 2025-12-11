@@ -23,6 +23,7 @@ import IncidentDetailDialog from './IncidentDetailDialog';
 import IncidentMap from './IncidentMap';
 import { useTranslation } from 'react-i18next';
 import { UniversalLocationPicker } from './UniversalLocationPicker';
+import { RequestBackupDialog } from './RequestBackupDialog';
 
 interface IncidentAssignment {
   id: string;
@@ -146,8 +147,6 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
   const [quickMessage, setQuickMessage] = useState('');
   const [resourceRequest, setResourceRequest] = useState('');
   const [showResourceDialog, setShowResourceDialog] = useState(false);
-  const [showBackupDialog, setShowBackupDialog] = useState(false);
-  const [backupReason, setBackupReason] = useState('');
   const [autoGPSAttempted, setAutoGPSAttempted] = useState(false);
   const [showLocationPicker, setShowLocationPicker] = useState(false);
 
@@ -1161,45 +1160,6 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
     return 'Location unavailable';
   };
 
-  // Request backup function for general use (not incident-specific)
-  const requestBackup = async () => {
-    if (!unitInfo || !backupReason.trim()) return;
-
-    try {
-      const { data: backupResult, error: backupError } = await supabase.functions.invoke('process-backup-request', {
-        body: {
-          incident_id: null, // General backup request, not incident-specific
-          requesting_unit_code: unitInfo.unit_code,
-          requesting_unit_name: unitInfo.unit_name,
-          reason: backupReason,
-          priority_level: 3, // Normal priority for general backup
-          location: unitInfo.current_location || 'Unknown location',
-          incident_number: null
-        }
-      });
-
-      if (backupError) {
-        console.error('Backup request failed:', backupError);
-        throw new Error('Failed to send backup request');
-      }
-
-      toast({
-        title: t('backupRequests.backupRequestCreated'),
-        description: t('fieldDashboard.backupRequestSent', { count: backupResult?.notifications_sent || 0 })
-      });
-      
-      setShowBackupDialog(false);
-      setBackupReason('');
-    } catch (error) {
-      console.error('Error requesting backup:', error);
-      toast({
-        title: t('fieldDashboard.errorTitle'),
-        description: t('fieldDashboard.failedToRequestBackup'),
-        variant: 'destructive'
-      });
-    }
-  };
-
   if (!unitInfo) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -1487,10 +1447,12 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
               <div className="space-y-3">
                 <h4 className="font-medium">{t('quickActions')}</h4>
                 <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" className="text-xs" onClick={() => setShowBackupDialog(true)}>
-                    <Users className="h-4 w-4 mr-2" />
-                    {t('backupRequests.requestBackup')}
-                  </Button>
+                  <RequestBackupDialog unitId={unitInfo?.id} unitCode={unitInfo?.unit_code}>
+                    <Button variant="outline" className="text-xs">
+                      <Users className="h-4 w-4 mr-2" />
+                      {t('emergency:requestBackup')}
+                    </Button>
+                  </RequestBackupDialog>
                   
                   <Button variant="outline" className="text-xs" onClick={() => setShowResourceDialog(true)}>
                     <Car className="h-4 w-4 mr-2" />
@@ -1674,25 +1636,6 @@ export const UnitFieldDashboard: React.FC<UnitFieldDashboardProps> = ({
           toast({ title: t('fieldDashboard.locationUpdated'), description: t('fieldDashboard.manualLocationSet') });
         }}
       />
-
-      <Dialog open={showBackupDialog} onOpenChange={setShowBackupDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('backupRequests.requestBackup')}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              value={backupReason}
-              onChange={(e) => setBackupReason(e.target.value)}
-              placeholder={t('requestBackupDialog.reasonPlaceholder')}
-              rows={3}
-            />
-            <Button onClick={requestBackup} disabled={!backupReason.trim()}>
-              {t('fieldDashboard.sendBackupRequest')}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={showResourceDialog} onOpenChange={setShowResourceDialog}>
         <DialogContent>
