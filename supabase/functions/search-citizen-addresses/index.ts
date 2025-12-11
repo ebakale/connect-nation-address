@@ -125,18 +125,27 @@ Deno.serve(async (req) => {
         .select('id, auth_user_id, is_protected_class, protection_reason')
         .in('auth_user_id', userIds);
 
-      // Get addresses for these persons
+      // Get citizen addresses for these persons
       const personIds = persons?.map(p => p.id) || [];
-      const { data: addresses } = await supabase
+      const { data: citizenAddresses } = await supabase
         .from('citizen_address')
-        .select('*, addresses:uac(street, city, region, country, building, latitude, longitude)')
+        .select('*')
         .in('person_id', personIds)
         .is('effective_to', null);
 
-      // Filter and format results based on privacy
+      // Get address details for the UACs (separate query since no FK relationship)
+      const uacs = citizenAddresses?.map(ca => ca.uac).filter(Boolean) || [];
+      const { data: addressDetails } = await supabase
+        .from('addresses')
+        .select('uac, street, city, region, country, building, latitude, longitude')
+        .in('uac', uacs);
+      
+      // Create a map for quick lookup
+      const addressMap = new Map(addressDetails?.map(a => [a.uac, a]) || []);
+
       const formattedResults = profiles.map(profile => {
         const person = persons?.find(p => p.auth_user_id === profile.user_id);
-        const personAddresses = addresses?.filter(a => a.person_id === person?.id) || [];
+        const personAddresses = citizenAddresses?.filter(a => a.person_id === person?.id) || [];
         
         // Filter addresses based on privacy and permissions
         const visibleAddresses = personAddresses.filter(addr => {
@@ -154,7 +163,7 @@ Deno.serve(async (req) => {
           return addr.searchable_by_public && 
                  (addr.privacy_level === 'PUBLIC' || addr.privacy_level === 'REGION_ONLY');
         }).map(addr => {
-          const addressData = Array.isArray(addr.addresses) ? addr.addresses[0] : addr.addresses;
+          const addressData = addressMap.get(addr.uac);
           
           // Redact based on privacy level if not admin/verifier
           if (!isAdmin && !isVerifier && addr.privacy_level === 'REGION_ONLY') {
