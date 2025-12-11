@@ -7,9 +7,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useToast } from "@/hooks/use-toast";
-import { Clock, MapPin, User, Calendar, ChevronRight, Shield, ShieldCheck, ShieldX, CheckCircle } from "lucide-react";
+import { Clock, MapPin, User, Calendar, ChevronRight, Shield, ShieldCheck, ShieldX, CheckCircle, AlertTriangle } from "lucide-react";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
+import { BackupApprovalActions } from "./BackupApprovalActions";
+import { BackupAcknowledgmentTracker } from "./BackupAcknowledgmentTracker";
 
 interface BackupNotification {
   id: string;
@@ -20,7 +22,9 @@ interface BackupNotification {
   priority_level: number;
   created_at: string;
   read: boolean;
-  backup_status?: 'pending' | 'fulfilled' | 'partially_fulfilled';
+  backup_status?: 'pending' | 'acknowledged' | 'approved' | 'denied' | 'fulfilled' | 'partially_fulfilled';
+  backup_request_status?: string;
+  is_officer_down?: boolean;
   assigned_units?: string[];
   units_added_after_request?: string[];
   metadata: {
@@ -31,6 +35,8 @@ interface BackupNotification {
     reason?: string;
     request_timestamp?: string;
     requesting_user_id?: string;
+    is_officer_down?: boolean;
+    backup_type?: string;
   };
 }
 
@@ -118,42 +124,50 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
 
       // Enrich RECEIVED items with live incident data to compute backup status
       if (receivedArr.length > 0) {
-        const receivedIds = receivedArr.map((i) => i.incident_id);
-        const { data: recIncidents, error: recErr } = await supabase
-          .from('emergency_incidents')
-          .select('id, assigned_units, backup_requesting_unit, incident_number, incident_uac')
-          .in('id', receivedIds);
-        if (!recErr && recIncidents) {
-          const recMap = new Map(recIncidents.map((inc: any) => [inc.id, inc]));
-          const enriched = receivedArr.map((item) => {
-            const inc = recMap.get(item.incident_id);
-            if (!inc) return item;
-            const currentUnits: string[] = inc.assigned_units || [];
-            const requestingUnit: string | undefined = item.metadata?.requesting_unit || inc.backup_requesting_unit;
+        const receivedIds = receivedArr.map((i) => i.incident_id).filter(Boolean);
+        if (receivedIds.length > 0) {
+          const { data: recIncidents, error: recErr } = await supabase
+            .from('emergency_incidents')
+            .select('id, assigned_units, backup_requesting_unit, incident_number, incident_uac, backup_request_status, is_officer_down')
+            .in('id', receivedIds);
+          if (!recErr && recIncidents) {
+            const recMap = new Map(recIncidents.map((inc: any) => [inc.id, inc]));
+            const enriched = receivedArr.map((item) => {
+              const inc = recMap.get(item.incident_id);
+              if (!inc) return item;
+              const currentUnits: string[] = inc.assigned_units || [];
+              const requestingUnit: string | undefined = item.metadata?.requesting_unit || inc.backup_requesting_unit;
 
-            let unitsAddedAfterRequest: string[] = [];
-            if (requestingUnit && currentUnits.length > 1 && currentUnits.includes(requestingUnit)) {
-              unitsAddedAfterRequest = currentUnits.filter((u: string) => u !== requestingUnit);
-            }
-
-            let backupStatus: 'pending' | 'fulfilled' | 'partially_fulfilled' = 'pending';
-            if (unitsAddedAfterRequest.length > 0) {
-              backupStatus = unitsAddedAfterRequest.length >= 2 ? 'fulfilled' : 'partially_fulfilled';
-            }
-
-            return {
-              ...item,
-              assigned_units: currentUnits,
-              units_added_after_request: unitsAddedAfterRequest,
-              backup_status: backupStatus,
-              metadata: {
-                ...item.metadata,
-                incident_number: inc.incident_number || item.metadata?.incident_number,
-                location: inc.incident_uac || item.metadata?.location,
+              let unitsAddedAfterRequest: string[] = [];
+              if (requestingUnit && currentUnits.length > 1 && currentUnits.includes(requestingUnit)) {
+                unitsAddedAfterRequest = currentUnits.filter((u: string) => u !== requestingUnit);
               }
-            } as BackupNotification;
-          });
-          setReceivedNotifications(enriched);
+
+              // Use the new backup_request_status if available, otherwise compute from units
+              let backupStatus = inc.backup_request_status || 'pending';
+              if (backupStatus === 'pending' && unitsAddedAfterRequest.length > 0) {
+                backupStatus = unitsAddedAfterRequest.length >= 2 ? 'fulfilled' : 'partially_fulfilled';
+              }
+
+              return {
+                ...item,
+                assigned_units: currentUnits,
+                units_added_after_request: unitsAddedAfterRequest,
+                backup_status: backupStatus,
+                backup_request_status: inc.backup_request_status,
+                is_officer_down: inc.is_officer_down || item.metadata?.is_officer_down,
+                metadata: {
+                  ...item.metadata,
+                  incident_number: inc.incident_number || item.metadata?.incident_number,
+                  location: inc.incident_uac || item.metadata?.location,
+                  is_officer_down: inc.is_officer_down || item.metadata?.is_officer_down,
+                }
+              } as BackupNotification;
+            });
+            setReceivedNotifications(enriched);
+          } else {
+            setReceivedNotifications(receivedArr);
+          }
         } else {
           setReceivedNotifications(receivedArr);
         }
@@ -214,11 +228,17 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
   const getBackupStatusBadge = (status?: string) => {
     switch (status) {
       case 'fulfilled':
-        return <Badge variant="secondary"><ShieldCheck className="h-3 w-3 mr-1" />{t('backupRequests.fulfilled')}</Badge>;
+        return <Badge className="bg-green-100 text-green-800"><ShieldCheck className="h-3 w-3 mr-1" />{t('backupRequests.fulfilled')}</Badge>;
       case 'partially_fulfilled':
         return <Badge variant="default"><Shield className="h-3 w-3 mr-1" />{t('backupRequests.partial')}</Badge>;
+      case 'approved':
+        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />{t('backupApproval.approved')}</Badge>;
+      case 'acknowledged':
+        return <Badge className="bg-blue-100 text-blue-800"><Clock className="h-3 w-3 mr-1" />{t('backupApproval.acknowledged')}</Badge>;
+      case 'denied':
+        return <Badge className="bg-red-100 text-red-800"><ShieldX className="h-3 w-3 mr-1" />{t('backupApproval.denied')}</Badge>;
       case 'pending':
-        return <Badge variant="outline"><ShieldX className="h-3 w-3 mr-1" />{t('backupRequests.pending')}</Badge>;
+        return <Badge variant="outline"><Clock className="h-3 w-3 mr-1" />{t('backupRequests.pending')}</Badge>;
       default:
         return null;
     }
@@ -252,14 +272,20 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
     <div
       className={`p-4 border rounded-lg cursor-pointer transition-all hover:bg-muted/50 ${
         !notification.read ? 'bg-blue-50 border-blue-200' : ''
-      }`}
+      } ${notification.is_officer_down || notification.metadata?.is_officer_down ? 'border-red-500 bg-red-50' : ''}`}
       onClick={onClick}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
+            {(notification.is_officer_down || notification.metadata?.is_officer_down || notification.priority_level === 0) && (
+              <Badge className="bg-red-600 text-white animate-pulse">
+                <AlertTriangle className="h-3 w-3 mr-1" />
+                {t('emergencyBackup.officerDown')}
+              </Badge>
+            )}
             <Badge className={getPriorityColor(notification.priority_level)}>
-              {getPriorityLabel(notification.priority_level)}
+              {notification.priority_level === 0 ? t('backupApproval.priorities.emergency') : getPriorityLabel(notification.priority_level)}
             </Badge>
             {getBackupStatusBadge(notification.backup_status)}
             {!notification.read && (
@@ -270,7 +296,7 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
           <h4 className="font-medium text-sm truncate">{notification.title}</h4>
           <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{notification.message}</p>
           
-          <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+          <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground flex-wrap">
             {notification.metadata?.incident_number && (
               <div className="flex items-center gap-1">
                 <User className="h-3 w-3" />
@@ -435,6 +461,28 @@ export function BackupNotificationsPanel({ className }: BackupNotificationsPanel
                   </div>
                 )}
               </div>
+
+              {/* Approval Actions for Supervisors */}
+              {(isPoliceSupervisor || isPoliceDispatcher || isAdmin) && selectedNotification.incident_id && (
+                <div className="border-t pt-4">
+                  <BackupApprovalActions
+                    notificationId={selectedNotification.id}
+                    incidentId={selectedNotification.incident_id}
+                    requestingUnit={selectedNotification.metadata?.requesting_unit}
+                    currentStatus={selectedNotification.backup_request_status || selectedNotification.backup_status}
+                    priorityLevel={selectedNotification.priority_level}
+                    onStatusChange={fetchBackupNotifications}
+                  />
+                </div>
+              )}
+
+              {/* Acknowledgment Tracker */}
+              {selectedNotification.incident_id && (
+                <BackupAcknowledgmentTracker 
+                  incidentId={selectedNotification.incident_id}
+                  className="mt-4"
+                />
+              )}
             </div>
           )}
         </DialogContent>
