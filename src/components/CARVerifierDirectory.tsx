@@ -44,32 +44,46 @@ export function CARVerifierDirectory() {
   const fetchCARVerifiers = async () => {
     setLoading(true);
     try {
-      // Get all users with verifier role and CAR domain
+      // Step 1: Get all users with verifier role (simple query without nested select)
       const { data: verifierRoles, error: rolesError } = await supabase
         .from('user_roles')
-        .select(`
-          user_id,
-          user_role_metadata (
-            scope_type,
-            scope_value
-          )
-        `)
+        .select('id, user_id')
         .eq('role', 'verifier');
 
       if (rolesError) throw rolesError;
+
+      // Step 2: Get metadata for those roles separately
+      const roleIds = verifierRoles?.map(r => r.id) || [];
+      let roleMetadataData: { user_role_id: string; scope_type: string; scope_value: string }[] = [];
+
+      if (roleIds.length > 0) {
+        const { data: metadataResult, error: metadataError } = await supabase
+          .from('user_role_metadata')
+          .select('user_role_id, scope_type, scope_value')
+          .in('user_role_id', roleIds);
+
+        if (metadataError) throw metadataError;
+        roleMetadataData = metadataResult || [];
+      }
+
+      // Step 3: Merge the data - attach metadata to roles
+      const verifierRolesWithMetadata = verifierRoles?.map(role => ({
+        ...role,
+        user_role_metadata: roleMetadataData.filter(m => m.user_role_id === role.id)
+      })) || [];
 
       // Filter for CAR domain verifiers
       const carVerifierIds: string[] = [];
       const verifierMetadata: Record<string, { domain: string; scopeType: string | null; scopeValue: string | null }> = {};
 
-      verifierRoles?.forEach(role => {
-        const metadata = role.user_role_metadata as any[];
+      verifierRolesWithMetadata.forEach(role => {
+        const metadata = role.user_role_metadata;
         let hasCARDomain = false;
         let domain = '';
         let scopeType: string | null = null;
         let scopeValue: string | null = null;
 
-        metadata?.forEach((m: any) => {
+        metadata?.forEach((m) => {
           if (m.scope_type === 'verification_domain') {
             if (m.scope_value === 'car' || m.scope_value === 'both') {
               hasCARDomain = true;
