@@ -577,6 +577,8 @@
     "config": "Configuración",
     "analytics": "Analítica",
     "stats": "Estadísticas",
+    "auditLogs": "Registros de Auditoría",
+    "audit": "Auditoría",
     "policeUserManagement": "Gestión de Usuarios Policiales",
     "manageOfficersDescription": "Gestionar oficiales de policía, despachadores, supervisores y administradores",
     "policeUnitManagement": "Gestión de Unidades Policiales",
