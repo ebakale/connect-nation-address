@@ -445,6 +445,20 @@ export const UnitPerformanceAnalytics: React.FC = () => {
                       <Button
                         size="sm"
                         variant="outline"
+                        onClick={() => setDateRange({ from: subDays(new Date(), 180), to: new Date() })}
+                      >
+                        {t('last180Days')}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setDateRange({ from: subDays(new Date(), 360), to: new Date() })}
+                      >
+                        {t('last360Days')}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
                         onClick={() => setDateRange({ 
                           from: startOfMonth(new Date()), 
                           to: endOfMonth(new Date()) 
