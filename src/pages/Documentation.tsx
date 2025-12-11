@@ -244,11 +244,11 @@ const Documentation: React.FC = () => {
               <CardHeader>
                 <CardTitle>Technical Documentation</CardTitle>
                 <CardDescription>
-                  Comprehensive architecture, API documentation, and system specifications (verified Jan 2025)
+                  Comprehensive architecture, API documentation, and system specifications (updated Dec 2025)
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid gap-4">
+                <div className="grid gap-4 md:grid-cols-2">
                   <Button variant="outline" className="justify-start" asChild>
                     <a href="/docs/system-manual.md" target="_blank">
                       <FileText className="h-4 w-4 mr-2" />
@@ -271,6 +271,18 @@ const Documentation: React.FC = () => {
                     <a href="/docs/current-hosting-blueprint.md" target="_blank">
                       <FileText className="h-4 w-4 mr-2" />
                       Hosting Blueprint
+                    </a>
+                  </Button>
+                  <Button variant="outline" className="justify-start" asChild>
+                    <a href="/docs/business-address-guide.md" target="_blank">
+                      <FileText className="h-4 w-4 mr-2" />
+                      Business Address Guide
+                    </a>
+                  </Button>
+                  <Button variant="outline" className="justify-start" asChild>
+                    <a href="/docs/retention-policy.md" target="_blank">
+                      <FileText className="h-4 w-4 mr-2" />
+                      Data Retention Policy
                     </a>
                   </Button>
                 </div>
