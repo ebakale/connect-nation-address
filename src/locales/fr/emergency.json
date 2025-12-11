@@ -1528,5 +1528,63 @@
   "automatedPoliceDispatch": "Répartition policière automatisée avec affectation intelligente d'unités basée sur la localisation",
   "integratedCommunications": "Communications intégrées entre opérateurs, répartiteurs et unités de terrain",
   "responseTimeTracking": "Suivi des temps de réponse avec analyse complète du cycle de vie des incidents",
-  "completeAddressIntegration": "Intégration complète des adresses utilisant les codes UAC pour une localisation précise"
+  "completeAddressIntegration": "Intégration complète des adresses utilisant les codes UAC pour une localisation précise",
+
+  "auditLog": {
+    "title": "Journal d'Audit",
+    "description": "Voir l'activité du système et les journaux d'actions",
+    "logs": "Journaux",
+    "filters": "Filtres",
+    "searchPlaceholder": "Rechercher...",
+    "filterByAction": "Filtrer par action",
+    "allActions": "Toutes les Actions",
+    "dateRange": "Période",
+    "last24Hours": "Dernières 24 Heures",
+    "last7Days": "7 Derniers Jours",
+    "last30Days": "30 Derniers Jours",
+    "last90Days": "90 Derniers Jours",
+    "refresh": "Actualiser",
+    "export": "Exporter CSV",
+    "exportSuccess": "Journaux exportés avec succès",
+    "timestamp": "Date/Heure",
+    "user": "Utilisateur",
+    "action": "Action",
+    "incidentNumber": "Incident #",
+    "details": "Détails",
+    "noLogsFound": "Aucun journal trouvé",
+    "showingLogs": "Affichage de {{count}} journaux",
+    "failedToLoad": "Échec du chargement",
+    "unknownUser": "Utilisateur Inconnu"
+  },
+
+  "evidence": {
+    "title": "Preuves Photographiques",
+    "description": "Preuves capturées pendant l'intervention",
+    "capture": "Preuves",
+    "captureEvidence": "Capturer Preuves",
+    "captureDescription": "Télécharger des preuves pour l'incident {{incident}}",
+    "takePhoto": "Prendre Photo",
+    "chooseFile": "Choisir Fichier",
+    "photoDescription": "Description (Optionnel)",
+    "descriptionPlaceholder": "Décrivez ce que montre cette photo...",
+    "uploadPhoto": "Télécharger",
+    "uploading": "Téléchargement...",
+    "uploadSuccess": "Preuve téléchargée avec succès",
+    "uploadFailed": "Échec du téléchargement",
+    "selectPhoto": "Sélectionnez une photo",
+    "invalidFileType": "Sélectionnez un fichier image",
+    "fileTooLarge": "Le fichier doit être inférieur à 10Mo",
+    "noEvidenceYet": "Aucune preuve pour cet incident",
+    "unknownOfficer": "Agent Inconnu",
+    "loadFailed": "Échec du chargement"
+  },
+
+  "navigation": {
+    "navigate": "Naviguer",
+    "openInMaps": "Ouvrir dans Maps",
+    "openingMaps": "Ouverture de l'application...",
+    "distance": "Distance",
+    "estimatedTime": "Temps Est.",
+    "gettingDirections": "Obtention des directions..."
+  }
 }

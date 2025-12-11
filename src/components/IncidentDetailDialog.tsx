@@ -12,7 +12,7 @@ import { useState, useEffect } from "react";
 import { 
   Eye, MapPin, Clock, User, Phone, MessageSquare, 
   AlertTriangle, Calendar, Shield, Navigation, CheckCircle,
-  Edit, Save, X, Users, Play, Radio, FileText
+  Edit, Save, X, Users, Play, Radio, FileText, Camera, ExternalLink
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -21,6 +21,9 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { RequestBackupDialog } from "@/components/RequestBackupDialog";
 import { IncidentStatusUpdateDialog } from "@/components/IncidentStatusUpdateDialog";
+import { EvidenceCaptureDialog } from "@/components/EvidenceCaptureDialog";
+import { IncidentEvidenceViewer } from "@/components/IncidentEvidenceViewer";
+import { openNavigation, calculateDistance, formatDistance, estimateTravelTime } from "@/lib/NavigationService";
 
 interface EmergencyIncident {
   id: string;
@@ -111,6 +114,20 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
   const [availableOperators, setAvailableOperators] = useState<{id: string, name: string, role: string}[]>([]);
   const [newNote, setNewNote] = useState('');
   const [addingNote, setAddingNote] = useState(false);
+  const [showEvidenceCapture, setShowEvidenceCapture] = useState(false);
+  const [evidenceRefresh, setEvidenceRefresh] = useState(0);
+
+  // Navigation handler
+  const handleNavigate = () => {
+    if (incident.location_latitude && incident.location_longitude) {
+      openNavigation({
+        latitude: Number(incident.location_latitude),
+        longitude: Number(incident.location_longitude),
+        label: incident.incident_number
+      });
+      toast.success(t('navigation.openingMaps'));
+    }
+  };
 
   // Fetch available emergency units for dispatch
   const fetchAvailableOfficers = async () => {
@@ -730,6 +747,22 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
           
           {/* Quick Actions */}
           <div className="flex flex-wrap gap-1 sm:gap-2">
+            {/* Navigation Button */}
+            {incident.location_latitude && incident.location_longitude && (
+              <Button variant="outline" size="sm" className="text-xs" onClick={handleNavigate}>
+                <ExternalLink className="h-3 w-3 mr-1" />
+                {t('navigation.navigate')}
+              </Button>
+            )}
+
+            {/* Evidence Capture Button */}
+            {isPoliceOperator && !isResolved && (
+              <Button variant="outline" size="sm" className="text-xs" onClick={() => setShowEvidenceCapture(true)}>
+                <Camera className="h-3 w-3 mr-1" />
+                {t('evidence.capture')}
+              </Button>
+            )}
+
             {canRequestBackup && (
               <RequestBackupDialog unitId={user?.id || ''} unitCode="OFFICER">
                 <Button variant="outline" size="sm" className="text-xs">
@@ -757,6 +790,15 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
           </div>
         </div>
       </div>
+
+      {/* Evidence Capture Dialog */}
+      <EvidenceCaptureDialog
+        open={showEvidenceCapture}
+        onOpenChange={setShowEvidenceCapture}
+        incidentId={incident.id}
+        incidentNumber={incident.incident_number}
+        onEvidenceUploaded={() => setEvidenceRefresh(prev => prev + 1)}
+      />
 
       {/* Add Note Section - Available for all incidents including resolved */}
       {canAddNotes && (
@@ -1177,6 +1219,23 @@ const IncidentDetailDialog = ({ incident, onUpdate, isResolvedView = false, hide
                 )}
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Evidence Section */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <Camera className="h-4 w-4" />
+              {t('evidence.title')}
+            </CardTitle>
+            <CardDescription>{t('evidence.description')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <IncidentEvidenceViewer 
+              incidentId={incident.id} 
+              refreshTrigger={evidenceRefresh}
+            />
           </CardContent>
         </Card>
 
