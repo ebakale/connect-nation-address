@@ -95,7 +95,9 @@
     "private": "Privé",
     "busy": "Occupé",
     "available": "Disponible",
-    "status": "Statut"
+    "status": "Statut",
+    "confirmed": "Confirmé",
+    "self_declared": "Auto Déclaré"
   },
   "messages": {
     "noData": "Aucune donnée disponible",

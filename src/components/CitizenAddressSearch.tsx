@@ -250,7 +250,7 @@ export const CitizenAddressSearch = () => {
                           )}
 
                           <Badge variant="outline" className="text-xs">
-                            {t('common:status.label')}: {t(`common:status.${getStatusKey(address.status)}`)}
+                            {t('common:status.status')}: {t(`common:status.${getStatusKey(address.status)}`, getStatusKey(address.status))}
                           </Badge>
                         </div>
                       ))}
