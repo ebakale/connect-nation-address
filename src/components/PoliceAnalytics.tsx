@@ -195,6 +195,8 @@ const PoliceAnalytics: React.FC = () => {
               <SelectItem value="7d">{t('policeAnalytics.last7Days')}</SelectItem>
               <SelectItem value="30d">{t('policeAnalytics.last30Days')}</SelectItem>
               <SelectItem value="90d">{t('policeAnalytics.last90Days')}</SelectItem>
+              <SelectItem value="180d">{t('policeAnalytics.last180Days')}</SelectItem>
+              <SelectItem value="360d">{t('policeAnalytics.last360Days')}</SelectItem>
             </SelectContent>
           </Select>
           <Button 

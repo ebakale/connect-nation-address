@@ -598,6 +598,8 @@
     "last7Days": "Últimos 7 días",
     "last30Days": "Últimos 30 días",
     "last90Days": "Últimos 90 días",
+    "last180Days": "Últimos 180 días",
+    "last360Days": "Últimos 360 días",
     "refresh": "Actualizar",
     "totalIncidents": "Total de Incidentes",
     "pending": "pendientes",
@@ -1788,6 +1790,8 @@
   "last7Days": "Últimos 7 días",
   "last30Days": "Últimos 30 días",
   "last90Days": "Últimos 90 días",
+  "last180Days": "Últimos 180 días",
+  "last360Days": "Últimos 360 días",
   "thisMonth": "Este mes",
   "lastMonth": "Mes anterior"
 }
