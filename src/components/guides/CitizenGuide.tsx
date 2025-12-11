@@ -1,12 +1,12 @@
 import { Card } from "@/components/ui/card";
-import { Home, Search, FileText, MapPin, QrCode } from "lucide-react";
+import { Home, Search, FileText, MapPin, QrCode, Building2, Users, Shield } from "lucide-react";
 
 export function CitizenGuide() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
         <h1 className="text-3xl font-bold mb-2">Citizen User Guide</h1>
-        <p className="text-muted-foreground">Complete guide for citizens using the National Address System</p>
+        <p className="text-muted-foreground">Complete guide for citizens using the National Address System (Updated Dec 2025)</p>
       </div>
 
       {/* Getting Started */}
@@ -16,9 +16,47 @@ export function CitizenGuide() {
           Getting Started
         </h2>
         <div className="space-y-3">
-          <p><strong>Welcome!</strong> The Biakam National Address System allows you to search for addresses, request new address creation, and manage your personal addresses.</p>
-          <p><strong>Access:</strong> Visit the Public Portal or Citizen Portal</p>
-          <p><strong>Registration:</strong> Create a free account to access full features</p>
+          <p><strong>Welcome!</strong> The Biakam National Address System allows you to search for addresses, request new address creation, declare your residence, register businesses, and manage your household.</p>
+          <p><strong>Access:</strong> Visit the Public Portal (no login) or Citizen Portal (with account)</p>
+          <p><strong>Registration:</strong> Create a free account to access full features including CAR declarations and business registration</p>
+        </div>
+      </Card>
+
+      {/* Unified Address Request - NEW */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <FileText className="h-5 w-5" />
+          Unified Address Request
+        </h2>
+        <div className="space-y-4">
+          <p>The Unified Address Request wizard guides you through all address-related actions in one place:</p>
+          
+          <div className="border-l-4 border-primary pl-4">
+            <h3 className="font-semibold mb-2">Step 1: Address Lookup</h3>
+            <ul className="list-disc list-inside space-y-1 ml-2">
+              <li>Search for existing address by UAC code</li>
+              <li>If found, proceed to declare it as your residence or register a business</li>
+              <li>If not found, you can request creation of a new address (NAR request)</li>
+            </ul>
+          </div>
+
+          <div className="border-l-4 border-primary pl-4">
+            <h3 className="font-semibold mb-2">Step 2: Choose Action</h3>
+            <ul className="list-disc list-inside space-y-1 ml-2">
+              <li><strong>Declare as Residence (CAR):</strong> Link this address to your profile</li>
+              <li><strong>Register Business:</strong> Register your business at this location</li>
+              <li><strong>Request New Address:</strong> If address doesn't exist in system</li>
+            </ul>
+          </div>
+
+          <div className="border-l-4 border-primary pl-4">
+            <h3 className="font-semibold mb-2">Step 3: Complete Form</h3>
+            <p>Fill in the required details based on your selected action</p>
+          </div>
+
+          <div className="bg-muted p-4 rounded-lg">
+            <p className="text-sm"><strong>💡 Tip:</strong> If you're declaring an address linked to a verified NAR address, your CAR declaration may be auto-approved instantly!</p>
+          </div>
         </div>
       </Card>
 
@@ -65,52 +103,50 @@ export function CitizenGuide() {
         </div>
       </Card>
 
-      {/* Requesting a New Address */}
+      {/* Business Address Registration - NEW */}
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <FileText className="h-5 w-5" />
-          Requesting a New Address
+          <Building2 className="h-5 w-5" />
+          Business Address Registration
         </h2>
         <div className="space-y-4">
-          <p>If your address doesn't exist in the system, you can request its creation:</p>
+          <p>Register your business to appear in the public Business Directory:</p>
           
           <div className="border-l-4 border-primary pl-4">
-            <h3 className="font-semibold mb-2">Step 1: Create Account</h3>
-            <p>Register for a free citizen account (required for requests)</p>
+            <h3 className="font-semibold mb-2">Step 1: Access via Unified Address Request</h3>
+            <p>Start from the dashboard and select "Register Business" option</p>
           </div>
 
           <div className="border-l-4 border-primary pl-4">
-            <h3 className="font-semibold mb-2">Step 2: Submit Address Request</h3>
-            <ol className="list-decimal list-inside space-y-2 ml-2">
-              <li>Click "Request New Address" from the citizen portal</li>
-              <li>Fill in the address form:
-                <ul className="list-disc list-inside ml-4 mt-1">
-                  <li><strong>Location:</strong> Allow GPS or pin on map</li>
-                  <li><strong>Street:</strong> Street name or nearest landmark</li>
-                  <li><strong>Building:</strong> Building name/number</li>
-                  <li><strong>City & Region:</strong> Select from dropdowns</li>
-                  <li><strong>Address Type:</strong> Residential, Commercial, etc.</li>
-                  <li><strong>Description:</strong> Additional helpful details</li>
-                </ul>
-              </li>
-              <li>Upload a photo of the building (optional but recommended)</li>
-              <li>Add justification explaining why address is needed</li>
-              <li>Click "Submit Request"</li>
-            </ol>
-          </div>
-
-          <div className="border-l-4 border-primary pl-4">
-            <h3 className="font-semibold mb-2">Step 3: Wait for Verification</h3>
-            <p>Your request will be reviewed by verifiers (typically 5 business days)</p>
-          </div>
-
-          <div className="border-l-4 border-primary pl-4">
-            <h3 className="font-semibold mb-2">Step 4: Receive Notification</h3>
-            <p className="mb-2">You'll be notified of the decision:</p>
-            <ul className="space-y-1 ml-2">
-              <li><strong className="text-green-600">✅ Approved:</strong> Address published with UAC assigned</li>
-              <li><strong className="text-red-600">❌ Rejected:</strong> Review feedback and resubmit with corrections</li>
+            <h3 className="font-semibold mb-2">Step 2: Select Address</h3>
+            <ul className="list-disc list-inside space-y-1 ml-2">
+              <li>Search for existing address by UAC</li>
+              <li>Or request creation of new address if not found</li>
             </ul>
+          </div>
+
+          <div className="border-l-4 border-primary pl-4">
+            <h3 className="font-semibold mb-2">Step 3: Business Information (Required)</h3>
+            <ul className="list-disc list-inside space-y-1 ml-2">
+              <li><strong>Organization Name:</strong> Official business name</li>
+              <li><strong>Business Category:</strong> retail, restaurant, healthcare, etc.</li>
+              <li><strong>Contact Details:</strong> Phone, email, website</li>
+              <li><strong>Services:</strong> What your business offers</li>
+              <li><strong>Operating Hours:</strong> When you're open</li>
+            </ul>
+          </div>
+
+          <div className="border-l-4 border-primary pl-4">
+            <h3 className="font-semibold mb-2">Step 4: Approval & Directory Listing</h3>
+            <ul className="list-disc list-inside space-y-1 ml-2">
+              <li>Business addresses are auto-published when approved</li>
+              <li>Your business appears in the public Business Directory</li>
+              <li>Customers can find you via search</li>
+            </ul>
+          </div>
+
+          <div className="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-lg">
+            <p className="text-sm"><strong>⚠️ Important:</strong> Organization name and business category are required. Incomplete registrations cannot be approved.</p>
           </div>
         </div>
       </Card>
@@ -127,10 +163,9 @@ export function CitizenGuide() {
           <h3 className="font-semibold mt-4">Setting Your Primary Address:</h3>
           <ol className="list-decimal list-inside space-y-2 ml-4">
             <li>Log in to the Citizen Portal</li>
-            <li>Navigate to "My Addresses"</li>
+            <li>Navigate to "My Addresses" or use Unified Address Request</li>
             <li>Click "Set Primary Address"</li>
             <li>Enter the UAC of your home address (if it exists in NAR)</li>
-            <li>Or provide full address details if UAC unknown</li>
             <li>Specify scope:
               <ul className="list-disc list-inside ml-4 mt-1">
                 <li><strong>Building:</strong> You live in the whole building</li>
@@ -139,7 +174,7 @@ export function CitizenGuide() {
             </li>
             <li>Add unit UAC if applicable (apartment number, etc.)</li>
             <li>Select occupant type (Owner, Tenant, etc.)</li>
-            <li>Click "Save" - address is pending verification</li>
+            <li>Click "Save" - address is pending verification or auto-approved</li>
           </ol>
 
           <h3 className="font-semibold mt-4">Adding Secondary Addresses:</h3>
@@ -163,6 +198,96 @@ export function CitizenGuide() {
         </div>
       </Card>
 
+      {/* Household Management - NEW */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Users className="h-5 w-5" />
+          Household Management
+        </h2>
+        <div className="space-y-4">
+          <p>Manage your household group and family members:</p>
+          
+          <div className="border-l-4 border-primary pl-4">
+            <h3 className="font-semibold mb-2">Creating a Household</h3>
+            <ul className="list-disc list-inside space-y-1 ml-2">
+              <li>Navigate to "Household Management" from your profile</li>
+              <li>Click "Create Household"</li>
+              <li>Enter household name and primary address (UAC)</li>
+              <li>You become the household head automatically</li>
+            </ul>
+          </div>
+
+          <div className="border-l-4 border-primary pl-4">
+            <h3 className="font-semibold mb-2">Adding Dependents</h3>
+            <ul className="list-disc list-inside space-y-1 ml-2">
+              <li>Add minors (under 18) as dependents</li>
+              <li>Specify relationship: child, grandchild, sibling, ward</li>
+              <li>Provide date of birth and full name</li>
+              <li>System tracks when dependents reach majority age</li>
+            </ul>
+          </div>
+
+          <div className="border-l-4 border-primary pl-4">
+            <h3 className="font-semibold mb-2">Household Members</h3>
+            <ul className="list-disc list-inside space-y-1 ml-2">
+              <li>Add adult household members (spouse, adult children, etc.)</li>
+              <li>Members can have their own account or be linked to yours</li>
+              <li>Designate primary vs secondary residents</li>
+              <li>Track move-in and move-out dates</li>
+            </ul>
+          </div>
+
+          <div className="border-l-4 border-primary pl-4">
+            <h3 className="font-semibold mb-2">Shared Custody Support</h3>
+            <ul className="list-disc list-inside space-y-1 ml-2">
+              <li>Dependents can belong to multiple households</li>
+              <li>Set custody type: sole, joint, primary, secondary</li>
+              <li>Define residence percentage if shared</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+
+      {/* Privacy Levels - NEW */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Shield className="h-5 w-5" />
+          Privacy Settings
+        </h2>
+        <div className="space-y-3">
+          <p>Control who can see your address information:</p>
+
+          <h3 className="font-semibold mt-4">Privacy Levels:</h3>
+          <ul className="space-y-3 ml-4">
+            <li>
+              <strong className="text-red-600">PRIVATE:</strong>
+              <p className="text-sm ml-4">Only you and authorized government officials can see your address. Not searchable by public.</p>
+            </li>
+            <li>
+              <strong className="text-yellow-600">REGION_ONLY:</strong>
+              <p className="text-sm ml-4">Visible to users within your region (emergency services, local government). Limited public visibility.</p>
+            </li>
+            <li>
+              <strong className="text-green-600">PUBLIC:</strong>
+              <p className="text-sm ml-4">Fully searchable. Useful if you want delivery services or visitors to find you easily.</p>
+            </li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Changing Privacy Level:</h3>
+          <ol className="list-decimal list-inside space-y-1 ml-4">
+            <li>Go to "My Addresses" in your dashboard</li>
+            <li>Select the address to modify</li>
+            <li>Click "Privacy Settings"</li>
+            <li>Choose your preferred level</li>
+            <li>Save changes (applies immediately)</li>
+          </ol>
+
+          <div className="bg-muted p-4 rounded-lg mt-4">
+            <p className="text-sm"><strong>Note:</strong> Regardless of your privacy setting, emergency services always have access to your address during emergencies.</p>
+          </div>
+        </div>
+      </Card>
+
       {/* Viewing Address Details */}
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Viewing Address Details</h2>
@@ -172,7 +297,7 @@ export function CitizenGuide() {
           <ul className="list-disc list-inside space-y-1 ml-4">
             <li><strong>UAC Code:</strong> Unique identifier</li>
             <li><strong>Full Address:</strong> Street, building, city, region</li>
-            <li><strong>Map Location:</strong> Interactive map with pin</li>
+            <li><strong>Map Location:</strong> Interactive map with pin (Google Maps or OpenStreetMap)</li>
             <li><strong>Coordinates:</strong> GPS latitude/longitude</li>
             <li><strong>Address Type:</strong> Residential, commercial, etc.</li>
             <li><strong>QR Code:</strong> Download for printing/sharing</li>
@@ -219,14 +344,14 @@ export function CitizenGuide() {
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Tracking Your Requests</h2>
         <div className="space-y-3">
-          <p>Monitor the status of your address creation requests:</p>
+          <p>Monitor the status of your address and business requests:</p>
           
           <h3 className="font-semibold mt-4">Request Statuses:</h3>
           <ul className="space-y-2 ml-4">
             <li><strong className="text-blue-600">Pending:</strong> Awaiting verification review</li>
             <li><strong className="text-purple-600">In Review:</strong> Being verified by staff</li>
             <li><strong className="text-yellow-600">Requires Additional Documents:</strong> Upload requested files</li>
-            <li><strong className="text-green-600">Approved:</strong> Address published to NAR</li>
+            <li><strong className="text-green-600">Approved:</strong> Address published to NAR / Business in directory</li>
             <li><strong className="text-red-600">Rejected:</strong> See feedback for corrections needed</li>
           </ul>
 
@@ -238,6 +363,10 @@ export function CitizenGuide() {
             <li>Add updated photo if photo quality was issue</li>
             <li>Submit - goes back to verification queue</li>
           </ol>
+
+          <div className="bg-muted p-4 rounded-lg mt-4">
+            <p className="text-sm"><strong>Rejected Items Retention:</strong> Rejected requests are kept for 6 months, then archived. After 24 months, personal data is anonymized. You can manually delete rejected requests anytime.</p>
+          </div>
         </div>
       </Card>
 
@@ -250,21 +379,24 @@ export function CitizenGuide() {
             <li>Published NAR addresses (street, building, coordinates)</li>
             <li>UAC codes and map locations</li>
             <li>Address type and general information</li>
+            <li>Business listings in the Business Directory</li>
           </ul>
 
           <h3 className="font-semibold mt-4">What's Private:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
             <li>Your personal information (name, contact details)</li>
-            <li>Your CAR address declarations (who lives where)</li>
+            <li>Your CAR address declarations (based on privacy level)</li>
             <li>Your request submission history</li>
             <li>Supporting documents you upload</li>
+            <li>Household and dependent information</li>
           </ul>
 
           <h3 className="font-semibold mt-4">Data Control:</h3>
           <ul className="list-disc list-inside space-y-1 ml-4">
             <li>You can update your CAR addresses anytime</li>
+            <li>You can change privacy levels for each address</li>
             <li>You can retire old addresses</li>
-            <li>You can delete pending requests</li>
+            <li>You can delete pending/rejected requests</li>
             <li>You control what documents you share</li>
           </ul>
         </div>
@@ -291,6 +423,15 @@ export function CitizenGuide() {
             <li>✅ Update when you move residences</li>
             <li>✅ Retire old addresses instead of deleting</li>
             <li>✅ Keep work addresses current</li>
+            <li>✅ Choose appropriate privacy level</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">When Registering Businesses:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>✅ Provide complete business information</li>
+            <li>✅ Choose accurate business category</li>
+            <li>✅ Keep operating hours updated</li>
+            <li>✅ Add services offered for better searchability</li>
           </ul>
 
           <h3 className="font-semibold mt-4">Common Mistakes to Avoid:</h3>
@@ -300,6 +441,7 @@ export function CitizenGuide() {
             <li>❌ Using blurry or indoor photos</li>
             <li>❌ Not checking UAC spelling</li>
             <li>❌ Forgetting to update moved addresses</li>
+            <li>❌ Leaving business category blank</li>
           </ul>
         </div>
       </Card>
@@ -310,7 +452,7 @@ export function CitizenGuide() {
         <div className="space-y-3">
           <div>
             <h3 className="font-semibold">How long does address approval take?</h3>
-            <p className="text-sm ml-2">Typically 5 business days. High-quality submissions may be auto-approved faster.</p>
+            <p className="text-sm ml-2">Typically 5 business days. High-quality submissions with verified UAC links may be auto-approved faster.</p>
           </div>
 
           <div>
@@ -330,12 +472,22 @@ export function CitizenGuide() {
 
           <div>
             <h3 className="font-semibold">Can I change my CAR address after verification?</h3>
-            <p className="text-sm ml-2">Yes, you can update or retire addresses at any time through the Citizen Portal.</p>
+            <p className="text-sm ml-2">Yes, you can update, retire, or change privacy levels at any time through the Citizen Portal.</p>
           </div>
 
           <div>
             <h3 className="font-semibold">What if I don't know my UAC?</h3>
             <p className="text-sm ml-2">Use the search feature to find your address, or look for QR codes on your building.</p>
+          </div>
+
+          <div>
+            <h3 className="font-semibold">Can my dependents have their own addresses?</h3>
+            <p className="text-sm ml-2">Minors are linked to your household. When they turn 18, they can create their own account and manage their own addresses.</p>
+          </div>
+
+          <div>
+            <h3 className="font-semibold">What happens to my business if I move?</h3>
+            <p className="text-sm ml-2">You can update your business address through the Business Management section. The old listing will be updated.</p>
           </div>
         </div>
       </Card>

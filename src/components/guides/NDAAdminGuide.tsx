@@ -1,12 +1,12 @@
 import { Card } from "@/components/ui/card";
-import { Shield, Database, Key, Settings, Globe, FileCheck } from "lucide-react";
+import { Shield, Database, Key, Settings, Globe, FileCheck, Users, Clock } from "lucide-react";
 
 export function NDAAdminGuide() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
         <h1 className="text-3xl font-bold mb-2">NDAA Admin User Guide</h1>
-        <p className="text-muted-foreground">Complete guide for National Digital Address Authority administrators</p>
+        <p className="text-muted-foreground">Complete guide for National Digital Address Authority administrators (Updated Dec 2025)</p>
       </div>
 
       <Card className="p-6">
@@ -27,6 +27,8 @@ export function NDAAdminGuide() {
                 <li>Override authority on all decisions</li>
                 <li>Strategic oversight of all registries (NAR, CAR)</li>
                 <li>National audit log access and compliance monitoring</li>
+                <li>Retention policy oversight</li>
+                <li>Auto-publishing policy management</li>
               </ul>
             </div>
           </div>
@@ -50,6 +52,55 @@ export function NDAAdminGuide() {
                 <p className="text-muted-foreground">
                   You have national-level access across all provinces, districts, and systems.
                 </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Role & User Management - NEW */}
+      <Card className="p-6">
+        <div className="flex items-start gap-3">
+          <Users className="h-6 w-6 text-primary mt-1" />
+          <div>
+            <h2 className="text-xl font-semibold mb-3">Role & User Management</h2>
+            <div className="space-y-3">
+              <p className="text-muted-foreground">Manage the 20+ system roles and their assignments:</p>
+              
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-medium text-sm text-primary">Address Roles</h4>
+                  <ul className="text-sm space-y-1 ml-4 mt-1 text-muted-foreground">
+                    <li>• admin, registrar, verifier</li>
+                    <li>• field_agent, nar_authority</li>
+                    <li>• car_admin, data_steward</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-medium text-sm text-primary">Emergency Roles</h4>
+                  <ul className="text-sm space-y-1 ml-4 mt-1 text-muted-foreground">
+                    <li>• police_admin, police_supervisor</li>
+                    <li>• police_operator, emergency_dispatcher</li>
+                    <li>• unit_lead</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-medium text-sm text-primary">Support Roles</h4>
+                  <ul className="text-sm space-y-1 ml-4 mt-1 text-muted-foreground">
+                    <li>• system_admin, support</li>
+                    <li>• auditor, partner</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-medium text-sm text-primary">Public Roles</h4>
+                  <ul className="text-sm space-y-1 ml-4 mt-1 text-muted-foreground">
+                    <li>• citizen, business_owner</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="bg-muted p-4 rounded-lg mt-4">
+                <p className="text-sm"><strong>Geographic Scope:</strong> All users can be assigned scope_type (national, regional, provincial, city) and scope_value (specific location). Verifiers also have verification_domain (nar, car, both).</p>
               </div>
             </div>
           </div>
@@ -87,6 +138,86 @@ export function NDAAdminGuide() {
         </div>
       </Card>
 
+      {/* Auto-Publishing Policy - NEW */}
+      <Card className="p-6">
+        <div className="flex items-start gap-3">
+          <Globe className="h-6 w-6 text-primary mt-1" />
+          <div>
+            <h2 className="text-xl font-semibold mb-3">Auto-Publishing Policy</h2>
+            <div className="space-y-3">
+              <p className="text-muted-foreground">
+                Upon address approval, the system automatically sets public visibility:
+              </p>
+              
+              <div className="grid md:grid-cols-2 gap-4 mt-4">
+                <div className="bg-green-500/10 border border-green-500/20 p-4 rounded-lg">
+                  <h4 className="font-semibold text-green-700 dark:text-green-400">Auto-Published (public=true)</h4>
+                  <ul className="list-disc list-inside text-sm mt-2 space-y-1 text-muted-foreground">
+                    <li>Business, Commercial</li>
+                    <li>Government, Landmark</li>
+                    <li>Institutional, Industrial</li>
+                    <li>Public</li>
+                  </ul>
+                </div>
+                <div className="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-lg">
+                  <h4 className="font-semibold text-yellow-700 dark:text-yellow-400">Private (public=false)</h4>
+                  <ul className="list-disc list-inside text-sm mt-2 space-y-1 text-muted-foreground">
+                    <li>Residential</li>
+                  </ul>
+                </div>
+              </div>
+
+              <p className="text-sm text-muted-foreground mt-4">
+                This policy eliminates manual publishing workflows. Residential addresses remain private by default for citizen privacy protection.
+              </p>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Retention Policy - NEW */}
+      <Card className="p-6">
+        <div className="flex items-start gap-3">
+          <Clock className="h-6 w-6 text-primary mt-1" />
+          <div>
+            <h2 className="text-xl font-semibold mb-3">Data Retention Policy</h2>
+            <div className="space-y-3">
+              <p className="text-muted-foreground">
+                Oversee the tiered retention policy for rejected items:
+              </p>
+              
+              <div className="space-y-3 mt-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-24 text-sm font-medium">0-6 months</div>
+                  <div className="flex-1">
+                    <p className="font-semibold">Active Retention</p>
+                    <p className="text-sm text-muted-foreground">Full data in main tables. Citizens can delete own items.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-24 text-sm font-medium">6-24 months</div>
+                  <div className="flex-1">
+                    <p className="font-semibold">Archive</p>
+                    <p className="text-sm text-muted-foreground">Moved to archive tables. PII preserved for audit.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-24 text-sm font-medium">24+ months</div>
+                  <div className="flex-1">
+                    <p className="font-semibold">Anonymization</p>
+                    <p className="text-sm text-muted-foreground">PII removed. Statistical data retained.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-muted p-4 rounded-lg mt-4">
+                <p className="text-sm"><strong>Monthly Cleanup:</strong> Cron job runs 1st of each month at 3 AM. Monitor cleanup_audit_log for execution records.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
       <Card className="p-6">
         <div className="flex items-start gap-3">
           <FileCheck className="h-6 w-6 text-primary mt-1" />
@@ -101,6 +232,7 @@ export function NDAAdminGuide() {
                 <li><strong>Publishing Overrides:</strong> Force publish or unpublish addresses</li>
                 <li><strong>CAR Overrides:</strong> Override CAR verification decisions</li>
                 <li><strong>Policy Exceptions:</strong> Grant exceptions to standard policies when justified</li>
+                <li><strong>Geographic Scope:</strong> Override user scope restrictions when necessary</li>
               </ul>
               <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-md">
                 <p className="text-sm text-yellow-600 dark:text-yellow-500">
@@ -126,6 +258,7 @@ export function NDAAdminGuide() {
                   <li>Review registrar performance across provinces</li>
                   <li>Set national standards and quality benchmarks</li>
                   <li>Access full evidence and verification records</li>
+                  <li>Monitor auto-publishing policy compliance</li>
                 </ul>
               </div>
               <div>
@@ -135,6 +268,7 @@ export function NDAAdminGuide() {
                   <li>Monitor CAR verifier performance</li>
                   <li>Review residency verification processes</li>
                   <li>Access aggregated person and household data</li>
+                  <li>Monitor privacy level distribution</li>
                 </ul>
               </div>
               <div>
@@ -163,6 +297,7 @@ export function NDAAdminGuide() {
                   <li>Set verification requirements and quality thresholds</li>
                   <li>Configure auto-verification rules and AI settings</li>
                   <li>Establish data retention and privacy policies</li>
+                  <li>Configure auto-publishing rules by address type</li>
                 </ul>
               </div>
               <div>
@@ -176,8 +311,9 @@ export function NDAAdminGuide() {
               <div>
                 <h3 className="font-semibold mb-2">User & Role Management</h3>
                 <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>Create and manage registrar accounts</li>
+                  <li>Create and manage registrar accounts nationwide</li>
                   <li>Assign geographic and organizational scopes to users</li>
+                  <li>Configure verification domains for verifiers</li>
                   <li>Audit user permissions and access patterns</li>
                   <li>Deactivate or transfer user responsibilities</li>
                 </ul>
@@ -199,6 +335,7 @@ export function NDAAdminGuide() {
                 <li><strong>Performance Analytics:</strong> Verification times, approval rates, and workflow efficiency</li>
                 <li><strong>Quality Metrics:</strong> Data quality scores, photo quality, coordinate accuracy</li>
                 <li><strong>Usage Statistics:</strong> API calls, search queries, citizen portal usage</li>
+                <li><strong>CAR Analytics:</strong> Citizen adoption, household formation, privacy levels</li>
                 <li><strong>Audit Trails:</strong> Full access to all system actions and changes</li>
               </ul>
             </div>
@@ -218,6 +355,7 @@ export function NDAAdminGuide() {
               <li><strong>Regular Audits:</strong> Review audit logs regularly for anomalies or security issues</li>
               <li><strong>Stakeholder Communication:</strong> Keep government agencies informed of system changes</li>
               <li><strong>Data Privacy:</strong> Ensure all configurations comply with national data protection laws</li>
+              <li><strong>Retention Oversight:</strong> Monitor cleanup operations and verify GDPR compliance</li>
             </ul>
           </div>
         </div>
