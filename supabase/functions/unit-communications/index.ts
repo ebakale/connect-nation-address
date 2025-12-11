@@ -299,40 +299,36 @@ const handler = async (req: Request): Promise<Response> => {
           )
         }
 
-        // For broadcast alerts, only unit members can acknowledge, not dispatchers
-        if (messageData.message_type === 'broadcast_alert') {
-          // Check if user is a member of a unit (field officer)
-          const { data: unitMembership } = await supabaseClient
-            .from('emergency_unit_members')
-            .select('unit_id')
-            .eq('officer_id', user.id)
-            .single()
+        // Check if user has permission to acknowledge this message
+        const isDispatcher = userRoles.some(role => 
+          ['police_dispatcher', 'police_supervisor', 'police_admin', 'admin'].includes(role.role)
+        )
+        
+        const isUnitMember = userRoles.some(role => 
+          ['police_operator'].includes(role.role)
+        )
 
-          if (!unitMembership) {
-            return new Response(
-              JSON.stringify({ error: 'Only unit members can acknowledge broadcast alerts' }),
-              { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-            )
-          }
-        } else {
-          // For regular messages, allow both dispatchers and unit members to acknowledge
-          const isDispatcher = userRoles.some(role => 
-            ['police_dispatcher', 'police_supervisor', 'police_admin', 'admin'].includes(role.role)
+        // Also check if the message is directed to this user specifically
+        const isMessageRecipient = messageData.to_user_id === user.id
+
+        // Check unit membership for field officers
+        const { data: unitMembership } = await supabaseClient
+          .from('emergency_unit_members')
+          .select('unit_id')
+          .eq('officer_id', user.id)
+          .maybeSingle()
+
+        const hasUnitMembership = !!unitMembership
+
+        // Allow acknowledgment if:
+        // 1. User is a dispatcher/supervisor/admin (can manage all communications)
+        // 2. User is the message recipient
+        // 3. User is a unit member (for broadcast alerts to their unit)
+        if (!isDispatcher && !isMessageRecipient && !hasUnitMembership && !isUnitMember) {
+          return new Response(
+            JSON.stringify({ error: 'You do not have permission to acknowledge this message' }),
+            { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           )
-          
-          const isUnitMember = userRoles.some(role => 
-            ['police_operator'].includes(role.role)
-          )
-
-          // Also check if the message is directed to this user specifically
-          const isMessageRecipient = messageData.to_user_id === user.id
-
-          if (!isDispatcher && !isUnitMember && !isMessageRecipient) {
-            return new Response(
-              JSON.stringify({ error: 'You do not have permission to acknowledge this message' }),
-              { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-            )
-          }
         }
 
         const { data: acknowledgment, error: ackError } = await supabaseClient
