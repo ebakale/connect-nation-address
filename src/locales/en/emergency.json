@@ -1897,5 +1897,41 @@
       "onScene": "On Scene",
       "allClear": "All Clear"
     }
+  },
+
+  "requestResourcesDialog": {
+    "title": "Request Resources",
+    "description": "Request equipment, vehicles, or personnel for unit {{unitCode}}",
+    "resourceType": "Resource Type",
+    "selectResourceType": "Select resource type",
+    "resourceTypes": {
+      "vehicle": "Vehicle",
+      "equipment": "Equipment",
+      "personnel": "Personnel",
+      "medical": "Medical Supplies",
+      "tactical": "Tactical Gear",
+      "other": "Other"
+    },
+    "urgencyLevel": "Urgency Level",
+    "selectUrgency": "Select urgency",
+    "urgencyOptions": {
+      "critical": "Critical - Immediate",
+      "high": "High Priority",
+      "standard": "Standard"
+    },
+    "quantity": "Quantity Needed",
+    "selectQuantity": "Select quantity",
+    "specificItems": "Specific Items/Equipment",
+    "specificItemsPlaceholder": "Describe exactly what resources you need (e.g., 2 patrol vehicles, forensic kit, K9 unit...)",
+    "deliveryLocation": "Delivery Location",
+    "deliveryLocationPlaceholder": "Leave blank for current position, or specify address/landmark",
+    "additionalNotes": "Additional Notes",
+    "additionalNotesPlaceholder": "Any additional context or special requirements...",
+    "cancel": "Cancel",
+    "sendRequest": "Send Request",
+    "sending": "Sending...",
+    "requestSent": "Resource request sent to dispatch",
+    "requestFailed": "Failed to send resource request",
+    "specifyItems": "Please specify what resources you need"
   }
 }
