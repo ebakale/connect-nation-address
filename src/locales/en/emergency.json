@@ -1729,6 +1729,8 @@
     "last7Days": "Last 7 Days",
     "last30Days": "Last 30 Days",
     "last90Days": "Last 90 Days",
+    "last180Days": "Last 180 Days",
+    "last360Days": "Last 360 Days",
     "refresh": "Refresh",
     "export": "Export CSV",
     "exportSuccess": "Audit logs exported successfully",
