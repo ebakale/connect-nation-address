@@ -277,7 +277,7 @@ export function CARVerifierDirectory() {
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={fetchCARVerifiers}>
                 <RefreshCw className="h-4 w-4 mr-2" />
-                {t('common:refresh')}
+                {t('common:buttons.refresh')}
               </Button>
               <Dialog open={requestDialogOpen} onOpenChange={setRequestDialogOpen}>
                 <DialogTrigger asChild>
@@ -308,7 +308,7 @@ export function CARVerifierDirectory() {
                   </div>
                   <DialogFooter>
                     <Button variant="outline" onClick={() => setRequestDialogOpen(false)}>
-                      {t('common:cancel')}
+                      {t('common:buttons.cancel')}
                     </Button>
                     <Button onClick={handleRequestVerifier} disabled={submittingRequest}>
                       {submittingRequest ? (
