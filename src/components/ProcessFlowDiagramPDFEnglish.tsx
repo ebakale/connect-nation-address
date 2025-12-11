@@ -212,10 +212,10 @@ const ProcessFlowDiagramPDFEnglish: React.FC = () => {
       'CITIZEN → Submits address requests, declares CAR addresses',
       'CAR_ADMIN → Manages CAR permissions via car_permissions table',
       'CAR_VERIFIER → Reviews citizen addresses, has_car_permission() checks',
-      'POLICE_ADMIN → Manages police system and units',
-      'POLICE_SUPERVISOR → Manages units and geographic coverage',
-      'POLICE_OPERATOR → Responds to incidents, unit member',
-      'POLICE_DISPATCHER → Assigns incidents to units',
+      'POLICE_ADMIN → Manages police system, full backup approval authority',
+      'POLICE_SUPERVISOR → Backup APPROVAL authority: approve/deny/modify priority',
+      'POLICE_OPERATOR → Responds to incidents, requests backup, Officer Down alert',
+      'POLICE_DISPATCHER → Backup COORDINATOR: acknowledge/route/escalate (no approve)',
       'NAR_AUTHORITY → Can create/verify addresses (regional scope)',
       'EMERGENCY_DISPATCHER → Specialized dispatcher role for critical incidents'
     ];

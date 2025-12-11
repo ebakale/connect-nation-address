@@ -270,7 +270,7 @@ The verifier role uses **verification domain scope** to determine capabilities:
 ### Emergency Management Roles
 
 #### 7. Police Dispatcher
-**Purpose**: Emergency call handling and unit dispatch
+**Purpose**: Emergency call handling, unit dispatch, and backup request coordination
 
 **Permissions**:
 - ✅ Receive and process emergency calls
@@ -281,6 +281,13 @@ The verifier role uses **verification domain scope** to determine capabilities:
 - ✅ Access verified address data
 - ✅ Send broadcast alerts
 - ✅ Track response times
+- ✅ **Backup Requests - Coordinator Actions**:
+  - Acknowledge receipt of backup requests
+  - Mark backup units as en route
+  - Mark backup units as on scene
+  - Escalate requests to supervisors
+- ❌ Cannot approve or deny backup requests (supervisor only)
+- ❌ Cannot modify backup request priority (supervisor only)
 
 **Geographic Scope**: Dispatch center jurisdiction
 **Primary Dashboard**: Police Dashboard (`/police`)
@@ -301,16 +308,21 @@ The verifier role uses **verification domain scope** to determine capabilities:
 **Primary Dashboard**: Police Dashboard (`/police`)
 
 #### 9. Police Supervisor
-**Purpose**: Tactical oversight and unit management
+**Purpose**: Tactical oversight, unit management, and backup request approval authority
 
 **Permissions**:
 - ✅ Monitor all incidents in jurisdiction
-- ✅ Approve backup requests
 - ✅ Review unit performance
 - ✅ Generate operational reports
 - ✅ Reassign units as needed
 - ✅ Access analytics dashboard
 - ✅ Manage unit structures
+- ✅ **Backup Requests - Full Authority**:
+  - All coordinator actions (acknowledge, en route, on scene)
+  - Approve backup requests
+  - Deny backup requests (with reason)
+  - Modify backup request priority
+  - Handle escalated requests from dispatchers
 
 **Geographic Scope**: Regional or departmental
 **Primary Dashboard**: Police Dashboard (`/police`)
