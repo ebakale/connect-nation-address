@@ -90,8 +90,8 @@ Deno.serve(async (req) => {
         .select('role')
         .eq('user_id', user.id);
 
-      const isAdmin = userRoles?.some(r => ['admin', 'registrar'].includes(r.role));
-      const isVerifier = userRoles?.some(r => ['verifier', 'car_verifier', 'registrar'].includes(r.role));
+      const isAdmin = userRoles?.some(r => ['admin', 'registrar', 'car_admin'].includes(r.role));
+      const isVerifier = userRoles?.some(r => ['verifier', 'car_verifier', 'car_admin', 'registrar'].includes(r.role));
 
       // Search profiles
       const { data: profiles } = await supabase
