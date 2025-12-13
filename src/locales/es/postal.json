@@ -1,0 +1,259 @@
+{
+  "title": "Servicios Postales del Gobierno",
+  "module": "Módulo de Entrega Postal",
+  "dashboard": "Panel Postal",
+  
+  "roles": {
+    "postal_clerk": "Empleado Postal",
+    "postal_agent": "Agente de Entrega",
+    "postal_dispatcher": "Despachador",
+    "postal_supervisor": "Supervisor Postal"
+  },
+  
+  "navigation": {
+    "orders": "Pedidos",
+    "newOrder": "Nuevo Pedido",
+    "assignments": "Asignaciones",
+    "myDeliveries": "Mis Entregas",
+    "agents": "Agentes",
+    "reports": "Informes",
+    "tracking": "Seguimiento"
+  },
+  
+  "order": {
+    "title": "Orden de Entrega",
+    "orders": "Órdenes de Entrega",
+    "newOrder": "Nueva Orden de Entrega",
+    "createOrder": "Crear Orden",
+    "orderNumber": "Número de Orden",
+    "orderDetails": "Detalles de la Orden",
+    "orderCreated": "Orden creada exitosamente",
+    "orderUpdated": "Orden actualizada exitosamente",
+    "noOrders": "No se encontraron órdenes de entrega"
+  },
+  
+  "sender": {
+    "title": "Información del Remitente",
+    "name": "Nombre del Remitente",
+    "address": "Dirección del Remitente",
+    "branch": "Sucursal Postal",
+    "phone": "Teléfono del Remitente",
+    "selectBranch": "Seleccione una sucursal postal"
+  },
+  
+  "recipient": {
+    "title": "Información del Destinatario",
+    "name": "Nombre del Destinatario",
+    "address": "Dirección del Destinatario",
+    "phone": "Teléfono del Destinatario",
+    "email": "Correo del Destinatario",
+    "enterUAC": "Ingrese el UAC del destinatario",
+    "validateAddress": "Validar Dirección"
+  },
+  
+  "package": {
+    "title": "Información del Paquete",
+    "type": "Tipo de Paquete",
+    "weight": "Peso (gramos)",
+    "dimensions": "Dimensiones (cm)",
+    "declaredValue": "Valor Declarado",
+    "notes": "Notas del Paquete",
+    "specialInstructions": "Instrucciones Especiales",
+    "requiresSignature": "Requiere Firma",
+    "requiresIdVerification": "Requiere Verificación de ID",
+    "types": {
+      "letter": "Carta",
+      "small_parcel": "Paquete Pequeño",
+      "medium_parcel": "Paquete Mediano",
+      "large_parcel": "Paquete Grande",
+      "document": "Documento",
+      "registered_mail": "Correo Certificado",
+      "express": "Express",
+      "government_document": "Documento Gubernamental"
+    }
+  },
+  
+  "status": {
+    "title": "Estado",
+    "pending_intake": "Pendiente de Recepción",
+    "ready_for_assignment": "Listo para Asignar",
+    "assigned": "Asignado",
+    "out_for_delivery": "En Camino",
+    "delivered": "Entregado",
+    "failed_delivery": "Entrega Fallida",
+    "address_not_found": "Dirección No Encontrada",
+    "returned_to_sender": "Devuelto al Remitente",
+    "cancelled": "Cancelado",
+    "updateStatus": "Actualizar Estado",
+    "statusUpdated": "Estado actualizado exitosamente",
+    "selectReason": "Seleccione una razón",
+    "provideReason": "Proporcione una razón"
+  },
+  
+  "priority": {
+    "title": "Prioridad",
+    "level1": "Urgente",
+    "level2": "Alta",
+    "level3": "Normal",
+    "level4": "Baja",
+    "level5": "Económico"
+  },
+  
+  "assignment": {
+    "title": "Asignación",
+    "assign": "Asignar",
+    "assignAgent": "Asignar a Agente",
+    "reassign": "Reasignar",
+    "unassign": "Desasignar",
+    "selectAgent": "Seleccione un agente",
+    "assignedTo": "Asignado a",
+    "assignedBy": "Asignado por",
+    "assignedAt": "Asignado el",
+    "routeSequence": "Secuencia de Ruta",
+    "estimatedDelivery": "Hora Estimada de Entrega",
+    "assignmentNotes": "Notas de Asignación",
+    "assignmentCreated": "Asignación creada exitosamente",
+    "noAssignment": "Sin asignar"
+  },
+  
+  "delivery": {
+    "title": "Entrega",
+    "myDeliveries": "Mis Entregas",
+    "todayDeliveries": "Entregas de Hoy",
+    "pendingDeliveries": "Entregas Pendientes",
+    "completedDeliveries": "Entregas Completadas",
+    "startDelivery": "Iniciar Entrega",
+    "completeDelivery": "Completar Entrega",
+    "failDelivery": "Marcar como Fallida",
+    "returnToSender": "Devolver al Remitente",
+    "addressNotFound": "Dirección No Encontrada",
+    "acknowledge": "Confirmar",
+    "acknowledged": "Confirmado",
+    "inProgress": "En Progreso",
+    "navigate": "Navegar",
+    "viewOnMap": "Ver en Mapa"
+  },
+  
+  "proof": {
+    "title": "Comprobante de Entrega",
+    "captureProof": "Capturar Comprobante",
+    "signature": "Firma",
+    "photo": "Foto",
+    "idVerification": "Verificación de ID",
+    "recipientAbsent": "Nota de Destinatario Ausente",
+    "receivedBy": "Recibido Por",
+    "relationship": "Relación con el Destinatario",
+    "idType": "Tipo de ID",
+    "idLastDigits": "Últimos 4 dígitos del ID",
+    "proofCaptured": "Comprobante capturado exitosamente",
+    "signHere": "Firme aquí",
+    "clearSignature": "Borrar Firma",
+    "takePhoto": "Tomar Foto",
+    "relationships": {
+      "recipient": "Destinatario",
+      "spouse": "Cónyuge",
+      "family_member": "Familiar",
+      "neighbor": "Vecino",
+      "security": "Seguridad/Guardia",
+      "other": "Otro"
+    }
+  },
+  
+  "agent": {
+    "title": "Agente de Entrega",
+    "agents": "Agentes de Entrega",
+    "agentName": "Nombre del Agente",
+    "workload": "Carga de Trabajo Actual",
+    "activeDeliveries": "Entregas Activas",
+    "completedToday": "Completadas Hoy",
+    "available": "Disponible",
+    "busy": "Ocupado",
+    "offline": "Desconectado"
+  },
+  
+  "tracking": {
+    "title": "Seguimiento de Orden",
+    "trackOrder": "Rastrear Orden",
+    "enterOrderNumber": "Ingrese número de orden",
+    "timeline": "Cronología",
+    "currentStatus": "Estado Actual",
+    "lastUpdate": "Última Actualización",
+    "estimatedDelivery": "Entrega Estimada"
+  },
+  
+  "reports": {
+    "title": "Informes",
+    "dailyReport": "Informe Diario",
+    "weeklyReport": "Informe Semanal",
+    "monthlyReport": "Informe Mensual",
+    "agentPerformance": "Rendimiento del Agente",
+    "deliveryMetrics": "Métricas de Entrega",
+    "totalDeliveries": "Total de Entregas",
+    "successRate": "Tasa de Éxito",
+    "averageDeliveryTime": "Tiempo Promedio de Entrega",
+    "failedDeliveries": "Entregas Fallidas",
+    "returnedPackages": "Paquetes Devueltos",
+    "export": "Exportar Informe"
+  },
+  
+  "stats": {
+    "totalOrders": "Total de Órdenes",
+    "pendingIntake": "Pendiente de Recepción",
+    "readyForAssignment": "Listo para Asignar",
+    "assigned": "Asignado",
+    "outForDelivery": "En Camino",
+    "delivered": "Entregado",
+    "failed": "Fallido",
+    "returned": "Devuelto",
+    "todayDeliveries": "Entregas de Hoy",
+    "todayCompleted": "Completadas Hoy"
+  },
+  
+  "filters": {
+    "all": "Todas las Órdenes",
+    "today": "Hoy",
+    "thisWeek": "Esta Semana",
+    "thisMonth": "Este Mes",
+    "byStatus": "Por Estado",
+    "byAgent": "Por Agente",
+    "byPriority": "Por Prioridad",
+    "dateRange": "Rango de Fechas"
+  },
+  
+  "actions": {
+    "viewDetails": "Ver Detalles",
+    "editOrder": "Editar Orden",
+    "cancelOrder": "Cancelar Orden",
+    "printLabel": "Imprimir Etiqueta",
+    "generateQR": "Generar Código QR"
+  },
+  
+  "validation": {
+    "senderNameRequired": "El nombre del remitente es requerido",
+    "recipientNameRequired": "El nombre del destinatario es requerido",
+    "recipientAddressRequired": "La dirección del destinatario es requerida",
+    "invalidUAC": "Dirección UAC inválida",
+    "agentRequired": "Por favor seleccione un agente",
+    "reasonRequired": "Por favor proporcione una razón"
+  },
+  
+  "messages": {
+    "loadingOrders": "Cargando órdenes...",
+    "noOrdersFound": "No se encontraron órdenes",
+    "orderCreatedSuccess": "Orden creada exitosamente",
+    "orderUpdatedSuccess": "Orden actualizada exitosamente",
+    "assignmentSuccess": "Orden asignada exitosamente",
+    "statusUpdateSuccess": "Estado actualizado exitosamente",
+    "proofCapturedSuccess": "Comprobante de entrega capturado",
+    "errorCreatingOrder": "Error al crear la orden",
+    "errorUpdatingStatus": "Error al actualizar el estado",
+    "errorAssigning": "Error al asignar la orden",
+    "confirmCancel": "¿Está seguro de que desea cancelar esta orden?"
+  },
+  
+  "schedule": {
+    "scheduledDate": "Fecha Programada",
+    "deadline": "Fecha Límite de Entrega",
+    "selectDate": "Seleccione una fecha"
+  }
+}

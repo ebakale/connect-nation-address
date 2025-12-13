@@ -23,6 +23,7 @@ import { DemoPresentationPage } from "./pages/DemoPresentationPage";
 import { DemoScriptPage } from "./pages/DemoScriptPage";
 import { BusinessAddressRegistrationForm } from "./components/BusinessAddressRegistrationForm";
 import MyBusinesses from "./pages/MyBusinesses";
+import PostalPage from "./pages/PostalPage";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +77,7 @@ const AppRoutes = () => {
       <Route path="/units-profiles" element={<ProtectedRoute><UnitsAndProfilesPage /></ProtectedRoute>} />
       <Route path="/business/register" element={<ProtectedRoute><BusinessAddressRegistrationForm /></ProtectedRoute>} />
       <Route path="/my-businesses" element={<ProtectedRoute><MyBusinesses /></ProtectedRoute>} />
+      <Route path="/postal" element={<ProtectedRoute><PostalPage /></ProtectedRoute>} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>

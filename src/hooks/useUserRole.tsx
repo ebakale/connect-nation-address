@@ -9,6 +9,7 @@ export type UserRole =
   | 'partner' | 'auditor' | 'data_steward' | 'support'
   | 'car_admin'
   | 'police_operator' | 'police_supervisor' | 'police_dispatcher' | 'police_admin'
+  | 'postal_clerk' | 'postal_agent' | 'postal_dispatcher' | 'postal_supervisor'
   | null;
 
 export interface RoleMetadata {

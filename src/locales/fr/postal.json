@@ -1,0 +1,259 @@
+{
+  "title": "Services Postaux du Gouvernement",
+  "module": "Module de Livraison Postale",
+  "dashboard": "Tableau de Bord Postal",
+  
+  "roles": {
+    "postal_clerk": "Employé Postal",
+    "postal_agent": "Agent de Livraison",
+    "postal_dispatcher": "Répartiteur",
+    "postal_supervisor": "Superviseur Postal"
+  },
+  
+  "navigation": {
+    "orders": "Commandes",
+    "newOrder": "Nouvelle Commande",
+    "assignments": "Affectations",
+    "myDeliveries": "Mes Livraisons",
+    "agents": "Agents",
+    "reports": "Rapports",
+    "tracking": "Suivi"
+  },
+  
+  "order": {
+    "title": "Commande de Livraison",
+    "orders": "Commandes de Livraison",
+    "newOrder": "Nouvelle Commande de Livraison",
+    "createOrder": "Créer la Commande",
+    "orderNumber": "Numéro de Commande",
+    "orderDetails": "Détails de la Commande",
+    "orderCreated": "Commande créée avec succès",
+    "orderUpdated": "Commande mise à jour avec succès",
+    "noOrders": "Aucune commande de livraison trouvée"
+  },
+  
+  "sender": {
+    "title": "Informations de l'Expéditeur",
+    "name": "Nom de l'Expéditeur",
+    "address": "Adresse de l'Expéditeur",
+    "branch": "Bureau de Poste",
+    "phone": "Téléphone de l'Expéditeur",
+    "selectBranch": "Sélectionnez un bureau de poste"
+  },
+  
+  "recipient": {
+    "title": "Informations du Destinataire",
+    "name": "Nom du Destinataire",
+    "address": "Adresse du Destinataire",
+    "phone": "Téléphone du Destinataire",
+    "email": "Email du Destinataire",
+    "enterUAC": "Entrez l'UAC du destinataire",
+    "validateAddress": "Valider l'Adresse"
+  },
+  
+  "package": {
+    "title": "Informations du Colis",
+    "type": "Type de Colis",
+    "weight": "Poids (grammes)",
+    "dimensions": "Dimensions (cm)",
+    "declaredValue": "Valeur Déclarée",
+    "notes": "Notes du Colis",
+    "specialInstructions": "Instructions Spéciales",
+    "requiresSignature": "Signature Requise",
+    "requiresIdVerification": "Vérification d'ID Requise",
+    "types": {
+      "letter": "Lettre",
+      "small_parcel": "Petit Colis",
+      "medium_parcel": "Colis Moyen",
+      "large_parcel": "Grand Colis",
+      "document": "Document",
+      "registered_mail": "Courrier Recommandé",
+      "express": "Express",
+      "government_document": "Document Gouvernemental"
+    }
+  },
+  
+  "status": {
+    "title": "Statut",
+    "pending_intake": "En Attente de Réception",
+    "ready_for_assignment": "Prêt pour Affectation",
+    "assigned": "Affecté",
+    "out_for_delivery": "En Cours de Livraison",
+    "delivered": "Livré",
+    "failed_delivery": "Livraison Échouée",
+    "address_not_found": "Adresse Introuvable",
+    "returned_to_sender": "Retourné à l'Expéditeur",
+    "cancelled": "Annulé",
+    "updateStatus": "Mettre à Jour le Statut",
+    "statusUpdated": "Statut mis à jour avec succès",
+    "selectReason": "Sélectionnez une raison",
+    "provideReason": "Fournissez une raison"
+  },
+  
+  "priority": {
+    "title": "Priorité",
+    "level1": "Urgent",
+    "level2": "Haute",
+    "level3": "Normale",
+    "level4": "Basse",
+    "level5": "Économique"
+  },
+  
+  "assignment": {
+    "title": "Affectation",
+    "assign": "Affecter",
+    "assignAgent": "Affecter à un Agent",
+    "reassign": "Réaffecter",
+    "unassign": "Désaffecter",
+    "selectAgent": "Sélectionnez un agent",
+    "assignedTo": "Affecté à",
+    "assignedBy": "Affecté par",
+    "assignedAt": "Affecté le",
+    "routeSequence": "Séquence d'Itinéraire",
+    "estimatedDelivery": "Heure de Livraison Estimée",
+    "assignmentNotes": "Notes d'Affectation",
+    "assignmentCreated": "Affectation créée avec succès",
+    "noAssignment": "Non affecté"
+  },
+  
+  "delivery": {
+    "title": "Livraison",
+    "myDeliveries": "Mes Livraisons",
+    "todayDeliveries": "Livraisons d'Aujourd'hui",
+    "pendingDeliveries": "Livraisons en Attente",
+    "completedDeliveries": "Livraisons Terminées",
+    "startDelivery": "Démarrer la Livraison",
+    "completeDelivery": "Terminer la Livraison",
+    "failDelivery": "Marquer comme Échouée",
+    "returnToSender": "Retourner à l'Expéditeur",
+    "addressNotFound": "Adresse Introuvable",
+    "acknowledge": "Confirmer",
+    "acknowledged": "Confirmé",
+    "inProgress": "En Cours",
+    "navigate": "Naviguer",
+    "viewOnMap": "Voir sur la Carte"
+  },
+  
+  "proof": {
+    "title": "Preuve de Livraison",
+    "captureProof": "Capturer la Preuve",
+    "signature": "Signature",
+    "photo": "Photo",
+    "idVerification": "Vérification d'ID",
+    "recipientAbsent": "Note d'Absence du Destinataire",
+    "receivedBy": "Reçu Par",
+    "relationship": "Relation avec le Destinataire",
+    "idType": "Type d'ID",
+    "idLastDigits": "4 derniers chiffres de l'ID",
+    "proofCaptured": "Preuve capturée avec succès",
+    "signHere": "Signez ici",
+    "clearSignature": "Effacer la Signature",
+    "takePhoto": "Prendre une Photo",
+    "relationships": {
+      "recipient": "Destinataire",
+      "spouse": "Conjoint(e)",
+      "family_member": "Membre de la Famille",
+      "neighbor": "Voisin",
+      "security": "Sécurité/Gardien",
+      "other": "Autre"
+    }
+  },
+  
+  "agent": {
+    "title": "Agent de Livraison",
+    "agents": "Agents de Livraison",
+    "agentName": "Nom de l'Agent",
+    "workload": "Charge de Travail Actuelle",
+    "activeDeliveries": "Livraisons Actives",
+    "completedToday": "Terminées Aujourd'hui",
+    "available": "Disponible",
+    "busy": "Occupé",
+    "offline": "Hors Ligne"
+  },
+  
+  "tracking": {
+    "title": "Suivi de Commande",
+    "trackOrder": "Suivre la Commande",
+    "enterOrderNumber": "Entrez le numéro de commande",
+    "timeline": "Chronologie",
+    "currentStatus": "Statut Actuel",
+    "lastUpdate": "Dernière Mise à Jour",
+    "estimatedDelivery": "Livraison Estimée"
+  },
+  
+  "reports": {
+    "title": "Rapports",
+    "dailyReport": "Rapport Quotidien",
+    "weeklyReport": "Rapport Hebdomadaire",
+    "monthlyReport": "Rapport Mensuel",
+    "agentPerformance": "Performance de l'Agent",
+    "deliveryMetrics": "Métriques de Livraison",
+    "totalDeliveries": "Total des Livraisons",
+    "successRate": "Taux de Réussite",
+    "averageDeliveryTime": "Temps Moyen de Livraison",
+    "failedDeliveries": "Livraisons Échouées",
+    "returnedPackages": "Colis Retournés",
+    "export": "Exporter le Rapport"
+  },
+  
+  "stats": {
+    "totalOrders": "Total des Commandes",
+    "pendingIntake": "En Attente de Réception",
+    "readyForAssignment": "Prêt pour Affectation",
+    "assigned": "Affecté",
+    "outForDelivery": "En Cours de Livraison",
+    "delivered": "Livré",
+    "failed": "Échoué",
+    "returned": "Retourné",
+    "todayDeliveries": "Livraisons d'Aujourd'hui",
+    "todayCompleted": "Terminées Aujourd'hui"
+  },
+  
+  "filters": {
+    "all": "Toutes les Commandes",
+    "today": "Aujourd'hui",
+    "thisWeek": "Cette Semaine",
+    "thisMonth": "Ce Mois",
+    "byStatus": "Par Statut",
+    "byAgent": "Par Agent",
+    "byPriority": "Par Priorité",
+    "dateRange": "Plage de Dates"
+  },
+  
+  "actions": {
+    "viewDetails": "Voir les Détails",
+    "editOrder": "Modifier la Commande",
+    "cancelOrder": "Annuler la Commande",
+    "printLabel": "Imprimer l'Étiquette",
+    "generateQR": "Générer le Code QR"
+  },
+  
+  "validation": {
+    "senderNameRequired": "Le nom de l'expéditeur est requis",
+    "recipientNameRequired": "Le nom du destinataire est requis",
+    "recipientAddressRequired": "L'adresse du destinataire est requise",
+    "invalidUAC": "Adresse UAC invalide",
+    "agentRequired": "Veuillez sélectionner un agent",
+    "reasonRequired": "Veuillez fournir une raison"
+  },
+  
+  "messages": {
+    "loadingOrders": "Chargement des commandes...",
+    "noOrdersFound": "Aucune commande trouvée",
+    "orderCreatedSuccess": "Commande créée avec succès",
+    "orderUpdatedSuccess": "Commande mise à jour avec succès",
+    "assignmentSuccess": "Commande affectée avec succès",
+    "statusUpdateSuccess": "Statut mis à jour avec succès",
+    "proofCapturedSuccess": "Preuve de livraison capturée",
+    "errorCreatingOrder": "Erreur lors de la création de la commande",
+    "errorUpdatingStatus": "Erreur lors de la mise à jour du statut",
+    "errorAssigning": "Erreur lors de l'affectation de la commande",
+    "confirmCancel": "Êtes-vous sûr de vouloir annuler cette commande ?"
+  },
+  
+  "schedule": {
+    "scheduledDate": "Date Prévue",
+    "deadline": "Date Limite de Livraison",
+    "selectDate": "Sélectionnez une date"
+  }
+}
