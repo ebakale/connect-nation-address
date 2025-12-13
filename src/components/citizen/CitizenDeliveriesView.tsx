@@ -159,7 +159,7 @@ const DeliveryListItem: React.FC<DeliveryListItemProps> = ({
               </Badge>
             </div>
             <div className="text-sm text-muted-foreground flex flex-wrap gap-2">
-              <span>{t(`packageType.${delivery.package_type}`)}</span>
+              <span>{t(`package.types.${delivery.package_type}`)}</span>
               <span>•</span>
               <span>{format(new Date(delivery.created_at), 'MMM d, yyyy')}</span>
             </div>
