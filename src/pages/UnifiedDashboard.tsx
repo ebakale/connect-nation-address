@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { 
   Shield, Users, Settings, BarChart3, LogOut, Search, FileText, Clock, AlertCircle,
   Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map, User, Phone,
-  Database, Network, Home, Building2, Plus
+  Database, Network, Home, Building2, Plus, Package
 } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
@@ -57,6 +57,7 @@ import { CARQualityMetrics } from '@/components/CARQualityMetrics';
 import { CARBulkOperations } from '@/components/CARBulkOperations';
 import { NARAuthorityDashboard } from '@/components/NARAuthorityDashboard';
 import { BusinessDirectory } from '@/components/BusinessDirectory';
+import CitizenDeliveriesView from '@/components/citizen/CitizenDeliveriesView';
 
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
 import { UnifiedAddressDashboard } from "@/components/UnifiedAddressDashboard";
@@ -413,6 +414,7 @@ const UnifiedDashboard = () => {
       case 'residency-verification': return t('dashboard:residencyVerification');
       case 'residency-verification-dashboard': return t('dashboard:myVerificationRequests');
       case 'citizen-address-portal': return t('dashboard:myAddressesCar');
+      case 'my-deliveries': return t('dashboard:myDeliveries');
       case 'recent-searches': return t('dashboard:recentSearches');
       case 'saved-locations': return t('dashboard:savedLocations');
       case 'saved-addresses': return t('dashboard:savedAddresses');
@@ -667,6 +669,19 @@ const UnifiedDashboard = () => {
                     </div>
                     <div className="text-center">
                       <div className="font-semibold text-sm">{t('dashboard:emergencyContacts')}</div>
+                    </div>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-auto min-h-[100px] flex flex-col items-center justify-center gap-2 p-4 hover:bg-primary/5"
+                    onClick={() => setActiveView('my-deliveries')}
+                  >
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Package className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="text-center">
+                      <div className="font-semibold text-sm">{t('dashboard:myDeliveries')}</div>
+                      <div className="text-xs text-muted-foreground mt-1">{t('dashboard:myDeliveriesDesc')}</div>
                     </div>
                   </Button>
                 </CardContent>
@@ -1023,6 +1038,13 @@ const UnifiedDashboard = () => {
         return (
           <div className="max-w-4xl">
             <EmergencyContacts />
+          </div>
+        );
+
+      case 'my-deliveries':
+        return (
+          <div className="max-w-6xl">
+            <CitizenDeliveriesView />
           </div>
         );
 

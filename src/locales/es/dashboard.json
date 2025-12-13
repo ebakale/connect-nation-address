@@ -41,6 +41,8 @@
   },
   "registerBusiness": "Registrar Negocio",
   "myBusinesses": "Mis Negocios",
+  "myDeliveries": "Mis Entregas",
+  "myDeliveriesDesc": "Rastrea tus paquetes y entregas entrantes",
   "addressNotFound": "¿No encuentras tu dirección?",
   "registerItNow": "Regístrala ahora",
   "addNewAddress": "Agregar Nueva Dirección",

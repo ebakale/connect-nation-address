@@ -41,6 +41,8 @@
   },
   "registerBusiness": "Enregistrer une Entreprise",
   "myBusinesses": "Mes Entreprises",
+  "myDeliveries": "Mes Livraisons",
+  "myDeliveriesDesc": "Suivez vos colis et livraisons entrantes",
   "addressNotFound": "Vous ne trouvez pas votre adresse ?",
   "registerItNow": "Enregistrez-la maintenant",
   "addNewAddress": "Ajouter une Nouvelle Adresse",
