@@ -118,6 +118,7 @@ const UnifiedDashboard = () => {
     canPublishAddresses,
     hasPoliceAccess,
     isPoliceRole,
+    isPostalRole,
     hasNDAAAccess,
     hasSystemAdminAccess,
     isNARAuthority
@@ -137,10 +138,12 @@ const UnifiedDashboard = () => {
     if (!loading) {
       if (isPoliceRole) {
         navigate('/police', { replace: true });
+      } else if (isPostalRole) {
+        navigate('/postal', { replace: true });
       }
       // All addressing-related roles now stay on unified dashboard
     }
-  }, [loading, isPoliceRole, navigate]);
+  }, [loading, isPoliceRole, isPostalRole, navigate]);
 
   // Stats state
   const [stats, setStats] = useState<DashboardStats>({

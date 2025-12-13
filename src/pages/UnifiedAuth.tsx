@@ -35,16 +35,22 @@ const UnifiedAuth = () => {
   });
   
   const { signIn, signUp, user, isOnlineMode } = useUnifiedAuth();
-  const { isPoliceRole, loading: roleLoading } = useUserRole();
+  const { isPoliceRole, isPostalRole, loading: roleLoading } = useUserRole();
   const { t } = useTranslation();
 
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user && !roleLoading) {
-      navigate(isPoliceRole ? '/police' : '/dashboard', { replace: true });
+      if (isPoliceRole) {
+        navigate('/police', { replace: true });
+      } else if (isPostalRole) {
+        navigate('/postal', { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
     }
-  }, [user, roleLoading, isPoliceRole, navigate]);
+  }, [user, roleLoading, isPoliceRole, isPostalRole, navigate]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
