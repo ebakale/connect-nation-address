@@ -18,7 +18,7 @@ const MapInvalidator: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       map.invalidateSize();
-    }, 300);
+    }, 500); // Increased timeout for dialog animation
     
     return () => clearTimeout(timer);
   }, [map]);
@@ -51,7 +51,18 @@ export function BusinessViewDialog({ business, open, onOpenChange }: BusinessVie
 
   if (!business) return null;
 
-  const hasCoordinates = business.addresses?.latitude && business.addresses?.longitude;
+  // Fix: Check for undefined/null explicitly to handle 0 coordinates correctly
+  const hasCoordinates = 
+    business.addresses?.latitude !== undefined && 
+    business.addresses?.latitude !== null &&
+    business.addresses?.longitude !== undefined && 
+    business.addresses?.longitude !== null;
+
+  // Debug logging
+  console.log('BusinessViewDialog - business:', business);
+  console.log('BusinessViewDialog - addresses:', business?.addresses);
+  console.log('BusinessViewDialog - hasCoordinates:', hasCoordinates);
+  console.log('BusinessViewDialog - lat/lng:', business?.addresses?.latitude, business?.addresses?.longitude);
 
   const handleGetDirections = () => {
     if (!hasCoordinates) return;
@@ -115,39 +126,39 @@ export function BusinessViewDialog({ business, open, onOpenChange }: BusinessVie
           <Separator />
 
           {/* Map Section */}
-          {hasCoordinates && (
+          {hasCoordinates ? (
             <>
               <div className="space-y-3">
                 <h3 className="font-semibold flex items-center gap-2">
                   <MapPin className="h-5 w-5" />
                   {t('business:registration.locationDetails')}
                 </h3>
-              <div className="rounded-lg overflow-hidden border" style={{ height: '192px' }}>
-                <MapContainer
-                  center={[business.addresses!.latitude, business.addresses!.longitude]}
-                  zoom={16}
-                  scrollWheelZoom={false}
-                  style={{ height: '100%', width: '100%', minHeight: '192px' }}
-                  className="h-full w-full"
-                >
-                  <TileLayer
-                    attribution={OSM_CONFIG.attribution}
-                    url={OSM_CONFIG.tileLayer}
-                  />
-                  <MapInvalidator />
-                  <Marker
-                    position={[business.addresses!.latitude, business.addresses!.longitude]}
-                    icon={businessMarkerIcon}
+                <div className="rounded-lg overflow-hidden border" style={{ height: '192px' }}>
+                  <MapContainer
+                    center={[business.addresses!.latitude, business.addresses!.longitude]}
+                    zoom={16}
+                    scrollWheelZoom={false}
+                    style={{ height: '100%', width: '100%', minHeight: '192px' }}
+                    className="h-full w-full"
                   >
-                    <Popup>
-                      <div className="text-sm">
-                        <strong>{business.organization_name}</strong>
-                        <br />
-                        {business.addresses!.street}, {business.addresses!.city}
-                      </div>
-                    </Popup>
-                  </Marker>
-                </MapContainer>
+                    <TileLayer
+                      attribution={OSM_CONFIG.attribution}
+                      url={OSM_CONFIG.tileLayer}
+                    />
+                    <MapInvalidator />
+                    <Marker
+                      position={[business.addresses!.latitude, business.addresses!.longitude]}
+                      icon={businessMarkerIcon}
+                    >
+                      <Popup>
+                        <div className="text-sm">
+                          <strong>{business.organization_name}</strong>
+                          <br />
+                          {business.addresses!.street}, {business.addresses!.city}
+                        </div>
+                      </Popup>
+                    </Marker>
+                  </MapContainer>
                 </div>
                 <Button 
                   variant="outline" 
@@ -160,6 +171,10 @@ export function BusinessViewDialog({ business, open, onOpenChange }: BusinessVie
               </div>
               <Separator />
             </>
+          ) : (
+            <div className="text-muted-foreground text-sm py-4">
+              {t('business:noLocationDataAvailable', 'No location data available for this business')}
+            </div>
           )}
 
           {/* Address Information */}
