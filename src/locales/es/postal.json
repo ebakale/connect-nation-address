@@ -125,7 +125,10 @@
     "assignmentCreated": "Asignación creada exitosamente",
     "noAssignment": "Sin asignar",
     "agentName": "Agente",
-    "agentPhone": "Teléfono del Agente"
+    "agentPhone": "Teléfono del Agente",
+    "noOrdersToAssign": "No hay pedidos listos para asignar",
+    "selectAll": "Seleccionar todos",
+    "notesPlaceholder": "Agregar notas para el agente..."
   },
   
   "delivery": {

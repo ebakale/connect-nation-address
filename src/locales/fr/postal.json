@@ -125,7 +125,10 @@
     "assignmentCreated": "Affectation créée avec succès",
     "noAssignment": "Non affecté",
     "agentName": "Agent",
-    "agentPhone": "Téléphone de l'Agent"
+    "agentPhone": "Téléphone de l'Agent",
+    "noOrdersToAssign": "Aucune commande prête à affecter",
+    "selectAll": "Tout sélectionner",
+    "notesPlaceholder": "Ajouter des notes pour l'agent..."
   },
   
   "delivery": {

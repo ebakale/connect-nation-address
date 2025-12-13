@@ -125,7 +125,10 @@
     "assignmentCreated": "Assignment created successfully",
     "noAssignment": "Not assigned",
     "agentName": "Agent",
-    "agentPhone": "Agent Phone"
+    "agentPhone": "Agent Phone",
+    "noOrdersToAssign": "No orders ready for assignment",
+    "selectAll": "Select all",
+    "notesPlaceholder": "Add notes for the agent..."
   },
   
   "delivery": {
