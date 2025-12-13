@@ -17,7 +17,8 @@
     "myDeliveries": "Mis Entregas",
     "agents": "Agentes",
     "reports": "Informes",
-    "tracking": "Seguimiento"
+    "tracking": "Seguimiento",
+    "admin": "Admin"
   },
   
   "order": {

@@ -24,9 +24,9 @@ export const PostalDashboard = () => {
   const [showNewOrderForm, setShowNewOrderForm] = useState(false);
 
   const statCards = [
-    { key: 'pending_intake', icon: Clock, value: stats?.pending_intake || 0, color: 'text-warning' },
-    { key: 'ready_for_assignment', icon: Package, value: stats?.ready_for_assignment || 0, color: 'text-info' },
-    { key: 'out_for_delivery', icon: Truck, value: stats?.out_for_delivery || 0, color: 'text-primary' },
+    { key: 'pendingIntake', icon: Clock, value: stats?.pending_intake || 0, color: 'text-warning' },
+    { key: 'readyForAssignment', icon: Package, value: stats?.ready_for_assignment || 0, color: 'text-info' },
+    { key: 'outForDelivery', icon: Truck, value: stats?.out_for_delivery || 0, color: 'text-primary' },
     { key: 'delivered', icon: CheckCircle, value: stats?.delivered || 0, color: 'text-success' },
     { key: 'failed', icon: AlertTriangle, value: stats?.failed || 0, color: 'text-destructive' },
     { key: 'returned', icon: RotateCcw, value: stats?.returned || 0, color: 'text-muted-foreground' },
@@ -101,7 +101,7 @@ export const PostalDashboard = () => {
           {(isPostalSupervisor || isAdmin) && (
             <TabsTrigger value="admin" className="text-xs sm:text-sm">
               <Settings className="h-4 w-4 mr-1 sm:mr-2" />
-              <span>Admin</span>
+              <span>{t('navigation.admin')}</span>
             </TabsTrigger>
           )}
         </TabsList>
