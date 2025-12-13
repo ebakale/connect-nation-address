@@ -16,6 +16,7 @@ import Portal from "./pages/Portal";
 import UnifiedDashboard from "./pages/UnifiedDashboard";
 import PoliceDashboard from "./pages/PoliceDashboard";
 import Documentation from "./pages/Documentation";
+import TrackDelivery from "./pages/TrackDelivery";
 
 import { UnitsAndProfilesPage } from "./pages/UnitsAndProfilesPage";
 import CitizenPortalUnified from "./pages/CitizenPortalUnified";
@@ -71,6 +72,7 @@ const AppRoutes = () => {
       <Route path="/demo-presentation" element={<DemoPresentationPage />} />
       <Route path="/demo-script" element={<DemoScriptPage />} />
       <Route path="/documentation" element={<Documentation />} />
+      <Route path="/track" element={<TrackDelivery />} />
       
       <Route path="/dashboard" element={<ProtectedRoute><UnifiedDashboard /></ProtectedRoute>} />
       <Route path="/police" element={<ProtectedRoute><PoliceDashboard /></ProtectedRoute>} />
