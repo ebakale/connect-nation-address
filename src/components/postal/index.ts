@@ -5,3 +5,5 @@ export { DeliveryOrderDetail } from './DeliveryOrderDetail';
 export { DeliveryAgentView } from './DeliveryAgentView';
 export { PostalReports } from './PostalReports';
 export { SeedPostalUsers } from './SeedPostalUsers';
+export { DeliveryAgentSelector } from './DeliveryAgentSelector';
+export { OrderAssignmentPanel } from './OrderAssignmentPanel';
