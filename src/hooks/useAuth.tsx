@@ -12,6 +12,8 @@ interface AuthContextType {
   signUp: (email: string, password: string, firstName: string, lastName: string, phoneNumber: string, nationalIdType: string, nationalId: string, dateOfBirth: string, nationality: string, preferredLanguage: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
+  signInWithGoogle: () => Promise<{ error: any }>;
+  resetPassword: (email: string) => Promise<{ error: any }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -141,6 +143,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       window.location.href = '/';
     }
   };
+
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth`
+      }
+    });
+
+    if (error) {
+      toast.error("Google Sign In Error: " + error.message);
+    }
+
+    return { error };
+  };
+
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth?reset=true`
+    });
+
+    if (error) {
+      toast.error("Password Reset Error: " + error.message);
+    } else {
+      toast.success("Password reset instructions sent to your email.");
+    }
+
+    return { error };
+  };
   return (
     <AuthContext.Provider value={{
       user,
@@ -148,7 +179,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       loading,
       signUp,
       signIn,
-      signOut
+      signOut,
+      signInWithGoogle,
+      resetPassword
     }}>
       {children}
     </AuthContext.Provider>
