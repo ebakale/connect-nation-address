@@ -183,6 +183,10 @@
     "signHere": "Sign here",
     "clearSignature": "Clear Signature",
     "takePhoto": "Take Photo",
+    "photoCaptured": "Photo captured",
+    "uploadError": "Error uploading photo",
+    "cameraError": "Camera not available",
+    "uploaded": "Uploaded",
     "relationships": {
       "recipient": "Recipient",
       "spouse": "Spouse",
@@ -229,7 +233,7 @@
   },
   
   "reports": {
-    "title": "Reports",
+    "title": "Delivery Reports",
     "dailyReport": "Daily Report",
     "weeklyReport": "Weekly Report",
     "monthlyReport": "Monthly Report",
@@ -240,7 +244,24 @@
     "averageDeliveryTime": "Average Delivery Time",
     "failedDeliveries": "Failed Deliveries",
     "returnedPackages": "Returned Packages",
-    "export": "Export Report"
+    "export": "Export",
+    "fetchError": "Failed to load analytics",
+    "exported": "Report exported",
+    "last7Days": "Last 7 days",
+    "last30Days": "Last 30 days",
+    "last90Days": "Last 90 days",
+    "totalOrders": "Total Orders",
+    "avgDeliveryTime": "Avg Delivery Time",
+    "pending": "Pending",
+    "dailyTrends": "Daily Trends",
+    "created": "Created",
+    "delivered": "Delivered",
+    "failed": "Failed",
+    "statusDistribution": "Status Distribution",
+    "packageTypes": "Package Types",
+    "priorityDistribution": "Priority Distribution",
+    "agent": "Agent",
+    "assigned": "Assigned"
   },
   
   "stats": {

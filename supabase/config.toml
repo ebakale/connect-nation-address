@@ -50,3 +50,6 @@ verify_jwt = true
 
 [functions.seed-postal-orders]
 verify_jwt = true
+
+[functions.postal-analytics-api]
+verify_jwt = false

@@ -320,6 +320,7 @@ export const DeliveryAgentView = () => {
           onSubmit={handleProofSubmit}
           orderNumber={proofDialog.delivery.order.order_number}
           recipientName={proofDialog.delivery.order.recipient_name}
+          orderId={proofDialog.delivery.order.id}
         />
       )}
     </div>
