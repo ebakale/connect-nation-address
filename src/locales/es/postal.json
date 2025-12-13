@@ -274,8 +274,13 @@
     "failed": "Fallido",
     "returned": "Devuelto",
     "todayDeliveries": "Entregas de Hoy",
-    "todayCompleted": "Completadas Hoy"
+    "todayCompleted": "Completadas Hoy",
+    "activeDeliveries": "Entregas Activas",
+    "completedToday": "Completadas Hoy",
+    "totalAssigned": "Total Asignadas"
   },
+  
+  "agentView": "Mi Panel de Entregas",
   
   "filters": {
     "all": "Todos",

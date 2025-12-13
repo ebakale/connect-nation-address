@@ -274,8 +274,13 @@
     "failed": "Échoué",
     "returned": "Retourné",
     "todayDeliveries": "Livraisons d'Aujourd'hui",
-    "todayCompleted": "Terminées Aujourd'hui"
+    "todayCompleted": "Terminées Aujourd'hui",
+    "activeDeliveries": "Livraisons Actives",
+    "completedToday": "Terminées Aujourd'hui",
+    "totalAssigned": "Total Assigné"
   },
+  
+  "agentView": "Mon Tableau de Livraisons",
   
   "filters": {
     "all": "Tous",

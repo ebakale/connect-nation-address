@@ -274,8 +274,13 @@
     "failed": "Failed",
     "returned": "Returned",
     "todayDeliveries": "Today's Deliveries",
-    "todayCompleted": "Completed Today"
+    "todayCompleted": "Completed Today",
+    "activeDeliveries": "Active Deliveries",
+    "completedToday": "Completed Today",
+    "totalAssigned": "Total Assigned"
   },
+  
+  "agentView": "My Deliveries Dashboard",
   
   "filters": {
     "all": "All",

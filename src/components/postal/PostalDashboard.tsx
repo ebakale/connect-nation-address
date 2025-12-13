@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { usePostalRole } from '@/hooks/usePostalRole';
 import { useDeliveryOrders } from '@/hooks/useDeliveryOrders';
-import { Package, Plus, Truck, Users, BarChart3, Clock, CheckCircle, AlertTriangle, RotateCcw, Settings } from 'lucide-react';
+import { useAgentDeliveries } from '@/hooks/useAgentDeliveries';
+import { Package, Plus, Truck, Users, BarChart3, Clock, CheckCircle, AlertTriangle, RotateCcw, Settings, MapPin } from 'lucide-react';
 import { DeliveryOrderForm } from './DeliveryOrderForm';
 import { DeliveryOrdersList } from './DeliveryOrdersList';
 import { DeliveryAgentView } from './DeliveryAgentView';
@@ -20,18 +21,32 @@ export const PostalDashboard = () => {
     isPostalClerk, isPostalAgent, isPostalDispatcher, isPostalSupervisor, isAdmin,
     canCreateOrders, canAssignOrders, canViewReports 
   } = usePostalRole();
-  const { stats, loading } = useDeliveryOrders();
-  const [activeTab, setActiveTab] = useState('overview');
+  const { stats: globalStats, loading } = useDeliveryOrders();
+  const { stats: agentStats } = useAgentDeliveries();
+  
+  // Agents default to "my-deliveries", others to "overview"
+  const [activeTab, setActiveTab] = useState(isPostalAgent ? 'my-deliveries' : 'overview');
   const [showNewOrderForm, setShowNewOrderForm] = useState(false);
 
-  const statCards = [
-    { key: 'pendingIntake', icon: Clock, value: stats?.pending_intake || 0, color: 'text-warning' },
-    { key: 'readyForAssignment', icon: Package, value: stats?.ready_for_assignment || 0, color: 'text-info' },
-    { key: 'outForDelivery', icon: Truck, value: stats?.out_for_delivery || 0, color: 'text-primary' },
-    { key: 'delivered', icon: CheckCircle, value: stats?.delivered || 0, color: 'text-success' },
-    { key: 'failed', icon: AlertTriangle, value: stats?.failed || 0, color: 'text-destructive' },
-    { key: 'returned', icon: RotateCcw, value: stats?.returned || 0, color: 'text-muted-foreground' },
+  // Agent-specific stat cards (personal metrics)
+  const agentStatCards = [
+    { key: 'activeDeliveries', icon: Truck, value: agentStats?.active || 0, color: 'text-primary' },
+    { key: 'completedToday', icon: CheckCircle, value: agentStats?.completedToday || 0, color: 'text-success' },
+    { key: 'totalAssigned', icon: Package, value: agentStats?.total || 0, color: 'text-info' },
   ];
+
+  // Global stat cards (for dispatchers, supervisors, clerks)
+  const globalStatCards = [
+    { key: 'pendingIntake', icon: Clock, value: globalStats?.pending_intake || 0, color: 'text-warning' },
+    { key: 'readyForAssignment', icon: Package, value: globalStats?.ready_for_assignment || 0, color: 'text-info' },
+    { key: 'outForDelivery', icon: Truck, value: globalStats?.out_for_delivery || 0, color: 'text-primary' },
+    { key: 'delivered', icon: CheckCircle, value: globalStats?.delivered || 0, color: 'text-success' },
+    { key: 'failed', icon: AlertTriangle, value: globalStats?.failed || 0, color: 'text-destructive' },
+    { key: 'returned', icon: RotateCcw, value: globalStats?.returned || 0, color: 'text-muted-foreground' },
+  ];
+
+  // Use appropriate stat cards based on role
+  const statCards = isPostalAgent ? agentStatCards : globalStatCards;
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -39,7 +54,9 @@ export const PostalDashboard = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-foreground">{t('dashboard')}</h1>
-          <p className="text-sm text-muted-foreground">{t('module')}</p>
+          <p className="text-sm text-muted-foreground">
+            {isPostalAgent ? t('agentView') : t('module')}
+          </p>
         </div>
         {canCreateOrders && (
           <Button onClick={() => setShowNewOrderForm(true)} className="w-full sm:w-auto">
@@ -49,8 +66,8 @@ export const PostalDashboard = () => {
         )}
       </div>
 
-      {/* Stats Grid - 2 rows of 3 cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+      {/* Stats Grid */}
+      <div className={`grid gap-3 sm:gap-4 ${isPostalAgent ? 'grid-cols-3' : 'grid-cols-2 sm:grid-cols-3'}`}>
         {statCards.map((stat) => (
           <Card key={stat.key} className="shadow-sm">
             <CardContent className="p-3 sm:p-4">
@@ -69,12 +86,16 @@ export const PostalDashboard = () => {
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-2 sm:flex sm:flex-wrap h-auto gap-1 bg-muted/50 p-1">
-          <TabsTrigger value="overview" className="text-xs sm:text-sm">
-            <Package className="h-4 w-4 mr-1 sm:mr-2" />
-            <span className="hidden sm:inline">{t('navigation.orders')}</span>
-            <span className="sm:hidden">{t('navigation.orders')}</span>
-          </TabsTrigger>
+          {/* Overview tab - hidden for agents */}
+          {!isPostalAgent && (
+            <TabsTrigger value="overview" className="text-xs sm:text-sm">
+              <Package className="h-4 w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">{t('navigation.orders')}</span>
+              <span className="sm:hidden">{t('navigation.orders')}</span>
+            </TabsTrigger>
+          )}
           
+          {/* My Deliveries - always visible for agents */}
           {isPostalAgent && (
             <TabsTrigger value="my-deliveries" className="text-xs sm:text-sm">
               <Truck className="h-4 w-4 mr-1 sm:mr-2" />
@@ -107,10 +128,14 @@ export const PostalDashboard = () => {
           )}
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-4">
-          <DeliveryOrdersList />
-        </TabsContent>
+        {/* Overview content - hidden for agents */}
+        {!isPostalAgent && (
+          <TabsContent value="overview" className="space-y-4">
+            <DeliveryOrdersList />
+          </TabsContent>
+        )}
 
+        {/* My Deliveries content */}
         {isPostalAgent && (
           <TabsContent value="my-deliveries" className="space-y-4">
             <DeliveryAgentView />
