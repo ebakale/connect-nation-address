@@ -159,6 +159,13 @@ export const useUserRole = () => {
   const isPoliceDispatcher = role === 'police_dispatcher';
   const isPoliceAdmin = role === 'police_admin';
   const isPoliceRole = isPoliceOperator || isPoliceSupervisor || isPoliceDispatcher || isPoliceAdmin;
+  
+  // Postal role checks
+  const isPostalClerk = role === 'postal_clerk';
+  const isPostalAgent = role === 'postal_agent';
+  const isPostalDispatcher = role === 'postal_dispatcher';
+  const isPostalSupervisor = role === 'postal_supervisor';
+  const isPostalRole = isPostalClerk || isPostalAgent || isPostalDispatcher || isPostalSupervisor;
 
   // Access level checks - clearly differentiated
   const hasNDAAAccess = role === 'ndaa_admin'; // Highest authority - National Digital Address Authority
@@ -400,6 +407,12 @@ export const useUserRole = () => {
     isPoliceDispatcher,
     isPoliceAdmin,
     isPoliceRole,
+    // Postal role checks
+    isPostalClerk,
+    isPostalAgent,
+    isPostalDispatcher,
+    isPostalSupervisor,
+    isPostalRole,
     // Access checks
     hasAdminAccess,
     hasNDAAAccess,
