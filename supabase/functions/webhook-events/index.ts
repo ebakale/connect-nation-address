@@ -125,25 +125,53 @@ serve(async (req) => {
 });
 
 async function getWebhookSubscriptions(eventType: string): Promise<WebhookSubscription[]> {
-  // In a real implementation, this would query a webhook_subscriptions table
-  // For demo purposes, we'll return mock data or check environment variables
-  
-  const webhookUrl = Deno.env.get('DEMO_WEBHOOK_URL');
-  if (webhookUrl) {
-    return [{
-      id: 'demo-webhook',
-      url: webhookUrl,
-      event_types: ['*'], // All events
-      active: true
-    }];
-  }
-
-  return WEBHOOK_SUBSCRIPTIONS.filter(sub => 
-    sub.active && (
-      sub.event_types.includes('*') || 
-      sub.event_types.includes(eventType)
-    )
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL') ?? '',
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
   );
+
+  try {
+    // Query webhook_configs table for active webhooks
+    const { data, error } = await supabase
+      .from('webhook_configs')
+      .select('*')
+      .eq('enabled', true);
+
+    if (error) {
+      console.error('Error fetching webhook configs:', error);
+      return [];
+    }
+
+    // Filter by event type
+    const subscriptions: WebhookSubscription[] = (data || [])
+      .filter(config => {
+        const events = config.events || [];
+        return events.includes('*') || events.includes(eventType);
+      })
+      .map(config => ({
+        id: config.id,
+        url: config.url,
+        event_types: config.events || [],
+        active: config.enabled,
+        secret: config.secret
+      }));
+
+    // Also check environment variable as fallback
+    const webhookUrl = Deno.env.get('DEMO_WEBHOOK_URL');
+    if (webhookUrl && !subscriptions.some(s => s.url === webhookUrl)) {
+      subscriptions.push({
+        id: 'demo-webhook',
+        url: webhookUrl,
+        event_types: ['*'],
+        active: true
+      });
+    }
+
+    return subscriptions;
+  } catch (error) {
+    console.error('Error in getWebhookSubscriptions:', error);
+    return [];
+  }
 }
 
 // Helper function to be called by other edge functions

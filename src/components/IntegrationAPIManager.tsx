@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,16 +23,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Key, Copy, Eye, EyeOff, Trash2, Plus, Info, Shield } from 'lucide-react';
+import { Key, Copy, Eye, EyeOff, Trash2, Plus, Info, Shield, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface APIKey {
   id: string;
   name: string;
-  key: string;
+  key_prefix: string;
   scope: string[];
   created: string;
-  lastUsed: string;
+  lastUsed: string | null;
   status: 'active' | 'inactive' | 'expired';
 }
 
@@ -41,52 +42,113 @@ export const IntegrationAPIManager = () => {
   const { toast } = useToast();
   const [showKey, setShowKey] = useState<string | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [apiKeys, setApiKeys] = useState<APIKey[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [newKeyName, setNewKeyName] = useState('');
+  const [creating, setCreating] = useState(false);
 
-  // Mock data - replace with actual API calls
-  const apiKeysData: Omit<APIKey, 'name'>[] = [
-    {
-      id: '1',
-      key: 'bk_live_a1b2c3d4e5f6g7h8i9j0',
-      scope: ['address:read', 'address:write', 'verification:read'],
-      created: '2025-01-10',
-      lastUsed: '2025-01-15 14:23',
-      status: 'active'
-    },
-    {
-      id: '2',
-      key: 'bk_live_k1l2m3n4o5p6q7r8s9t0',
-      scope: ['incident:read', 'incident:write', 'location:read'],
-      created: '2025-01-05',
-      lastUsed: '2025-01-15 15:45',
-      status: 'active'
-    },
-    {
-      id: '3',
-      key: 'bk_live_u1v2w3x4y5z6a7b8c9d0',
-      scope: ['address:read'],
-      created: '2024-12-01',
-      lastUsed: '2024-12-15 10:00',
-      status: 'inactive'
-    }
-  ];
+  useEffect(() => {
+    fetchApiKeys();
+  }, []);
 
-  const getApiKeyName = (id: string): string => {
-    switch (id) {
-      case '1':
-        return t('dashboard:governmentIntegrationApi');
-      case '2':
-        return t('dashboard:emergencyServicesApi');
-      case '3':
-        return t('dashboard:mobileAppApiOld');
-      default:
-        return '';
+  const fetchApiKeys = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('api_keys')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const formattedKeys: APIKey[] = (data || []).map(key => ({
+        id: key.id,
+        name: key.name,
+        key_prefix: key.key_prefix,
+        scope: key.service ? [key.service] : [],
+        created: new Date(key.created_at).toLocaleDateString(),
+        lastUsed: key.last_used_at ? new Date(key.last_used_at).toLocaleString() : null,
+        status: key.status as 'active' | 'inactive' | 'expired'
+      }));
+
+      setApiKeys(formattedKeys);
+    } catch (error) {
+      console.error('Error fetching API keys:', error);
+      toast({
+        title: t('common:error'),
+        description: 'Failed to load API keys',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const apiKeys: APIKey[] = apiKeysData.map(key => ({
-    ...key,
-    name: getApiKeyName(key.id)
-  }));
+  const createApiKey = async () => {
+    if (!newKeyName.trim()) return;
+
+    try {
+      setCreating(true);
+      const keyPrefix = `bk_live_${crypto.randomUUID().slice(0, 20)}`;
+      const keyHash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(keyPrefix));
+      const hashArray = Array.from(new Uint8Array(keyHash));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+      const { error } = await supabase
+        .from('api_keys')
+        .insert({
+          name: newKeyName,
+          key_prefix: keyPrefix,
+          key_hash: hashHex,
+          service: 'general',
+          status: 'active'
+        });
+
+      if (error) throw error;
+
+      await fetchApiKeys();
+      setIsCreateDialogOpen(false);
+      setNewKeyName('');
+      
+      toast({
+        title: t('common:success'),
+        description: t('dashboard:apiKeyCreated'),
+      });
+    } catch (error) {
+      console.error('Error creating API key:', error);
+      toast({
+        title: t('common:error'),
+        description: 'Failed to create API key',
+        variant: 'destructive',
+      });
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const deleteApiKey = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('api_keys')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      await fetchApiKeys();
+      toast({
+        title: t('common:success'),
+        description: 'API key deleted',
+      });
+    } catch (error) {
+      console.error('Error deleting API key:', error);
+      toast({
+        title: t('common:error'),
+        description: 'Failed to delete API key',
+        variant: 'destructive',
+      });
+    }
+  };
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
@@ -236,7 +298,7 @@ export const IntegrationAPIManager = () => {
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <code className="text-sm">
-                        {showKey === key.id ? key.key : '••••••••••••••••'}
+                        {showKey === key.id ? key.key_prefix : '••••••••••••••••'}
                       </code>
                       <Button
                         variant="ghost"
@@ -252,7 +314,7 @@ export const IntegrationAPIManager = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => copyToClipboard(key.key, t('dashboard:apiKey'))}
+                        onClick={() => copyToClipboard(key.key_prefix, t('dashboard:apiKey'))}
                       >
                         <Copy className="h-4 w-4" />
                       </Button>

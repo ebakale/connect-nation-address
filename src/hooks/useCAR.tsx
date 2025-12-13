@@ -257,8 +257,79 @@ export const useCitizenAddresses = () => {
   };
 };
 
-// TODO: Add address events functionality later
-// export const useAddressEvents = () => { ... };
+// Address events hook for audit trail
+export const useAddressEvents = (citizenAddressId?: string) => {
+  const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      let query = supabase
+        .from('citizen_address_event')
+        .select('*')
+        .order('at', { ascending: false })
+        .limit(100);
+
+      if (citizenAddressId) {
+        query = query.eq('citizen_address_id', citizenAddressId);
+      }
+
+      const { data, error } = await query;
+
+      if (error) throw error;
+
+      setEvents(data || []);
+    } catch (error: any) {
+      console.error('Error fetching address events:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load address events',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const logEvent = async (
+    personId: string,
+    eventType: string,
+    payload?: any,
+    addressId?: string
+  ) => {
+    try {
+      const { error } = await supabase
+        .from('citizen_address_event')
+        .insert({
+          person_id: personId,
+          citizen_address_id: addressId || citizenAddressId,
+          event_type: eventType,
+          actor_id: (await supabase.auth.getUser()).data.user?.id,
+          payload
+        });
+
+      if (error) throw error;
+
+      await fetchEvents();
+    } catch (error: any) {
+      console.error('Error logging address event:', error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, [citizenAddressId]);
+
+  return {
+    events,
+    loading,
+    refetch: fetchEvents,
+    logEvent
+  };
+};
 
 // Admin hooks for verifiers/registrars
 export const useAddressReviewQueue = () => {

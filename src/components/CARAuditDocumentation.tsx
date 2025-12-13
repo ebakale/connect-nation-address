@@ -185,13 +185,37 @@ export function CARAuditDocumentation() {
         description: 'Creating audit report for download...',
       });
 
-      // This would generate and download a comprehensive audit report
-      // For now, we'll simulate the process
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Build CSV content from audit events
+      const csvHeaders = ['Event ID', 'Event Type', 'Person ID', 'Actor', 'Timestamp', 'UAC', 'Payload'];
+      const csvRows = auditEvents.map(event => [
+        event.id,
+        event.event_type,
+        event.person_id,
+        event.actor_name || 'System',
+        new Date(event.at).toISOString(),
+        event.uac || 'N/A',
+        JSON.stringify(event.payload || {})
+      ]);
+
+      const csvContent = [
+        csvHeaders.join(','),
+        ...csvRows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+      ].join('\n');
+
+      // Download CSV file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `car-audit-report-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
 
       toast({
         title: 'Report Generated',
-        description: 'Audit report has been generated successfully.',
+        description: 'Audit report has been downloaded successfully.',
       });
     } catch (error) {
       console.error('Error generating report:', error);
