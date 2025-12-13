@@ -1,4 +1,4 @@
-# Biakam National Address System - Comprehensive Manual
+# ConEG National Digital Services Platform - Comprehensive Manual
 
 ## Table of Contents
 1. [System Overview](#system-overview)
@@ -15,10 +15,10 @@
 
 ## System Overview
 
-The Biakam National Address System is a comprehensive digital platform designed to modernize address management and emergency response in Equatorial Guinea. This unified system consists of three tightly integrated modules that work synergistically to provide enhanced public services, emergency response coordination, and data-driven urban planning capabilities.
+The ConEG National Digital Services Platform is a comprehensive digital platform designed to modernize address management, emergency response, and postal delivery services in Equatorial Guinea. This unified system consists of four tightly integrated modules that work synergistically to provide enhanced public services, emergency response coordination, postal delivery management, and data-driven urban planning capabilities.
 
 ### Platform Name
-**Biakam** - Derived from the indigenous name for Malabo, symbolizing the connection between traditional location references and modern digital addressing.
+**ConEG** - Connect Equatorial Guinea, symbolizing the connection between citizens, government services, and modern digital infrastructure.
 
 ### Core Mission
 - **Standardized Addressing**: Create a universal, structured address system for Equatorial Guinea

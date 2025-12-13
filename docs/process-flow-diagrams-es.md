@@ -1,4 +1,4 @@
-# Diagramas de Flujo de Procesos - Sistema ConnectNation Address
+# Diagramas de Flujo de Procesos - Plataforma ConEG de Servicios Digitales Nacionales
 
 ## 1. Flujo Unificado de Solicitud de Direcciones
 
@@ -476,7 +476,144 @@ Equipo NAR revisa retroalimentación
 Mejora de calidad de datos
 ```
 
-## 7. Flujo de Retención de Elementos Rechazados
+## 7. Flujo del Módulo de Entrega Postal
+
+### Flujo Completo de Orden de Entrega
+
+```
+Inicio - Creación de Orden
+  ↓
+Empleado Postal inicia sesión en Portal Postal
+  ↓
+Empleado crea nueva orden de entrega
+  ├── Ingresa información del remitente
+  │   ├── Nombre del remitente
+  │   ├── Sucursal del remitente
+  │   └── Teléfono del remitente
+  ├── Busca dirección del destinatario por UAC
+  │   ├── Sistema valida que UAC existe
+  │   ├── Auto-completa desde NAR/CAR
+  │   └── Muestra dirección verificada
+  ├── Ingresa detalles del paquete
+  │   ├── Tipo de paquete (carta, paquete, registrado)
+  │   ├── Peso y dimensiones
+  │   ├── Valor declarado
+  │   └── Manejo especial (frágil, materiales peligrosos)
+  └── Establece parámetros de entrega
+      ├── Nivel de prioridad (1-5)
+      ├── Fecha programada
+      ├── ¿Requiere firma?
+      └── ¿Requiere verificación de ID?
+  ↓
+Orden enviada
+  ├── Número de orden generado (DEL-AAAA-XXXXXX)
+  ├── Estado: pending_intake
+  └── Aparece en cola del despachador
+  ↓
+Asignación del Despachador
+  ↓
+Despachador ve órdenes pendientes
+  ├── Revisa UAC del destinatario y ubicación
+  ├── Verifica requisitos del paquete
+  └── Nota nivel de prioridad
+  ↓
+Ve agentes disponibles
+  ├── Carga de trabajo de agentes
+  ├── Áreas de cobertura
+  └── Estado de disponibilidad
+  ↓
+Asigna orden a agente
+  ├── Agrega notas de despacho
+  ├── Establece tiempo estimado de entrega
+  └── Confirma asignación
+  ↓
+Sistema actualiza orden
+  ├── Estado: assigned
+  ├── Agente notificado
+  └── Aparece en cola del agente
+  ↓
+Ejecución de Entrega
+  ↓
+Agente recibe notificación
+  ↓
+Ve detalles de entrega
+  ├── Nombre del destinatario y UAC
+  ├── Dirección completa del registro
+  ├── Detalles del paquete
+  └── Instrucciones especiales
+  ↓
+Inicia entrega (estado: out_for_delivery)
+  ↓
+Navega usando coordenadas GPS del UAC
+  ├── Direcciones paso a paso
+  ├── ETA en tiempo real
+  └── Estado visible para despachador
+  ↓
+Llega a ubicación
+  ├── Sistema verifica proximidad GPS
+  ├── Agente marca "Llegado"
+  └── Ubicación registrada
+  ↓
+Intento de entrega
+  ├── Ruta de ÉXITO:
+  │   ├── Verificar identidad del destinatario
+  │   ├── Capturar firma en dispositivo
+  │   ├── Tomar foto del paquete entregado
+  │   ├── Registrar nombre del receptor
+  │   └── Completar verificación de ID si requerido
+  │
+  └── Ruta de FALLO:
+      ├── Seleccionar razón de fallo
+      │   ├── Dirección no encontrada
+      │   ├── Destinatario no disponible
+      │   ├── Entrega rechazada
+      │   └── Problemas de acceso
+      └── Registrar notas para reintento
+  ↓
+Completar entrega
+  ├── Estado: delivered / failed_delivery / returned_to_sender
+  ├── Prueba subida (firma + foto)
+  ├── GPS y marca de tiempo registrados
+  └── Notificaciones enviadas
+  ↓
+Monitoreo del supervisor
+  ├── Visibilidad del dashboard en tiempo real
+  ├── Métricas de rendimiento actualizadas
+  └── Prueba disponible para revisión
+  ↓
+Fin
+```
+
+### Estados de Entrega
+- **pending_intake**: Orden creada, esperando revisión
+- **ready_for_assignment**: Aprobada, lista para despacho
+- **assigned**: Asignada a agente de entrega
+- **out_for_delivery**: Agente en camino
+- **delivered**: Entregado exitosamente con prueba
+- **failed_delivery**: Intento de entrega sin éxito
+- **address_not_found**: No se pudo ubicar la dirección
+- **returned_to_sender**: Devuelto al origen
+
+### Integración de Direcciones UAC
+
+```
+Creación de Orden
+  ↓
+Empleado ingresa UAC del destinatario
+  ↓
+Sistema consulta tabla de direcciones
+  ├── Verifica verified = true
+  ├── Obtiene coordenadas
+  └── Obtiene detalles completos de dirección
+  ↓
+¿UAC validado?
+  ├── SÍ → Completar campos del destinatario
+  │         └── Habilitar envío de orden
+  └── NO → Mostrar mensaje de error
+          └── Requerir UAC válido
+```
+
+## 8. Flujo de Retención de Elementos Rechazados
 
 ### Aplicación Automática de Política de Retención
 
@@ -532,7 +669,7 @@ delete_rejected_request(request_id) ejecutado
 Confirmación mostrada al usuario
 ```
 
-## 8. Procesos de Calidad y Mantenimiento
+## 9. Procesos de Calidad y Mantenimiento
 
 ### Auditoría Automática de Calidad
 
@@ -607,11 +744,19 @@ Actualiza información según hallazgos
 
 ## Conclusión
 
-Estos diagramas de flujo documentan los procesos interconectados del Sistema Nacional de Direcciones Biakam a diciembre de 2025. Las mejoras clave incluyen:
+Estos diagramas de flujo documentan los procesos interconectados de la Plataforma ConEG de Servicios Digitales Nacionales a diciembre de 2025. La plataforma ahora incluye cuatro módulos integrados:
+
+- **NAR (Registro Nacional de Direcciones)**: Registro oficial de direcciones mantenido por el gobierno
+- **CAR (Repositorio de Direcciones del Ciudadano)**: Declaraciones de direcciones gestionadas por ciudadanos
+- **Gestión de Emergencias**: Reporte de incidentes y coordinación de respuesta en tiempo real
+- **Entrega Postal**: Servicios postales gubernamentales con integración de direcciones UAC
+
+Las mejoras clave incluyen:
 
 - Flujo **Unificado de Solicitud de Direcciones** consolidando flujos NAR, CAR y Negocios
 - **Auto-publicación** basada en tipo de dirección (eliminando publicación manual)
 - **Auto-aprobación** para declaraciones CAR vinculadas a direcciones NAR verificadas
+- **Módulo de Entrega Postal** con direcciones verificadas por UAC para entregas precisas
 - **Alcance de dominio de verificación** para permisos flexibles de verificadores
 - **Alcance geográfico** asegurando que usuarios vean solo datos relevantes
 - **Política de retención** con archivado y anonimización automáticos
@@ -622,4 +767,4 @@ El sistema mantiene la integridad y seguridad de datos mientras proporciona fluj
 ---
 
 *Última Actualización: Diciembre 2025*
-*Versión: 3.0*
+*Versión: 4.0*
