@@ -85,19 +85,19 @@ serve(async (req) => {
       )
     }
 
-    // Check if user has admin role
+    // Check if user has admin or postal_supervisor role
     const { data: userRoles } = await supabaseAdmin
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
     
-    const hasAdminRole = userRoles?.some(r => 
-      ['admin', 'ndaa_admin'].includes(r.role)
+    const hasPermission = userRoles?.some(r => 
+      ['admin', 'ndaa_admin', 'postal_supervisor'].includes(r.role)
     )
 
-    if (!hasAdminRole) {
+    if (!hasPermission) {
       return new Response(
-        JSON.stringify({ error: 'Insufficient permissions - Admin access required' }),
+        JSON.stringify({ error: 'Insufficient permissions - Admin or Postal Supervisor access required' }),
         { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
