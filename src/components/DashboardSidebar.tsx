@@ -19,7 +19,8 @@ import {
   Star,
   Globe,
   Building,
-  AlertCircle
+  AlertCircle,
+  Package
 } from 'lucide-react';
 import {
   Sidebar,
@@ -189,6 +190,13 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: isCitizen
     },
     {
+      id: 'my-deliveries',
+      title: t('myDeliveries'),
+      icon: Package,
+      onClick: () => handleItemClick('my-deliveries'),
+      visible: isCitizen
+    },
+    {
       id: 'admin-panel',
       title: t('admin'),
       icon: Settings,
@@ -256,7 +264,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   );
   
   const toolsItems = visibleItems.filter(item => 
-    ['unified-address-request', 'address-search', 'saved-addresses', 'my-businesses'].includes(item.id)
+    ['unified-address-request', 'address-search', 'saved-addresses', 'my-businesses', 'my-deliveries'].includes(item.id)
   );
   
   const settingsItems = visibleItems.filter(item => 
