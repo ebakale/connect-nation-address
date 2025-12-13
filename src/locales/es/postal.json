@@ -108,7 +108,7 @@
   },
   
   "assignment": {
-    "title": "Asignación",
+    "title": "Asignación del Agente",
     "assign": "Asignar",
     "assignAgent": "Asignar a Agente",
     "reassign": "Reasignar",
@@ -116,12 +116,16 @@
     "selectAgent": "Seleccione un agente",
     "assignedTo": "Asignado a",
     "assignedBy": "Asignado por",
-    "assignedAt": "Asignado el",
-    "routeSequence": "Secuencia de Ruta",
-    "estimatedDelivery": "Hora Estimada de Entrega",
-    "assignmentNotes": "Notas de Asignación",
+    "assignedAt": "Asignado",
+    "acknowledgedAt": "Confirmado",
+    "startedAt": "Iniciado",
+    "routeSequence": "Posición en Ruta",
+    "estimatedDelivery": "Entrega Est.",
+    "assignmentNotes": "Notas del Despachador",
     "assignmentCreated": "Asignación creada exitosamente",
-    "noAssignment": "Sin asignar"
+    "noAssignment": "Sin asignar",
+    "agentName": "Agente",
+    "agentPhone": "Teléfono del Agente"
   },
   
   "delivery": {

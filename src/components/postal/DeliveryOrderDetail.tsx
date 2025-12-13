@@ -1,14 +1,28 @@
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { DeliveryStatus } from '@/types/postal';
+import { DeliveryStatus, DeliveryAssignment } from '@/types/postal';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   Package, MapPin, Clock, User, Phone, Mail, 
   Scale, Ruler, DollarSign, FileSignature, ShieldCheck,
-  Calendar, Building2
+  Calendar, Building2, UserCheck, Truck, CheckCircle2
 } from 'lucide-react';
 import { format } from 'date-fns';
+
+interface DeliveryOrderAssignment {
+  id: string;
+  agent_id: string;
+  assigned_at: string;
+  acknowledged_at?: string | null;
+  started_at?: string | null;
+  estimated_delivery_time?: string | null;
+  route_sequence?: number | null;
+  notes?: string | null;
+  assigned_by: string;
+}
 
 interface DeliveryOrder {
   id: string;
@@ -35,6 +49,12 @@ interface DeliveryOrder {
   delivery_deadline?: string | null;
   created_at: string;
   updated_at: string;
+  delivery_assignments?: DeliveryOrderAssignment[];
+}
+
+interface AgentProfile {
+  full_name: string;
+  phone?: string | null;
 }
 
 interface DeliveryOrderDetailProps {
@@ -45,6 +65,34 @@ interface DeliveryOrderDetailProps {
 
 export const DeliveryOrderDetail = ({ order, open, onOpenChange }: DeliveryOrderDetailProps) => {
   const { t } = useTranslation('postal');
+  const [agentProfile, setAgentProfile] = useState<AgentProfile | null>(null);
+
+  const assignment = order?.delivery_assignments?.[0];
+  const hasAssignment = !!assignment;
+  const showAssignmentSection = hasAssignment && ['assigned', 'out_for_delivery', 'delivered', 'failed_delivery', 'address_not_found', 'returned_to_sender'].includes(order?.status || '');
+
+  useEffect(() => {
+    const fetchAgentProfile = async () => {
+      if (!assignment?.agent_id) {
+        setAgentProfile(null);
+        return;
+      }
+
+      const { data } = await supabase
+        .from('profiles')
+        .select('full_name, phone')
+        .eq('user_id', assignment.agent_id)
+        .single();
+
+      if (data) {
+        setAgentProfile(data);
+      }
+    };
+
+    if (open && assignment) {
+      fetchAgentProfile();
+    }
+  }, [open, assignment]);
 
   if (!order) return null;
 
@@ -189,6 +237,83 @@ export const DeliveryOrderDetail = ({ order, open, onOpenChange }: DeliveryOrder
               )}
             </div>
           </div>
+
+          {/* Agent Assignment */}
+          {showAssignmentSection && assignment && (
+            <>
+              <Separator />
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <Truck className="h-4 w-4" />
+                  {t('assignment.title')}
+                </h3>
+                <div className="bg-muted/50 rounded-lg p-3 space-y-2 text-sm">
+                  {agentProfile && (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <UserCheck className="h-4 w-4 text-muted-foreground" />
+                        <span className="font-medium">{agentProfile.full_name}</span>
+                      </div>
+                      {agentProfile.phone && (
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-4 w-4 text-muted-foreground" />
+                          <a href={`tel:${agentProfile.phone}`} className="text-primary hover:underline">
+                            {agentProfile.phone}
+                          </a>
+                        </div>
+                      )}
+                    </>
+                  )}
+                  
+                  {/* Assignment Timeline */}
+                  <div className="pt-2 space-y-1.5 border-t border-border/50 mt-2">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+                      <span className="text-muted-foreground text-xs">{t('assignment.assignedAt')}:</span>
+                      <span className="text-xs">{format(new Date(assignment.assigned_at), 'MMM d, HH:mm')}</span>
+                    </div>
+                    {assignment.acknowledged_at && (
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+                        <span className="text-muted-foreground text-xs">{t('assignment.acknowledgedAt')}:</span>
+                        <span className="text-xs">{format(new Date(assignment.acknowledged_at), 'MMM d, HH:mm')}</span>
+                      </div>
+                    )}
+                    {assignment.started_at && (
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+                        <span className="text-muted-foreground text-xs">{t('assignment.startedAt')}:</span>
+                        <span className="text-xs">{format(new Date(assignment.started_at), 'MMM d, HH:mm')}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {assignment.estimated_delivery_time && (
+                    <div className="flex items-center gap-2 pt-1">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">{t('assignment.estimatedDelivery')}:</span>
+                      <span>{format(new Date(assignment.estimated_delivery_time), 'MMM d, HH:mm')}</span>
+                    </div>
+                  )}
+
+                  {assignment.route_sequence && (
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">{t('assignment.routeSequence')}:</span>
+                      <Badge variant="outline" className="text-xs">#{assignment.route_sequence}</Badge>
+                    </div>
+                  )}
+
+                  {assignment.notes && (
+                    <div className="pt-2 border-t border-border/50 mt-2">
+                      <span className="text-muted-foreground text-xs">{t('assignment.assignmentNotes')}:</span>
+                      <p className="text-xs mt-1">{assignment.notes}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Requirements */}
           {(order.requires_signature || order.requires_id_verification) && (

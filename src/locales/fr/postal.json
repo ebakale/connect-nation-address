@@ -108,7 +108,7 @@
   },
   
   "assignment": {
-    "title": "Affectation",
+    "title": "Affectation de l'Agent",
     "assign": "Affecter",
     "assignAgent": "Affecter à un Agent",
     "reassign": "Réaffecter",
@@ -116,12 +116,16 @@
     "selectAgent": "Sélectionnez un agent",
     "assignedTo": "Affecté à",
     "assignedBy": "Affecté par",
-    "assignedAt": "Affecté le",
-    "routeSequence": "Séquence d'Itinéraire",
-    "estimatedDelivery": "Heure de Livraison Estimée",
-    "assignmentNotes": "Notes d'Affectation",
+    "assignedAt": "Affecté",
+    "acknowledgedAt": "Confirmé",
+    "startedAt": "Démarré",
+    "routeSequence": "Position sur l'Itinéraire",
+    "estimatedDelivery": "Livraison Est.",
+    "assignmentNotes": "Notes du Répartiteur",
     "assignmentCreated": "Affectation créée avec succès",
-    "noAssignment": "Non affecté"
+    "noAssignment": "Non affecté",
+    "agentName": "Agent",
+    "agentPhone": "Téléphone de l'Agent"
   },
   
   "delivery": {

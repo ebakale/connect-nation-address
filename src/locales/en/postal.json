@@ -108,7 +108,7 @@
   },
   
   "assignment": {
-    "title": "Assignment",
+    "title": "Agent Assignment",
     "assign": "Assign",
     "assignAgent": "Assign to Agent",
     "reassign": "Reassign",
@@ -116,12 +116,16 @@
     "selectAgent": "Select an agent",
     "assignedTo": "Assigned to",
     "assignedBy": "Assigned by",
-    "assignedAt": "Assigned at",
-    "routeSequence": "Route Sequence",
-    "estimatedDelivery": "Estimated Delivery Time",
-    "assignmentNotes": "Assignment Notes",
+    "assignedAt": "Assigned",
+    "acknowledgedAt": "Acknowledged",
+    "startedAt": "Started",
+    "routeSequence": "Route Position",
+    "estimatedDelivery": "Est. Delivery",
+    "assignmentNotes": "Dispatcher Notes",
     "assignmentCreated": "Assignment created successfully",
-    "noAssignment": "Not assigned"
+    "noAssignment": "Not assigned",
+    "agentName": "Agent",
+    "agentPhone": "Agent Phone"
   },
   
   "delivery": {
