@@ -49,16 +49,16 @@ export const PostalDashboard = () => {
         )}
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+      {/* Stats Grid - 2 rows of 3 cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
         {statCards.map((stat) => (
           <Card key={stat.key} className="shadow-sm">
             <CardContent className="p-3 sm:p-4">
-              <div className="flex items-center justify-between">
-                <stat.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${stat.color}`} />
+              <div className="flex items-center justify-between gap-2">
+                <stat.icon className={`h-5 w-5 sm:h-6 sm:w-6 shrink-0 ${stat.color}`} />
                 <span className="text-lg sm:text-2xl font-bold text-foreground">{stat.value}</span>
               </div>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-1 truncate">
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1 break-words">
                 {t(`stats.${stat.key}`)}
               </p>
             </CardContent>
