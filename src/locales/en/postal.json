@@ -228,8 +228,10 @@
     "printLabel": "Print Label",
     "generateQR": "Generate QR Code",
     "createTestUsers": "Create Test Postal Users",
+    "createTestOrders": "Create Test Delivery Orders",
     "usersCreated": "Users Created",
-    "creating": "Creating users...",
+    "ordersCreated": "Orders Created",
+    "creating": "Creating...",
     "success": "Success",
     "error": "Error"
   },
@@ -255,7 +257,8 @@
     "errorUpdatingStatus": "Error updating status",
     "errorAssigning": "Error assigning order",
     "confirmCancel": "Are you sure you want to cancel this order?",
-    "seedDescription": "Create test postal users for development and testing. This will create 5 users with different postal roles."
+    "seedDescription": "Create test postal users for development and testing. This will create 5 users with different postal roles.",
+    "seedOrdersDescription": "Create test delivery orders with various statuses for development and testing. Requires postal users to be created first."
   },
   
   "schedule": {

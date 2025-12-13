@@ -47,3 +47,6 @@ verify_jwt = false
 
 [functions.seed-postal-users]
 verify_jwt = true
+
+[functions.seed-postal-orders]
+verify_jwt = true

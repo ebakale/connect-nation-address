@@ -228,8 +228,10 @@
     "printLabel": "Imprimer l'Étiquette",
     "generateQR": "Générer le Code QR",
     "createTestUsers": "Créer des Utilisateurs de Test Postal",
+    "createTestOrders": "Créer des Commandes de Test",
     "usersCreated": "Utilisateurs Créés",
-    "creating": "Création des utilisateurs...",
+    "ordersCreated": "Commandes Créées",
+    "creating": "Création...",
     "success": "Succès",
     "error": "Erreur"
   },
@@ -255,7 +257,8 @@
     "errorUpdatingStatus": "Erreur lors de la mise à jour du statut",
     "errorAssigning": "Erreur lors de l'affectation de la commande",
     "confirmCancel": "Êtes-vous sûr de vouloir annuler cette commande ?",
-    "seedDescription": "Créer des utilisateurs de test pour le développement et les tests. Cela créera 5 utilisateurs avec différents rôles postaux."
+    "seedDescription": "Créer des utilisateurs de test pour le développement et les tests. Cela créera 5 utilisateurs avec différents rôles postaux.",
+    "seedOrdersDescription": "Créer des commandes de livraison de test avec différents statuts pour le développement et les tests. Nécessite que les utilisateurs postaux soient créés en premier."
   },
   
   "schedule": {
