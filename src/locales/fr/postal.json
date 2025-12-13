@@ -258,6 +258,15 @@
     "estimatedDelivery": "Livraison Estimée"
   },
   
+  "myDeliveries": {
+    "title": "Mes Livraisons",
+    "description": "Suivez les colis livrés à vos adresses enregistrées",
+    "all": "Tous",
+    "active": "Actifs",
+    "completed": "Terminés",
+    "noDeliveries": "Aucune livraison trouvée"
+  },
+  
   "reports": {
     "title": "Rapports de Livraison",
     "dailyReport": "Rapport Quotidien",

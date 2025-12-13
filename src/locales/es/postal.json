@@ -258,6 +258,15 @@
     "estimatedDelivery": "Entrega Estimada"
   },
   
+  "myDeliveries": {
+    "title": "Mis Entregas",
+    "description": "Rastree paquetes entregados a sus direcciones registradas",
+    "all": "Todos",
+    "active": "Activos",
+    "completed": "Completados",
+    "noDeliveries": "No se encontraron entregas"
+  },
+  
   "reports": {
     "title": "Informes de Entrega",
     "dailyReport": "Informe Diario",
