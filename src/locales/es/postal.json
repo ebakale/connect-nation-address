@@ -33,6 +33,13 @@
     "noOrders": "No se encontraron órdenes de entrega"
   },
   
+  "details": {
+    "requirements": "Requisitos de Entrega",
+    "timeline": "Cronología",
+    "createdAt": "Creado",
+    "updatedAt": "Última Actualización"
+  },
+  
   "sender": {
     "title": "Información del Remitente",
     "name": "Nombre del Remitente",

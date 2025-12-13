@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useDeliveryOrders } from '@/hooks/useDeliveryOrders';
 import { DeliveryStatus } from '@/types/postal';
+import { DeliveryOrderDetail } from './DeliveryOrderDetail';
 import { Package, MapPin, Clock, User, ChevronRight } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -14,6 +16,8 @@ interface DeliveryOrdersListProps {
 export const DeliveryOrdersList = ({ showAssignmentPanel = false }: DeliveryOrdersListProps) => {
   const { t } = useTranslation('postal');
   const { orders, loading } = useDeliveryOrders();
+  const [selectedOrder, setSelectedOrder] = useState<typeof orders[0] | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
 
   const getStatusBadgeVariant = (status: DeliveryStatus) => {
     switch (status) {
@@ -41,6 +45,11 @@ export const DeliveryOrdersList = ({ showAssignmentPanel = false }: DeliveryOrde
     return labels[level] || t('priority.level3');
   };
 
+  const handleOrderClick = (order: typeof orders[0]) => {
+    setSelectedOrder(order);
+    setDetailOpen(true);
+  };
+
   if (loading) {
     return (
       <Card>
@@ -63,56 +72,76 @@ export const DeliveryOrdersList = ({ showAssignmentPanel = false }: DeliveryOrde
   }
 
   return (
-    <div className="space-y-3">
-      {orders.map((order) => (
-        <Card key={order.id} className="hover:shadow-md transition-shadow">
-          <CardContent className="p-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-              {/* Order Info */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-mono text-sm font-medium text-foreground">
-                    {order.order_number}
-                  </span>
-                  <Badge variant={getStatusBadgeVariant(order.status) as any}>
-                    {t(`status.${order.status}`)}
-                  </Badge>
-                  {order.priority_level <= 2 && (
-                    <Badge variant="destructive" className="text-xs">
-                      {getPriorityLabel(order.priority_level)}
+    <>
+      <div className="space-y-3">
+        {orders.map((order) => (
+          <Card 
+            key={order.id} 
+            className="hover:shadow-md transition-shadow cursor-pointer"
+            onClick={() => handleOrderClick(order)}
+          >
+            <CardContent className="p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                {/* Order Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-mono text-sm font-medium text-foreground">
+                      {order.order_number}
+                    </span>
+                    <Badge variant={getStatusBadgeVariant(order.status) as any}>
+                      {t(`status.${order.status}`)}
                     </Badge>
-                  )}
+                    {order.priority_level <= 2 && (
+                      <Badge variant="destructive" className="text-xs">
+                        {getPriorityLabel(order.priority_level)}
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  <div className="mt-2 space-y-1">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <User className="h-4 w-4 shrink-0" />
+                      <span className="truncate">{order.recipient_name}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <MapPin className="h-4 w-4 shrink-0" />
+                      <span className="font-mono truncate">{order.recipient_address_uac}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Clock className="h-4 w-4 shrink-0" />
+                      <span>{format(new Date(order.created_at), 'MMM d, yyyy HH:mm')}</span>
+                    </div>
+                  </div>
                 </div>
-                
-                <div className="mt-2 space-y-1">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <User className="h-4 w-4 shrink-0" />
-                    <span className="truncate">{order.recipient_name}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <MapPin className="h-4 w-4 shrink-0" />
-                    <span className="font-mono truncate">{order.recipient_address_uac}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Clock className="h-4 w-4 shrink-0" />
-                    <span>{format(new Date(order.created_at), 'MMM d, yyyy HH:mm')}</span>
-                  </div>
-                </div>
-              </div>
 
-              {/* Package Type */}
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-xs">
-                  {t(`package.types.${order.package_type}`)}
-                </Badge>
-                <Button variant="ghost" size="icon" className="shrink-0">
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
+                {/* Package Type */}
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-xs">
+                    {t(`package.types.${order.package_type}`)}
+                  </Badge>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="shrink-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOrderClick(order);
+                    }}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <DeliveryOrderDetail 
+        order={selectedOrder}
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+      />
+    </>
   );
 };

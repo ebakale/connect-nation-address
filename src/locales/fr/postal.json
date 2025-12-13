@@ -33,6 +33,13 @@
     "noOrders": "Aucune commande de livraison trouvée"
   },
   
+  "details": {
+    "requirements": "Exigences de Livraison",
+    "timeline": "Chronologie",
+    "createdAt": "Créé",
+    "updatedAt": "Dernière Mise à Jour"
+  },
+  
   "sender": {
     "title": "Informations de l'Expéditeur",
     "name": "Nom de l'Expéditeur",
