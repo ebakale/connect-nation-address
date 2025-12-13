@@ -391,7 +391,7 @@ export default function MyBusinesses() {
                               onClick={() => openGoogleMaps(business.addresses!.latitude, business.addresses!.longitude)}
                             >
                               <Map className="h-3 w-3 mr-1" />
-                              {t('common:buttons.viewOnMap')}
+                              {t('common:viewOnMap')}
                             </Button>
                           </div>
                         </div>
