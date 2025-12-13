@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { useDeliveryOrders } from '@/hooks/useDeliveryOrders';
 import { PackageType, CreateDeliveryOrderInput } from '@/types/postal';
+import { UACAddressPicker, SelectedAddress } from '@/components/UACAddressPicker';
 
 interface DeliveryOrderFormProps {
   open: boolean;
@@ -19,6 +20,7 @@ export const DeliveryOrderForm = ({ open, onClose }: DeliveryOrderFormProps) => 
   const { t } = useTranslation('postal');
   const { createOrder } = useDeliveryOrders();
   const [loading, setLoading] = useState(false);
+  const [validatedAddress, setValidatedAddress] = useState<SelectedAddress | null>(null);
   const [formData, setFormData] = useState<CreateDeliveryOrderInput>({
     sender_name: '',
     recipient_name: '',
@@ -88,13 +90,19 @@ export const DeliveryOrderForm = ({ open, onClose }: DeliveryOrderFormProps) => 
                   required
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 sm:col-span-2">
                 <Label>{t('recipient.address')} (UAC) *</Label>
-                <Input
-                  value={formData.recipient_address_uac}
-                  onChange={(e) => setFormData({ ...formData, recipient_address_uac: e.target.value })}
-                  placeholder={t('recipient.enterUAC')}
-                  required
+                <UACAddressPicker
+                  onAddressSelect={(address) => {
+                    setValidatedAddress(address);
+                    setFormData({ ...formData, recipient_address_uac: address.uac });
+                  }}
+                  onClear={() => {
+                    setValidatedAddress(null);
+                    setFormData({ ...formData, recipient_address_uac: '' });
+                  }}
+                  placeholder={t('recipient.searchAddress')}
+                  showDescription={true}
                 />
               </div>
               <div className="space-y-2">
@@ -185,7 +193,7 @@ export const DeliveryOrderForm = ({ open, onClose }: DeliveryOrderFormProps) => 
             <Button type="button" variant="outline" onClick={onClose} className="w-full sm:w-auto">
               {t('common:buttons.cancel')}
             </Button>
-            <Button type="submit" disabled={loading} className="w-full sm:w-auto">
+            <Button type="submit" disabled={loading || !validatedAddress} className="w-full sm:w-auto">
               {loading ? t('common:buttons.loading') : t('order.createOrder')}
             </Button>
           </div>
