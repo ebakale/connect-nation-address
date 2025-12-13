@@ -106,15 +106,16 @@ export function BusinessViewDialog({ business, open, onOpenChange }: BusinessVie
                   <MapPin className="h-5 w-5" />
                   {t('business:registration.locationDetails')}
                 </h3>
-                <div className="h-48 rounded-lg overflow-hidden border">
-                  <MapContainer
-                    center={[business.addresses!.latitude, business.addresses!.longitude]}
-                    zoom={16}
-                    scrollWheelZoom={false}
-                    className="h-full w-full"
-                  >
-                    <TileLayer
-                      attribution={OSM_CONFIG.attribution}
+              <div className="rounded-lg overflow-hidden border" style={{ height: '192px' }}>
+                <MapContainer
+                  center={[business.addresses!.latitude, business.addresses!.longitude]}
+                  zoom={16}
+                  scrollWheelZoom={false}
+                  style={{ height: '100%', width: '100%', minHeight: '192px' }}
+                  className="h-full w-full"
+                >
+                  <TileLayer
+                    attribution={OSM_CONFIG.attribution}
                       url={OSM_CONFIG.tileLayer}
                     />
                     <Marker
