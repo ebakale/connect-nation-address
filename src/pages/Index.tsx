@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3 } from 'lucide-react';
+import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3, Package, Truck } from 'lucide-react';
 import { ValuePropositionPDF } from '@/components/ValuePropositionPDF';
 import StoryboardsPDF from '@/components/StoryboardsPDF';
 import BusinessModelCanvasPDF from '@/components/BusinessModelCanvasPDF';
@@ -173,7 +173,7 @@ const Index = () => {
                   {/* Badge */}
                   <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white shadow-lg backdrop-blur-sm border border-white/20">
                     <MapPin className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                    <span className="text-sm sm:text-base font-semibold">{t('common:platform.connectEGPlatform')}</span>
+                    <span className="text-sm sm:text-base font-semibold">{t('common:platform.nationalDigitalServicesPlatform')}</span>
                   </div>
                   
                   {/* Main Heading */}
@@ -181,16 +181,14 @@ const Index = () => {
                     <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent leading-tight mobile-container">
                        <span className="block">{t('common:platform.connectEG')}</span>
                         <span className="block text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-foreground/90 mt-1">
-                          {t('common:platform.digitalPlatform')}
+                          {t('common:platform.nationalDigitalServicesPlatform')}
                         </span>
                     </h1>
                   </div>
                   
                   {/* Subtitle */}
                    <p className="text-sm sm:text-base md:text-lg lg:text-xl text-foreground/70 max-w-4xl mx-auto leading-relaxed font-light mobile-text-responsive mobile-container">
-                     {t('common:platform.connectEGDescription')}
-                     <span className="text-primary font-medium"> {t('common:platform.connectingCitizensServices')} </span>
-                     {t('common:platform.innovativeTechnology')}
+                     {t('common:platform.conEGDescription')}
                    </p>
                    
                    {/* CTA Buttons */}
@@ -227,61 +225,53 @@ const Index = () => {
                 <div className="inline-block p-3 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl">
                   <div className="flex items-center gap-2 px-4 py-2">
                     <div className="h-2 w-2 bg-primary rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium text-primary">{t('common:platform.dualCorePlatform')}</span>
+                    <span className="text-sm font-medium text-primary">{t('common:platform.tripleCorePlatform')}</span>
                   </div>
                 </div>
                 <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent">
                   {t('common:platform.coreFunctionalities')}
                 </h2>
                 <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                  {t('common:platform.twoIntegratedSystems')}
+                  {t('common:platform.threeIntegratedSystems')}
                 </p>
               </div>
 
-              {/* Main Module Cards */}
-              <div className="grid md:grid-cols-2 gap-12 mb-16">
+              {/* Main Module Cards - Three Modules */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
                 {/* Address Registry Module */}
                 <Card className="group relative overflow-hidden bg-gradient-to-br from-white to-primary/5 border-2 border-primary/10 hover:border-primary/30 shadow-xl hover:shadow-blue transform hover:scale-105 transition-all duration-300">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative h-64 bg-cover bg-center" style={{ backgroundImage: `url(${featureSearch})` }}>
+                  <div className="relative h-48 bg-cover bg-center" style={{ backgroundImage: `url(${featureSearch})` }}>
                     <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/40 to-transparent"></div>
-                    <div className="absolute bottom-6 left-6 right-6">
-                      <div className="flex items-center gap-4 mb-3">
-                        <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
-                          <MapPin className="h-8 w-8 text-white" />
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
+                          <MapPin className="h-6 w-6 text-white" />
                         </div>
                         <div>
-                          <h3 className="text-3xl font-bold text-white">{t('address:addressRegistrySystem')}</h3>
-                          <p className="text-blue-100 text-lg">{t('address:digitalAddressingInfrastructure')}</p>
+                          <h3 className="text-xl font-bold text-white">{t('address:addressRegistrySystem')}</h3>
+                          <p className="text-blue-100 text-sm">{t('address:digitalAddressingInfrastructure')}</p>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <CardContent className="relative p-8">
-                    <div className="space-y-4">
-                      <p className="text-muted-foreground leading-relaxed text-lg">
+                  <CardContent className="relative p-6">
+                    <div className="space-y-3">
+                      <p className="text-muted-foreground leading-relaxed text-sm">
                         {t('address:comprehensiveDigitalAddressing')}
                       </p>
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">{t('address:gpsBasedRegistrationPrecise')}</span>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
+                          <span className="text-xs">{t('address:gpsBasedRegistrationPrecise')}</span>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">{t('address:multiLevelVerificationNAR')}</span>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
+                          <span className="text-xs">{t('address:multiLevelVerificationNAR')}</span>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">{t('address:smartSearchAdvancedFilters')}</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">{t('address:uniqueUACCodesQR')}</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="h-5 w-5 text-primary" />
-                          <span className="text-sm">{t('address:multipleAddressesManagement')}</span>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
+                          <span className="text-xs">{t('address:uniqueUACCodesQR')}</span>
                         </div>
                       </div>
                     </div>
@@ -291,45 +281,77 @@ const Index = () => {
                 {/* Emergency Management Module */}
                 <Card className="group relative overflow-hidden bg-gradient-to-br from-white to-destructive/5 border-2 border-destructive/10 hover:border-destructive/30 shadow-xl hover:shadow-red transform hover:scale-105 transition-all duration-300">
                   <div className="absolute inset-0 bg-gradient-to-br from-destructive/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative h-64 bg-cover bg-center" style={{ backgroundImage: `url(${featureEmergencyManagement})` }}>
+                  <div className="relative h-48 bg-cover bg-center" style={{ backgroundImage: `url(${featureEmergencyManagement})` }}>
                     <div className="absolute inset-0 bg-gradient-to-t from-destructive/90 via-destructive/40 to-transparent"></div>
-                    <div className="absolute bottom-6 left-6 right-6">
-                      <div className="flex items-center gap-4 mb-3">
-                        <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
-                          <Shield className="h-8 w-8 text-white" />
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
+                          <Shield className="h-6 w-6 text-white" />
                         </div>
                         <div>
-                          <h3 className="text-3xl font-bold text-white">{t('emergency:management')}</h3>
-                          <p className="text-red-100 text-lg">{t('emergency:policeEmergencyServices')}</p>
+                          <h3 className="text-xl font-bold text-white">{t('emergency:management')}</h3>
+                          <p className="text-red-100 text-sm">{t('emergency:policeEmergencyServices')}</p>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <CardContent className="relative p-8">
-                     <div className="space-y-4">
-                        <p className="text-muted-foreground leading-relaxed text-lg">
+                  <CardContent className="relative p-6">
+                     <div className="space-y-3">
+                        <p className="text-muted-foreground leading-relaxed text-sm">
                           {t('emergency:integratedEmergencyResponse')}
                         </p>
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-3">
-                            <CheckCircle className="h-5 w-5 text-destructive" />
-                            <span className="text-sm">{t('emergency:realtimeEmergencyAlerts')}</span>
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4 text-destructive flex-shrink-0" />
+                            <span className="text-xs">{t('emergency:realtimeEmergencyAlerts')}</span>
                           </div>
-                          <div className="flex items-center gap-3">
-                            <CheckCircle className="h-5 w-5 text-destructive" />
-                            <span className="text-sm">{t('emergency:automatedPoliceDispatch')}</span>
+                          <div className="flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4 text-destructive flex-shrink-0" />
+                            <span className="text-xs">{t('emergency:automatedPoliceDispatch')}</span>
                           </div>
-                          <div className="flex items-center gap-3">
-                            <CheckCircle className="h-5 w-5 text-destructive" />
-                            <span className="text-sm">{t('emergency:integratedCommunications')}</span>
+                          <div className="flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4 text-destructive flex-shrink-0" />
+                            <span className="text-xs">{t('emergency:responseTimeTracking')}</span>
                           </div>
-                          <div className="flex items-center gap-3">
-                            <CheckCircle className="h-5 w-5 text-destructive" />
-                            <span className="text-sm">{t('emergency:responseTimeTracking')}</span>
+                        </div>
+                     </div>
+                  </CardContent>
+                </Card>
+
+                {/* Postal Delivery Module */}
+                <Card className="group relative overflow-hidden bg-gradient-to-br from-white to-secondary/5 border-2 border-secondary/10 hover:border-secondary/30 shadow-xl hover:shadow-green transform hover:scale-105 transition-all duration-300">
+                  <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative h-48 bg-cover bg-center" style={{ backgroundImage: `url(${featureRegistration})` }}>
+                    <div className="absolute inset-0 bg-gradient-to-t from-secondary/90 via-secondary/40 to-transparent"></div>
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
+                          <Package className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold text-white">{t('common:platform.postalDeliverySystem')}</h3>
+                          <p className="text-green-100 text-sm">{t('common:platform.governmentPostalServices')}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <CardContent className="relative p-6">
+                     <div className="space-y-3">
+                        <p className="text-muted-foreground leading-relaxed text-sm">
+                          {t('common:platform.postalDeliveryDescription')}
+                        </p>
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4 text-secondary flex-shrink-0" />
+                            <span className="text-xs">{t('common:platform.uacAddressIntegration')}</span>
                           </div>
-                          <div className="flex items-center gap-3">
-                            <CheckCircle className="h-5 w-5 text-destructive" />
-                            <span className="text-sm">{t('emergency:completeAddressIntegration')}</span>
+                          <div className="flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4 text-secondary flex-shrink-0" />
+                            <span className="text-xs">{t('common:platform.realTimeTracking')}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4 text-secondary flex-shrink-0" />
+                            <span className="text-xs">{t('common:platform.proofOfDelivery')}</span>
                           </div>
                         </div>
                      </div>
@@ -453,7 +475,7 @@ const Index = () => {
                       {t('common:platform.platformObjectives')}
                     </h2>
                    <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                     {t('common:platform.transformingEquatorialGuinea')}
+                     {t('common:platform.transformingEquatorialGuineaExpanded')}
                    </p>
                 </div>
 
@@ -499,7 +521,22 @@ const Index = () => {
                       </div>
                     </div>
                      <p className="text-muted-foreground leading-relaxed">
-                       {t('common:platform.provideDirectAccess')}
+                       {t('common:platform.provideDirectAccessExpanded')}
+                     </p>
+                  </div>
+
+                  <div className="group p-8 bg-gradient-to-br from-white to-accent/5 rounded-2xl border-2 border-accent/10 hover:border-accent/30 shadow-lg hover:shadow-yellow transform hover:scale-105 transition-all duration-300">
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="p-3 bg-gradient-to-br from-accent to-accent/80 rounded-2xl shadow-lg">
+                        <Package className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('common:platform.serviceIntegration')}</h3>
+                        <div className="h-1 w-16 bg-gradient-to-r from-accent to-accent/60 rounded-full mb-3"></div>
+                      </div>
+                    </div>
+                     <p className="text-muted-foreground leading-relaxed">
+                       {t('common:platform.serviceIntegrationDesc')}
                      </p>
                   </div>
                   
