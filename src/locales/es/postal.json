@@ -228,8 +228,10 @@
     "printLabel": "Imprimir Etiqueta",
     "generateQR": "Generar Código QR",
     "createTestUsers": "Crear Usuarios de Prueba Postal",
+    "createTestOrders": "Crear Órdenes de Prueba",
     "usersCreated": "Usuarios Creados",
-    "creating": "Creando usuarios...",
+    "ordersCreated": "Órdenes Creadas",
+    "creating": "Creando...",
     "success": "Éxito",
     "error": "Error"
   },
@@ -255,7 +257,8 @@
     "errorUpdatingStatus": "Error al actualizar el estado",
     "errorAssigning": "Error al asignar la orden",
     "confirmCancel": "¿Está seguro de que desea cancelar esta orden?",
-    "seedDescription": "Crear usuarios de prueba para desarrollo y testing. Esto creará 5 usuarios con diferentes roles postales."
+    "seedDescription": "Crear usuarios de prueba para desarrollo y testing. Esto creará 5 usuarios con diferentes roles postales.",
+    "seedOrdersDescription": "Crear órdenes de entrega de prueba con varios estados para desarrollo y testing. Requiere que los usuarios postales sean creados primero."
   },
   
   "schedule": {
