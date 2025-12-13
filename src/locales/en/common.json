@@ -45,7 +45,8 @@
     "enable": "Enable",
     "hide": "Hide",
     "details": "Details",
-    "add": "Add"
+    "add": "Add",
+    "getDirections": "Get Directions"
   },
   "yes": "Yes",
   "no": "No",
