@@ -219,18 +219,88 @@ export function CARDataValidation() {
 
   const resolveDuplicate = async (duplicateCheck: DuplicateCheck, action: string) => {
     try {
-      // This would implement duplicate resolution logic
-      toast({
-        title: 'Duplicate Resolved',
-        description: `Applied ${action} to duplicate UAC ${duplicateCheck.uac}`,
-      });
+      if (action === 'merge') {
+        // Keep the first record (oldest), remove duplicates
+        const primaryAddress = duplicateCheck.duplicates[0];
+        const duplicatesToRemove = duplicateCheck.duplicates.slice(1);
+        
+        for (const dup of duplicatesToRemove) {
+          // Delete duplicate citizen_address entries
+          await supabase
+            .from('citizen_address')
+            .delete()
+            .eq('id', dup.id);
+          
+          // Log the merge event
+          await supabase
+            .from('citizen_address_event')
+            .insert({
+              person_id: dup.person_id,
+              citizen_address_id: primaryAddress.id,
+              event_type: 'MERGE',
+              actor_id: (await supabase.auth.getUser()).data.user?.id,
+              payload: { merged_from: dup.id, action: 'duplicate_resolution' }
+            });
+        }
+        
+        toast({
+          title: t('dashboard:duplicateResolved'),
+          description: t('dashboard:duplicateMergeSuccess', { count: duplicatesToRemove.length }),
+        });
+      } else if (action === 'delete') {
+        // Delete all but the first record
+        const duplicatesToRemove = duplicateCheck.duplicates.slice(1);
+        
+        for (const dup of duplicatesToRemove) {
+          await supabase
+            .from('citizen_address')
+            .delete()
+            .eq('id', dup.id);
+        }
+        
+        toast({
+          title: t('dashboard:duplicateResolved'),
+          description: t('dashboard:duplicateDeleteSuccess', { count: duplicatesToRemove.length }),
+        });
+      } else if (action === 'flag_for_review') {
+        // Mark all as needing manual review by updating notes
+        for (const addr of duplicateCheck.duplicates) {
+          await supabase
+            .from('citizen_address')
+            .update({ 
+              notes: `[FLAGGED] Multiple claims detected for UAC ${duplicateCheck.uac}. Manual review required.` 
+            })
+            .eq('id', addr.id);
+        }
+        
+        toast({
+          title: t('dashboard:flaggedForReview'),
+          description: t('dashboard:duplicateFlaggedSuccess'),
+        });
+      } else if (action === 'keep_both') {
+        // Mark as reviewed - not a duplicate
+        for (const addr of duplicateCheck.duplicates) {
+          await supabase
+            .from('citizen_address')
+            .update({ 
+              notes: `[REVIEWED] Confirmed as valid separate claim for UAC ${duplicateCheck.uac}` 
+            })
+            .eq('id', addr.id);
+        }
+        
+        toast({
+          title: t('dashboard:duplicateResolved'),
+          description: t('dashboard:keptBothSuccess'),
+        });
+      }
 
       await fetchDuplicateChecks();
+      await fetchStats();
     } catch (error) {
       console.error('Error resolving duplicate:', error);
       toast({
-        title: 'Resolution Failed',
-        description: 'Failed to resolve duplicate',
+        title: t('common:error'),
+        description: t('dashboard:resolutionFailed'),
         variant: 'destructive',
       });
     }

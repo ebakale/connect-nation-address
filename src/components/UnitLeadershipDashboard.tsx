@@ -5,22 +5,19 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
 import { 
-  Users, Shield, Activity, TrendingUp, MapPin, Radio,
+  Users, Shield, Activity, TrendingUp, MapPin,
   UserPlus, UserMinus, Clock, AlertTriangle, CheckCircle,
-  FileText, Send, Calendar, Target, Award, Settings,
-  BarChart3, PieChart, Download, Upload, RefreshCw,
-  MessageSquare, Bell, Star, Flag, Navigation, Car
+  Target, BarChart3, MessageSquare, Bell, RefreshCw, Settings
 } from 'lucide-react';
+import { UnitCommunicationsPanel } from './UnitCommunicationsPanel';
 
 interface UnitMember {
   id: string;
@@ -843,53 +840,11 @@ export const UnitLeadershipDashboard: React.FC = () => {
             </TabsContent>
 
             <TabsContent value="communications" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{t('unitLeadershipDashboard.teamCommunications')}</CardTitle>
-                    <Dialog open={showMessageDialog} onOpenChange={setShowMessageDialog}>
-                      <DialogTrigger asChild>
-                        <Button size="sm" className="text-xs whitespace-nowrap">
-                          <MessageSquare className="h-3 w-3 mr-1" />
-                          {t('unitLeadershipDashboard.sendMessage')}
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>{t('unitLeadershipDashboard.sendMessageToTeam')}</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <div>
-                            <Label htmlFor="message">{t('unitLeadershipDashboard.message')}</Label>
-                            <Textarea
-                              id="message"
-                              placeholder={t('unitLeadershipDashboard.enterMessagePlaceholder')}
-                              value={teamMessage}
-                              onChange={(e) => setTeamMessage(e.target.value)}
-                              rows={4}
-                            />
-                          </div>
-                          <Button 
-                            onClick={sendTeamMessage}
-                            disabled={!teamMessage.trim() || isLoading}
-                            className="w-full"
-                          >
-                            <Send className="h-4 w-4 mr-2" />
-                            {t('unitLeadershipDashboard.sendMessage')}
-                          </Button>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center text-muted-foreground py-8">
-                    <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>{t('unitLeadershipDashboard.communicationComingSoon')}</p>
-                    <p className="text-sm">{t('unitLeadershipDashboard.realTimeMessaging')}</p>
-                  </div>
-                </CardContent>
-              </Card>
+              <UnitCommunicationsPanel 
+                unitId={selectedUnit.id}
+                unitCode={selectedUnit.unit_code}
+                unitMembers={unitMembers}
+              />
             </TabsContent>
           </Tabs>
         </>

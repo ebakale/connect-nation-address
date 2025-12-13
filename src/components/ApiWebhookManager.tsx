@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,15 +8,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Key, Webhook, Eye, EyeOff, Plus, Trash2, Edit, ExternalLink } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { Key, Webhook, Eye, EyeOff, Plus, Trash2, Edit, Loader2 } from 'lucide-react';
 
 interface ApiKey {
   id: string;
   name: string;
   service: string;
-  status: 'active' | 'inactive';
-  lastUsed?: string;
-  masked: string;
+  status: string;
+  last_used_at?: string;
+  key_prefix: string;
+  created_at: string;
 }
 
 interface WebhookConfig {
@@ -24,8 +26,8 @@ interface WebhookConfig {
   name: string;
   url: string;
   events: string[];
-  status: 'active' | 'inactive';
-  lastTriggered?: string;
+  status: string;
+  last_triggered_at?: string;
 }
 
 const ApiWebhookManager: React.FC = () => {
@@ -34,44 +36,10 @@ const ApiWebhookManager: React.FC = () => {
   const [showApiKey, setShowApiKey] = useState<Record<string, boolean>>({});
   const [newApiKey, setNewApiKey] = useState({ name: '', service: '', key: '' });
   const [newWebhook, setNewWebhook] = useState({ name: '', url: '', events: [] as string[] });
-
-  // Mock data - in real implementation, this would come from Supabase
-  const [apiKeys, setApiKeys] = useState<ApiKey[]>([
-    {
-      id: '1',
-      name: 'Mapbox Token',
-      service: 'Mapbox',
-      status: 'active',
-      lastUsed: '2 hours ago',
-      masked: 'pk.eyJ1Ijoi****************************'
-    },
-    {
-      id: '2',
-      name: 'OpenAI API Key',
-      service: 'OpenAI',
-      status: 'active',
-      lastUsed: '1 day ago',
-      masked: 'sk-****************************'
-    }
-  ]);
-
-  const [webhooks, setWebhooks] = useState<WebhookConfig[]>([
-    {
-      id: '1',
-      name: 'Address Verification Webhook',
-      url: 'https://api.external-service.com/webhook',
-      events: ['address.verified', 'address.rejected'],
-      status: 'active',
-      lastTriggered: '3 hours ago'
-    },
-    {
-      id: '2',
-      name: 'User Registration Webhook',
-      url: 'https://hooks.zapier.com/hooks/catch/12345/abcdef',
-      events: ['user.created', 'user.role_changed'],
-      status: 'inactive'
-    }
-  ]);
+  const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
+  const [webhooks, setWebhooks] = useState<WebhookConfig[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   const availableEvents = [
     'address.created',
@@ -83,95 +51,194 @@ const ApiWebhookManager: React.FC = () => {
     'system.backup_completed'
   ];
 
-  const handleAddApiKey = () => {
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [keysResponse, webhooksResponse] = await Promise.all([
+        supabase.from('api_keys').select('*').order('created_at', { ascending: false }),
+        supabase.from('webhook_configs').select('*').order('created_at', { ascending: false })
+      ]);
+
+      if (keysResponse.error) throw keysResponse.error;
+      if (webhooksResponse.error) throw webhooksResponse.error;
+
+      setApiKeys(keysResponse.data || []);
+      setWebhooks(webhooksResponse.data || []);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      toast({
+        title: t('common:error'),
+        description: t('dashboard:fetchError'),
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const hashKey = async (key: string): Promise<string> => {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(key);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  };
+
+  const handleAddApiKey = async () => {
     if (!newApiKey.name || !newApiKey.service || !newApiKey.key) {
       toast({
         title: t('common:error'),
         description: t('dashboard:fillAllFields'),
-        variant: "destructive",
+        variant: 'destructive',
       });
       return;
     }
 
-    const newKey: ApiKey = {
-      id: Date.now().toString(),
-      name: newApiKey.name,
-      service: newApiKey.service,
-      status: 'active',
-      masked: newApiKey.key.substring(0, 8) + '*'.repeat(20)
-    };
+    setSaving(true);
+    try {
+      const keyHash = await hashKey(newApiKey.key);
+      const keyPrefix = newApiKey.key.substring(0, 8) + '***';
 
-    setApiKeys([...apiKeys, newKey]);
-    setNewApiKey({ name: '', service: '', key: '' });
-    
-    toast({
-      title: t('common:success'),
-      description: t('dashboard:apiKeyAddedSuccess'),
-    });
+      const { error } = await supabase.from('api_keys').insert({
+        name: newApiKey.name,
+        service: newApiKey.service,
+        key_hash: keyHash,
+        key_prefix: keyPrefix,
+        status: 'active',
+        created_by: (await supabase.auth.getUser()).data.user?.id
+      });
+
+      if (error) throw error;
+
+      setNewApiKey({ name: '', service: '', key: '' });
+      await fetchData();
+      
+      toast({
+        title: t('common:success'),
+        description: t('dashboard:apiKeyAddedSuccess'),
+      });
+    } catch (error) {
+      console.error('Error adding API key:', error);
+      toast({
+        title: t('common:error'),
+        description: t('dashboard:apiKeyAddError'),
+        variant: 'destructive',
+      });
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleAddWebhook = () => {
+  const handleAddWebhook = async () => {
     if (!newWebhook.name || !newWebhook.url || newWebhook.events.length === 0) {
       toast({
         title: t('common:error'),
         description: t('dashboard:webhookFieldsRequired'),
-        variant: "destructive",
+        variant: 'destructive',
       });
       return;
     }
 
-    const webhook: WebhookConfig = {
-      id: Date.now().toString(),
-      name: newWebhook.name,
-      url: newWebhook.url,
-      events: newWebhook.events,
-      status: 'active'
-    };
+    setSaving(true);
+    try {
+      const { error } = await supabase.from('webhook_configs').insert({
+        name: newWebhook.name,
+        url: newWebhook.url,
+        events: newWebhook.events,
+        status: 'active',
+        created_by: (await supabase.auth.getUser()).data.user?.id
+      });
 
-    setWebhooks([...webhooks, webhook]);
-    setNewWebhook({ name: '', url: '', events: [] });
-    
-    toast({
-      title: t('common:success'),
-      description: t('dashboard:webhookAddedSuccess'),
-    });
+      if (error) throw error;
+
+      setNewWebhook({ name: '', url: '', events: [] });
+      await fetchData();
+      
+      toast({
+        title: t('common:success'),
+        description: t('dashboard:webhookAddedSuccess'),
+      });
+    } catch (error) {
+      console.error('Error adding webhook:', error);
+      toast({
+        title: t('common:error'),
+        description: t('dashboard:webhookAddError'),
+        variant: 'destructive',
+      });
+    } finally {
+      setSaving(false);
+    }
   };
 
   const toggleApiKeyVisibility = (keyId: string) => {
     setShowApiKey(prev => ({ ...prev, [keyId]: !prev[keyId] }));
   };
 
-  const deleteApiKey = (keyId: string) => {
-    setApiKeys(apiKeys.filter(key => key.id !== keyId));
-    toast({
-      title: t('common:success'),
-      description: t('dashboard:apiKeyDeletedSuccess'),
-    });
+  const deleteApiKey = async (keyId: string) => {
+    try {
+      const { error } = await supabase.from('api_keys').delete().eq('id', keyId);
+      if (error) throw error;
+
+      await fetchData();
+      toast({
+        title: t('common:success'),
+        description: t('dashboard:apiKeyDeletedSuccess'),
+      });
+    } catch (error) {
+      console.error('Error deleting API key:', error);
+      toast({
+        title: t('common:error'),
+        description: t('dashboard:apiKeyDeleteError'),
+        variant: 'destructive',
+      });
+    }
   };
 
-  const deleteWebhook = (webhookId: string) => {
-    setWebhooks(webhooks.filter(webhook => webhook.id !== webhookId));
-    toast({
-      title: t('common:success'),
-      description: t('dashboard:webhookDeletedSuccess'),
-    });
+  const deleteWebhook = async (webhookId: string) => {
+    try {
+      const { error } = await supabase.from('webhook_configs').delete().eq('id', webhookId);
+      if (error) throw error;
+
+      await fetchData();
+      toast({
+        title: t('common:success'),
+        description: t('dashboard:webhookDeletedSuccess'),
+      });
+    } catch (error) {
+      console.error('Error deleting webhook:', error);
+      toast({
+        title: t('common:error'),
+        description: t('dashboard:webhookDeleteError'),
+        variant: 'destructive',
+      });
+    }
   };
 
-  const toggleWebhookStatus = (webhookId: string) => {
-    setWebhooks(webhooks.map(webhook => 
-      webhook.id === webhookId 
-        ? { ...webhook, status: webhook.status === 'active' ? 'inactive' : 'active' }
-        : webhook
-    ));
+  const toggleWebhookStatus = async (webhookId: string, currentStatus: string) => {
+    try {
+      const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+      const { error } = await supabase
+        .from('webhook_configs')
+        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .eq('id', webhookId);
+
+      if (error) throw error;
+
+      await fetchData();
+    } catch (error) {
+      console.error('Error toggling webhook status:', error);
+    }
   };
 
   const testWebhook = async (webhook: WebhookConfig) => {
     try {
       const response = await fetch(webhook.url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           event: 'test',
           timestamp: new Date().toISOString(),
@@ -180,6 +247,12 @@ const ApiWebhookManager: React.FC = () => {
       });
 
       if (response.ok) {
+        // Update last triggered
+        await supabase
+          .from('webhook_configs')
+          .update({ last_triggered_at: new Date().toISOString() })
+          .eq('id', webhook.id);
+
         toast({
           title: t('common:success'),
           description: t('dashboard:webhookTestSuccess'),
@@ -188,13 +261,29 @@ const ApiWebhookManager: React.FC = () => {
         throw new Error('Webhook test failed');
       }
     } catch (error) {
+      // Update failure count
+      await supabase
+        .from('webhook_configs')
+        .update({ failure_count: (webhook as any).failure_count + 1 || 1 })
+        .eq('id', webhook.id);
+
       toast({
         title: t('common:error'),
         description: t('dashboard:webhookTestFailed'),
-        variant: "destructive",
+        variant: 'destructive',
       });
     }
   };
+
+  if (loading) {
+    return (
+      <Card>
+        <CardContent className="flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -220,67 +309,60 @@ const ApiWebhookManager: React.FC = () => {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">{t('dashboard:activeApiKeys')}</CardTitle>
-              <CardDescription>
-                {t('dashboard:manageApiKeysForServices')}
-              </CardDescription>
+              <CardDescription>{t('dashboard:manageApiKeysForServices')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {apiKeys.map((key) => (
-                <div key={key.id} className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h4 className="font-medium">{key.name}</h4>
-                      <Badge variant={key.status === 'active' ? 'default' : 'secondary'}>
-                        {key.status}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{key.service}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <code className="text-xs bg-muted px-2 py-1 rounded">
-                        {showApiKey[key.id] ? 'pk.eyJ1Ijoi...[HIDDEN_FOR_SECURITY]' : key.masked}
-                      </code>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => toggleApiKeyVisibility(key.id)}
-                      >
-                        {showApiKey[key.id] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </Button>
-                    </div>
-                     {key.lastUsed && (
-                       <p className="text-xs text-muted-foreground mt-1">{t('dashboard:lastUsed')}: {key.lastUsed}</p>
-                     )}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm">
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="outline" size="sm">
-                          <Trash2 className="h-4 w-4" />
+              {apiKeys.length === 0 ? (
+                <p className="text-center text-muted-foreground py-4">{t('dashboard:noApiKeys')}</p>
+              ) : (
+                apiKeys.map((key) => (
+                  <div key={key.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h4 className="font-medium">{key.name}</h4>
+                        <Badge variant={key.status === 'active' ? 'default' : 'secondary'}>
+                          {key.status}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">{key.service}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <code className="text-xs bg-muted px-2 py-1 rounded">
+                          {showApiKey[key.id] ? key.key_prefix : key.key_prefix.replace(/./g, '*')}
+                        </code>
+                        <Button variant="ghost" size="sm" onClick={() => toggleApiKeyVisibility(key.id)}>
+                          {showApiKey[key.id] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </Button>
-                      </AlertDialogTrigger>
-                       <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>{t('dashboard:deleteApiKey')}</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            {t('dashboard:deleteApiKeyConfirm')}
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>{t('common:buttons.cancel')}</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => deleteApiKey(key.id)}>
-                            {t('common:buttons.delete')}
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                      </div>
+                      {key.last_used_at && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {t('dashboard:lastUsed')}: {new Date(key.last_used_at).toLocaleString()}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="outline" size="sm"><Trash2 className="h-4 w-4" /></Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>{t('dashboard:deleteApiKey')}</AlertDialogTitle>
+                            <AlertDialogDescription>{t('dashboard:deleteApiKeyConfirm')}</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>{t('common:buttons.cancel')}</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => deleteApiKey(key.id)}>
+                              {t('common:buttons.delete')}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
 
-               <Card>
+              <Card>
                 <CardHeader>
                   <CardTitle className="text-base">{t('dashboard:addNewApiKey')}</CardTitle>
                 </CardHeader>
@@ -315,8 +397,8 @@ const ApiWebhookManager: React.FC = () => {
                       onChange={(e) => setNewApiKey({ ...newApiKey, key: e.target.value })}
                     />
                   </div>
-                  <Button onClick={handleAddApiKey} className="w-full">
-                    <Plus className="h-4 w-4 mr-2" />
+                  <Button onClick={handleAddApiKey} className="w-full" disabled={saving}>
+                    {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Plus className="h-4 w-4 mr-2" />}
                     {t('dashboard:addApiKey')}
                   </Button>
                 </CardContent>
@@ -329,74 +411,65 @@ const ApiWebhookManager: React.FC = () => {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">{t('dashboard:webhookConfigurations')}</CardTitle>
-              <CardDescription>
-                {t('dashboard:configureWebhooksDesc')}
-              </CardDescription>
+              <CardDescription>{t('dashboard:configureWebhooksDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {webhooks.map((webhook) => (
-                <div key={webhook.id} className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h4 className="font-medium">{webhook.name}</h4>
-                      <Badge variant={webhook.status === 'active' ? 'default' : 'secondary'}>
-                        {webhook.status}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-2">{webhook.url}</p>
-                    <div className="flex flex-wrap gap-1 mb-2">
-                      {webhook.events.map((event) => (
-                        <Badge key={event} variant="outline" className="text-xs">
-                          {event}
+              {webhooks.length === 0 ? (
+                <p className="text-center text-muted-foreground py-4">{t('dashboard:noWebhooks')}</p>
+              ) : (
+                webhooks.map((webhook) => (
+                  <div key={webhook.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h4 className="font-medium">{webhook.name}</h4>
+                        <Badge variant={webhook.status === 'active' ? 'default' : 'secondary'}>
+                          {webhook.status}
                         </Badge>
-                      ))}
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">{webhook.url}</p>
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {webhook.events.map((event) => (
+                          <Badge key={event} variant="outline" className="text-xs">{event}</Badge>
+                        ))}
+                      </div>
+                      {webhook.last_triggered_at && (
+                        <p className="text-xs text-muted-foreground">
+                          {t('dashboard:lastTriggered')}: {new Date(webhook.last_triggered_at).toLocaleString()}
+                        </p>
+                      )}
                     </div>
-                    {webhook.lastTriggered && (
-                      <p className="text-xs text-muted-foreground">{t('dashboard:lastTriggered')}: {webhook.lastTriggered}</p>
-                    )}
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm" onClick={() => testWebhook(webhook)}>
+                        {t('dashboard:test')}
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => toggleWebhookStatus(webhook.id, webhook.status)}
+                      >
+                        {webhook.status === 'active' ? t('common:buttons.disable') : t('common:buttons.enable')}
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="outline" size="sm"><Trash2 className="h-4 w-4" /></Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>{t('dashboard:deleteWebhook')}</AlertDialogTitle>
+                            <AlertDialogDescription>{t('dashboard:deleteWebhookConfirm')}</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>{t('common:buttons.cancel')}</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => deleteWebhook(webhook.id)}>
+                              {t('common:buttons.delete')}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => testWebhook(webhook)}
-                    >
-                      {t('dashboard:test')}
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => toggleWebhookStatus(webhook.id)}
-                    >
-                      {webhook.status === 'active' ? t('common:buttons.disable') : t('common:buttons.enable')}
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="outline" size="sm">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>{t('dashboard:deleteWebhook')}</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            {t('dashboard:deleteWebhookConfirm')}
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>{t('common:buttons.cancel')}</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => deleteWebhook(webhook.id)}>
-                            {t('common:buttons.delete')}
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
 
               <Card>
                 <CardHeader>
@@ -433,15 +506,9 @@ const ApiWebhookManager: React.FC = () => {
                             checked={newWebhook.events.includes(event)}
                             onChange={(e) => {
                               if (e.target.checked) {
-                                setNewWebhook({ 
-                                  ...newWebhook, 
-                                  events: [...newWebhook.events, event] 
-                                });
+                                setNewWebhook({ ...newWebhook, events: [...newWebhook.events, event] });
                               } else {
-                                setNewWebhook({ 
-                                  ...newWebhook, 
-                                  events: newWebhook.events.filter(e => e !== event) 
-                                });
+                                setNewWebhook({ ...newWebhook, events: newWebhook.events.filter(ev => ev !== event) });
                               }
                             }}
                           />
@@ -450,8 +517,8 @@ const ApiWebhookManager: React.FC = () => {
                       ))}
                     </div>
                   </div>
-                  <Button onClick={handleAddWebhook} className="w-full">
-                    <Plus className="h-4 w-4 mr-2" />
+                  <Button onClick={handleAddWebhook} className="w-full" disabled={saving}>
+                    {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Webhook className="h-4 w-4 mr-2" />}
                     {t('dashboard:addWebhook')}
                   </Button>
                 </CardContent>
@@ -460,28 +527,6 @@ const ApiWebhookManager: React.FC = () => {
           </Card>
         </TabsContent>
       </Tabs>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">{t('dashboard:externalManagement')}</CardTitle>
-          <CardDescription>
-            {t('dashboard:advancedConfigurationDesc')}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button variant="outline" asChild>
-            <a 
-              href="https://supabase.com/dashboard/project/calegudnfdbeznyiebbh/settings/functions" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center gap-2"
-            >
-              <ExternalLink className="h-4 w-4" />
-              {t('dashboard:openSupabaseDashboard')}
-            </a>
-          </Button>
-        </CardContent>
-      </Card>
     </div>
   );
 };
