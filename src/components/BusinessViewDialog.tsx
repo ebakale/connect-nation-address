@@ -5,10 +5,26 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Phone, Mail, Globe, Users, Clock, Building2, CheckCircle, XCircle, Calendar, Navigation } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Database } from "@/integrations/supabase/types";
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { OSM_CONFIG, createMarkerIcon } from '@/lib/osmConfig';
+import { useEffect } from 'react';
+
+// Component to force map to recalculate size after dialog opens
+const MapInvalidator: React.FC = () => {
+  const map = useMap();
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, [map]);
+  
+  return null;
+};
 
 type OrganizationAddress = Database["public"]["Tables"]["organization_addresses"]["Row"] & {
   addresses?: {
@@ -116,21 +132,22 @@ export function BusinessViewDialog({ business, open, onOpenChange }: BusinessVie
                 >
                   <TileLayer
                     attribution={OSM_CONFIG.attribution}
-                      url={OSM_CONFIG.tileLayer}
-                    />
-                    <Marker
-                      position={[business.addresses!.latitude, business.addresses!.longitude]}
-                      icon={businessMarkerIcon}
-                    >
-                      <Popup>
-                        <div className="text-sm">
-                          <strong>{business.organization_name}</strong>
-                          <br />
-                          {business.addresses!.street}, {business.addresses!.city}
-                        </div>
-                      </Popup>
-                    </Marker>
-                  </MapContainer>
+                    url={OSM_CONFIG.tileLayer}
+                  />
+                  <MapInvalidator />
+                  <Marker
+                    position={[business.addresses!.latitude, business.addresses!.longitude]}
+                    icon={businessMarkerIcon}
+                  >
+                    <Popup>
+                      <div className="text-sm">
+                        <strong>{business.organization_name}</strong>
+                        <br />
+                        {business.addresses!.street}, {business.addresses!.city}
+                      </div>
+                    </Popup>
+                  </Marker>
+                </MapContainer>
                 </div>
                 <Button 
                   variant="outline" 
