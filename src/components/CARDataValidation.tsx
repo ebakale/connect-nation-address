@@ -353,6 +353,16 @@ export function CARDataValidation() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* PLACEHOLDER NOTICE */}
+              <div className="flex items-start gap-3 p-4 rounded-lg border border-yellow-300 bg-yellow-50 dark:bg-yellow-950/30 dark:border-yellow-700">
+                <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium text-yellow-800 dark:text-yellow-400">Placeholder Feature</p>
+                  <p className="text-sm text-yellow-700 dark:text-yellow-500">
+                    Validation is currently simulated. Real validation engine integration coming soon.
+                  </p>
+                </div>
+              </div>
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="text-lg font-medium">Run Full Validation</h3>

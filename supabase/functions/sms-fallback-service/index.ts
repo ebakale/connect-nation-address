@@ -1,3 +1,23 @@
+/**
+ * ============================================================
+ * PLACEHOLDER: SMS Fallback Service
+ * ============================================================
+ * This edge function currently SIMULATES sending SMS messages.
+ * Messages are NOT actually sent to recipients.
+ * 
+ * TODO: Integrate with a real SMS provider:
+ * - Twilio (https://www.twilio.com)
+ * - AWS SNS
+ * - Africa's Talking
+ * - Local telecom provider APIs
+ * 
+ * Required secrets when implementing:
+ * - TWILIO_ACCOUNT_SID
+ * - TWILIO_AUTH_TOKEN
+ * - TWILIO_FROM_NUMBER
+ * ============================================================
+ */
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.55.0";
@@ -19,6 +39,7 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // This function processes the SMS fallback queue
+    console.warn('⚠️ PLACEHOLDER: SMS messages are SIMULATED. Integrate with Twilio or another SMS provider for production.');
     console.log('Processing SMS fallback queue...');
 
     // Get pending SMS messages
@@ -102,7 +123,8 @@ serve(async (req) => {
       JSON.stringify({ 
         success: true,
         processed: results.length,
-        results: results
+        results: results,
+        _placeholder_warning: "SMS_PLACEHOLDER: Messages are SIMULATED, not actually sent. Integrate SMS provider for production."
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -1,3 +1,17 @@
+/**
+ * ============================================================
+ * PARTIAL PLACEHOLDER: Photo Quality Analysis
+ * ============================================================
+ * - Vision analysis (OpenAI): REAL - Uses GPT-4o for image analysis
+ * - EXIF metadata extraction: SIMULATED - Returns random GPS/timestamp
+ * 
+ * TODO: Implement real EXIF extraction:
+ * - Use a library like 'exifr' to parse actual image metadata
+ * - Extract real GPS coordinates from photo EXIF data
+ * - Extract actual capture timestamp
+ * ============================================================
+ */
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -187,10 +201,13 @@ async function analyzeImageWithVision(imageUrl: string) {
 }
 
 async function analyzeImageMetadata(imageUrl: string) {
+  // ⚠️ PLACEHOLDER: EXIF metadata is SIMULATED
   // In a real implementation, you would:
   // 1. Download the image
   // 2. Extract EXIF data using a library like exifr
   // 3. Parse GPS coordinates, timestamp, camera info
+  
+  console.warn('⚠️ PLACEHOLDER: EXIF metadata extraction is simulated. GPS/timestamp data is not real.');
   
   // For now, returning simulated metadata analysis
   const hasGPS = Math.random() > 0.3; // 70% chance of GPS data
@@ -203,7 +220,9 @@ async function analyzeImageMetadata(imageUrl: string) {
     score: hasGPS ? 90 : 30,
     hasGPS,
     timestamp: hasGPS ? new Date().toISOString() : null,
-    coordinates
+    coordinates,
+    _isSimulated: true,
+    _placeholder_warning: "EXIF metadata is SIMULATED. Real EXIF extraction not yet implemented."
   };
 }
 
