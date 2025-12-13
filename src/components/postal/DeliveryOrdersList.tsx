@@ -5,10 +5,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useDeliveryOrders } from '@/hooks/useDeliveryOrders';
+import { usePostalRole } from '@/hooks/usePostalRole';
 import { DeliveryStatus } from '@/types/postal';
 import { DeliveryOrderDetail } from './DeliveryOrderDetail';
 import { OrderAssignmentPanel } from './OrderAssignmentPanel';
-import { Package, MapPin, Clock, User, ChevronRight } from 'lucide-react';
+import { Package, MapPin, Clock, User, ChevronRight, ArrowRight, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -18,10 +19,12 @@ interface DeliveryOrdersListProps {
 
 export const DeliveryOrdersList = ({ showAssignmentPanel = false }: DeliveryOrdersListProps) => {
   const { t } = useTranslation('postal');
-  const { orders, loading, fetchOrders } = useDeliveryOrders();
+  const { orders, loading, fetchOrders, markAsReadyForAssignment } = useDeliveryOrders();
+  const { canUpdateOrderStatus } = usePostalRole();
   const [selectedOrder, setSelectedOrder] = useState<typeof orders[0] | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
+  const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
 
   // Filter orders for assignment view - only show ready_for_assignment
   const displayOrders = showAssignmentPanel 
@@ -79,6 +82,16 @@ export const DeliveryOrdersList = ({ showAssignmentPanel = false }: DeliveryOrde
   const handleAssignmentComplete = () => {
     setSelectedOrderIds([]);
     fetchOrders();
+  };
+
+  const handleMarkReady = async (e: React.MouseEvent, orderId: string) => {
+    e.stopPropagation();
+    setUpdatingOrderId(orderId);
+    try {
+      await markAsReadyForAssignment(orderId);
+    } finally {
+      setUpdatingOrderId(null);
+    }
   };
 
   if (loading) {
@@ -183,11 +196,32 @@ export const DeliveryOrdersList = ({ showAssignmentPanel = false }: DeliveryOrde
                   </div>
                 </div>
 
-                {/* Package Type */}
-                <div className="flex items-center gap-2">
+                {/* Package Type & Actions */}
+                <div className="flex items-center gap-2 flex-wrap">
                   <Badge variant="outline" className="text-xs">
                     {t(`package.types.${order.package_type}`)}
                   </Badge>
+                  
+                  {/* Quick Mark Ready Button for Clerks */}
+                  {!showAssignmentPanel && canUpdateOrderStatus && order.status === 'pending_intake' && (
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="shrink-0"
+                      disabled={updatingOrderId === order.id}
+                      onClick={(e) => handleMarkReady(e, order.id)}
+                    >
+                      {updatingOrderId === order.id ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <>
+                          <ArrowRight className="h-3 w-3 mr-1" />
+                          {t('actions.markReady')}
+                        </>
+                      )}
+                    </Button>
+                  )}
+                  
                   {!showAssignmentPanel && (
                     <Button 
                       variant="ghost" 
@@ -237,6 +271,7 @@ export const DeliveryOrdersList = ({ showAssignmentPanel = false }: DeliveryOrde
         order={selectedOrder}
         open={detailOpen}
         onOpenChange={setDetailOpen}
+        onOrderUpdated={fetchOrders}
       />
     </>
   );

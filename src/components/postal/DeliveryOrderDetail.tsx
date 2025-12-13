@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { DeliveryStatus, DeliveryAssignment } from '@/types/postal';
 import { supabase } from '@/integrations/supabase/client';
+import { usePostalRole } from '@/hooks/usePostalRole';
+import { useDeliveryOrders } from '@/hooks/useDeliveryOrders';
 import { 
   Package, MapPin, Clock, User, Phone, Mail, 
   Scale, Ruler, DollarSign, FileSignature, ShieldCheck,
-  Calendar, Building2, UserCheck, Truck, CheckCircle2
+  Calendar, Building2, UserCheck, Truck, CheckCircle2, ArrowRight, Loader2
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -61,11 +64,15 @@ interface DeliveryOrderDetailProps {
   order: DeliveryOrder | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onOrderUpdated?: () => void;
 }
 
-export const DeliveryOrderDetail = ({ order, open, onOpenChange }: DeliveryOrderDetailProps) => {
+export const DeliveryOrderDetail = ({ order, open, onOpenChange, onOrderUpdated }: DeliveryOrderDetailProps) => {
   const { t } = useTranslation('postal');
   const [agentProfile, setAgentProfile] = useState<AgentProfile | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const { canUpdateOrderStatus, isPostalClerk } = usePostalRole();
+  const { markAsReadyForAssignment } = useDeliveryOrders();
 
   const assignment = order?.delivery_assignments?.[0];
   const hasAssignment = !!assignment;
@@ -95,6 +102,22 @@ export const DeliveryOrderDetail = ({ order, open, onOpenChange }: DeliveryOrder
   }, [open, assignment]);
 
   if (!order) return null;
+
+  const canMarkReady = canUpdateOrderStatus && order.status === 'pending_intake';
+
+  const handleMarkReady = async () => {
+    if (!order) return;
+    setIsUpdating(true);
+    try {
+      const success = await markAsReadyForAssignment(order.id);
+      if (success) {
+        onOrderUpdated?.();
+        onOpenChange(false);
+      }
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   const getStatusBadgeVariant = (status: DeliveryStatus) => {
     switch (status) {
@@ -402,6 +425,27 @@ export const DeliveryOrderDetail = ({ order, open, onOpenChange }: DeliveryOrder
               )}
             </div>
           </div>
+
+          {/* Action Buttons */}
+          {canMarkReady && (
+            <>
+              <Separator />
+              <div className="pt-2">
+                <Button
+                  className="w-full"
+                  onClick={handleMarkReady}
+                  disabled={isUpdating}
+                >
+                  {isUpdating ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <ArrowRight className="h-4 w-4 mr-2" />
+                  )}
+                  {t('actions.markReadyForAssignment')}
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </SheetContent>
     </Sheet>
