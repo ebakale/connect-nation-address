@@ -137,7 +137,7 @@ export const DeliveryTrackingResult: React.FC<DeliveryTrackingResultProps> = ({ 
             <div className="flex items-center gap-2">
               <Package className="h-4 w-4 text-muted-foreground" />
               <span className="text-muted-foreground">{t('tracking.packageType')}:</span>
-              <span className="font-medium">{t(`packageType.${data.package_type}`)}</span>
+              <span className="font-medium">{t(`package.types.${data.package_type}`)}</span>
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-muted-foreground" />
