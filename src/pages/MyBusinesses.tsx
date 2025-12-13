@@ -345,7 +345,7 @@ export default function MyBusinesses() {
                               </Badge>
                               {business.business_address_type && (
                                 <Badge variant="outline" className="text-xs">
-                                  {t(`business:addressTypes.${business.business_address_type?.toLowerCase()}`)}
+                                  {t(`business:addressTypes.${business.business_address_type}`)}
                                 </Badge>
                               )}
                             </div>
@@ -463,13 +463,13 @@ export default function MyBusinesses() {
                             {business.tax_identification_number && (
                               <div className="flex items-center gap-2">
                                 <Hash className="h-3 w-3 text-muted-foreground" />
-                                <span>{t('business:registration.tinNumber')}: {business.tax_identification_number}</span>
+                                <span>{t('business:registration.taxId')}: {business.tax_identification_number}</span>
                               </div>
                             )}
                             {business.employee_count && (
                               <div className="flex items-center gap-2">
                                 <Users className="h-3 w-3 text-muted-foreground" />
-                                <span>{business.employee_count} {t('business:registration.employees')}</span>
+                                <span>{business.employee_count} {t('business:dashboard.employees')}</span>
                               </div>
                             )}
                             {business.customer_capacity && (
@@ -505,7 +505,7 @@ export default function MyBusinesses() {
                             {business.seasonal_operation && (
                               <Badge variant="secondary" className="text-xs">
                                 <Calendar className="h-3 w-3 mr-1" />
-                                {t('business:registration.seasonalBusiness')}
+                                {t('business:registration.seasonalOperation')}
                               </Badge>
                             )}
                             {business.appointment_required && (
@@ -528,13 +528,13 @@ export default function MyBusinesses() {
                             {business.wheelchair_accessible && (
                               <Badge variant="outline" className="text-xs">
                                 <Accessibility className="h-3 w-3 mr-1" />
-                                {t('business:search.wheelchairAccessible')}
+                                {t('business:registration.wheelchairAccessible')}
                               </Badge>
                             )}
                             {business.parking_available && (
                               <Badge variant="outline" className="text-xs">
                                 <Car className="h-3 w-3 mr-1" />
-                                {t('business:search.parkingAvailable')}
+                                {t('business:registration.parkingAvailable')}
                                 {business.parking_capacity && ` (${business.parking_capacity})`}
                               </Badge>
                             )}
@@ -584,7 +584,7 @@ export default function MyBusinesses() {
                       <div className="space-y-2">
                         <h4 className="text-sm font-semibold flex items-center gap-2 text-muted-foreground">
                           <Shield className="h-4 w-4" />
-                          {t('business:registration.visibility')}
+                          {t('business:registration.visibilitySettings')}
                         </h4>
                         <div className="pl-6 flex flex-wrap gap-2">
                           <Badge variant={business.publicly_visible ? "default" : "secondary"} className="text-xs">

@@ -35,6 +35,11 @@
     "publiclyVisible": "Publicly Visible",
     "showOnMaps": "Show on Maps",
     "showContactInfo": "Show Contact Information",
+    "private": "Private",
+    "hiddenFromMaps": "Hidden from Maps",
+    "hideContactInfo": "Contact Info Hidden",
+    "licenseExpiryDate": "License Expiry Date",
+    "location": "Location",
     "selectLocation": "Select Business Location",
     "uploadDocuments": "Upload Verification Documents",
     "businessLicense": "Business License",
@@ -154,7 +159,9 @@
     "documentReview": "Document Review",
     "approveAndVerify": "Approve and Verify",
     "reject": "Reject",
-    "successMessage": "Business registration request submitted successfully!"
+    "successMessage": "Business registration request submitted successfully!",
+    "verifiedAt": "Verified On",
+    "verifiedBy": "Verified By"
   },
   "approval": {
     "approveBusiness": "Approve Business",
