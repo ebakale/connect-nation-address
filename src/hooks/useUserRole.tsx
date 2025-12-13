@@ -82,6 +82,7 @@ export const useUserRole = () => {
             'admin', 'ndaa_admin', 'police_admin',
             'police_supervisor', 'police_dispatcher', 'police_operator',
             'car_admin',
+            'postal_supervisor', 'postal_dispatcher', 'postal_clerk', 'postal_agent',
             'registrar', 'verifier',
             'field_agent', 'property_claimant',
             'citizen', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user'
