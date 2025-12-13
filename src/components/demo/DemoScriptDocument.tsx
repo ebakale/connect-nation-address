@@ -17,7 +17,9 @@ import {
   Clock,
   Target,
   Lightbulb,
-  Monitor
+  Monitor,
+  Home,
+  Truck
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -146,6 +148,90 @@ const scenarios: DemoScenario[] = [
       'No manual verification or phone calls required'
     ],
     presenterNotes: 'The public portal enables instant address verification for businesses, reducing onboarding time from days to minutes. The QR code provides portable, scannable proof of address verification.'
+  },
+  {
+    id: 'car-registration-household',
+    title: 'CAR Registration, Household Management & Address Verification',
+    icon: Home,
+    context: 'Pedro Martínez has his NAR address approved and now needs to declare it as his official residence (CAR). He also wants to register his household members including his spouse and two children, and request residency verification for legal purposes.',
+    objective: 'Declare a CAR address, create a household group with members and dependents, and request residency verification',
+    actors: [
+      { role: 'Citizen/Head of Household', name: 'Pedro Martínez', type: 'primary' },
+      { role: 'Spouse', name: 'Carmen Martínez', type: 'secondary' },
+      { role: 'CAR Verifier', name: 'System Queue', type: 'secondary' }
+    ],
+    modules: ['Citizen Dashboard', 'My CAR Addresses', 'Household Management', 'Verification Requests'],
+    steps: [
+      { step: 1, action: 'Pedro logs into his citizen dashboard', screen: 'UnifiedDashboard with citizen navigation showing My CAR Addresses, Household, Verification Requests', notes: 'Point out the CAR-specific menu items available to citizens.' },
+      { step: 2, action: 'He clicks "My CAR Addresses" in the sidebar', screen: 'CitizenAddressManager showing current addresses (if any) and "Add Address" button', notes: 'Explain CAR = Citizen Address Registry - links citizens to their official residence.' },
+      { step: 3, action: 'Pedro clicks "Add Address" and enters his approved UAC: GQ-BN-MLO-AVLB-0045', screen: 'Address lookup by UAC with verified address result', notes: 'Show that CAR declaration uses existing NAR addresses - no duplicates created.' },
+      { step: 4, action: 'He selects address scope: "Primary Residence"', screen: 'Scope selector with Primary/Secondary options', notes: 'Explain: Citizens can have one primary and multiple secondary addresses.' },
+      { step: 5, action: 'Pedro sets privacy level: "Private - Authorized Services Only"', screen: 'Privacy level dropdown with options', notes: 'Highlight citizen control over who can see their address.' },
+      { step: 6, action: 'He confirms the declaration and address is added', screen: 'Success message, address appears in "My Addresses" list with "Self-Declared" status', notes: 'Note: Self-declared status means awaiting verification.' },
+      { step: 7, action: 'Pedro navigates to "Household Management"', screen: 'HouseholdManagement component with "Create Household" option', notes: 'Explain households group family members at same address.' },
+      { step: 8, action: 'He clicks "Create Household Group"', screen: 'CreateHouseholdDialog with household name, primary UAC fields', notes: 'Show the household creation form.' },
+      { step: 9, action: 'Pedro enters: Household Name: "Familia Martínez", Primary Address: his CAR address', screen: 'Form fields populated, Create button enabled', notes: 'Point out automatic linking to CAR address.' },
+      { step: 10, action: 'Household created. Pedro is automatically set as "Household Head"', screen: 'Household card with Pedro as head, "Add Member" and "Add Dependent" buttons', notes: 'Explain the household head role and permissions.' },
+      { step: 11, action: 'He clicks "Add Member" to add his spouse Carmen', screen: 'AddMemberDialog with person search or email invite', notes: 'Members must have their own accounts to be added.' },
+      { step: 12, action: 'Pedro enters Carmen\'s email for invitation', screen: 'Email invitation form with relationship selector: Spouse', notes: 'Show relationship types: Spouse, Parent, Sibling, etc.' },
+      { step: 13, action: 'Invitation sent. He now clicks "Add Dependent" for children', screen: 'AddDependentDialog with dependent information form', notes: 'Dependents are minors or adults without their own accounts.' },
+      { step: 14, action: 'Pedro adds first child: Name, DOB, Relationship: Son', screen: 'Dependent form with full_name, date_of_birth, relationship_to_guardian', notes: 'Explain dependent types: Minor, Adult Dependent, Elderly Dependent.' },
+      { step: 15, action: 'He adds dependent type: "Minor" and saves', screen: 'Success message, dependent appears in household member list', notes: 'Point out guardian relationship is recorded.' },
+      { step: 16, action: 'Pedro repeats for second child (Daughter)', screen: 'Household now shows 2 dependents, 1 pending member (Carmen)', notes: 'Show the complete household structure.' },
+      { step: 17, action: 'He navigates to "Verification Requests" to request residency verification', screen: 'UserVerificationRequests component with "Request Verification" button', notes: 'Explain residency verification = official proof of residence.' },
+      { step: 18, action: 'Pedro clicks "Request Verification" for his primary address', screen: 'Verification request form with address selector, purpose field', notes: 'Show verification request options.' },
+      { step: 19, action: 'He selects purpose: "Legal Documentation" and submits', screen: 'Request confirmation with reference number', notes: 'Explain the request goes to CAR verification queue.' },
+      { step: 20, action: 'Request status shows: "Pending Verification"', screen: 'Request card with status badge, timeline', notes: 'Demonstrate tracking capability for verification requests.' }
+    ],
+    outcome: [
+      'Pedro has declared his official residence (CAR) linked to verified NAR address',
+      'Household "Familia Martínez" created with 4 members: Pedro (head), Carmen (pending), 2 children (dependents)',
+      'Carmen will receive invitation to join household when she logs in',
+      'Residency verification request submitted for legal purposes',
+      'All family members can be located via household address for government services'
+    ],
+    presenterNotes: 'CAR registration connects citizens to their addresses for government services. Household management enables family grouping with proper roles (head, member, dependent). The verification request system provides official proof of residence for legal, banking, and administrative purposes. Note how privacy controls give citizens power over their data visibility.'
+  },
+  {
+    id: 'passport-delivery-car',
+    title: 'Delivery of Government Passport to Citizen Residence',
+    icon: Truck,
+    context: 'The Immigration Office needs to deliver a newly issued passport to citizen Elena Nguema at her registered CAR address. The delivery agent uses the system to verify the address, navigate to the location, and confirm delivery.',
+    objective: 'Use CAR address data to deliver official government documents to citizen residence',
+    actors: [
+      { role: 'Delivery Agent', name: 'Roberto Obiang', type: 'primary' },
+      { role: 'Citizen/Recipient', name: 'Elena Nguema', type: 'secondary' },
+      { role: 'Immigration Office', name: 'System', type: 'secondary' }
+    ],
+    modules: ['Government Services Portal', 'Address Verification', 'Delivery Tracking', 'Proof of Delivery'],
+    steps: [
+      { step: 1, action: 'Immigration Office creates delivery order with Elena\'s UAC: GQ-BN-MLO-ELEN-0089', screen: 'Delivery order creation interface with UAC field', notes: 'Show how government agencies use UAC for citizen identification.' },
+      { step: 2, action: 'System automatically retrieves CAR address details for the UAC', screen: 'Address details populated: Street, City, Region, GPS coordinates', notes: 'Explain automatic address lookup from CAR registry.' },
+      { step: 3, action: 'Delivery agent Roberto logs in with his government credentials', screen: 'Authentication page, redirect to delivery dashboard', notes: 'Point out role-based access for delivery personnel.' },
+      { step: 4, action: 'Roberto sees today\'s delivery assignments in his queue', screen: 'Delivery queue with pending items, Elena\'s passport at top', notes: 'Show delivery prioritization and scheduling.' },
+      { step: 5, action: 'He clicks on Elena\'s delivery to view full details', screen: 'Delivery detail card: recipient name, UAC, full address, special instructions', notes: 'Demonstrate comprehensive delivery information.' },
+      { step: 6, action: 'Roberto clicks "View Address on Map"', screen: 'Interactive map showing exact location with satellite imagery', notes: 'Show GPS precision for accurate delivery.' },
+      { step: 7, action: 'He clicks "Navigate" to get directions', screen: 'Navigation integration opens (Apple Maps/Google Maps)', notes: 'Demonstrate cross-platform navigation support.' },
+      { step: 8, action: 'Roberto drives to the location following GPS directions', screen: 'Mobile view with ETA countdown', notes: 'Note: Real-time tracking available for supervisors.' },
+      { step: 9, action: 'Upon arrival, he clicks "Arrived at Location"', screen: 'Status update with GPS confirmation', notes: 'System verifies agent is within proximity of address.' },
+      { step: 10, action: 'Roberto verifies the address matches physical location', screen: 'Address confirmation screen with UAC and street details', notes: 'Show visual confirmation step for delivery accuracy.' },
+      { step: 11, action: 'He rings doorbell and Elena answers', screen: 'Recipient verification screen appears', notes: 'Explain identity verification before handover.' },
+      { step: 12, action: 'Roberto asks Elena to verify her identity (National ID shown)', screen: 'ID verification checkbox: "Recipient identity confirmed"', notes: 'Point out security measures for sensitive documents.' },
+      { step: 13, action: 'Elena confirms receipt by signing on the device screen', screen: 'Signature capture pad with "Sign here" prompt', notes: 'Show digital signature capture for proof of delivery.' },
+      { step: 14, action: 'Roberto takes a photo of the delivery (optional)', screen: 'Camera capture with geolocation overlay', notes: 'Explain photo evidence for delivery confirmation.' },
+      { step: 15, action: 'He clicks "Confirm Delivery" to complete', screen: 'Delivery confirmation dialog with summary', notes: 'Show final confirmation step.' },
+      { step: 16, action: 'System records: delivery time, location, recipient signature', screen: 'Success screen: "Delivery completed successfully"', notes: 'Demonstrate complete audit trail.' },
+      { step: 17, action: 'Elena receives SMS/email notification: "Your passport has been delivered"', screen: 'Notification preview showing delivery confirmation', notes: 'Point out automatic citizen notification.' },
+      { step: 18, action: 'Immigration Office sees updated status: "Delivered"', screen: 'Back-office view with delivery status updated, timestamp, signature', notes: 'Show end-to-end tracking visibility for government.' }
+    ],
+    outcome: [
+      'Passport delivered accurately to Elena\'s CAR-registered address',
+      'Complete audit trail: who delivered, when, where, with proof',
+      'Citizen received notification of successful delivery',
+      'Immigration Office has digital proof of delivery with signature',
+      'No failed deliveries due to incorrect address information'
+    ],
+    presenterNotes: 'This scenario demonstrates the real-world value of CAR addresses for government service delivery. The UAC provides a universal identifier that ensures documents reach the correct person at the correct location. Digital signatures and GPS verification create an audit trail that protects both the citizen and the government agency. This workflow eliminates failed deliveries and reduces administrative overhead.'
   },
   {
     id: 'emergency-call',
