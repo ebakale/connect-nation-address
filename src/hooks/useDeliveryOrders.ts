@@ -17,7 +17,20 @@ export const useDeliveryOrders = () => {
     try {
       let query = supabase
         .from('delivery_orders')
-        .select('*')
+        .select(`
+          *,
+          delivery_assignments (
+            id,
+            agent_id,
+            assigned_at,
+            acknowledged_at,
+            started_at,
+            estimated_delivery_time,
+            route_sequence,
+            notes,
+            assigned_by
+          )
+        `)
         .order('created_at', { ascending: false });
       
       if (statusFilter) {
