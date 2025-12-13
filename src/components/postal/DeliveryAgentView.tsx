@@ -12,6 +12,8 @@ import { useAgentDeliveries, AgentDelivery } from '@/hooks/useAgentDeliveries';
 import { DeliveryProofCapture, ProofData } from './DeliveryProofCapture';
 import { DeliveryStatus } from '@/types/postal';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { openNavigation } from '@/lib/NavigationService';
 
 export const DeliveryAgentView = () => {
   const { t } = useTranslation('postal');
@@ -77,10 +79,42 @@ export const DeliveryAgentView = () => {
     setActionLoading(null);
   };
 
-  const handleNavigate = (delivery: AgentDelivery) => {
-    // Open in maps app - simplified for now
+  const handleNavigate = async (delivery: AgentDelivery) => {
     const uac = delivery.order.recipient_address_uac;
-    toast.info(`${t('agent.navigatingTo')} ${uac}`);
+    setActionLoading(`nav-${delivery.order.id}`);
+    
+    try {
+      // Lookup address coordinates from UAC
+      const { data: address, error } = await supabase
+        .from('addresses')
+        .select('latitude, longitude, street, city')
+        .eq('uac', uac)
+        .single();
+      
+      if (error || !address?.latitude || !address?.longitude) {
+        toast.error(t('agent.addressNotFound'));
+        setActionLoading(null);
+        return;
+      }
+      
+      // Open native maps app
+      const label = `${address.street}, ${address.city}`;
+      const success = await openNavigation({
+        latitude: Number(address.latitude),
+        longitude: Number(address.longitude),
+        label
+      });
+      
+      if (success) {
+        toast.info(`${t('agent.navigatingTo')} ${uac}`);
+      } else {
+        toast.error(t('agent.navigationFailed'));
+      }
+    } catch (err) {
+      toast.error(t('agent.navigationFailed'));
+    }
+    
+    setActionLoading(null);
   };
 
   const getPriorityBadge = (priority: number) => {
@@ -229,9 +263,14 @@ export const DeliveryAgentView = () => {
                           size="sm" 
                           variant="outline"
                           onClick={() => handleNavigate(delivery)}
+                          disabled={actionLoading === `nav-${delivery.order.id}`}
                           className="min-w-[44px]"
                         >
-                          <Navigation className="h-4 w-4" />
+                          {actionLoading === `nav-${delivery.order.id}` ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Navigation className="h-4 w-4" />
+                          )}
                         </Button>
                         <Button 
                           size="sm"

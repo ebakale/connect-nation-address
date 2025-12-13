@@ -211,6 +211,8 @@
     "deliveryStarted": "Entrega iniciada",
     "markedFailed": "Marcada como fallida",
     "navigatingTo": "Navegando a",
+    "addressNotFound": "Coordenadas de dirección no encontradas",
+    "navigationFailed": "Error al abrir navegación",
     "available": "Disponible",
     "busy": "Ocupado",
     "offline": "Desconectado"
