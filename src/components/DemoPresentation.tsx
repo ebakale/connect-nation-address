@@ -18,7 +18,12 @@ import {
   Clock,
   UserCheck,
   Navigation,
-  Download
+  Download,
+  Radio,
+  Camera,
+  Bell,
+  FileText,
+  Volume2
 } from 'lucide-react';
 import { toast } from 'sonner';
 import PptxGenJS from 'pptxgenjs';
@@ -54,7 +59,9 @@ const demoScenarios: DemoScenario[] = [
       'Acceso desde cualquier dispositivo sin autenticación',
       'Interfaz optimizada para búsquedas rápidas',
       'Coordinadas aproximadas para direcciones privadas',
-      'Información completa para direcciones con UAC exacto'
+      'Información completa para direcciones con UAC exacto',
+      'Directorio de negocios integrado (comerciales auto-publicadas)',
+      'Mapas de respaldo con OpenStreetMap cuando Google Maps no disponible'
     ],
     workflow: [
       'Acceso directo al portal público sin autenticación',
@@ -70,7 +77,8 @@ const demoScenarios: DemoScenario[] = [
       'Búsqueda eficiente sin barreras de entrada',
       'Información confiable del registro oficial',
       'Interfaz intuitiva para usuarios no técnicos',
-      'Disponibilidad 24/7 sin restricciones'
+      'Disponibilidad 24/7 sin restricciones',
+      'Auto-publicación de direcciones comerciales verificadas'
     ],
     icon: <Search className="h-6 w-6" />,
     color: 'bg-blue-500'
@@ -79,19 +87,22 @@ const demoScenarios: DemoScenario[] = [
     id: 'police-integrated',
     title: 'Portal Policial Integrado',
     actor: 'Personal Policial (Operadores, Despachadores, Supervisores, Administradores)',
-    description: 'Sistema unificado de gestión policial que integra operaciones, emergencias y administración según rol',
+    description: 'Sistema unificado de gestión policial que integra operaciones, emergencias, comunicaciones en tiempo real, y administración según rol con características avanzadas de respaldo y evidencia',
     features: [
       'Recepción automática de alertas ciudadanas con geolocalización',
       'Mapa unificado de incidentes activos por jurisdicción',
       'Sistema de despacho inteligente con asignación automática',
-      'Comunicaciones bidireccionales entre unidades y central',
+      'Comunicaciones bidireccionales en hilos con notificaciones sonoras por prioridad',
       'Gestión de estado de oficiales y unidades en tiempo real',
-      'Sistema de respaldo coordinado entre unidades',
-      'Panel administrativo para gestión de personal (Supervisores/Admin)',
-      'Analíticas de rendimiento y tiempos de respuesta',
-      'Dashboard de liderazgo para coordinación territorial',
-      'Sistema de notificaciones automáticas a reporteros',
-      'Logs completos de incidentes con auditoría',
+      'Botón "OFFICER DOWN" para emergencias críticas con difusión inmediata a TODO el personal',
+      'Sistema de respaldo escalonado: Supervisores aprueban, Despachadores coordinan',
+      'Reconocimiento obligatorio de respaldo (recibido, en-route, on-scene, all-clear)',
+      'Diálogo completo de solicitud de recursos (tipo, urgencia, cantidad, ubicación)',
+      'Captura de evidencia fotográfica en escena con geolocalización GPS',
+      'Navegación integrada a escenas de incidentes (iOS/Android/Web)',
+      'Panel de Logs de Auditoría completo para transparencia operativa',
+      'Configuración persistente del sistema con almacenamiento en base de datos',
+      'Analíticas en tiempo real con rangos de fecha personalizables',
       'Encriptación de datos sensibles para seguridad operativa',
       'Sesiones operativas con control de turnos',
       'Difusión de alertas masivas para emergencias'
@@ -100,25 +111,31 @@ const demoScenarios: DemoScenario[] = [
       'Autenticación con credenciales policiales',
       'Inicialización de sesión operativa según rol',
       'Dashboard personalizado (Operador/Despachador/Supervisor/Admin)',
-      'Recepción automática de alerta ciudadana',
+      'Recepción automática de alerta ciudadana con notificación sonora',
       'Procesamiento y clasificación de emergencia',
       'Asignación inteligente a unidad más cercana',
-      'Comunicación directa con unidades en campo',
-      'Monitoreo de progreso en tiempo real',
-      'Solicitud/gestión de respaldo si necesario',
+      'Comunicación en hilos con unidades en campo (Bandeja/Enviados/Historial)',
+      'Monitoreo de progreso en tiempo real con GPS',
+      'Solicitud de respaldo con aprobación escalonada (Supervisor aprueba)',
+      'Activación de "OFFICER DOWN" para emergencias críticas',
+      'Reconocimiento obligatorio de respaldo por despachadores y unidades',
+      'Captura de evidencia fotográfica georreferenciada en escena',
+      'Navegación integrada a ubicación del incidente',
       'Actualización de estado hasta resolución',
-      'Cierre con documentación completa',
-      'Análisis post-incidente para mejoras'
+      'Cierre con documentación completa y evidencia',
+      'Análisis post-incidente con logs de auditoría'
     ],
     benefits: [
       'Respuesta unificada y coordinada a emergencias',
       'Eliminación de duplicación entre sistemas',
-      'Comunicación mejorada entre todos los niveles',
+      'Comunicación mejorada en hilos con alertas sonoras por prioridad',
       'Asignación optimizada de recursos según ubicación',
-      'Trazabilidad completa de operaciones policiales',
+      'Trazabilidad completa de operaciones con auditoría',
       'Reducción significativa en tiempos de respuesta',
       'Gestión eficiente de múltiples incidentes simultáneos',
-      'Transparencia operativa con supervisión jerárquica'
+      'Transparencia operativa con supervisión jerárquica',
+      'Captura de evidencia integrada para documentación legal',
+      'Navegación directa a escenas desde cualquier dispositivo'
     ],
     icon: <Shield className="h-6 w-6" />,
     color: 'bg-red-500'
@@ -127,14 +144,14 @@ const demoScenarios: DemoScenario[] = [
     id: 'nar-portal',
     title: 'Portal NAR Unificado',
     actor: 'Registradores y Verificadores NAR',
-    description: 'Sistema consolidado del Registro Nacional que unifica verificación y publicación territorial',
+    description: 'Sistema consolidado del Registro Nacional que unifica verificación y publicación territorial con auto-publicación de direcciones comerciales',
     features: [
       'Cola integrada de solicitudes pendientes de verificación',
       'Herramientas avanzadas de verificación geoespacial',
       'Panel unificado de aprobación/rechazo con justificación',
       'Sistema automático de detección de duplicados',
       'Dashboard territorial con métricas por provincia/municipio',
-      'Cola de publicación masiva de direcciones verificadas',
+      'Auto-publicación automática de direcciones comerciales verificadas',
       'Cola de despublicación para direcciones obsoletas',
       'Analíticas de cobertura geográfica del territorio',
       'Reportes de calidad de datos por región',
@@ -142,7 +159,8 @@ const demoScenarios: DemoScenario[] = [
       'Herramientas de análisis de calidad fotográfica',
       'Sistema de verificación por lotes para eficiencia',
       'Gestión de alcance geográfico por registrador',
-      'Monitoreo de métricas de rendimiento diario'
+      'Monitoreo de métricas de rendimiento diario',
+      'Flujo unificado para NAR, CAR y Business en un solo wizard'
     ],
     workflow: [
       'Autenticación según rol (Verificador/Registrador)',
@@ -152,7 +170,7 @@ const demoScenarios: DemoScenario[] = [
       'Verificación de fotografías y coordenadas',
       'Detección automática de duplicados',
       'Decisión de aprobación/rechazo con documentación',
-      'Publicación coordinada de direcciones verificadas',
+      'Auto-publicación automática según tipo de dirección',
       'Gestión de direcciones ya publicadas',
       'Análisis de cobertura y calidad territorial',
       'Generación de reportes de rendimiento'
@@ -160,7 +178,7 @@ const demoScenarios: DemoScenario[] = [
     benefits: [
       'Flujo unificado de verificación a publicación',
       'Control de calidad garantizado en registro nacional',
-      'Eliminación de redundancias entre verificadores y registradores',
+      'Eliminación de pasos manuales para direcciones comerciales',
       'Gestión territorial eficiente y coordinada',
       'Proceso estandarizado con trazabilidad completa',
       'Optimización de recursos por área geográfica'
@@ -172,7 +190,7 @@ const demoScenarios: DemoScenario[] = [
     id: 'field-agent',
     title: 'App de Campo Móvil',
     actor: 'Agentes de Campo',
-    description: 'Aplicación móvil especializada para captura y verificación in-situ con capacidades offline',
+    description: 'Aplicación móvil especializada para captura y verificación in-situ con capacidades offline y flujo de aprobación integrado',
     features: [
       'Captura GPS automática de alta precisión',
       'Fotografía georreferenciada con metadatos completos',
@@ -187,18 +205,21 @@ const demoScenarios: DemoScenario[] = [
       'Indicadores de estado de red y progreso de sincronización',
       'Optimización para dispositivos móviles y tablets',
       'Captura de cámara nativa con permisos automáticos',
-      'Almacenamiento local seguro para trabajo remoto'
+      'Almacenamiento local seguro para trabajo remoto',
+      'Envío a cola de aprobación NAR (no creación directa)',
+      'Filtrado por alcance geográfico asignado'
     ],
     workflow: [
       'Autenticación en dispositivo móvil',
       'Activación de modo campo con permisos de ubicación',
-      'Navegación al área de trabajo asignada',
+      'Navegación al área de trabajo asignada (según scope)',
       'Uso del mapa offline para ubicar direcciones objetivo',
       'Captura automática de coordenadas GPS precisas',
       'Toma de fotografías georreferenciadas',
       'Escaneo QR para verificación de direcciones existentes',
       'Almacenamiento local cuando no hay conectividad',
       'Validación automática de calidad antes del envío',
+      'Envío a cola de aprobación NAR para revisión',
       'Sincronización automática al recuperar conectividad',
       'Confirmación de envío exitoso al sistema central'
     ],
@@ -208,7 +229,8 @@ const demoScenarios: DemoScenario[] = [
       'Verificación fotográfica con geolocalización exacta',
       'Reducción de errores por validación automática',
       'Flexibilidad operativa en áreas sin cobertura',
-      'Integración seamless con sistema central'
+      'Integración seamless con sistema central',
+      'Flujo de aprobación que mantiene control de calidad'
     ],
     icon: <Navigation className="h-6 w-6" />,
     color: 'bg-orange-500'
@@ -217,7 +239,7 @@ const demoScenarios: DemoScenario[] = [
     id: 'car-portal',
     title: 'Portal CAR - Direcciones Personales',
     actor: 'Ciudadanos y Verificadores CAR',
-    description: 'Sistema especializado para gestión de direcciones personales ciudadanas con verificación de residencia',
+    description: 'Sistema especializado para gestión de direcciones personales ciudadanas con verificación de residencia y verificadores con dominio configurable',
     features: [
       'Creación automática de registro personal al autenticarse',
       'Gestión de direcciones primarias y secundarias personales',
@@ -225,15 +247,17 @@ const demoScenarios: DemoScenario[] = [
       'Control de vigencia temporal con fechas efectivas',
       'Verificación automática con direcciones NAR existentes',
       'Sistema de verificación de residencia con documentos legales',
-      'Cola de revisión manual para verificadores CAR especializados',
+      'Verificador unificado con dominio configurable (NAR/CAR/ambos)',
       'Seguimiento de estado: autodeclarado/confirmado/rechazado',
       'Auditoría completa de eventos y cambios personales',
       'Historial detallado de direcciones por ciudadano',
       'Gestión de consentimientos de privacidad',
       'Integración con marco legal de cumplimiento',
-      'Permisos granulares para verificadores CAR',
-      'Sistema de detección y fusión de duplicados de persona',
-      'Métricas de calidad específicas del registro ciudadano'
+      'Directorio de verificadores (solo lectura para CAR Admin)',
+      'Flujo "Solicitar Verificador" a Admin del Sistema',
+      'Analíticas de privacidad (solo lectura para CAR Admin)',
+      'Métricas de calidad específicas del registro ciudadano',
+      'Gestión de hogares y dependientes'
     ],
     workflow: [
       'Autenticación ciudadana y creación automática de registro',
@@ -241,7 +265,7 @@ const demoScenarios: DemoScenario[] = [
       'Especificación de tipo de ocupación y alcance (edificio/unidad)',
       'Validación automática si UAC existe en NAR verificado',
       'Envío a cola de revisión manual si UAC no verificado',
-      'Verificación por car_verifier con documentos de residencia',
+      'Verificación por verificador con dominio CAR asignado',
       'Proceso de verificación legal con documentos de propiedad',
       'Aprobación/rechazo con justificación documentada',
       'Notificación automática al ciudadano del resultado',
@@ -257,7 +281,7 @@ const demoScenarios: DemoScenario[] = [
       'Cumplimiento legal con documentación requerida',
       'Control de privacidad y consentimientos',
       'Auditoría completa para transparencia ciudadana',
-      'Gestión eficiente de verificadores especializados'
+      'Gestión eficiente de verificadores con dominio flexible'
     ],
     icon: <Users className="h-6 w-6" />,
     color: 'bg-indigo-500'
@@ -396,7 +420,7 @@ export const DemoPresentation: React.FC = () => {
         bold: true
       });
 
-      techSlide.addText("• 99.9% Precisión GPS\n• <30s Tiempo de Respuesta\n• 24/7 Disponibilidad\n• 100% Trabajo Offline", {
+      techSlide.addText("• 99.9% Precisión GPS\n• <30s Tiempo de Respuesta\n• 24/7 Disponibilidad\n• 100% Trabajo Offline\n• Mensajería en Hilos\n• Alertas Sonoras por Prioridad\n• Captura de Evidencia GPS\n• Navegación Multiplataforma", {
         x: 0.5,
         y: 1.5,
         w: 9,
@@ -436,7 +460,7 @@ export const DemoPresentation: React.FC = () => {
         </div>
 
         {/* Scenario Selection */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {demoScenarios.map((scenario) => (
             <Card 
               key={scenario.id}
@@ -661,7 +685,7 @@ export const DemoPresentation: React.FC = () => {
                       </div>
                       <div>
                         <span className="text-xs font-medium text-green-600">Permisos:</span>
-                        <p className="text-xs">Gestión de usuarios, Configuración del sistema, Analíticas globales</p>
+                        <p className="text-xs">Gestión de usuarios/roles, Configuración del sistema, Analíticas globales, Creación de verificadores con dominio</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -686,14 +710,14 @@ export const DemoPresentation: React.FC = () => {
                       <CardTitle className="text-base">Administrador CAR (car_admin)</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
-                      <p className="text-sm text-muted-foreground">Administrador del Registro Ciudadano de Direcciones</p>
+                      <p className="text-sm text-muted-foreground">Administrador del Registro Ciudadano de Direcciones (sin gestión de roles)</p>
                       <div>
                         <span className="text-xs font-medium text-blue-600">Portales:</span>
                         <p className="text-xs">Portal CAR administrativo, Dashboard de calidad CAR</p>
                       </div>
                       <div>
                         <span className="text-xs font-medium text-green-600">Permisos:</span>
-                        <p className="text-xs">Gestión de verificadores CAR, Métricas de calidad, Políticas de residencia</p>
+                        <p className="text-xs">Gestión de personas, Métricas de calidad, Directorio de verificadores (solo lectura), "Solicitar Verificador", Analíticas de privacidad, Gestión de hogares</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -706,7 +730,10 @@ export const DemoPresentation: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Card className="border-red-200">
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-base">Administrador Policial (police_admin)</CardTitle>
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Shield className="h-4 w-4" />
+                        Administrador Policial (police_admin)
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
                       <p className="text-sm text-muted-foreground">Administración completa del sistema policial</p>
@@ -714,41 +741,66 @@ export const DemoPresentation: React.FC = () => {
                         <span className="text-xs font-medium text-blue-600">Portales:</span>
                         <p className="text-xs">Dashboard policial completo, Central de emergencias, Administración de unidades</p>
                       </div>
+                      <div>
+                        <span className="text-xs font-medium text-green-600">Nuevas Funciones:</span>
+                        <p className="text-xs">Logs de auditoría del sistema, Configuración persistente, Analíticas en tiempo real con rangos de fecha, Gestión de roles policiales</p>
+                      </div>
                     </CardContent>
                   </Card>
                   <Card className="border-red-200">
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-base">Supervisor Policial (police_supervisor)</CardTitle>
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <UserCheck className="h-4 w-4" />
+                        Supervisor Policial (police_supervisor)
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
-                      <p className="text-sm text-muted-foreground">Supervisión de operaciones policiales</p>
+                      <p className="text-sm text-muted-foreground">Supervisión de operaciones policiales con autoridad de aprobación</p>
                       <div>
                         <span className="text-xs font-medium text-blue-600">Portales:</span>
                         <p className="text-xs">Dashboard policial, Central de emergencias, Dashboard de liderazgo</p>
                       </div>
-                    </CardContent>
-                  </Card>
-                  <Card className="border-red-200">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-base">Despachador Policial (police_dispatcher)</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <p className="text-sm text-muted-foreground">Despacho y coordinación de unidades</p>
                       <div>
-                        <span className="text-xs font-medium text-blue-600">Portales:</span>
-                        <p className="text-xs">Central de emergencias, Sistema de comunicaciones</p>
+                        <span className="text-xs font-medium text-green-600">Nuevas Funciones:</span>
+                        <p className="text-xs">Aprobación/denegación de respaldo, Revisión de evidencia capturada, Gestión de unidades con métricas, Modificación de prioridad de incidentes</p>
                       </div>
                     </CardContent>
                   </Card>
                   <Card className="border-red-200">
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-base">Operador Policial (police_operator)</CardTitle>
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Radio className="h-4 w-4" />
+                        Despachador Policial (police_dispatcher)
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
-                      <p className="text-sm text-muted-foreground">Operaciones básicas policiales</p>
+                      <p className="text-sm text-muted-foreground">Despacho y coordinación de unidades (sin autoridad de aprobación)</p>
                       <div>
                         <span className="text-xs font-medium text-blue-600">Portales:</span>
-                        <p className="text-xs">Dashboard policial básico, Recepción de incidentes</p>
+                        <p className="text-xs">Central de emergencias, Sistema de comunicaciones</p>
+                      </div>
+                      <div>
+                        <span className="text-xs font-medium text-green-600">Nuevas Funciones:</span>
+                        <p className="text-xs">Comunicaciones en hilos (Bandeja/Enviados/Historial), Notificaciones sonoras por prioridad, Coordinación de respaldo (sin aprobación), Escalamiento a supervisores, Reconocimiento de respaldo</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-red-200">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <AlertTriangle className="h-4 w-4" />
+                        Operador Policial (police_operator)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">Operaciones en campo con herramientas avanzadas</p>
+                      <div>
+                        <span className="text-xs font-medium text-blue-600">Portales:</span>
+                        <p className="text-xs">Dashboard de campo, Recepción de incidentes</p>
+                      </div>
+                      <div>
+                        <span className="text-xs font-medium text-green-600">Nuevas Funciones:</span>
+                        <p className="text-xs">Botón "OFFICER DOWN" para emergencias críticas, Solicitud de respaldo completa (tipo, urgencia, ubicación, médico), Solicitud de recursos detallada, Captura de evidencia con GPS, Navegación integrada (iOS/Android/Web), Seguimiento de reconocimiento de respaldo</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -771,23 +823,23 @@ export const DemoPresentation: React.FC = () => {
                       </div>
                       <div>
                         <span className="text-xs font-medium text-green-600">Permisos:</span>
-                        <p className="text-xs">Publicación de direcciones, Gestión territorial, Analíticas de cobertura</p>
+                        <p className="text-xs">Publicación de direcciones, Gestión territorial, Analíticas de cobertura, Auto-publicación de comerciales</p>
                       </div>
                     </CardContent>
                   </Card>
                   <Card className="border-green-200">
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-base">Verificador NAR (verifier)</CardTitle>
+                      <CardTitle className="text-base">Verificador Unificado (verifier)</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
-                      <p className="text-sm text-muted-foreground">Verificación de solicitudes del registro nacional</p>
+                      <p className="text-sm text-muted-foreground">Verificador con dominio configurable (NAR/CAR/ambos)</p>
                       <div>
                         <span className="text-xs font-medium text-blue-600">Portal:</span>
-                        <p className="text-xs">Dashboard de verificación NAR</p>
+                        <p className="text-xs">Dashboard de verificación según dominio asignado</p>
                       </div>
                       <div>
-                        <span className="text-xs font-medium text-green-600">Permisos:</span>
-                        <p className="text-xs">Validación geoespacial, Aprobación/rechazo, Control de calidad</p>
+                        <span className="text-xs font-medium text-green-600">Permisos (según dominio):</span>
+                        <p className="text-xs">NAR: Validación geoespacial, Aprobación/rechazo. CAR: Verificación de residencia, Validación de documentos. Ambos: Todos los permisos</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -796,69 +848,14 @@ export const DemoPresentation: React.FC = () => {
                       <CardTitle className="text-base">Agente de Campo (field_agent)</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
-                      <p className="text-sm text-muted-foreground">Captura de datos en terreno</p>
+                      <p className="text-sm text-muted-foreground">Captura de datos en terreno con flujo de aprobación</p>
                       <div>
                         <span className="text-xs font-medium text-blue-600">Portal:</span>
                         <p className="text-xs">App de campo móvil</p>
                       </div>
                       <div>
                         <span className="text-xs font-medium text-green-600">Permisos:</span>
-                        <p className="text-xs">Captura GPS, Fotografía georreferenciada, Trabajo offline</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-
-              {/* Roles CAR */}
-              <div>
-                <h3 className="text-lg font-semibold mb-3 text-indigo-600">Roles CAR (Registro Ciudadano)</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card className="border-indigo-200">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-base">Verificador CAR (car_verifier)</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <p className="text-sm text-muted-foreground">Verificación especializada de direcciones ciudadanas</p>
-                      <div>
-                        <span className="text-xs font-medium text-blue-600">Portal:</span>
-                        <p className="text-xs">Dashboard CAR especializado</p>
-                      </div>
-                      <div>
-                        <span className="text-xs font-medium text-green-600">Permisos:</span>
-                        <p className="text-xs">Revisión de direcciones ciudadanas, Verificación de residencia, Gestión de estatus</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  <Card className="border-indigo-200">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-base">Verificador de Residencia (residency_verifier)</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <p className="text-sm text-muted-foreground">Verificación de documentos de residencia y propiedad</p>
-                      <div>
-                        <span className="text-xs font-medium text-blue-600">Portal:</span>
-                        <p className="text-xs">Portal de verificación de residencia</p>
-                      </div>
-                      <div>
-                        <span className="text-xs font-medium text-green-600">Permisos:</span>
-                        <p className="text-xs">Validación de documentos, Verificación legal, Consentimientos de privacidad</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  <Card className="border-indigo-200">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-base">Administrador CAR (car_admin)</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <p className="text-sm text-muted-foreground">Gestión completa del módulo CAR</p>
-                      <div>
-                        <span className="text-xs font-medium text-blue-600">Portal:</span>
-                        <p className="text-xs">Dashboard administrativo CAR</p>
-                      </div>
-                      <div>
-                        <span className="text-xs font-medium text-green-600">Permisos:</span>
-                        <p className="text-xs">Gestión de permisos, Métricas de calidad, Fusión de duplicados</p>
+                        <p className="text-xs">Captura GPS, Fotografía georreferenciada, Trabajo offline, Envío a cola de aprobación (no creación directa), Filtrado por scope</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -881,7 +878,7 @@ export const DemoPresentation: React.FC = () => {
                       </div>
                       <div>
                         <span className="text-xs font-medium text-green-600">Permisos:</span>
-                        <p className="text-xs">Búsqueda de direcciones, Solicitudes personales, Reporte de emergencias</p>
+                        <p className="text-xs">Búsqueda de direcciones, Solicitudes personales, Reporte de emergencias, Flujo unificado de direcciones (NAR/CAR/Business), Gestión de hogares y dependientes</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -952,18 +949,23 @@ export const DemoPresentation: React.FC = () => {
                   <Badge variant="secondary" className="p-3 justify-center">Geolocalización GPS</Badge>
                   <Badge variant="secondary" className="p-3 justify-center">Mapas Interactivos</Badge>
                   <Badge variant="secondary" className="p-3 justify-center">Códigos QR/UAC</Badge>
-                  <Badge variant="secondary" className="p-3 justify-center">Comunicaciones</Badge>
+                  <Badge variant="secondary" className="p-3 justify-center">Comunicaciones en Hilos</Badge>
+                  <Badge variant="secondary" className="p-3 justify-center">Alertas Sonoras</Badge>
+                  <Badge variant="secondary" className="p-3 justify-center">Captura de Evidencia</Badge>
+                  <Badge variant="secondary" className="p-3 justify-center">Navegación GPS</Badge>
+                  <Badge variant="secondary" className="p-3 justify-center">Respaldo Escalonado</Badge>
                   <Badge variant="secondary" className="p-3 justify-center">Analíticas</Badge>
-                  <Badge variant="secondary" className="p-3 justify-center">Reportes</Badge>
+                  <Badge variant="secondary" className="p-3 justify-center">Logs de Auditoría</Badge>
                   <Badge variant="secondary" className="p-3 justify-center">Trabajo Offline</Badge>
-                  <Badge variant="secondary" className="p-3 justify-center">Sincronización</Badge>
+                  <Badge variant="secondary" className="p-3 justify-center">OpenStreetMap Fallback</Badge>
                 </div>
               </TabsContent>
               
               <TabsContent value="integration" className="space-y-4">
                 <p className="text-muted-foreground">
                   El sistema se integra con servicios existentes de gobierno, sistemas de emergencia, 
-                  y plataformas de mapas para proporcionar una solución completa de gestión de direcciones.
+                  y plataformas de mapas (Google Maps con fallback a OpenStreetMap) para proporcionar una solución completa de gestión de direcciones.
+                  Incluye integración con aplicaciones de navegación nativas (Apple Maps, Google Maps) para enrutamiento en campo.
                 </p>
               </TabsContent>
               
@@ -984,6 +986,22 @@ export const DemoPresentation: React.FC = () => {
                   <div className="text-center p-4 border rounded-lg">
                     <div className="text-2xl font-bold text-primary">100%</div>
                     <div className="text-sm text-muted-foreground">Trabajo Offline</div>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <div className="text-2xl font-bold text-primary">&lt;2min</div>
+                    <div className="text-sm text-muted-foreground">Respaldo Ackn.</div>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <div className="text-2xl font-bold text-primary">100%</div>
+                    <div className="text-sm text-muted-foreground">Auditoría</div>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <div className="text-2xl font-bold text-primary">3</div>
+                    <div className="text-sm text-muted-foreground">Idiomas</div>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <div className="text-2xl font-bold text-primary">Auto</div>
+                    <div className="text-sm text-muted-foreground">Publicación Comercial</div>
                   </div>
                 </div>
               </TabsContent>
