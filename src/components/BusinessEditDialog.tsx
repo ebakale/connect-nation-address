@@ -172,7 +172,7 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
             </div>
 
             <div>
-              <Label htmlFor="business_status">{t('business:dashboard.status')}</Label>
+              <Label htmlFor="business_status">{t('business:dashboard.businessStatus')}</Label>
               <Select value={formData.business_status} onValueChange={(value) => setFormData({ ...formData, business_status: value })}>
                 <SelectTrigger>
                   <SelectValue />
@@ -191,7 +191,7 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
             <h3 className="font-semibold">{t('business:registration.contactInformation')}</h3>
             
             <div>
-              <Label htmlFor="primary_contact_name">{t('business:registration.contactName')}</Label>
+              <Label htmlFor="primary_contact_name">{t('business:registration.primaryContact')}</Label>
               <Input
                 id="primary_contact_name"
                 value={formData.primary_contact_name}
@@ -201,7 +201,7 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="primary_contact_phone">{t('business:registration.phone')}</Label>
+                <Label htmlFor="primary_contact_phone">{t('business:registration.primaryPhone')}</Label>
                 <Input
                   id="primary_contact_phone"
                   type="tel"
@@ -222,7 +222,7 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
             </div>
 
             <div>
-              <Label htmlFor="primary_contact_email">{t('business:registration.email')}</Label>
+              <Label htmlFor="primary_contact_email">{t('business:registration.primaryEmail')}</Label>
               <Input
                 id="primary_contact_email"
                 type="email"
@@ -380,11 +380,11 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSuccess }: 
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
-              {t('common:cancel')}
+              {t('common:buttons.cancel')}
             </Button>
             <Button type="submit" disabled={loading}>
               {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              {t('common:saveChanges')}
+              {t('common:buttons.saveChanges')}
             </Button>
           </DialogFooter>
         </form>
