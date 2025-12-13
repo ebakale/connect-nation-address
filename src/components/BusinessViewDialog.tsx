@@ -1,9 +1,14 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { MapPin, Phone, Mail, Globe, Users, Clock, Building2, CheckCircle, XCircle, Calendar } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MapPin, Phone, Mail, Globe, Users, Clock, Building2, CheckCircle, XCircle, Calendar, Navigation } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Database } from "@/integrations/supabase/types";
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { OSM_CONFIG, createMarkerIcon } from '@/lib/osmConfig';
 
 type OrganizationAddress = Database["public"]["Tables"]["organization_addresses"]["Row"] & {
   addresses?: {
@@ -26,9 +31,36 @@ interface BusinessViewDialogProps {
 }
 
 export function BusinessViewDialog({ business, open, onOpenChange }: BusinessViewDialogProps) {
-  const { t } = useTranslation(['business', 'common']);
+  const { t } = useTranslation(['business', 'common', 'address']);
 
   if (!business) return null;
+
+  const hasCoordinates = business.addresses?.latitude && business.addresses?.longitude;
+
+  const handleGetDirections = () => {
+    if (!hasCoordinates) return;
+    const { latitude, longitude } = business.addresses!;
+    const label = encodeURIComponent(business.organization_name || 'Business Location');
+    
+    // Try to open in native maps app, fallback to Google Maps
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isAndroid = /Android/.test(navigator.userAgent);
+    
+    if (isIOS) {
+      window.open(`maps://maps.apple.com/?daddr=${latitude},${longitude}&q=${label}`, '_blank');
+    } else if (isAndroid) {
+      window.open(`geo:${latitude},${longitude}?q=${latitude},${longitude}(${label})`, '_blank');
+    } else {
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`, '_blank');
+    }
+  };
+
+  const businessMarkerIcon = L.icon({
+    iconUrl: createMarkerIcon(OSM_CONFIG.markerColors.business),
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -30],
+  });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -66,12 +98,58 @@ export function BusinessViewDialog({ business, open, onOpenChange }: BusinessVie
 
           <Separator />
 
+          {/* Map Section */}
+          {hasCoordinates && (
+            <>
+              <div className="space-y-3">
+                <h3 className="font-semibold flex items-center gap-2">
+                  <MapPin className="h-5 w-5" />
+                  {t('business:registration.locationDetails')}
+                </h3>
+                <div className="h-48 rounded-lg overflow-hidden border">
+                  <MapContainer
+                    center={[business.addresses!.latitude, business.addresses!.longitude]}
+                    zoom={16}
+                    scrollWheelZoom={false}
+                    className="h-full w-full"
+                  >
+                    <TileLayer
+                      attribution={OSM_CONFIG.attribution}
+                      url={OSM_CONFIG.tileLayer}
+                    />
+                    <Marker
+                      position={[business.addresses!.latitude, business.addresses!.longitude]}
+                      icon={businessMarkerIcon}
+                    >
+                      <Popup>
+                        <div className="text-sm">
+                          <strong>{business.organization_name}</strong>
+                          <br />
+                          {business.addresses!.street}, {business.addresses!.city}
+                        </div>
+                      </Popup>
+                    </Marker>
+                  </MapContainer>
+                </div>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={handleGetDirections}
+                >
+                  <Navigation className="h-4 w-4 mr-2" />
+                  {t('common:getDirections')}
+                </Button>
+              </div>
+              <Separator />
+            </>
+          )}
+
           {/* Address Information */}
           {business.addresses && (
             <div>
               <h3 className="font-semibold mb-3 flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
-                {t('business:registration.locationDetails')}
+                <Building2 className="h-5 w-5" />
+                {t('address:addressDetails')}
               </h3>
               <div className="space-y-2 text-sm pl-7">
                 <div>

@@ -45,7 +45,8 @@
     "enable": "Habilitar",
     "hide": "Ocultar",
     "details": "Detalles",
-    "add": "Agregar"
+    "add": "Agregar",
+    "getDirections": "Obtener Direcciones"
   },
   "yes": "Sí",
   "no": "No",

@@ -45,7 +45,8 @@
     "enable": "Activer",
     "hide": "Masquer",
     "details": "Détails",
-    "add": "Ajouter"
+    "add": "Ajouter",
+    "getDirections": "Obtenir l'Itinéraire"
   },
   "yes": "Oui",
   "no": "Non",
