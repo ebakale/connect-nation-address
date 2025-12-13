@@ -194,16 +194,16 @@ const scenarios: DemoScenario[] = [
   },
   {
     id: 'passport-delivery-car',
-    title: 'Delivery of Government Passport to Citizen Residence',
+    title: 'Government Postal Delivery to Citizen Residence',
     icon: Truck,
-    context: 'The Immigration Office needs to deliver a newly issued passport to citizen Elena Nguema at her registered CAR address. The delivery agent uses the system to verify the address, navigate to the location, and confirm delivery.',
-    objective: 'Use CAR address data to deliver official government documents to citizen residence',
+    context: 'The Immigration Office needs to deliver a newly issued passport to citizen Elena Nguema at her registered CAR address. The postal delivery agent uses the ConEG Postal Module to verify the address, navigate to the location, and confirm delivery with proof.',
+    objective: 'Use the Postal Delivery Module with CAR address data to deliver official government documents',
     actors: [
-      { role: 'Delivery Agent', name: 'Roberto Obiang', type: 'primary' },
+      { role: 'Postal Delivery Agent', name: 'Roberto Obiang', type: 'primary' },
       { role: 'Citizen/Recipient', name: 'Elena Nguema', type: 'secondary' },
       { role: 'Immigration Office', name: 'System', type: 'secondary' }
     ],
-    modules: ['Government Services Portal', 'Address Verification', 'Delivery Tracking', 'Proof of Delivery'],
+    modules: ['Postal Portal', 'Address Verification', 'Delivery Tracking', 'Proof of Delivery'],
     steps: [
       { step: 1, action: 'Immigration Office creates delivery order with Elena\'s UAC: GQ-BN-MLO-ELEN-0089', screen: 'Delivery order creation interface with UAC field', notes: 'Show how government agencies use UAC for citizen identification.' },
       { step: 2, action: 'System automatically retrieves CAR address details for the UAC', screen: 'Address details populated: Street, City, Region, GPS coordinates', notes: 'Explain automatic address lookup from CAR registry.' },

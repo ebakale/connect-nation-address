@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ProcessFlowDiagramPDF from '@/components/ProcessFlowDiagramPDF';
 import ProcessFlowDiagramPDFEnglish from '@/components/ProcessFlowDiagramPDFEnglish';
-import { FileText, BookOpen, Workflow } from 'lucide-react';
+import { FileText, BookOpen, Workflow, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { FieldAgentGuide } from '@/components/guides/FieldAgentGuide';
 import { VerifierGuide } from '@/components/guides/VerifierGuide';
@@ -16,6 +16,10 @@ import { PoliceAdminGuide } from '@/components/guides/PoliceAdminGuide';
 import { CARAdminGuide } from '@/components/guides/CARAdminGuide';
 import { NDAAdminGuide } from '@/components/guides/NDAAdminGuide';
 import { SystemAdminGuide } from '@/components/guides/SystemAdminGuide';
+import { PostalClerkGuide } from '@/components/guides/PostalClerkGuide';
+import { PostalDispatcherGuide } from '@/components/guides/PostalDispatcherGuide';
+import { PostalAgentGuide } from '@/components/guides/PostalAgentGuide';
+import { PostalSupervisorGuide } from '@/components/guides/PostalSupervisorGuide';
 
 
 const Documentation: React.FC = () => {
@@ -26,10 +30,10 @@ const Documentation: React.FC = () => {
         <div className="text-center space-y-4 py-8">
           <h1 className="text-4xl font-bold flex items-center justify-center gap-3">
             <BookOpen className="h-10 w-10 text-primary" />
-            System Documentation
+            ConEG Platform Documentation
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Access comprehensive documentation, process flows, and technical resources for the Biakam National Address System
+            Comprehensive documentation for the ConEG National Digital Services Platform - Digital Addressing, Emergency Management, and Postal Delivery
           </p>
         </div>
 
@@ -60,7 +64,7 @@ const Documentation: React.FC = () => {
                     Process Flow Diagrams (English)
                   </CardTitle>
                   <CardDescription>
-                    Complete workflow documentation for NAR, CAR, Business, and Emergency Management - verified against actual implementation (Dec 2025)
+                    Complete workflow documentation for NAR, CAR, Business, Emergency Management, and Postal Delivery - verified against actual implementation (Dec 2025)
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -73,6 +77,7 @@ const Documentation: React.FC = () => {
                       <li>Business Address Registration - Full business workflow</li>
                       <li>CAR Process - Auto-approval via trigger for verified NAR links</li>
                       <li>Emergency Management - Auto-status to 'dispatched' on unit assignment</li>
+                      <li><strong>Postal Delivery</strong> - Order creation, assignment, delivery, and proof capture</li>
                       <li>Rejected Items Retention - 6mo archive, 24mo anonymization</li>
                       <li>Map Fallback - OpenStreetMap when Google Maps unavailable</li>
                     </ul>
@@ -90,7 +95,7 @@ const Documentation: React.FC = () => {
                     Diagramas de Flujo de Procesos (Español)
                   </CardTitle>
                   <CardDescription>
-                    Documentación completa de flujos de trabajo para procesos NAR, CAR, Negocio y Gestión de Emergencias en español
+                    Documentación completa de flujos de trabajo para procesos NAR, CAR, Negocio, Gestión de Emergencias y Entrega Postal en español
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -103,6 +108,7 @@ const Documentation: React.FC = () => {
                       <li>Registro de Direcciones de Negocio</li>
                       <li>Proceso CAR - Repositorio de Direcciones Ciudadanas</li>
                       <li>Proceso de Gestión de Emergencias</li>
+                      <li><strong>Entrega Postal</strong> - Creación de órdenes, asignación, entrega y comprobante</li>
                       <li>Política de Retención de Elementos Rechazados</li>
                     </ul>
                   </div>
@@ -414,6 +420,51 @@ const Documentation: React.FC = () => {
                 </CardContent>
               </Card>
 
+              {/* Postal Delivery Process - NEW */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-primary flex items-center gap-2">
+                    <Package className="h-5 w-5" />
+                    Postal Delivery Process
+                  </CardTitle>
+                  <CardDescription>Complete government postal delivery workflow using UAC addresses</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-2">
+                    {[
+                      { title: 'ORDER CREATION', desc: 'Postal Clerk creates delivery order with recipient UAC', icon: '📦' },
+                      { title: 'UAC VALIDATION', desc: 'System validates recipient address in NAR database', icon: '✓' },
+                      { title: 'PACKAGE INTAKE', desc: 'Package received, weighed, documented', icon: '📋' },
+                      { title: 'READY FOR ASSIGNMENT', desc: 'Clerk marks order ready for dispatcher', icon: '✅' },
+                      { title: 'DISPATCHER ASSIGNMENT', desc: 'Dispatcher assigns to delivery agent based on route', icon: '🗺️' },
+                      { title: 'AGENT NOTIFICATION', desc: 'Delivery agent receives assignment on mobile device', icon: '📱' },
+                      { title: 'OUT FOR DELIVERY', desc: 'Agent picks up package, starts delivery route', icon: '🚚' },
+                      { title: 'NAVIGATION', desc: 'Agent navigates using UAC GPS coordinates', icon: '📍' },
+                      { title: 'PROOF CAPTURE', desc: 'Photo and/or signature captured with geolocation', icon: '📸' },
+                      { title: 'DELIVERY COMPLETE', desc: 'Status updated, recipient notified', icon: '🎯' }
+                    ].map((step, idx) => (
+                      <div key={idx}>
+                        <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-lg">
+                          <div className="text-2xl">{step.icon}</div>
+                          <div className="flex-1">
+                            <div className="font-semibold text-sm">{step.title}</div>
+                            <div className="text-xs text-muted-foreground">{step.desc}</div>
+                          </div>
+                        </div>
+                        {idx < 9 && (
+                          <div className="flex justify-center py-1">
+                            <div className="text-muted-foreground">↓</div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="bg-purple-500/10 border border-purple-500/20 p-4 rounded-lg mt-4">
+                    <p className="text-sm"><strong>UAC Integration:</strong> All deliveries use verified UAC addresses from the National Address Registry, ensuring accurate GPS navigation and eliminating failed deliveries due to incorrect address information.</p>
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Map Fallback Note */}
               <Card className="bg-muted/50">
                 <CardHeader>
@@ -490,18 +541,24 @@ const Documentation: React.FC = () => {
           {/* User Guides */}
           <TabsContent value="guides" className="mt-6">
             <Tabs defaultValue="field-agent" className="w-full">
-              <TabsList className="grid w-full grid-cols-5 lg:grid-cols-11 max-w-full mx-auto gap-1">
+              <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 max-w-full mx-auto gap-1 mb-2">
                 <TabsTrigger value="ndaa-admin">NDAA Admin</TabsTrigger>
                 <TabsTrigger value="system-admin">System Admin</TabsTrigger>
                 <TabsTrigger value="registrar">Registrar</TabsTrigger>
                 <TabsTrigger value="field-agent">Field Agent</TabsTrigger>
-                <TabsTrigger value="verifier">Verifier (NAR/CAR)</TabsTrigger>
+                <TabsTrigger value="verifier">Verifier</TabsTrigger>
                 <TabsTrigger value="car-admin">CAR Admin</TabsTrigger>
                 <TabsTrigger value="police-admin">Police Admin</TabsTrigger>
-                <TabsTrigger value="police-supervisor">Supervisor</TabsTrigger>
+                <TabsTrigger value="police-supervisor">Police Supervisor</TabsTrigger>
+              </TabsList>
+              <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7 max-w-full mx-auto gap-1">
                 <TabsTrigger value="dispatcher">Dispatcher</TabsTrigger>
                 <TabsTrigger value="police-operator">Police Officer</TabsTrigger>
                 <TabsTrigger value="citizen">Citizen</TabsTrigger>
+                <TabsTrigger value="postal-clerk">Postal Clerk</TabsTrigger>
+                <TabsTrigger value="postal-dispatcher">Postal Dispatcher</TabsTrigger>
+                <TabsTrigger value="postal-agent">Postal Agent</TabsTrigger>
+                <TabsTrigger value="postal-supervisor">Postal Supervisor</TabsTrigger>
               </TabsList>
               
               <TabsContent value="ndaa-admin" className="mt-6">
@@ -546,6 +603,22 @@ const Documentation: React.FC = () => {
               
               <TabsContent value="citizen" className="mt-6">
                 <CitizenGuide />
+              </TabsContent>
+
+              <TabsContent value="postal-clerk" className="mt-6">
+                <PostalClerkGuide />
+              </TabsContent>
+
+              <TabsContent value="postal-dispatcher" className="mt-6">
+                <PostalDispatcherGuide />
+              </TabsContent>
+
+              <TabsContent value="postal-agent" className="mt-6">
+                <PostalAgentGuide />
+              </TabsContent>
+
+              <TabsContent value="postal-supervisor" className="mt-6">
+                <PostalSupervisorGuide />
               </TabsContent>
             </Tabs>
           </TabsContent>
