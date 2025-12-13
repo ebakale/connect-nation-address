@@ -316,7 +316,7 @@ export const DemoPresentation: React.FC = () => {
       
       // Slide de título
       const titleSlide = pptx.addSlide();
-      titleSlide.addText("ConnectNation Address - Presentación Demo", {
+      titleSlide.addText("ConEG - Presentación Demo", {
         x: 1,
         y: 1,
         w: 8,
@@ -429,7 +429,7 @@ export const DemoPresentation: React.FC = () => {
         bullet: true
       });
 
-      await pptx.writeFile({ fileName: 'ConnectNation-Demo-Presentation.pptx' });
+      await pptx.writeFile({ fileName: 'ConEG-Demo-Presentation.pptx' });
       toast.success('Presentación exportada exitosamente');
     } catch (error) {
       console.error('Error exporting PowerPoint:', error);
@@ -443,10 +443,10 @@ export const DemoPresentation: React.FC = () => {
         {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-gray-900">
-            ConnectNation Address - Demo Interactivo
+            ConEG - Demo Interactivo
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Demostraciones adaptadas a las necesidades específicas de cada actor del sistema
+            Plataforma Nacional de Servicios Digitales - Direcciones, Emergencias y Entregas Postales
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button onClick={exportToPowerPoint} variant="outline">
