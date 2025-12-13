@@ -211,6 +211,8 @@
     "deliveryStarted": "Delivery started",
     "markedFailed": "Marked as failed",
     "navigatingTo": "Navigating to",
+    "addressNotFound": "Address coordinates not found",
+    "navigationFailed": "Failed to open navigation",
     "available": "Available",
     "busy": "Busy",
     "offline": "Offline"

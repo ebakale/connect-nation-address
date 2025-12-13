@@ -211,6 +211,8 @@
     "deliveryStarted": "Livraison démarrée",
     "markedFailed": "Marquée comme échouée",
     "navigatingTo": "Navigation vers",
+    "addressNotFound": "Coordonnées de l'adresse non trouvées",
+    "navigationFailed": "Échec de l'ouverture de la navigation",
     "available": "Disponible",
     "busy": "Occupé",
     "offline": "Hors Ligne"
