@@ -44,3 +44,6 @@ verify_jwt = false
 
 [functions.system-config-api]
 verify_jwt = false
+
+[functions.seed-postal-users]
+verify_jwt = true

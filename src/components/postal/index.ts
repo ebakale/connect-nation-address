@@ -3,3 +3,4 @@ export { DeliveryOrderForm } from './DeliveryOrderForm';
 export { DeliveryOrdersList } from './DeliveryOrdersList';
 export { DeliveryAgentView } from './DeliveryAgentView';
 export { PostalReports } from './PostalReports';
+export { SeedPostalUsers } from './SeedPostalUsers';

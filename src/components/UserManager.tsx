@@ -100,14 +100,18 @@ const UserManager: React.FC = () => {
   const policeRoles = [
     'police_operator', 'police_supervisor', 'police_dispatcher', 'police_admin'
   ] as const;
+
+  const postalRoles = [
+    'postal_clerk', 'postal_agent', 'postal_dispatcher', 'postal_supervisor'
+  ] as const;
   
   const addressingRoles = hasNDAAAccess 
     ? ['admin', 'ndaa_admin', 'registrar', 'verifier', 'field_agent', 'citizen', 
        'property_claimant', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user',
-       'car_admin'] as const
+       'car_admin', ...postalRoles] as const
     : ['admin', 'registrar', 'verifier', 'field_agent', 'citizen', 
        'property_claimant', 'partner', 'auditor', 'data_steward', 'support', 'moderator', 'user',
-       'car_admin'] as const; // System admin cannot assign NDAA role
+       'car_admin', ...postalRoles] as const; // System admin cannot assign NDAA role
 
   // Region to cities mapping for Equatorial Guinea
   const regionCities: Record<string, string[]> = {
@@ -226,7 +230,8 @@ const UserManager: React.FC = () => {
   const assignRole = async (userId: string, role: string) => {
     // Check if role requires geographic scope
     if (role === 'police_dispatcher' || role === 'police_supervisor' || 
-        role === 'registrar' || role === 'verifier' || role === 'field_agent') {
+        role === 'registrar' || role === 'verifier' || role === 'field_agent' ||
+        role === 'postal_dispatcher' || role === 'postal_supervisor') {
       setPendingAssignment({ userId, role });
       setShowScopeDialog(true);
       return;
@@ -583,7 +588,8 @@ const UserManager: React.FC = () => {
                                    <SelectItem key={role} value={role}>
                                     {role.replace('_', ' ')}
                                      {(role === 'police_dispatcher' || role === 'police_supervisor' || 
-                                       role === 'registrar' || role === 'verifier' || role === 'field_agent') && (
+                                       role === 'registrar' || role === 'verifier' || role === 'field_agent' ||
+                                       role === 'postal_dispatcher' || role === 'postal_supervisor') && (
                                        <span className="text-xs text-muted-foreground ml-1">({t('userManagement.requiresGeographicScope')})</span>
                                      )}
                                    </SelectItem>
@@ -683,7 +689,8 @@ const UserManager: React.FC = () => {
                               <SelectItem key={role} value={role}>
                                 {role.replace('_', ' ')}
                                  {(role === 'police_dispatcher' || role === 'police_supervisor' || 
-                                   role === 'registrar' || role === 'verifier' || role === 'field_agent') && (
+                                   role === 'registrar' || role === 'verifier' || role === 'field_agent' ||
+                                   role === 'postal_dispatcher' || role === 'postal_supervisor') && (
                                    <span className="text-xs text-muted-foreground ml-1">({t('userManagement.requiresGeographicScope')})</span>
                                  )}
                               </SelectItem>

@@ -1741,5 +1741,11 @@
     "requestSent": "Demande de ressources envoyée au dispatching",
     "requestFailed": "Échec de l'envoi de la demande de ressources",
     "specifyItems": "Veuillez spécifier les ressources dont vous avez besoin"
+  },
+  "postalRoles": {
+    "postal_clerk": "Employé Postal",
+    "postal_agent": "Agent de Livraison",
+    "postal_dispatcher": "Répartiteur Postal",
+    "postal_supervisor": "Superviseur Postal"
   }
 }
