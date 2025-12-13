@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useDeliveryOrders } from '@/hooks/useDeliveryOrders';
 import { usePostalRole } from '@/hooks/usePostalRole';
 import { DeliveryStatus } from '@/types/postal';
 import { DeliveryOrderDetail } from './DeliveryOrderDetail';
 import { OrderAssignmentPanel } from './OrderAssignmentPanel';
 import { OrderStatusFilter } from './OrderStatusFilter';
-import { Package, MapPin, Clock, User, ChevronRight, ArrowRight, Loader2 } from 'lucide-react';
+import { Package, MapPin, Clock, User, ChevronRight, ArrowRight, Loader2, Users } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-
 interface DeliveryOrdersListProps {
   showAssignmentPanel?: boolean;
 }
@@ -288,20 +288,55 @@ export const DeliveryOrdersList = ({ showAssignmentPanel = false }: DeliveryOrde
     </div>
   );
 
-  // Assignment mode with side panel
+  // Assignment mode with side panel on desktop, bottom sheet on mobile
   if (showAssignmentPanel) {
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2">
+      <div className="space-y-4">
+        {/* Mobile: Floating action button + bottom sheet */}
+        <div className="lg:hidden">
           {ordersList}
+          
+          {/* Fixed bottom bar for mobile assignment */}
+          {selectedOrderIds.length > 0 && (
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-border shadow-elevated z-40">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button className="w-full min-h-[48px]">
+                    <Users className="h-4 w-4 mr-2" />
+                    {t('assignment.assignSelected', 'Assign')} ({selectedOrderIds.length})
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="bottom" className="h-[85vh] overflow-y-auto">
+                  <SheetHeader className="mb-4">
+                    <SheetTitle>{t('assignment.title')}</SheetTitle>
+                  </SheetHeader>
+                  <OrderAssignmentPanel
+                    selectedOrderIds={selectedOrderIds}
+                    onAssignmentComplete={handleAssignmentComplete}
+                    onClearSelection={() => setSelectedOrderIds([])}
+                  />
+                </SheetContent>
+              </Sheet>
+            </div>
+          )}
+          
+          {/* Add padding at bottom to prevent content being hidden behind fixed bar */}
+          {selectedOrderIds.length > 0 && <div className="h-20" />}
         </div>
-        <div className="lg:col-span-1">
-          <div className="sticky top-4">
-            <OrderAssignmentPanel
-              selectedOrderIds={selectedOrderIds}
-              onAssignmentComplete={handleAssignmentComplete}
-              onClearSelection={() => setSelectedOrderIds([])}
-            />
+
+        {/* Desktop: Side-by-side layout */}
+        <div className="hidden lg:grid lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2">
+            {ordersList}
+          </div>
+          <div className="lg:col-span-1">
+            <div className="sticky top-4">
+              <OrderAssignmentPanel
+                selectedOrderIds={selectedOrderIds}
+                onAssignmentComplete={handleAssignmentComplete}
+                onClearSelection={() => setSelectedOrderIds([])}
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -227,6 +227,8 @@
   html, body, #root {
     height: 100%;
     min-height: 100%;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   @supports (-webkit-touch-callout: none) {
@@ -484,8 +486,19 @@
   }
 
   /* ========================================
-     MOBILE UTILITIES
+     MOBILE-FIRST UTILITIES
      ======================================== */
+  .no-scroll-x {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  .text-wrap-break {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
   .mobile-container {
     @apply px-4 sm:px-6 lg:px-8;
   }
@@ -498,6 +511,13 @@
     @apply text-sm sm:text-base;
   }
 
+  .mobile-stack {
+    @apply flex flex-col gap-2 sm:flex-row sm:gap-3;
+  }
+
+  .mobile-grid-responsive {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4;
+  }
   .mobile-viewport-stable {
     min-height: 100vh;
     min-height: 100dvh;
