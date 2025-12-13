@@ -225,14 +225,16 @@
   },
   
   "filters": {
-    "all": "Toutes les Commandes",
+    "all": "Tous",
     "today": "Aujourd'hui",
     "thisWeek": "Cette Semaine",
     "thisMonth": "Ce Mois",
     "byStatus": "Par Statut",
     "byAgent": "Par Agent",
     "byPriority": "Par Priorité",
-    "dateRange": "Plage de Dates"
+    "dateRange": "Plage de Dates",
+    "filterByStatus": "Filtrer par Statut",
+    "noOrdersWithStatus": "Aucune commande avec ce statut"
   },
   
   "actions": {

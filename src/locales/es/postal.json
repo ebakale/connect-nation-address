@@ -225,14 +225,16 @@
   },
   
   "filters": {
-    "all": "Todas las Órdenes",
+    "all": "Todos",
     "today": "Hoy",
     "thisWeek": "Esta Semana",
     "thisMonth": "Este Mes",
     "byStatus": "Por Estado",
     "byAgent": "Por Agente",
     "byPriority": "Por Prioridad",
-    "dateRange": "Rango de Fechas"
+    "dateRange": "Rango de Fechas",
+    "filterByStatus": "Filtrar por Estado",
+    "noOrdersWithStatus": "No hay pedidos con este estado"
   },
   
   "actions": {

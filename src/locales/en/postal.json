@@ -225,14 +225,16 @@
   },
   
   "filters": {
-    "all": "All Orders",
+    "all": "All",
     "today": "Today",
     "thisWeek": "This Week",
     "thisMonth": "This Month",
     "byStatus": "By Status",
     "byAgent": "By Agent",
     "byPriority": "By Priority",
-    "dateRange": "Date Range"
+    "dateRange": "Date Range",
+    "filterByStatus": "Filter by Status",
+    "noOrdersWithStatus": "No orders with this status"
   },
   
   "actions": {
