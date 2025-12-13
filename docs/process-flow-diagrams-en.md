@@ -1,4 +1,4 @@
-# Process Flow Diagrams - ConnectNation Address System
+# Process Flow Diagrams - ConEG National Digital Services Platform
 
 ## 1. Unified Address Request Workflow
 
@@ -487,7 +487,144 @@ NAR team reviews feedback
 Data quality improvement
 ```
 
-## 7. Rejected Items Retention Workflow
+## 7. Postal Delivery Module Workflow
+
+### Complete Delivery Order Flow
+
+```
+Start - Order Creation
+  ↓
+Postal Clerk logs into Postal Portal
+  ↓
+Clerk creates new delivery order
+  ├── Enter sender information
+  │   ├── Sender name
+  │   ├── Sender branch
+  │   └── Sender phone
+  ├── Search recipient address by UAC
+  │   ├── System validates UAC exists
+  │   ├── Auto-populates from NAR/CAR
+  │   └── Displays verified address
+  ├── Enter package details
+  │   ├── Package type (letter, parcel, registered)
+  │   ├── Weight and dimensions
+  │   ├── Declared value
+  │   └── Special handling (fragile, hazmat)
+  └── Set delivery parameters
+      ├── Priority level (1-5)
+      ├── Scheduled date
+      ├── Requires signature?
+      └── Requires ID verification?
+  ↓
+Order submitted
+  ├── Order number generated (DEL-YYYY-XXXXXX)
+  ├── Status: pending_intake
+  └── Appears in dispatcher queue
+  ↓
+Dispatcher Assignment
+  ↓
+Dispatcher views pending orders
+  ├── Reviews recipient UAC and location
+  ├── Checks package requirements
+  └── Notes priority level
+  ↓
+Views available agents
+  ├── Agent workload counts
+  ├── Agent coverage areas
+  └── Availability status
+  ↓
+Assigns order to agent
+  ├── Adds dispatch notes
+  ├── Sets estimated delivery time
+  └── Confirms assignment
+  ↓
+System updates order
+  ├── Status: assigned
+  ├── Agent notified
+  └── Appears in agent queue
+  ↓
+Delivery Execution
+  ↓
+Agent receives notification
+  ↓
+Views delivery details
+  ├── Recipient name and UAC
+  ├── Full address from registry
+  ├── Package details
+  └── Special instructions
+  ↓
+Starts delivery (status: out_for_delivery)
+  ↓
+Navigates using UAC GPS coordinates
+  ├── Turn-by-turn directions
+  ├── Real-time ETA
+  └── Status visible to dispatcher
+  ↓
+Arrives at location
+  ├── System verifies GPS proximity
+  ├── Agent marks "Arrived"
+  └── Location logged
+  ↓
+Delivery attempt
+  ├── SUCCESS path:
+  │   ├── Verify recipient identity
+  │   ├── Capture signature on device
+  │   ├── Take photo of delivered package
+  │   ├── Record recipient name
+  │   └── Complete ID verification if required
+  │
+  └── FAILED path:
+      ├── Select failure reason
+      │   ├── Address not found
+      │   ├── Recipient not available
+      │   ├── Refused delivery
+      │   └── Access issues
+      └── Record notes for reattempt
+  ↓
+Complete delivery
+  ├── Status: delivered / failed_delivery / returned_to_sender
+  ├── Proof uploaded (signature + photo)
+  ├── GPS and timestamp recorded
+  └── Notifications sent
+  ↓
+Supervisor monitoring
+  ├── Real-time dashboard visibility
+  ├── Performance metrics updated
+  └── Proof available for review
+  ↓
+End
+```
+
+### Delivery Status States
+- **pending_intake**: Order created, awaiting review
+- **ready_for_assignment**: Approved, ready for dispatch
+- **assigned**: Assigned to delivery agent
+- **out_for_delivery**: Agent en route
+- **delivered**: Successfully delivered with proof
+- **failed_delivery**: Delivery attempt unsuccessful
+- **address_not_found**: Could not locate address
+- **returned_to_sender**: Returned to origin
+
+### UAC Address Integration
+
+```
+Order Creation
+  ↓
+Clerk enters recipient UAC
+  ↓
+System queries addresses table
+  ├── Checks verified = true
+  ├── Retrieves coordinates
+  └── Gets full address details
+  ↓
+UAC validated?
+  ├── YES → Populate recipient fields
+  │         └── Enable order submission
+  └── NO → Show error message
+          └── Require valid UAC
+```
+
+## 8. Rejected Items Retention Workflow
 
 ### Automatic Retention Policy Enforcement
 
@@ -543,7 +680,7 @@ delete_rejected_request(request_id) called
 Confirmation shown to user
 ```
 
-## 8. Quality and Maintenance Processes
+## 9. Quality and Maintenance Processes
 
 ### Automated Quality Audit
 
@@ -618,11 +755,19 @@ Update information based on findings
 
 ## Conclusion
 
-These flow diagrams document the interconnected processes of the Biakam National Address System as of December 2025. Key improvements include:
+These flow diagrams document the interconnected processes of the ConEG National Digital Services Platform as of December 2025. The platform now includes four integrated modules:
+
+- **NAR (National Address Registry)**: Official government-maintained address registry
+- **CAR (Citizen Address Repository)**: Citizen-managed address declarations
+- **Emergency Management**: Real-time incident reporting and response coordination
+- **Postal Delivery**: Government postal services with UAC address integration
+
+Key improvements include:
 
 - **Unified Address Request** workflow consolidating NAR, CAR, and Business flows
 - **Auto-publishing** based on address type (eliminating manual publication)
 - **Auto-approval** for CAR declarations linked to verified NAR addresses
+- **Postal Delivery Module** with UAC-verified addresses for accurate deliveries
 - **Verification domain scoping** for flexible verifier permissions
 - **Geographic scoping** ensuring users see only relevant data
 - **Retention policy** with automatic archiving and anonymization
@@ -633,4 +778,4 @@ The system maintains data integrity and security while providing efficient workf
 ---
 
 *Last Updated: December 2025*
-*Version: 3.0*
+*Version: 4.0*

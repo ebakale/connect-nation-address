@@ -370,6 +370,51 @@ const scenarios: DemoScenario[] = [
       'Exportable reports for command briefings'
     ],
     presenterNotes: 'Supervisors have full oversight with approval authority for backup requests. Real-time analytics enable data-driven decisions. The audit log ensures complete transparency - every action is tracked with who, what, and when.'
+  },
+  {
+    id: 'postal-delivery-workflow',
+    title: 'Complete Postal Delivery Module Workflow',
+    icon: Truck,
+    context: 'The ConEG Postal Delivery Module manages government postal services from order creation to final delivery. This scenario demonstrates the complete workflow involving postal clerks, dispatchers, delivery agents, and supervisors.',
+    objective: 'Demonstrate the end-to-end postal delivery workflow using UAC-verified addresses',
+    actors: [
+      { role: 'Postal Clerk', name: 'Carmen Santos', type: 'primary' },
+      { role: 'Postal Dispatcher', name: 'Luis Fernández', type: 'secondary' },
+      { role: 'Delivery Agent', name: 'Pedro García', type: 'secondary' },
+      { role: 'Postal Supervisor', name: 'Ana Moreno', type: 'secondary' }
+    ],
+    modules: ['PostalPage', 'DeliveryOrderForm', 'DispatcherPanel', 'AgentDeliveryView', 'SupervisorDashboard'],
+    steps: [
+      { step: 1, action: 'Carmen (Postal Clerk) logs into the Postal Portal', screen: 'PostalPage with Clerk view showing "Create Order" tab', notes: 'Point out the role-based interface for postal staff.' },
+      { step: 2, action: 'She clicks "Create New Order" to begin order entry', screen: 'DeliveryOrderForm wizard opens at Step 1', notes: 'Explain the multi-step order creation process.' },
+      { step: 3, action: 'Carmen enters sender info: Government Immigration Office', screen: 'Sender section with branch, name, phone fields', notes: 'Show sender details including branch identification.' },
+      { step: 4, action: 'She searches for recipient address using UAC: GQ-BN-MLO-ELEN-0089', screen: 'UACAddressPicker with search results showing verified address', notes: 'Demonstrate UAC integration with address system.' },
+      { step: 5, action: 'System auto-populates recipient address from CAR registry', screen: 'Address details filled: Elena Nguema, full address displayed', notes: 'Point out automatic address lookup from verified registry.' },
+      { step: 6, action: 'Carmen adds package details: Passport, Registered, Requires ID verification', screen: 'Package type selector, special handling checkboxes', notes: 'Show package classification and security options.' },
+      { step: 7, action: 'She sets priority and scheduled delivery date', screen: 'Priority slider, date picker for scheduled delivery', notes: 'Explain priority levels and scheduling options.' },
+      { step: 8, action: 'Order submitted successfully with number: DEL-2025-001234', screen: 'Success confirmation with order reference number', notes: 'Note: Order goes to dispatcher queue with pending_intake status.' },
+      { step: 9, action: 'Luis (Dispatcher) views orders in "Ready for Assignment" tab', screen: 'DispatcherPanel with pending orders list', notes: 'Dispatchers see orders waiting for agent assignment.' },
+      { step: 10, action: 'He clicks Carmen\'s passport delivery order', screen: 'Order detail panel showing recipient UAC, package info', notes: 'Show comprehensive order information for dispatch decisions.' },
+      { step: 11, action: 'Luis views available agents and their workloads', screen: 'Agent list with active delivery counts per agent', notes: 'Demonstrate workload balancing for efficient dispatch.' },
+      { step: 12, action: 'He assigns order to Pedro García who is in the area', screen: 'Assignment dialog with agent selection, notes field', notes: 'Show assignment workflow with optional notes.' },
+      { step: 13, action: 'Pedro (Agent) receives notification on his mobile device', screen: 'Agent mobile view with new assignment notification', notes: 'Point out mobile-first design for field agents.' },
+      { step: 14, action: 'He views today\'s deliveries in "My Deliveries" tab', screen: 'AgentDeliveryView with route-ordered delivery list', notes: 'Show deliveries organized by route sequence.' },
+      { step: 15, action: 'Pedro clicks "Navigate" to get directions to Elena\'s address', screen: 'Navigation integration opens with UAC coordinates', notes: 'Demonstrate GPS navigation using verified coordinates.' },
+      { step: 16, action: 'Upon arrival, he clicks "Mark Arrived" and system logs GPS', screen: 'Arrival confirmation with GPS verification', notes: 'Show location verification for delivery accuracy.' },
+      { step: 17, action: 'Pedro verifies Elena\'s ID and captures proof of delivery', screen: 'Proof capture: photo, signature pad, recipient name', notes: 'Demonstrate multi-method proof capture for accountability.' },
+      { step: 18, action: 'He clicks "Complete Delivery" with signature and photo', screen: 'Delivery completion confirmation with proof summary', notes: 'Show complete audit trail created at delivery.' },
+      { step: 19, action: 'Ana (Supervisor) monitors deliveries in real-time dashboard', screen: 'SupervisorDashboard with stats, agent performance, map', notes: 'Point out supervisor visibility into all operations.' },
+      { step: 20, action: 'She sees the passport delivery completed with proof attached', screen: 'Completed deliveries list with proof review button', notes: 'Show how supervisors can review delivery evidence.' }
+    ],
+    outcome: [
+      'Complete postal delivery from intake to confirmed delivery in one workflow',
+      'UAC integration ensures accurate recipient address verification',
+      'GPS tracking and proof capture create complete audit trail',
+      'Multi-role workflow with clear handoffs between clerk, dispatcher, agent',
+      'Real-time supervisor visibility into all postal operations',
+      'Digital proof of delivery (photo + signature) for legal compliance'
+    ],
+    presenterNotes: 'The Postal Delivery Module integrates seamlessly with the digital address system. UAC codes provide verified, geocoded addresses that eliminate delivery failures. The complete workflow from intake to proof of delivery demonstrates government-grade accountability. Supervisors have real-time visibility while role-based access ensures each staff member sees only relevant functionality.'
   }
 ];
 
@@ -432,7 +477,7 @@ export function DemoScriptDocument() {
     pdf.setTextColor(255, 255, 255);
     pdf.setFontSize(24);
     pdf.setFont('helvetica', 'bold');
-    pdf.text('ConnectNation Address System', margin, 30);
+    pdf.text('ConEG National Digital Services Platform', margin, 30);
     pdf.setFontSize(16);
     pdf.setFont('helvetica', 'normal');
     pdf.text('Complete Demo Script Document', margin, 42);
