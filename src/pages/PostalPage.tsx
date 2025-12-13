@@ -22,10 +22,10 @@ const PostalPage = () => {
 
   // Get role badge
   const getRoleBadge = () => {
-    if (isPostalSupervisor) return { label: t('roles.supervisor'), variant: 'default' as const };
-    if (isPostalDispatcher) return { label: t('roles.dispatcher'), variant: 'secondary' as const };
-    if (isPostalAgent) return { label: t('roles.agent'), variant: 'outline' as const };
-    if (isPostalClerk) return { label: t('roles.clerk'), variant: 'outline' as const };
+    if (isPostalSupervisor) return { label: t('roles.postal_supervisor'), variant: 'default' as const };
+    if (isPostalDispatcher) return { label: t('roles.postal_dispatcher'), variant: 'secondary' as const };
+    if (isPostalAgent) return { label: t('roles.postal_agent'), variant: 'outline' as const };
+    if (isPostalClerk) return { label: t('roles.postal_clerk'), variant: 'outline' as const };
     return null;
   };
 
@@ -97,7 +97,7 @@ const PostalPage = () => {
                     className="flex items-center gap-1.5"
                   >
                     <LogOut className="h-3.5 w-3.5" />
-                    <span className="hidden sm:inline text-sm">{t('common:logout')}</span>
+                    <span className="hidden sm:inline text-sm">{t('common:navigation.logout')}</span>
                   </Button>
                 </div>
               </div>
