@@ -85,6 +85,7 @@ const Index = () => {
     { id: 'about', labelKey: 'common:navigation.about', icon: Users },
     { id: 'public', labelKey: 'common:platform.searchAddresses', icon: Search },
     { id: 'emergency', labelKey: 'emergency:title', icon: Shield },
+    { id: 'track', labelKey: 'postal:tracking.title', icon: Package, route: '/track' },
     { id: 'documentation', labelKey: 'common:navigation.documentation', icon: Book, route: '/documentation' },
     { id: 'help', labelKey: 'common:navigation.help', icon: HelpCircle },
   ], []);
