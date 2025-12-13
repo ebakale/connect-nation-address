@@ -144,7 +144,7 @@ export const EnhancedAddressDetailModal: React.FC<EnhancedAddressDetailModalProp
     });
   };
 
-  const getDirections = (fromCurrentLocation = true, fromUAC?: string) => {
+  const getDirections = async (fromCurrentLocation = true, fromUAC?: string) => {
     if (!address) return;
 
     const { latitude, longitude } = address;
@@ -171,12 +171,33 @@ export const EnhancedAddressDetailModal: React.FC<EnhancedAddressDetailModalProp
         url = `https://maps.google.com/maps?daddr=${latitude},${longitude}`;
       }
     } else if (fromUAC) {
-      // Directions from another UAC (would need to resolve UAC to coordinates first)
-      toast({
-        title: t('common:featureComingSoon'),
-        description: t('common:directionsFromUACComingSoon'),
-      });
-      return;
+      // Lookup source UAC coordinates
+      try {
+        const { data: sourceAddress, error } = await supabase
+          .from('addresses')
+          .select('latitude, longitude, street, city')
+          .eq('uac', fromUAC)
+          .single();
+
+        if (error || !sourceAddress?.latitude || !sourceAddress?.longitude) {
+          toast({
+            title: t('common:error'),
+            description: t('common:addressNotFound'),
+            variant: 'destructive',
+          });
+          return;
+        }
+
+        // Open Google Maps with directions from source to destination
+        url = `https://maps.google.com/maps?saddr=${sourceAddress.latitude},${sourceAddress.longitude}&daddr=${latitude},${longitude}`;
+      } catch (err) {
+        toast({
+          title: t('common:error'),
+          description: t('common:addressNotFound'),
+          variant: 'destructive',
+        });
+        return;
+      }
     }
 
     if (url) {

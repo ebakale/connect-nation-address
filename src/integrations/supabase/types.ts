@@ -371,6 +371,45 @@ export type Database = {
         }
         Relationships: []
       }
+      api_keys: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          key_hash: string
+          key_prefix: string
+          last_used_at: string | null
+          name: string
+          service: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          key_hash: string
+          key_prefix: string
+          last_used_at?: string | null
+          name: string
+          service: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          key_hash?: string
+          key_prefix?: string
+          last_used_at?: string | null
+          name?: string
+          service?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       authorized_verifiers: {
         Row: {
           authority_name: string
@@ -3139,6 +3178,44 @@ export type Database = {
           },
         ]
       }
+      unit_messages: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          priority_level: number | null
+          read_by: string[] | null
+          sender_id: string
+          unit_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          priority_level?: number | null
+          read_by?: string[] | null
+          sender_id: string
+          unit_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          priority_level?: number | null
+          read_by?: string[] | null
+          sender_id?: string
+          unit_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unit_messages_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "emergency_units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_role_metadata: {
         Row: {
           created_at: string | null
@@ -3209,6 +3286,48 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
+      }
+      webhook_configs: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          events: string[]
+          failure_count: number | null
+          id: string
+          last_triggered_at: string | null
+          name: string
+          secret_hash: string | null
+          status: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          events?: string[]
+          failure_count?: number | null
+          id?: string
+          last_triggered_at?: string | null
+          name: string
+          secret_hash?: string | null
+          status?: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          events?: string[]
+          failure_count?: number | null
+          id?: string
+          last_triggered_at?: string | null
+          name?: string
+          secret_hash?: string | null
+          status?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
       }
       webhook_delivery: {
         Row: {
