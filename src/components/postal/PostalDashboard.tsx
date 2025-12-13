@@ -14,6 +14,7 @@ import { DeliveryAgentView } from './DeliveryAgentView';
 import { PostalReports } from './PostalReports';
 import { SeedPostalUsers } from './SeedPostalUsers';
 import { SeedPostalOrders } from './SeedPostalOrders';
+import { SeedCitizenDeliveries } from './SeedCitizenDeliveries';
 
 export const PostalDashboard = () => {
   const { t } = useTranslation('postal');
@@ -156,9 +157,10 @@ export const PostalDashboard = () => {
 
         {(isPostalSupervisor || isAdmin) && (
           <TabsContent value="admin" className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               <SeedPostalUsers />
               <SeedPostalOrders />
+              <SeedCitizenDeliveries />
             </div>
           </TabsContent>
         )}

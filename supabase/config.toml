@@ -56,3 +56,6 @@ verify_jwt = false
 
 [functions.track-delivery]
 verify_jwt = false
+
+[functions.seed-citizen-deliveries]
+verify_jwt = true
