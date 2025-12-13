@@ -247,7 +247,9 @@
     "ordersCreated": "Órdenes Creadas",
     "creating": "Creando...",
     "success": "Éxito",
-    "error": "Error"
+    "error": "Error",
+    "markReadyForAssignment": "Marcar Listo para Asignar",
+    "markReady": "Listo"
   },
   
   "validation": {
