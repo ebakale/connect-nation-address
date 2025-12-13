@@ -195,4 +195,5 @@ const DeliveryListItem: React.FC<DeliveryListItemProps> = ({
   );
 };
 
+export { CitizenDeliveriesView };
 export default CitizenDeliveriesView;
