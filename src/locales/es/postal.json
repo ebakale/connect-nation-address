@@ -226,6 +226,8 @@
   
   "filters": {
     "all": "Todos",
+    "filterByStatus": "Filtrar por estado",
+    "selectStatus": "Seleccionar estado",
     "today": "Hoy",
     "thisWeek": "Esta Semana",
     "thisMonth": "Este Mes",

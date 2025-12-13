@@ -1,7 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { DeliveryStats, DeliveryStatus } from '@/types/postal';
 
 interface OrderStatusFilterProps {
@@ -30,38 +35,41 @@ export function OrderStatusFilter({ activeFilter, onFilterChange, stats }: Order
     return stats[countKey] as number;
   };
 
+  const getSelectedLabel = () => {
+    const selected = statusOptions.find(opt => opt.value === activeFilter);
+    if (!selected) return t('filters.selectStatus');
+    const count = getCount(selected.countKey);
+    return count !== undefined ? `${t(selected.labelKey)} (${count})` : t(selected.labelKey);
+  };
+
   return (
     <div className="mb-4">
       <p className="text-sm text-muted-foreground mb-2">{t('filters.filterByStatus')}</p>
-      <ScrollArea className="w-full whitespace-nowrap">
-        <div className="flex gap-2 pb-2">
+      <Select 
+        value={activeFilter} 
+        onValueChange={(value) => onFilterChange(value as DeliveryStatus | 'all')}
+      >
+        <SelectTrigger className="w-full sm:w-[280px]">
+          <SelectValue>{getSelectedLabel()}</SelectValue>
+        </SelectTrigger>
+        <SelectContent className="bg-background z-50">
           {statusOptions.map((option) => {
             const count = getCount(option.countKey);
-            const isActive = activeFilter === option.value;
-            
             return (
-              <Button
-                key={option.value}
-                variant={isActive ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => onFilterChange(option.value)}
-                className="flex-shrink-0"
-              >
-                {t(option.labelKey)}
-                {count !== undefined && (
-                  <Badge 
-                    variant={isActive ? 'secondary' : 'outline'} 
-                    className="ml-2"
-                  >
-                    {count}
-                  </Badge>
-                )}
-              </Button>
+              <SelectItem key={option.value} value={option.value}>
+                <span className="flex items-center gap-2">
+                  {t(option.labelKey)}
+                  {count !== undefined && (
+                    <Badge variant="outline" className="ml-auto text-xs">
+                      {count}
+                    </Badge>
+                  )}
+                </span>
+              </SelectItem>
             );
           })}
-        </div>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+        </SelectContent>
+      </Select>
     </div>
   );
 }
