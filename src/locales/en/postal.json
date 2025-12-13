@@ -33,6 +33,13 @@
     "noOrders": "No delivery orders found"
   },
   
+  "details": {
+    "requirements": "Delivery Requirements",
+    "timeline": "Timeline",
+    "createdAt": "Created",
+    "updatedAt": "Last Updated"
+  },
+  
   "sender": {
     "title": "Sender Information",
     "name": "Sender Name",
