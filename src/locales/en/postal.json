@@ -1,0 +1,259 @@
+{
+  "title": "Government Postal Services",
+  "module": "Postal Delivery Module",
+  "dashboard": "Postal Dashboard",
+  
+  "roles": {
+    "postal_clerk": "Postal Clerk",
+    "postal_agent": "Delivery Agent",
+    "postal_dispatcher": "Dispatcher",
+    "postal_supervisor": "Postal Supervisor"
+  },
+  
+  "navigation": {
+    "orders": "Orders",
+    "newOrder": "New Order",
+    "assignments": "Assignments",
+    "myDeliveries": "My Deliveries",
+    "agents": "Agents",
+    "reports": "Reports",
+    "tracking": "Tracking"
+  },
+  
+  "order": {
+    "title": "Delivery Order",
+    "orders": "Delivery Orders",
+    "newOrder": "New Delivery Order",
+    "createOrder": "Create Order",
+    "orderNumber": "Order Number",
+    "orderDetails": "Order Details",
+    "orderCreated": "Order created successfully",
+    "orderUpdated": "Order updated successfully",
+    "noOrders": "No delivery orders found"
+  },
+  
+  "sender": {
+    "title": "Sender Information",
+    "name": "Sender Name",
+    "address": "Sender Address",
+    "branch": "Postal Branch",
+    "phone": "Sender Phone",
+    "selectBranch": "Select a postal branch"
+  },
+  
+  "recipient": {
+    "title": "Recipient Information",
+    "name": "Recipient Name",
+    "address": "Recipient Address",
+    "phone": "Recipient Phone",
+    "email": "Recipient Email",
+    "enterUAC": "Enter recipient UAC",
+    "validateAddress": "Validate Address"
+  },
+  
+  "package": {
+    "title": "Package Information",
+    "type": "Package Type",
+    "weight": "Weight (grams)",
+    "dimensions": "Dimensions (cm)",
+    "declaredValue": "Declared Value",
+    "notes": "Package Notes",
+    "specialInstructions": "Special Instructions",
+    "requiresSignature": "Requires Signature",
+    "requiresIdVerification": "Requires ID Verification",
+    "types": {
+      "letter": "Letter",
+      "small_parcel": "Small Parcel",
+      "medium_parcel": "Medium Parcel",
+      "large_parcel": "Large Parcel",
+      "document": "Document",
+      "registered_mail": "Registered Mail",
+      "express": "Express",
+      "government_document": "Government Document"
+    }
+  },
+  
+  "status": {
+    "title": "Status",
+    "pending_intake": "Pending Intake",
+    "ready_for_assignment": "Ready for Assignment",
+    "assigned": "Assigned",
+    "out_for_delivery": "Out for Delivery",
+    "delivered": "Delivered",
+    "failed_delivery": "Failed Delivery",
+    "address_not_found": "Address Not Found",
+    "returned_to_sender": "Returned to Sender",
+    "cancelled": "Cancelled",
+    "updateStatus": "Update Status",
+    "statusUpdated": "Status updated successfully",
+    "selectReason": "Select a reason",
+    "provideReason": "Provide reason"
+  },
+  
+  "priority": {
+    "title": "Priority",
+    "level1": "Urgent",
+    "level2": "High",
+    "level3": "Normal",
+    "level4": "Low",
+    "level5": "Economy"
+  },
+  
+  "assignment": {
+    "title": "Assignment",
+    "assign": "Assign",
+    "assignAgent": "Assign to Agent",
+    "reassign": "Reassign",
+    "unassign": "Unassign",
+    "selectAgent": "Select an agent",
+    "assignedTo": "Assigned to",
+    "assignedBy": "Assigned by",
+    "assignedAt": "Assigned at",
+    "routeSequence": "Route Sequence",
+    "estimatedDelivery": "Estimated Delivery Time",
+    "assignmentNotes": "Assignment Notes",
+    "assignmentCreated": "Assignment created successfully",
+    "noAssignment": "Not assigned"
+  },
+  
+  "delivery": {
+    "title": "Delivery",
+    "myDeliveries": "My Deliveries",
+    "todayDeliveries": "Today's Deliveries",
+    "pendingDeliveries": "Pending Deliveries",
+    "completedDeliveries": "Completed Deliveries",
+    "startDelivery": "Start Delivery",
+    "completeDelivery": "Complete Delivery",
+    "failDelivery": "Mark as Failed",
+    "returnToSender": "Return to Sender",
+    "addressNotFound": "Address Not Found",
+    "acknowledge": "Acknowledge",
+    "acknowledged": "Acknowledged",
+    "inProgress": "In Progress",
+    "navigate": "Navigate",
+    "viewOnMap": "View on Map"
+  },
+  
+  "proof": {
+    "title": "Proof of Delivery",
+    "captureProof": "Capture Proof",
+    "signature": "Signature",
+    "photo": "Photo",
+    "idVerification": "ID Verification",
+    "recipientAbsent": "Recipient Absent Note",
+    "receivedBy": "Received By",
+    "relationship": "Relationship to Recipient",
+    "idType": "ID Type",
+    "idLastDigits": "Last 4 digits of ID",
+    "proofCaptured": "Proof captured successfully",
+    "signHere": "Sign here",
+    "clearSignature": "Clear Signature",
+    "takePhoto": "Take Photo",
+    "relationships": {
+      "recipient": "Recipient",
+      "spouse": "Spouse",
+      "family_member": "Family Member",
+      "neighbor": "Neighbor",
+      "security": "Security/Guard",
+      "other": "Other"
+    }
+  },
+  
+  "agent": {
+    "title": "Delivery Agent",
+    "agents": "Delivery Agents",
+    "agentName": "Agent Name",
+    "workload": "Current Workload",
+    "activeDeliveries": "Active Deliveries",
+    "completedToday": "Completed Today",
+    "available": "Available",
+    "busy": "Busy",
+    "offline": "Offline"
+  },
+  
+  "tracking": {
+    "title": "Order Tracking",
+    "trackOrder": "Track Order",
+    "enterOrderNumber": "Enter order number",
+    "timeline": "Timeline",
+    "currentStatus": "Current Status",
+    "lastUpdate": "Last Update",
+    "estimatedDelivery": "Estimated Delivery"
+  },
+  
+  "reports": {
+    "title": "Reports",
+    "dailyReport": "Daily Report",
+    "weeklyReport": "Weekly Report",
+    "monthlyReport": "Monthly Report",
+    "agentPerformance": "Agent Performance",
+    "deliveryMetrics": "Delivery Metrics",
+    "totalDeliveries": "Total Deliveries",
+    "successRate": "Success Rate",
+    "averageDeliveryTime": "Average Delivery Time",
+    "failedDeliveries": "Failed Deliveries",
+    "returnedPackages": "Returned Packages",
+    "export": "Export Report"
+  },
+  
+  "stats": {
+    "totalOrders": "Total Orders",
+    "pendingIntake": "Pending Intake",
+    "readyForAssignment": "Ready for Assignment",
+    "assigned": "Assigned",
+    "outForDelivery": "Out for Delivery",
+    "delivered": "Delivered",
+    "failed": "Failed",
+    "returned": "Returned",
+    "todayDeliveries": "Today's Deliveries",
+    "todayCompleted": "Completed Today"
+  },
+  
+  "filters": {
+    "all": "All Orders",
+    "today": "Today",
+    "thisWeek": "This Week",
+    "thisMonth": "This Month",
+    "byStatus": "By Status",
+    "byAgent": "By Agent",
+    "byPriority": "By Priority",
+    "dateRange": "Date Range"
+  },
+  
+  "actions": {
+    "viewDetails": "View Details",
+    "editOrder": "Edit Order",
+    "cancelOrder": "Cancel Order",
+    "printLabel": "Print Label",
+    "generateQR": "Generate QR Code"
+  },
+  
+  "validation": {
+    "senderNameRequired": "Sender name is required",
+    "recipientNameRequired": "Recipient name is required",
+    "recipientAddressRequired": "Recipient address is required",
+    "invalidUAC": "Invalid UAC address",
+    "agentRequired": "Please select an agent",
+    "reasonRequired": "Please provide a reason"
+  },
+  
+  "messages": {
+    "loadingOrders": "Loading orders...",
+    "noOrdersFound": "No orders found",
+    "orderCreatedSuccess": "Order created successfully",
+    "orderUpdatedSuccess": "Order updated successfully",
+    "assignmentSuccess": "Order assigned successfully",
+    "statusUpdateSuccess": "Status updated successfully",
+    "proofCapturedSuccess": "Proof of delivery captured",
+    "errorCreatingOrder": "Error creating order",
+    "errorUpdatingStatus": "Error updating status",
+    "errorAssigning": "Error assigning order",
+    "confirmCancel": "Are you sure you want to cancel this order?"
+  },
+  
+  "schedule": {
+    "scheduledDate": "Scheduled Date",
+    "deadline": "Delivery Deadline",
+    "selectDate": "Select a date"
+  }
+}

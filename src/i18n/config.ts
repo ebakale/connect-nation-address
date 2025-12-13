@@ -35,6 +35,10 @@ import businessEN from '../locales/en/business.json';
 import businessES from '../locales/es/business.json';
 import businessFR from '../locales/fr/business.json';
 
+import postalEN from '../locales/en/postal.json';
+import postalES from '../locales/es/postal.json';
+import postalFR from '../locales/fr/postal.json';
+
 const resources = {
   en: {
     common: commonEN,
@@ -46,6 +50,7 @@ const resources = {
     countries: countriesEN,
     car: carEN,
     business: businessEN,
+    postal: postalEN,
   },
   es: {
     common: commonES,
@@ -57,6 +62,7 @@ const resources = {
     countries: countriesES,
     car: carES,
     business: businessES,
+    postal: postalES,
   },
   fr: {
     common: commonFR,
@@ -68,6 +74,7 @@ const resources = {
     countries: countriesFR,
     car: carFR,
     business: businessFR,
+    postal: postalFR,
   },
 };
 

@@ -910,6 +910,256 @@ export type Database = {
         }
         Relationships: []
       }
+      delivery_assignments: {
+        Row: {
+          acknowledged_at: string | null
+          agent_id: string
+          assigned_at: string
+          assigned_by: string
+          estimated_delivery_time: string | null
+          id: string
+          notes: string | null
+          order_id: string
+          route_sequence: number | null
+          started_at: string | null
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          agent_id: string
+          assigned_at?: string
+          assigned_by: string
+          estimated_delivery_time?: string | null
+          id?: string
+          notes?: string | null
+          order_id: string
+          route_sequence?: number | null
+          started_at?: string | null
+        }
+        Update: {
+          acknowledged_at?: string | null
+          agent_id?: string
+          assigned_at?: string
+          assigned_by?: string
+          estimated_delivery_time?: string | null
+          id?: string
+          notes?: string | null
+          order_id?: string
+          route_sequence?: number | null
+          started_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_assignments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      delivery_orders: {
+        Row: {
+          completed_at: string | null
+          completed_by: string | null
+          created_at: string
+          created_by: string
+          declared_value: number | null
+          delivery_deadline: string | null
+          dimensions_cm: string | null
+          id: string
+          notes: string | null
+          order_number: string
+          package_type: Database["public"]["Enums"]["package_type"]
+          priority_level: number
+          recipient_address_uac: string
+          recipient_email: string | null
+          recipient_name: string
+          recipient_phone: string | null
+          requires_id_verification: boolean | null
+          requires_signature: boolean | null
+          scheduled_date: string | null
+          sender_address_uac: string | null
+          sender_branch: string | null
+          sender_name: string
+          sender_phone: string | null
+          special_instructions: string | null
+          status: Database["public"]["Enums"]["delivery_status"]
+          updated_at: string
+          weight_grams: number | null
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          created_by: string
+          declared_value?: number | null
+          delivery_deadline?: string | null
+          dimensions_cm?: string | null
+          id?: string
+          notes?: string | null
+          order_number?: string
+          package_type?: Database["public"]["Enums"]["package_type"]
+          priority_level?: number
+          recipient_address_uac: string
+          recipient_email?: string | null
+          recipient_name: string
+          recipient_phone?: string | null
+          requires_id_verification?: boolean | null
+          requires_signature?: boolean | null
+          scheduled_date?: string | null
+          sender_address_uac?: string | null
+          sender_branch?: string | null
+          sender_name: string
+          sender_phone?: string | null
+          special_instructions?: string | null
+          status?: Database["public"]["Enums"]["delivery_status"]
+          updated_at?: string
+          weight_grams?: number | null
+        }
+        Update: {
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          created_by?: string
+          declared_value?: number | null
+          delivery_deadline?: string | null
+          dimensions_cm?: string | null
+          id?: string
+          notes?: string | null
+          order_number?: string
+          package_type?: Database["public"]["Enums"]["package_type"]
+          priority_level?: number
+          recipient_address_uac?: string
+          recipient_email?: string | null
+          recipient_name?: string
+          recipient_phone?: string | null
+          requires_id_verification?: boolean | null
+          requires_signature?: boolean | null
+          scheduled_date?: string | null
+          sender_address_uac?: string | null
+          sender_branch?: string | null
+          sender_name?: string
+          sender_phone?: string | null
+          special_instructions?: string | null
+          status?: Database["public"]["Enums"]["delivery_status"]
+          updated_at?: string
+          weight_grams?: number | null
+        }
+        Relationships: []
+      }
+      delivery_proof: {
+        Row: {
+          captured_at: string
+          captured_by: string
+          id: string
+          latitude: number | null
+          longitude: number | null
+          notes: string | null
+          order_id: string
+          photo_url: string | null
+          proof_type: string
+          received_by_name: string | null
+          recipient_id_last_digits: string | null
+          recipient_id_type: string | null
+          relationship_to_recipient: string | null
+          signature_data: string | null
+        }
+        Insert: {
+          captured_at?: string
+          captured_by: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          notes?: string | null
+          order_id: string
+          photo_url?: string | null
+          proof_type: string
+          received_by_name?: string | null
+          recipient_id_last_digits?: string | null
+          recipient_id_type?: string | null
+          relationship_to_recipient?: string | null
+          signature_data?: string | null
+        }
+        Update: {
+          captured_at?: string
+          captured_by?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          notes?: string | null
+          order_id?: string
+          photo_url?: string | null
+          proof_type?: string
+          received_by_name?: string | null
+          recipient_id_last_digits?: string | null
+          recipient_id_type?: string | null
+          relationship_to_recipient?: string | null
+          signature_data?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_proof_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      delivery_status_logs: {
+        Row: {
+          changed_at: string
+          changed_by: string
+          id: string
+          latitude: number | null
+          location_accuracy: number | null
+          longitude: number | null
+          new_status: Database["public"]["Enums"]["delivery_status"]
+          notes: string | null
+          order_id: string
+          previous_status: Database["public"]["Enums"]["delivery_status"] | null
+          reason: string | null
+        }
+        Insert: {
+          changed_at?: string
+          changed_by: string
+          id?: string
+          latitude?: number | null
+          location_accuracy?: number | null
+          longitude?: number | null
+          new_status: Database["public"]["Enums"]["delivery_status"]
+          notes?: string | null
+          order_id: string
+          previous_status?:
+            | Database["public"]["Enums"]["delivery_status"]
+            | null
+          reason?: string | null
+        }
+        Update: {
+          changed_at?: string
+          changed_by?: string
+          id?: string
+          latitude?: number | null
+          location_accuracy?: number | null
+          longitude?: number | null
+          new_status?: Database["public"]["Enums"]["delivery_status"]
+          notes?: string | null
+          order_id?: string
+          previous_status?:
+            | Database["public"]["Enums"]["delivery_status"]
+            | null
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_status_logs_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dependent_authorization_audit: {
         Row: {
           action: string
@@ -3307,6 +3557,7 @@ export type Database = {
         Args: { p_flagged_by?: string; p_reason: string; p_request_id: string }
         Returns: boolean
       }
+      generate_delivery_order_number: { Args: never; Returns: string }
       generate_incident_number: { Args: never; Returns: string }
       generate_incident_uac: {
         Args: {
@@ -3673,6 +3924,16 @@ export type Database = {
         | "PORT"
         | "OTHER"
       custody_type_enum: "FULL" | "SHARED" | "PARTIAL" | "TEMPORARY"
+      delivery_status:
+        | "pending_intake"
+        | "ready_for_assignment"
+        | "assigned"
+        | "out_for_delivery"
+        | "delivered"
+        | "failed_delivery"
+        | "address_not_found"
+        | "returned_to_sender"
+        | "cancelled"
       dependent_relationship:
         | "CHILD"
         | "ADOPTED_CHILD"
@@ -3721,6 +3982,15 @@ export type Database = {
         | "other_legal_document"
       membership_status_enum: "ACTIVE" | "MOVED_OUT" | "TEMPORARY" | "VISITING"
       occupant_type: "OWNER" | "TENANT" | "FAMILY" | "OTHER"
+      package_type:
+        | "letter"
+        | "small_parcel"
+        | "medium_parcel"
+        | "large_parcel"
+        | "document"
+        | "registered_mail"
+        | "express"
+        | "government_document"
       privacy_access_level:
         | "public"
         | "restricted"
@@ -3935,6 +4205,17 @@ export const Constants = {
         "OTHER",
       ],
       custody_type_enum: ["FULL", "SHARED", "PARTIAL", "TEMPORARY"],
+      delivery_status: [
+        "pending_intake",
+        "ready_for_assignment",
+        "assigned",
+        "out_for_delivery",
+        "delivered",
+        "failed_delivery",
+        "address_not_found",
+        "returned_to_sender",
+        "cancelled",
+      ],
       dependent_relationship: [
         "CHILD",
         "ADOPTED_CHILD",
@@ -3988,6 +4269,16 @@ export const Constants = {
       ],
       membership_status_enum: ["ACTIVE", "MOVED_OUT", "TEMPORARY", "VISITING"],
       occupant_type: ["OWNER", "TENANT", "FAMILY", "OTHER"],
+      package_type: [
+        "letter",
+        "small_parcel",
+        "medium_parcel",
+        "large_parcel",
+        "document",
+        "registered_mail",
+        "express",
+        "government_document",
+      ],
       privacy_access_level: [
         "public",
         "restricted",
