@@ -73,61 +73,29 @@ serve(async (req) => {
       console.log('Using existing person record:', personId);
     }
 
-    // Step 3: Get verified addresses to use as UACs
-    const { data: verifiedAddresses, error: addressError } = await supabase
-      .from('addresses')
-      .select('uac, street, city, region')
-      .eq('verified', true)
-      .limit(3);
+    // Step 3: Get Josefina's existing citizen addresses
+    const { data: citizenAddresses, error: citizenAddrError } = await supabase
+      .from('citizen_address')
+      .select('uac, address_kind')
+      .eq('person_id', personId)
+      .eq('status', 'CONFIRMED');
 
-    if (addressError || !verifiedAddresses || verifiedAddresses.length === 0) {
-      console.error('No verified addresses found:', addressError);
+    if (citizenAddrError || !citizenAddresses || citizenAddresses.length === 0) {
+      console.error('No citizen addresses found for Josefina:', citizenAddrError);
       return new Response(
-        JSON.stringify({ error: 'No verified addresses found. Please seed addresses first.' }),
+        JSON.stringify({ error: 'Josefina has no registered citizen addresses. Please register at least one address first.' }),
         { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log('Found verified addresses:', verifiedAddresses.length);
+    console.log('Found citizen addresses:', citizenAddresses.length);
+    
+    // Use the PRIMARY address UAC, or the first one if no PRIMARY
+    const primaryAddr = citizenAddresses.find(ca => ca.address_kind === 'PRIMARY');
+    const primaryUac = primaryAddr?.uac || citizenAddresses[0].uac;
+    console.log('Using primary UAC for deliveries:', primaryUac);
 
-    // Step 4: Create citizen_address entries linking Josefina to these UACs
-    const citizenAddresses = verifiedAddresses.map((addr, index) => ({
-      person_id: personId,
-      uac: addr.uac,
-      address_kind: index === 0 ? 'PRIMARY' : 'SECONDARY',
-      scope: 'BUILDING',
-      occupant: 'OWNER',
-      status: 'CONFIRMED',
-      effective_from: new Date().toISOString().split('T')[0],
-      source: 'SEEDED_FOR_TESTING',
-      created_by: josefinaProfile.user_id
-    }));
-
-    // Check for existing citizen addresses to avoid duplicates
-    const { data: existingCitizenAddresses } = await supabase
-      .from('citizen_address')
-      .select('uac')
-      .eq('person_id', personId);
-
-    const existingUacs = new Set(existingCitizenAddresses?.map(ca => ca.uac) || []);
-    const newCitizenAddresses = citizenAddresses.filter(ca => !existingUacs.has(ca.uac));
-
-    if (newCitizenAddresses.length > 0) {
-      const { error: citizenAddrError } = await supabase
-        .from('citizen_address')
-        .insert(newCitizenAddresses);
-
-      if (citizenAddrError) {
-        console.error('Error creating citizen addresses:', citizenAddrError);
-        // Continue anyway, might already exist
-      } else {
-        console.log('Created citizen addresses:', newCitizenAddresses.length);
-      }
-    } else {
-      console.log('Citizen addresses already exist');
-    }
-
-    // Step 5: Get a postal clerk to be the creator
+    // Step 4: Get a postal clerk to be the creator
     const { data: postalClerk } = await supabase
       .from('user_roles')
       .select('user_id')
@@ -137,8 +105,7 @@ serve(async (req) => {
 
     const creatorId = postalClerk?.user_id || josefinaProfile.user_id;
 
-    // Step 6: Create delivery orders for Josefina
-    const primaryUac = verifiedAddresses[0].uac;
+    // Step 5: Create delivery orders for Josefina
     const now = new Date();
     
     const deliveryOrders = [
@@ -309,7 +276,7 @@ serve(async (req) => {
         message: 'Citizen deliveries seeded successfully',
         data: {
           personId,
-          citizenAddressesCreated: newCitizenAddresses.length,
+          primaryUac,
           ordersCreated: createdOrders.length,
           orders: createdOrders
         }
