@@ -35,6 +35,11 @@
     "publiclyVisible": "Públicamente Visible",
     "showOnMaps": "Mostrar en Mapas",
     "showContactInfo": "Mostrar Información de Contacto",
+    "private": "Privado",
+    "hiddenFromMaps": "Oculto en Mapas",
+    "hideContactInfo": "Información de Contacto Oculta",
+    "licenseExpiryDate": "Fecha de Vencimiento de Licencia",
+    "location": "Ubicación",
     "selectLocation": "Seleccionar Ubicación del Negocio",
     "uploadDocuments": "Cargar Documentos de Verificación",
     "businessLicense": "Licencia Comercial",
@@ -155,7 +160,9 @@
     "approveAndVerify": "Aprobar y Verificar",
     "reject": "Rechazar",
     "successMessage": "¡Solicitud de registro de negocio enviada exitosamente!",
-    "selectProvinceFirst": "Selecciona una provincia primero"
+    "selectProvinceFirst": "Selecciona una provincia primero",
+    "verifiedAt": "Verificado El",
+    "verifiedBy": "Verificado Por"
   },
   "approval": {
     "approveBusiness": "Aprobar Negocio",
