@@ -148,7 +148,7 @@ async function loadTranslationFixes() {
         escapeValue: false,
       },
 
-      ns: ['common', 'auth', 'dashboard', 'address', 'emergency', 'admin', 'countries', 'car', 'business'],
+      ns: ['common', 'auth', 'dashboard', 'address', 'emergency', 'admin', 'countries', 'car', 'business', 'postal'],
       defaultNS: 'common',
       
       pluralSeparator: '_',
@@ -190,7 +190,7 @@ i18n
     },
 
     // Namespace and key separator
-    ns: ['common', 'auth', 'dashboard', 'address', 'emergency', 'admin', 'countries', 'car', 'business'],
+    ns: ['common', 'auth', 'dashboard', 'address', 'emergency', 'admin', 'countries', 'car', 'business', 'postal'],
     defaultNS: 'common',
     
     // Pluralization
