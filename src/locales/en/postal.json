@@ -258,6 +258,15 @@
     "estimatedDelivery": "Estimated Delivery"
   },
   
+  "myDeliveries": {
+    "title": "My Deliveries",
+    "description": "Track packages being delivered to your registered addresses",
+    "all": "All",
+    "active": "Active",
+    "completed": "Completed",
+    "noDeliveries": "No deliveries found"
+  },
+  
   "reports": {
     "title": "Delivery Reports",
     "dailyReport": "Daily Report",

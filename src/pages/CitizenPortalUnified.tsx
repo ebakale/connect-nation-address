@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   MapPin, Search, FileText, Clock, LogOut, Phone, FileCheck, 
-  AlertCircle, User, Home, Settings, Users, Bell
+  AlertCircle, User, Home, Settings, Users, Bell, Package
 } from "lucide-react";
 
 // Hooks and Components
@@ -30,6 +30,7 @@ import { SetPrimaryAddressForm } from "@/components/SetPrimaryAddressForm";
 import { SavedLocationsManager } from "@/components/SavedLocationsManager";
 import { AddSecondaryAddressForm } from "@/components/AddSecondaryAddressForm";
 import { AddressPrivacySettings } from "@/components/AddressPrivacySettings";
+import CitizenDeliveriesView from "@/components/citizen/CitizenDeliveriesView";
 
 interface SearchResult {
   uac: string;
@@ -175,6 +176,10 @@ const CitizenPortalUnified = () => {
                 <TabsTrigger value="verification" className="flex items-center gap-2">
                   <FileCheck className="h-4 w-4" />
                   <span className="hidden sm:inline">Verification</span>
+                </TabsTrigger>
+                <TabsTrigger value="deliveries" className="flex items-center gap-2">
+                  <Package className="h-4 w-4" />
+                  <span className="hidden sm:inline">{t('postal:myDeliveries.title', 'Deliveries')}</span>
                 </TabsTrigger>
                 <TabsTrigger value="notifications" className="flex items-center gap-2">
                   <Bell className="h-4 w-4" />
@@ -522,6 +527,13 @@ const CitizenPortalUnified = () => {
               </Card>
             </div>
           </TabsContent>
+
+          {/* My Deliveries Tab (authenticated only) */}
+          {isAuthenticated && (
+            <TabsContent value="deliveries">
+              <CitizenDeliveriesView />
+            </TabsContent>
+          )}
         </Tabs>
 
         {/* Footer */}
