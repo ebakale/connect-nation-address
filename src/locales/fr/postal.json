@@ -225,7 +225,12 @@
     "editOrder": "Modifier la Commande",
     "cancelOrder": "Annuler la Commande",
     "printLabel": "Imprimer l'Étiquette",
-    "generateQR": "Générer le Code QR"
+    "generateQR": "Générer le Code QR",
+    "createTestUsers": "Créer des Utilisateurs de Test Postal",
+    "usersCreated": "Utilisateurs Créés",
+    "creating": "Création des utilisateurs...",
+    "success": "Succès",
+    "error": "Erreur"
   },
   
   "validation": {
@@ -248,7 +253,8 @@
     "errorCreatingOrder": "Erreur lors de la création de la commande",
     "errorUpdatingStatus": "Erreur lors de la mise à jour du statut",
     "errorAssigning": "Erreur lors de l'affectation de la commande",
-    "confirmCancel": "Êtes-vous sûr de vouloir annuler cette commande ?"
+    "confirmCancel": "Êtes-vous sûr de vouloir annuler cette commande ?",
+    "seedDescription": "Créer des utilisateurs de test pour le développement et les tests. Cela créera 5 utilisateurs avec différents rôles postaux."
   },
   
   "schedule": {

@@ -6,11 +6,12 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { usePostalRole } from '@/hooks/usePostalRole';
 import { useDeliveryOrders } from '@/hooks/useDeliveryOrders';
-import { Package, Plus, Truck, Users, BarChart3, Clock, CheckCircle, AlertTriangle, RotateCcw } from 'lucide-react';
+import { Package, Plus, Truck, Users, BarChart3, Clock, CheckCircle, AlertTriangle, RotateCcw, Settings } from 'lucide-react';
 import { DeliveryOrderForm } from './DeliveryOrderForm';
 import { DeliveryOrdersList } from './DeliveryOrdersList';
 import { DeliveryAgentView } from './DeliveryAgentView';
 import { PostalReports } from './PostalReports';
+import { SeedPostalUsers } from './SeedPostalUsers';
 
 export const PostalDashboard = () => {
   const { t } = useTranslation('postal');
@@ -96,6 +97,13 @@ export const PostalDashboard = () => {
               <span className="sm:hidden">{t('reports.title')}</span>
             </TabsTrigger>
           )}
+
+          {(isPostalSupervisor || isAdmin) && (
+            <TabsTrigger value="admin" className="text-xs sm:text-sm">
+              <Settings className="h-4 w-4 mr-1 sm:mr-2" />
+              <span>Admin</span>
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
@@ -117,6 +125,12 @@ export const PostalDashboard = () => {
         {canViewReports && (
           <TabsContent value="reports" className="space-y-4">
             <PostalReports />
+          </TabsContent>
+        )}
+
+        {(isPostalSupervisor || isAdmin) && (
+          <TabsContent value="admin" className="space-y-4">
+            <SeedPostalUsers />
           </TabsContent>
         )}
       </Tabs>

@@ -1933,5 +1933,11 @@
     "requestSent": "Resource request sent to dispatch",
     "requestFailed": "Failed to send resource request",
     "specifyItems": "Please specify what resources you need"
+  },
+  "postalRoles": {
+    "postal_clerk": "Postal Clerk",
+    "postal_agent": "Delivery Agent",
+    "postal_dispatcher": "Postal Dispatcher",
+    "postal_supervisor": "Postal Supervisor"
   }
 }

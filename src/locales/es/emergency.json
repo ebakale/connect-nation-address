@@ -1941,5 +1941,11 @@
     "requestSent": "Solicitud de recursos enviada al despacho",
     "requestFailed": "Error al enviar solicitud de recursos",
     "specifyItems": "Por favor especifique qué recursos necesita"
+  },
+  "postalRoles": {
+    "postal_clerk": "Empleado Postal",
+    "postal_agent": "Agente de Entrega",
+    "postal_dispatcher": "Despachador Postal",
+    "postal_supervisor": "Supervisor Postal"
   }
 }

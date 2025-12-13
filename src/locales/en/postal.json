@@ -225,7 +225,12 @@
     "editOrder": "Edit Order",
     "cancelOrder": "Cancel Order",
     "printLabel": "Print Label",
-    "generateQR": "Generate QR Code"
+    "generateQR": "Generate QR Code",
+    "createTestUsers": "Create Test Postal Users",
+    "usersCreated": "Users Created",
+    "creating": "Creating users...",
+    "success": "Success",
+    "error": "Error"
   },
   
   "validation": {
@@ -248,7 +253,8 @@
     "errorCreatingOrder": "Error creating order",
     "errorUpdatingStatus": "Error updating status",
     "errorAssigning": "Error assigning order",
-    "confirmCancel": "Are you sure you want to cancel this order?"
+    "confirmCancel": "Are you sure you want to cancel this order?",
+    "seedDescription": "Create test postal users for development and testing. This will create 5 users with different postal roles."
   },
   
   "schedule": {
