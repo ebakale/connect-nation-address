@@ -3635,6 +3635,10 @@ export type Database = {
         | "car_admin"
         | "car_verifier"
         | "residency_verifier"
+        | "postal_clerk"
+        | "postal_agent"
+        | "postal_dispatcher"
+        | "postal_supervisor"
       business_address_type:
         | "RESIDENTIAL"
         | "COMMERCIAL"
@@ -3890,6 +3894,10 @@ export const Constants = {
         "car_admin",
         "car_verifier",
         "residency_verifier",
+        "postal_clerk",
+        "postal_agent",
+        "postal_dispatcher",
+        "postal_supervisor",
       ],
       business_address_type: [
         "RESIDENTIAL",
