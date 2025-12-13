@@ -20,6 +20,7 @@ import Documentation from "./pages/Documentation";
 import { UnitsAndProfilesPage } from "./pages/UnitsAndProfilesPage";
 import CitizenPortalUnified from "./pages/CitizenPortalUnified";
 import { DemoPresentationPage } from "./pages/DemoPresentationPage";
+import { DemoScriptPage } from "./pages/DemoScriptPage";
 import { BusinessAddressRegistrationForm } from "./components/BusinessAddressRegistrationForm";
 import MyBusinesses from "./pages/MyBusinesses";
 
@@ -67,6 +68,7 @@ const AppRoutes = () => {
       <Route path="/portal" element={<Portal />} />
       <Route path="/citizen" element={<CitizenPortalUnified />} />
       <Route path="/demo-presentation" element={<DemoPresentationPage />} />
+      <Route path="/demo-script" element={<DemoScriptPage />} />
       <Route path="/documentation" element={<Documentation />} />
       
       <Route path="/dashboard" element={<ProtectedRoute><UnifiedDashboard /></ProtectedRoute>} />
