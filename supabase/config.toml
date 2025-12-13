@@ -53,3 +53,6 @@ verify_jwt = true
 
 [functions.postal-analytics-api]
 verify_jwt = false
+
+[functions.track-delivery]
+verify_jwt = false
