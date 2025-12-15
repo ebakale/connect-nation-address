@@ -10,6 +10,10 @@ export const usePickupRequests = () => {
   const { user } = useAuth();
   const [requests, setRequests] = useState<PickupRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lastFetchParams, setLastFetchParams] = useState<{
+    statusFilter?: PickupStatus | PickupStatus[];
+    agentId?: string;
+  }>({});
 
   const fetchRequests = useCallback(async (
     statusFilter?: PickupStatus | PickupStatus[],
@@ -17,6 +21,7 @@ export const usePickupRequests = () => {
   ) => {
     if (!user) return;
     setLoading(true);
+    setLastFetchParams({ statusFilter, agentId });
 
     try {
       let query = supabase
@@ -62,6 +67,32 @@ export const usePickupRequests = () => {
     if (!user) return;
     await fetchRequests(statusFilter, user.id);
   }, [user, fetchRequests]);
+
+  // Real-time subscription for pickup request updates
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('pickup-requests-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'pickup_requests'
+        },
+        (payload) => {
+          console.log('Pickup request change detected:', payload.eventType);
+          // Re-fetch with the last used parameters
+          fetchRequests(lastFetchParams.statusFilter, lastFetchParams.agentId);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, fetchRequests, lastFetchParams]);
 
   const createRequest = async (input: CreatePickupRequestInput): Promise<PickupRequest | null> => {
     if (!user) return null;
