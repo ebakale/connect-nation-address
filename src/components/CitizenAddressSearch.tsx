@@ -89,15 +89,15 @@ export const CitizenAddressSearch = () => {
 
       if (data.results?.length === 0) {
         toast({
-          title: t('common:search.noResults'),
-          description: t('common:search.noResultsDescription'),
+          title: t('common:searchResults.noResults'),
+          description: t('common:searchResults.noResultsDescription'),
         });
       }
     } catch (error: any) {
       console.error('Search error:', error);
       toast({
         title: t('common:status.error'),
-        description: error.message || t('common:search.searchError'),
+        description: error.message || t('common:searchResults.searchError'),
         variant: "destructive"
       });
     } finally {
@@ -178,15 +178,15 @@ export const CitizenAddressSearch = () => {
       {hasSearched && (
         <Card>
           <CardHeader>
-            <CardTitle>{t('common:search.results')} ({searchResults.length})</CardTitle>
+            <CardTitle>{t('common:searchResults.results')} ({searchResults.length})</CardTitle>
           </CardHeader>
           <CardContent>
             {searchResults.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <AlertTriangle className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                <p>{t('common:search.noResults')}</p>
+                <p>{t('common:searchResults.noResults')}</p>
                 <p className="text-sm mt-2">
-                  {t('common:search.optInRequired')}
+                  {t('common:searchResults.optInRequired')}
                 </p>
               </div>
             ) : (
