@@ -255,16 +255,39 @@ export const usePostalLabels = () => {
 
       // Generate PDF
       const pdfBlob = await generateLabelPDF(order, trackingNumber);
-      
-      // Open PDF in new window for printing
       const pdfUrl = URL.createObjectURL(pdfBlob);
-      const printWindow = window.open(pdfUrl, '_blank');
       
-      if (printWindow) {
-        printWindow.onload = () => {
-          printWindow.print();
-        };
-      }
+      // Create hidden iframe for reliable printing (avoids popup blockers)
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'fixed';
+      iframe.style.right = '0';
+      iframe.style.bottom = '0';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = 'none';
+      iframe.src = pdfUrl;
+      
+      document.body.appendChild(iframe);
+      
+      iframe.onload = () => {
+        // Wait for PDF to fully render, then print
+        setTimeout(() => {
+          try {
+            iframe.contentWindow?.print();
+          } catch (e) {
+            // Fallback: open in new tab if iframe printing fails
+            window.open(pdfUrl, '_blank');
+          }
+          
+          // Clean up iframe after printing dialog closes
+          setTimeout(() => {
+            if (iframe.parentNode) {
+              document.body.removeChild(iframe);
+            }
+            URL.revokeObjectURL(pdfUrl);
+          }, 1000);
+        }, 500);
+      };
 
       // Record print action
       if (existingLabel) {
