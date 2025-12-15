@@ -1137,6 +1137,7 @@
   "schedulePickupDescription": "Request postal agents to collect packages from your location",
   "createPickupRequest": "Create Pickup Request",
   "myPickupRequests": "My Pickup Requests",
+  "myPickupRequestsDescription": "View, edit, or cancel your pending pickup requests",
   "deliveryPreferencesDescription": "Set your delivery preferences for each of your registered addresses",
   "managePreferences": "Manage Preferences",
   "noAddressesForPreferences": "You don't have any registered addresses yet. Register an address first to set delivery preferences."

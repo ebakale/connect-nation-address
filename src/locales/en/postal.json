@@ -460,7 +460,30 @@
       "completed": "Completed",
       "cancelled": "Cancelled",
       "failed": "Failed"
-    }
+    },
+    "viewDetails": "View Details",
+    "editRequest": "Edit",
+    "cancelRequest": "Cancel",
+    "requestDetails": "Pickup Request Details",
+    "editRequestTitle": "Edit Pickup Request",
+    "saveChanges": "Save Changes",
+    "notSpecified": "Not specified",
+    "assignmentInfo": "Assignment Information",
+    "assignedAgent": "Assigned Agent",
+    "assignedAt": "Assigned At",
+    "completionInfo": "Completion Information",
+    "completedAt": "Completed At",
+    "createdAt": "Created",
+    "updatedAt": "Last Updated",
+    "notes": "Notes",
+    "contactEmail": "Contact Email",
+    "cancelConfirmTitle": "Cancel Pickup Request?",
+    "cancelConfirmDescription": "This action cannot be undone. The pickup request will be cancelled.",
+    "confirmCancel": "Yes, Cancel Request",
+    "requestUpdated": "Pickup request updated successfully",
+    "requestCancelled": "Pickup request cancelled",
+    "updateError": "Error updating pickup request",
+    "cancelError": "Error cancelling pickup request"
   },
   
   "returns": {

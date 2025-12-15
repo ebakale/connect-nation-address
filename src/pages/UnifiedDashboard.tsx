@@ -60,6 +60,7 @@ import { BusinessDirectory } from '@/components/BusinessDirectory';
 import CitizenDeliveriesView from '@/components/citizen/CitizenDeliveriesView';
 import { PickupRequestForm } from '@/components/postal/PickupRequestForm';
 import { DeliveryPreferencesForm } from '@/components/postal/DeliveryPreferencesForm';
+import { CitizenPickupRequestCard } from '@/components/postal/CitizenPickupRequestCard';
 import { usePickupRequests } from '@/hooks/usePickupRequests';
 import { useCitizenAddresses } from '@/hooks/useCAR';
 import { Truck } from 'lucide-react';
@@ -185,7 +186,7 @@ const UnifiedDashboard = () => {
   const [deliveryPreferencesOpen, setDeliveryPreferencesOpen] = useState(false);
   const [selectedAddressForPrefs, setSelectedAddressForPrefs] = useState<string>('');
   const [citizenAddressDetails, setCitizenAddressDetails] = useState<Array<{uac: string; street: string; city: string}>>([]);
-  const { requests: pickupRequests, fetchRequests: fetchPickupRequests } = usePickupRequests();
+  const { requests: pickupRequests, fetchRequests: fetchPickupRequests, updateRequest, cancelRequest } = usePickupRequests();
   
   // Use the proper hook that handles auth_user_id -> person_id lookup correctly
   const { currentAddresses, loading: addressesLoading } = useCitizenAddresses();
@@ -1211,21 +1212,17 @@ const UnifiedDashboard = () => {
               <Card>
                 <CardHeader>
                   <CardTitle>{t('dashboard:myPickupRequests')}</CardTitle>
+                  <CardDescription>{t('dashboard:myPickupRequestsDescription')}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {pickupRequests.map((request) => (
-                      <div key={request.id} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div>
-                          <p className="font-medium">{request.pickup_address_uac}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {new Date(request.preferred_date).toLocaleDateString()} - {request.preferred_time_window}
-                          </p>
-                        </div>
-                        <Badge variant={request.status === 'completed' ? 'default' : 'secondary'}>
-                          {t(`postal:status.${request.status}`)}
-                        </Badge>
-                      </div>
+                      <CitizenPickupRequestCard
+                        key={request.id}
+                        request={request}
+                        onCancel={cancelRequest}
+                        onUpdate={updateRequest}
+                      />
                     ))}
                   </div>
                 </CardContent>

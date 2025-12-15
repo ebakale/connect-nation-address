@@ -164,6 +164,55 @@ export const usePickupRequests = () => {
     }
   };
 
+  const updateRequest = async (
+    requestId: string,
+    updates: Partial<CreatePickupRequestInput>
+  ): Promise<boolean> => {
+    if (!user) return false;
+
+    try {
+      const { error } = await supabase
+        .from('pickup_requests')
+        .update(updates)
+        .eq('id', requestId)
+        .eq('requester_id', user.id)
+        .eq('status', 'pending');
+
+      if (error) throw error;
+
+      toast.success(t('pickup.requestUpdated'));
+      await fetchRequests();
+      return true;
+    } catch (error) {
+      console.error('Error updating pickup request:', error);
+      toast.error(t('pickup.updateError'));
+      return false;
+    }
+  };
+
+  const cancelRequest = async (requestId: string): Promise<boolean> => {
+    if (!user) return false;
+
+    try {
+      const { error } = await supabase
+        .from('pickup_requests')
+        .update({ status: 'cancelled' as PickupStatus })
+        .eq('id', requestId)
+        .eq('requester_id', user.id)
+        .eq('status', 'pending');
+
+      if (error) throw error;
+
+      toast.success(t('pickup.requestCancelled'));
+      await fetchRequests();
+      return true;
+    } catch (error) {
+      console.error('Error cancelling pickup request:', error);
+      toast.error(t('pickup.cancelError'));
+      return false;
+    }
+  };
+
   useEffect(() => {
     if (user) {
       fetchRequests();
@@ -178,5 +227,7 @@ export const usePickupRequests = () => {
     createRequest,
     assignRequest,
     updateStatus,
+    updateRequest,
+    cancelRequest,
   };
 };
