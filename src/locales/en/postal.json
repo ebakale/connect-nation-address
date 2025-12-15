@@ -378,5 +378,122 @@
     "scheduledDate": "Scheduled Date",
     "deadline": "Delivery Deadline",
     "selectDate": "Select a date"
+  },
+  
+  "pickup": {
+    "title": "Pickup Requests",
+    "requestPickup": "Request Pickup",
+    "requestCreated": "Pickup request created successfully",
+    "requestError": "Error creating pickup request",
+    "assignmentSuccess": "Pickup assigned successfully",
+    "packageCount": "Number of Packages",
+    "estimatedWeight": "Estimated Weight (g)",
+    "packageDescription": "Package Description",
+    "preferredDate": "Preferred Pickup Date",
+    "preferredTime": "Preferred Time Window",
+    "contactName": "Contact Name",
+    "contactPhone": "Contact Phone",
+    "pickupNotes": "Pickup Notes"
+  },
+  
+  "returns": {
+    "title": "Returns",
+    "initiateReturn": "Initiate Return",
+    "returnCreated": "Return initiated successfully",
+    "returnError": "Error initiating return",
+    "labelGenerated": "Return label generated",
+    "labelError": "Error generating label",
+    "returnReason": "Return Reason",
+    "reasons": {
+      "wrong_item": "Wrong Item",
+      "damaged": "Damaged",
+      "refused": "Refused",
+      "undeliverable": "Undeliverable",
+      "customer_return": "Customer Return",
+      "address_incorrect": "Address Incorrect",
+      "other": "Other"
+    },
+    "statuses": {
+      "initiated": "Initiated",
+      "label_generated": "Label Generated",
+      "pickup_scheduled": "Pickup Scheduled",
+      "in_transit": "In Transit",
+      "received": "Received",
+      "processed": "Processed",
+      "cancelled": "Cancelled"
+    }
+  },
+  
+  "labels": {
+    "title": "Shipping Labels",
+    "generateLabel": "Generate Label",
+    "printLabel": "Print Label",
+    "downloadLabel": "Download Label",
+    "generated": "Label generated successfully",
+    "generateError": "Error generating label",
+    "printing": "Opening print dialog...",
+    "printError": "Error printing label",
+    "downloaded": "Label downloaded",
+    "downloadError": "Error downloading label"
+  },
+  
+  "bulkImport": {
+    "title": "Bulk Import",
+    "uploadFile": "Upload CSV File",
+    "downloadTemplate": "Download Template",
+    "importComplete": "Import complete: {{success}} of {{total}} orders created",
+    "importError": "Error processing import",
+    "invalidPackageType": "Invalid package type",
+    "invalidPriority": "Priority must be 1-5",
+    "invalidCODAmount": "Invalid COD amount",
+    "processing": "Processing...",
+    "selectFile": "Select a CSV file to import"
+  },
+  
+  "cod": {
+    "title": "Cash on Delivery",
+    "amount": "COD Amount",
+    "required": "COD Required",
+    "collectPayment": "Collect Payment",
+    "paymentCollected": "Payment collected successfully",
+    "collectionError": "Error collecting payment",
+    "fundsRemitted": "Funds remitted successfully",
+    "remittanceError": "Error remitting funds",
+    "paymentMethod": "Payment Method",
+    "cash": "Cash",
+    "mobileMoney": "Mobile Money",
+    "receiptNumber": "Receipt Number",
+    "pendingCollection": "Pending Collection",
+    "collected": "Collected",
+    "remitted": "Remitted"
+  },
+  
+  "preferences": {
+    "title": "Delivery Preferences",
+    "saved": "Preferences saved successfully",
+    "saveError": "Error saving preferences",
+    "deleted": "Preferences deleted",
+    "deleteError": "Error deleting preferences",
+    "timeWindow": "Preferred Time Window",
+    "morning": "Morning (8:00 - 12:00)",
+    "afternoon": "Afternoon (12:00 - 17:00)",
+    "evening": "Evening (17:00 - 20:00)",
+    "any": "Any Time",
+    "safeDrop": "Safe Drop Location",
+    "safeDropAuth": "Authorize safe drop",
+    "alternateRecipient": "Alternate Recipient",
+    "alternateRecipientAuth": "Authorize alternate recipient",
+    "holdAtPostOffice": "Hold at Post Office",
+    "allowNeighbor": "Allow neighbor delivery",
+    "notifications": "Notification Preferences",
+    "emailNotifications": "Email Notifications",
+    "smsNotifications": "SMS Notifications"
+  },
+  
+  "timeWindows": {
+    "morning": "Morning (8-12)",
+    "afternoon": "Afternoon (12-17)",
+    "evening": "Evening (17-20)",
+    "any": "Any Time"
   }
 }
