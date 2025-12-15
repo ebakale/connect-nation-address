@@ -29,17 +29,18 @@ const RoutingControl: React.FC<{
   destination: L.LatLng;
   onRouteCalculated: (distance: number, duration: number, steps: RouteStep[]) => void;
   onRouteError: () => void;
-  onRouteStart: () => void;
-}> = ({ origin, destination, onRouteCalculated, onRouteError, onRouteStart }) => {
+}> = ({ origin, destination, onRouteCalculated, onRouteError }) => {
   const map = useMap();
   const routingControlRef = useRef<L.Control | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
     if (!map || !origin || !destination) return;
-
-    // Signal route calculation started
-    onRouteStart();
+    
+    // Prevent double initialization
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
 
     // Remove existing control
     if (routingControlRef.current) {
@@ -122,7 +123,7 @@ const RoutingControl: React.FC<{
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, origin, destination]);
+  }, [map]);
 
   return null;
 };
@@ -191,6 +192,7 @@ export const RouteMapView: React.FC<RouteMapViewProps> = ({
         getDestinationFromUAC(deliveryUAC)
       ]);
       setIsInitializing(false);
+      setIsCalculatingRoute(true); // Start calculating route when map shows
     };
     initialize();
   }, [deliveryUAC, getUserLocation, getDestinationFromUAC]);
@@ -208,16 +210,12 @@ export const RouteMapView: React.FC<RouteMapViewProps> = ({
     setIsCalculatingRoute(false);
   }, []);
 
-  const handleRouteStart = useCallback(() => {
-    setIsCalculatingRoute(true);
-    setRouteError(false);
-  }, []);
-
   const handleRetryRoute = useCallback(() => {
     setRouteError(false);
     setRouteDistance(null);
     setRouteDuration(null);
     setRouteSteps([]);
+    setIsCalculatingRoute(true);
     setRouteKey(prev => prev + 1); // Force re-mount of RoutingControl
   }, []);
 
@@ -405,7 +403,6 @@ export const RouteMapView: React.FC<RouteMapViewProps> = ({
                 destination={L.latLng(destination.lat, destination.lng)}
                 onRouteCalculated={handleRouteCalculated}
                 onRouteError={handleRouteError}
-                onRouteStart={handleRouteStart}
               />
             </MapContainer>
           </div>
