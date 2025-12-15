@@ -459,13 +459,21 @@
   
   "labels": {
     "title": "Shipping Labels",
+    "preview": "Label Preview",
+    "from": "From",
+    "to": "To",
+    "signatureRequired": "Signature Required",
+    "idRequired": "ID Required",
+    "generate": "Generate Label",
     "generateLabel": "Generate Label",
     "printLabel": "Print Label",
     "downloadLabel": "Download Label",
     "generated": "Label generated successfully",
     "generateError": "Error generating label",
+    "print": "Print",
     "printing": "Opening print dialog...",
     "printError": "Error printing label",
+    "download": "Download",
     "downloaded": "Label downloaded",
     "downloadError": "Error downloading label"
   },
