@@ -8,7 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useDeliveryPreferences } from '@/hooks/useDeliveryPreferences';
-import { TimeWindow } from '@/types/postalEnhanced';
+import { TimeWindow, DeliveryPreferences } from '@/types/postalEnhanced';
 import { Clock, User, MapPin, Bell, Save, Trash2 } from 'lucide-react';
 
 interface DeliveryPreferencesFormProps {
@@ -19,8 +19,9 @@ interface DeliveryPreferencesFormProps {
 
 export const DeliveryPreferencesForm = ({ open, onClose, addressUac }: DeliveryPreferencesFormProps) => {
   const { t } = useTranslation('postal');
-  const { preferences, loading, savePreferences, deletePreferences } = useDeliveryPreferences(addressUac);
+  const { getPreferencesByUAC, savePreferences, deletePreferences } = useDeliveryPreferences();
   const [saving, setSaving] = useState(false);
+  const [existingPrefs, setExistingPrefs] = useState<DeliveryPreferences | null>(null);
   
   const [formData, setFormData] = useState({
     preferred_time_window: 'any' as TimeWindow,
@@ -38,37 +39,47 @@ export const DeliveryPreferencesForm = ({ open, onClose, addressUac }: DeliveryP
   });
 
   useEffect(() => {
-    if (preferences) {
-      setFormData({
-        preferred_time_window: (preferences.preferred_time_window as TimeWindow) || 'any',
-        safe_drop_authorized: preferences.safe_drop_authorized || false,
-        safe_drop_location: preferences.safe_drop_location || '',
-        alternate_recipient_authorized: preferences.alternate_recipient_authorized || false,
-        alternate_recipient_name: preferences.alternate_recipient_name || '',
-        alternate_recipient_phone: preferences.alternate_recipient_phone || '',
-        hold_at_post_office: preferences.hold_at_post_office || false,
-        allow_neighbor_delivery: preferences.allow_neighbor_delivery || false,
-        notification_email: preferences.notification_email ?? true,
-        notification_sms: preferences.notification_sms ?? true,
-        notification_push: preferences.notification_push || false,
-        special_instructions: preferences.special_instructions || '',
-      });
-    }
-  }, [preferences]);
+    const loadPreferences = async () => {
+      if (open && addressUac) {
+        const prefs = await getPreferencesByUAC(addressUac);
+        if (prefs) {
+          setExistingPrefs(prefs);
+          setFormData({
+            preferred_time_window: prefs.preferred_time_window || 'any',
+            safe_drop_authorized: prefs.safe_drop_authorized || false,
+            safe_drop_location: prefs.safe_drop_location || '',
+            alternate_recipient_authorized: prefs.alternate_recipient_authorized || false,
+            alternate_recipient_name: prefs.alternate_recipient_name || '',
+            alternate_recipient_phone: prefs.alternate_recipient_phone || '',
+            hold_at_post_office: prefs.hold_at_post_office || false,
+            allow_neighbor_delivery: prefs.allow_neighbor_delivery || false,
+            notification_email: prefs.notification_email ?? true,
+            notification_sms: prefs.notification_sms ?? true,
+            notification_push: prefs.notification_push || false,
+            special_instructions: prefs.special_instructions || '',
+          });
+        }
+      }
+    };
+    loadPreferences();
+  }, [open, addressUac, getPreferencesByUAC]);
 
   const timeWindows: TimeWindow[] = ['any', 'morning', 'afternoon', 'evening'];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    await savePreferences(formData);
+    await savePreferences({
+      address_uac: addressUac,
+      ...formData,
+    });
     setSaving(false);
     onClose();
   };
 
   const handleDelete = async () => {
-    if (confirm(t('preferences.confirmDelete'))) {
-      await deletePreferences();
+    if (existingPrefs && confirm(t('preferences.confirmDelete'))) {
+      await deletePreferences(existingPrefs.id);
       onClose();
     }
   };
@@ -231,7 +242,7 @@ export const DeliveryPreferencesForm = ({ open, onClose, addressUac }: DeliveryP
 
           {/* Actions */}
           <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
-            {preferences && (
+            {existingPrefs && (
               <Button type="button" variant="destructive" onClick={handleDelete} className="w-full sm:w-auto">
                 <Trash2 className="h-4 w-4 mr-2" />
                 {t('preferences.delete')}

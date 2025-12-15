@@ -94,7 +94,7 @@ export const ReturnOrdersList = () => {
                   <div className="flex items-start justify-between">
                     <div>
                       <p className="font-mono font-medium">{ret.return_number}</p>
-                      <Badge className={getStatusColor(ret.status as ReturnStatus)}>
+                      <Badge className={getStatusColor(ret.status)}>
                         {t(`returns.status.${ret.status}`)}
                       </Badge>
                     </div>
@@ -106,7 +106,7 @@ export const ReturnOrdersList = () => {
                   <div className="flex items-center gap-2 text-sm">
                     <Package className="h-4 w-4 text-muted-foreground" />
                     <span>{t('returns.originalOrder')}: </span>
-                    <span className="font-mono">{ret.original_order_id.slice(0, 8)}...</span>
+                    <span className="font-mono">{ret.original_order_id?.slice(0, 8) || 'N/A'}...</span>
                   </div>
 
                   <div className="text-sm">
@@ -114,9 +114,9 @@ export const ReturnOrdersList = () => {
                     <span>{t(`returns.reasons.${ret.return_reason}`)}</span>
                   </div>
 
-                  {ret.reason_details && (
+                  {ret.return_reason_details && (
                     <p className="text-sm text-muted-foreground border-l-2 pl-3">
-                      {ret.reason_details}
+                      {ret.return_reason_details}
                     </p>
                   )}
 
