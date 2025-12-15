@@ -54,10 +54,10 @@ const AdminPanel: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-hidden">
       <Tabs defaultValue="users" className="space-y-6">
-        <div className="border-b">
-          <TabsList className="h-auto p-1 bg-muted/50 flex flex-wrap gap-1 rounded-lg">
+        <div className="border-b overflow-x-auto">
+          <TabsList className="h-auto p-1 bg-muted/50 flex flex-wrap gap-1 rounded-lg min-w-max sm:min-w-0">
             <TabsTrigger value="users" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
               {t('userManagement')}
             </TabsTrigger>

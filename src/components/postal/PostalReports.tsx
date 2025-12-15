@@ -126,7 +126,7 @@ export const PostalReports = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-hidden">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-2">
@@ -195,14 +195,14 @@ export const PostalReports = () => {
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-hidden">
         {/* Daily Trends */}
-        <Card>
+        <Card className="overflow-hidden">
           <CardHeader>
             <CardTitle className="text-base">{t('reports.dailyTrends')}</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="h-[250px]">
+          <CardContent className="overflow-x-auto">
+            <div className="h-[250px] min-w-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data?.dailyTrends || []}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -242,12 +242,12 @@ export const PostalReports = () => {
         </Card>
 
         {/* Status Distribution */}
-        <Card>
+        <Card className="overflow-hidden">
           <CardHeader>
             <CardTitle className="text-base">{t('reports.statusDistribution')}</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="h-[250px]">
+          <CardContent className="overflow-x-auto">
+            <div className="h-[250px] min-w-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -272,12 +272,12 @@ export const PostalReports = () => {
         </Card>
 
         {/* Package Types */}
-        <Card>
+        <Card className="overflow-hidden">
           <CardHeader>
             <CardTitle className="text-base">{t('reports.packageTypes')}</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="h-[250px]">
+          <CardContent className="overflow-x-auto">
+            <div className="h-[250px] min-w-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data?.packageTypeDistribution || []}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -292,12 +292,12 @@ export const PostalReports = () => {
         </Card>
 
         {/* Priority Distribution */}
-        <Card>
+        <Card className="overflow-hidden">
           <CardHeader>
             <CardTitle className="text-base">{t('reports.priorityDistribution')}</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="h-[250px]">
+          <CardContent className="overflow-x-auto">
+            <div className="h-[250px] min-w-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data?.priorityDistribution || []} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -314,13 +314,13 @@ export const PostalReports = () => {
 
       {/* Agent Performance */}
       {data?.agentPerformance && data.agentPerformance.length > 0 && (
-        <Card>
+        <Card className="overflow-hidden">
           <CardHeader>
             <CardTitle className="text-base">{t('reports.agentPerformance')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+            <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+              <table className="w-full text-sm min-w-[400px]">
                 <thead>
                   <tr className="border-b">
                     <th className="text-left p-2">{t('reports.agent')}</th>

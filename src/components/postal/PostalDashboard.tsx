@@ -97,8 +97,8 @@ export const PostalDashboard = () => {
       </div>
 
       {/* Main Content Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2 sm:flex sm:flex-wrap h-auto gap-1 bg-muted/50 p-1">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 overflow-hidden">
+        <TabsList className="grid w-full grid-cols-2 sm:flex sm:flex-wrap h-auto gap-1 bg-muted/50 p-1 overflow-x-auto">
           {!isPostalAgent && (
             <TabsTrigger value="overview" className="text-xs sm:text-sm">
               <Package className="h-4 w-4 mr-1 sm:mr-2" />

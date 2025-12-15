@@ -642,7 +642,7 @@ const PoliceDashboard = () => {
 
   return (
     <>
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Header - Government Emergency Styling */}
       <header className="border-b bg-card shadow-sm">
         <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
@@ -699,7 +699,7 @@ const PoliceDashboard = () => {
       </header>
 
       {/* Main Content - Optimized Layout */}
-      <main className="px-2 sm:px-4 py-3">
+      <main className="px-2 sm:px-4 py-3 overflow-x-hidden">
         {/* Show admin panel directly if user has only admin access */}
         {hasPoliceAdminAccess && !isPoliceOperator && !isPoliceDispatcher && !isPoliceSupervisor ? (
           <div className="max-w-7xl mx-auto">
@@ -719,17 +719,17 @@ const PoliceDashboard = () => {
               </div>
             )}
 
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3 overflow-hidden">
               {/* Compact Tab Navigation */}
               {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher ? (
-                <TabsList className="grid grid-cols-2 gap-2">
+                <TabsList className="grid grid-cols-2 gap-2 overflow-x-auto">
                   <TabsTrigger value="field" className="text-sm">
                     <Radio className="h-4 w-4 mr-2" />
                     {t('myUnit')}
                   </TabsTrigger>
                 </TabsList>
               ) : (
-                <TabsList className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+                <TabsList className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 overflow-x-auto">
                   {!hasPoliceAdminAccess && !isPoliceSupervisor && isPoliceOperator && (
                     <TabsTrigger value="field" className="text-sm">
                       <Radio className="h-4 w-4 mr-2" />

@@ -333,10 +333,10 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
 
   return (
     <Sidebar className={cn(
-      "border-r border-border bg-card",
-      collapsed ? "w-16" : "w-64"
+      "border-r border-border bg-card shrink-0",
+      collapsed ? "w-16 max-w-16" : "w-64 max-w-64"
     )}>
-      <SidebarContent className="gap-0 py-2">
+      <SidebarContent className="gap-0 py-2 overflow-x-hidden">
         {/* Header */}
         {!collapsed && (
           <div className="px-4 py-3 border-b border-border mb-2">
