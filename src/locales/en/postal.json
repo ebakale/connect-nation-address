@@ -158,6 +158,7 @@
   "routing": {
     "title": "Route to Delivery",
     "calculating": "Calculating route...",
+    "calculatingRoute": "Calculating route...",
     "distance": "Distance",
     "duration": "Est. Time",
     "steps": "Directions",
@@ -172,6 +173,7 @@
     "start": "Start",
     "arrive": "Arrive at destination",
     "retry": "Try Again",
+    "retryRoute": "Retry Route",
     "iframeHint": "Location may be blocked in preview mode. Use the Maps App button for navigation."
   },
   

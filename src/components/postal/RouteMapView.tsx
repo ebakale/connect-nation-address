@@ -29,16 +29,26 @@ const RoutingControl: React.FC<{
   destination: L.LatLng;
   onRouteCalculated: (distance: number, duration: number, steps: RouteStep[]) => void;
   onRouteError: () => void;
-}> = ({ origin, destination, onRouteCalculated, onRouteError }) => {
+  onRouteStart: () => void;
+}> = ({ origin, destination, onRouteCalculated, onRouteError, onRouteStart }) => {
   const map = useMap();
   const routingControlRef = useRef<L.Control | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (!map || !origin || !destination) return;
 
+    // Signal route calculation started
+    onRouteStart();
+
     // Remove existing control
     if (routingControlRef.current) {
       map.removeControl(routingControlRef.current);
+    }
+
+    // Clear any existing timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
 
     // Create routing control using the global L.Routing
@@ -48,10 +58,17 @@ const RoutingControl: React.FC<{
       return;
     }
 
+    // Set a 15 second timeout for route calculation
+    timeoutRef.current = setTimeout(() => {
+      console.warn('Route calculation timed out');
+      onRouteError();
+    }, 15000);
+
     const routingControl = LRouting.control({
       waypoints: [origin, destination],
       router: LRouting.osrmv1({
-        serviceUrl: 'https://router.project-osrm.org/route/v1'
+        serviceUrl: 'https://routing.openstreetmap.de/routed-car/route/v1',
+        timeout: 12000 // 12 second timeout for OSRM request
       }),
       lineOptions: {
         styles: [{ color: 'hsl(215, 85%, 45%)', weight: 5, opacity: 0.8 }],
@@ -66,6 +83,12 @@ const RoutingControl: React.FC<{
     });
 
     routingControl.on('routesfound', (e: any) => {
+      // Clear timeout on success
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      
       const routes = e.routes;
       if (routes && routes.length > 0) {
         const route = routes[0];
@@ -79,6 +102,11 @@ const RoutingControl: React.FC<{
     });
 
     routingControl.on('routingerror', () => {
+      // Clear timeout on error
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
       onRouteError();
     });
 
@@ -86,11 +114,14 @@ const RoutingControl: React.FC<{
     routingControlRef.current = routingControl;
 
     return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
       if (routingControlRef.current && map) {
         map.removeControl(routingControlRef.current);
       }
     };
-  }, [map, origin, destination, onRouteCalculated, onRouteError]);
+  }, [map, origin, destination, onRouteCalculated, onRouteError, onRouteStart]);
 
   return null;
 };
@@ -118,6 +149,8 @@ export const RouteMapView: React.FC<RouteMapViewProps> = ({
   const [routeSteps, setRouteSteps] = useState<RouteStep[]>([]);
   const [routeError, setRouteError] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [isCalculatingRoute, setIsCalculatingRoute] = useState(false);
+  const [routeKey, setRouteKey] = useState(0); // For forcing route recalculation
 
   // Create custom marker icons
   const originIcon = L.divIcon({
@@ -166,10 +199,25 @@ export const RouteMapView: React.FC<RouteMapViewProps> = ({
     setRouteDuration(duration);
     setRouteSteps(steps);
     setRouteError(false);
+    setIsCalculatingRoute(false);
   };
 
   const handleRouteError = () => {
     setRouteError(true);
+    setIsCalculatingRoute(false);
+  };
+
+  const handleRouteStart = () => {
+    setIsCalculatingRoute(true);
+    setRouteError(false);
+  };
+
+  const handleRetryRoute = () => {
+    setRouteError(false);
+    setRouteDistance(null);
+    setRouteDuration(null);
+    setRouteSteps([]);
+    setRouteKey(prev => prev + 1); // Force re-mount of RoutingControl
   };
 
   const formatDistance = (meters: number) => {
@@ -283,13 +331,27 @@ export const RouteMapView: React.FC<RouteMapViewProps> = ({
           <div className="p-3 bg-card border-b">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                {routeDistance !== null && (
+                {isCalculatingRoute && (
+                  <div className="flex items-center gap-1.5">
+                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                    <span className="text-muted-foreground">{t('routing.calculatingRoute')}</span>
+                  </div>
+                )}
+                {!isCalculatingRoute && routeError && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-destructive text-sm">{t('routing.routeError')}</span>
+                    <Button variant="outline" size="sm" onClick={handleRetryRoute}>
+                      {t('routing.retryRoute')}
+                    </Button>
+                  </div>
+                )}
+                {!isCalculatingRoute && !routeError && routeDistance !== null && (
                   <div className="flex items-center gap-1.5">
                     <RouteIcon className="h-4 w-4 text-primary" />
                     <span className="font-medium">{formatDistance(routeDistance)}</span>
                   </div>
                 )}
-                {routeDuration !== null && (
+                {!isCalculatingRoute && !routeError && routeDuration !== null && (
                   <div className="flex items-center gap-1.5">
                     <Clock className="h-4 w-4 text-muted-foreground" />
                     <span className="text-muted-foreground">{formatDuration(routeDuration)}</span>
@@ -337,10 +399,12 @@ export const RouteMapView: React.FC<RouteMapViewProps> = ({
 
               {/* Routing Control */}
               <RoutingControl
+                key={routeKey}
                 origin={L.latLng(userLocation.lat, userLocation.lng)}
                 destination={L.latLng(destination.lat, destination.lng)}
                 onRouteCalculated={handleRouteCalculated}
                 onRouteError={handleRouteError}
+                onRouteStart={handleRouteStart}
               />
             </MapContainer>
           </div>
