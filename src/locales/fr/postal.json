@@ -383,13 +383,16 @@
     "title": "Préférences de Livraison",
     "deliveryTiming": "Horaire de Livraison",
     "timeWindow": "Créneau Horaire Préféré",
+    "preferredTimeWindow": "Créneau Horaire Préféré",
     "any": "N'importe quand",
     "morning": "Matin (8:00 - 12:00)",
     "afternoon": "Après-midi (12:00 - 17:00)",
     "evening": "Soir (17:00 - 20:00)",
     "safeDropOptions": "Options de Dépôt Sécurisé",
     "authorizeSafeDrop": "Autoriser le Dépôt Sécurisé",
+    "safeDropAuthorized": "Autoriser le Dépôt Sécurisé",
     "safeDropLocation": "Lieu de Dépôt Sécurisé",
+    "safeDropLocationPlaceholder": "Ex: Laisser à la porte arrière, chez le voisin...",
     "safeDropPlaceholder": "Ex: Laisser sur le porche arrière",
     "alternateRecipient": "Destinataire Alternatif",
     "authorizeAlternate": "Autoriser un Destinataire Alternatif",
@@ -410,7 +413,13 @@
     "delete": "Supprimer les Préférences",
     "deleted": "Préférences supprimées",
     "deleteError": "Erreur lors de la suppression",
-    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ces préférences?"
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ces préférences?",
+    "timeWindows": {
+      "morning": "Matin (8-12)",
+      "afternoon": "Après-midi (12-17)",
+      "evening": "Soir (17-20)",
+      "any": "N'importe Quand"
+    }
   },
   "pickup": {
     "title": "Ramassage",

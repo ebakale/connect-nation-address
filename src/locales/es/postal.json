@@ -383,13 +383,16 @@
     "title": "Preferencias de Entrega",
     "deliveryTiming": "Horario de Entrega",
     "timeWindow": "Ventana de Tiempo Preferida",
+    "preferredTimeWindow": "Ventana de Tiempo Preferida",
     "any": "Cualquier hora",
     "morning": "Mañana (8:00 - 12:00)",
     "afternoon": "Tarde (12:00 - 17:00)",
     "evening": "Noche (17:00 - 20:00)",
     "safeDropOptions": "Opciones de Entrega Segura",
     "authorizeSafeDrop": "Autorizar Entrega Segura",
+    "safeDropAuthorized": "Autorizar Entrega Segura",
     "safeDropLocation": "Ubicación de Entrega Segura",
+    "safeDropLocationPlaceholder": "Ej: Dejar en el porche trasero, con vecino...",
     "safeDropPlaceholder": "Ej: Dejar en el porche trasero",
     "alternateRecipient": "Destinatario Alternativo",
     "authorizeAlternate": "Autorizar Destinatario Alternativo",
@@ -410,7 +413,13 @@
     "delete": "Eliminar Preferencias",
     "deleted": "Preferencias eliminadas",
     "deleteError": "Error al eliminar preferencias",
-    "confirmDelete": "¿Está seguro de eliminar estas preferencias?"
+    "confirmDelete": "¿Está seguro de eliminar estas preferencias?",
+    "timeWindows": {
+      "morning": "Mañana (8-12)",
+      "afternoon": "Tarde (12-17)",
+      "evening": "Noche (17-20)",
+      "any": "Cualquier Hora"
+    }
   },
   "pickup": {
     "title": "Recogida",
