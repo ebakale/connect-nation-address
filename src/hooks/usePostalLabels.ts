@@ -257,37 +257,25 @@ export const usePostalLabels = () => {
       const pdfBlob = await generateLabelPDF(order, trackingNumber);
       const pdfUrl = URL.createObjectURL(pdfBlob);
       
-      // Create hidden iframe for reliable printing (avoids popup blockers)
-      const iframe = document.createElement('iframe');
-      iframe.style.position = 'fixed';
-      iframe.style.right = '0';
-      iframe.style.bottom = '0';
-      iframe.style.width = '0';
-      iframe.style.height = '0';
-      iframe.style.border = 'none';
-      iframe.src = pdfUrl;
+      // Open PDF in new tab - browser's native PDF viewer will render it properly
+      const pdfWindow = window.open(pdfUrl, '_blank');
       
-      document.body.appendChild(iframe);
-      
-      iframe.onload = () => {
-        // Wait for PDF to fully render, then print
-        setTimeout(() => {
-          try {
-            iframe.contentWindow?.print();
-          } catch (e) {
-            // Fallback: open in new tab if iframe printing fails
-            window.open(pdfUrl, '_blank');
-          }
-          
-          // Clean up iframe after printing dialog closes
-          setTimeout(() => {
-            if (iframe.parentNode) {
-              document.body.removeChild(iframe);
-            }
-            URL.revokeObjectURL(pdfUrl);
-          }, 1000);
-        }, 500);
-      };
+      if (pdfWindow) {
+        // Show instruction toast
+        toast.success(t('labels.printInstructions'), {
+          duration: 5000,
+        });
+      } else {
+        // If popup blocked, offer download as fallback
+        const link = document.createElement('a');
+        link.href = pdfUrl;
+        link.download = `label-${order.order_number}.pdf`;
+        link.click();
+        toast.info(t('labels.downloadedForPrint'));
+      }
+
+      // Clean up blob URL after delay
+      setTimeout(() => URL.revokeObjectURL(pdfUrl), 60000);
 
       // Record print action
       if (existingLabel) {
