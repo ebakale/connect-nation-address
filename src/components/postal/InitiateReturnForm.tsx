@@ -25,9 +25,9 @@ export const InitiateReturnForm = ({ open, onClose, orderId, orderNumber }: Init
 
   const [formData, setFormData] = useState({
     return_reason: '' as ReturnReason | '',
-    reason_details: '',
-    generate_label: true,
-    schedule_pickup: false,
+    return_reason_details: '',
+    pickup_requested: false,
+    notes: '',
   });
 
   const returnReasons: ReturnReason[] = [
@@ -46,7 +46,9 @@ export const InitiateReturnForm = ({ open, onClose, orderId, orderNumber }: Init
     const result = await createReturn({
       original_order_id: orderId,
       return_reason: formData.return_reason as ReturnReason,
-      reason_details: formData.reason_details || undefined,
+      return_reason_details: formData.return_reason_details || undefined,
+      pickup_requested: formData.pickup_requested,
+      notes: formData.notes || undefined,
     });
     setLoading(false);
 
@@ -94,8 +96,8 @@ export const InitiateReturnForm = ({ open, onClose, orderId, orderNumber }: Init
           <div className="space-y-2">
             <Label>{t('returns.details')}</Label>
             <Textarea
-              value={formData.reason_details}
-              onChange={(e) => setFormData({ ...formData, reason_details: e.target.value })}
+              value={formData.return_reason_details}
+              onChange={(e) => setFormData({ ...formData, return_reason_details: e.target.value })}
               placeholder={t('returns.detailsPlaceholder')}
               rows={3}
             />
@@ -104,29 +106,31 @@ export const InitiateReturnForm = ({ open, onClose, orderId, orderNumber }: Init
           {/* Options */}
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 border rounded-md">
-              <Label>{t('returns.generateLabel')}</Label>
-              <Switch
-                checked={formData.generate_label}
-                onCheckedChange={(v) => setFormData({ ...formData, generate_label: v })}
-              />
-            </div>
-            <div className="flex items-center justify-between p-3 border rounded-md">
               <Label>{t('returns.schedulePickup')}</Label>
               <Switch
-                checked={formData.schedule_pickup}
-                onCheckedChange={(v) => setFormData({ ...formData, schedule_pickup: v })}
+                checked={formData.pickup_requested}
+                onCheckedChange={(v) => setFormData({ ...formData, pickup_requested: v })}
               />
             </div>
           </div>
 
-          {formData.generate_label && (
-            <Alert>
-              <AlertTriangle className="h-4 w-4" />
-              <AlertDescription>
-                {t('returns.labelNotice')}
-              </AlertDescription>
-            </Alert>
-          )}
+          {/* Notes */}
+          <div className="space-y-2">
+            <Label>{t('returns.notes')}</Label>
+            <Textarea
+              value={formData.notes}
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              placeholder={t('returns.notesPlaceholder')}
+              rows={2}
+            />
+          </div>
+
+          <Alert>
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              {t('returns.labelNotice')}
+            </AlertDescription>
+          </Alert>
 
           {/* Actions */}
           <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">

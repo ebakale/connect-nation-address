@@ -35,26 +35,26 @@ export const PickupRequestForm = ({ open, onClose }: PickupRequestFormProps) => 
     preferred_time_window: 'any' as TimeWindow,
     contact_name: '',
     contact_phone: '',
-    notes: '',
+    pickup_notes: '',
   });
 
   const timeWindows: TimeWindow[] = ['any', 'morning', 'afternoon', 'evening'];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedAddress || !preferredDate) return;
+    if (!selectedAddress || !preferredDate || !formData.contact_name) return;
 
     setLoading(true);
     const success = await createRequest({
       pickup_address_uac: selectedAddress.uac,
-      package_description: formData.package_description,
+      package_description: formData.package_description || undefined,
       package_count: formData.package_count,
       estimated_weight_grams: formData.estimated_weight_grams,
       preferred_date: format(preferredDate, 'yyyy-MM-dd'),
       preferred_time_window: formData.preferred_time_window,
-      contact_name: formData.contact_name || undefined,
+      contact_name: formData.contact_name,
       contact_phone: formData.contact_phone || undefined,
-      notes: formData.notes || undefined,
+      pickup_notes: formData.pickup_notes || undefined,
     });
     setLoading(false);
 
@@ -102,12 +102,11 @@ export const PickupRequestForm = ({ open, onClose }: PickupRequestFormProps) => 
             <h3 className="font-medium">{t('pickup.packageDetails')}</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2 sm:col-span-2">
-                <Label>{t('pickup.packageDescription')} *</Label>
+                <Label>{t('pickup.packageDescription')}</Label>
                 <Textarea
                   value={formData.package_description}
                   onChange={(e) => setFormData({ ...formData, package_description: e.target.value })}
                   placeholder={t('pickup.descriptionPlaceholder')}
-                  required
                   rows={2}
                 />
               </div>
@@ -190,10 +189,11 @@ export const PickupRequestForm = ({ open, onClose }: PickupRequestFormProps) => 
             <h3 className="font-medium">{t('pickup.contactInfo')}</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>{t('pickup.contactName')}</Label>
+                <Label>{t('pickup.contactName')} *</Label>
                 <Input
                   value={formData.contact_name}
                   onChange={(e) => setFormData({ ...formData, contact_name: e.target.value })}
+                  required
                 />
               </div>
               <div className="space-y-2">
@@ -210,8 +210,8 @@ export const PickupRequestForm = ({ open, onClose }: PickupRequestFormProps) => 
           <div className="space-y-2">
             <Label>{t('pickup.notes')}</Label>
             <Textarea
-              value={formData.notes}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              value={formData.pickup_notes}
+              onChange={(e) => setFormData({ ...formData, pickup_notes: e.target.value })}
               placeholder={t('pickup.notesPlaceholder')}
               rows={2}
             />
@@ -224,7 +224,7 @@ export const PickupRequestForm = ({ open, onClose }: PickupRequestFormProps) => 
             </Button>
             <Button
               type="submit"
-              disabled={loading || !selectedAddress || !preferredDate || !formData.package_description}
+              disabled={loading || !selectedAddress || !preferredDate || !formData.contact_name}
               className="w-full sm:w-auto"
             >
               {loading ? t('common:buttons.loading') : t('pickup.submitRequest')}

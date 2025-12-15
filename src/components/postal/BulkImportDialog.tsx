@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useBulkImport } from '@/hooks/useBulkImport';
+import { BulkImportRowData } from '@/types/postalEnhanced';
 import { Upload, FileSpreadsheet, Download, CheckCircle, XCircle, AlertTriangle, Loader2 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
@@ -16,29 +17,14 @@ interface BulkImportDialogProps {
   onClose: () => void;
 }
 
-interface ParsedRow {
-  row_number: number;
-  sender_name: string;
-  recipient_name: string;
-  recipient_address_uac: string;
-  recipient_phone?: string;
-  recipient_email?: string;
-  package_type: string;
-  weight_grams?: number;
-  declared_value?: number;
-  priority_level?: number;
-  notes?: string;
-  cod_amount?: number;
-}
-
 export const BulkImportDialog = ({ open, onClose }: BulkImportDialogProps) => {
   const { t } = useTranslation('postal');
-  const { processImport, loading } = useBulkImport();
+  const { processImport, loading, downloadTemplate } = useBulkImport();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [step, setStep] = useState<'upload' | 'preview' | 'progress' | 'complete'>('upload');
   const [fileName, setFileName] = useState('');
-  const [parsedData, setParsedData] = useState<ParsedRow[]>([]);
+  const [parsedData, setParsedData] = useState<BulkImportRowData[]>([]);
   const [validationErrors, setValidationErrors] = useState<{ row: number; error: string }[]>([]);
   const [importResult, setImportResult] = useState<{ success: number; failed: number; errors: string[] } | null>(null);
 
@@ -54,27 +40,27 @@ export const BulkImportDialog = ({ open, onClose }: BulkImportDialogProps) => {
       const worksheet = workbook.Sheets[workbook.SheetNames[0]];
       const jsonData = XLSX.utils.sheet_to_json<Record<string, unknown>>(worksheet);
 
-      const parsed: ParsedRow[] = jsonData.map((row, index) => ({
-        row_number: index + 2, // +2 for header row and 1-indexing
+      const parsed: BulkImportRowData[] = jsonData.map((row) => ({
         sender_name: String(row['sender_name'] || ''),
+        sender_phone: row['sender_phone'] ? String(row['sender_phone']) : undefined,
         recipient_name: String(row['recipient_name'] || ''),
         recipient_address_uac: String(row['recipient_address_uac'] || ''),
         recipient_phone: row['recipient_phone'] ? String(row['recipient_phone']) : undefined,
         recipient_email: row['recipient_email'] ? String(row['recipient_email']) : undefined,
         package_type: String(row['package_type'] || 'letter'),
-        weight_grams: row['weight_grams'] ? Number(row['weight_grams']) : undefined,
-        declared_value: row['declared_value'] ? Number(row['declared_value']) : undefined,
-        priority_level: row['priority_level'] ? Number(row['priority_level']) : 3,
+        weight_grams: row['weight_grams'] ? String(row['weight_grams']) : undefined,
+        declared_value: row['declared_value'] ? String(row['declared_value']) : undefined,
+        priority_level: row['priority_level'] ? String(row['priority_level']) : '3',
         notes: row['notes'] ? String(row['notes']) : undefined,
-        cod_amount: row['cod_amount'] ? Number(row['cod_amount']) : undefined,
+        cod_amount: row['cod_amount'] ? String(row['cod_amount']) : undefined,
       }));
 
       // Validate
       const errors: { row: number; error: string }[] = [];
-      parsed.forEach((row) => {
-        if (!row.sender_name) errors.push({ row: row.row_number, error: t('validation.senderNameRequired') });
-        if (!row.recipient_name) errors.push({ row: row.row_number, error: t('validation.recipientNameRequired') });
-        if (!row.recipient_address_uac) errors.push({ row: row.row_number, error: t('validation.recipientAddressRequired') });
+      parsed.forEach((row, index) => {
+        if (!row.sender_name) errors.push({ row: index + 2, error: t('validation.senderNameRequired') });
+        if (!row.recipient_name) errors.push({ row: index + 2, error: t('validation.recipientNameRequired') });
+        if (!row.recipient_address_uac) errors.push({ row: index + 2, error: t('validation.recipientAddressRequired') });
       });
 
       setParsedData(parsed);
@@ -88,55 +74,18 @@ export const BulkImportDialog = ({ open, onClose }: BulkImportDialogProps) => {
   const handleImport = async () => {
     setStep('progress');
 
-    const result = await processImport(
-      fileName,
-      parsedData.map((row) => ({
-        sender_name: row.sender_name,
-        recipient_name: row.recipient_name,
-        recipient_address_uac: row.recipient_address_uac,
-        recipient_phone: row.recipient_phone,
-        recipient_email: row.recipient_email,
-        package_type: row.package_type as 'letter' | 'small_parcel' | 'medium_parcel' | 'large_parcel' | 'document' | 'registered_mail' | 'express' | 'government_document',
-        weight_grams: row.weight_grams,
-        declared_value: row.declared_value,
-        priority_level: row.priority_level,
-        notes: row.notes,
-        cod_amount: row.cod_amount,
-        cod_required: !!row.cod_amount,
-      }))
-    );
+    const result = await processImport(fileName, parsedData);
 
     if (result) {
       setImportResult({
         success: result.success_count,
         failed: result.error_count,
-        errors: (result.error_summary as { errors?: string[] })?.errors || [],
+        errors: result.error_summary?.map(e => `Row ${e.row}: ${e.error}`) || [],
       });
       setStep('complete');
+    } else {
+      setStep('upload');
     }
-  };
-
-  const downloadTemplate = () => {
-    const template = [
-      {
-        sender_name: 'Example Sender',
-        recipient_name: 'Example Recipient',
-        recipient_address_uac: 'GQ-BN-MAL-001-0001',
-        recipient_phone: '+240222123456',
-        recipient_email: 'recipient@example.com',
-        package_type: 'letter',
-        weight_grams: 100,
-        declared_value: 0,
-        priority_level: 3,
-        notes: 'Handle with care',
-        cod_amount: 0,
-      },
-    ];
-
-    const ws = XLSX.utils.json_to_sheet(template);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Orders');
-    XLSX.writeFile(wb, 'postal_orders_template.xlsx');
   };
 
   const resetDialog = () => {
@@ -240,9 +189,9 @@ export const BulkImportDialog = ({ open, onClose }: BulkImportDialogProps) => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {parsedData.slice(0, 50).map((row) => (
-                      <TableRow key={row.row_number}>
-                        <TableCell>{row.row_number}</TableCell>
+                    {parsedData.slice(0, 50).map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{index + 2}</TableCell>
                         <TableCell>{row.sender_name}</TableCell>
                         <TableCell>{row.recipient_name}</TableCell>
                         <TableCell className="font-mono text-xs">{row.recipient_address_uac}</TableCell>

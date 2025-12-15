@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { usePostalLabels } from '@/hooks/usePostalLabels';
 import { DeliveryOrder } from '@/types/postal';
 import { Printer, Download, QrCode, Loader2 } from 'lucide-react';
+import QRCodeLib from 'qrcode';
 
 interface LabelPreviewProps {
   open: boolean;
@@ -15,9 +16,8 @@ interface LabelPreviewProps {
 
 export const LabelPreview = ({ open, onClose, order }: LabelPreviewProps) => {
   const { t } = useTranslation('postal');
-  const { generateLabel, generateQRCode, loading } = usePostalLabels();
+  const { generating, printLabel, downloadLabel } = usePostalLabels();
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
-  const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
 
   useEffect(() => {
     if (open && order) {
@@ -26,35 +26,25 @@ export const LabelPreview = ({ open, onClose, order }: LabelPreviewProps) => {
   }, [open, order]);
 
   const generateQRForOrder = async () => {
-    const trackingUrl = `${window.location.origin}/track?order=${order.order_number}`;
-    const qrUrl = await generateQRCode(trackingUrl);
-    setQrCodeUrl(qrUrl);
-  };
-
-  const handleGenerateLabel = async () => {
-    const blob = await generateLabel(order);
-    if (blob) {
-      setPdfBlob(blob);
+    try {
+      const trackingUrl = `${window.location.origin}/track?order=${order.order_number}`;
+      const qrUrl = await QRCodeLib.toDataURL(trackingUrl, {
+        width: 150,
+        margin: 1,
+        color: { dark: '#000000', light: '#ffffff' }
+      });
+      setQrCodeUrl(qrUrl);
+    } catch (error) {
+      console.error('Error generating QR code:', error);
     }
   };
 
-  const handlePrint = () => {
-    if (pdfBlob) {
-      const url = URL.createObjectURL(pdfBlob);
-      const printWindow = window.open(url, '_blank');
-      printWindow?.print();
-    }
+  const handlePrint = async () => {
+    await printLabel(order);
   };
 
-  const handleDownload = () => {
-    if (pdfBlob) {
-      const url = URL.createObjectURL(pdfBlob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `label-${order.order_number}.pdf`;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
+  const handleDownload = async () => {
+    await downloadLabel(order);
   };
 
   const getPriorityLabel = (level: number) => {
@@ -133,27 +123,18 @@ export const LabelPreview = ({ open, onClose, order }: LabelPreviewProps) => {
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3">
-            {!pdfBlob ? (
-              <Button onClick={handleGenerateLabel} disabled={loading} className="flex-1">
-                {loading ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <QrCode className="h-4 w-4 mr-2" />
-                )}
-                {t('labels.generate')}
-              </Button>
-            ) : (
-              <>
-                <Button onClick={handlePrint} className="flex-1">
-                  <Printer className="h-4 w-4 mr-2" />
-                  {t('labels.print')}
-                </Button>
-                <Button variant="outline" onClick={handleDownload} className="flex-1">
-                  <Download className="h-4 w-4 mr-2" />
-                  {t('labels.download')}
-                </Button>
-              </>
-            )}
+            <Button onClick={handlePrint} disabled={generating} className="flex-1">
+              {generating ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Printer className="h-4 w-4 mr-2" />
+              )}
+              {t('labels.print')}
+            </Button>
+            <Button variant="outline" onClick={handleDownload} disabled={generating} className="flex-1">
+              <Download className="h-4 w-4 mr-2" />
+              {t('labels.download')}
+            </Button>
             <Button variant="outline" onClick={onClose}>
               {t('common:buttons.close')}
             </Button>

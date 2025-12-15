@@ -8,17 +8,18 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useCODTransactions } from '@/hooks/useCODTransactions';
 import { CODStatus } from '@/types/postalEnhanced';
 import { DollarSign, CheckCircle, Clock, ArrowRight, Receipt } from 'lucide-react';
-import { format } from 'date-fns';
 
 export const CODManagement = () => {
   const { t } = useTranslation('postal');
-  const { transactions, stats, loading, collectPayment, remitPayment } = useCODTransactions();
+  const { transactions, stats, loading, collectPayment, remitFunds, getTransactionByOrderId } = useCODTransactions();
   const [statusFilter, setStatusFilter] = useState<CODStatus | 'all'>('all');
-  const [collectingId, setCollectingId] = useState<string | null>(null);
-  const [remittingId, setRemittingId] = useState<string | null>(null);
+  const [collectingOrderId, setCollectingOrderId] = useState<string | null>(null);
+  const [selectedForRemit, setSelectedForRemit] = useState<string[]>([]);
+  const [showRemitDialog, setShowRemitDialog] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('cash');
   const [remittanceRef, setRemittanceRef] = useState('');
 
@@ -41,17 +42,27 @@ export const CODManagement = () => {
     }
   };
 
-  const handleCollect = async (transactionId: string) => {
-    await collectPayment({ transaction_id: transactionId, payment_method: paymentMethod });
-    setCollectingId(null);
+  const handleCollect = async (orderId: string) => {
+    await collectPayment({ order_id: orderId, payment_method: paymentMethod });
+    setCollectingOrderId(null);
     setPaymentMethod('cash');
   };
 
-  const handleRemit = async (transactionId: string) => {
-    await remitPayment({ transaction_id: transactionId, remittance_reference: remittanceRef });
-    setRemittingId(null);
+  const handleRemit = async () => {
+    if (selectedForRemit.length === 0) return;
+    await remitFunds(selectedForRemit, remittanceRef);
+    setShowRemitDialog(false);
     setRemittanceRef('');
+    setSelectedForRemit([]);
   };
+
+  const toggleRemitSelection = (id: string) => {
+    setSelectedForRemit(prev => 
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  };
+
+  const collectedTransactions = transactions.filter(t => t.collection_status === 'collected');
 
   return (
     <div className="space-y-6">
@@ -111,21 +122,32 @@ export const CODManagement = () => {
               <Receipt className="h-5 w-5" />
               {t('cod.transactions')}
             </CardTitle>
-            <Select
-              value={statusFilter}
-              onValueChange={(v) => setStatusFilter(v as CODStatus | 'all')}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t('filters.all')}</SelectItem>
-                <SelectItem value="pending">{t('cod.pending')}</SelectItem>
-                <SelectItem value="collected">{t('cod.collected')}</SelectItem>
-                <SelectItem value="remitted">{t('cod.remitted')}</SelectItem>
-                <SelectItem value="failed">{t('cod.failed')}</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex gap-2">
+              {collectedTransactions.length > 0 && (
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => setShowRemitDialog(true)}
+                >
+                  {t('cod.remitFunds')}
+                </Button>
+              )}
+              <Select
+                value={statusFilter}
+                onValueChange={(v) => setStatusFilter(v as CODStatus | 'all')}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t('filters.all')}</SelectItem>
+                  <SelectItem value="pending">{t('cod.pending')}</SelectItem>
+                  <SelectItem value="collected">{t('cod.collected')}</SelectItem>
+                  <SelectItem value="remitted">{t('cod.remitted')}</SelectItem>
+                  <SelectItem value="failed">{t('cod.failed')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -148,7 +170,7 @@ export const CODManagement = () => {
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-sm">{tx.order_id.slice(0, 8)}...</span>
-                        <Badge className={getStatusColor(tx.collection_status as CODStatus)}>
+                        <Badge className={getStatusColor(tx.collection_status)}>
                           {t(`cod.${tx.collection_status}`)}
                         </Badge>
                       </div>
@@ -164,13 +186,8 @@ export const CODManagement = () => {
 
                     <div className="flex gap-2">
                       {tx.collection_status === 'pending' && (
-                        <Button size="sm" onClick={() => setCollectingId(tx.id)}>
+                        <Button size="sm" onClick={() => setCollectingOrderId(tx.order_id)}>
                           {t('cod.collect')}
-                        </Button>
-                      )}
-                      {tx.collection_status === 'collected' && (
-                        <Button size="sm" variant="outline" onClick={() => setRemittingId(tx.id)}>
-                          {t('cod.remit')}
                         </Button>
                       )}
                     </div>
@@ -183,7 +200,7 @@ export const CODManagement = () => {
       </Card>
 
       {/* Collect Dialog */}
-      <Dialog open={!!collectingId} onOpenChange={() => setCollectingId(null)}>
+      <Dialog open={!!collectingOrderId} onOpenChange={() => setCollectingOrderId(null)}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{t('cod.collectPayment')}</DialogTitle>
@@ -203,10 +220,10 @@ export const CODManagement = () => {
               </Select>
             </div>
             <div className="flex gap-3">
-              <Button variant="outline" onClick={() => setCollectingId(null)}>
+              <Button variant="outline" onClick={() => setCollectingOrderId(null)}>
                 {t('common:buttons.cancel')}
               </Button>
-              <Button onClick={() => collectingId && handleCollect(collectingId)}>
+              <Button onClick={() => collectingOrderId && handleCollect(collectingOrderId)}>
                 {t('cod.confirmCollection')}
               </Button>
             </div>
@@ -215,12 +232,25 @@ export const CODManagement = () => {
       </Dialog>
 
       {/* Remit Dialog */}
-      <Dialog open={!!remittingId} onOpenChange={() => setRemittingId(null)}>
-        <DialogContent>
+      <Dialog open={showRemitDialog} onOpenChange={() => setShowRemitDialog(false)}>
+        <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>{t('cod.remitFunds')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">{t('cod.selectTransactions')}</p>
+            <ScrollArea className="h-[200px] border rounded-md p-2">
+              {collectedTransactions.map(tx => (
+                <div key={tx.id} className="flex items-center gap-3 p-2 hover:bg-muted/50 rounded">
+                  <Checkbox
+                    checked={selectedForRemit.includes(tx.id)}
+                    onCheckedChange={() => toggleRemitSelection(tx.id)}
+                  />
+                  <span className="font-mono text-sm">{tx.receipt_number}</span>
+                  <span className="font-bold">{tx.amount.toLocaleString()} {tx.currency}</span>
+                </div>
+              ))}
+            </ScrollArea>
             <div className="space-y-2">
               <Label>{t('cod.remittanceReference')}</Label>
               <Input
@@ -230,11 +260,11 @@ export const CODManagement = () => {
               />
             </div>
             <div className="flex gap-3">
-              <Button variant="outline" onClick={() => setRemittingId(null)}>
+              <Button variant="outline" onClick={() => setShowRemitDialog(false)}>
                 {t('common:buttons.cancel')}
               </Button>
-              <Button onClick={() => remittingId && handleRemit(remittingId)}>
-                {t('cod.confirmRemittance')}
+              <Button onClick={handleRemit} disabled={selectedForRemit.length === 0 || !remittanceRef}>
+                {t('cod.confirmRemittance')} ({selectedForRemit.length})
               </Button>
             </div>
           </div>

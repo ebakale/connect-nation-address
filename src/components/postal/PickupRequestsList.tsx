@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { usePickupRequests } from '@/hooks/usePickupRequests';
 import { usePostalRole } from '@/hooks/usePostalRole';
-import { DeliveryAgentSelector } from './DeliveryAgentSelector';
+import { usePostalAgents, PostalAgent } from '@/hooks/usePostalAgents';
 import { PickupStatus } from '@/types/postalEnhanced';
 import { Package, MapPin, Calendar, Clock, User, CheckCircle, Truck } from 'lucide-react';
 import { format } from 'date-fns';
@@ -16,8 +16,9 @@ export const PickupRequestsList = () => {
   const { t } = useTranslation('postal');
   const { requests: pickupRequests, loading, assignRequest, updateStatus } = usePickupRequests();
   const { isPostalDispatcher, isPostalSupervisor, isAdmin } = usePostalRole();
+  const { agents } = usePostalAgents();
   const [statusFilter, setStatusFilter] = useState<PickupStatus | 'all'>('all');
-  const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
+  const [selectedAgent, setSelectedAgent] = useState<string>('');
   const [assigningId, setAssigningId] = useState<string | null>(null);
 
   const canAssign = isPostalDispatcher || isPostalSupervisor || isAdmin;
@@ -47,7 +48,7 @@ export const PickupRequestsList = () => {
     if (!selectedAgent) return;
     await assignRequest(pickupId, selectedAgent);
     setAssigningId(null);
-    setSelectedAgent(null);
+    setSelectedAgent('');
   };
 
   const handleMarkCompleted = async (pickupId: string) => {
@@ -100,7 +101,7 @@ export const PickupRequestsList = () => {
                   <div className="flex items-start justify-between">
                     <div>
                       <p className="font-mono font-medium">{request.request_number}</p>
-                      <Badge className={getStatusColor(request.status as PickupStatus)}>
+                      <Badge className={getStatusColor(request.status)}>
                         {t(`pickup.status.${request.status}`)}
                       </Badge>
                     </div>
@@ -142,22 +143,32 @@ export const PickupRequestsList = () => {
                   {canAssign && request.status === 'pending' && (
                     <div className="pt-2 border-t space-y-2">
                       {assigningId === request.id ? (
-                        <div className="flex gap-2">
-                          <DeliveryAgentSelector
-                            selectedAgentId={selectedAgent || ''}
-                            onAgentSelect={setSelectedAgent}
-                          />
-                          <Button size="sm" onClick={() => handleAssign(request.id)}>
-                            <Truck className="h-4 w-4 mr-1" />
-                            {t('assignment.assign')}
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => setAssigningId(null)}
-                          >
-                            {t('common:buttons.cancel')}
-                          </Button>
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <Select value={selectedAgent} onValueChange={setSelectedAgent}>
+                            <SelectTrigger className="flex-1">
+                              <SelectValue placeholder={t('assignment.selectAgent')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {agents.map((agent) => (
+                                <SelectItem key={agent.id} value={agent.id}>
+                                  {agent.full_name} ({agent.activeAssignments} active)
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <div className="flex gap-2">
+                            <Button size="sm" onClick={() => handleAssign(request.id)} disabled={!selectedAgent}>
+                              <Truck className="h-4 w-4 mr-1" />
+                              {t('assignment.assign')}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => setAssigningId(null)}
+                            >
+                              {t('common:buttons.cancel')}
+                            </Button>
+                          </div>
                         </div>
                       ) : (
                         <Button
