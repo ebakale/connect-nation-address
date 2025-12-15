@@ -522,6 +522,7 @@
     "requestUpdated": "Demande de ramassage mise à jour",
     "requestCancelled": "Demande de ramassage annulée",
     "updateError": "Erreur lors de la mise à jour",
+    "updateFailed": "Échec de la mise à jour - la demande peut avoir été traitée ou annulée",
     "cancelError": "Erreur lors de l'annulation",
     "cannotEditCompleted": "Impossible de modifier - la demande est déjà terminée ou annulée",
     "cannotCancelCompleted": "Impossible d'annuler - la demande est déjà terminée ou annulée",

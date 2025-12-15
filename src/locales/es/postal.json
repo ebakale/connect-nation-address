@@ -522,6 +522,7 @@
     "requestUpdated": "Solicitud de recogida actualizada",
     "requestCancelled": "Solicitud de recogida cancelada",
     "updateError": "Error al actualizar la solicitud",
+    "updateFailed": "Actualización fallida - la solicitud puede haber sido procesada o cancelada",
     "cancelError": "Error al cancelar la solicitud",
     "cannotEditCompleted": "No se puede editar - la solicitud ya está completada o cancelada",
     "cannotCancelCompleted": "No se puede cancelar - la solicitud ya está completada o cancelada",

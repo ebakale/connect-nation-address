@@ -214,18 +214,21 @@ export const usePickupRequests = () => {
     }
 
     try {
-      let query = supabase
+      const { data, error } = await supabase
         .from('pickup_requests')
         .update(updates)
         .eq('id', requestId)
-        .eq('requester_id', user.id);
-
-      // Allow update for editable statuses
-      query = query.in('status', EDITABLE_STATUSES);
-
-      const { error } = await query;
+        .eq('requester_id', user.id)
+        .in('status', EDITABLE_STATUSES)
+        .select();
 
       if (error) throw error;
+
+      // Check if any rows were actually updated (RLS may have blocked the update)
+      if (!data || data.length === 0) {
+        toast.error(t('pickup.updateFailed'));
+        return false;
+      }
 
       toast.success(t('pickup.requestUpdated'));
       await fetchRequests();

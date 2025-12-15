@@ -485,6 +485,7 @@
     "requestUpdated": "Pickup request updated successfully",
     "requestCancelled": "Pickup request cancelled",
     "updateError": "Error updating pickup request",
+    "updateFailed": "Update failed - the request may have already been processed or cancelled",
     "cancelError": "Error cancelling pickup request",
     "cannotEditCompleted": "Cannot edit - request is already completed or cancelled",
     "cannotCancelCompleted": "Cannot cancel - request is already completed or cancelled",
