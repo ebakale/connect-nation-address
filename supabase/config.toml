@@ -59,3 +59,9 @@ verify_jwt = false
 
 [functions.seed-citizen-deliveries]
 verify_jwt = true
+
+[functions.postal-notifications]
+verify_jwt = true
+
+[functions.bulk-import-orders]
+verify_jwt = true

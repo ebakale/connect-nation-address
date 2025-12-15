@@ -8,8 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { useDeliveryOrders } from '@/hooks/useDeliveryOrders';
-import { PackageType, CreateDeliveryOrderInput } from '@/types/postal';
+import { PackageType, CreateDeliveryOrderInput, TimeWindow } from '@/types/postal';
 import { UACAddressPicker, SelectedAddress } from '@/components/UACAddressPicker';
+import { CODSection } from './CODSection';
 
 interface DeliveryOrderFormProps {
   open: boolean;
@@ -29,12 +30,15 @@ export const DeliveryOrderForm = ({ open, onClose }: DeliveryOrderFormProps) => 
     requires_signature: true,
     requires_id_verification: false,
     priority_level: 3,
+    cod_required: false,
   });
 
   const packageTypes: PackageType[] = [
     'letter', 'small_parcel', 'medium_parcel', 'large_parcel',
     'document', 'registered_mail', 'express', 'government_document'
   ];
+
+  const timeWindows: TimeWindow[] = ['morning', 'afternoon', 'evening', 'any'];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -163,6 +167,24 @@ export const DeliveryOrderForm = ({ open, onClose }: DeliveryOrderFormProps) => 
                   </SelectContent>
                 </Select>
               </div>
+              <div className="space-y-2">
+                <Label>{t('preferences.preferredTimeWindow')}</Label>
+                <Select
+                  value={formData.preferred_time_window || 'any'}
+                  onValueChange={(v) => setFormData({ ...formData, preferred_time_window: v as TimeWindow })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {timeWindows.map((window) => (
+                      <SelectItem key={window} value={window}>
+                        {t(`preferences.timeWindows.${window}`)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="flex items-center justify-between p-3 border rounded-md">
                 <Label>{t('package.requiresSignature')}</Label>
                 <Switch
@@ -177,7 +199,24 @@ export const DeliveryOrderForm = ({ open, onClose }: DeliveryOrderFormProps) => 
                   onCheckedChange={(v) => setFormData({ ...formData, requires_id_verification: v })}
                 />
               </div>
+              <div className="flex items-center justify-between p-3 border rounded-md">
+                <Label>{t('preferences.safeDropAuthorized')}</Label>
+                <Switch
+                  checked={formData.safe_drop_authorized || false}
+                  onCheckedChange={(v) => setFormData({ ...formData, safe_drop_authorized: v })}
+                />
+              </div>
             </div>
+            {formData.safe_drop_authorized && (
+              <div className="space-y-2">
+                <Label>{t('preferences.safeDropLocation')}</Label>
+                <Input
+                  value={formData.safe_drop_location || ''}
+                  onChange={(e) => setFormData({ ...formData, safe_drop_location: e.target.value })}
+                  placeholder={t('preferences.safeDropLocationPlaceholder')}
+                />
+              </div>
+            )}
             <div className="space-y-2">
               <Label>{t('package.notes')}</Label>
               <Textarea
@@ -187,6 +226,14 @@ export const DeliveryOrderForm = ({ open, onClose }: DeliveryOrderFormProps) => 
               />
             </div>
           </div>
+
+          {/* COD Section */}
+          <CODSection
+            codRequired={formData.cod_required || false}
+            codAmount={formData.cod_amount}
+            onCodRequiredChange={(v) => setFormData({ ...formData, cod_required: v, cod_amount: v ? formData.cod_amount : undefined })}
+            onCodAmountChange={(v) => setFormData({ ...formData, cod_amount: v })}
+          />
 
           {/* Actions */}
           <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">

@@ -199,6 +199,15 @@ export interface CreateDeliveryOrderInput {
   priority_level?: number;
   scheduled_date?: string;
   delivery_deadline?: string;
+  // COD fields
+  cod_required?: boolean;
+  cod_amount?: number;
+  // Delivery preferences
+  preferred_time_window?: TimeWindow;
+  safe_drop_authorized?: boolean;
+  safe_drop_location?: string;
+  alternate_recipient_name?: string;
+  alternate_recipient_phone?: string;
 }
 
 export interface UpdateDeliveryStatusInput {
