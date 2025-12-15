@@ -185,6 +185,12 @@
     "protected": "Protegido"
   },
   "search": "Buscar",
+  "dependentType": {
+    "minor": "Menor (Menor de 18)",
+    "elderly": "Anciano",
+    "disabled": "Discapacitado",
+    "student": "Estudiante"
+  },
   "searchResults": {
     "noResults": "No Se Encontraron Resultados",
     "noResultsDescription": "No se encontraron ciudadanos que coincidan con sus criterios de búsqueda",
