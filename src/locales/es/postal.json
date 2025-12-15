@@ -447,7 +447,8 @@
   "pickup": {
     "title": "Recogida",
     "requests": "Solicitudes de Recogida",
-    "requestTitle": "Solicitar Recogida",
+    "requestPickup": "Solicitar Recogida",
+    "requestTitle": "Solicitar Recogida de Paquetes",
     "pickupLocation": "Ubicación de Recogida",
     "address": "Dirección de Recogida",
     "searchAddress": "Buscar dirección...",
@@ -465,6 +466,7 @@
     "contactName": "Nombre de Contacto",
     "contactPhone": "Teléfono de Contacto",
     "notes": "Notas",
+    "pickupNotes": "Notas de Recogida",
     "notesPlaceholder": "Notas adicionales...",
     "submitRequest": "Enviar Solicitud",
     "requestCreated": "Solicitud de recogida creada",
@@ -473,6 +475,12 @@
     "packages": "paquetes",
     "assignAgent": "Asignar Agente",
     "markCompleted": "Marcar Completada",
+    "timeWindows": {
+      "any": "Cualquier hora",
+      "morning": "Mañana (8AM-12PM)",
+      "afternoon": "Tarde (12PM-5PM)",
+      "evening": "Noche (5PM-8PM)"
+    },
     "status": {
       "pending": "Pendiente",
       "scheduled": "Programada",
