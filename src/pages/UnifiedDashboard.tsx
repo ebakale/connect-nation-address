@@ -58,6 +58,10 @@ import { CARBulkOperations } from '@/components/CARBulkOperations';
 import { NARAuthorityDashboard } from '@/components/NARAuthorityDashboard';
 import { BusinessDirectory } from '@/components/BusinessDirectory';
 import CitizenDeliveriesView from '@/components/citizen/CitizenDeliveriesView';
+import { PickupRequestForm } from '@/components/postal/PickupRequestForm';
+import { DeliveryPreferencesForm } from '@/components/postal/DeliveryPreferencesForm';
+import { usePickupRequests } from '@/hooks/usePickupRequests';
+import { Truck } from 'lucide-react';
 
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
 import { UnifiedAddressDashboard } from "@/components/UnifiedAddressDashboard";
@@ -175,6 +179,41 @@ const UnifiedDashboard = () => {
   const [activeView, setActiveView] = useState('overview');
   const [selectedAddress, setSelectedAddress] = useState<SearchResult | null>(null);
   const [showMapView, setShowMapView] = useState(false);
+
+  // Postal/Pickup state
+  const [pickupRequestOpen, setPickupRequestOpen] = useState(false);
+  const [deliveryPreferencesOpen, setDeliveryPreferencesOpen] = useState(false);
+  const [selectedAddressForPrefs, setSelectedAddressForPrefs] = useState<string>('');
+  const [citizenAddresses, setCitizenAddresses] = useState<Array<{uac: string; street: string; city: string}>>([]);
+  const { requests: pickupRequests, fetchRequests: fetchPickupRequests } = usePickupRequests();
+
+  // Fetch citizen addresses for delivery preferences
+  useEffect(() => {
+    const fetchCitizenAddresses = async () => {
+      if (!user || !isCitizen) return;
+      try {
+        const { data: citizenAddrData } = await supabase
+          .from('citizen_address')
+          .select('uac')
+          .eq('person_id', user.id);
+        
+        if (citizenAddrData && citizenAddrData.length > 0) {
+          const uacs = citizenAddrData.map(ca => ca.uac);
+          const { data: addressData } = await supabase
+            .from('addresses')
+            .select('uac, street, city')
+            .in('uac', uacs);
+          
+          if (addressData) {
+            setCitizenAddresses(addressData);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching citizen addresses:', error);
+      }
+    };
+    fetchCitizenAddresses();
+  }, [user, isCitizen]);
 
   // Auto-open specific dashboards for different roles
   useEffect(() => {
@@ -1151,6 +1190,112 @@ const UnifiedDashboard = () => {
           </div>
         );
 
+      case 'request-pickup':
+        return (
+          <div className="space-y-6 max-w-4xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:requestPickup')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:requestPickupDescription')}</p>
+              </div>
+              <Badge variant="outline">
+                <Package className="h-3 w-3 mr-1" />
+                {t('common:postal')}
+              </Badge>
+            </div>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Truck className="h-5 w-5" />
+                  {t('dashboard:schedulePickup')}
+                </CardTitle>
+                <CardDescription>{t('dashboard:schedulePickupDescription')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button onClick={() => setPickupRequestOpen(true)}>
+                  <Package className="h-4 w-4 mr-2" />
+                  {t('dashboard:createPickupRequest')}
+                </Button>
+              </CardContent>
+            </Card>
+            
+            {pickupRequests.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('dashboard:myPickupRequests')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {pickupRequests.map((request) => (
+                      <div key={request.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <p className="font-medium">{request.pickup_address_uac}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(request.preferred_date).toLocaleDateString()} - {request.preferred_time_window}
+                          </p>
+                        </div>
+                        <Badge variant={request.status === 'completed' ? 'default' : 'secondary'}>
+                          {t(`postal:status.${request.status}`)}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        );
+
+      case 'delivery-preferences':
+        return (
+          <div className="space-y-6 max-w-4xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:deliveryPreferences')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:deliveryPreferencesDescription')}</p>
+              </div>
+              <Badge variant="outline">
+                <Settings className="h-3 w-3 mr-1" />
+                {t('common:preferences')}
+              </Badge>
+            </div>
+            
+            {citizenAddresses.length > 0 ? (
+              <div className="grid gap-4">
+                {citizenAddresses.map((address) => (
+                  <Card key={address.uac}>
+                    <CardHeader>
+                      <CardTitle className="text-lg">{address.street}</CardTitle>
+                      <CardDescription>{address.city} - UAC: {address.uac}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button 
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedAddressForPrefs(address.uac);
+                          setDeliveryPreferencesOpen(true);
+                        }}
+                      >
+                        <Settings className="h-4 w-4 mr-2" />
+                        {t('dashboard:managePreferences')}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="pt-6">
+                  <p className="text-muted-foreground text-center">
+                    {t('dashboard:noAddressesForPreferences')}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        );
+
       default:
         return (
           <div className="text-center py-12">
@@ -1217,6 +1362,22 @@ const UnifiedDashboard = () => {
             </div>
           </main>
         </div>
+
+        {/* Pickup Request Dialog */}
+        <PickupRequestForm 
+          open={pickupRequestOpen} 
+          onClose={() => {
+            setPickupRequestOpen(false);
+            fetchPickupRequests();
+          }}
+        />
+
+        {/* Delivery Preferences Dialog */}
+        <DeliveryPreferencesForm 
+          open={deliveryPreferencesOpen} 
+          onClose={() => setDeliveryPreferencesOpen(false)}
+          addressUac={selectedAddressForPrefs}
+        />
       </div>
     </SidebarProvider>
   );
