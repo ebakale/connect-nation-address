@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
@@ -121,7 +121,8 @@ const RoutingControl: React.FC<{
         map.removeControl(routingControlRef.current);
       }
     };
-  }, [map, origin, destination, onRouteCalculated, onRouteError, onRouteStart]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, origin, destination]);
 
   return null;
 };
@@ -194,31 +195,31 @@ export const RouteMapView: React.FC<RouteMapViewProps> = ({
     initialize();
   }, [deliveryUAC, getUserLocation, getDestinationFromUAC]);
 
-  const handleRouteCalculated = (distance: number, duration: number, steps: RouteStep[]) => {
+  const handleRouteCalculated = useCallback((distance: number, duration: number, steps: RouteStep[]) => {
     setRouteDistance(distance);
     setRouteDuration(duration);
     setRouteSteps(steps);
     setRouteError(false);
     setIsCalculatingRoute(false);
-  };
+  }, []);
 
-  const handleRouteError = () => {
+  const handleRouteError = useCallback(() => {
     setRouteError(true);
     setIsCalculatingRoute(false);
-  };
+  }, []);
 
-  const handleRouteStart = () => {
+  const handleRouteStart = useCallback(() => {
     setIsCalculatingRoute(true);
     setRouteError(false);
-  };
+  }, []);
 
-  const handleRetryRoute = () => {
+  const handleRetryRoute = useCallback(() => {
     setRouteError(false);
     setRouteDistance(null);
     setRouteDuration(null);
     setRouteSteps([]);
     setRouteKey(prev => prev + 1); // Force re-mount of RoutingControl
-  };
+  }, []);
 
   const formatDistance = (meters: number) => {
     if (meters >= 1000) {
