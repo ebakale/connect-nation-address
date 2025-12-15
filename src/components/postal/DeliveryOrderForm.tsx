@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { useDeliveryOrders } from '@/hooks/useDeliveryOrders';
 import { PackageType, CreateDeliveryOrderInput, TimeWindow } from '@/types/postal';
-import { UACAddressPicker, SelectedAddress } from '@/components/UACAddressPicker';
+import { RecipientSearchPicker, SelectedRecipientAddress } from './RecipientSearchPicker';
 import { CODSection } from './CODSection';
 
 interface DeliveryOrderFormProps {
@@ -21,7 +21,7 @@ export const DeliveryOrderForm = ({ open, onClose }: DeliveryOrderFormProps) => 
   const { t } = useTranslation('postal');
   const { createOrder } = useDeliveryOrders();
   const [loading, setLoading] = useState(false);
-  const [validatedAddress, setValidatedAddress] = useState<SelectedAddress | null>(null);
+  const [validatedAddress, setValidatedAddress] = useState<SelectedRecipientAddress | null>(null);
   const [formData, setFormData] = useState<CreateDeliveryOrderInput>({
     sender_name: '',
     recipient_name: '',
@@ -96,18 +96,20 @@ export const DeliveryOrderForm = ({ open, onClose }: DeliveryOrderFormProps) => 
               </div>
               <div className="space-y-2 sm:col-span-2">
                 <Label>{t('recipient.address')} (UAC) *</Label>
-                <UACAddressPicker
-                  onAddressSelect={(address) => {
+                <RecipientSearchPicker
+                  onAddressSelect={(address, recipientName) => {
                     setValidatedAddress(address);
-                    setFormData({ ...formData, recipient_address_uac: address.uac });
+                    setFormData({ 
+                      ...formData, 
+                      recipient_address_uac: address.uac,
+                      // Auto-fill recipient name if found via name search
+                      recipient_name: recipientName || formData.recipient_name 
+                    });
                   }}
                   onClear={() => {
                     setValidatedAddress(null);
                     setFormData({ ...formData, recipient_address_uac: '' });
                   }}
-                  placeholder={t('recipient.searchAddress')}
-                  showDescription={true}
-                  allowPrivateAddresses={true}
                 />
               </div>
               <div className="space-y-2">
