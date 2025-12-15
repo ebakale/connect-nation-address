@@ -163,14 +163,16 @@
     "steps": "Indicaciones",
     "yourLocation": "Tu Ubicación",
     "destination": "Destino",
-    "openInMaps": "Abrir en Mapas",
+    "openInMaps": "Abrir en App de Mapas",
     "close": "Cerrar",
     "routeError": "No se pudo calcular la ruta",
     "locationError": "No se pudo obtener tu ubicación",
     "destinationError": "No se pudo encontrar la dirección de destino",
     "stepNumber": "Paso {{number}}",
     "start": "Inicio",
-    "arrive": "Llegar al destino"
+    "arrive": "Llegar al destino",
+    "retry": "Intentar de Nuevo",
+    "iframeHint": "La ubicación puede estar bloqueada en modo vista previa. Usa el botón de App de Mapas para navegar."
   },
   
   "proof": {

@@ -163,14 +163,16 @@
     "steps": "Directions",
     "yourLocation": "Your Location",
     "destination": "Destination",
-    "openInMaps": "Open in Maps",
+    "openInMaps": "Open in Maps App",
     "close": "Close",
     "routeError": "Could not calculate route",
     "locationError": "Could not get your location",
     "destinationError": "Could not find destination address",
     "stepNumber": "Step {{number}}",
     "start": "Start",
-    "arrive": "Arrive at destination"
+    "arrive": "Arrive at destination",
+    "retry": "Try Again",
+    "iframeHint": "Location may be blocked in preview mode. Use the Maps App button for navigation."
   },
   
   "proof": {

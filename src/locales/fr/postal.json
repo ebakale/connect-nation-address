@@ -163,14 +163,16 @@
     "steps": "Instructions",
     "yourLocation": "Votre Position",
     "destination": "Destination",
-    "openInMaps": "Ouvrir dans Maps",
+    "openInMaps": "Ouvrir dans l'App Cartes",
     "close": "Fermer",
     "routeError": "Impossible de calculer l'itinéraire",
     "locationError": "Impossible d'obtenir votre position",
     "destinationError": "Impossible de trouver l'adresse de destination",
     "stepNumber": "Étape {{number}}",
     "start": "Départ",
-    "arrive": "Arriver à destination"
+    "arrive": "Arriver à destination",
+    "retry": "Réessayer",
+    "iframeHint": "La localisation peut être bloquée en mode aperçu. Utilisez le bouton App Cartes pour naviguer."
   },
   
   "proof": {
