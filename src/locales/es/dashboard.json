@@ -44,6 +44,8 @@
   "myDeliveries": "Mis Entregas",
   "myDeliveriesDesc": "Rastrea tus paquetes y entregas entrantes",
   "requestPickup": "Solicitar Recogida",
+  "myPickupRequests": "Mis Solicitudes de Recogida",
+  "myPickupRequestsDescription": "Ver, editar o cancelar tus solicitudes de recogida pendientes",
   "requestPickupDesc": "Programa una recogida de paquetes desde tu dirección",
   "deliveryPreferences": "Preferencias de Entrega",
   "deliveryPreferencesDesc": "Gestiona tus preferencias y configuraciones de entrega",

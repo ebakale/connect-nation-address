@@ -44,6 +44,8 @@
   "myDeliveries": "Mes Livraisons",
   "myDeliveriesDesc": "Suivez vos colis et livraisons entrantes",
   "requestPickup": "Demander un Ramassage",
+  "myPickupRequests": "Mes Demandes de Ramassage",
+  "myPickupRequestsDescription": "Voir, modifier ou annuler vos demandes de ramassage en attente",
   "requestPickupDesc": "Planifier un ramassage de colis depuis votre adresse",
   "deliveryPreferences": "Préférences de Livraison",
   "deliveryPreferencesDesc": "Gérer vos préférences et paramètres de livraison",
