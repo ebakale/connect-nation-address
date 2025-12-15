@@ -483,7 +483,9 @@
     "requestUpdated": "Pickup request updated successfully",
     "requestCancelled": "Pickup request cancelled",
     "updateError": "Error updating pickup request",
-    "cancelError": "Error cancelling pickup request"
+    "cancelError": "Error cancelling pickup request",
+    "cannotEditProcessed": "Cannot edit - request is already being processed",
+    "cannotCancelProcessed": "Cannot cancel - request is already being processed"
   },
   
   "returns": {
