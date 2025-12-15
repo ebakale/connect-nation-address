@@ -487,6 +487,7 @@
     "title": "Cash on Delivery",
     "amount": "COD Amount",
     "required": "COD Required",
+    "enableCOD": "Enable Cash on Delivery",
     "collectPayment": "Collect Payment",
     "paymentCollected": "Payment collected successfully",
     "collectionError": "Error collecting payment",
@@ -526,19 +527,29 @@
     "deleted": "Preferences deleted",
     "deleteError": "Error deleting preferences",
     "timeWindow": "Preferred Time Window",
+    "preferredTimeWindow": "Preferred Time Window",
     "morning": "Morning (8:00 - 12:00)",
     "afternoon": "Afternoon (12:00 - 17:00)",
     "evening": "Evening (17:00 - 20:00)",
     "any": "Any Time",
     "safeDrop": "Safe Drop Location",
     "safeDropAuth": "Authorize safe drop",
+    "safeDropAuthorized": "Authorize Safe Drop",
+    "safeDropLocation": "Safe Drop Location",
+    "safeDropLocationPlaceholder": "E.g., Leave at back door, with neighbor...",
     "alternateRecipient": "Alternate Recipient",
     "alternateRecipientAuth": "Authorize alternate recipient",
     "holdAtPostOffice": "Hold at Post Office",
     "allowNeighbor": "Allow neighbor delivery",
     "notifications": "Notification Preferences",
     "emailNotifications": "Email Notifications",
-    "smsNotifications": "SMS Notifications"
+    "smsNotifications": "SMS Notifications",
+    "timeWindows": {
+      "morning": "Morning (8-12)",
+      "afternoon": "Afternoon (12-17)",
+      "evening": "Evening (17-20)",
+      "any": "Any Time"
+    }
   },
   
   "timeWindows": {
