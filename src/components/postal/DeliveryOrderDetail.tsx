@@ -8,10 +8,12 @@ import { DeliveryStatus, DeliveryAssignment } from '@/types/postal';
 import { supabase } from '@/integrations/supabase/client';
 import { usePostalRole } from '@/hooks/usePostalRole';
 import { useDeliveryOrders } from '@/hooks/useDeliveryOrders';
+import { LabelPreview } from './LabelPreview';
 import { 
   Package, MapPin, Clock, User, Phone, Mail, 
   Scale, Ruler, DollarSign, FileSignature, ShieldCheck,
-  Calendar, Building2, UserCheck, Truck, CheckCircle2, ArrowRight, Loader2
+  Calendar, Building2, UserCheck, Truck, CheckCircle2, ArrowRight, Loader2,
+  Printer, Banknote
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -53,6 +55,8 @@ interface DeliveryOrder {
   created_at: string;
   updated_at: string;
   delivery_assignments?: DeliveryOrderAssignment[];
+  cod_required?: boolean | null;
+  cod_amount?: number | null;
 }
 
 interface AgentProfile {
@@ -71,9 +75,11 @@ export const DeliveryOrderDetail = ({ order, open, onOpenChange, onOrderUpdated 
   const { t } = useTranslation('postal');
   const [agentProfile, setAgentProfile] = useState<AgentProfile | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
-  const { canUpdateOrderStatus, isPostalClerk } = usePostalRole();
+  const [labelPreviewOpen, setLabelPreviewOpen] = useState(false);
+  const { canUpdateOrderStatus, isPostalClerk, isPostalDispatcher, isPostalSupervisor } = usePostalRole();
   const { markAsReadyForAssignment } = useDeliveryOrders();
-
+  
+  const canPrintLabel = isPostalClerk || isPostalDispatcher || isPostalSupervisor;
   const assignment = order?.delivery_assignments?.[0];
   const hasAssignment = !!assignment;
   const showAssignmentSection = hasAssignment && ['assigned', 'out_for_delivery', 'delivered', 'failed_delivery', 'address_not_found', 'returned_to_sender'].includes(order?.status || '');
@@ -255,11 +261,33 @@ export const DeliveryOrderDetail = ({ order, open, onOpenChange, onOrderUpdated 
               {order.declared_value && (
                 <div className="flex items-center gap-2">
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
-                  <span>{order.declared_value.toLocaleString()} XAF</span>
+                  <span>{t('package.declaredValue')}: {order.declared_value.toLocaleString()} XAF</span>
                 </div>
               )}
             </div>
           </div>
+
+          {/* COD Information */}
+          {order.cod_required && (
+            <>
+              <Separator />
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <Banknote className="h-4 w-4" />
+                  {t('cod.title')}
+                </h3>
+                <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg p-3 space-y-2 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">{t('cod.amount')}:</span>
+                    <span className="font-bold text-lg">{order.cod_amount?.toLocaleString() || 0} XAF</span>
+                  </div>
+                  <Badge variant="warning" className="text-xs">
+                    {t('cod.collectOnDelivery')}
+                  </Badge>
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Agent Assignment */}
           {showAssignmentSection && assignment && (
@@ -427,27 +455,45 @@ export const DeliveryOrderDetail = ({ order, open, onOpenChange, onOrderUpdated 
           </div>
 
           {/* Action Buttons */}
-          {canMarkReady && (
-            <>
-              <Separator />
-              <div className="pt-2">
-                <Button
-                  className="w-full"
-                  onClick={handleMarkReady}
-                  disabled={isUpdating}
-                >
-                  {isUpdating ? (
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  ) : (
-                    <ArrowRight className="h-4 w-4 mr-2" />
-                  )}
-                  {t('actions.markReadyForAssignment')}
-                </Button>
-              </div>
-            </>
-          )}
+          <Separator />
+          <div className="pt-2 space-y-2">
+            {canPrintLabel && (
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => setLabelPreviewOpen(true)}
+              >
+                <Printer className="h-4 w-4 mr-2" />
+                {t('labels.print')}
+              </Button>
+            )}
+            
+            {canMarkReady && (
+              <Button
+                className="w-full"
+                onClick={handleMarkReady}
+                disabled={isUpdating}
+              >
+                {isUpdating ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <ArrowRight className="h-4 w-4 mr-2" />
+                )}
+                {t('actions.markReadyForAssignment')}
+              </Button>
+            )}
+          </div>
         </div>
       </SheetContent>
+      
+      {/* Label Preview Dialog */}
+      {order && (
+        <LabelPreview
+          open={labelPreviewOpen}
+          onClose={() => setLabelPreviewOpen(false)}
+          order={order as any}
+        />
+      )}
     </Sheet>
   );
 };

@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   MapPin, Search, FileText, Clock, LogOut, Phone, FileCheck, 
-  AlertCircle, User, Home, Settings, Users, Bell, Package
+  AlertCircle, User, Home, Settings, Users, Bell, Package, Truck
 } from "lucide-react";
 
 // Hooks and Components
@@ -31,6 +31,7 @@ import { SavedLocationsManager } from "@/components/SavedLocationsManager";
 import { AddSecondaryAddressForm } from "@/components/AddSecondaryAddressForm";
 import { AddressPrivacySettings } from "@/components/AddressPrivacySettings";
 import CitizenDeliveriesView from "@/components/citizen/CitizenDeliveriesView";
+import { PickupRequestForm, DeliveryPreferencesForm } from "@/components/postal";
 
 interface SearchResult {
   uac: string;
@@ -67,6 +68,9 @@ const CitizenPortalUnified = () => {
   const [verificationRequestsOpen, setVerificationRequestsOpen] = useState(false);
   const [primaryAddressFormOpen, setPrimaryAddressFormOpen] = useState(false);
   const [secondaryAddressFormOpen, setSecondaryAddressFormOpen] = useState(false);
+  const [pickupRequestOpen, setPickupRequestOpen] = useState(false);
+  const [deliveryPreferencesOpen, setDeliveryPreferencesOpen] = useState(false);
+  const [selectedAddressForPrefs, setSelectedAddressForPrefs] = useState<string>('');
 
   // Effect to set default tab based on auth status
   useEffect(() => {
@@ -180,6 +184,10 @@ const CitizenPortalUnified = () => {
                 <TabsTrigger value="deliveries" className="flex items-center gap-2">
                   <Package className="h-4 w-4" />
                   <span className="hidden sm:inline">{t('postal:myDeliveries.title', 'Deliveries')}</span>
+                </TabsTrigger>
+                <TabsTrigger value="pickup" className="flex items-center gap-2">
+                  <Truck className="h-4 w-4" />
+                  <span className="hidden sm:inline">{t('postal:pickup.title', 'Pickup')}</span>
                 </TabsTrigger>
                 <TabsTrigger value="notifications" className="flex items-center gap-2">
                   <Bell className="h-4 w-4" />
@@ -534,6 +542,47 @@ const CitizenPortalUnified = () => {
               <CitizenDeliveriesView />
             </TabsContent>
           )}
+
+          {/* Pickup Request Tab (authenticated only) */}
+          {isAuthenticated && (
+            <TabsContent value="pickup" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Truck className="h-5 w-5 text-primary" />
+                    {t('postal:pickup.title', 'Request Pickup')}
+                  </CardTitle>
+                  <CardDescription>
+                    {t('postal:pickup.description', 'Schedule a pickup for your packages')}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Button onClick={() => setPickupRequestOpen(true)}>
+                    <Truck className="h-4 w-4 mr-2" />
+                    {t('postal:pickup.requestPickup', 'Request Pickup')}
+                  </Button>
+                  
+                  {primaryAddress && (
+                    <div className="mt-4">
+                      <p className="text-sm text-muted-foreground mb-2">
+                        {t('postal:preferences.managePreferences', 'Manage delivery preferences for your addresses')}
+                      </p>
+                      <Button 
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedAddressForPrefs(primaryAddress.uac);
+                          setDeliveryPreferencesOpen(true);
+                        }}
+                      >
+                        <Settings className="h-4 w-4 mr-2" />
+                        {t('postal:preferences.title', 'Delivery Preferences')}
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
         </Tabs>
 
         {/* Footer */}
@@ -626,6 +675,19 @@ const CitizenPortalUnified = () => {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Pickup Request Dialog */}
+        <PickupRequestForm
+          open={pickupRequestOpen}
+          onClose={() => setPickupRequestOpen(false)}
+        />
+
+        {/* Delivery Preferences Dialog */}
+        <DeliveryPreferencesForm
+          open={deliveryPreferencesOpen}
+          onClose={() => setDeliveryPreferencesOpen(false)}
+          addressUac={selectedAddressForPrefs}
+        />
       </div>
     </div>
   );

@@ -197,6 +197,20 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: isCitizen
     },
     {
+      id: 'request-pickup',
+      title: t('requestPickup'),
+      icon: Package,
+      onClick: () => handleItemClick('request-pickup'),
+      visible: isCitizen
+    },
+    {
+      id: 'delivery-preferences',
+      title: t('deliveryPreferences'),
+      icon: Settings,
+      onClick: () => handleItemClick('delivery-preferences'),
+      visible: isCitizen
+    },
+    {
       id: 'admin-panel',
       title: t('admin'),
       icon: Settings,
@@ -264,7 +278,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   );
   
   const toolsItems = visibleItems.filter(item => 
-    ['unified-address-request', 'address-search', 'saved-addresses', 'my-businesses', 'my-deliveries'].includes(item.id)
+    ['unified-address-request', 'address-search', 'saved-addresses', 'my-businesses', 'my-deliveries', 'request-pickup', 'delivery-preferences'].includes(item.id)
   );
   
   const settingsItems = visibleItems.filter(item => 
