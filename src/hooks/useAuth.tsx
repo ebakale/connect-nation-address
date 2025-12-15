@@ -40,26 +40,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
     });
 
-    // Ensure session is cleared when window is closed or page is hidden on dashboard
-    const handleBeforeUnload = () => {
-      if (window.location.pathname.includes('/dashboard')) {
-        try { localStorage.removeItem(AUTH_TOKEN_KEY); } catch {}
-      }
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'hidden' && window.location.pathname.includes('/dashboard')) {
-        try { localStorage.removeItem(AUTH_TOKEN_KEY); } catch {}
-      }
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
     return () => {
       subscription.unsubscribe();
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
