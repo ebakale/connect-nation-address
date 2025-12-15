@@ -44,10 +44,17 @@ export const useRouting = (): UseRoutingResult => {
     setIsLoadingLocation(true);
     setLocationError(null);
 
-    return new Promise((resolve) => {
+    // Manual timeout promise as fallback for iframe environments
+    const timeoutPromise = new Promise<Coordinates | null>((resolve) => {
+      setTimeout(() => {
+        resolve(null);
+      }, 15000); // 15 second hard timeout
+    });
+
+    // Geolocation promise
+    const locationPromise = new Promise<Coordinates | null>((resolve) => {
       if (!navigator.geolocation) {
         setLocationError('Geolocation not supported');
-        setIsLoadingLocation(false);
         resolve(null);
         return;
       }
@@ -59,7 +66,6 @@ export const useRouting = (): UseRoutingResult => {
             lng: position.coords.longitude
           };
           setUserLocation(coords);
-          setIsLoadingLocation(false);
           resolve(coords);
         },
         (error) => {
@@ -76,7 +82,6 @@ export const useRouting = (): UseRoutingResult => {
               break;
           }
           setLocationError(errorMessage);
-          setIsLoadingLocation(false);
           resolve(null);
         },
         {
@@ -86,7 +91,17 @@ export const useRouting = (): UseRoutingResult => {
         }
       );
     });
-  }, []);
+
+    // Race: first one to complete wins
+    const result = await Promise.race([locationPromise, timeoutPromise]);
+    
+    if (!result && !locationError) {
+      setLocationError('Location request timed out. Try opening in external maps app.');
+    }
+    
+    setIsLoadingLocation(false);
+    return result;
+  }, [locationError]);
 
   const getDestinationFromUAC = useCallback(async (uac: string): Promise<Coordinates | null> => {
     setIsLoadingDestination(true);

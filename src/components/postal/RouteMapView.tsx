@@ -247,7 +247,22 @@ export const RouteMapView: React.FC<RouteMapViewProps> = ({
               <p className="text-sm text-muted-foreground mb-4">
                 {locationError || destinationError || t('routing.routeError')}
               </p>
+              <p className="text-xs text-muted-foreground mb-4">
+                {t('routing.iframeHint')}
+              </p>
               <div className="flex flex-col gap-2">
+                {locationError && (
+                  <Button 
+                    onClick={() => {
+                      setRouteError(false);
+                      getUserLocation();
+                    }} 
+                    variant="outline" 
+                    className="w-full"
+                  >
+                    {t('routing.retry')}
+                  </Button>
+                )}
                 <Button onClick={openExternalMaps} variant="default" className="w-full">
                   <ExternalLink className="h-4 w-4 mr-2" />
                   {t('routing.openInMaps')}
