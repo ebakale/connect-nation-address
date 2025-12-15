@@ -460,10 +460,10 @@
   "labels": {
     "title": "Shipping Labels",
     "preview": "Label Preview",
-    "from": "From",
-    "to": "To",
-    "signatureRequired": "Signature Required",
-    "idRequired": "ID Required",
+    "from": "FROM",
+    "to": "TO",
+    "signatureRequired": "SIGNATURE REQ.",
+    "idRequired": "ID REQ.",
     "generate": "Generate Label",
     "generateLabel": "Generate Label",
     "printLabel": "Print Label",
@@ -476,8 +476,10 @@
     "download": "Download",
     "downloaded": "Label downloaded",
     "downloadError": "Error downloading label",
-    "printInstructions": "PDF opened - Press Ctrl+P (or Cmd+P on Mac) to print",
-    "downloadedForPrint": "Label downloaded - Open file to print"
+    "governmentPostalService": "GOVERNMENT POSTAL SERVICE",
+    "equatorialGuinea": "EQUATORIAL GUINEA",
+    "trackingNumber": "TRACKING NUMBER",
+    "order": "Order"
   },
   
   "bulkImport": {

@@ -26,6 +26,173 @@ export const usePostalLabels = () => {
     }
   };
 
+  const getPackageTypeLabel = (packageType: string): string => {
+    const key = `package.types.${packageType}`;
+    const translated = t(key);
+    return translated !== key ? translated : packageType.replace(/_/g, ' ').toUpperCase();
+  };
+
+  const getPriorityLabel = (priority: number): string => {
+    const labels = [
+      t('priority.urgent'),
+      t('priority.high'),
+      t('priority.normal'),
+      t('priority.low'),
+      t('priority.economy')
+    ];
+    return labels[Math.min(priority - 1, 4)] || t('priority.normal');
+  };
+
+  const generateLabelHTML = async (
+    order: DeliveryOrder,
+    s10TrackingNumber: string,
+    labelType: LabelType = 'standard'
+  ): Promise<string> => {
+    const trackingUrl = `${window.location.origin}/track?order=${order.order_number}`;
+    const qrDataUrl = await generateQRCode(trackingUrl);
+    
+    const priorityColors = ['#ff0000', '#ffa500', '#008000', '#0000ff', '#808080'];
+    const priority = (order.priority_level || 3) - 1;
+    const priorityColor = priorityColors[priority] || '#008000';
+    
+    const labelColors: Record<LabelType, string> = {
+      standard: '#c8c8c8',
+      express: '#ff4500',
+      registered: '#008000',
+      return: '#800080'
+    };
+
+    const packageInfo: string[] = [];
+    if (order.package_type) packageInfo.push(getPackageTypeLabel(order.package_type));
+    if (order.weight_grams) packageInfo.push(`${order.weight_grams}g`);
+    if (order.requires_signature) packageInfo.push(t('labels.signatureRequired'));
+    if (order.requires_id_verification) packageInfo.push(t('labels.idRequired'));
+
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>${t('labels.title')} - ${order.order_number}</title>
+        <style>
+          @page { size: 100mm 150mm; margin: 0; }
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { 
+            font-family: Arial, Helvetica, sans-serif; 
+            width: 100mm; 
+            height: 150mm; 
+            padding: 2mm;
+          }
+          .label { 
+            border: 0.5mm solid #000; 
+            width: 96mm; 
+            height: 146mm; 
+            position: relative;
+          }
+          .header { 
+            background: #003366; 
+            color: white; 
+            padding: 3mm; 
+            text-align: center; 
+          }
+          .header h1 { font-size: 10pt; margin-bottom: 1mm; }
+          .header h2 { font-size: 8pt; font-weight: normal; }
+          .badges { display: flex; justify-content: space-between; padding: 2mm 3mm; }
+          .badge { 
+            padding: 1mm 3mm; 
+            font-size: 6pt; 
+            font-weight: bold; 
+            color: white; 
+            border-radius: 1mm;
+          }
+          .priority { background: ${priorityColor}; }
+          .label-type { 
+            background: ${labelColors[labelType]}; 
+            color: ${labelType === 'standard' ? '#000' : '#fff'};
+          }
+          .section { padding: 2mm 3mm; }
+          .section-title { font-size: 8pt; font-weight: bold; margin-bottom: 1mm; }
+          .sender-name { font-size: 9pt; }
+          .sender-phone { font-size: 7pt; color: #666; }
+          .divider { border-top: 0.3mm solid #ccc; margin: 2mm 3mm; }
+          .recipient-name { font-size: 11pt; font-weight: bold; }
+          .uac-box { 
+            background: #f0f0f0; 
+            padding: 2mm; 
+            text-align: center; 
+            font-size: 10pt; 
+            font-weight: bold; 
+            margin: 2mm 0;
+          }
+          .address { font-size: 8pt; }
+          .qr-section { display: flex; justify-content: space-between; align-items: flex-start; }
+          .qr-left { flex: 1; }
+          .qr-code { width: 30mm; height: 30mm; }
+          .tracking-section { 
+            text-align: center; 
+            padding: 2mm 3mm; 
+            border-top: 0.3mm solid #ccc;
+          }
+          .tracking-label { font-size: 10pt; font-weight: bold; }
+          .tracking-number { font-size: 12pt; font-weight: bold; margin: 1mm 0; }
+          .order-number { font-size: 8pt; color: #666; }
+          .package-info { font-size: 7pt; text-align: center; margin-top: 1mm; }
+          .cod-box { 
+            background: #ffd700; 
+            text-align: center; 
+            padding: 2mm; 
+            font-weight: bold; 
+            font-size: 9pt;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="label">
+          <div class="header">
+            <h1>${t('labels.governmentPostalService')}</h1>
+            <h2>${t('labels.equatorialGuinea')}</h2>
+          </div>
+          
+          <div class="badges">
+            <span class="badge priority">${getPriorityLabel(order.priority_level || 3)}</span>
+            <span class="badge label-type">${labelType.toUpperCase()}</span>
+          </div>
+          
+          <div class="section">
+            <div class="section-title">${t('labels.from')}:</div>
+            <div class="sender-name">${order.sender_name || 'N/A'}</div>
+            ${order.sender_phone ? `<div class="sender-phone">Tel: ${order.sender_phone}</div>` : ''}
+          </div>
+          
+          <div class="divider"></div>
+          
+          <div class="section qr-section">
+            <div class="qr-left">
+              <div class="section-title">${t('labels.to')}:</div>
+              <div class="recipient-name">${order.recipient_name || 'N/A'}</div>
+              <div class="uac-box">${order.recipient_address_uac || 'N/A'}</div>
+              ${order.recipient_address ? 
+                `<div class="address">${order.recipient_address.street}, ${order.recipient_address.city}</div>` : ''}
+              ${order.recipient_phone ? `<div class="sender-phone">Tel: ${order.recipient_phone}</div>` : ''}
+            </div>
+            ${qrDataUrl ? `<img class="qr-code" src="${qrDataUrl}" alt="QR Code" />` : ''}
+          </div>
+          
+          <div class="tracking-section">
+            <div class="tracking-label">${t('labels.trackingNumber')}</div>
+            <div class="tracking-number">${s10TrackingNumber}</div>
+            <div class="order-number">${t('labels.order')}: ${order.order_number}</div>
+            <div class="package-info">${packageInfo.join(' | ')}</div>
+          </div>
+          
+          ${order.cod_required && order.cod_amount ? 
+            `<div class="cod-box">COD: ${order.cod_amount.toLocaleString()} XAF</div>` : ''}
+        </div>
+      </body>
+      </html>
+    `;
+  };
+
   const generateLabelPDF = useCallback(async (
     order: DeliveryOrder,
     s10TrackingNumber: string,
@@ -34,29 +201,26 @@ export const usePostalLabels = () => {
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
-      format: [100, 150] // 10cm x 15cm standard label
+      format: [100, 150]
     });
 
-    // Background
     doc.setFillColor(255, 255, 255);
     doc.rect(0, 0, 100, 150, 'F');
-
-    // Border
     doc.setDrawColor(0);
     doc.setLineWidth(0.5);
     doc.rect(2, 2, 96, 146);
 
-    // Header - Government Postal Service
+    // Header
     doc.setFillColor(0, 51, 102);
     doc.rect(2, 2, 96, 15, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.text('GOVERNMENT POSTAL SERVICE', 50, 10, { align: 'center' });
+    doc.text(t('labels.governmentPostalService'), 50, 10, { align: 'center' });
     doc.setFontSize(8);
-    doc.text('EQUATORIAL GUINEA', 50, 15, { align: 'center' });
+    doc.text(t('labels.equatorialGuinea'), 50, 15, { align: 'center' });
 
-    // Label type indicator
+    // Label type
     doc.setTextColor(0, 0, 0);
     const labelColors: Record<LabelType, [number, number, number]> = {
       standard: [200, 200, 200],
@@ -71,8 +235,7 @@ export const usePostalLabels = () => {
     doc.setTextColor(labelType === 'standard' ? 0 : 255, labelType === 'standard' ? 0 : 255, labelType === 'standard' ? 0 : 255);
     doc.text(labelType.toUpperCase(), 84, 25, { align: 'center' });
 
-    // Priority indicator
-    const priorityLabels = ['URGENT', 'HIGH', 'NORMAL', 'LOW', 'ECONOMY'];
+    // Priority
     const priorityColors: [number, number, number][] = [
       [255, 0, 0], [255, 165, 0], [0, 128, 0], [0, 0, 255], [128, 128, 128]
     ];
@@ -81,13 +244,13 @@ export const usePostalLabels = () => {
     doc.rect(5, 20, 25, 8, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(6);
-    doc.text(priorityLabels[priority], 17.5, 25, { align: 'center' });
+    doc.text(getPriorityLabel(order.priority_level || 3), 17.5, 25, { align: 'center' });
 
-    // Sender section
+    // Sender
     doc.setTextColor(0, 0, 0);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
-    doc.text('FROM:', 5, 35);
+    doc.text(`${t('labels.from')}:`, 5, 35);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.text(order.sender_name || 'N/A', 5, 41);
@@ -96,29 +259,26 @@ export const usePostalLabels = () => {
       doc.text(`Tel: ${order.sender_phone}`, 5, 46);
     }
 
-    // Divider
     doc.setDrawColor(200, 200, 200);
     doc.line(5, 50, 95, 50);
 
-    // Recipient section
+    // Recipient
     doc.setTextColor(0, 0, 0);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
-    doc.text('TO:', 5, 57);
+    doc.text(`${t('labels.to')}:`, 5, 57);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(11);
     doc.text(order.recipient_name || 'N/A', 5, 64);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     
-    // UAC Address
     doc.setFillColor(240, 240, 240);
     doc.rect(5, 67, 90, 10, 'F');
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
     doc.text(order.recipient_address_uac || 'N/A', 50, 73, { align: 'center' });
 
-    // Full address if available
     if (order.recipient_address) {
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8);
@@ -126,7 +286,6 @@ export const usePostalLabels = () => {
       doc.text(addressLine, 5, 82, { maxWidth: 60 });
     }
 
-    // Phone
     if (order.recipient_phone) {
       doc.setFontSize(8);
       doc.text(`Tel: ${order.recipient_phone}`, 5, 88);
@@ -139,31 +298,29 @@ export const usePostalLabels = () => {
       doc.addImage(qrDataUrl, 'PNG', 65, 78, 30, 30);
     }
 
-    // Divider
     doc.line(5, 110, 95, 110);
 
-    // Tracking number
+    // Tracking
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
-    doc.text('TRACKING NUMBER', 50, 117, { align: 'center' });
+    doc.text(t('labels.trackingNumber'), 50, 117, { align: 'center' });
     doc.setFontSize(12);
     doc.text(s10TrackingNumber, 50, 125, { align: 'center' });
 
-    // Order number
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Order: ${order.order_number}`, 50, 131, { align: 'center' });
+    doc.text(`${t('labels.order')}: ${order.order_number}`, 50, 131, { align: 'center' });
 
     // Package info
     doc.setFontSize(7);
     const packageInfo: string[] = [];
-    if (order.package_type) packageInfo.push(order.package_type.toUpperCase());
+    if (order.package_type) packageInfo.push(getPackageTypeLabel(order.package_type));
     if (order.weight_grams) packageInfo.push(`${order.weight_grams}g`);
-    if (order.requires_signature) packageInfo.push('SIGNATURE REQ.');
-    if (order.requires_id_verification) packageInfo.push('ID REQ.');
+    if (order.requires_signature) packageInfo.push(t('labels.signatureRequired'));
+    if (order.requires_id_verification) packageInfo.push(t('labels.idRequired'));
     doc.text(packageInfo.join(' | '), 50, 137, { align: 'center' });
 
-    // COD indicator if applicable
+    // COD
     if (order.cod_required && order.cod_amount) {
       doc.setFillColor(255, 215, 0);
       doc.rect(5, 140, 90, 8, 'F');
@@ -174,7 +331,7 @@ export const usePostalLabels = () => {
     }
 
     return doc.output('blob');
-  }, []);
+  }, [t]);
 
   const generateLabel = async (
     order: DeliveryOrder,
@@ -253,29 +410,51 @@ export const usePostalLabels = () => {
         trackingNumber = label.s10_tracking_number || order.order_number;
       }
 
-      // Generate PDF
-      const pdfBlob = await generateLabelPDF(order, trackingNumber);
-      const pdfUrl = URL.createObjectURL(pdfBlob);
+      // Generate HTML label for printing
+      const labelHTML = await generateLabelHTML(order, trackingNumber);
       
-      // Open PDF in new tab - browser's native PDF viewer will render it properly
-      const pdfWindow = window.open(pdfUrl, '_blank');
-      
-      if (pdfWindow) {
-        // Show instruction toast
-        toast.success(t('labels.printInstructions'), {
-          duration: 5000,
-        });
-      } else {
-        // If popup blocked, offer download as fallback
-        const link = document.createElement('a');
-        link.href = pdfUrl;
-        link.download = `label-${order.order_number}.pdf`;
-        link.click();
-        toast.info(t('labels.downloadedForPrint'));
-      }
+      // Create hidden iframe
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'fixed';
+      iframe.style.right = '0';
+      iframe.style.bottom = '0';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = 'none';
+      document.body.appendChild(iframe);
 
-      // Clean up blob URL after delay
-      setTimeout(() => URL.revokeObjectURL(pdfUrl), 60000);
+      // Write HTML content to iframe
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+      if (!iframeDoc) throw new Error('Could not access iframe document');
+      
+      iframeDoc.open();
+      iframeDoc.write(labelHTML);
+      iframeDoc.close();
+
+      // Wait for images (QR code) to load, then print
+      const images = iframeDoc.getElementsByTagName('img');
+      const imageLoadPromises = Array.from(images).map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise<void>((resolve) => {
+          img.onload = () => resolve();
+          img.onerror = () => resolve();
+        });
+      });
+
+      await Promise.all(imageLoadPromises);
+      
+      // Small delay to ensure rendering is complete
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Trigger print dialog
+      iframe.contentWindow?.print();
+
+      // Clean up after print dialog closes
+      setTimeout(() => {
+        if (iframe.parentNode) {
+          document.body.removeChild(iframe);
+        }
+      }, 1000);
 
       // Record print action
       if (existingLabel) {
