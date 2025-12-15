@@ -57,7 +57,30 @@
     "email": "Recipient Email",
     "enterUAC": "Enter recipient UAC",
     "validateAddress": "Validate Address",
-    "searchAddress": "Search by UAC code or address..."
+    "searchAddress": "Search by UAC code or address...",
+    "searchMode": "Search mode",
+    "modeAddress": "By Address",
+    "modeName": "By Name",
+    "searchByAddress": "Search by UAC code or address...",
+    "searchByName": "Search by recipient name...",
+    "addressResults": "Address Results",
+    "personResults": "Recipients Found",
+    "addresses": "addresses",
+    "careOf": "Care of",
+    "selectedAddress": "Selected Address",
+    "addressSelected": "Address Selected",
+    "searchError": "Failed to search. Please try again.",
+    "noAddressResults": "No addresses found matching \"{{query}}\"",
+    "noNameResults": "No recipients found matching \"{{query}}\"",
+    "tryNameSearch": "Try searching by recipient name instead",
+    "tryAddressSearch": "Try searching by UAC or address instead",
+    "dependentTypes": {
+      "minor": "Minor",
+      "adult_student": "Adult Student",
+      "adult_dependent": "Adult Dependent",
+      "elderly": "Elderly",
+      "disabled": "Disabled"
+    }
   },
   
   "package": {

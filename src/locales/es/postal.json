@@ -57,7 +57,30 @@
     "email": "Correo del Destinatario",
     "enterUAC": "Ingrese el UAC del destinatario",
     "validateAddress": "Validar Dirección",
-    "searchAddress": "Buscar por código UAC o dirección..."
+    "searchAddress": "Buscar por código UAC o dirección...",
+    "searchMode": "Modo de búsqueda",
+    "modeAddress": "Por Dirección",
+    "modeName": "Por Nombre",
+    "searchByAddress": "Buscar por código UAC o dirección...",
+    "searchByName": "Buscar por nombre del destinatario...",
+    "addressResults": "Direcciones Encontradas",
+    "personResults": "Destinatarios Encontrados",
+    "addresses": "direcciones",
+    "careOf": "A cargo de",
+    "selectedAddress": "Dirección Seleccionada",
+    "addressSelected": "Dirección Seleccionada",
+    "searchError": "Error en la búsqueda. Intente de nuevo.",
+    "noAddressResults": "No se encontraron direcciones para \"{{query}}\"",
+    "noNameResults": "No se encontraron destinatarios para \"{{query}}\"",
+    "tryNameSearch": "Intente buscar por nombre del destinatario",
+    "tryAddressSearch": "Intente buscar por UAC o dirección",
+    "dependentTypes": {
+      "minor": "Menor",
+      "adult_student": "Estudiante Adulto",
+      "adult_dependent": "Dependiente Adulto",
+      "elderly": "Adulto Mayor",
+      "disabled": "Discapacitado"
+    }
   },
   
   "package": {
