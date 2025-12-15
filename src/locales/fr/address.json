@@ -492,7 +492,7 @@
   "countryLabel": "Pays",
   "addressExport": "Exportation d'Adresses",
   "exportedAddressesDescription": "Adresses exportées du système UAC",
-  "status": "Statut",
+  "statusLabel": "Statut",
   "verified": "Vérifié",
   "unverified": "Non vérifié",
   "public": "Public",
