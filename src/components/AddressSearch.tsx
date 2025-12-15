@@ -228,7 +228,7 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
             variant="default"
             size="sm"
           >
-            {isSearching ? t('searching') : t('search')}
+            {isSearching ? t('searching') : t('common:buttons.search')}
           </Button>
         </div>
       </div>
