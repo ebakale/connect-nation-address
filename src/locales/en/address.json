@@ -470,7 +470,7 @@
   "cityLabel": "City",
   "regionLabel": "Region",
   "countryLabel": "Country",
-  "status": "Status",
+  "statusLabel": "Status",
   "verified": "Verified",
   "unverified": "Unverified",
   "public": "Public",
