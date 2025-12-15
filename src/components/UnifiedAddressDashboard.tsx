@@ -41,6 +41,7 @@ import AdminPanel from './AdminPanel';
 import { PickupRequestForm } from './postal/PickupRequestForm';
 import { DeliveryPreferencesForm } from './postal/DeliveryPreferencesForm';
 import { usePickupRequests } from '@/hooks/usePickupRequests';
+import { useCitizenAddresses } from '@/hooks/useCAR';
 
 interface UnifiedAddressDashboardProps {
   onClose?: () => void;
@@ -121,57 +122,43 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
   const [pickupRequestOpen, setPickupRequestOpen] = useState(false);
   const [deliveryPreferencesOpen, setDeliveryPreferencesOpen] = useState(false);
   const [selectedAddressForPrefs, setSelectedAddressForPrefs] = useState<string>('');
-  const [citizenAddresses, setCitizenAddresses] = useState<Array<{ uac: string; street: string; city: string }>>([]);
+  const [citizenAddressDetails, setCitizenAddressDetails] = useState<Array<{ uac: string; street: string; city: string }>>([]);
   
   const { requests: pickupRequests, loading: pickupLoading, fetchRequests } = usePickupRequests();
+  
+  // Use the proper hook that handles auth_user_id -> person_id lookup correctly
+  const { currentAddresses, loading: addressesLoading } = useCitizenAddresses();
 
   // Update active tab when active role changes
   useEffect(() => {
     setActiveTab(getDefaultTab());
   }, [activeRole, role]);
 
-  // Fetch citizen addresses for delivery preferences
+  // Fetch address details (street, city) for citizen addresses
   useEffect(() => {
-    const fetchCitizenAddresses = async () => {
-      if (!user?.id) return;
+    const fetchAddressDetails = async () => {
+      if (!currentAddresses || currentAddresses.length === 0) {
+        setCitizenAddressDetails([]);
+        return;
+      }
       
       try {
-        // @ts-expect-error - Supabase type depth issue workaround
-        const personResult = await supabase
-          .from('person')
-          .select('id')
-          .eq('user_id', user.id)
-          .limit(1);
+        const uacs = currentAddresses.map(a => a.uac);
+        const { data, error } = await supabase
+          .from('addresses')
+          .select('uac, street, city')
+          .in('uac', uacs);
         
-        const personId = (personResult.data as Array<{ id: string }> | null)?.[0]?.id;
-        
-        if (personId) {
-          const addressResult = await supabase
-            .from('citizen_address')
-            .select('uac')
-            .eq('person_id', personId)
-            .is('effective_to', null);
-          
-          const uacs = (addressResult.data as Array<{ uac: string }> | null)?.map(a => a.uac) || [];
-          
-          if (uacs.length > 0) {
-            const detailsResult = await supabase
-              .from('addresses')
-              .select('uac, street, city')
-              .in('uac', uacs);
-            
-            if (detailsResult.data) {
-              setCitizenAddresses(detailsResult.data as Array<{ uac: string; street: string; city: string }>);
-            }
-          }
+        if (!error && data) {
+          setCitizenAddressDetails(data as Array<{ uac: string; street: string; city: string }>);
         }
       } catch (error) {
-        console.error('Error fetching citizen addresses:', error);
+        console.error('Error fetching address details:', error);
       }
     };
     
-    fetchCitizenAddresses();
-  }, [user?.id]);
+    fetchAddressDetails();
+  }, [currentAddresses]);
 
   // Define tabs based on active role
   const getAvailableTabs = () => {
@@ -556,9 +543,17 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
               </Badge>
             </div>
             
-            {citizenAddresses.length > 0 ? (
+            {addressesLoading ? (
+              <Card>
+                <CardContent className="pt-6">
+                  <p className="text-muted-foreground text-center">
+                    {t('common:loading')}...
+                  </p>
+                </CardContent>
+              </Card>
+            ) : citizenAddressDetails.length > 0 ? (
               <div className="grid gap-4">
-                {citizenAddresses.map((address) => (
+                {citizenAddressDetails.map((address) => (
                   <Card key={address.uac}>
                     <CardHeader>
                       <CardTitle className="text-lg">{address.street}</CardTitle>
