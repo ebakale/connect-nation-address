@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Search, MapPin, Check, Loader2, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -36,6 +36,11 @@ interface UACAddressPickerProps {
   allowPrivateAddresses?: boolean;
 }
 
+// Helper to format address for display in input
+const formatSelectedAddressDisplay = (address: { uac: string; street: string; city: string }) => {
+  return `${address.uac} - ${address.street}, ${address.city}`;
+};
+
 export const UACAddressPicker: React.FC<UACAddressPickerProps> = ({
   onAddressSelect,
   onClear,
@@ -52,9 +57,6 @@ export const UACAddressPicker: React.FC<UACAddressPickerProps> = ({
   const [selectedAddress, setSelectedAddress] = useState<SelectedAddress | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  
-  // Ref to skip search after address selection
-  const skipSearchRef = useRef<boolean>(false);
 
   const { searchAddresses } = useAddresses();
   const { toast } = useToast();
@@ -90,11 +92,14 @@ export const UACAddressPicker: React.FC<UACAddressPickerProps> = ({
     }
   }, [searchAddresses, allowPrivateAddresses, toast]);
 
-  // Debounce search - skip if we just selected an address
+  // Debounce search - skip if query matches selected address display
   useEffect(() => {
-    if (skipSearchRef.current) {
-      skipSearchRef.current = false;
-      return;
+    // If there's a selected address and query matches its display format, don't search
+    if (selectedAddress) {
+      const expectedDisplay = formatSelectedAddressDisplay(selectedAddress);
+      if (query === expectedDisplay) {
+        return; // Skip search - this is the selected address display
+      }
     }
     
     const timeoutId = setTimeout(() => {
@@ -102,7 +107,7 @@ export const UACAddressPicker: React.FC<UACAddressPickerProps> = ({
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [query, performSearch]);
+  }, [query, performSearch, selectedAddress]);
 
   const handleAddressSelect = (address: any) => {
     const selectedAddr: SelectedAddress = {
@@ -122,9 +127,7 @@ export const UACAddressPicker: React.FC<UACAddressPickerProps> = ({
     };
 
     setSelectedAddress(selectedAddr);
-    // Skip the next search triggered by query change
-    skipSearchRef.current = true;
-    setQuery(`${address.uac} - ${address.street}, ${address.city}`);
+    setQuery(formatSelectedAddressDisplay(address));
     setShowResults(false);
     
     onAddressSelect?.(selectedAddr);
@@ -141,6 +144,22 @@ export const UACAddressPicker: React.FC<UACAddressPickerProps> = ({
     setResults([]);
     setShowResults(false);
     onClear?.();
+  };
+
+  // Handle input changes - clear selection if user modifies the query
+  const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setQuery(newValue);
+    
+    // If user types something different from the selected address, clear selection
+    if (selectedAddress) {
+      const expectedDisplay = formatSelectedAddressDisplay(selectedAddress);
+      if (newValue !== expectedDisplay) {
+        setSelectedAddress(null);
+        setShowResults(false);
+        onClear?.();
+      }
+    }
   };
 
   const formatAddress = (address: any) => {
@@ -161,7 +180,7 @@ export const UACAddressPicker: React.FC<UACAddressPickerProps> = ({
             type="text"
             placeholder={placeholder}
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={handleQueryChange}
             disabled={disabled}
             className="pl-10 pr-20"
           />
