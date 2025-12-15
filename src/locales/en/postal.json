@@ -56,7 +56,8 @@
     "phone": "Recipient Phone",
     "email": "Recipient Email",
     "enterUAC": "Enter recipient UAC",
-    "validateAddress": "Validate Address"
+    "validateAddress": "Validate Address",
+    "searchAddress": "Search by UAC code or address..."
   },
   
   "package": {

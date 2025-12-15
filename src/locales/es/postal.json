@@ -56,7 +56,8 @@
     "phone": "Teléfono del Destinatario",
     "email": "Correo del Destinatario",
     "enterUAC": "Ingrese el UAC del destinatario",
-    "validateAddress": "Validar Dirección"
+    "validateAddress": "Validar Dirección",
+    "searchAddress": "Buscar por código UAC o dirección..."
   },
   
   "package": {
