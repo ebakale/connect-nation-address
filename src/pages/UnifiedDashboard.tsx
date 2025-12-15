@@ -61,6 +61,7 @@ import CitizenDeliveriesView from '@/components/citizen/CitizenDeliveriesView';
 import { PickupRequestForm } from '@/components/postal/PickupRequestForm';
 import { DeliveryPreferencesForm } from '@/components/postal/DeliveryPreferencesForm';
 import { usePickupRequests } from '@/hooks/usePickupRequests';
+import { useCitizenAddresses } from '@/hooks/useCAR';
 import { Truck } from 'lucide-react';
 
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
@@ -184,36 +185,37 @@ const UnifiedDashboard = () => {
   const [pickupRequestOpen, setPickupRequestOpen] = useState(false);
   const [deliveryPreferencesOpen, setDeliveryPreferencesOpen] = useState(false);
   const [selectedAddressForPrefs, setSelectedAddressForPrefs] = useState<string>('');
-  const [citizenAddresses, setCitizenAddresses] = useState<Array<{uac: string; street: string; city: string}>>([]);
+  const [citizenAddressDetails, setCitizenAddressDetails] = useState<Array<{uac: string; street: string; city: string}>>([]);
   const { requests: pickupRequests, fetchRequests: fetchPickupRequests } = usePickupRequests();
+  
+  // Use the proper hook that handles auth_user_id -> person_id lookup correctly
+  const { currentAddresses, loading: addressesLoading } = useCitizenAddresses();
 
-  // Fetch citizen addresses for delivery preferences
+  // Fetch address details (street, city) for citizen addresses from the hook
   useEffect(() => {
-    const fetchCitizenAddresses = async () => {
-      if (!user || !isCitizen) return;
+    const fetchAddressDetails = async () => {
+      if (!currentAddresses || currentAddresses.length === 0) {
+        setCitizenAddressDetails([]);
+        return;
+      }
+      
       try {
-        const { data: citizenAddrData } = await supabase
-          .from('citizen_address')
-          .select('uac')
-          .eq('person_id', user.id);
+        const uacs = currentAddresses.map(a => a.uac);
+        const { data, error } = await supabase
+          .from('addresses')
+          .select('uac, street, city')
+          .in('uac', uacs);
         
-        if (citizenAddrData && citizenAddrData.length > 0) {
-          const uacs = citizenAddrData.map(ca => ca.uac);
-          const { data: addressData } = await supabase
-            .from('addresses')
-            .select('uac, street, city')
-            .in('uac', uacs);
-          
-          if (addressData) {
-            setCitizenAddresses(addressData);
-          }
+        if (!error && data) {
+          setCitizenAddressDetails(data as Array<{ uac: string; street: string; city: string }>);
         }
       } catch (error) {
-        console.error('Error fetching citizen addresses:', error);
+        console.error('Error fetching address details:', error);
       }
     };
-    fetchCitizenAddresses();
-  }, [user, isCitizen]);
+    
+    fetchAddressDetails();
+  }, [currentAddresses]);
 
   // Auto-open specific dashboards for different roles
   useEffect(() => {
@@ -1261,9 +1263,17 @@ const UnifiedDashboard = () => {
               </Badge>
             </div>
             
-            {citizenAddresses.length > 0 ? (
+            {addressesLoading ? (
+              <Card>
+                <CardContent className="pt-6">
+                  <p className="text-muted-foreground text-center">
+                    {t('common:loading')}...
+                  </p>
+                </CardContent>
+              </Card>
+            ) : citizenAddressDetails.length > 0 ? (
               <div className="grid gap-4">
-                {citizenAddresses.map((address) => (
+                {citizenAddressDetails.map((address) => (
                   <Card key={address.uac}>
                     <CardHeader>
                       <CardTitle className="text-lg">{address.street}</CardTitle>
