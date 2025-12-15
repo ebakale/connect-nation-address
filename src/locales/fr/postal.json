@@ -447,7 +447,8 @@
   "pickup": {
     "title": "Ramassage",
     "requests": "Demandes de Ramassage",
-    "requestTitle": "Demander un Ramassage",
+    "requestPickup": "Demander un Ramassage",
+    "requestTitle": "Demander un Ramassage de Colis",
     "pickupLocation": "Lieu de Ramassage",
     "address": "Adresse de Ramassage",
     "searchAddress": "Rechercher une adresse...",
@@ -465,6 +466,7 @@
     "contactName": "Nom du Contact",
     "contactPhone": "Téléphone du Contact",
     "notes": "Notes",
+    "pickupNotes": "Notes de Ramassage",
     "notesPlaceholder": "Notes supplémentaires...",
     "submitRequest": "Soumettre la Demande",
     "requestCreated": "Demande de ramassage créée",
@@ -473,6 +475,12 @@
     "packages": "colis",
     "assignAgent": "Assigner un Agent",
     "markCompleted": "Marquer Terminé",
+    "timeWindows": {
+      "any": "N'importe quand",
+      "morning": "Matin (8h-12h)",
+      "afternoon": "Après-midi (12h-17h)",
+      "evening": "Soir (17h-20h)"
+    },
     "status": {
       "pending": "En Attente",
       "scheduled": "Planifié",
