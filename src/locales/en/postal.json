@@ -475,7 +475,9 @@
     "printError": "Error printing label",
     "download": "Download",
     "downloaded": "Label downloaded",
-    "downloadError": "Error downloading label"
+    "downloadError": "Error downloading label",
+    "printInstructions": "PDF opened - Press Ctrl+P (or Cmd+P on Mac) to print",
+    "downloadedForPrint": "Label downloaded - Open file to print"
   },
   
   "bulkImport": {

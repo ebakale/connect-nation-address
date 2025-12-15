@@ -553,7 +553,9 @@
     "printError": "Erreur d'impression",
     "download": "Télécharger",
     "downloaded": "Étiquette téléchargée",
-    "downloadError": "Erreur de téléchargement"
+    "downloadError": "Erreur de téléchargement",
+    "printInstructions": "PDF ouvert - Appuyez sur Ctrl+P (ou Cmd+P sur Mac) pour imprimer",
+    "downloadedForPrint": "Étiquette téléchargée - Ouvrez le fichier pour imprimer"
   },
   "bulkImport": {
     "title": "Importation en Masse",
