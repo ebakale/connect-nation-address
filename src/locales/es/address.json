@@ -193,7 +193,7 @@
   "subcategory": "Subcategoría",
   "importance": "Importancia",
   "priority": "Prioridad",
-  "status": "Estado",
+  "statusLabel": "Estado",
   "visibility": "Visibilidad",
   "accessibility": "Accesibilidad",
   "facilities": "Instalaciones",
