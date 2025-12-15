@@ -477,9 +477,12 @@
     "markProcessed": "Marquer Traité",
     "status": {
       "initiated": "Initié",
+      "label_generated": "Étiquette Générée",
       "labelGenerated": "Étiquette Générée",
       "pickupScheduled": "Ramassage Planifié",
+      "pickup_scheduled": "Ramassage Planifié",
       "inTransit": "En Transit",
+      "in_transit": "En Transit",
       "received": "Reçu",
       "processed": "Traité",
       "cancelled": "Annulé"

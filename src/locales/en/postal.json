@@ -382,6 +382,7 @@
   
   "pickup": {
     "title": "Pickup Requests",
+    "requests": "Pickup Requests",
     "requestPickup": "Request Pickup",
     "requestCreated": "Pickup request created successfully",
     "requestError": "Error creating pickup request",
@@ -393,7 +394,20 @@
     "preferredTime": "Preferred Time Window",
     "contactName": "Contact Name",
     "contactPhone": "Contact Phone",
-    "pickupNotes": "Pickup Notes"
+    "pickupNotes": "Pickup Notes",
+    "noRequests": "No pickup requests",
+    "packages": "packages",
+    "assignAgent": "Assign Agent",
+    "markCompleted": "Mark Completed",
+    "status": {
+      "pending": "Pending",
+      "scheduled": "Scheduled",
+      "assigned": "Assigned",
+      "en_route": "En Route",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "failed": "Failed"
+    }
   },
   
   "returns": {
@@ -404,6 +418,14 @@
     "labelGenerated": "Return label generated",
     "labelError": "Error generating label",
     "returnReason": "Return Reason",
+    "noReturns": "No returns",
+    "originalOrder": "Original Order",
+    "reason": "Reason",
+    "trackingNumber": "Tracking Number",
+    "generateLabel": "Generate Label",
+    "markInTransit": "Mark In Transit",
+    "markReceived": "Mark Received",
+    "markProcessed": "Mark Processed",
     "reasons": {
       "wrong_item": "Wrong Item",
       "damaged": "Damaged",
@@ -412,6 +434,17 @@
       "customer_return": "Customer Return",
       "address_incorrect": "Address Incorrect",
       "other": "Other"
+    },
+    "status": {
+      "initiated": "Initiated",
+      "label_generated": "Label Generated",
+      "labelGenerated": "Label Generated",
+      "pickup_scheduled": "Pickup Scheduled",
+      "in_transit": "In Transit",
+      "inTransit": "In Transit",
+      "received": "Received",
+      "processed": "Processed",
+      "cancelled": "Cancelled"
     },
     "statuses": {
       "initiated": "Initiated",
@@ -464,8 +497,26 @@
     "mobileMoney": "Mobile Money",
     "receiptNumber": "Receipt Number",
     "pendingCollection": "Pending Collection",
+    "pending": "Pending",
     "collected": "Collected",
-    "remitted": "Remitted"
+    "remitted": "Remitted",
+    "failed": "Failed",
+    "totalAmount": "Total Amount",
+    "transactions": "COD Transactions",
+    "noTransactions": "No transactions",
+    "collect": "Collect",
+    "confirmCollection": "Confirm Collection",
+    "remitFunds": "Remit Funds",
+    "selectTransactions": "Select transactions to remit",
+    "remittanceReference": "Remittance Reference",
+    "referencePlaceholder": "Reference number...",
+    "confirmRemittance": "Confirm Remittance",
+    "receipt": "Receipt",
+    "methods": {
+      "cash": "Cash",
+      "mobileMoney": "Mobile Money",
+      "card": "Card"
+    }
   },
   
   "preferences": {
