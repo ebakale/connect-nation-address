@@ -7,16 +7,21 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, User, MapPin, Shield, AlertTriangle, Loader2 } from "lucide-react";
+import { Search, User, MapPin, Shield, AlertTriangle, Loader2, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from 'react-i18next';
 
 interface SearchResult {
-  person_id: string;
+  person_id?: string;
+  dependent_id?: string;
   full_name: string;
   email?: string;
   is_protected: boolean;
+  is_dependent?: boolean;
+  dependent_type?: string;
+  relationship_to_guardian?: string;
+  guardian_name?: string;
   addresses: Array<{
     uac: string;
     unit_uac?: string;
@@ -105,6 +110,16 @@ export const CitizenAddressSearch = () => {
     }
   };
 
+  const getDependentTypeLabel = (type: string | undefined) => {
+    if (!type) return '';
+    return t(`common:dependentType.${type.toLowerCase()}`, type);
+  };
+
+  const getRelationshipLabel = (relationship: string | undefined) => {
+    if (!relationship) return '';
+    return t(`address:relationship${relationship.replace(/_/g, '')}`, relationship);
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -123,6 +138,13 @@ export const CitizenAddressSearch = () => {
             <AlertTitle>{t('common:security.privacy')}</AlertTitle>
             <AlertDescription>
               {t('common:security.searchLogged')}
+            </AlertDescription>
+          </Alert>
+
+          <Alert variant="default" className="mb-6 border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950">
+            <Users className="h-4 w-4 text-blue-600" />
+            <AlertDescription className="text-blue-800 dark:text-blue-200">
+              {t('address:searchIncludesHouseholds')}
             </AlertDescription>
           </Alert>
 
@@ -193,11 +215,30 @@ export const CitizenAddressSearch = () => {
               <div className="space-y-4">
                 {searchResults.map((result, idx) => (
                   <div key={idx} className="border rounded-lg p-4 space-y-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="font-semibold text-lg">{result.full_name}</h3>
+                    <div className="flex items-start justify-between flex-wrap gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="font-semibold text-lg">{result.full_name}</h3>
+                          {result.is_dependent && (
+                            <Badge variant="secondary" className="flex items-center gap-1">
+                              <Users className="h-3 w-3" />
+                              {t('address:householdDependent')}
+                            </Badge>
+                          )}
+                        </div>
                         {result.email && (
                           <p className="text-sm text-muted-foreground">{result.email}</p>
+                        )}
+                        {result.is_dependent && result.guardian_name && (
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                            <User className="h-4 w-4" />
+                            <span>{t('address:dependentOfGuardian', { guardian: result.guardian_name })}</span>
+                            {result.dependent_type && (
+                              <Badge variant="outline" className="text-xs">
+                                {getDependentTypeLabel(result.dependent_type)}
+                              </Badge>
+                            )}
+                          </div>
                         )}
                       </div>
                       {result.is_protected && (
@@ -211,7 +252,7 @@ export const CitizenAddressSearch = () => {
                     <div className="space-y-2">
                       {result.addresses.map((address, addrIdx) => (
                         <div key={addrIdx} className="bg-muted/50 rounded p-3 space-y-2">
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
                             <Badge variant="outline" className="font-mono">
                               {address.uac}
                             </Badge>
@@ -224,8 +265,8 @@ export const CitizenAddressSearch = () => {
 
                           {address.street && (
                             <div className="flex items-start gap-2">
-                              <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                              <div className="text-sm">
+                              <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground flex-shrink-0" />
+                              <div className="text-sm break-words">
                                 {address.building && <div className="font-medium">{address.building}</div>}
                                 <div>{address.street}</div>
                                 <div className="text-muted-foreground">
@@ -238,7 +279,7 @@ export const CitizenAddressSearch = () => {
 
                           {!address.street && address.city && (
                             <div className="flex items-start gap-2">
-                              <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground" />
+                              <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground flex-shrink-0" />
                               <div className="text-sm text-muted-foreground">
                                 <div>{address.city}, {address.region}</div>
                                 <div>{address.country}</div>

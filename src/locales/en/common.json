@@ -185,6 +185,12 @@
     "protected": "Protected"
   },
   "search": "Search",
+  "dependentType": {
+    "minor": "Minor (Under 18)",
+    "elderly": "Elderly",
+    "disabled": "Disabled",
+    "student": "Student"
+  },
   "searchResults": {
     "noResults": "No Results Found",
     "noResultsDescription": "No matching citizens found for your search criteria",
