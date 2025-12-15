@@ -493,10 +493,20 @@
     max-width: 100%;
   }
 
+  .overflow-safe {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
   .text-wrap-break {
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
+  }
+
+  /* Table scroll wrapper for mobile */
+  .table-scroll-wrapper {
+    @apply overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0;
   }
 
   .mobile-container {

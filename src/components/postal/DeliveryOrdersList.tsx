@@ -138,7 +138,7 @@ export const DeliveryOrdersList = ({ showAssignmentPanel = false }: DeliveryOrde
   }
 
   const ordersList = (
-    <div className="space-y-3">
+    <div className="space-y-3 overflow-hidden">
       {/* Status Filter - hide in assignment mode since it's already filtered */}
       {!showAssignmentPanel && (
         <OrderStatusFilter
@@ -184,7 +184,7 @@ export const DeliveryOrdersList = ({ showAssignmentPanel = false }: DeliveryOrde
               <Card 
                 key={order.id} 
                 className={cn(
-                  'transition-all',
+                  'transition-all overflow-hidden',
                   showAssignmentPanel 
                     ? 'cursor-default' 
                     : 'hover:shadow-md cursor-pointer',

@@ -1162,13 +1162,13 @@ const UnifiedDashboard = () => {
 
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen w-full flex bg-background">
+      <div className="min-h-screen w-full flex bg-background overflow-x-hidden">
         <DashboardSidebar 
           onNavigationClick={handleSidebarNavigation}
           pendingCount={stats.pendingApprovals}
         />
         
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Header */}
           <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="flex items-center justify-between px-4 py-2 gap-2">
@@ -1211,8 +1211,8 @@ const UnifiedDashboard = () => {
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 overflow-auto">
-            <div className="p-6">
+          <main className="flex-1 overflow-x-hidden overflow-y-auto">
+            <div className="p-4 sm:p-6 max-w-full">
               {renderActiveView()}
             </div>
           </main>

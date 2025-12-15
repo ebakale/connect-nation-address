@@ -45,9 +45,9 @@ const PostalPage = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-background overflow-x-hidden">
         <DashboardSidebar onNavigationClick={() => {}} />
-        <div className="flex-1 flex flex-col min-h-screen">
+        <div className="flex-1 flex flex-col min-h-screen min-w-0 overflow-hidden">
           {/* Header - consistent with other dashboards */}
           <header className="border-b bg-card shadow-sm">
             <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
@@ -104,7 +104,7 @@ const PostalPage = () => {
             </div>
           </header>
 
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full overflow-x-hidden">
             <PostalDashboard />
           </main>
           <Footer />

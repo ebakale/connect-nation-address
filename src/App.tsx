@@ -64,25 +64,27 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 // Routes component that can use hooks safely
 const AppRoutes = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/auth" element={<UnifiedAuth />} />
-      <Route path="/portal" element={<Portal />} />
-      <Route path="/citizen" element={<CitizenPortalUnified />} />
-      <Route path="/demo-presentation" element={<DemoPresentationPage />} />
-      <Route path="/demo-script" element={<DemoScriptPage />} />
-      <Route path="/documentation" element={<Documentation />} />
-      <Route path="/track" element={<TrackDelivery />} />
-      
-      <Route path="/dashboard" element={<ProtectedRoute><UnifiedDashboard /></ProtectedRoute>} />
-      <Route path="/police" element={<ProtectedRoute><PoliceDashboard /></ProtectedRoute>} />
-      <Route path="/units-profiles" element={<ProtectedRoute><UnitsAndProfilesPage /></ProtectedRoute>} />
-      <Route path="/business/register" element={<ProtectedRoute><BusinessAddressRegistrationForm /></ProtectedRoute>} />
-      <Route path="/my-businesses" element={<ProtectedRoute><MyBusinesses /></ProtectedRoute>} />
-      <Route path="/postal" element={<ProtectedRoute><PostalPage /></ProtectedRoute>} />
-      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <div className="w-full max-w-full overflow-x-hidden">
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/auth" element={<UnifiedAuth />} />
+        <Route path="/portal" element={<Portal />} />
+        <Route path="/citizen" element={<CitizenPortalUnified />} />
+        <Route path="/demo-presentation" element={<DemoPresentationPage />} />
+        <Route path="/demo-script" element={<DemoScriptPage />} />
+        <Route path="/documentation" element={<Documentation />} />
+        <Route path="/track" element={<TrackDelivery />} />
+        
+        <Route path="/dashboard" element={<ProtectedRoute><UnifiedDashboard /></ProtectedRoute>} />
+        <Route path="/police" element={<ProtectedRoute><PoliceDashboard /></ProtectedRoute>} />
+        <Route path="/units-profiles" element={<ProtectedRoute><UnitsAndProfilesPage /></ProtectedRoute>} />
+        <Route path="/business/register" element={<ProtectedRoute><BusinessAddressRegistrationForm /></ProtectedRoute>} />
+        <Route path="/my-businesses" element={<ProtectedRoute><MyBusinesses /></ProtectedRoute>} />
+        <Route path="/postal" element={<ProtectedRoute><PostalPage /></ProtectedRoute>} />
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </div>
   );
 };
 
