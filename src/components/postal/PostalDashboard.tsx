@@ -18,7 +18,7 @@ import { PickupRequestsList } from './PickupRequestsList';
 import { ReturnOrdersList } from './ReturnOrdersList';
 import { CODManagement } from './CODManagement';
 import { BulkImportDialog } from './BulkImportDialog';
-
+import { FixMissingNARAddress } from '@/components/admin/FixMissingNARAddress';
 export const PostalDashboard = () => {
   const { t } = useTranslation('postal');
   const { 
@@ -204,6 +204,7 @@ export const PostalDashboard = () => {
               <SeedPostalUsers />
               <SeedPostalOrders />
               <SeedCitizenDeliveries />
+              <FixMissingNARAddress />
             </div>
           </TabsContent>
         )}
