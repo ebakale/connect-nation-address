@@ -65,7 +65,6 @@ import { useCitizenAddresses } from '@/hooks/useCAR';
 import { Truck } from 'lucide-react';
 
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
-import { UnifiedAddressDashboard } from "@/components/UnifiedAddressDashboard";
 import { RegistrarDashboardView } from "@/components/RegistrarDashboardView";
 import { SystemIntegration } from "@/components/SystemIntegration";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -1149,20 +1148,6 @@ const UnifiedDashboard = () => {
         // Redirect to car-admin for consolidated interface
         setActiveView('car-admin');
         return null;
-
-      case 'unified-address-dashboard':
-        // Field agents should not access this - redirect to overview
-        if (isFieldAgent) {
-          setActiveView('overview');
-          return <div className="text-center py-12">
-            <p className="text-muted-foreground">{t('dashboard:redirectingToOverview')}</p>
-          </div>;
-        }
-        return (
-          <div className="max-w-7xl">
-            <UnifiedAddressDashboard />
-          </div>
-        );
 
       case 'admin-panel':
         return (
