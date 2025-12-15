@@ -125,27 +125,27 @@ export const CitizenPickupRequestCard = ({
                 {t('pickup.viewDetails')}
               </Button>
               
-              {isPending && (
-                <>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setEditOpen(true)}
-                  >
-                    <Pencil className="h-3.5 w-3.5 mr-1" />
-                    {t('pickup.editRequest')}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-destructive hover:text-destructive"
-                    onClick={() => setCancelDialogOpen(true)}
-                  >
-                    <X className="h-3.5 w-3.5 mr-1" />
-                    {t('pickup.cancelRequest')}
-                  </Button>
-                </>
-              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setEditOpen(true)}
+                disabled={!isPending}
+                title={!isPending ? t('pickup.cannotEditProcessed') : undefined}
+              >
+                <Pencil className="h-3.5 w-3.5 mr-1" />
+                {t('pickup.editRequest')}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className={isPending ? "text-destructive hover:text-destructive" : ""}
+                onClick={() => setCancelDialogOpen(true)}
+                disabled={!isPending}
+                title={!isPending ? t('pickup.cannotCancelProcessed') : undefined}
+              >
+                <X className="h-3.5 w-3.5 mr-1" />
+                {t('pickup.cancelRequest')}
+              </Button>
             </div>
           </div>
         </CardContent>

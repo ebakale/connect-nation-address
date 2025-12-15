@@ -520,7 +520,9 @@
     "requestUpdated": "Solicitud de recogida actualizada",
     "requestCancelled": "Solicitud de recogida cancelada",
     "updateError": "Error al actualizar la solicitud",
-    "cancelError": "Error al cancelar la solicitud"
+    "cancelError": "Error al cancelar la solicitud",
+    "cannotEditProcessed": "No se puede editar - la solicitud ya está siendo procesada",
+    "cannotCancelProcessed": "No se puede cancelar - la solicitud ya está siendo procesada"
   },
   "returns": {
     "title": "Devoluciones",
