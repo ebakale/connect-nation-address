@@ -38,14 +38,14 @@ serve(async (req) => {
       );
     }
 
-    // Check if user has admin role
+    // Check if user has admin or supervisor role
     const { data: userRoles } = await supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", user.id);
     
     const hasPermission = userRoles?.some(r => 
-      ["admin", "ndaa_admin", "registrar"].includes(r.role)
+      ["admin", "ndaa_admin", "registrar", "postal_supervisor"].includes(r.role)
     );
 
     if (!hasPermission) {
