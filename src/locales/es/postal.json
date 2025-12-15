@@ -477,9 +477,12 @@
     "markProcessed": "Marcar Procesada",
     "status": {
       "initiated": "Iniciada",
+      "label_generated": "Etiqueta Generada",
       "labelGenerated": "Etiqueta Generada",
       "pickupScheduled": "Recogida Programada",
+      "pickup_scheduled": "Recogida Programada",
       "inTransit": "En Tránsito",
+      "in_transit": "En Tránsito",
       "received": "Recibida",
       "processed": "Procesada",
       "cancelled": "Cancelada"
