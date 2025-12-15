@@ -500,9 +500,11 @@
     },
     "viewDetails": "Voir les Détails",
     "editRequest": "Modifier",
+    "editContact": "Modifier Contact",
     "cancelRequest": "Annuler",
     "requestDetails": "Détails de la Demande de Ramassage",
     "editRequestTitle": "Modifier la Demande de Ramassage",
+    "editContactTitle": "Modifier les Informations de Contact",
     "saveChanges": "Enregistrer",
     "notSpecified": "Non spécifié",
     "assignmentInfo": "Informations d'Attribution",
@@ -521,8 +523,14 @@
     "requestCancelled": "Demande de ramassage annulée",
     "updateError": "Erreur lors de la mise à jour",
     "cancelError": "Erreur lors de l'annulation",
-    "cannotEditProcessed": "Impossible de modifier - la demande est déjà en cours de traitement",
-    "cannotCancelProcessed": "Impossible d'annuler - la demande est déjà en cours de traitement"
+    "cannotEditCompleted": "Impossible de modifier - la demande est déjà terminée ou annulée",
+    "cannotCancelCompleted": "Impossible d'annuler - la demande est déjà terminée ou annulée",
+    "editLimitedToContact": "Seules les informations de contact et les notes peuvent être modifiées",
+    "restrictedEditNotice": "Comme un agent est déjà assigné, seules les informations de contact et les notes peuvent être modifiées. Les détails du colis et les changements d'horaire ne sont plus disponibles.",
+    "cancelWarningAssigned": "Un agent a déjà été assigné à ce ramassage. Annuler maintenant notifiera l'agent et libérera son emploi du temps.",
+    "cancelWarningEnRoute": "Un agent est actuellement en route vers votre emplacement! Annuler maintenant gaspillera des ressources et le temps de l'agent.",
+    "cancelImpactAssigned": "L'agent assigné sera notifié de cette annulation.",
+    "cancelImpactEnRoute": "ATTENTION: L'agent voyage déjà vers votre emplacement. Cette annulation gaspille du carburant et du temps."
   },
   "returns": {
     "title": "Retours",

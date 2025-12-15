@@ -500,9 +500,11 @@
     },
     "viewDetails": "Ver Detalles",
     "editRequest": "Editar",
+    "editContact": "Editar Contacto",
     "cancelRequest": "Cancelar",
     "requestDetails": "Detalles de la Solicitud de Recogida",
     "editRequestTitle": "Editar Solicitud de Recogida",
+    "editContactTitle": "Editar Información de Contacto",
     "saveChanges": "Guardar Cambios",
     "notSpecified": "No especificado",
     "assignmentInfo": "Información de Asignación",
@@ -521,8 +523,14 @@
     "requestCancelled": "Solicitud de recogida cancelada",
     "updateError": "Error al actualizar la solicitud",
     "cancelError": "Error al cancelar la solicitud",
-    "cannotEditProcessed": "No se puede editar - la solicitud ya está siendo procesada",
-    "cannotCancelProcessed": "No se puede cancelar - la solicitud ya está siendo procesada"
+    "cannotEditCompleted": "No se puede editar - la solicitud ya está completada o cancelada",
+    "cannotCancelCompleted": "No se puede cancelar - la solicitud ya está completada o cancelada",
+    "editLimitedToContact": "Solo se puede editar la información de contacto y notas",
+    "restrictedEditNotice": "Como ya hay un agente asignado, solo se puede modificar la información de contacto y las notas. Los detalles del paquete y cambios de horario ya no están disponibles.",
+    "cancelWarningAssigned": "Un agente ya ha sido asignado a esta recogida. Cancelar ahora notificará al agente y liberará su horario.",
+    "cancelWarningEnRoute": "¡Un agente está actualmente en camino a su ubicación! Cancelar ahora desperdiciará recursos y el tiempo del agente.",
+    "cancelImpactAssigned": "El agente asignado será notificado de esta cancelación.",
+    "cancelImpactEnRoute": "ADVERTENCIA: El agente ya está viajando a su ubicación. Esta cancelación desperdicia combustible y tiempo."
   },
   "returns": {
     "title": "Devoluciones",
