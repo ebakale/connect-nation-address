@@ -77,7 +77,7 @@ export const usePickupRequests = () => {
       if (error) throw error;
 
       toast.success(t('pickup.requestCreated'));
-      await fetchRequests();
+      fetchRequests(); // Don't await - let dialog close immediately
       
       return {
         ...data,
