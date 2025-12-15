@@ -21,6 +21,8 @@ export type PackageType =
   | 'express'
   | 'government_document';
 
+export type TimeWindow = 'morning' | 'afternoon' | 'evening' | 'any';
+
 export interface DeliveryOrder {
   id: string;
   order_number: string;
@@ -63,6 +65,21 @@ export interface DeliveryOrder {
   // Completion info
   completed_at: string | null;
   completed_by: string | null;
+  
+  // COD fields
+  cod_required: boolean;
+  cod_amount: number | null;
+  
+  // Delivery preferences
+  preferred_time_window: TimeWindow;
+  safe_drop_authorized: boolean;
+  safe_drop_location: string | null;
+  alternate_recipient_name: string | null;
+  alternate_recipient_phone: string | null;
+  
+  // Label
+  label_generated: boolean;
+  notification_count: number;
   
   // Joined data
   recipient_address?: {

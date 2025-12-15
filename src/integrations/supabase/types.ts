@@ -555,6 +555,105 @@ export type Database = {
         }
         Relationships: []
       }
+      bulk_import_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          error_count: number
+          error_summary: Json | null
+          file_name: string
+          file_url: string | null
+          id: string
+          job_number: string
+          processed_rows: number
+          started_at: string | null
+          status: Database["public"]["Enums"]["import_status"]
+          success_count: number
+          total_rows: number
+          uploaded_by: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          error_count?: number
+          error_summary?: Json | null
+          file_name: string
+          file_url?: string | null
+          id?: string
+          job_number: string
+          processed_rows?: number
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["import_status"]
+          success_count?: number
+          total_rows?: number
+          uploaded_by: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          error_count?: number
+          error_summary?: Json | null
+          file_name?: string
+          file_url?: string | null
+          id?: string
+          job_number?: string
+          processed_rows?: number
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["import_status"]
+          success_count?: number
+          total_rows?: number
+          uploaded_by?: string
+        }
+        Relationships: []
+      }
+      bulk_import_orders: {
+        Row: {
+          error_message: string | null
+          id: string
+          import_job_id: string
+          order_id: string | null
+          processed_at: string | null
+          raw_data: Json
+          row_number: number
+          status: string
+        }
+        Insert: {
+          error_message?: string | null
+          id?: string
+          import_job_id: string
+          order_id?: string | null
+          processed_at?: string | null
+          raw_data: Json
+          row_number: number
+          status?: string
+        }
+        Update: {
+          error_message?: string | null
+          id?: string
+          import_job_id?: string
+          order_id?: string | null
+          processed_at?: string | null
+          raw_data?: Json
+          row_number?: number
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bulk_import_orders_import_job_id_fkey"
+            columns: ["import_job_id"]
+            isOneToOne: false
+            referencedRelation: "bulk_import_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bulk_import_orders_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       car_permissions: {
         Row: {
           can_access_address_history: boolean | null
@@ -901,6 +1000,68 @@ export type Database = {
         }
         Relationships: []
       }
+      cod_transactions: {
+        Row: {
+          amount: number
+          collected_at: string | null
+          collected_by: string | null
+          collection_status: Database["public"]["Enums"]["cod_status"]
+          created_at: string
+          currency: string
+          id: string
+          notes: string | null
+          order_id: string
+          payment_method: string | null
+          receipt_number: string | null
+          remittance_date: string | null
+          remittance_reference: string | null
+          remitted_to: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          collected_at?: string | null
+          collected_by?: string | null
+          collection_status?: Database["public"]["Enums"]["cod_status"]
+          created_at?: string
+          currency?: string
+          id?: string
+          notes?: string | null
+          order_id: string
+          payment_method?: string | null
+          receipt_number?: string | null
+          remittance_date?: string | null
+          remittance_reference?: string | null
+          remitted_to?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          collected_at?: string | null
+          collected_by?: string | null
+          collection_status?: Database["public"]["Enums"]["cod_status"]
+          created_at?: string
+          currency?: string
+          id?: string
+          notes?: string | null
+          order_id?: string
+          payment_method?: string | null
+          receipt_number?: string | null
+          remittance_date?: string | null
+          remittance_reference?: string | null
+          remitted_to?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cod_transactions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coverage_analytics: {
         Row: {
           addresses_published: number | null
@@ -998,6 +1159,10 @@ export type Database = {
       }
       delivery_orders: {
         Row: {
+          alternate_recipient_name: string | null
+          alternate_recipient_phone: string | null
+          cod_amount: number | null
+          cod_required: boolean | null
           completed_at: string | null
           completed_by: string | null
           created_at: string
@@ -1006,9 +1171,14 @@ export type Database = {
           delivery_deadline: string | null
           dimensions_cm: string | null
           id: string
+          label_generated: boolean | null
           notes: string | null
+          notification_count: number | null
           order_number: string
           package_type: Database["public"]["Enums"]["package_type"]
+          preferred_time_window:
+            | Database["public"]["Enums"]["time_window"]
+            | null
           priority_level: number
           recipient_address_uac: string
           recipient_email: string | null
@@ -1016,6 +1186,8 @@ export type Database = {
           recipient_phone: string | null
           requires_id_verification: boolean | null
           requires_signature: boolean | null
+          safe_drop_authorized: boolean | null
+          safe_drop_location: string | null
           scheduled_date: string | null
           sender_address_uac: string | null
           sender_branch: string | null
@@ -1027,6 +1199,10 @@ export type Database = {
           weight_grams: number | null
         }
         Insert: {
+          alternate_recipient_name?: string | null
+          alternate_recipient_phone?: string | null
+          cod_amount?: number | null
+          cod_required?: boolean | null
           completed_at?: string | null
           completed_by?: string | null
           created_at?: string
@@ -1035,9 +1211,14 @@ export type Database = {
           delivery_deadline?: string | null
           dimensions_cm?: string | null
           id?: string
+          label_generated?: boolean | null
           notes?: string | null
+          notification_count?: number | null
           order_number?: string
           package_type?: Database["public"]["Enums"]["package_type"]
+          preferred_time_window?:
+            | Database["public"]["Enums"]["time_window"]
+            | null
           priority_level?: number
           recipient_address_uac: string
           recipient_email?: string | null
@@ -1045,6 +1226,8 @@ export type Database = {
           recipient_phone?: string | null
           requires_id_verification?: boolean | null
           requires_signature?: boolean | null
+          safe_drop_authorized?: boolean | null
+          safe_drop_location?: string | null
           scheduled_date?: string | null
           sender_address_uac?: string | null
           sender_branch?: string | null
@@ -1056,6 +1239,10 @@ export type Database = {
           weight_grams?: number | null
         }
         Update: {
+          alternate_recipient_name?: string | null
+          alternate_recipient_phone?: string | null
+          cod_amount?: number | null
+          cod_required?: boolean | null
           completed_at?: string | null
           completed_by?: string | null
           created_at?: string
@@ -1064,9 +1251,14 @@ export type Database = {
           delivery_deadline?: string | null
           dimensions_cm?: string | null
           id?: string
+          label_generated?: boolean | null
           notes?: string | null
+          notification_count?: number | null
           order_number?: string
           package_type?: Database["public"]["Enums"]["package_type"]
+          preferred_time_window?:
+            | Database["public"]["Enums"]["time_window"]
+            | null
           priority_level?: number
           recipient_address_uac?: string
           recipient_email?: string | null
@@ -1074,6 +1266,8 @@ export type Database = {
           recipient_phone?: string | null
           requires_id_verification?: boolean | null
           requires_signature?: boolean | null
+          safe_drop_authorized?: boolean | null
+          safe_drop_location?: string | null
           scheduled_date?: string | null
           sender_address_uac?: string | null
           sender_branch?: string | null
@@ -1083,6 +1277,72 @@ export type Database = {
           status?: Database["public"]["Enums"]["delivery_status"]
           updated_at?: string
           weight_grams?: number | null
+        }
+        Relationships: []
+      }
+      delivery_preferences: {
+        Row: {
+          address_uac: string
+          allow_neighbor_delivery: boolean | null
+          alternate_recipient_authorized: boolean | null
+          alternate_recipient_name: string | null
+          alternate_recipient_phone: string | null
+          created_at: string
+          hold_at_post_office: boolean | null
+          id: string
+          notification_email: boolean | null
+          notification_push: boolean | null
+          notification_sms: boolean | null
+          preferred_time_window:
+            | Database["public"]["Enums"]["time_window"]
+            | null
+          safe_drop_authorized: boolean | null
+          safe_drop_location: string | null
+          special_instructions: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address_uac: string
+          allow_neighbor_delivery?: boolean | null
+          alternate_recipient_authorized?: boolean | null
+          alternate_recipient_name?: string | null
+          alternate_recipient_phone?: string | null
+          created_at?: string
+          hold_at_post_office?: boolean | null
+          id?: string
+          notification_email?: boolean | null
+          notification_push?: boolean | null
+          notification_sms?: boolean | null
+          preferred_time_window?:
+            | Database["public"]["Enums"]["time_window"]
+            | null
+          safe_drop_authorized?: boolean | null
+          safe_drop_location?: string | null
+          special_instructions?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address_uac?: string
+          allow_neighbor_delivery?: boolean | null
+          alternate_recipient_authorized?: boolean | null
+          alternate_recipient_name?: string | null
+          alternate_recipient_phone?: string | null
+          created_at?: string
+          hold_at_post_office?: boolean | null
+          id?: string
+          notification_email?: boolean | null
+          notification_push?: boolean | null
+          notification_sms?: boolean | null
+          preferred_time_window?:
+            | Database["public"]["Enums"]["time_window"]
+            | null
+          safe_drop_authorized?: boolean | null
+          safe_drop_location?: string | null
+          special_instructions?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -2427,6 +2687,212 @@ export type Database = {
         }
         Relationships: []
       }
+      pickup_requests: {
+        Row: {
+          assigned_agent_id: string | null
+          assigned_at: string | null
+          assigned_by: string | null
+          completed_at: string | null
+          contact_email: string | null
+          contact_name: string
+          contact_phone: string | null
+          created_at: string
+          estimated_weight_grams: number | null
+          id: string
+          package_count: number | null
+          package_description: string | null
+          pickup_address_uac: string
+          pickup_notes: string | null
+          preferred_date: string
+          preferred_time_window:
+            | Database["public"]["Enums"]["time_window"]
+            | null
+          proof_photo_url: string | null
+          request_number: string
+          requester_id: string
+          status: Database["public"]["Enums"]["pickup_status"]
+          updated_at: string
+        }
+        Insert: {
+          assigned_agent_id?: string | null
+          assigned_at?: string | null
+          assigned_by?: string | null
+          completed_at?: string | null
+          contact_email?: string | null
+          contact_name: string
+          contact_phone?: string | null
+          created_at?: string
+          estimated_weight_grams?: number | null
+          id?: string
+          package_count?: number | null
+          package_description?: string | null
+          pickup_address_uac: string
+          pickup_notes?: string | null
+          preferred_date: string
+          preferred_time_window?:
+            | Database["public"]["Enums"]["time_window"]
+            | null
+          proof_photo_url?: string | null
+          request_number: string
+          requester_id: string
+          status?: Database["public"]["Enums"]["pickup_status"]
+          updated_at?: string
+        }
+        Update: {
+          assigned_agent_id?: string | null
+          assigned_at?: string | null
+          assigned_by?: string | null
+          completed_at?: string | null
+          contact_email?: string | null
+          contact_name?: string
+          contact_phone?: string | null
+          created_at?: string
+          estimated_weight_grams?: number | null
+          id?: string
+          package_count?: number | null
+          package_description?: string | null
+          pickup_address_uac?: string
+          pickup_notes?: string | null
+          preferred_date?: string
+          preferred_time_window?:
+            | Database["public"]["Enums"]["time_window"]
+            | null
+          proof_photo_url?: string | null
+          request_number?: string
+          requester_id?: string
+          status?: Database["public"]["Enums"]["pickup_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      postal_labels: {
+        Row: {
+          barcode_data: string
+          generated_at: string
+          generated_by: string
+          id: string
+          label_pdf_url: string | null
+          label_type: Database["public"]["Enums"]["label_type"]
+          metadata: Json | null
+          order_id: string | null
+          printed_at: string | null
+          printed_by: string | null
+          qr_code_data: string | null
+          return_order_id: string | null
+          s10_tracking_number: string | null
+          voided_at: string | null
+          voided_by: string | null
+        }
+        Insert: {
+          barcode_data: string
+          generated_at?: string
+          generated_by: string
+          id?: string
+          label_pdf_url?: string | null
+          label_type?: Database["public"]["Enums"]["label_type"]
+          metadata?: Json | null
+          order_id?: string | null
+          printed_at?: string | null
+          printed_by?: string | null
+          qr_code_data?: string | null
+          return_order_id?: string | null
+          s10_tracking_number?: string | null
+          voided_at?: string | null
+          voided_by?: string | null
+        }
+        Update: {
+          barcode_data?: string
+          generated_at?: string
+          generated_by?: string
+          id?: string
+          label_pdf_url?: string | null
+          label_type?: Database["public"]["Enums"]["label_type"]
+          metadata?: Json | null
+          order_id?: string | null
+          printed_at?: string | null
+          printed_by?: string | null
+          qr_code_data?: string | null
+          return_order_id?: string | null
+          s10_tracking_number?: string | null
+          voided_at?: string | null
+          voided_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "postal_labels_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "postal_labels_return_order_id_fkey"
+            columns: ["return_order_id"]
+            isOneToOne: false
+            referencedRelation: "return_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      postal_notifications: {
+        Row: {
+          channel: Database["public"]["Enums"]["notification_channel"]
+          created_at: string
+          delivered_at: string | null
+          error_message: string | null
+          id: string
+          message_content: string
+          message_subject: string | null
+          metadata: Json | null
+          notification_type: Database["public"]["Enums"]["notification_type"]
+          order_id: string | null
+          recipient_email: string | null
+          recipient_phone: string | null
+          sent_at: string | null
+          status: string
+        }
+        Insert: {
+          channel: Database["public"]["Enums"]["notification_channel"]
+          created_at?: string
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          message_content: string
+          message_subject?: string | null
+          metadata?: Json | null
+          notification_type: Database["public"]["Enums"]["notification_type"]
+          order_id?: string | null
+          recipient_email?: string | null
+          recipient_phone?: string | null
+          sent_at?: string | null
+          status?: string
+        }
+        Update: {
+          channel?: Database["public"]["Enums"]["notification_channel"]
+          created_at?: string
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          message_content?: string
+          message_subject?: string | null
+          metadata?: Json | null
+          notification_type?: Database["public"]["Enums"]["notification_type"]
+          order_id?: string | null
+          recipient_email?: string | null
+          recipient_phone?: string | null
+          sent_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "postal_notifications_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       privacy_consent_log: {
         Row: {
           consent_details: Json | null
@@ -2911,6 +3377,81 @@ export type Database = {
             columns: ["citizen_address_id"]
             isOneToOne: false
             referencedRelation: "current_citizen_addresses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      return_orders: {
+        Row: {
+          created_at: string
+          id: string
+          initiated_by: string
+          notes: string | null
+          original_order_id: string | null
+          pickup_request_id: string | null
+          pickup_requested: boolean | null
+          processed_at: string | null
+          processed_by: string | null
+          received_at: string | null
+          return_label_url: string | null
+          return_number: string
+          return_reason: Database["public"]["Enums"]["return_reason"]
+          return_reason_details: string | null
+          return_tracking_number: string | null
+          status: Database["public"]["Enums"]["return_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          initiated_by: string
+          notes?: string | null
+          original_order_id?: string | null
+          pickup_request_id?: string | null
+          pickup_requested?: boolean | null
+          processed_at?: string | null
+          processed_by?: string | null
+          received_at?: string | null
+          return_label_url?: string | null
+          return_number: string
+          return_reason: Database["public"]["Enums"]["return_reason"]
+          return_reason_details?: string | null
+          return_tracking_number?: string | null
+          status?: Database["public"]["Enums"]["return_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          initiated_by?: string
+          notes?: string | null
+          original_order_id?: string | null
+          pickup_request_id?: string | null
+          pickup_requested?: boolean | null
+          processed_at?: string | null
+          processed_by?: string | null
+          received_at?: string | null
+          return_label_url?: string | null
+          return_number?: string
+          return_reason?: Database["public"]["Enums"]["return_reason"]
+          return_reason_details?: string | null
+          return_tracking_number?: string | null
+          status?: Database["public"]["Enums"]["return_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "return_orders_original_order_id_fkey"
+            columns: ["original_order_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "return_orders_pickup_request_id_fkey"
+            columns: ["pickup_request_id"]
+            isOneToOne: false
+            referencedRelation: "pickup_requests"
             referencedColumns: ["id"]
           },
         ]
@@ -3677,6 +4218,7 @@ export type Database = {
         Returns: boolean
       }
       generate_delivery_order_number: { Args: never; Returns: string }
+      generate_import_job_number: { Args: never; Returns: string }
       generate_incident_number: { Args: never; Returns: string }
       generate_incident_uac: {
         Args: {
@@ -3687,6 +4229,9 @@ export type Database = {
         }
         Returns: string
       }
+      generate_pickup_request_number: { Args: never; Returns: string }
+      generate_return_order_number: { Args: never; Returns: string }
+      generate_s10_tracking_number: { Args: never; Returns: string }
       generate_uac: {
         Args: {
           p_city: string
@@ -4042,6 +4587,7 @@ export type Database = {
         | "AIRPORT"
         | "PORT"
         | "OTHER"
+      cod_status: "pending" | "collected" | "remitted" | "failed" | "waived"
       custody_type_enum: "FULL" | "SHARED" | "PARTIAL" | "TEMPORARY"
       delivery_status:
         | "pending_intake"
@@ -4084,6 +4630,13 @@ export type Database = {
         | "DEPENDENT"
         | "TEMPORARY_RESIDENT"
       household_status_enum: "ACTIVE" | "TRANSFERRED" | "DISSOLVED" | "MERGED"
+      import_status:
+        | "pending"
+        | "processing"
+        | "completed"
+        | "failed"
+        | "partial"
+      label_type: "standard" | "express" | "registered" | "return"
       legal_document_type:
         | "property_deed"
         | "land_certificate"
@@ -4100,6 +4653,16 @@ export type Database = {
         | "marriage_certificate"
         | "other_legal_document"
       membership_status_enum: "ACTIVE" | "MOVED_OUT" | "TEMPORARY" | "VISITING"
+      notification_channel: "email" | "sms" | "push"
+      notification_type:
+        | "order_created"
+        | "dispatched"
+        | "out_for_delivery"
+        | "delivered"
+        | "failed_delivery"
+        | "pickup_reminder"
+        | "return_initiated"
+        | "cod_reminder"
       occupant_type: "OWNER" | "TENANT" | "FAMILY" | "OTHER"
       package_type:
         | "letter"
@@ -4110,11 +4673,35 @@ export type Database = {
         | "registered_mail"
         | "express"
         | "government_document"
+      pickup_status:
+        | "pending"
+        | "scheduled"
+        | "assigned"
+        | "en_route"
+        | "completed"
+        | "cancelled"
+        | "failed"
       privacy_access_level:
         | "public"
         | "restricted"
         | "confidential"
         | "classified"
+      return_reason:
+        | "wrong_item"
+        | "damaged"
+        | "refused"
+        | "undeliverable"
+        | "customer_return"
+        | "address_incorrect"
+        | "other"
+      return_status:
+        | "initiated"
+        | "label_generated"
+        | "pickup_scheduled"
+        | "in_transit"
+        | "received"
+        | "processed"
+        | "cancelled"
       search_purpose_type:
         | "DELIVERY"
         | "EMERGENCY_CONTACT"
@@ -4122,6 +4709,7 @@ export type Database = {
         | "BUSINESS_CONTACT"
         | "PERSONAL"
         | "OTHER"
+      time_window: "morning" | "afternoon" | "evening" | "any"
       verification_status:
         | "pending"
         | "document_review"
@@ -4323,6 +4911,7 @@ export const Constants = {
         "PORT",
         "OTHER",
       ],
+      cod_status: ["pending", "collected", "remitted", "failed", "waived"],
       custody_type_enum: ["FULL", "SHARED", "PARTIAL", "TEMPORARY"],
       delivery_status: [
         "pending_intake",
@@ -4370,6 +4959,14 @@ export const Constants = {
         "TEMPORARY_RESIDENT",
       ],
       household_status_enum: ["ACTIVE", "TRANSFERRED", "DISSOLVED", "MERGED"],
+      import_status: [
+        "pending",
+        "processing",
+        "completed",
+        "failed",
+        "partial",
+      ],
+      label_type: ["standard", "express", "registered", "return"],
       legal_document_type: [
         "property_deed",
         "land_certificate",
@@ -4387,6 +4984,17 @@ export const Constants = {
         "other_legal_document",
       ],
       membership_status_enum: ["ACTIVE", "MOVED_OUT", "TEMPORARY", "VISITING"],
+      notification_channel: ["email", "sms", "push"],
+      notification_type: [
+        "order_created",
+        "dispatched",
+        "out_for_delivery",
+        "delivered",
+        "failed_delivery",
+        "pickup_reminder",
+        "return_initiated",
+        "cod_reminder",
+      ],
       occupant_type: ["OWNER", "TENANT", "FAMILY", "OTHER"],
       package_type: [
         "letter",
@@ -4398,11 +5006,38 @@ export const Constants = {
         "express",
         "government_document",
       ],
+      pickup_status: [
+        "pending",
+        "scheduled",
+        "assigned",
+        "en_route",
+        "completed",
+        "cancelled",
+        "failed",
+      ],
       privacy_access_level: [
         "public",
         "restricted",
         "confidential",
         "classified",
+      ],
+      return_reason: [
+        "wrong_item",
+        "damaged",
+        "refused",
+        "undeliverable",
+        "customer_return",
+        "address_incorrect",
+        "other",
+      ],
+      return_status: [
+        "initiated",
+        "label_generated",
+        "pickup_scheduled",
+        "in_transit",
+        "received",
+        "processed",
+        "cancelled",
       ],
       search_purpose_type: [
         "DELIVERY",
@@ -4412,6 +5047,7 @@ export const Constants = {
         "PERSONAL",
         "OTHER",
       ],
+      time_window: ["morning", "afternoon", "evening", "any"],
       verification_status: [
         "pending",
         "document_review",
