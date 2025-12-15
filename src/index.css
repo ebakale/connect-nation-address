@@ -735,3 +735,19 @@
     border: 1px solid #ccc !important;
   }
 }
+
+/* ============================================
+   LEAFLET ROUTING MACHINE STYLES
+   ============================================ */
+.leaflet-routing-container {
+  display: none !important;
+}
+
+.leaflet-routing-alternatives-container {
+  display: none !important;
+}
+
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+}

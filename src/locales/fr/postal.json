@@ -151,7 +151,26 @@
     "acknowledged": "Confirmé",
     "inProgress": "En Cours",
     "navigate": "Naviguer",
-    "viewOnMap": "Voir sur la Carte"
+    "viewOnMap": "Voir sur la Carte",
+    "showRoute": "Voir l'Itinéraire"
+  },
+  
+  "routing": {
+    "title": "Itinéraire vers la Livraison",
+    "calculating": "Calcul de l'itinéraire...",
+    "distance": "Distance",
+    "duration": "Temps Est.",
+    "steps": "Instructions",
+    "yourLocation": "Votre Position",
+    "destination": "Destination",
+    "openInMaps": "Ouvrir dans Maps",
+    "close": "Fermer",
+    "routeError": "Impossible de calculer l'itinéraire",
+    "locationError": "Impossible d'obtenir votre position",
+    "destinationError": "Impossible de trouver l'adresse de destination",
+    "stepNumber": "Étape {{number}}",
+    "start": "Départ",
+    "arrive": "Arriver à destination"
   },
   
   "proof": {

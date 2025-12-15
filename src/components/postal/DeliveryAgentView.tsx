@@ -6,10 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Package, MapPin, Play, CheckCircle, XCircle, 
-  RotateCcw, Navigation, Clock, AlertTriangle, Loader2
+  RotateCcw, Navigation, Clock, AlertTriangle, Loader2, Route
 } from 'lucide-react';
 import { useAgentDeliveries, AgentDelivery } from '@/hooks/useAgentDeliveries';
 import { DeliveryProofCapture, ProofData } from './DeliveryProofCapture';
+import { RouteMapView } from './RouteMapView';
 import { DeliveryStatus } from '@/types/postal';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -24,6 +25,7 @@ export const DeliveryAgentView = () => {
     delivery: null
   });
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [routeMapDelivery, setRouteMapDelivery] = useState<AgentDelivery | null>(null);
 
   const activeStatuses: DeliveryStatus[] = ['assigned', 'out_for_delivery'];
   const completedStatuses: DeliveryStatus[] = ['delivered', 'failed_delivery', 'returned_to_sender', 'address_not_found'];
@@ -115,6 +117,10 @@ export const DeliveryAgentView = () => {
     }
     
     setActionLoading(null);
+  };
+
+  const handleShowRoute = (delivery: AgentDelivery) => {
+    setRouteMapDelivery(delivery);
   };
 
   const getPriorityBadge = (priority: number) => {
@@ -262,9 +268,19 @@ export const DeliveryAgentView = () => {
                         <Button 
                           size="sm" 
                           variant="outline"
+                          onClick={() => handleShowRoute(delivery)}
+                          className="min-w-[44px]"
+                          title={t('delivery.showRoute')}
+                        >
+                          <Route className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
                           onClick={() => handleNavigate(delivery)}
                           disabled={actionLoading === `nav-${delivery.order.id}`}
                           className="min-w-[44px]"
+                          title={t('delivery.navigate')}
                         >
                           {actionLoading === `nav-${delivery.order.id}` ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
@@ -321,6 +337,16 @@ export const DeliveryAgentView = () => {
           orderNumber={proofDialog.delivery.order.order_number}
           recipientName={proofDialog.delivery.order.recipient_name}
           orderId={proofDialog.delivery.order.id}
+        />
+      )}
+
+      {/* Route Map View */}
+      {routeMapDelivery && (
+        <RouteMapView
+          deliveryUAC={routeMapDelivery.order.recipient_address_uac}
+          recipientName={routeMapDelivery.order.recipient_name}
+          recipientAddress={routeMapDelivery.order.recipient_address_uac}
+          onClose={() => setRouteMapDelivery(null)}
         />
       )}
     </div>
