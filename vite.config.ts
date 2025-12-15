@@ -24,8 +24,11 @@ export default defineConfig(({ mode }) => ({
   },
   optimizeDeps: {
     // Prevent multiple React copies in dev pre-bundle and ensure single React instance
+    // Also exclude react-leaflet from pre-bundling to avoid stale cached builds after version changes.
     exclude: [
-      '@tanstack/react-query'
+      '@tanstack/react-query',
+      'react-leaflet',
+      '@react-leaflet/core'
     ],
     include: ['qrcode']
   },
