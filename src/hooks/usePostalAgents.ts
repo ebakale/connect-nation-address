@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useUserRole } from './useUserRole';
 
 export interface PostalAgent {
   id: string;
@@ -11,15 +12,37 @@ export interface PostalAgent {
 export const usePostalAgents = () => {
   const [agents, setAgents] = useState<PostalAgent[]>([]);
   const [loading, setLoading] = useState(true);
+  const { roleMetadata, isAdmin } = useUserRole();
+
+  // Get geographic scope for filtering agents
+  const getGeographicFilter = useCallback(() => {
+    if (isAdmin) return null;
+    
+    const geoScope = roleMetadata.find(m => 
+      m.scope_type === 'region' || m.scope_type === 'city' || m.scope_type === 'province'
+    );
+    
+    return geoScope || null;
+  }, [roleMetadata, isAdmin]);
 
   const fetchAgents = async () => {
     setLoading(true);
     try {
-      // Get users with postal_agent role
-      const { data: agentRoles, error: rolesError } = await supabase
+      const geoFilter = getGeographicFilter();
+      
+      // Get users with postal_agent role and their metadata
+      let agentRolesQuery = supabase
         .from('user_roles')
-        .select('user_id')
+        .select(`
+          user_id,
+          user_role_metadata!fk_user_role_metadata_user_role (
+            scope_type,
+            scope_value
+          )
+        `)
         .eq('role', 'postal_agent');
+
+      const { data: agentRoles, error: rolesError } = await agentRolesQuery;
 
       if (rolesError) throw rolesError;
 
@@ -28,13 +51,38 @@ export const usePostalAgents = () => {
         return;
       }
 
-      const agentIds = agentRoles.map(r => r.user_id);
+      // Filter agents by geographic scope if dispatcher/supervisor has scope
+      let filteredAgentIds: string[];
+      
+      if (geoFilter) {
+        filteredAgentIds = agentRoles
+          .filter(r => {
+            const agentMeta = r.user_role_metadata || [];
+            // Include agent if they have matching scope or no scope (available anywhere)
+            if (agentMeta.length === 0) return true;
+            return agentMeta.some((m: any) => 
+              (m.scope_type === geoFilter.scope_type || 
+               m.scope_type === 'region' || 
+               m.scope_type === 'city' || 
+               m.scope_type === 'province') &&
+              m.scope_value?.toLowerCase() === geoFilter.scope_value?.toLowerCase()
+            );
+          })
+          .map(r => r.user_id);
+      } else {
+        filteredAgentIds = agentRoles.map(r => r.user_id);
+      }
+
+      if (filteredAgentIds.length === 0) {
+        setAgents([]);
+        return;
+      }
 
       // Get profiles for these agents
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('user_id, full_name, phone')
-        .in('user_id', agentIds);
+        .in('user_id', filteredAgentIds);
 
       if (profilesError) throw profilesError;
 
@@ -42,7 +90,7 @@ export const usePostalAgents = () => {
       const { data: assignments, error: assignmentsError } = await supabase
         .from('delivery_assignments')
         .select('agent_id, order_id')
-        .in('agent_id', agentIds);
+        .in('agent_id', filteredAgentIds);
 
       if (assignmentsError) throw assignmentsError;
 
@@ -87,7 +135,7 @@ export const usePostalAgents = () => {
 
   useEffect(() => {
     fetchAgents();
-  }, []);
+  }, [getGeographicFilter]);
 
   return { agents, loading, refetch: fetchAgents };
 };

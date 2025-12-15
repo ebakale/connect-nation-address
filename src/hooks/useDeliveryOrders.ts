@@ -3,12 +3,27 @@ import { supabase } from '@/integrations/supabase/client';
 import { DeliveryOrder, DeliveryStatus, CreateDeliveryOrderInput, DeliveryStats } from '@/types/postal';
 import { useAuth } from './useAuth';
 import { toast } from '@/hooks/use-toast';
+import { useUserRole } from './useUserRole';
 
 export const useDeliveryOrders = () => {
   const [orders, setOrders] = useState<DeliveryOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<DeliveryStats | null>(null);
   const { user } = useAuth();
+  const { roleMetadata, isPostalSupervisor, isPostalDispatcher, isAdmin } = useUserRole();
+
+  // Get geographic scope for postal dispatchers/supervisors
+  const getGeographicFilter = useCallback(() => {
+    // Admins see all
+    if (isAdmin) return null;
+    
+    // Find geographic scope from metadata
+    const geoScope = roleMetadata.find(m => 
+      m.scope_type === 'region' || m.scope_type === 'city' || m.scope_type === 'province'
+    );
+    
+    return geoScope || null;
+  }, [roleMetadata, isAdmin]);
 
   const fetchOrders = useCallback(async (statusFilter?: DeliveryStatus | DeliveryStatus[]) => {
     if (!user) return;
@@ -45,7 +60,43 @@ export const useDeliveryOrders = () => {
       
       if (error) throw error;
       
-      setOrders((data || []) as DeliveryOrder[]);
+      let filteredData = data || [];
+      const geoFilter = getGeographicFilter();
+      
+      // Apply geographic filtering for dispatchers/supervisors
+      if (geoFilter && (isPostalDispatcher || isPostalSupervisor)) {
+        // Get UACs from orders
+        const uacs = filteredData.map(o => o.recipient_address_uac).filter(Boolean);
+        
+        if (uacs.length > 0) {
+          // Look up addresses by UAC to get their region/city
+          const { data: addresses } = await supabase
+            .from('addresses')
+            .select('uac, city, region')
+            .in('uac', uacs);
+          
+          // Build a map of UAC to location
+          const uacLocationMap = new Map<string, { city?: string; region?: string }>();
+          addresses?.forEach(addr => {
+            uacLocationMap.set(addr.uac, { city: addr.city, region: addr.region });
+          });
+          
+          // Filter orders by geographic scope
+          filteredData = filteredData.filter(order => {
+            const location = uacLocationMap.get(order.recipient_address_uac);
+            if (!location) return true; // Include if no address data found
+            
+            if (geoFilter.scope_type === 'city') {
+              return location.city?.toLowerCase() === geoFilter.scope_value.toLowerCase();
+            } else if (geoFilter.scope_type === 'region' || geoFilter.scope_type === 'province') {
+              return location.region?.toLowerCase() === geoFilter.scope_value.toLowerCase();
+            }
+            return true;
+          });
+        }
+      }
+      
+      setOrders(filteredData as DeliveryOrder[]);
     } catch (error) {
       console.error('Error fetching delivery orders:', error);
       toast({
@@ -56,7 +107,7 @@ export const useDeliveryOrders = () => {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, getGeographicFilter, isPostalDispatcher, isPostalSupervisor]);
 
   const fetchStats = useCallback(async () => {
     if (!user) return;
