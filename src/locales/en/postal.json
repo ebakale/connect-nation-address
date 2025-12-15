@@ -463,9 +463,11 @@
     },
     "viewDetails": "View Details",
     "editRequest": "Edit",
+    "editContact": "Edit Contact",
     "cancelRequest": "Cancel",
     "requestDetails": "Pickup Request Details",
     "editRequestTitle": "Edit Pickup Request",
+    "editContactTitle": "Edit Contact Information",
     "saveChanges": "Save Changes",
     "notSpecified": "Not specified",
     "assignmentInfo": "Assignment Information",
@@ -484,8 +486,14 @@
     "requestCancelled": "Pickup request cancelled",
     "updateError": "Error updating pickup request",
     "cancelError": "Error cancelling pickup request",
-    "cannotEditProcessed": "Cannot edit - request is already being processed",
-    "cannotCancelProcessed": "Cannot cancel - request is already being processed"
+    "cannotEditCompleted": "Cannot edit - request is already completed or cancelled",
+    "cannotCancelCompleted": "Cannot cancel - request is already completed or cancelled",
+    "editLimitedToContact": "Only contact information and notes can be edited",
+    "restrictedEditNotice": "Since an agent is already assigned, only contact information and notes can be modified. Package details and schedule changes are no longer available.",
+    "cancelWarningAssigned": "An agent has already been assigned to this pickup. Cancelling now will notify the agent and free up their schedule.",
+    "cancelWarningEnRoute": "An agent is currently on their way to your location! Cancelling now will waste resources and the agent's time.",
+    "cancelImpactAssigned": "The assigned agent will be notified of this cancellation.",
+    "cancelImpactEnRoute": "WARNING: The agent is already traveling to your location. This cancellation wastes fuel and time."
   },
   
   "returns": {

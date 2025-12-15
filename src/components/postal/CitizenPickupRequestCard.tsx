@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
-  Package, Calendar, Clock, User, Phone, Eye, Pencil, X,
-  MapPin, Scale
+  Package, Calendar, Clock, User, Eye, Pencil, X,
+  MapPin, AlertTriangle
 } from 'lucide-react';
 import { format } from 'date-fns';
 import type { PickupRequest, PickupStatus } from '@/types/postalEnhanced';
@@ -24,9 +25,14 @@ import {
 
 interface CitizenPickupRequestCardProps {
   request: PickupRequest;
-  onCancel: (id: string) => Promise<boolean>;
-  onUpdate: (id: string, updates: any) => Promise<boolean>;
+  onCancel: (id: string, status: PickupStatus) => Promise<boolean>;
+  onUpdate: (id: string, updates: any, status: PickupStatus) => Promise<boolean>;
 }
+
+// Define which statuses allow editing and cancellation
+const EDITABLE_STATUSES: PickupStatus[] = ['pending', 'scheduled', 'assigned'];
+const CANCELLABLE_STATUSES: PickupStatus[] = ['pending', 'scheduled', 'assigned', 'en_route'];
+const FULL_EDIT_STATUSES: PickupStatus[] = ['pending', 'scheduled'];
 
 export const CitizenPickupRequestCard = ({ 
   request, 
@@ -39,7 +45,10 @@ export const CitizenPickupRequestCard = ({
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
 
-  const isPending = request.status === 'pending';
+  const canEdit = EDITABLE_STATUSES.includes(request.status);
+  const canCancel = CANCELLABLE_STATUSES.includes(request.status);
+  const isFullEdit = FULL_EDIT_STATUSES.includes(request.status);
+  const isRestrictedEdit = canEdit && !isFullEdit;
 
   const getStatusColor = (status: PickupStatus) => {
     switch (status) {
@@ -62,13 +71,39 @@ export const CitizenPickupRequestCard = ({
     }
   };
 
+  const getEditTooltip = () => {
+    if (!canEdit) return t('pickup.cannotEditCompleted');
+    if (isRestrictedEdit) return t('pickup.editLimitedToContact');
+    return undefined;
+  };
+
+  const getCancelTooltip = () => {
+    if (!canCancel) return t('pickup.cannotCancelCompleted');
+    return undefined;
+  };
+
+  const getCancelWarning = () => {
+    switch (request.status) {
+      case 'assigned':
+        return t('pickup.cancelWarningAssigned');
+      case 'en_route':
+        return t('pickup.cancelWarningEnRoute');
+      default:
+        return t('pickup.cancelConfirmDescription');
+    }
+  };
+
   const handleCancel = async () => {
     setCancelling(true);
-    const success = await onCancel(request.id);
+    const success = await onCancel(request.id, request.status);
     setCancelling(false);
     if (success) {
       setCancelDialogOpen(false);
     }
+  };
+
+  const handleUpdate = async (id: string, updates: any) => {
+    return onUpdate(id, updates, request.status);
   };
 
   return (
@@ -129,19 +164,19 @@ export const CitizenPickupRequestCard = ({
                 variant="outline"
                 size="sm"
                 onClick={() => setEditOpen(true)}
-                disabled={!isPending}
-                title={!isPending ? t('pickup.cannotEditProcessed') : undefined}
+                disabled={!canEdit}
+                title={getEditTooltip()}
               >
                 <Pencil className="h-3.5 w-3.5 mr-1" />
-                {t('pickup.editRequest')}
+                {isRestrictedEdit ? t('pickup.editContact') : t('pickup.editRequest')}
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                className={isPending ? "text-destructive hover:text-destructive" : ""}
+                className={canCancel ? "text-destructive hover:text-destructive" : ""}
                 onClick={() => setCancelDialogOpen(true)}
-                disabled={!isPending}
-                title={!isPending ? t('pickup.cannotCancelProcessed') : undefined}
+                disabled={!canCancel}
+                title={getCancelTooltip()}
               >
                 <X className="h-3.5 w-3.5 mr-1" />
                 {t('pickup.cancelRequest')}
@@ -163,7 +198,8 @@ export const CitizenPickupRequestCard = ({
         request={request}
         open={editOpen}
         onClose={() => setEditOpen(false)}
-        onUpdate={onUpdate}
+        onUpdate={handleUpdate}
+        restrictedMode={isRestrictedEdit}
       />
 
       {/* Cancel Confirmation */}
@@ -172,9 +208,23 @@ export const CitizenPickupRequestCard = ({
           <AlertDialogHeader>
             <AlertDialogTitle>{t('pickup.cancelConfirmTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t('pickup.cancelConfirmDescription')}
+              {getCancelWarning()}
             </AlertDialogDescription>
           </AlertDialogHeader>
+          
+          {/* Show warning for assigned/en_route */}
+          {(request.status === 'assigned' || request.status === 'en_route') && (
+            <Alert variant="destructive" className="mt-2">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                {request.status === 'en_route' 
+                  ? t('pickup.cancelImpactEnRoute')
+                  : t('pickup.cancelImpactAssigned')
+                }
+              </AlertDescription>
+            </Alert>
+          )}
+          
           <AlertDialogFooter>
             <AlertDialogCancel disabled={cancelling}>
               {t('common:buttons.cancel')}

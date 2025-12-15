@@ -164,19 +164,35 @@ export const usePickupRequests = () => {
     }
   };
 
+  // Statuses that allow editing (full or restricted)
+  const EDITABLE_STATUSES: PickupStatus[] = ['pending', 'scheduled', 'assigned'];
+  // Statuses that allow cancellation
+  const CANCELLABLE_STATUSES: PickupStatus[] = ['pending', 'scheduled', 'assigned', 'en_route'];
+
   const updateRequest = async (
     requestId: string,
-    updates: Partial<CreatePickupRequestInput>
+    updates: Partial<CreatePickupRequestInput>,
+    currentStatus?: PickupStatus
   ): Promise<boolean> => {
     if (!user) return false;
 
+    // Validate status allows editing
+    if (currentStatus && !EDITABLE_STATUSES.includes(currentStatus)) {
+      toast.error(t('pickup.cannotEditCompleted'));
+      return false;
+    }
+
     try {
-      const { error } = await supabase
+      let query = supabase
         .from('pickup_requests')
         .update(updates)
         .eq('id', requestId)
-        .eq('requester_id', user.id)
-        .eq('status', 'pending');
+        .eq('requester_id', user.id);
+
+      // Allow update for editable statuses
+      query = query.in('status', EDITABLE_STATUSES);
+
+      const { error } = await query;
 
       if (error) throw error;
 
@@ -190,16 +206,29 @@ export const usePickupRequests = () => {
     }
   };
 
-  const cancelRequest = async (requestId: string): Promise<boolean> => {
+  const cancelRequest = async (
+    requestId: string,
+    currentStatus?: PickupStatus
+  ): Promise<boolean> => {
     if (!user) return false;
 
+    // Validate status allows cancellation
+    if (currentStatus && !CANCELLABLE_STATUSES.includes(currentStatus)) {
+      toast.error(t('pickup.cannotCancelCompleted'));
+      return false;
+    }
+
     try {
-      const { error } = await supabase
+      let query = supabase
         .from('pickup_requests')
         .update({ status: 'cancelled' as PickupStatus })
         .eq('id', requestId)
-        .eq('requester_id', user.id)
-        .eq('status', 'pending');
+        .eq('requester_id', user.id);
+
+      // Allow cancel for cancellable statuses
+      query = query.in('status', CANCELLABLE_STATUSES);
+
+      const { error } = await query;
 
       if (error) throw error;
 
