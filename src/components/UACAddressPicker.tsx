@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Search, MapPin, Check, Loader2, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -53,6 +53,9 @@ export const UACAddressPicker: React.FC<UACAddressPickerProps> = ({
   const [isSearching, setIsSearching] = useState(false);
   const [showResults, setShowResults] = useState(false);
   
+  // Ref to skip search after address selection
+  const skipSearchRef = useRef(false);
+  
   const { searchAddresses } = useAddresses();
   const { toast } = useToast();
 
@@ -87,8 +90,13 @@ export const UACAddressPicker: React.FC<UACAddressPickerProps> = ({
     }
   }, [searchAddresses, allowPrivateAddresses, toast]);
 
-  // Debounce search
+  // Debounce search - skip if we just selected an address
   useEffect(() => {
+    if (skipSearchRef.current) {
+      skipSearchRef.current = false;
+      return;
+    }
+    
     const timeoutId = setTimeout(() => {
       performSearch(query);
     }, 300);
@@ -114,6 +122,8 @@ export const UACAddressPicker: React.FC<UACAddressPickerProps> = ({
     };
 
     setSelectedAddress(selectedAddr);
+    // Skip the next search triggered by query change
+    skipSearchRef.current = true;
     setQuery(`${address.uac} - ${address.street}, ${address.city}`);
     setShowResults(false);
     
