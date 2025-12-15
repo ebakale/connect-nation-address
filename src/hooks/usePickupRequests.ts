@@ -214,6 +214,13 @@ export const usePickupRequests = () => {
     }
 
     try {
+      console.log('=== PICKUP REQUEST UPDATE DEBUG ===');
+      console.log('Request ID:', requestId);
+      console.log('User ID:', user.id);
+      console.log('Current Status:', currentStatus);
+      console.log('Editable Statuses:', EDITABLE_STATUSES);
+      console.log('Update payload:', JSON.stringify(updates, null, 2));
+      
       const { data, error } = await supabase
         .from('pickup_requests')
         .update(updates)
@@ -221,6 +228,9 @@ export const usePickupRequests = () => {
         .eq('requester_id', user.id)
         .in('status', EDITABLE_STATUSES)
         .select();
+      
+      console.log('Update response - data:', data);
+      console.log('Update response - error:', error);
 
       if (error) throw error;
 
