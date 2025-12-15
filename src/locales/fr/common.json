@@ -184,7 +184,8 @@
     "searchLogged": "Toutes les recherches sont enregistrées et auditées pour conformité à la confidentialité. N'accédez aux adresses des citoyens que pour des fins légitimes.",
     "protected": "Protégé"
   },
-  "search": {
+  "search": "Rechercher",
+  "searchResults": {
     "noResults": "Aucun Résultat Trouvé",
     "noResultsDescription": "Aucun citoyen correspondant à vos critères de recherche n'a été trouvé",
     "searchError": "Une erreur s'est produite lors de la recherche",

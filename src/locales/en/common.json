@@ -184,7 +184,8 @@
     "searchLogged": "All searches are logged and audited for privacy compliance. Only access citizen addresses for legitimate purposes.",
     "protected": "Protected"
   },
-  "search": {
+  "search": "Search",
+  "searchResults": {
     "noResults": "No Results Found",
     "noResultsDescription": "No matching citizens found for your search criteria",
     "searchError": "An error occurred while searching",

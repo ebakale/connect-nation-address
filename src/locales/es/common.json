@@ -184,7 +184,8 @@
     "searchLogged": "Todas las búsquedas se registran y auditan para cumplimiento de privacidad. Solo acceda a direcciones de ciudadanos para propósitos legítimos.",
     "protected": "Protegido"
   },
-  "search": {
+  "search": "Buscar",
+  "searchResults": {
     "noResults": "No Se Encontraron Resultados",
     "noResultsDescription": "No se encontraron ciudadanos que coincidan con sus criterios de búsqueda",
     "searchError": "Ocurrió un error al buscar",
