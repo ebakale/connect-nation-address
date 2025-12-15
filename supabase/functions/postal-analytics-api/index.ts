@@ -153,6 +153,18 @@ serve(async (req) => {
       }
     });
 
+    // Fetch agent profiles to get names
+    const agentIds = Object.keys(agentStats);
+    let profileMap = new Map<string, string>();
+    if (agentIds.length > 0) {
+      const { data: profiles } = await supabaseClient
+        .from('profiles')
+        .select('user_id, full_name')
+        .in('user_id', agentIds);
+      
+      profileMap = new Map(profiles?.map(p => [p.user_id, p.full_name || 'Unknown']) || []);
+    }
+
     // Calculate overall metrics
     const totalOrders = orders?.length || 0;
     const deliveredCount = statusCounts.delivered;
@@ -184,6 +196,7 @@ serve(async (req) => {
       dailyTrends: trendsArray,
       agentPerformance: Object.entries(agentStats).map(([agentId, stats]) => ({
         agentId,
+        agentName: profileMap.get(agentId) || 'Unknown Agent',
         ...stats,
         successRate: stats.assigned > 0 ? Math.round((stats.delivered / stats.assigned) * 100) : 0,
       })),

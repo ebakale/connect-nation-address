@@ -35,7 +35,7 @@ interface AnalyticsData {
   packageTypeDistribution: Array<{ type: string; count: number }>;
   priorityDistribution: Array<{ priority: string; count: number }>;
   dailyTrends: Array<{ date: string; created: number; delivered: number; failed: number }>;
-  agentPerformance: Array<{ agentId: string; assigned: number; delivered: number; failed: number; successRate: number }>;
+  agentPerformance: Array<{ agentId: string; agentName?: string; assigned: number; delivered: number; failed: number; successRate: number }>;
   timeRange: string;
   generatedAt: string;
 }
@@ -111,17 +111,8 @@ export const PostalReports = () => {
   };
 
   const translateStatus = (status: string) => {
-    const statusMap: Record<string, string> = {
-      pending_intake: t('status.pendingIntake'),
-      ready_for_assignment: t('status.readyForAssignment'),
-      assigned: t('status.assigned'),
-      out_for_delivery: t('status.outForDelivery'),
-      delivered: t('status.delivered'),
-      failed_delivery: t('status.failedDelivery'),
-      address_not_found: t('status.addressNotFound'),
-      returned_to_sender: t('status.returnedToSender'),
-    };
-    return statusMap[status] || status;
+    // Use snake_case keys to match postal.json status keys
+    return t(`status.${status}`, { defaultValue: status });
   };
 
   if (loading) {
@@ -342,7 +333,7 @@ export const PostalReports = () => {
                 <tbody>
                   {data.agentPerformance.map((agent, idx) => (
                     <tr key={idx} className="border-b last:border-0">
-                      <td className="p-2 font-mono text-xs">{agent.agentId.slice(0, 8)}...</td>
+                      <td className="p-2">{agent.agentName || agent.agentId.slice(0, 8)}</td>
                       <td className="text-center p-2">{agent.assigned}</td>
                       <td className="text-center p-2 text-green-600">{agent.delivered}</td>
                       <td className="text-center p-2 text-red-600">{agent.failed}</td>
