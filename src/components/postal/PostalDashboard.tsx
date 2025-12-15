@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { usePostalRole } from '@/hooks/usePostalRole';
 import { useDeliveryOrders } from '@/hooks/useDeliveryOrders';
 import { useAgentDeliveries } from '@/hooks/useAgentDeliveries';
-import { Package, Plus, Truck, Users, BarChart3, Clock, CheckCircle, AlertTriangle, RotateCcw, Settings, MapPin } from 'lucide-react';
+import { Package, Plus, Truck, Users, BarChart3, Clock, CheckCircle, AlertTriangle, RotateCcw, Settings, FileUp, DollarSign, Undo2, Calendar } from 'lucide-react';
 import { DeliveryOrderForm } from './DeliveryOrderForm';
 import { DeliveryOrdersList } from './DeliveryOrdersList';
 import { DeliveryAgentView } from './DeliveryAgentView';
@@ -15,6 +14,10 @@ import { PostalReports } from './PostalReports';
 import { SeedPostalUsers } from './SeedPostalUsers';
 import { SeedPostalOrders } from './SeedPostalOrders';
 import { SeedCitizenDeliveries } from './SeedCitizenDeliveries';
+import { PickupRequestsList } from './PickupRequestsList';
+import { ReturnOrdersList } from './ReturnOrdersList';
+import { CODManagement } from './CODManagement';
+import { BulkImportDialog } from './BulkImportDialog';
 
 export const PostalDashboard = () => {
   const { t } = useTranslation('postal');
@@ -22,21 +25,19 @@ export const PostalDashboard = () => {
     isPostalClerk, isPostalAgent, isPostalDispatcher, isPostalSupervisor, isAdmin,
     canCreateOrders, canAssignOrders, canViewReports 
   } = usePostalRole();
-  const { stats: globalStats, loading } = useDeliveryOrders();
+  const { stats: globalStats } = useDeliveryOrders();
   const { stats: agentStats } = useAgentDeliveries();
   
-  // Agents default to "my-deliveries", others to "overview"
   const [activeTab, setActiveTab] = useState(isPostalAgent ? 'my-deliveries' : 'overview');
   const [showNewOrderForm, setShowNewOrderForm] = useState(false);
+  const [showBulkImport, setShowBulkImport] = useState(false);
 
-  // Agent-specific stat cards (personal metrics)
   const agentStatCards = [
     { key: 'activeDeliveries', icon: Truck, value: agentStats?.active || 0, color: 'text-primary' },
     { key: 'completedToday', icon: CheckCircle, value: agentStats?.completedToday || 0, color: 'text-success' },
     { key: 'totalAssigned', icon: Package, value: agentStats?.total || 0, color: 'text-info' },
   ];
 
-  // Global stat cards (for dispatchers, supervisors, clerks)
   const globalStatCards = [
     { key: 'pendingIntake', icon: Clock, value: globalStats?.pending_intake || 0, color: 'text-warning' },
     { key: 'readyForAssignment', icon: Package, value: globalStats?.ready_for_assignment || 0, color: 'text-info' },
@@ -46,8 +47,11 @@ export const PostalDashboard = () => {
     { key: 'returned', icon: RotateCcw, value: globalStats?.returned || 0, color: 'text-muted-foreground' },
   ];
 
-  // Use appropriate stat cards based on role
   const statCards = isPostalAgent ? agentStatCards : globalStatCards;
+  const canManagePickups = isPostalDispatcher || isPostalSupervisor || isAdmin;
+  const canManageReturns = isPostalDispatcher || isPostalSupervisor || isAdmin;
+  const canManageCOD = isPostalSupervisor || isAdmin;
+  const canBulkImport = isPostalClerk || isPostalDispatcher || isPostalSupervisor || isAdmin;
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -59,12 +63,20 @@ export const PostalDashboard = () => {
             {isPostalAgent ? t('agentView') : t('module')}
           </p>
         </div>
-        {canCreateOrders && (
-          <Button onClick={() => setShowNewOrderForm(true)} className="w-full sm:w-auto">
-            <Plus className="h-4 w-4 mr-2" />
-            {t('order.newOrder')}
-          </Button>
-        )}
+        <div className="flex flex-wrap gap-2">
+          {canBulkImport && (
+            <Button variant="outline" onClick={() => setShowBulkImport(true)} className="w-full sm:w-auto">
+              <FileUp className="h-4 w-4 mr-2" />
+              {t('bulkImport.title')}
+            </Button>
+          )}
+          {canCreateOrders && (
+            <Button onClick={() => setShowNewOrderForm(true)} className="w-full sm:w-auto">
+              <Plus className="h-4 w-4 mr-2" />
+              {t('order.newOrder')}
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Stats Grid */}
@@ -87,37 +99,52 @@ export const PostalDashboard = () => {
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-2 sm:flex sm:flex-wrap h-auto gap-1 bg-muted/50 p-1">
-          {/* Overview tab - hidden for agents */}
           {!isPostalAgent && (
             <TabsTrigger value="overview" className="text-xs sm:text-sm">
               <Package className="h-4 w-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">{t('navigation.orders')}</span>
-              <span className="sm:hidden">{t('navigation.orders')}</span>
+              <span>{t('navigation.orders')}</span>
             </TabsTrigger>
           )}
           
-          {/* My Deliveries - always visible for agents */}
           {isPostalAgent && (
             <TabsTrigger value="my-deliveries" className="text-xs sm:text-sm">
               <Truck className="h-4 w-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">{t('navigation.myDeliveries')}</span>
-              <span className="sm:hidden">{t('delivery.title')}</span>
+              <span>{t('navigation.myDeliveries')}</span>
             </TabsTrigger>
           )}
           
           {canAssignOrders && (
             <TabsTrigger value="assignments" className="text-xs sm:text-sm">
               <Users className="h-4 w-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">{t('navigation.assignments')}</span>
-              <span className="sm:hidden">{t('assignment.title')}</span>
+              <span>{t('navigation.assignments')}</span>
+            </TabsTrigger>
+          )}
+
+          {canManagePickups && (
+            <TabsTrigger value="pickups" className="text-xs sm:text-sm">
+              <Calendar className="h-4 w-4 mr-1 sm:mr-2" />
+              <span>{t('pickup.title')}</span>
+            </TabsTrigger>
+          )}
+
+          {canManageReturns && (
+            <TabsTrigger value="returns" className="text-xs sm:text-sm">
+              <Undo2 className="h-4 w-4 mr-1 sm:mr-2" />
+              <span>{t('returns.title')}</span>
+            </TabsTrigger>
+          )}
+
+          {canManageCOD && (
+            <TabsTrigger value="cod" className="text-xs sm:text-sm">
+              <DollarSign className="h-4 w-4 mr-1 sm:mr-2" />
+              <span>{t('cod.title')}</span>
             </TabsTrigger>
           )}
           
           {canViewReports && (
             <TabsTrigger value="reports" className="text-xs sm:text-sm">
               <BarChart3 className="h-4 w-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">{t('navigation.reports')}</span>
-              <span className="sm:hidden">{t('reports.title')}</span>
+              <span>{t('navigation.reports')}</span>
             </TabsTrigger>
           )}
 
@@ -129,14 +156,12 @@ export const PostalDashboard = () => {
           )}
         </TabsList>
 
-        {/* Overview content - hidden for agents */}
         {!isPostalAgent && (
           <TabsContent value="overview" className="space-y-4">
             <DeliveryOrdersList />
           </TabsContent>
         )}
 
-        {/* My Deliveries content */}
         {isPostalAgent && (
           <TabsContent value="my-deliveries" className="space-y-4">
             <DeliveryAgentView />
@@ -146,6 +171,24 @@ export const PostalDashboard = () => {
         {canAssignOrders && (
           <TabsContent value="assignments" className="space-y-4">
             <DeliveryOrdersList showAssignmentPanel />
+          </TabsContent>
+        )}
+
+        {canManagePickups && (
+          <TabsContent value="pickups" className="space-y-4">
+            <PickupRequestsList />
+          </TabsContent>
+        )}
+
+        {canManageReturns && (
+          <TabsContent value="returns" className="space-y-4">
+            <ReturnOrdersList />
+          </TabsContent>
+        )}
+
+        {canManageCOD && (
+          <TabsContent value="cod" className="space-y-4">
+            <CODManagement />
           </TabsContent>
         )}
 
@@ -166,11 +209,17 @@ export const PostalDashboard = () => {
         )}
       </Tabs>
 
-      {/* New Order Form Dialog */}
       {showNewOrderForm && (
         <DeliveryOrderForm 
           open={showNewOrderForm} 
           onClose={() => setShowNewOrderForm(false)} 
+        />
+      )}
+
+      {showBulkImport && (
+        <BulkImportDialog
+          open={showBulkImport}
+          onClose={() => setShowBulkImport(false)}
         />
       )}
     </div>
