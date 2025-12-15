@@ -574,5 +574,13 @@
   "narAuthorityProfileDesc": "Votre profil et permissions d'Autorité NAR",
   "yourJurisdictionAndPermissions": "Votre juridiction et permissions",
   "myCreatedAddresses": "Adresses que J'ai Créées",
-  "createNARAddress": "Créer une Adresse NAR"
+  "createNARAddress": "Créer une Adresse NAR",
+  "requestPickupDescription": "Planifiez un ramassage de colis depuis votre adresse",
+  "schedulePickup": "Planifier un Ramassage",
+  "schedulePickupDescription": "Demandez aux agents postaux de collecter les colis depuis votre emplacement",
+  "createPickupRequest": "Créer une Demande de Ramassage",
+  "myPickupRequests": "Mes Demandes de Ramassage",
+  "deliveryPreferencesDescription": "Définissez vos préférences de livraison pour chacune de vos adresses enregistrées",
+  "managePreferences": "Gérer les Préférences",
+  "noAddressesForPreferences": "Vous n'avez pas encore d'adresses enregistrées. Enregistrez d'abord une adresse pour définir les préférences de livraison."
 }

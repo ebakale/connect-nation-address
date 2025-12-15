@@ -574,5 +574,13 @@
   "narAuthorityProfileDesc": "Tu perfil y permisos de Autoridad NAR",
   "yourJurisdictionAndPermissions": "Tu jurisdicción y permisos",
   "myCreatedAddresses": "Direcciones que Creé",
-  "createNARAddress": "Crear Dirección NAR"
+  "createNARAddress": "Crear Dirección NAR",
+  "requestPickupDescription": "Programa una recogida de paquetes desde tu dirección",
+  "schedulePickup": "Programar Recogida",
+  "schedulePickupDescription": "Solicita a los agentes postales recoger paquetes de tu ubicación",
+  "createPickupRequest": "Crear Solicitud de Recogida",
+  "myPickupRequests": "Mis Solicitudes de Recogida",
+  "deliveryPreferencesDescription": "Configura tus preferencias de entrega para cada una de tus direcciones registradas",
+  "managePreferences": "Gestionar Preferencias",
+  "noAddressesForPreferences": "Aún no tienes direcciones registradas. Registra una dirección primero para configurar preferencias de entrega."
 }
