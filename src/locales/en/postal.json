@@ -151,7 +151,26 @@
     "acknowledged": "Acknowledged",
     "inProgress": "In Progress",
     "navigate": "Navigate",
-    "viewOnMap": "View on Map"
+    "viewOnMap": "View on Map",
+    "showRoute": "Show Route"
+  },
+  
+  "routing": {
+    "title": "Route to Delivery",
+    "calculating": "Calculating route...",
+    "distance": "Distance",
+    "duration": "Est. Time",
+    "steps": "Directions",
+    "yourLocation": "Your Location",
+    "destination": "Destination",
+    "openInMaps": "Open in Maps",
+    "close": "Close",
+    "routeError": "Could not calculate route",
+    "locationError": "Could not get your location",
+    "destinationError": "Could not find destination address",
+    "stepNumber": "Step {{number}}",
+    "start": "Start",
+    "arrive": "Arrive at destination"
   },
   
   "proof": {

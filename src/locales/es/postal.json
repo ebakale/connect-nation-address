@@ -151,7 +151,26 @@
     "acknowledged": "Confirmado",
     "inProgress": "En Progreso",
     "navigate": "Navegar",
-    "viewOnMap": "Ver en Mapa"
+    "viewOnMap": "Ver en Mapa",
+    "showRoute": "Ver Ruta"
+  },
+  
+  "routing": {
+    "title": "Ruta a la Entrega",
+    "calculating": "Calculando ruta...",
+    "distance": "Distancia",
+    "duration": "Tiempo Est.",
+    "steps": "Indicaciones",
+    "yourLocation": "Tu Ubicación",
+    "destination": "Destino",
+    "openInMaps": "Abrir en Mapas",
+    "close": "Cerrar",
+    "routeError": "No se pudo calcular la ruta",
+    "locationError": "No se pudo obtener tu ubicación",
+    "destinationError": "No se pudo encontrar la dirección de destino",
+    "stepNumber": "Paso {{number}}",
+    "start": "Inicio",
+    "arrive": "Llegar al destino"
   },
   
   "proof": {
