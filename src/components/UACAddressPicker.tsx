@@ -54,8 +54,8 @@ export const UACAddressPicker: React.FC<UACAddressPickerProps> = ({
   const [showResults, setShowResults] = useState(false);
   
   // Ref to skip search after address selection
-  const skipSearchRef = useRef(false);
-  
+  const skipSearchRef = useRef<boolean>(false);
+
   const { searchAddresses } = useAddresses();
   const { toast } = useToast();
 
