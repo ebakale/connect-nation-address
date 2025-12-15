@@ -11,7 +11,10 @@ export const usePickupRequests = () => {
   const [requests, setRequests] = useState<PickupRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchRequests = useCallback(async (statusFilter?: PickupStatus | PickupStatus[]) => {
+  const fetchRequests = useCallback(async (
+    statusFilter?: PickupStatus | PickupStatus[],
+    agentId?: string
+  ) => {
     if (!user) return;
     setLoading(true);
 
@@ -28,6 +31,11 @@ export const usePickupRequests = () => {
         } else {
           query = query.eq('status', statusFilter);
         }
+      }
+
+      // Filter by assigned agent
+      if (agentId) {
+        query = query.eq('assigned_agent_id', agentId);
       }
 
       const { data, error } = await query;
@@ -49,6 +57,11 @@ export const usePickupRequests = () => {
       setLoading(false);
     }
   }, [user, t]);
+
+  const fetchAgentPickups = useCallback(async (statusFilter?: PickupStatus | PickupStatus[]) => {
+    if (!user) return;
+    await fetchRequests(statusFilter, user.id);
+  }, [user, fetchRequests]);
 
   const createRequest = async (input: CreatePickupRequestInput): Promise<PickupRequest | null> => {
     if (!user) return null;
@@ -161,6 +174,7 @@ export const usePickupRequests = () => {
     requests,
     loading,
     fetchRequests,
+    fetchAgentPickups,
     createRequest,
     assignRequest,
     updateStatus,
