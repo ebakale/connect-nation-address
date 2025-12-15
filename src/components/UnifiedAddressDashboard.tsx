@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   MapPin, Home, Shield, Users, BarChart3, Settings, 
   Building2, FileText, Clock, CheckCircle, AlertCircle,
-  Database, Network, Search, UserCheck, Workflow
+  Database, Network, Search, UserCheck, Workflow, Package, Truck
 } from "lucide-react";
 
 // Import existing components
@@ -36,6 +36,11 @@ import { AddressRequestForm } from './AddressRequestForm';
 import { AddressRequestStatus } from './AddressRequestStatus';
 import { NARCARTestPanel } from './NARCARTestPanel';
 import AdminPanel from './AdminPanel';
+
+// Import postal components
+import { PickupRequestForm } from './postal/PickupRequestForm';
+import { DeliveryPreferencesForm } from './postal/DeliveryPreferencesForm';
+import { usePickupRequests } from '@/hooks/usePickupRequests';
 
 interface UnifiedAddressDashboardProps {
   onClose?: () => void;
@@ -112,10 +117,61 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
 
   const [activeTab, setActiveTab] = useState(getDefaultTab());
 
+  // Postal dialog states
+  const [pickupRequestOpen, setPickupRequestOpen] = useState(false);
+  const [deliveryPreferencesOpen, setDeliveryPreferencesOpen] = useState(false);
+  const [selectedAddressForPrefs, setSelectedAddressForPrefs] = useState<string>('');
+  const [citizenAddresses, setCitizenAddresses] = useState<Array<{ uac: string; street: string; city: string }>>([]);
+  
+  const { requests: pickupRequests, loading: pickupLoading, fetchRequests } = usePickupRequests();
+
   // Update active tab when active role changes
   useEffect(() => {
     setActiveTab(getDefaultTab());
   }, [activeRole, role]);
+
+  // Fetch citizen addresses for delivery preferences
+  useEffect(() => {
+    const fetchCitizenAddresses = async () => {
+      if (!user?.id) return;
+      
+      try {
+        // @ts-expect-error - Supabase type depth issue workaround
+        const personResult = await supabase
+          .from('person')
+          .select('id')
+          .eq('user_id', user.id)
+          .limit(1);
+        
+        const personId = (personResult.data as Array<{ id: string }> | null)?.[0]?.id;
+        
+        if (personId) {
+          const addressResult = await supabase
+            .from('citizen_address')
+            .select('uac')
+            .eq('person_id', personId)
+            .is('effective_to', null);
+          
+          const uacs = (addressResult.data as Array<{ uac: string }> | null)?.map(a => a.uac) || [];
+          
+          if (uacs.length > 0) {
+            const detailsResult = await supabase
+              .from('addresses')
+              .select('uac, street, city')
+              .in('uac', uacs);
+            
+            if (detailsResult.data) {
+              setCitizenAddresses(detailsResult.data as Array<{ uac: string; street: string; city: string }>);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching citizen addresses:', error);
+      }
+    };
+    
+    fetchCitizenAddresses();
+  }, [user?.id]);
 
   // Define tabs based on active role
   const getAvailableTabs = () => {
@@ -428,6 +484,113 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
         );
 
 
+      case 'request-pickup':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:requestPickup')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:requestPickupDescription')}</p>
+              </div>
+              <Badge variant="outline">
+                <Package className="h-3 w-3 mr-1" />
+                {t('postal:pickup')}
+              </Badge>
+            </div>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Truck className="h-5 w-5" />
+                  {t('dashboard:schedulePickup')}
+                </CardTitle>
+                <CardDescription>{t('dashboard:schedulePickupDescription')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button onClick={() => setPickupRequestOpen(true)}>
+                  <Package className="h-4 w-4 mr-2" />
+                  {t('dashboard:createPickupRequest')}
+                </Button>
+              </CardContent>
+            </Card>
+            
+            {/* Show existing pickup requests */}
+            {pickupRequests.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('dashboard:myPickupRequests')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {pickupRequests.map((request) => (
+                      <div key={request.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <p className="font-medium">{request.pickup_address_uac}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(request.preferred_date).toLocaleDateString()} - {request.preferred_time_window}
+                          </p>
+                        </div>
+                        <Badge variant={request.status === 'completed' ? 'default' : 'secondary'}>
+                          {t(`postal:status.${request.status}`)}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        );
+
+      case 'delivery-preferences':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{t('dashboard:deliveryPreferences')}</h2>
+                <p className="text-muted-foreground">{t('dashboard:deliveryPreferencesDescription')}</p>
+              </div>
+              <Badge variant="outline">
+                <Settings className="h-3 w-3 mr-1" />
+                {t('postal:preferences')}
+              </Badge>
+            </div>
+            
+            {citizenAddresses.length > 0 ? (
+              <div className="grid gap-4">
+                {citizenAddresses.map((address) => (
+                  <Card key={address.uac}>
+                    <CardHeader>
+                      <CardTitle className="text-lg">{address.street}</CardTitle>
+                      <CardDescription>{address.city} - UAC: {address.uac}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button 
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedAddressForPrefs(address.uac);
+                          setDeliveryPreferencesOpen(true);
+                        }}
+                      >
+                        <Settings className="h-4 w-4 mr-2" />
+                        {t('dashboard:managePreferences')}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="pt-6">
+                  <p className="text-muted-foreground text-center">
+                    {t('dashboard:noAddressesForPreferences')}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        );
+
       default:
         return <div>{t('dashboard:selectTabViewContent')}</div>;
     }
@@ -504,6 +667,24 @@ export function UnifiedAddressDashboard({ onClose }: UnifiedAddressDashboardProp
           {renderTabContent()}
         </div>
       </Tabs>
+
+      {/* Postal Dialogs */}
+      <PickupRequestForm 
+        open={pickupRequestOpen} 
+        onClose={() => {
+          setPickupRequestOpen(false);
+          fetchRequests();
+        }} 
+      />
+      
+      <DeliveryPreferencesForm
+        open={deliveryPreferencesOpen}
+        onClose={() => {
+          setDeliveryPreferencesOpen(false);
+          setSelectedAddressForPrefs('');
+        }}
+        addressUac={selectedAddressForPrefs}
+      />
     </div>
   );
 }

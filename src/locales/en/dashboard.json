@@ -1131,5 +1131,13 @@
   "narAuthorityProfileDesc": "Your NAR Authority profile and permissions",
   "yourJurisdictionAndPermissions": "Your jurisdiction and permissions",
   "myCreatedAddresses": "Addresses I Created",
-  "createNARAddress": "Create NAR Address"
+  "createNARAddress": "Create NAR Address",
+  "requestPickupDescription": "Schedule a package pickup from your address",
+  "schedulePickup": "Schedule Pickup",
+  "schedulePickupDescription": "Request postal agents to collect packages from your location",
+  "createPickupRequest": "Create Pickup Request",
+  "myPickupRequests": "My Pickup Requests",
+  "deliveryPreferencesDescription": "Set your delivery preferences for each of your registered addresses",
+  "managePreferences": "Manage Preferences",
+  "noAddressesForPreferences": "You don't have any registered addresses yet. Register an address first to set delivery preferences."
 }
