@@ -541,10 +541,10 @@
   "labels": {
     "title": "Etiquetas",
     "preview": "Vista Previa de Etiqueta",
-    "from": "De",
-    "to": "Para",
-    "signatureRequired": "Firma Requerida",
-    "idRequired": "ID Requerido",
+    "from": "DE",
+    "to": "PARA",
+    "signatureRequired": "FIRMA REQ.",
+    "idRequired": "ID REQ.",
     "generate": "Generar Etiqueta",
     "generated": "Etiqueta generada",
     "generateError": "Error al generar etiqueta",
@@ -554,8 +554,10 @@
     "download": "Descargar",
     "downloaded": "Etiqueta descargada",
     "downloadError": "Error al descargar",
-    "printInstructions": "PDF abierto - Presione Ctrl+P (o Cmd+P en Mac) para imprimir",
-    "downloadedForPrint": "Etiqueta descargada - Abra el archivo para imprimir"
+    "governmentPostalService": "SERVICIO POSTAL GUBERNAMENTAL",
+    "equatorialGuinea": "GUINEA ECUATORIAL",
+    "trackingNumber": "NÚMERO DE SEGUIMIENTO",
+    "order": "Pedido"
   },
   "bulkImport": {
     "title": "Importación Masiva",
