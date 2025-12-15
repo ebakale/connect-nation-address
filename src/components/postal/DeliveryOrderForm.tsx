@@ -107,6 +107,7 @@ export const DeliveryOrderForm = ({ open, onClose }: DeliveryOrderFormProps) => 
                   }}
                   placeholder={t('recipient.searchAddress')}
                   showDescription={true}
+                  allowPrivateAddresses={true}
                 />
               </div>
               <div className="space-y-2">
