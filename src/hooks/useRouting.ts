@@ -107,32 +107,47 @@ export const useRouting = (): UseRoutingResult => {
     setIsLoadingDestination(true);
     setDestinationError(null);
 
-    try {
-      const { data, error } = await supabase
-        .from('addresses')
-        .select('latitude, longitude')
-        .eq('uac', uac)
-        .single();
+    // Timeout promise for destination fetch
+    const timeoutPromise = new Promise<Coordinates | null>((resolve) => {
+      setTimeout(() => {
+        resolve(null);
+      }, 10000); // 10 second timeout
+    });
 
-      if (error || !data) {
-        setDestinationError('Address not found');
-        setIsLoadingDestination(false);
+    const fetchPromise = (async (): Promise<Coordinates | null> => {
+      try {
+        const { data, error } = await supabase
+          .from('addresses')
+          .select('latitude, longitude')
+          .eq('uac', uac)
+          .single();
+
+        if (error || !data) {
+          setDestinationError('Address not found');
+          return null;
+        }
+
+        const coords = {
+          lat: data.latitude,
+          lng: data.longitude
+        };
+        setDestination(coords);
+        return coords;
+      } catch (err) {
+        setDestinationError('Failed to fetch address');
         return null;
       }
+    })();
 
-      const coords = {
-        lat: data.latitude,
-        lng: data.longitude
-      };
-      setDestination(coords);
-      setIsLoadingDestination(false);
-      return coords;
-    } catch (err) {
-      setDestinationError('Failed to fetch address');
-      setIsLoadingDestination(false);
-      return null;
+    const result = await Promise.race([fetchPromise, timeoutPromise]);
+    
+    if (!result && !destinationError) {
+      setDestinationError('Destination fetch timed out');
     }
-  }, []);
+    
+    setIsLoadingDestination(false);
+    return result;
+  }, [destinationError]);
 
   const clearRoute = useCallback(() => {
     setUserLocation(null);

@@ -158,6 +158,7 @@
   "routing": {
     "title": "Itinéraire vers la Livraison",
     "calculating": "Calcul de l'itinéraire...",
+    "calculatingRoute": "Calcul de l'itinéraire...",
     "distance": "Distance",
     "duration": "Temps Est.",
     "steps": "Instructions",
@@ -172,6 +173,7 @@
     "start": "Départ",
     "arrive": "Arriver à destination",
     "retry": "Réessayer",
+    "retryRoute": "Réessayer l'Itinéraire",
     "iframeHint": "La localisation peut être bloquée en mode aperçu. Utilisez le bouton App Cartes pour naviguer."
   },
   

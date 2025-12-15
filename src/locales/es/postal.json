@@ -158,6 +158,7 @@
   "routing": {
     "title": "Ruta a la Entrega",
     "calculating": "Calculando ruta...",
+    "calculatingRoute": "Calculando ruta...",
     "distance": "Distancia",
     "duration": "Tiempo Est.",
     "steps": "Indicaciones",
@@ -172,6 +173,7 @@
     "start": "Inicio",
     "arrive": "Llegar al destino",
     "retry": "Intentar de Nuevo",
+    "retryRoute": "Reintentar Ruta",
     "iframeHint": "La ubicación puede estar bloqueada en modo vista previa. Usa el botón de App de Mapas para navegar."
   },
   
