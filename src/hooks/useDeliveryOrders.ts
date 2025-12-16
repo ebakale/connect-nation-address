@@ -117,11 +117,42 @@ export const useDeliveryOrders = () => {
       
       const { data, error } = await supabase
         .from('delivery_orders')
-        .select('status, scheduled_date, completed_at');
+        .select('status, scheduled_date, completed_at, recipient_address_uac');
       
       if (error) throw error;
       
-      const orders = data || [];
+      let orders = data || [];
+      
+      // Apply geographic filtering for dispatchers/supervisors (same as fetchOrders)
+      const geoFilter = getGeographicFilter();
+      if (geoFilter && (isPostalDispatcher || isPostalSupervisor)) {
+        const uacs = orders.map(o => o.recipient_address_uac).filter(Boolean);
+        
+        if (uacs.length > 0) {
+          const { data: addresses } = await supabase
+            .from('addresses')
+            .select('uac, city, region')
+            .in('uac', uacs);
+          
+          const uacLocationMap = new Map<string, { city?: string; region?: string }>();
+          addresses?.forEach(addr => {
+            uacLocationMap.set(addr.uac, { city: addr.city, region: addr.region });
+          });
+          
+          orders = orders.filter(order => {
+            const location = uacLocationMap.get(order.recipient_address_uac);
+            if (!location) return true;
+            
+            if (geoFilter.scope_type === 'city') {
+              return location.city?.toLowerCase() === geoFilter.scope_value.toLowerCase();
+            } else if (geoFilter.scope_type === 'region' || geoFilter.scope_type === 'province') {
+              return location.region?.toLowerCase() === geoFilter.scope_value.toLowerCase();
+            }
+            return true;
+          });
+        }
+      }
+      
       const todayOrders = orders.filter(o => 
         o.scheduled_date === today || 
         (o.completed_at && o.completed_at.startsWith(today))
@@ -144,7 +175,7 @@ export const useDeliveryOrders = () => {
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
-  }, [user]);
+  }, [user, getGeographicFilter, isPostalDispatcher, isPostalSupervisor]);
 
   const createOrder = async (input: CreateDeliveryOrderInput): Promise<DeliveryOrder | null> => {
     if (!user) return null;
