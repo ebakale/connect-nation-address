@@ -48,7 +48,7 @@ export const DeliveryProofCapture = ({
   const [showCamera, setShowCamera] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [formData, setFormData] = useState<ProofData>({
-    proof_type: 'delivered',
+    proof_type: 'photo',
     received_by_name: recipientName,
     relationship_to_recipient: 'recipient',
     notes: ''
@@ -67,7 +67,7 @@ export const DeliveryProofCapture = ({
       setShowCamera(false);
       setCameraError(null);
       setFormData({
-        proof_type: 'delivered',
+        proof_type: 'photo',
         received_by_name: recipientName,
         relationship_to_recipient: 'recipient',
         notes: ''
