@@ -45,6 +45,8 @@ export const DeliveryProofCapture = ({
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [showCamera, setShowCamera] = useState(false);
+  const [cameraError, setCameraError] = useState<string | null>(null);
   const [formData, setFormData] = useState<ProofData>({
     proof_type: 'delivered',
     received_by_name: recipientName,
@@ -52,11 +54,18 @@ export const DeliveryProofCapture = ({
     notes: ''
   });
 
+  // Refs
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
   // Reset state when dialog opens
   useEffect(() => {
     if (open) {
       setPhotoPreview(null);
       setPhotoUrl(null);
+      setShowCamera(false);
+      setCameraError(null);
       setFormData({
         proof_type: 'delivered',
         received_by_name: recipientName,
@@ -78,9 +87,110 @@ export const DeliveryProofCapture = ({
     }
   }, [open]);
 
-  // Refs for file inputs
-  const cameraInputRef = useRef<HTMLInputElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Start/stop camera stream
+  useEffect(() => {
+    if (showCamera && !Capacitor.isNativePlatform()) {
+      startWebCamera();
+    }
+    return () => {
+      stopWebCamera();
+    };
+  }, [showCamera]);
+
+  // Cleanup camera on dialog close
+  useEffect(() => {
+    if (!open) {
+      stopWebCamera();
+    }
+  }, [open]);
+
+  const startWebCamera = async () => {
+    setCameraError(null);
+    try {
+      const constraints: MediaStreamConstraints = {
+        video: { facingMode: { ideal: 'environment' } },
+        audio: false,
+      };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+      }
+    } catch (error) {
+      console.error('Camera error:', error);
+      setCameraError(t('proof.cameraError'));
+      toast.error(t('proof.cameraError'));
+    }
+  };
+
+  const stopWebCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+  };
+
+  const captureFromWebCamera = async () => {
+    if (!videoRef.current) return;
+    
+    setUploadingPhoto(true);
+    try {
+      const video = videoRef.current;
+      const canvas = document.createElement('canvas');
+      const width = video.videoWidth || 1280;
+      const height = video.videoHeight || 720;
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      
+      ctx.drawImage(video, 0, 0, width, height);
+      
+      // Get data URL for preview
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      setPhotoPreview(dataUrl);
+      
+      // Convert to blob and upload
+      canvas.toBlob(async (blob) => {
+        if (!blob) {
+          setUploadingPhoto(false);
+          return;
+        }
+        
+        const fileName = `${orderId}-${Date.now()}.jpg`;
+        const filePath = `proofs/${fileName}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('delivery-proof')
+          .upload(filePath, blob, {
+            contentType: 'image/jpeg',
+            upsert: false,
+          });
+        
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          toast.error(t('proof.uploadError'));
+          setUploadingPhoto(false);
+          return;
+        }
+        
+        const { data: urlData } = supabase.storage
+          .from('delivery-proof')
+          .getPublicUrl(filePath);
+        
+        setPhotoUrl(urlData.publicUrl);
+        toast.success(t('proof.photoCaptured'));
+        setShowCamera(false);
+        stopWebCamera();
+        setUploadingPhoto(false);
+      }, 'image/jpeg', 0.9);
+    } catch (error) {
+      console.error('Capture error:', error);
+      toast.error(t('proof.uploadError'));
+      setUploadingPhoto(false);
+    }
+  };
 
   const capturePhoto = async () => {
     // Check if running on native platform (iOS/Android)
@@ -136,8 +246,8 @@ export const DeliveryProofCapture = ({
       }
       setUploadingPhoto(false);
     } else {
-      // Web browser - trigger file input with camera capture
-      cameraInputRef.current?.click();
+      // Web browser - show live camera view
+      setShowCamera(true);
     }
   };
 
@@ -150,23 +260,20 @@ export const DeliveryProofCapture = ({
     if (file) {
       await uploadFilePhoto(file);
     }
-    // Reset the input so the same file can be selected again
     e.target.value = '';
   };
 
   const uploadFilePhoto = async (file: File) => {
     setUploadingPhoto(true);
     try {
-      // Preview
       const reader = new FileReader();
       reader.onload = (e) => setPhotoPreview(e.target?.result as string);
       reader.readAsDataURL(file);
 
-      // Upload
       const fileName = `${orderId}-${Date.now()}.${file.name.split('.').pop() || 'jpg'}`;
       const filePath = `proofs/${fileName}`;
 
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('delivery-proof')
         .upload(filePath, file, {
           contentType: file.type,
@@ -196,6 +303,11 @@ export const DeliveryProofCapture = ({
   const removePhoto = () => {
     setPhotoPreview(null);
     setPhotoUrl(null);
+  };
+
+  const cancelCamera = () => {
+    setShowCamera(false);
+    stopWebCamera();
   };
 
   const handleSubmit = async () => {
@@ -292,15 +404,7 @@ export const DeliveryProofCapture = ({
             )}
           </div>
 
-          {/* Hidden file inputs */}
-          <input
-            ref={cameraInputRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            className="hidden"
-            onChange={handleFileChange}
-          />
+          {/* Hidden file input */}
           <input
             ref={fileInputRef}
             type="file"
@@ -313,7 +417,44 @@ export const DeliveryProofCapture = ({
           <div className="space-y-2">
             <Label>{t('proof.photo')}</Label>
             
-            {photoPreview ? (
+            {showCamera ? (
+              // Live camera view for web browsers
+              <div className="space-y-3">
+                <div className="relative aspect-[4/3] w-full bg-muted rounded-lg overflow-hidden">
+                  <video 
+                    ref={videoRef} 
+                    playsInline 
+                    autoPlay
+                    muted
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {cameraError && (
+                  <p className="text-destructive text-sm">{cameraError}</p>
+                )}
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={captureFromWebCamera}
+                    disabled={uploadingPhoto || !!cameraError}
+                    className="flex-1"
+                  >
+                    {uploadingPhoto ? (
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    ) : (
+                      <Camera className="h-4 w-4 mr-2" />
+                    )}
+                    {t('proof.capture')}
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={cancelCamera}
+                    className="flex-1"
+                  >
+                    {t('common:buttons.cancel')}
+                  </Button>
+                </div>
+              </div>
+            ) : photoPreview ? (
               <div className="relative">
                 <img 
                   src={photoPreview} 

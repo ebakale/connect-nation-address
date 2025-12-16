@@ -231,6 +231,7 @@
     "clearSignature": "Clear Signature",
     "takePhoto": "Take Photo",
     "uploadPhoto": "Upload Photo",
+    "capture": "Capture",
     "photoCaptured": "Photo captured",
     "uploadError": "Error uploading photo",
     "cameraError": "Camera not available",

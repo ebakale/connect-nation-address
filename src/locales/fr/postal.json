@@ -231,6 +231,7 @@
     "clearSignature": "Effacer la Signature",
     "takePhoto": "Prendre une Photo",
     "uploadPhoto": "Télécharger une Photo",
+    "capture": "Capturer",
     "photoCaptured": "Photo capturée",
     "uploadError": "Erreur de téléchargement de la photo",
     "cameraError": "Caméra non disponible",
