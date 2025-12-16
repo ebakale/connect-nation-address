@@ -3,7 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ProcessFlowDiagramPDF from '@/components/ProcessFlowDiagramPDF';
 import ProcessFlowDiagramPDFEnglish from '@/components/ProcessFlowDiagramPDFEnglish';
-import { FileText, BookOpen, Workflow, Package } from 'lucide-react';
+import { FileText, BookOpen, Workflow, Package, Presentation } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { FieldAgentGuide } from '@/components/guides/FieldAgentGuide';
 import { VerifierGuide } from '@/components/guides/VerifierGuide';
@@ -35,6 +36,20 @@ const Documentation: React.FC = () => {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Comprehensive documentation for the ConEG National Digital Services Platform - Digital Addressing, Emergency Management, and Postal Delivery
           </p>
+          <div className="flex justify-center gap-3 pt-2">
+            <Link to="/module-presentation">
+              <Button variant="outline" className="gap-2">
+                <Presentation className="h-4 w-4" />
+                Module Presentation
+              </Button>
+            </Link>
+            <Link to="/demo-script">
+              <Button variant="outline" className="gap-2">
+                <FileText className="h-4 w-4" />
+                Demo Script
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Main Content */}

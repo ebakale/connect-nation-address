@@ -993,5 +993,158 @@
         "Complete audit trail with GPS, photos, signatures, and COD receipts"
       ]
     }
+  },
+
+  "modulePresentation": {
+    "title": "ConEG - Government Modules Overview",
+    "subtitle": "National Digital Services Platform",
+    "exportSuccess": "PDF Exported",
+    "exportSuccessDesc": "The presentation has been saved as PDF",
+    "exportError": "Export failed",
+    "tabLabels": {
+      "address": "Address",
+      "emergency": "Emergency",
+      "postal": "Postal"
+    },
+    "introduction": {
+      "title": "Platform Introduction",
+      "description": "The ConEG National Digital Services Platform integrates three essential government modules: Digital Address Registration, Emergency Management, and Government Postal Delivery. Together, these modules enable standardized addressing, faster emergency response, and efficient postal services across the nation."
+    },
+    "purposeLabel": "Purpose",
+    "functionalitiesLabel": "Key Functionalities",
+    "scenariosLabel": "Real-Life Scenarios",
+    "benefitsLabel": "Benefits & Impact",
+    "labels": {
+      "module": "Government Module"
+    },
+    "modules": {
+      "digitalAddress": {
+        "name": "Digital Address Module",
+        "purpose": "The Digital Address Module creates and manages unique, standardized address codes (UAC) for every location in the country. It enables citizens, businesses, and government services to use verified addresses for banking, utilities, legal documentation, and emergency services.",
+        "functionalities": [
+          "Register new residential and business addresses with GPS coordinates",
+          "Generate unique Unified Address Codes (UAC) for each location",
+          "Verify and approve address requests through official review",
+          "Public address search portal for businesses and services",
+          "QR code generation for portable address verification",
+          "Household management and family member registration",
+          "Privacy controls for residential address visibility"
+        ],
+        "scenarios": [
+          {
+            "title": "Citizen Registers New Home",
+            "description": "María González moves to a new neighborhood. She logs into the portal, searches for her address, creates a new registration request with GPS location and property photo. A municipal verifier reviews and approves the request, generating her official UAC code."
+          },
+          {
+            "title": "Bank Verifies Customer Address",
+            "description": "A compliance officer at BANKIA needs to verify a customer address before opening an account. She uses the public portal to search by UAC code, confirms the address is verified, and downloads a QR code as proof for compliance records."
+          },
+          {
+            "title": "Municipal Officer Approves Address",
+            "description": "Carlos, a NAR Verifier assigned to Bioko Norte, reviews pending address requests in his queue. He checks GPS coordinates on the map, reviews the property photo, and approves verified addresses which are automatically assigned UAC codes."
+          }
+        ],
+        "benefits": [
+          "Eliminates address confusion and delivery failures",
+          "Enables faster customer onboarding for banks and services",
+          "Provides legal proof of residence for citizens",
+          "Supports emergency services with accurate location data",
+          "Reduces administrative burden with digital verification"
+        ]
+      },
+      "emergency": {
+        "name": "Emergency Management Module",
+        "purpose": "The Emergency Management Module links emergency calls and incidents to digital addresses, enabling faster dispatch, accurate navigation, and coordinated response between police, fire, and medical services.",
+        "functionalities": [
+          "Emergency incident reporting linked to verified addresses",
+          "Real-time dispatch and unit assignment",
+          "GPS-based unit tracking and navigation",
+          "Supervisor monitoring and incident oversight",
+          "Backup request and officer-down alerts",
+          "Evidence capture with geotagged photos",
+          "Incident timeline and audit logging"
+        ],
+        "scenarios": [
+          {
+            "title": "Dispatcher Receives Emergency Call",
+            "description": "A dispatcher receives an emergency call. The caller provides their UAC code, which instantly displays their exact location on the map. The dispatcher assigns the nearest available police unit with one click, and the unit receives navigation instructions immediately."
+          },
+          {
+            "title": "Officer Navigates to Incident",
+            "description": "Officer Roberto receives an incident assignment on his mobile device. The app shows the exact address, distance, and estimated arrival time. He uses the built-in navigation to reach the location quickly, then updates his status to 'On Scene'."
+          },
+          {
+            "title": "Supervisor Monitors Active Incidents",
+            "description": "Police Supervisor Ana monitors all active incidents across her region from her dashboard. She sees unit locations in real-time, reviews incident details, approves backup requests, and ensures proper resource allocation during a multi-incident situation."
+          }
+        ],
+        "benefits": [
+          "Reduces emergency response time with precise location data",
+          "Enables coordinated multi-agency response",
+          "Provides complete incident documentation for legal proceedings",
+          "Improves officer safety with backup request system",
+          "Supports data-driven resource allocation decisions"
+        ]
+      },
+      "postal": {
+        "name": "Government Postal Module",
+        "purpose": "The Government Postal Module enables official postal services to create, assign, track, and deliver packages using the national digital address system. It provides complete delivery lifecycle management from order creation to proof of delivery.",
+        "functionalities": [
+          "Create delivery orders with validated UAC addresses",
+          "Assign orders to postal agents with route optimization",
+          "Track delivery status in real-time",
+          "Capture proof of delivery with photos and signatures",
+          "Manage pickup requests from citizens",
+          "Process returns and undeliverable packages",
+          "Cash on delivery (COD) collection and remittance"
+        ],
+        "scenarios": [
+          {
+            "title": "Postal Clerk Creates Delivery Order",
+            "description": "Carmen, a postal clerk, receives a registered letter. She searches for the recipient's UAC code, validates the address exists in the system, enters package details, and creates the delivery order. The system generates a tracking number and barcode label."
+          },
+          {
+            "title": "Dispatcher Assigns Deliveries",
+            "description": "Luis, a postal dispatcher, reviews the day's pending orders. He assigns batches of deliveries to postal agents based on geographic zones, sets priority levels for urgent items, and sends notifications to agents with their daily routes."
+          },
+          {
+            "title": "Agent Completes Delivery",
+            "description": "Roberto, a postal agent, arrives at the delivery address using the app's navigation. He verifies the recipient's identity, captures a photo of the delivered package, obtains a digital signature, and marks the order as delivered with GPS confirmation."
+          }
+        ],
+        "benefits": [
+          "Eliminates delivery failures from incorrect addresses",
+          "Provides transparent tracking for citizens and senders",
+          "Enables accountability with complete delivery proof",
+          "Reduces operational costs with optimized routing",
+          "Supports revenue collection with COD management"
+        ]
+      }
+    },
+    "summary": {
+      "title": "Cross-Module Benefits",
+      "subtitle": "How the three modules work together",
+      "headers": {
+        "module": "Module",
+        "primaryBenefit": "Primary Benefit",
+        "keyUsers": "Key Users"
+      },
+      "digitalAddress": {
+        "benefit": "Standardized addressing for all government services",
+        "users": "Citizens, Businesses, Municipal Officers"
+      },
+      "emergency": {
+        "benefit": "Faster response with accurate location data",
+        "users": "Police, Fire, Medical, Dispatchers"
+      },
+      "postal": {
+        "benefit": "Reliable delivery with complete tracking",
+        "users": "Postal Staff, Citizens, Businesses"
+      }
+    },
+    "footer": {
+      "closing": "These three modules form the foundation of modern digital government services, enabling efficient public administration and improved citizen services.",
+      "tagline": "ConEG - Connecting Government, Empowering Citizens"
+    }
   }
 }

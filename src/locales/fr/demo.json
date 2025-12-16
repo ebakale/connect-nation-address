@@ -993,5 +993,158 @@
         "Piste d'audit complète avec GPS, photos, signatures et reçus COD"
       ]
     }
+  },
+
+  "modulePresentation": {
+    "title": "ConEG - Aperçu des Modules Gouvernementaux",
+    "subtitle": "Plateforme Nationale de Services Numériques",
+    "exportSuccess": "PDF Exporté",
+    "exportSuccessDesc": "La présentation a été enregistrée en PDF",
+    "exportError": "Erreur d'exportation",
+    "tabLabels": {
+      "address": "Adresse",
+      "emergency": "Urgence",
+      "postal": "Postal"
+    },
+    "introduction": {
+      "title": "Introduction à la Plateforme",
+      "description": "La Plateforme Nationale de Services Numériques ConEG intègre trois modules gouvernementaux essentiels: Enregistrement d'Adresses Numériques, Gestion des Urgences et Livraison Postale Gouvernementale. Ensemble, ces modules permettent un adressage standardisé, une réponse d'urgence plus rapide et des services postaux efficaces à travers le pays."
+    },
+    "purposeLabel": "Objectif",
+    "functionalitiesLabel": "Fonctionnalités Clés",
+    "scenariosLabel": "Scénarios Réels",
+    "benefitsLabel": "Avantages et Impact",
+    "labels": {
+      "module": "Module Gouvernemental"
+    },
+    "modules": {
+      "digitalAddress": {
+        "name": "Module d'Adresses Numériques",
+        "purpose": "Le Module d'Adresses Numériques crée et gère des codes d'adresse uniques et standardisés (UAC) pour chaque emplacement du pays. Il permet aux citoyens, entreprises et services gouvernementaux d'utiliser des adresses vérifiées pour la banque, les services publics, la documentation légale et les services d'urgence.",
+        "functionalities": [
+          "Enregistrer de nouvelles adresses résidentielles et commerciales avec coordonnées GPS",
+          "Générer des Codes d'Adresse Unifiés (UAC) uniques pour chaque emplacement",
+          "Vérifier et approuver les demandes d'adresses par révision officielle",
+          "Portail public de recherche d'adresses pour entreprises et services",
+          "Génération de codes QR pour vérification d'adresse portable",
+          "Gestion du foyer et enregistrement des membres de la famille",
+          "Contrôles de confidentialité pour la visibilité des adresses résidentielles"
+        ],
+        "scenarios": [
+          {
+            "title": "Citoyen Enregistre un Nouveau Domicile",
+            "description": "María González déménage dans un nouveau quartier. Elle se connecte au portail, recherche son adresse, crée une nouvelle demande d'enregistrement avec localisation GPS et photo de la propriété. Un vérificateur municipal examine et approuve la demande, générant son code UAC officiel."
+          },
+          {
+            "title": "Banque Vérifie l'Adresse du Client",
+            "description": "Un agent de conformité chez BANKIA doit vérifier l'adresse d'un client avant d'ouvrir un compte. Elle utilise le portail public pour rechercher par code UAC, confirme que l'adresse est vérifiée et télécharge un code QR comme preuve pour les registres de conformité."
+          },
+          {
+            "title": "Agent Municipal Approuve une Adresse",
+            "description": "Carlos, un Vérificateur NAR assigné à Bioko Norte, examine les demandes d'adresses en attente dans sa file. Il vérifie les coordonnées GPS sur la carte, examine la photo de la propriété et approuve les adresses vérifiées qui reçoivent automatiquement des codes UAC."
+          }
+        ],
+        "benefits": [
+          "Élimine la confusion d'adresses et les échecs de livraison",
+          "Permet une intégration client plus rapide pour les banques et services",
+          "Fournit une preuve légale de résidence aux citoyens",
+          "Soutient les services d'urgence avec des données de localisation précises",
+          "Réduit la charge administrative avec la vérification numérique"
+        ]
+      },
+      "emergency": {
+        "name": "Module de Gestion des Urgences",
+        "purpose": "Le Module de Gestion des Urgences lie les appels d'urgence et incidents aux adresses numériques, permettant une expédition plus rapide, une navigation précise et une réponse coordonnée entre police, pompiers et services médicaux.",
+        "functionalities": [
+          "Signalement d'incidents d'urgence liés aux adresses vérifiées",
+          "Expédition en temps réel et affectation d'unités",
+          "Suivi d'unités basé sur GPS et navigation",
+          "Surveillance des superviseurs et supervision des incidents",
+          "Demandes de renfort et alertes agent à terre",
+          "Capture de preuves avec photos géolocalisées",
+          "Chronologie des incidents et journalisation d'audit"
+        ],
+        "scenarios": [
+          {
+            "title": "Répartiteur Reçoit un Appel d'Urgence",
+            "description": "Un répartiteur reçoit un appel d'urgence. L'appelant fournit son code UAC, qui affiche instantanément son emplacement exact sur la carte. Le répartiteur assigne l'unité de police la plus proche en un clic, et l'unité reçoit immédiatement les instructions de navigation."
+          },
+          {
+            "title": "Agent Navigue vers l'Incident",
+            "description": "L'agent Roberto reçoit une affectation d'incident sur son appareil mobile. L'application affiche l'adresse exacte, la distance et le temps d'arrivée estimé. Il utilise la navigation intégrée pour atteindre l'emplacement rapidement, puis met à jour son statut à 'Sur Place'."
+          },
+          {
+            "title": "Superviseur Surveille les Incidents Actifs",
+            "description": "La Superviseure de Police Ana surveille tous les incidents actifs dans sa région depuis son tableau de bord. Elle voit les emplacements des unités en temps réel, examine les détails des incidents, approuve les demandes de renfort et assure une allocation appropriée des ressources pendant une situation multi-incidents."
+          }
+        ],
+        "benefits": [
+          "Réduit le temps de réponse d'urgence avec des données de localisation précises",
+          "Permet une réponse coordonnée multi-agences",
+          "Fournit une documentation complète des incidents pour les procédures légales",
+          "Améliore la sécurité des agents avec le système de demande de renfort",
+          "Soutient les décisions d'allocation de ressources basées sur les données"
+        ]
+      },
+      "postal": {
+        "name": "Module Postal Gouvernemental",
+        "purpose": "Le Module Postal Gouvernemental permet aux services postaux officiels de créer, assigner, suivre et livrer des colis en utilisant le système national d'adresses numériques. Il fournit une gestion complète du cycle de vie de livraison depuis la création de commande jusqu'à la preuve de livraison.",
+        "functionalities": [
+          "Créer des commandes de livraison avec adresses UAC validées",
+          "Assigner des commandes aux agents postaux avec optimisation des itinéraires",
+          "Suivre l'état de livraison en temps réel",
+          "Capturer la preuve de livraison avec photos et signatures",
+          "Gérer les demandes d'enlèvement des citoyens",
+          "Traiter les retours et colis non livrables",
+          "Contre-remboursement (COD) collecte et remise"
+        ],
+        "scenarios": [
+          {
+            "title": "Employé Postal Crée une Commande de Livraison",
+            "description": "Carmen, une employée postale, reçoit une lettre recommandée. Elle recherche le code UAC du destinataire, valide que l'adresse existe dans le système, entre les détails du colis et crée la commande de livraison. Le système génère un numéro de suivi et une étiquette code-barres."
+          },
+          {
+            "title": "Répartiteur Assigne les Livraisons",
+            "description": "Luis, un répartiteur postal, examine les commandes en attente du jour. Il assigne des lots de livraisons aux agents postaux selon les zones géographiques, définit les niveaux de priorité pour les articles urgents et envoie des notifications aux agents avec leurs itinéraires quotidiens."
+          },
+          {
+            "title": "Agent Complète la Livraison",
+            "description": "Roberto, un agent postal, arrive à l'adresse de livraison en utilisant la navigation de l'application. Il vérifie l'identité du destinataire, capture une photo du colis livré, obtient une signature numérique et marque la commande comme livrée avec confirmation GPS."
+          }
+        ],
+        "benefits": [
+          "Élimine les échecs de livraison dus aux adresses incorrectes",
+          "Fournit un suivi transparent pour les citoyens et expéditeurs",
+          "Permet la responsabilité avec une preuve de livraison complète",
+          "Réduit les coûts opérationnels avec un routage optimisé",
+          "Soutient la collecte de revenus avec la gestion du COD"
+        ]
+      }
+    },
+    "summary": {
+      "title": "Avantages Inter-Modules",
+      "subtitle": "Comment les trois modules travaillent ensemble",
+      "headers": {
+        "module": "Module",
+        "primaryBenefit": "Avantage Principal",
+        "keyUsers": "Utilisateurs Clés"
+      },
+      "digitalAddress": {
+        "benefit": "Adressage standardisé pour tous les services gouvernementaux",
+        "users": "Citoyens, Entreprises, Agents Municipaux"
+      },
+      "emergency": {
+        "benefit": "Réponse plus rapide avec des données de localisation précises",
+        "users": "Police, Pompiers, Médecins, Répartiteurs"
+      },
+      "postal": {
+        "benefit": "Livraison fiable avec suivi complet",
+        "users": "Personnel Postal, Citoyens, Entreprises"
+      }
+    },
+    "footer": {
+      "closing": "Ces trois modules forment la fondation des services gouvernementaux numériques modernes, permettant une administration publique efficace et de meilleurs services aux citoyens.",
+      "tagline": "ConEG - Connecter le Gouvernement, Autonomiser les Citoyens"
+    }
   }
 }
