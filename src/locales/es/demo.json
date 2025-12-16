@@ -1,0 +1,996 @@
+{
+  "title": "Documento del Guión de Demostración",
+  "subtitle": "Plataforma Nacional de Servicios Digitales ConEG",
+  "completeDocument": "Documento Completo del Guión de Demostración",
+  "generated": "Generado",
+  "print": "Imprimir",
+  "exportPDF": "Exportar PDF",
+  "scenarios": "Escenarios",
+  "scenario": "Escenario",
+  "of": "de",
+  "context": "Contexto",
+  "objective": "Objetivo",
+  "actors": "Actores",
+  "primary": "Principal",
+  "secondary": "Secundario",
+  "modulesUsed": "Módulos Utilizados",
+  "stepByStepFlow": "Flujo Paso a Paso",
+  "notes": "Notas",
+  "presenterNote": "Nota del Presentador",
+  "outcomesTitle": "Resultados y Valor Entregado",
+  "keyPresenterMessage": "Mensaje Clave del Presentador",
+  "previousScenario": "Escenario Anterior",
+  "nextScenario": "Siguiente Escenario",
+  "tableOfContents": "Tabla de Contenidos",
+  "step": "Paso",
+  "screen": "Pantalla",
+
+  "scenarios": {
+    "citizenRegistration": {
+      "title": "Ciudadano Registra una Nueva Dirección Digital",
+      "context": "Una ciudadana llamada María González se ha mudado recientemente a un nuevo barrio en desarrollo en Malabo. Necesita registrar su nueva residencia para obtener una dirección digital oficial para servicios bancarios, de servicios públicos y documentación legal.",
+      "objective": "Enviar una nueva solicitud de dirección residencial a través del flujo unificado",
+      "presenterNotes": "El flujo unificado elimina la confusión - los ciudadanos no necesitan entender NAR vs CAR vs Negocio. El sistema los guía a través del proceso apropiado según su selección.",
+      "actors": {
+        "citizen": { "role": "Ciudadano", "name": "María González" },
+        "verifier": { "role": "Verificador NAR", "name": "Cola del Sistema" }
+      },
+      "modules": ["Portal Público", "Panel del Ciudadano", "Flujo Unificado de Solicitud de Dirección"],
+      "steps": {
+        "1": {
+          "action": "María accede al sistema en la página de inicio",
+          "screen": "Página de inicio con sección hero y botón \"Iniciar Sesión\"",
+          "notes": "Señale el diseño gubernamental limpio y profesional. Mencione el soporte multiidioma (EN/ES/FR)."
+        },
+        "2": {
+          "action": "Hace clic en \"Iniciar Sesión\" e inicia sesión con sus credenciales",
+          "screen": "Página UnifiedAuth con formulario de correo/contraseña",
+          "notes": "Destaque la autenticación segura. Mencione que los nuevos usuarios pueden registrarse aquí."
+        },
+        "3": {
+          "action": "Después del inicio de sesión, el sistema detecta su rol de \"ciudadano\" y muestra su panel",
+          "screen": "UnifiedDashboard con navegación específica para ciudadanos",
+          "notes": "Señale la navegación basada en roles - los ciudadanos solo ven opciones relevantes."
+        },
+        "4": {
+          "action": "María hace clic en \"Registrar Dirección\" en la barra lateral",
+          "screen": "El asistente UnifiedAddressRequestFlow se abre en el Paso 1",
+          "notes": "Explique que el flujo unificado maneja registros residenciales Y comerciales."
+        },
+        "5": {
+          "action": "Busca su dirección ingresando el nombre de la calle \"Avenida de la Libertad 45\"",
+          "screen": "AddressLookupStep con entrada de búsqueda y resultados",
+          "notes": "Muestre cómo el sistema busca primero direcciones NAR existentes."
+        },
+        "6": {
+          "action": "No se encuentra ninguna dirección existente. María hace clic en \"Crear Nueva Dirección\"",
+          "screen": "El flujo transiciona al paso de selección de tipo de dirección",
+          "notes": "Señale que el sistema guía a los usuarios - no creará duplicados."
+        },
+        "7": {
+          "action": "Selecciona la opción \"Dirección Residencial\"",
+          "screen": "Se abre AddressRequestForm con selector de ubicación",
+          "notes": "Destaque la clara distinción entre residencial y comercial."
+        },
+        "8": {
+          "action": "María usa el mapa interactivo para señalar su ubicación exacta",
+          "screen": "UniversalLocationPicker con mapa",
+          "notes": "Demuestre haciendo clic en el mapa para establecer coordenadas GPS. Mencione el respaldo offline."
+        },
+        "9": {
+          "action": "Completa: Calle, Ciudad, Región, Número de edificio, Foto de la propiedad",
+          "screen": "Los campos del formulario se completan, se abre la captura de cámara",
+          "notes": "Muestre la solicitud de permiso de cámara. Enfatice las fotos geoetiquetadas."
+        },
+        "10": {
+          "action": "María agrega justificación y envía",
+          "screen": "Aparece diálogo de confirmación",
+          "notes": "Note que los ciudadanos proporcionan justificación para el registro de auditoría."
+        },
+        "11": {
+          "action": "El sistema confirma: \"Solicitud enviada exitosamente\"",
+          "screen": "Pantalla de éxito con ID de solicitud",
+          "notes": "Muestre la confirmación instantánea. Explique que la solicitud va a la cola de verificación."
+        },
+        "12": {
+          "action": "María navega a \"Estado de Solicitud\" para seguir su envío",
+          "screen": "Panel AddressRequestStatus mostrando \"Pendiente\"",
+          "notes": "Demuestre la transparencia - los ciudadanos siempre pueden verificar el estado."
+        }
+      },
+      "outcomes": [
+        "María ha enviado su solicitud de dirección en menos de 5 minutos",
+        "Tiene un número de referencia para seguimiento",
+        "La solicitud entra en la cola de verificación NAR",
+        "Al ser aprobada, recibirá un UAC único (Código de Dirección Unificado)"
+      ]
+    },
+    "municipalityValidation": {
+      "title": "El Municipio Valida y Gestiona una Dirección",
+      "context": "Carlos Méndez, un Verificador NAR asignado a la región de Bioko Norte, revisa la solicitud de dirección de María y la valida para su inclusión en el Registro Nacional de Direcciones.",
+      "objective": "Revisar y aprobar una solicitud de dirección pendiente con verificación adecuada",
+      "presenterNotes": "El flujo de verificación asegura la calidad de datos. El filtrado por alcance geográfico significa que cada verificador gestiona solo su territorio. La política de auto-publicación elimina pasos manuales para direcciones comerciales mientras protege la privacidad residencial.",
+      "actors": {
+        "verifier": { "role": "Verificador NAR", "name": "Carlos Méndez" },
+        "citizen": { "role": "Ciudadano", "name": "María González" }
+      },
+      "modules": ["UnifiedDashboard", "Herramientas de Verificación", "Panel de Aprobación de Direcciones"],
+      "steps": {
+        "1": {
+          "action": "Carlos inicia sesión con sus credenciales de verificador",
+          "screen": "UnifiedAuth → redirección automática a UnifiedDashboard",
+          "notes": "Explique las redirecciones basadas en roles."
+        },
+        "2": {
+          "action": "Su panel muestra insignia de rol \"Verificador\" con alcance \"Bioko Norte\"",
+          "screen": "Encabezado del panel con insignias de rol e indicador de alcance geográfico",
+          "notes": "Destaque el filtrado por alcance geográfico - solo ve solicitudes de su región."
+        },
+        "3": {
+          "action": "Las tarjetas de estadísticas muestran: 3 Direcciones NAR, 5 Verificaciones Pendientes",
+          "screen": "Tarjetas de estadísticas generales con conteos en tiempo real",
+          "notes": "Señale que el conteo pendiente está filtrado por su región asignada."
+        },
+        "4": {
+          "action": "Carlos hace clic en \"Herramientas de Verificación\" en la barra lateral",
+          "screen": "Componente VerificationTools con pestañas",
+          "notes": "Muestre la interfaz de la estación de verificación."
+        },
+        "5": {
+          "action": "Ve la solicitud de María en la parte superior de la lista pendiente",
+          "screen": "Panel AddressRequestApproval con tarjetas de solicitud",
+          "notes": "Note que las solicitudes están ordenadas por fecha de envío."
+        },
+        "6": {
+          "action": "Carlos hace clic en \"Ver Detalles\" en la solicitud de María",
+          "screen": "La tarjeta de detalle de solicitud se expande",
+          "notes": "Señale los datos completos disponibles para verificación."
+        },
+        "7": {
+          "action": "Hace clic en \"Ver en Mapa\" para verificar coordenadas",
+          "screen": "AddressMapDialog se abre mostrando ubicación en mapa interactivo",
+          "notes": "Demuestre el cambio a vista satelital para verificación visual."
+        },
+        "8": {
+          "action": "Carlos usa el botón \"Análisis de Auto-Verificación\"",
+          "screen": "El sistema ejecuta validación de coordenadas, muestra recomendaciones",
+          "notes": "Explique la verificación asistida por ML (mejora opcional)."
+        },
+        "9": {
+          "action": "Revisa la foto geoetiquetada mostrando la fachada de la propiedad",
+          "screen": "Visor de fotos con metadatos (marca de tiempo, coordenadas GPS)",
+          "notes": "Destaque la cadena de evidencia fotográfica para cumplimiento legal."
+        },
+        "10": {
+          "action": "Carlos hace clic en el botón \"Aprobar\"",
+          "screen": "Diálogo de confirmación con casilla para notas de verificación",
+          "notes": "Muestre el paso de confirmación de aprobación."
+        },
+        "11": {
+          "action": "Agrega nota y confirma la aprobación",
+          "screen": "El sistema procesa la aprobación",
+          "notes": "Explique el registro de auditoría de quién aprobó y cuándo."
+        },
+        "12": {
+          "action": "El sistema muestra el UAC generado: GQ-BN-MLO-AVLB-0045",
+          "screen": "Mensaje de éxito con UAC generado",
+          "notes": "Señale el formato único del código de dirección."
+        },
+        "13": {
+          "action": "Para direcciones residenciales, la dirección se establece como privada por defecto",
+          "screen": "El estado se actualiza a \"Verificada, Privada\"",
+          "notes": "Explique la política de auto-publicación: Comercial = público, Residencial = privado."
+        }
+      },
+      "outcomes": [
+        "La dirección de María ahora está oficialmente en el Registro Nacional",
+        "Recibe un código UAC: GQ-BN-MLO-AVLB-0045",
+        "El registro de auditoría muestra que Carlos la verificó con marca de tiempo",
+        "La dirección es buscable por sistemas autorizados"
+      ]
+    },
+    "businessVerification": {
+      "title": "Empresa Valida una Dirección para Prestación de Servicios",
+      "context": "BANKIA Servicios Financieros necesita verificar la dirección de un cliente antes de abrir una cuenta bancaria. El oficial de cumplimiento busca en el registro público de direcciones para confirmar que la dirección existe.",
+      "objective": "Verificar una dirección a través del portal público sin autenticación",
+      "presenterNotes": "El portal público permite la verificación instantánea de direcciones para empresas, reduciendo el tiempo de incorporación de días a minutos. El código QR proporciona prueba portátil y escaneable de verificación de dirección.",
+      "actors": {
+        "officer": { "role": "Oficial de Cumplimiento Bancario", "name": "Ana Torres" }
+      },
+      "modules": ["Portal Público", "Búsqueda de Direcciones", "Directorio de Empresas"],
+      "steps": {
+        "1": {
+          "action": "Ana accede al portal público sin iniciar sesión",
+          "screen": "PublicPortalWithAnalytics mostrando interfaz de búsqueda pública",
+          "notes": "Enfatice: No se requiere inicio de sesión para búsquedas públicas."
+        },
+        "2": {
+          "action": "Ve dos pestañas: \"Búsqueda de Direcciones\" y \"Directorio de Empresas\"",
+          "screen": "Componente de pestañas en la parte superior del portal",
+          "notes": "Explique el acceso público vs autenticado."
+        },
+        "3": {
+          "action": "Ana ingresa el código UAC: \"GQ-BN-MLO-AVLB-0045\"",
+          "screen": "Entrada de búsqueda de PublicAccessPortal",
+          "notes": "Muestre cómo el UAC proporciona búsqueda instantánea y precisa."
+        },
+        "4": {
+          "action": "Hace clic en el botón \"Buscar\"",
+          "screen": "La búsqueda se ejecuta, se muestra indicador de carga",
+          "notes": "Note la rápida respuesta de búsqueda."
+        },
+        "5": {
+          "action": "El resultado aparece con insignia de verificado",
+          "screen": "Tarjeta de resultado de búsqueda con insignia verificada, puntuación de completitud",
+          "notes": "Señale la insignia \"Verificado\" indicando estado oficial."
+        },
+        "6": {
+          "action": "Ana hace clic en \"Ver Detalles\" en el resultado",
+          "screen": "Tarjeta expandida mostrando detalles completos de dirección",
+          "notes": "Note: Las coordenadas son aproximadas por privacidad (residencial)."
+        },
+        "7": {
+          "action": "La tarjeta muestra estado de verificación: ✓ Verificada, Puntuación: 95%",
+          "screen": "Indicadores de estado con porcentaje de completitud",
+          "notes": "Explique que la puntuación de completitud = indicador de calidad de datos."
+        },
+        "8": {
+          "action": "Ana hace clic en \"Generar Código QR\" para documentación",
+          "screen": "El diálogo QRCodeGenerator se abre con vista previa del QR",
+          "notes": "Muestre que el QR contiene el UAC para escaneo móvil fácil."
+        },
+        "9": {
+          "action": "Descarga el código QR como prueba de verificación",
+          "screen": "El botón de descarga guarda archivo PNG",
+          "notes": "Explique que esto crea prueba auditable de verificación."
+        },
+        "10": {
+          "action": "Para direcciones comerciales, Ana revisa la pestaña \"Directorio de Empresas\"",
+          "screen": "Componente BusinessDirectory con lista buscable",
+          "notes": "Muestre el directorio de empresas integrado con direcciones comerciales."
+        },
+        "11": {
+          "action": "Busca \"BANKIA\" para encontrar ubicaciones de sucursales bancarias",
+          "screen": "Resultados de búsqueda mostrando direcciones de sucursales bancarias con detalles",
+          "notes": "Demuestre metadatos de negocios (horarios, servicios, contacto)."
+        }
+      },
+      "outcomes": [
+        "Ana verificó la dirección del cliente en menos de 2 minutos",
+        "Tiene prueba codificada con QR de verificación para registros de cumplimiento",
+        "El banco puede proceder con la apertura de cuenta",
+        "No se requiere verificación manual ni llamadas telefónicas"
+      ]
+    },
+    "carRegistrationHousehold": {
+      "title": "Registro CAR, Gestión de Hogar y Verificación de Dirección",
+      "context": "Pedro Martínez tiene su dirección NAR aprobada y ahora necesita declararla como su residencia oficial (CAR). También quiere registrar a los miembros de su hogar incluyendo su esposa y dos hijos, y solicitar verificación de residencia para propósitos legales.",
+      "objective": "Declarar una dirección CAR, crear un grupo de hogar con miembros y dependientes, y solicitar verificación de residencia",
+      "presenterNotes": "El registro CAR conecta a los ciudadanos con sus direcciones para servicios gubernamentales. La gestión de hogares permite la agrupación familiar con roles adecuados (jefe, miembro, dependiente). El sistema de solicitud de verificación proporciona prueba oficial de residencia para propósitos legales, bancarios y administrativos. Note cómo los controles de privacidad dan a los ciudadanos poder sobre la visibilidad de sus datos.",
+      "actors": {
+        "citizen": { "role": "Ciudadano/Jefe de Hogar", "name": "Pedro Martínez" },
+        "spouse": { "role": "Cónyuge", "name": "Carmen Martínez" },
+        "verifier": { "role": "Verificador CAR", "name": "Cola del Sistema" }
+      },
+      "modules": ["Panel del Ciudadano", "Mis Direcciones CAR", "Gestión de Hogar", "Solicitudes de Verificación"],
+      "steps": {
+        "1": {
+          "action": "Pedro inicia sesión en su panel de ciudadano",
+          "screen": "UnifiedDashboard con navegación de ciudadano mostrando Mis Direcciones CAR, Hogar, Solicitudes de Verificación",
+          "notes": "Señale los elementos del menú específicos de CAR disponibles para ciudadanos."
+        },
+        "2": {
+          "action": "Hace clic en \"Mis Direcciones CAR\" en la barra lateral",
+          "screen": "CitizenAddressManager mostrando direcciones actuales (si las hay) y botón \"Agregar Dirección\"",
+          "notes": "Explique CAR = Registro de Direcciones del Ciudadano - vincula ciudadanos a su residencia oficial."
+        },
+        "3": {
+          "action": "Pedro hace clic en \"Agregar Dirección\" e ingresa su UAC aprobado: GQ-BN-MLO-AVLB-0045",
+          "screen": "Búsqueda de dirección por UAC con resultado de dirección verificada",
+          "notes": "Muestre que la declaración CAR usa direcciones NAR existentes - no se crean duplicados."
+        },
+        "4": {
+          "action": "Selecciona el alcance de dirección: \"Residencia Principal\"",
+          "screen": "Selector de alcance con opciones Principal/Secundaria",
+          "notes": "Explique: Los ciudadanos pueden tener una primaria y múltiples direcciones secundarias."
+        },
+        "5": {
+          "action": "Pedro establece nivel de privacidad: \"Privado - Solo Servicios Autorizados\"",
+          "screen": "Menú desplegable de nivel de privacidad con opciones",
+          "notes": "Destaque el control del ciudadano sobre quién puede ver su dirección."
+        },
+        "6": {
+          "action": "Confirma la declaración y la dirección se agrega",
+          "screen": "Mensaje de éxito, la dirección aparece en lista \"Mis Direcciones\" con estado \"Auto-declarada\"",
+          "notes": "Note: El estado auto-declarado significa esperando verificación."
+        },
+        "7": {
+          "action": "Pedro navega a \"Gestión de Hogar\"",
+          "screen": "Componente HouseholdManagement con opción \"Crear Hogar\"",
+          "notes": "Explique que los hogares agrupan miembros de familia en la misma dirección."
+        },
+        "8": {
+          "action": "Hace clic en \"Crear Grupo de Hogar\"",
+          "screen": "CreateHouseholdDialog con campos de nombre de hogar y UAC primario",
+          "notes": "Muestre el formulario de creación de hogar."
+        },
+        "9": {
+          "action": "Pedro ingresa: Nombre del Hogar: \"Familia Martínez\", Dirección Principal: su dirección CAR",
+          "screen": "Campos del formulario completados, botón Crear habilitado",
+          "notes": "Señale la vinculación automática a la dirección CAR."
+        },
+        "10": {
+          "action": "Hogar creado. Pedro es establecido automáticamente como \"Jefe de Hogar\"",
+          "screen": "Tarjeta de hogar con Pedro como jefe, botones \"Agregar Miembro\" y \"Agregar Dependiente\"",
+          "notes": "Explique el rol de jefe de hogar y sus permisos."
+        },
+        "11": {
+          "action": "Hace clic en \"Agregar Miembro\" para agregar a su esposa Carmen",
+          "screen": "AddMemberDialog con búsqueda de persona o invitación por correo",
+          "notes": "Los miembros deben tener sus propias cuentas para ser agregados."
+        },
+        "12": {
+          "action": "Pedro ingresa el correo de Carmen para invitación",
+          "screen": "Formulario de invitación por correo con selector de relación: Cónyuge",
+          "notes": "Muestre tipos de relación: Cónyuge, Padre, Hermano, etc."
+        },
+        "13": {
+          "action": "Invitación enviada. Ahora hace clic en \"Agregar Dependiente\" para los hijos",
+          "screen": "AddDependentDialog con formulario de información de dependiente",
+          "notes": "Los dependientes son menores o adultos sin sus propias cuentas."
+        },
+        "14": {
+          "action": "Pedro agrega primer hijo: Nombre, Fecha de nacimiento, Relación: Hijo",
+          "screen": "Formulario de dependiente con nombre_completo, fecha_nacimiento, relación_con_tutor",
+          "notes": "Explique tipos de dependientes: Menor, Dependiente Adulto, Dependiente Anciano."
+        },
+        "15": {
+          "action": "Agrega tipo de dependiente: \"Menor\" y guarda",
+          "screen": "Mensaje de éxito, el dependiente aparece en la lista de miembros del hogar",
+          "notes": "Señale que la relación de tutor queda registrada."
+        },
+        "16": {
+          "action": "Pedro repite para el segundo hijo (Hija)",
+          "screen": "El hogar ahora muestra 2 dependientes, 1 miembro pendiente (Carmen)",
+          "notes": "Muestre la estructura completa del hogar."
+        },
+        "17": {
+          "action": "Navega a \"Solicitudes de Verificación\" para solicitar verificación de residencia",
+          "screen": "Componente UserVerificationRequests con botón \"Solicitar Verificación\"",
+          "notes": "Explique que verificación de residencia = prueba oficial de residencia."
+        },
+        "18": {
+          "action": "Pedro hace clic en \"Solicitar Verificación\" para su dirección principal",
+          "screen": "Formulario de solicitud de verificación con selector de dirección, campo de propósito",
+          "notes": "Muestre las opciones de solicitud de verificación."
+        },
+        "19": {
+          "action": "Selecciona propósito: \"Documentación Legal\" y envía",
+          "screen": "Confirmación de solicitud con número de referencia",
+          "notes": "Explique que la solicitud va a la cola de verificación CAR."
+        },
+        "20": {
+          "action": "El estado de solicitud muestra: \"Verificación Pendiente\"",
+          "screen": "Tarjeta de solicitud con insignia de estado, línea de tiempo",
+          "notes": "Demuestre la capacidad de seguimiento para solicitudes de verificación."
+        }
+      },
+      "outcomes": [
+        "Pedro ha declarado su residencia oficial (CAR) vinculada a dirección NAR verificada",
+        "Hogar \"Familia Martínez\" creado con 4 miembros: Pedro (jefe), Carmen (pendiente), 2 hijos (dependientes)",
+        "Carmen recibirá invitación para unirse al hogar cuando inicie sesión",
+        "Solicitud de verificación de residencia enviada para propósitos legales",
+        "Todos los miembros de familia pueden ser localizados vía dirección del hogar para servicios gubernamentales"
+      ]
+    },
+    "passportDeliveryCar": {
+      "title": "Entrega Postal Gubernamental a Residencia del Ciudadano",
+      "context": "La Oficina de Inmigración necesita entregar un pasaporte recién emitido a la ciudadana Elena Nguema en su dirección CAR registrada. El agente de entrega postal usa el Módulo Postal ConEG para verificar la dirección, navegar a la ubicación y confirmar la entrega con prueba.",
+      "objective": "Usar el Módulo de Entrega Postal con datos de dirección CAR para entregar documentos gubernamentales oficiales",
+      "presenterNotes": "Este escenario demuestra el valor real de las direcciones CAR para la entrega de servicios gubernamentales. El UAC proporciona un identificador universal que asegura que los documentos lleguen a la persona correcta en la ubicación correcta. Las firmas digitales y la verificación GPS crean un registro de auditoría que protege tanto al ciudadano como a la agencia gubernamental. Este flujo de trabajo elimina entregas fallidas y reduce la carga administrativa.",
+      "actors": {
+        "agent": { "role": "Agente de Entrega Postal", "name": "Roberto Obiang" },
+        "citizen": { "role": "Ciudadano/Destinatario", "name": "Elena Nguema" },
+        "office": { "role": "Oficina de Inmigración", "name": "Sistema" }
+      },
+      "modules": ["Portal Postal", "Verificación de Dirección", "Seguimiento de Entrega", "Prueba de Entrega"],
+      "steps": {
+        "1": {
+          "action": "La Oficina de Inmigración crea orden de entrega con UAC de Elena: GQ-BN-MLO-ELEN-0089",
+          "screen": "Interfaz de creación de orden de entrega con campo UAC",
+          "notes": "Muestre cómo las agencias gubernamentales usan UAC para identificación de ciudadanos."
+        },
+        "2": {
+          "action": "El sistema recupera automáticamente los detalles de dirección CAR para el UAC",
+          "screen": "Detalles de dirección completados: Calle, Ciudad, Región, coordenadas GPS",
+          "notes": "Explique la búsqueda automática de dirección del registro CAR."
+        },
+        "3": {
+          "action": "El agente de entrega Roberto inicia sesión con sus credenciales gubernamentales",
+          "screen": "Página de autenticación, redirección al panel de entrega",
+          "notes": "Señale el acceso basado en roles para personal de entrega."
+        },
+        "4": {
+          "action": "Roberto ve las asignaciones de entrega del día en su cola",
+          "screen": "Cola de entregas con elementos pendientes, el pasaporte de Elena en la parte superior",
+          "notes": "Muestre la priorización y programación de entregas."
+        },
+        "5": {
+          "action": "Hace clic en la entrega de Elena para ver detalles completos",
+          "screen": "Tarjeta de detalle de entrega: nombre del destinatario, UAC, dirección completa, instrucciones especiales",
+          "notes": "Demuestre la información completa de entrega."
+        },
+        "6": {
+          "action": "Roberto hace clic en \"Ver Dirección en Mapa\"",
+          "screen": "Mapa interactivo mostrando ubicación exacta con imágenes satelitales",
+          "notes": "Muestre la precisión GPS para entrega exacta."
+        },
+        "7": {
+          "action": "Hace clic en \"Navegar\" para obtener direcciones",
+          "screen": "La integración de navegación se abre (Apple Maps/Google Maps)",
+          "notes": "Demuestre el soporte de navegación multiplataforma."
+        },
+        "8": {
+          "action": "Roberto conduce a la ubicación siguiendo las direcciones GPS",
+          "screen": "Vista móvil con cuenta regresiva de ETA",
+          "notes": "Note: Seguimiento en tiempo real disponible para supervisores."
+        },
+        "9": {
+          "action": "Al llegar, hace clic en \"Llegué a la Ubicación\"",
+          "screen": "Actualización de estado con confirmación GPS",
+          "notes": "El sistema verifica que el agente está dentro de la proximidad de la dirección."
+        },
+        "10": {
+          "action": "Roberto verifica que la dirección coincide con la ubicación física",
+          "screen": "Pantalla de confirmación de dirección con UAC y detalles de calle",
+          "notes": "Muestre el paso de confirmación visual para precisión de entrega."
+        },
+        "11": {
+          "action": "Toca el timbre y Elena responde",
+          "screen": "Aparece pantalla de verificación de destinatario",
+          "notes": "Explique la verificación de identidad antes de la entrega."
+        },
+        "12": {
+          "action": "Roberto pide a Elena verificar su identidad (se muestra DNI Nacional)",
+          "screen": "Casilla de verificación de ID: \"Identidad del destinatario confirmada\"",
+          "notes": "Señale las medidas de seguridad para documentos sensibles."
+        },
+        "13": {
+          "action": "Elena confirma recepción firmando en la pantalla del dispositivo",
+          "screen": "Panel de captura de firma con mensaje \"Firme aquí\"",
+          "notes": "Muestre la captura de firma digital para prueba de entrega."
+        },
+        "14": {
+          "action": "Roberto toma una foto de la entrega (opcional)",
+          "screen": "Captura de cámara con superposición de geolocalización",
+          "notes": "Explique la evidencia fotográfica para confirmación de entrega."
+        },
+        "15": {
+          "action": "Hace clic en \"Confirmar Entrega\" para completar",
+          "screen": "Diálogo de confirmación de entrega con resumen",
+          "notes": "Muestre el paso final de confirmación."
+        },
+        "16": {
+          "action": "El sistema registra: hora de entrega, ubicación, firma del destinatario",
+          "screen": "Pantalla de éxito: \"Entrega completada exitosamente\"",
+          "notes": "Demuestre el registro de auditoría completo."
+        },
+        "17": {
+          "action": "Elena recibe notificación SMS/correo: \"Su pasaporte ha sido entregado\"",
+          "screen": "Vista previa de notificación mostrando confirmación de entrega",
+          "notes": "Señale la notificación automática al ciudadano."
+        },
+        "18": {
+          "action": "La Oficina de Inmigración ve estado actualizado: \"Entregado\"",
+          "screen": "Vista de back-office con estado de entrega actualizado, marca de tiempo, firma",
+          "notes": "Muestre la visibilidad de seguimiento de extremo a extremo para el gobierno."
+        }
+      },
+      "outcomes": [
+        "Pasaporte entregado con precisión a la dirección CAR registrada de Elena",
+        "Registro de auditoría completo: quién entregó, cuándo, dónde, con prueba",
+        "Ciudadana recibió notificación de entrega exitosa",
+        "Oficina de Inmigración tiene prueba digital de entrega con firma",
+        "Sin entregas fallidas debido a información de dirección incorrecta"
+      ]
+    },
+    "emergencyCall": {
+      "title": "Llamada de Emergencia Vinculada a una Dirección Digital",
+      "context": "Juan Pérez presencia un accidente de tráfico cerca de la Avenida de la Independencia en Malabo. Usa la función de alerta de emergencia para reportar el incidente con su ubicación precisa.",
+      "objective": "Reportar una emergencia con coordenadas GPS vinculadas al sistema de direcciones",
+      "presenterNotes": "El sistema de alerta de emergencia captura coordenadas GPS precisas y las enruta automáticamente al despachador apropiado según la ubicación. Los ciudadanos reciben actualizaciones en tiempo real sobre el progreso de la respuesta.",
+      "actors": {
+        "reporter": { "role": "Ciudadano/Reportero", "name": "Juan Pérez" },
+        "dispatcher": { "role": "Despachador de Emergencias", "name": "Sistema" }
+      },
+      "modules": ["Panel del Ciudadano", "Contactos de Emergencia", "Sistema de Alerta de Emergencia"],
+      "steps": {
+        "1": {
+          "action": "Juan abre la app (ya ha iniciado sesión como ciudadano)",
+          "screen": "UnifiedDashboard con vista de ciudadano",
+          "notes": "Explique el acceso rápido para emergencias."
+        },
+        "2": {
+          "action": "Hace clic en \"Contactos de Emergencia\" en la navegación",
+          "screen": "Componente EmergencyContacts con tarjetas de Policía y Emergencias",
+          "notes": "Muestre los botones prominentes de emergencia."
+        },
+        "3": {
+          "action": "Se muestran dos opciones: \"Policía\" y \"Servicios de Emergencia\"",
+          "screen": "Tarjetas de emergencia con botones de llamada y alerta de ubicación",
+          "notes": "Note ambas opciones: llamada directa Y alerta digital."
+        },
+        "4": {
+          "action": "Juan hace clic en \"Enviar Alerta de Ubicación\" en la tarjeta de Policía",
+          "screen": "Se abre diálogo con solicitud de geolocalización",
+          "notes": "Explique que esto activa la captura de ubicación GPS."
+        },
+        "5": {
+          "action": "El sistema solicita permiso de ubicación y captura coordenadas",
+          "screen": "Indicador de carga con mensaje \"Obteniendo ubicación...\"",
+          "notes": "Muestre el indicador de precisión (precisión GPS)."
+        },
+        "6": {
+          "action": "Ubicación capturada: Lat 3.7523, Lng 8.7741 (± 5m de precisión)",
+          "screen": "Confirmación de ubicación con vista previa del mapa",
+          "notes": "Señale la alta precisión para respuesta de emergencia."
+        },
+        "7": {
+          "action": "Juan escribe mensaje: \"Accidente de tráfico, dos vehículos, posibles heridos\"",
+          "screen": "Área de texto para descripción de emergencia",
+          "notes": "Explique el texto libre para descripción de la situación."
+        },
+        "8": {
+          "action": "Hace clic en el botón \"Enviar Alerta\"",
+          "screen": "Diálogo de confirmación con advertencia sobre uso de emergencia",
+          "notes": "Muestre el paso de confirmación para prevenir alertas accidentales."
+        },
+        "9": {
+          "action": "Alerta enviada exitosamente",
+          "screen": "Pantalla de éxito con número de referencia",
+          "notes": "Note: Juan recibe número de referencia para seguimiento."
+        },
+        "10": {
+          "action": "El sistema busca automáticamente la dirección NAR más cercana",
+          "screen": "Proceso en segundo plano - vincula a UAC si está cerca",
+          "notes": "Explique la asociación automática de dirección."
+        },
+        "11": {
+          "action": "Juan ve el panel de notificaciones con actualizaciones de estado",
+          "screen": "Componente ReporterNotifications mostrando estado de alerta",
+          "notes": "Demuestre el seguimiento de estado en tiempo real para reporteros."
+        }
+      },
+      "outcomes": [
+        "Alerta de emergencia creada con coordenadas GPS precisas",
+        "Incidente auto-asignado a despachador disponible en Malabo",
+        "El reportero tiene número de referencia y puede seguir la respuesta",
+        "El sistema vinculó la alerta a la dirección verificada más cercana (UAC)"
+      ]
+    },
+    "dispatcherAssignment": {
+      "title": "Despachador Asigna Unidades de Emergencia",
+      "context": "La Despachadora Elena García recibe la alerta de emergencia de Juan en el centro de comando policial. Debe asignar unidades de respuesta y coordinar la respuesta.",
+      "objective": "Asignar y coordinar unidades de campo para responder a un incidente de emergencia",
+      "presenterNotes": "El sistema de comunicaciones con hilos y notificaciones de sonido asegura que los despachadores nunca pierdan alertas críticas. Los botones rápidos de códigos de radio aceleran las comunicaciones estándar. La estructura de tres pestañas (Entrada/Enviados/Historial) mantiene las comunicaciones organizadas.",
+      "actors": {
+        "dispatcher": { "role": "Despachador de Policía", "name": "Elena García" },
+        "unit": { "role": "Unidad de Campo", "name": "Unidad de Patrulla Alpha-7" }
+      },
+      "modules": ["PoliceDashboard", "Lista de Incidentes", "Comunicaciones del Despachador", "Asignación de Unidades"],
+      "steps": {
+        "1": {
+          "action": "Elena está conectada en el centro de comando policial",
+          "screen": "PoliceDashboard con pestaña \"Centro de Comando\" activa",
+          "notes": "Muestre la interfaz específica del despachador."
+        },
+        "2": {
+          "action": "Suena notificación de sonido (tono de alerta basado en prioridad)",
+          "screen": "Aparece notificación toast con resumen del incidente",
+          "notes": "Demuestre alertas de audio - diferentes tonos para niveles de prioridad."
+        },
+        "3": {
+          "action": "Nuevo incidente aparece en lista de incidentes con estado \"PENDIENTE\"",
+          "screen": "Lista de incidentes con nueva tarjeta resaltada en ámbar",
+          "notes": "Señale la insignia de prioridad (Crítico/Alto/Estándar)."
+        },
+        "4": {
+          "action": "El incidente muestra: Accidente de Tráfico, Prioridad 2 (Alta)",
+          "screen": "Tarjeta de incidente con tipo, prioridad, resumen de ubicación",
+          "notes": "Explique la auto-clasificación basada en tipo de emergencia."
+        },
+        "5": {
+          "action": "Elena hace clic en el incidente para ver detalles completos",
+          "screen": "IncidentDetailDialog se abre con pestañas",
+          "notes": "Muestre información completa del incidente."
+        },
+        "6": {
+          "action": "Revisa la pestaña Mapa mostrando ubicación exacta del incidente",
+          "screen": "IncidentMap con marcador de incidente y unidades cercanas",
+          "notes": "Señale las posiciones de unidades en el mapa para asignación por proximidad."
+        },
+        "7": {
+          "action": "Elena ve unidades cercanas: Alpha-7 (Disponible, 0.8km)",
+          "screen": "Superposición de unidades en mapa con insignias de estado",
+          "notes": "Explique el estado de unidades en tiempo real desde seguimiento GPS."
+        },
+        "8": {
+          "action": "Hace clic en el botón \"Asignar Unidades\"",
+          "screen": "Diálogo de asignación con lista de casillas de unidades disponibles",
+          "notes": "Muestre la interfaz de selección de unidades."
+        },
+        "9": {
+          "action": "Elena selecciona \"Alpha-7\" y agrega nota de despacho",
+          "screen": "Formulario de asignación con área de texto para notas",
+          "notes": "Note que el despachador puede agregar contexto para unidades de campo."
+        },
+        "10": {
+          "action": "Hace clic en \"Despachar\"",
+          "screen": "El sistema envía la asignación, actualiza estado del incidente",
+          "notes": "Muestre el cambio de estado a \"DESPACHADO\"."
+        },
+        "11": {
+          "action": "Elena abre pestaña \"Comunicaciones\" (Entrada/Enviados/Historial)",
+          "screen": "Comunicaciones del Despachador con mensajes en hilos",
+          "notes": "Demuestre la estructura de comunicación de tres pestañas."
+        },
+        "12": {
+          "action": "Envía mensaje rápido usando código de radio \"10-23 En Ruta\"",
+          "screen": "Botones rápidos de código de radio debajo del área de composición",
+          "notes": "Muestre cómo los códigos de radio aceleran la comunicación."
+        },
+        "13": {
+          "action": "El mensaje aparece en pestaña Enviados con marca de tiempo",
+          "screen": "Lista de mensajes enviados con confirmación de entrega",
+          "notes": "Señale el agrupamiento de mensajes por unidad."
+        }
+      },
+      "outcomes": [
+        "Incidente asignado dentro de 45 segundos de recibir la alerta",
+        "Unidad de campo Alpha-7 recibe notificación con detalles de ubicación",
+        "El despachador puede seguir el progreso de la unidad en el mapa",
+        "Todas las comunicaciones registradas para registro de auditoría"
+      ]
+    },
+    "fieldResponder": {
+      "title": "Respondedores de Campo Usan Datos de Dirección en el Terreno",
+      "context": "El Oficial Miguel Rodríguez de la Unidad Alpha-7 recibe la asignación de despacho en su dispositivo móvil. Navega a la escena, gestiona el incidente y captura evidencia.",
+      "objective": "Navegar al incidente, gestionar respuesta y capturar evidencia con datos GPS",
+      "presenterNotes": "Los oficiales de campo tienen todo lo que necesitan en móvil: navegación a coordenadas exactas, captura de evidencia con geolocalización, actualizaciones de estado y solicitudes de respaldo de emergencia. El botón \"Oficial Caído\" proporciona funcionalidad crítica de seguridad con transmisión inmediata a todo el sistema.",
+      "actors": {
+        "officer": { "role": "Operador de Policía", "name": "Oficial Miguel Rodríguez" },
+        "dispatcher": { "role": "Despachador", "name": "Elena García" }
+      },
+      "modules": ["PoliceDashboard (pestaña Campo)", "Panel de Campo de Unidad", "Captura de Evidencia", "Navegación"],
+      "steps": {
+        "1": {
+          "action": "Miguel abre la app en su dispositivo móvil",
+          "screen": "PoliceDashboard redirige automáticamente a pestaña Campo",
+          "notes": "Explique la selección de pestaña basada en rol."
+        },
+        "2": {
+          "action": "Su UnitFieldDashboard muestra notificación de asignación actual",
+          "screen": "Tarjeta de asignación con detalles del incidente, botón Aceptar",
+          "notes": "Señale la interfaz optimizada para móvil."
+        },
+        "3": {
+          "action": "Hace clic en el botón \"Aceptar Asignación\"",
+          "screen": "El estado se actualiza a \"Despachado\", el temporizador inicia",
+          "notes": "Muestre el flujo de estados: Aceptar → En Ruta → En Escena."
+        },
+        "4": {
+          "action": "Miguel hace clic en el botón \"Navegar\" para obtener direcciones",
+          "screen": "La integración de navegación abre mapas nativos",
+          "notes": "Demuestre la navegación multiplataforma."
+        },
+        "5": {
+          "action": "El sistema muestra: \"Distancia: 0.8km, ETA: 3 minutos\"",
+          "screen": "Estimación de distancia desde GPS actual al incidente",
+          "notes": "Note el cálculo de distancia en tiempo real."
+        },
+        "6": {
+          "action": "La app de mapas nativos se abre con ruta a coordenadas del incidente",
+          "screen": "App de mapas externa (iOS/Android)",
+          "notes": "Muestre la transición fluida a navegación."
+        },
+        "7": {
+          "action": "En ruta, Miguel actualiza estado: hace clic en \"En Ruta\"",
+          "screen": "El botón de estado cambia incidente a \"Respondiendo\"",
+          "notes": "Explique el registro automático de marca de tiempo GPS."
+        },
+        "8": {
+          "action": "Llegada: Miguel hace clic en el botón \"En Escena\"",
+          "screen": "El estado cambia a \"En Escena\"",
+          "notes": "Señale que el seguimiento de tiempo de respuesta comienza ahora."
+        },
+        "9": {
+          "action": "Usa el botón \"Capturar Evidencia\" para fotografiar la escena",
+          "screen": "Interfaz de cámara se abre con superposición GPS",
+          "notes": "Muestre la captura de fotos geoetiquetadas."
+        },
+        "10": {
+          "action": "Miguel toma fotos de: escena del accidente, daños a vehículos",
+          "screen": "Captura de foto con campo de descripción",
+          "notes": "Explique la categorización de evidencia."
+        },
+        "11": {
+          "action": "Las fotos se suben al almacenamiento seguro con coordenadas GPS",
+          "screen": "Indicador de progreso de subida, confirmación de éxito",
+          "notes": "Note: Evidencia almacenada en bucket de almacenamiento Supabase."
+        },
+        "12": {
+          "action": "Miguel necesita recursos adicionales, hace clic en \"Solicitar Recursos\"",
+          "screen": "RequestResourcesDialog se abre con formulario completo",
+          "notes": "Muestre las opciones detalladas de solicitud de recursos."
+        },
+        "13": {
+          "action": "Selecciona: Tipo: Médico, Urgencia: Alta, Cantidad: 1 ambulancia",
+          "screen": "Campos del formulario para tipo de recurso, urgencia, cantidad",
+          "notes": "Demuestre el flujo detallado de solicitud."
+        },
+        "14": {
+          "action": "Solicitud de recursos enviada, visible para despachadores",
+          "screen": "Mensaje de confirmación",
+          "notes": "Explique el flujo de coordinación de recursos."
+        },
+        "15": {
+          "action": "Situación crítica: Miguel presiona el botón \"OFICIAL CAÍDO\"",
+          "screen": "EmergencyBackupButton activa transmisión inmediata",
+          "notes": "CRÍTICO: Explique que esto transmite a TODO el personal policial inmediatamente."
+        },
+        "16": {
+          "action": "Incidente resuelto: Miguel hace clic en \"Marcar Completado\"",
+          "screen": "Diálogo de resolución con campo de notas",
+          "notes": "Muestre el flujo de cierre del incidente."
+        }
+      },
+      "outcomes": [
+        "Oficial navegó directamente a la escena usando coordenadas de dirección digital",
+        "Evidencia capturada con metadatos GPS para cadena de custodia legal",
+        "Tiempo de respuesta rastreado automáticamente: Despacho → Llegada = 3 minutos",
+        "Todas las acciones registradas para revisión de supervisor y auditoría"
+      ]
+    },
+    "supervisorMonitoring": {
+      "title": "Supervisor Monitorea y Reporta",
+      "context": "La Capitana Isabel Ruiz, Supervisora de Policía, revisa las operaciones del día incluyendo la respuesta al accidente de tráfico. Monitorea el rendimiento de unidades y genera reportes para el mando.",
+      "objective": "Monitorear operaciones, aprobar solicitudes de respaldo y generar reportes de rendimiento",
+      "presenterNotes": "Los supervisores tienen supervisión completa con autoridad de aprobación para solicitudes de respaldo. Los análisis en tiempo real permiten decisiones basadas en datos. El registro de auditoría asegura transparencia total - cada acción es rastreada con quién, qué y cuándo.",
+      "actors": {
+        "supervisor": { "role": "Supervisor de Policía", "name": "Capitana Isabel Ruiz" }
+      },
+      "modules": ["PoliceDashboard", "Panel de Liderazgo de Unidad", "Análisis Policial", "Registros de Auditoría"],
+      "steps": {
+        "1": {
+          "action": "La Capitana Ruiz inicia sesión y ve el panel de supervisor",
+          "screen": "PoliceDashboard con pestaña Coordinación disponible",
+          "notes": "Muestre la navegación específica del supervisor."
+        },
+        "2": {
+          "action": "La vista general muestra: 12 Incidentes Activos, 8 Unidades Disponibles, Respuesta Promedio: 4.2 min",
+          "screen": "Tarjetas de estadísticas con métricas operacionales en tiempo real",
+          "notes": "Señale los datos en tiempo real de la base de datos."
+        },
+        "3": {
+          "action": "Hace clic en \"Vista de Unidades\" para ver el estado de todas las unidades",
+          "screen": "Componente UnitsOverview con tarjetas de unidades y estados",
+          "notes": "Muestre la distribución de unidades por estados."
+        },
+        "4": {
+          "action": "La Capitana revisa el panel \"Notificaciones de Respaldo\"",
+          "screen": "BackupNotificationsPanel mostrando solicitudes pendientes/aprobadas",
+          "notes": "Demuestre la autoridad de aprobación de respaldo."
+        },
+        "5": {
+          "action": "Ve una solicitud de respaldo pendiente de la Unidad Bravo-3",
+          "screen": "Tarjeta de solicitud con botones Aprobar/Denegar/Escalar",
+          "notes": "Señale la aprobación escalonada: Supervisores aprueban, Despachadores coordinan."
+        },
+        "6": {
+          "action": "La Capitana aprueba la solicitud de respaldo con nota",
+          "screen": "Diálogo de aprobación con campo de notas",
+          "notes": "Muestre el flujo de aprobación y notificación a la unidad solicitante."
+        },
+        "7": {
+          "action": "Abre la pestaña \"Análisis de Rendimiento\"",
+          "screen": "UnitPerformanceAnalytics con selector de rango de fechas",
+          "notes": "Demuestre los rangos de fechas personalizables."
+        },
+        "8": {
+          "action": "Selecciona rango de fechas: \"Últimos 7 Días\" usando selector de calendario",
+          "screen": "Componente selector de fecha, los análisis se actualizan",
+          "notes": "Muestre la carga dinámica de datos."
+        },
+        "9": {
+          "action": "Los gráficos muestran: Tiempos de respuesta, Incidentes por tipo, Utilización de unidades",
+          "screen": "Visualizaciones Recharts con gráficos de barras/líneas",
+          "notes": "Señale el panel visual de análisis."
+        },
+        "10": {
+          "action": "La Capitana profundiza en el incidente del accidente de tráfico",
+          "screen": "IncidentDetailDialog con línea de tiempo completa",
+          "notes": "Muestre el historial completo del incidente."
+        },
+        "11": {
+          "action": "Revisa la pestaña Evidencia mostrando las fotos capturadas",
+          "screen": "Galería de evidencia con fotos, marcas de tiempo, ubicaciones",
+          "notes": "Demuestre la revisión de evidencia para supervisores."
+        },
+        "12": {
+          "action": "La Capitana hace clic en la pestaña \"Registros de Auditoría\"",
+          "screen": "AuditLogViewer con entradas de registro filtrables",
+          "notes": "Muestre transparencia y responsabilidad."
+        },
+        "13": {
+          "action": "Los registros muestran todas las acciones: despacho, actualizaciones de estado, subidas de evidencia",
+          "screen": "Entradas de registro con actor, acción, marca de tiempo",
+          "notes": "Señale el registro de auditoría completo."
+        },
+        "14": {
+          "action": "Exporta el reporte del día usando el botón \"Exportar CSV\"",
+          "screen": "Descarga de CSV conteniendo datos del incidente",
+          "notes": "Muestre la capacidad de reportes para el mando."
+        }
+      },
+      "outcomes": [
+        "Supervisor tiene visibilidad en tiempo real de todas las operaciones",
+        "Solicitudes de respaldo manejadas con jerarquía de autoridad apropiada",
+        "Métricas de rendimiento disponibles para planificación de recursos",
+        "Registro de auditoría completo asegura responsabilidad",
+        "Reportes exportables para informes del mando"
+      ]
+    },
+    "postalDeliveryWorkflow": {
+      "title": "Flujo Completo del Módulo de Entrega Postal",
+      "context": "El Módulo de Entrega Postal ConEG gestiona los servicios postales gubernamentales desde la creación de órdenes hasta la entrega final. Este escenario mejorado demuestra búsqueda de destinatarios por nombre, navegación en la app, Contra Reembolso (COD), solicitudes de recogida, devoluciones, importación masiva y flujo de entrega completo.",
+      "objective": "Demostrar características postales mejoradas: búsqueda por nombre, navegación en app, COD, recogidas, devoluciones e importación masiva",
+      "presenterNotes": "Este escenario postal mejorado muestra todas las características de las Fases 1-8: búsqueda de destinatarios por nombre (incluyendo dependientes del hogar), navegación en la app con Leaflet/OSRM (elimina necesidad de apps de navegación externas), manejo de COD desde cobro hasta remisión, servicio de solicitudes de recogida para conveniencia ciudadana, devoluciones/logística inversa para entregas fallidas, importación masiva para operaciones de alto volumen, y notificaciones automáticas al cliente. La integración con el sistema de direcciones digitales asegura entregas precisas usando direcciones verificadas con UAC.",
+      "actors": {
+        "clerk": { "role": "Empleado Postal", "name": "Carmen Santos" },
+        "dispatcher": { "role": "Despachador Postal", "name": "Luis Fernández" },
+        "agent": { "role": "Agente de Entrega", "name": "Pedro García" },
+        "supervisor": { "role": "Supervisor Postal", "name": "Ana Moreno" },
+        "citizen": { "role": "Ciudadano", "name": "Elena Nguema" }
+      },
+      "modules": ["Página Postal", "Formulario de Orden de Entrega", "Panel del Despachador", "Vista de Entrega del Agente", "Panel del Supervisor", "Solicitudes de Recogida", "Órdenes de Devolución", "Gestión COD", "Importación Masiva"],
+      "steps": {
+        "1": {
+          "action": "Carmen (Empleada Postal) inicia sesión en el Portal Postal",
+          "screen": "PostalPage con vista de Empleado mostrando pestañas \"Crear Orden\" e \"Importación Masiva\"",
+          "notes": "Señale la interfaz basada en roles con características mejoradas para personal postal."
+        },
+        "2": {
+          "action": "Hace clic en \"Crear Nueva Orden\" para iniciar la entrada de orden",
+          "screen": "El asistente DeliveryOrderForm se abre en el Paso 1",
+          "notes": "Explique el proceso de creación de órdenes de múltiples pasos."
+        },
+        "3": {
+          "action": "Carmen ingresa info del remitente: Oficina de Inmigración del Gobierno",
+          "screen": "Sección de remitente con campos de sucursal, nombre, teléfono",
+          "notes": "Muestre detalles del remitente incluyendo identificación de sucursal."
+        },
+        "4": {
+          "action": "Carmen busca por NOMBRE del destinatario: \"Pablo Martínez Jr.\" (un dependiente del hogar)",
+          "screen": "UACAddressPicker muestra resultados de búsqueda por nombre incluyendo dependientes",
+          "notes": "NUEVO: Búsqueda de destinatario por nombre encuentra miembros/dependientes del hogar, no solo titulares de cuenta."
+        },
+        "5": {
+          "action": "El sistema muestra la dirección de Pablo con \"Atención de: Pedro Martínez\" (tutor)",
+          "screen": "Tarjeta de dirección con insignia de dependiente y relación con tutor",
+          "notes": "Demuestre la resolución de direcciones de dependientes del hogar para entrega postal."
+        },
+        "6": {
+          "action": "Carmen agrega detalles del paquete: Pasaporte, Certificado, Requiere verificación de ID",
+          "screen": "Selector de tipo de paquete, casillas de manejo especial",
+          "notes": "Muestre clasificación de paquetes y opciones de seguridad."
+        },
+        "7": {
+          "action": "Habilita Contra Reembolso (COD) e ingresa monto: 5,000 XAF",
+          "screen": "CODSection con campo de monto y opciones de método de pago",
+          "notes": "NUEVO: COD permite cobro de pago en la entrega."
+        },
+        "8": {
+          "action": "Carmen genera etiqueta de envío con código de barras y código QR",
+          "screen": "LabelPreview mostrando número de seguimiento S10, código de barras, código QR",
+          "notes": "NUEVO: Etiquetas compatibles con UPU S10 con códigos escaneables."
+        },
+        "9": {
+          "action": "Orden enviada con número: DEL-2025-001234 y seguimiento: EG123456789GQ",
+          "screen": "Confirmación de éxito con números de orden y seguimiento S10",
+          "notes": "Note: La orden entra en cola del despachador; URL de seguimiento en código QR."
+        },
+        "10": {
+          "action": "Luis (Despachador) ve órdenes en pestaña \"Listo para Asignación\"",
+          "screen": "DispatcherPanel con lista de órdenes pendientes incluyendo indicadores COD",
+          "notes": "Los despachadores ven órdenes esperando asignación de agente con banderas COD."
+        },
+        "11": {
+          "action": "Abre pestaña \"Recogidas\" para ver solicitudes de recogida de ciudadanos",
+          "screen": "PickupRequestsList mostrando solicitudes de recogida pendientes de ciudadanos",
+          "notes": "NUEVO: Los ciudadanos pueden solicitar recolección de paquetes desde sus direcciones."
+        },
+        "12": {
+          "action": "Luis programa una solicitud de recogida y asigna a Pedro",
+          "screen": "Diálogo de programación de recogida con fecha/hora y selección de agente",
+          "notes": "Muestre la integración del flujo de solicitudes de recogida."
+        },
+        "13": {
+          "action": "Asigna tanto la entrega como la recogida a Pedro García",
+          "screen": "Diálogo de asignación con sugerencia de optimización de ruta",
+          "notes": "Demuestre el balance de carga de trabajo y eficiencia de rutas."
+        },
+        "14": {
+          "action": "Pedro (Agente) recibe notificaciones en su dispositivo móvil",
+          "screen": "Vista móvil del agente con asignaciones de entrega y recogida",
+          "notes": "Señale el diseño mobile-first para agentes de campo."
+        },
+        "15": {
+          "action": "Pedro hace clic en \"Mostrar Ruta\" para navegación embebida en la app",
+          "screen": "RouteMapView con polilínea de ruta visual, marcadores, distancia, ETA, direcciones paso a paso",
+          "notes": "NUEVO: Navegación en la app usando Leaflet/OSRM - no se necesita app externa."
+        },
+        "16": {
+          "action": "La ruta muestra: Origen (marcador azul) → Destino (marcador rojo), 2.3km, 8 min",
+          "screen": "Mapa interactivo con límites auto-ajustados y direcciones desplazables",
+          "notes": "Demuestre la navegación embebida manteniendo al agente en la app."
+        },
+        "17": {
+          "action": "Pedro llega y hace clic en \"Marcar Llegada\" - el sistema registra GPS",
+          "screen": "Confirmación de llegada con verificación GPS",
+          "notes": "Muestre la verificación de ubicación para precisión de entrega."
+        },
+        "18": {
+          "action": "Cobra pago COD: 5,000 XAF en efectivo y registra recibo",
+          "screen": "Diálogo de cobro COD con monto, método de pago, número de recibo",
+          "notes": "NUEVO: Cobro COD rastreado con recibo para remisión."
+        },
+        "19": {
+          "action": "Pedro captura prueba: foto, firma, nombre del destinatario",
+          "screen": "Captura de prueba: foto, panel de firma, confirmación de nombre del destinatario",
+          "notes": "Demuestre la captura de prueba multi-método para responsabilidad."
+        },
+        "20": {
+          "action": "Entrega completada - Elena recibe notificación SMS/correo",
+          "screen": "Notificación al cliente: \"Su paquete ha sido entregado\"",
+          "notes": "NUEVO: Notificaciones automáticas al cliente en etapas clave del ciclo de vida."
+        },
+        "21": {
+          "action": "Pedro completa la recogida, captura prueba fotográfica",
+          "screen": "Completación de recogida con captura de prueba",
+          "notes": "Muestre el flujo de cumplimiento de solicitudes de recogida."
+        },
+        "22": {
+          "action": "Ana (Supervisora) abre pestaña \"Gestión COD\"",
+          "screen": "CODManagement mostrando cobros pendientes y reconciliación diaria",
+          "notes": "NUEVO: Seguimiento COD desde cobro hasta remisión."
+        },
+        "23": {
+          "action": "Ve saldos COD de agentes y marca los 5,000 XAF de Pedro como remitidos",
+          "screen": "Diálogo de remisión del agente con monto y referencia",
+          "notes": "Demuestre el flujo de reconciliación COD."
+        },
+        "24": {
+          "action": "Ana abre pestaña \"Devoluciones\" para gestionar logística inversa",
+          "screen": "ReturnOrdersList mostrando solicitudes de devolución y su estado",
+          "notes": "NUEVO: Gestión de devoluciones para entregas no entregables o devoluciones iniciadas por clientes."
+        },
+        "25": {
+          "action": "Carmen usa \"Importación Masiva\" para subir 50 órdenes desde CSV",
+          "screen": "BulkImportDialog con subida de CSV, vista previa de validación, procesamiento por lotes",
+          "notes": "NUEVO: Importación masiva de órdenes con validación y reporte de errores."
+        }
+      },
+      "outcomes": [
+        "Búsqueda de destinatario por nombre permite entrega a dependientes del hogar sin UAC",
+        "Navegación en la app mantiene a los agentes en la app con navegación visual y direcciones",
+        "Cobro COD rastreado desde pago hasta remisión del supervisor",
+        "Solicitudes de recogida permiten a ciudadanos programar recolección de paquetes",
+        "Devoluciones/logística inversa gestionan paquetes no entregables y devueltos por clientes",
+        "Importación masiva procesa órdenes de alto volumen eficientemente vía subida de CSV",
+        "Notificaciones automáticas al cliente en todas las etapas del ciclo de vida de entrega",
+        "Etiquetas compatibles con S10 con códigos de barras y QR para seguimiento",
+        "Registro de auditoría completo con GPS, fotos, firmas y recibos COD"
+      ]
+    }
+  }
+}
