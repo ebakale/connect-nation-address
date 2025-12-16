@@ -285,6 +285,62 @@ const demoScenarios: DemoScenario[] = [
     ],
     icon: <Users className="h-6 w-6" />,
     color: 'bg-indigo-500'
+  },
+  {
+    id: 'postal-portal',
+    title: 'Portal de Entregas Postales',
+    actor: 'Personal Postal (Oficinistas, Despachadores, Agentes, Supervisores)',
+    description: 'Módulo completo de entregas postales gubernamentales con seguimiento en tiempo real, navegación integrada, COD, recogidas y devoluciones',
+    features: [
+      'Creación de órdenes con validación de direcciones UAC',
+      'Búsqueda de destinatarios por NOMBRE (incluye dependientes del hogar)',
+      'Generación de etiquetas con código de barras y QR (estándar S10 UPU)',
+      'Cash on Delivery (COD) con seguimiento de cobros y remesas',
+      'Importación masiva de órdenes via CSV con validación',
+      'Navegación in-app con Leaflet/OSRM (ruta visual, direcciones giro a giro)',
+      'Solicitudes de recogida ciudadanas con programación',
+      'Gestión de devoluciones y logística inversa',
+      'Preferencias de entrega por destinatario (ventana horaria, safe drop)',
+      'Notificaciones automáticas SMS/Email en cada etapa',
+      'Captura de prueba de entrega (foto, firma, GPS)',
+      'Panel de supervisor con métricas y reconciliación COD',
+      'Seguimiento público de entregas sin autenticación',
+      'Asignación inteligente por carga de trabajo y zona',
+      'Reportes exportables CSV/PDF',
+      'Filtrado por alcance geográfico para despachadores/supervisores'
+    ],
+    workflow: [
+      'Oficinista crea orden: busca destinatario por nombre o UAC',
+      'Sistema valida dirección y genera etiqueta con código S10',
+      'Si COD habilitado, registra monto a cobrar',
+      'Despachador revisa órdenes pendientes filtradas por región',
+      'Despachador gestiona solicitudes de recogida ciudadanas',
+      'Asigna órdenes y recogidas a agentes disponibles',
+      'Agente recibe asignaciones en dispositivo móvil',
+      'Agente usa navegación in-app (Show Route) con mapa visual',
+      'Ruta muestra origen, destino, distancia, ETA, direcciones',
+      'Al llegar, marca llegada con verificación GPS',
+      'Si COD, cobra monto y registra recibo',
+      'Captura prueba: foto de entrega y firma digital',
+      'Sistema envía notificación al destinatario',
+      'Supervisor monitorea entregas en tiempo real',
+      'Supervisor reconcilia cobros COD de agentes',
+      'Supervisor gestiona devoluciones y logística inversa'
+    ],
+    benefits: [
+      'Búsqueda por nombre permite entregas a dependientes del hogar',
+      'Navegación in-app elimina necesidad de apps externas',
+      'COD permite cobros en destino con trazabilidad completa',
+      'Recogidas ciudadanas reducen visitas a oficina postal',
+      'Devoluciones gestionadas sistemáticamente',
+      'Importación masiva reduce entrada manual de datos',
+      'Etiquetas S10 cumplen estándares UPU internacionales',
+      'Notificaciones automáticas mejoran experiencia ciudadana',
+      'Seguimiento público sin login aumenta transparencia',
+      'Métricas en tiempo real para gestión operativa'
+    ],
+    icon: <FileText className="h-6 w-6" />,
+    color: 'bg-teal-500'
   }
 ];
 
