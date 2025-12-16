@@ -498,10 +498,10 @@
       "title": "Appel d'Urgence Lié à une Adresse Numérique",
       "context": "Juan Pérez est témoin d'un accident de la route près de l'Avenida de la Independencia à Malabo. Il utilise la fonction d'alerte d'urgence pour signaler l'incident avec sa localisation précise.",
       "objective": "Signaler une urgence avec des coordonnées GPS liées au système d'adresses",
-      "presenterNotes": "Le système d'alerte d'urgence capture des coordonnées GPS précises et les achemine automatiquement vers le répartiteur approprié en fonction de l'emplacement. Les citoyens reçoivent des mises à jour en temps réel sur la progression de la réponse.",
+      "presenterNotes": "Le système d'alerte d'urgence capture des coordonnées GPS précises et les achemine automatiquement vers le répartiteur approprié en fonction de l'emplacement. Le système auto-affecte à un répartiteur disponible dans la zone géographique. Les citoyens reçoivent des mises à jour en temps réel sur la progression de la réponse.",
       "actors": {
         "reporter": { "role": "Citoyen/Signaleur", "name": "Juan Pérez" },
-        "dispatcher": { "role": "Répartiteur d'Urgence", "name": "Système" }
+        "dispatcher": { "role": "Répartiteur d'Urgence", "name": "Auto-Affecté (Elena García)" }
       },
       "modules": ["Tableau de Bord Citoyen", "Contacts d'Urgence", "Système d'Alerte d'Urgence"],
       "steps": {

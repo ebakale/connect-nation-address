@@ -498,10 +498,10 @@
       "title": "Emergency Call Linked to a Digital Address",
       "context": "Juan Pérez witnesses a traffic accident near Avenida de la Independencia in Malabo. He uses the emergency alert feature to report the incident with his precise location.",
       "objective": "Report an emergency with GPS coordinates linked to the address system",
-      "presenterNotes": "The emergency alert system captures precise GPS coordinates and automatically routes to the appropriate dispatcher based on location. Citizens receive real-time updates on response progress.",
+      "presenterNotes": "The emergency alert system captures precise GPS coordinates and automatically routes to the appropriate dispatcher based on location. The system auto-assigns to an available dispatcher in the geographic area. Citizens receive real-time updates on response progress.",
       "actors": {
         "reporter": { "role": "Citizen/Reporter", "name": "Juan Pérez" },
-        "dispatcher": { "role": "Emergency Dispatcher", "name": "System" }
+        "dispatcher": { "role": "Emergency Dispatcher", "name": "Auto-Assigned (Elena García)" }
       },
       "modules": ["Citizen Dashboard", "Emergency Contacts", "Emergency Alert System"],
       "steps": {

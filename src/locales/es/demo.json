@@ -498,10 +498,10 @@
       "title": "Llamada de Emergencia Vinculada a una Dirección Digital",
       "context": "Juan Pérez presencia un accidente de tráfico cerca de la Avenida de la Independencia en Malabo. Usa la función de alerta de emergencia para reportar el incidente con su ubicación precisa.",
       "objective": "Reportar una emergencia con coordenadas GPS vinculadas al sistema de direcciones",
-      "presenterNotes": "El sistema de alerta de emergencia captura coordenadas GPS precisas y las enruta automáticamente al despachador apropiado según la ubicación. Los ciudadanos reciben actualizaciones en tiempo real sobre el progreso de la respuesta.",
+      "presenterNotes": "El sistema de alerta de emergencia captura coordenadas GPS precisas y las enruta automáticamente al despachador apropiado según la ubicación. El sistema auto-asigna a un despachador disponible en el área geográfica. Los ciudadanos reciben actualizaciones en tiempo real sobre el progreso de la respuesta.",
       "actors": {
         "reporter": { "role": "Ciudadano/Reportero", "name": "Juan Pérez" },
-        "dispatcher": { "role": "Despachador de Emergencias", "name": "Sistema" }
+        "dispatcher": { "role": "Despachador de Emergencias", "name": "Auto-Asignado (Elena García)" }
       },
       "modules": ["Panel del Ciudadano", "Contactos de Emergencia", "Sistema de Alerta de Emergencia"],
       "steps": {
