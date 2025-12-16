@@ -1145,6 +1145,54 @@
     "footer": {
       "closing": "Estos tres módulos forman la base de los servicios gubernamentales digitales modernos, permitiendo administración pública eficiente y mejores servicios ciudadanos.",
       "tagline": "ConEG - Conectando Gobierno, Empoderando Ciudadanos"
+    },
+    "nationalImpact": {
+      "title": "Impacto Nacional para Países en Desarrollo",
+      "subtitle": "Cómo el direccionamiento digital transforma países sin sistemas de direcciones tradicionales",
+      "context": "En países como Guinea Ecuatorial, donde el direccionamiento tradicional de calles es limitado y la urbanización está creciendo rápidamente, un sistema de direcciones digitales proporciona una oportunidad de saltar etapas para establecer infraestructura moderna sin las décadas de desarrollo requeridas por el direccionamiento convencional. Este sistema permite beneficios inmediatos en la economía, la sociedad y las operaciones gubernamentales.",
+      "economic": {
+        "title": "Beneficios Económicos",
+        "benefits": [
+          "Inclusión Financiera: Los ciudadanos pueden abrir cuentas bancarias y acceder a crédito con direcciones verificadas, expandiendo la economía formal",
+          "Crecimiento del Comercio Electrónico: Los negocios en línea pueden entregar de manera confiable en cualquier lugar, permitiendo el emprendimiento digital en áreas rurales",
+          "Derechos de Propiedad: La documentación clara de direcciones apoya el registro de tierras y la verificación de propiedad",
+          "Registro de Empresas: Las compañías pueden registrarse formalmente con direcciones comerciales verificadas para licencias e impuestos",
+          "Eficiencia Logística: Los servicios de entrega reducen las entregas fallidas en un 40-60%, reduciendo costos y habilitando nuevos modelos de negocio",
+          "Inversión Extranjera: Las empresas internacionales ganan confianza en la infraestructura local para operaciones de cadena de suministro"
+        ]
+      },
+      "social": {
+        "title": "Beneficios Sociales",
+        "benefits": [
+          "Acceso a la Salud: Las ambulancias localizan pacientes más rápido; las campañas de salud pueden dirigirse a comunidades específicas con precisión",
+          "Planificación Educativa: Las escuelas pueden ubicarse cerca de centros poblacionales usando datos residenciales precisos",
+          "Documentación de Identidad: Los ciudadanos pueden obtener tarjetas de identidad, pasaportes y documentos oficiales con direcciones verificadas",
+          "Servicios Sociales: Los programas de ayuda gubernamental y bienestar pueden llegar a los beneficiarios previstos con precisión",
+          "Participación Cívica: El registro de votantes y los procesos electorales se vuelven más precisos y transparentes",
+          "Desarrollo Comunitario: Los planificadores urbanos pueden identificar áreas desatendidas para inversión en infraestructura"
+        ]
+      },
+      "government": {
+        "title": "Beneficios Gubernamentales",
+        "benefits": [
+          "Recaudación de Impuestos: Mejora en la recaudación de ingresos con ubicaciones rastreables de negocios y propiedades",
+          "Precisión Censal: Los datos poblacionales se vuelven precisos, permitiendo decisiones políticas basadas en evidencia",
+          "Prestación de Servicios: Los servicios gubernamentales (agua, electricidad, saneamiento) pueden planificarse y entregarse eficientemente",
+          "Respuesta de Emergencia: Policía, bomberos y servicios médicos responden más rápido con datos de ubicación exactos",
+          "Planificación Urbana: Decisiones basadas en datos para carreteras, servicios públicos e instalaciones públicas",
+          "Anticorrupción: Registros de direcciones transparentes y verificables reducen el fraude en transacciones de propiedades y negocios"
+        ]
+      },
+      "potentialImpact": {
+        "title": "Beneficios Proyectados",
+        "stats": [
+          { "label": "Mejora en Respuesta de Emergencia", "value": "40-60%" },
+          { "label": "Aumento en Tasa de Éxito de Entregas", "value": "50-70%" },
+          { "label": "Crecimiento en Inclusión Financiera", "value": "25-40%" },
+          { "label": "Mejora en Ingresos Gubernamentales", "value": "15-25%" }
+        ]
+      },
+      "closing": "Un sistema de direcciones digitales posiciona a Guinea Ecuatorial como líder regional en infraestructura de gobierno digital, demostrando que los países en desarrollo pueden lograr una prestación de servicios moderna sin replicar décadas de evolución del direccionamiento occidental."
     }
   }
 }
