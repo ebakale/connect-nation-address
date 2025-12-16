@@ -137,7 +137,7 @@ export const RecipientSearchPicker: React.FC<RecipientSearchPickerProps> = ({
     }
   }, [toast, t]);
 
-  // Debounced search
+  // Debounced search - use refs to avoid infinite loop from callback dependencies
   useEffect(() => {
     if (selectedAddress) {
       const expectedDisplay = formatSelectedAddressDisplay(selectedAddress);
@@ -155,16 +155,33 @@ export const RecipientSearchPicker: React.FC<RecipientSearchPickerProps> = ({
 
     const timeoutId = setTimeout(async () => {
       setIsSearching(true);
-      if (searchMode === 'address') {
-        await searchByAddress(query);
-      } else {
-        await searchByName(query);
+      try {
+        if (searchMode === 'address') {
+          const results = await searchAddresses(query);
+          setAddressResults(results);
+          setShowResults(true);
+        } else {
+          const { data, error } = await supabase.functions.invoke('search-citizen-addresses', {
+            body: {
+              query,
+              purpose: 'DELIVERY',
+              purposeDetails: 'Postal delivery order recipient search',
+              limit: 20,
+            },
+          });
+          if (!error) {
+            setPersonResults(data?.results || []);
+            setShowResults(true);
+          }
+        }
+      } catch (error) {
+        console.error('Search error:', error);
       }
       setIsSearching(false);
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [query, searchMode, searchByAddress, searchByName, selectedAddress]);
+  }, [query, searchMode, selectedAddress, searchAddresses]);
 
   // Handle address selection from address mode
   const handleAddressSelect = (address: any) => {

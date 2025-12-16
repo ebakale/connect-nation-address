@@ -237,9 +237,43 @@ Deno.serve(async (req) => {
     }).filter(r => r.address_count > 0);
 
     // ========== FORMAT DEPENDENT RESULTS ==========
+    // First, get guardian addresses for dependents without direct addresses
+    const guardianAddressMap = new Map<string, typeof profileAddresses>();
+    for (const dependent of dependents || []) {
+      const depAddrs = dependentAddresses?.filter(a => a.dependent_id === dependent.id) || [];
+      if (depAddrs.length === 0 && dependent.guardian_person_id) {
+        // Get guardian's addresses for this dependent
+        const guardianAddrs = profileAddresses?.filter(a => a.person_id === dependent.guardian_person_id) || [];
+        if (guardianAddrs.length > 0) {
+          guardianAddressMap.set(dependent.id, guardianAddrs);
+        }
+      }
+    }
+
+    // Also fetch address details for guardian addresses not already in addressMap
+    const guardianUacs = Array.from(guardianAddressMap.values())
+      .flat()
+      .map(a => a.uac)
+      .filter(uac => !addressMap.has(uac));
+    
+    if (guardianUacs.length > 0) {
+      const { data: guardianAddressDetails } = await supabase
+        .from('addresses')
+        .select('uac, street, city, region, country, building, latitude, longitude')
+        .in('uac', guardianUacs);
+      
+      guardianAddressDetails?.forEach(a => addressMap.set(a.uac, a));
+    }
+
     const dependentResults = (dependents || []).map(dependent => {
       const guardianPerson = guardianPersons?.find(p => p.id === dependent.guardian_person_id);
-      const depAddresses = dependentAddresses?.filter(a => a.dependent_id === dependent.id) || [];
+      let depAddresses = dependentAddresses?.filter(a => a.dependent_id === dependent.id) || [];
+      
+      // If dependent has no direct addresses, use guardian's addresses
+      const usingGuardianAddresses = depAddresses.length === 0 && guardianAddressMap.has(dependent.id);
+      if (usingGuardianAddresses) {
+        depAddresses = guardianAddressMap.get(dependent.id) || [];
+      }
       
       // Filter addresses based on privacy and permissions
       const visibleAddresses = depAddresses.filter(addr => {
@@ -264,6 +298,7 @@ Deno.serve(async (req) => {
             region: addressData?.region || 'N/A',
             country: addressData?.country || 'N/A',
             privacy_level: addr.privacy_level,
+            inherited_from_guardian: usingGuardianAddresses,
           };
         }
 
@@ -279,6 +314,7 @@ Deno.serve(async (req) => {
           longitude: addressData?.longitude,
           privacy_level: addr.privacy_level,
           status: addr.status,
+          inherited_from_guardian: usingGuardianAddresses,
         };
       });
 
@@ -296,6 +332,7 @@ Deno.serve(async (req) => {
         guardian_name: guardianName,
         addresses: visibleAddresses,
         address_count: visibleAddresses.length,
+        uses_guardian_address: usingGuardianAddresses,
       };
     }).filter(r => r.address_count > 0);
 
