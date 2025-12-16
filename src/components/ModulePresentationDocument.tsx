@@ -24,7 +24,11 @@ import {
   Landmark,
   Briefcase,
   GraduationCap,
-  Home
+  Home,
+  Eye,
+  Lock,
+  Target,
+  Radio
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { toast } from '@/hooks/use-toast';
@@ -487,6 +491,133 @@ export const ModulePresentationDocument: React.FC = () => {
             {/* Closing statement */}
             <div className="text-center border-t pt-6">
               <p className="text-muted-foreground">{t('modulePresentation.nationalImpact.closing')}</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* National Security Section */}
+        <Card className="border-t-4 border-t-red-700 print:break-before-page">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-full bg-red-100">
+                <Shield className="h-8 w-8 text-red-700" />
+              </div>
+              <div>
+                <CardTitle className="text-xl">{t('modulePresentation.nationalSecurity.title')}</CardTitle>
+                <CardDescription>{t('modulePresentation.nationalSecurity.subtitle')}</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-8">
+            {/* Context */}
+            <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+              <p className="text-muted-foreground leading-relaxed">
+                {t('modulePresentation.nationalSecurity.context')}
+              </p>
+            </div>
+
+            {/* Security Areas */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Border & Immigration Security */}
+              <Card className="border-l-4 border-l-red-700">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Target className="h-5 w-5 text-red-700" />
+                    {t('modulePresentation.nationalSecurity.border.title')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3">
+                    {(t('modulePresentation.nationalSecurity.border.benefits', { returnObjects: true }) as string[]).map((benefit, index) => (
+                      <li key={index} className="flex items-start gap-2 text-sm">
+                        <CheckCircle className="h-4 w-4 text-red-700 mt-0.5 flex-shrink-0" />
+                        <span>{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Law Enforcement */}
+              <Card className="border-l-4 border-l-blue-700">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Eye className="h-5 w-5 text-blue-700" />
+                    {t('modulePresentation.nationalSecurity.lawEnforcement.title')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3">
+                    {(t('modulePresentation.nationalSecurity.lawEnforcement.benefits', { returnObjects: true }) as string[]).map((benefit, index) => (
+                      <li key={index} className="flex items-start gap-2 text-sm">
+                        <CheckCircle className="h-4 w-4 text-blue-700 mt-0.5 flex-shrink-0" />
+                        <span>{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Crisis & Disaster Management */}
+              <Card className="border-l-4 border-l-orange-600">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Radio className="h-5 w-5 text-orange-600" />
+                    {t('modulePresentation.nationalSecurity.crisis.title')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3">
+                    {(t('modulePresentation.nationalSecurity.crisis.benefits', { returnObjects: true }) as string[]).map((benefit, index) => (
+                      <li key={index} className="flex items-start gap-2 text-sm">
+                        <CheckCircle className="h-4 w-4 text-orange-600 mt-0.5 flex-shrink-0" />
+                        <span>{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Data Security & Sovereignty */}
+              <Card className="border-l-4 border-l-purple-700">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Lock className="h-5 w-5 text-purple-700" />
+                    {t('modulePresentation.nationalSecurity.dataSecurity.title')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3">
+                    {(t('modulePresentation.nationalSecurity.dataSecurity.benefits', { returnObjects: true }) as string[]).map((benefit, index) => (
+                      <li key={index} className="flex items-start gap-2 text-sm">
+                        <CheckCircle className="h-4 w-4 text-purple-700 mt-0.5 flex-shrink-0" />
+                        <span>{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Strategic Value */}
+            <div className="bg-gradient-to-r from-red-50 to-blue-50 p-6 rounded-lg border">
+              <h4 className="font-semibold mb-4 flex items-center gap-2">
+                <Shield className="h-5 w-5 text-red-700" />
+                {t('modulePresentation.nationalSecurity.strategicValue.title')}
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {(t('modulePresentation.nationalSecurity.strategicValue.points', { returnObjects: true }) as Array<{ title: string; description: string }>).map((point, index) => (
+                  <div key={index} className="text-center p-4 bg-background rounded-lg">
+                    <div className="font-semibold text-primary mb-1">{point.title}</div>
+                    <div className="text-xs text-muted-foreground">{point.description}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Closing */}
+            <div className="text-center border-t pt-6">
+              <p className="text-muted-foreground">{t('modulePresentation.nationalSecurity.closing')}</p>
             </div>
           </CardContent>
         </Card>
