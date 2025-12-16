@@ -13,9 +13,23 @@ import {
   Package, MapPin, Clock, User, Phone, Mail, 
   Scale, Ruler, DollarSign, FileSignature, ShieldCheck,
   Calendar, Building2, UserCheck, Truck, CheckCircle2, ArrowRight, Loader2,
-  Printer, Banknote
+  Printer, Banknote, Camera
 } from 'lucide-react';
 import { format } from 'date-fns';
+
+interface DeliveryProof {
+  id: string;
+  proof_type: string;
+  photo_url: string | null;
+  signature_data: string | null;
+  received_by_name: string | null;
+  recipient_id_type: string | null;
+  recipient_id_last_digits: string | null;
+  captured_at: string;
+  latitude: number | null;
+  longitude: number | null;
+  notes: string | null;
+}
 
 interface DeliveryOrderAssignment {
   id: string;
@@ -76,6 +90,7 @@ export const DeliveryOrderDetail = ({ order, open, onOpenChange, onOrderUpdated 
   const [agentProfile, setAgentProfile] = useState<AgentProfile | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [labelPreviewOpen, setLabelPreviewOpen] = useState(false);
+  const [deliveryProof, setDeliveryProof] = useState<DeliveryProof | null>(null);
   const { canUpdateOrderStatus, isPostalClerk, isPostalDispatcher, isPostalSupervisor } = usePostalRole();
   const { markAsReadyForAssignment } = useDeliveryOrders();
   
@@ -106,6 +121,29 @@ export const DeliveryOrderDetail = ({ order, open, onOpenChange, onOrderUpdated 
       fetchAgentProfile();
     }
   }, [open, assignment]);
+
+  useEffect(() => {
+    const fetchDeliveryProof = async () => {
+      if (!order?.id || order.status !== 'delivered') {
+        setDeliveryProof(null);
+        return;
+      }
+
+      const { data } = await supabase
+        .from('delivery_proof')
+        .select('*')
+        .eq('order_id', order.id)
+        .order('captured_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      setDeliveryProof(data);
+    };
+
+    if (open) {
+      fetchDeliveryProof();
+    }
+  }, [open, order?.id, order?.status]);
 
   if (!order) return null;
 
@@ -360,6 +398,64 @@ export const DeliveryOrderDetail = ({ order, open, onOpenChange, onOrderUpdated 
                       <span className="text-muted-foreground text-xs">{t('assignment.assignmentNotes')}:</span>
                       <p className="text-xs mt-1">{assignment.notes}</p>
                     </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Delivery Proof Section - Only for delivered orders */}
+          {order.status === 'delivered' && deliveryProof && (
+            <>
+              <Separator />
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <Camera className="h-4 w-4" />
+                  {t('proof.title')}
+                </h3>
+                <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg p-3 space-y-3">
+                  {/* Proof type and timestamp */}
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <Badge variant="outline">{t(`proof.types.${deliveryProof.proof_type}`)}</Badge>
+                    <span className="text-xs text-muted-foreground">
+                      {format(new Date(deliveryProof.captured_at), 'MMM d, yyyy HH:mm')}
+                    </span>
+                  </div>
+                  
+                  {/* Received by */}
+                  {deliveryProof.received_by_name && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <UserCheck className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">{t('proof.receivedBy')}:</span>
+                      <span className="font-medium">{deliveryProof.received_by_name}</span>
+                    </div>
+                  )}
+
+                  {/* ID Verification */}
+                  {deliveryProof.recipient_id_type && deliveryProof.recipient_id_last_digits && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">{t('proof.idVerification')}:</span>
+                      <span className="font-mono text-xs">{deliveryProof.recipient_id_type} ****{deliveryProof.recipient_id_last_digits}</span>
+                    </div>
+                  )}
+                  
+                  {/* Photo */}
+                  {deliveryProof.photo_url && (
+                    <div className="mt-2">
+                      <img 
+                        src={deliveryProof.photo_url} 
+                        alt={t('proof.photo')} 
+                        className="rounded-lg max-w-full border cursor-pointer hover:opacity-90 transition-opacity"
+                        onClick={() => window.open(deliveryProof.photo_url!, '_blank')}
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">{t('proof.viewFullSize')}</p>
+                    </div>
+                  )}
+                  
+                  {/* Notes */}
+                  {deliveryProof.notes && (
+                    <p className="text-sm text-muted-foreground mt-2 bg-muted/50 rounded p-2">{deliveryProof.notes}</p>
                   )}
                 </div>
               </div>

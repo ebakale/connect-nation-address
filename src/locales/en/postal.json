@@ -236,6 +236,13 @@
     "uploadError": "Error uploading photo",
     "cameraError": "Camera not available",
     "uploaded": "Uploaded",
+    "viewFullSize": "Click to view full size",
+    "types": {
+      "photo": "Photo",
+      "signature": "Signature",
+      "id_verification": "ID Verification",
+      "recipient_absent_note": "Recipient Absent"
+    },
     "relationships": {
       "recipient": "Recipient",
       "spouse": "Spouse",

@@ -236,6 +236,13 @@
     "uploadError": "Error al subir foto",
     "cameraError": "Cámara no disponible",
     "uploaded": "Subida",
+    "viewFullSize": "Clic para ver tamaño completo",
+    "types": {
+      "photo": "Foto",
+      "signature": "Firma",
+      "id_verification": "Verificación de ID",
+      "recipient_absent_note": "Destinatario Ausente"
+    },
     "relationships": {
       "recipient": "Destinatario",
       "spouse": "Cónyuge",
