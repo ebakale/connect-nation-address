@@ -230,6 +230,7 @@
     "signHere": "Signez ici",
     "clearSignature": "Effacer la Signature",
     "takePhoto": "Prendre une Photo",
+    "uploadPhoto": "Télécharger une Photo",
     "photoCaptured": "Photo capturée",
     "uploadError": "Erreur de téléchargement de la photo",
     "cameraError": "Caméra non disponible",

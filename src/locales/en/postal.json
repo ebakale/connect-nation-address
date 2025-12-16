@@ -230,6 +230,7 @@
     "signHere": "Sign here",
     "clearSignature": "Clear Signature",
     "takePhoto": "Take Photo",
+    "uploadPhoto": "Upload Photo",
     "photoCaptured": "Photo captured",
     "uploadError": "Error uploading photo",
     "cameraError": "Camera not available",

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -6,8 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Camera, MapPin, CheckCircle, X, Loader2, Image as ImageIcon } from 'lucide-react';
+import { Camera, MapPin, CheckCircle, X, Loader2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
+import { Capacitor } from '@capacitor/core';
 import { Camera as CapacitorCamera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -77,79 +78,80 @@ export const DeliveryProofCapture = ({
     }
   }, [open]);
 
+  // Refs for file inputs
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const capturePhoto = async () => {
-    setUploadingPhoto(true);
-    try {
-      // Try Capacitor Camera first
-      const photo = await CapacitorCamera.getPhoto({
-        quality: 80,
-        allowEditing: false,
-        resultType: CameraResultType.Base64,
-        source: CameraSource.Camera,
-        saveToGallery: false,
-      });
+    // Check if running on native platform (iOS/Android)
+    if (Capacitor.isNativePlatform()) {
+      setUploadingPhoto(true);
+      try {
+        const photo = await CapacitorCamera.getPhoto({
+          quality: 80,
+          allowEditing: false,
+          resultType: CameraResultType.Base64,
+          source: CameraSource.Camera,
+          saveToGallery: false,
+        });
 
-      if (photo.base64String) {
-        // Set preview
-        setPhotoPreview(`data:image/${photo.format || 'jpeg'};base64,${photo.base64String}`);
+        if (photo.base64String) {
+          setPhotoPreview(`data:image/${photo.format || 'jpeg'};base64,${photo.base64String}`);
 
-        // Convert base64 to blob
-        const byteCharacters = atob(photo.base64String);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], { type: `image/${photo.format || 'jpeg'}` });
-
-        // Upload to Supabase Storage
-        const fileName = `${orderId}-${Date.now()}.${photo.format || 'jpg'}`;
-        const filePath = `proofs/${fileName}`;
-
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('delivery-proof')
-          .upload(filePath, blob, {
-            contentType: `image/${photo.format || 'jpeg'}`,
-            upsert: false,
-          });
-
-        if (uploadError) {
-          console.error('Upload error:', uploadError);
-          toast.error(t('proof.uploadError'));
-          setUploadingPhoto(false);
-          return;
-        }
-
-        // Get public URL
-        const { data: urlData } = supabase.storage
-          .from('delivery-proof')
-          .getPublicUrl(filePath);
-
-        setPhotoUrl(urlData.publicUrl);
-        toast.success(t('proof.photoCaptured'));
-      }
-    } catch (error: any) {
-      console.error('Camera error:', error);
-      
-      // Fallback to file input for web
-      if (error.message?.includes('not implemented') || error.message?.includes('not available')) {
-        // Trigger file input fallback
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.capture = 'environment';
-        input.onchange = async (e) => {
-          const file = (e.target as HTMLInputElement).files?.[0];
-          if (file) {
-            await uploadFilePhoto(file);
+          const byteCharacters = atob(photo.base64String);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
           }
-        };
-        input.click();
-      } else {
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], { type: `image/${photo.format || 'jpeg'}` });
+
+          const fileName = `${orderId}-${Date.now()}.${photo.format || 'jpg'}`;
+          const filePath = `proofs/${fileName}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from('delivery-proof')
+            .upload(filePath, blob, {
+              contentType: `image/${photo.format || 'jpeg'}`,
+              upsert: false,
+            });
+
+          if (uploadError) {
+            console.error('Upload error:', uploadError);
+            toast.error(t('proof.uploadError'));
+            setUploadingPhoto(false);
+            return;
+          }
+
+          const { data: urlData } = supabase.storage
+            .from('delivery-proof')
+            .getPublicUrl(filePath);
+
+          setPhotoUrl(urlData.publicUrl);
+          toast.success(t('proof.photoCaptured'));
+        }
+      } catch (error: any) {
+        console.error('Camera error:', error);
         toast.error(t('proof.cameraError'));
       }
+      setUploadingPhoto(false);
+    } else {
+      // Web browser - trigger file input with camera capture
+      cameraInputRef.current?.click();
     }
-    setUploadingPhoto(false);
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      await uploadFilePhoto(file);
+    }
+    // Reset the input so the same file can be selected again
+    e.target.value = '';
   };
 
   const uploadFilePhoto = async (file: File) => {
@@ -290,6 +292,23 @@ export const DeliveryProofCapture = ({
             )}
           </div>
 
+          {/* Hidden file inputs */}
+          <input
+            ref={cameraInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+
           {/* Photo Section */}
           <div className="space-y-2">
             <Label>{t('proof.photo')}</Label>
@@ -316,21 +335,38 @@ export const DeliveryProofCapture = ({
                 )}
               </div>
             ) : (
-              <Button 
-                variant="outline" 
-                className="w-full h-24 flex-col gap-2" 
-                onClick={capturePhoto}
-                disabled={uploadingPhoto}
-              >
-                {uploadingPhoto ? (
-                  <Loader2 className="h-6 w-6 animate-spin" />
-                ) : (
-                  <>
-                    <Camera className="h-6 w-6" />
-                    <span>{t('proof.takePhoto')}</span>
-                  </>
-                )}
-              </Button>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  className="flex-1 h-20 flex-col gap-2" 
+                  onClick={capturePhoto}
+                  disabled={uploadingPhoto}
+                >
+                  {uploadingPhoto ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <>
+                      <Camera className="h-5 w-5" />
+                      <span className="text-xs">{t('proof.takePhoto')}</span>
+                    </>
+                  )}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="flex-1 h-20 flex-col gap-2" 
+                  onClick={handleUploadClick}
+                  disabled={uploadingPhoto}
+                >
+                  {uploadingPhoto ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <>
+                      <Upload className="h-5 w-5" />
+                      <span className="text-xs">{t('proof.uploadPhoto')}</span>
+                    </>
+                  )}
+                </Button>
+              </div>
             )}
           </div>
         </div>
