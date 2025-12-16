@@ -313,6 +313,8 @@
     "receivedBy": "Received by",
     "deliveredAt": "Delivered at",
     "proofPhoto": "Delivery photo",
+    "proofNotAvailable": "Proof not yet available",
+    "proofPending": "Delivery confirmation pending",
     "footer": "Government Postal Service - Track your deliveries securely",
     "trackOrder": "Track Order",
     "enterOrderNumber": "Enter order number",
