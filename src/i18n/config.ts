@@ -12,6 +12,7 @@ import emergencyEN from '../locales/en/emergency.json';
 import adminEN from '../locales/en/admin.json';
 import countriesEN from '../locales/en/countries.json';
 import carEN from '../locales/en/car.json';
+import demoEN from '../locales/en/demo.json';
 
 import commonES from '../locales/es/common.json';
 import authES from '../locales/es/auth.json';
@@ -21,6 +22,7 @@ import emergencyES from '../locales/es/emergency.json';
 import adminES from '../locales/es/admin.json';
 import countriesES from '../locales/es/countries.json';
 import carES from '../locales/es/car.json';
+import demoES from '../locales/es/demo.json';
 
 import commonFR from '../locales/fr/common.json';
 import authFR from '../locales/fr/auth.json';
@@ -30,6 +32,7 @@ import emergencyFR from '../locales/fr/emergency.json';
 import adminFR from '../locales/fr/admin.json';
 import countriesFR from '../locales/fr/countries.json';
 import carFR from '../locales/fr/car.json';
+import demoFR from '../locales/fr/demo.json';
 
 import businessEN from '../locales/en/business.json';
 import businessES from '../locales/es/business.json';
@@ -51,6 +54,7 @@ const resources = {
     car: carEN,
     business: businessEN,
     postal: postalEN,
+    demo: demoEN,
   },
   es: {
     common: commonES,
@@ -63,6 +67,7 @@ const resources = {
     car: carES,
     business: businessES,
     postal: postalES,
+    demo: demoES,
   },
   fr: {
     common: commonFR,
@@ -75,6 +80,7 @@ const resources = {
     car: carFR,
     business: businessFR,
     postal: postalFR,
+    demo: demoFR,
   },
 };
 
@@ -148,7 +154,7 @@ async function loadTranslationFixes() {
         escapeValue: false,
       },
 
-      ns: ['common', 'auth', 'dashboard', 'address', 'emergency', 'admin', 'countries', 'car', 'business', 'postal'],
+      ns: ['common', 'auth', 'dashboard', 'address', 'emergency', 'admin', 'countries', 'car', 'business', 'postal', 'demo'],
       defaultNS: 'common',
       
       pluralSeparator: '_',
@@ -190,7 +196,7 @@ i18n
     },
 
     // Namespace and key separator
-    ns: ['common', 'auth', 'dashboard', 'address', 'emergency', 'admin', 'countries', 'car', 'business', 'postal'],
+    ns: ['common', 'auth', 'dashboard', 'address', 'emergency', 'admin', 'countries', 'car', 'business', 'postal', 'demo'],
     defaultNS: 'common',
     
     // Pluralization
