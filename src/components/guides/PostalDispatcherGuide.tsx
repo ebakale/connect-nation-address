@@ -1,12 +1,12 @@
 import { Card } from "@/components/ui/card";
-import { Truck, Users, MapPin, Route, Clock, BarChart3 } from "lucide-react";
+import { Truck, Users, MapPin, Route, Clock, BarChart3, Package, RotateCcw, Upload } from "lucide-react";
 
 export function PostalDispatcherGuide() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
         <h1 className="text-3xl font-bold mb-2">Postal Dispatcher User Guide</h1>
-        <p className="text-muted-foreground">Complete guide for assigning orders, managing routes, and coordinating delivery agents</p>
+        <p className="text-muted-foreground">Complete guide for assigning orders, managing routes, coordinating pickup requests, and overseeing returns</p>
       </div>
 
       {/* Getting Started */}
@@ -16,9 +16,9 @@ export function PostalDispatcherGuide() {
           Getting Started
         </h2>
         <div className="space-y-3">
-          <p><strong>Your Role:</strong> Postal Dispatchers manage order assignments, optimize delivery routes, and coordinate between clerks and delivery agents to ensure efficient postal operations.</p>
-          <p><strong>Access:</strong> Log in and navigate to the Postal Portal at /postal - dispatcher dashboard will show assignment queue and agent management</p>
-          <p><strong>Key Permissions:</strong> Assign orders to agents, manage routes, update order status, view agent workloads, monitor delivery progress</p>
+          <p><strong>Your Role:</strong> Postal Dispatchers manage order assignments, optimize delivery routes, coordinate pickup requests, oversee returns, and ensure efficient postal operations across the team.</p>
+          <p><strong>Access:</strong> Log in and navigate to the Postal Portal at /postal - dispatcher dashboard will show assignment queue, pickups, returns, and agent management</p>
+          <p><strong>Key Permissions:</strong> Assign orders to agents, manage routes, update order status, view agent workloads, monitor delivery progress, schedule pickups, track returns, review bulk imports</p>
         </div>
       </Card>
 
@@ -36,6 +36,7 @@ export function PostalDispatcherGuide() {
               <li>Filter by priority, date, or region</li>
               <li>Sort by deadline to prioritize urgent orders</li>
               <li>View recipient UAC location on map</li>
+              <li>Check recipient delivery preferences</li>
             </ul>
           </div>
           
@@ -67,6 +68,123 @@ export function PostalDispatcherGuide() {
         </div>
       </Card>
 
+      {/* Pickup Request Management */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Package className="h-5 w-5" />
+          Managing Pickup Requests
+        </h2>
+        <div className="space-y-3">
+          <p>Citizens can request package collection from their addresses:</p>
+          
+          <h3 className="font-semibold mt-4">Pickup Request Workflow:</h3>
+          <ol className="list-decimal list-inside space-y-2 ml-4">
+            <li>Access the "Pickups" tab to see pending requests</li>
+            <li>Review request details (address, package count, time window)</li>
+            <li>Schedule a pickup date/time</li>
+            <li>Assign to an available agent in that area</li>
+            <li>Monitor pickup completion</li>
+          </ol>
+
+          <div className="grid md:grid-cols-2 gap-4 mt-4">
+            <div className="bg-muted p-4 rounded-lg">
+              <h4 className="font-semibold">Request Information</h4>
+              <ul className="text-sm mt-2 space-y-1">
+                <li>Requester name and contact</li>
+                <li>Pickup address (UAC verified)</li>
+                <li>Number of packages</li>
+                <li>Estimated weight</li>
+                <li>Preferred date/time window</li>
+              </ul>
+            </div>
+            <div className="bg-muted p-4 rounded-lg">
+              <h4 className="font-semibold">Pickup Statuses</h4>
+              <ul className="text-sm mt-2 space-y-1">
+                <li><span className="text-yellow-600">●</span> Pending - Awaiting scheduling</li>
+                <li><span className="text-blue-600">●</span> Scheduled - Date/time confirmed</li>
+                <li><span className="text-purple-600">●</span> Assigned - Agent assigned</li>
+                <li><span className="text-orange-600">●</span> En Route - Agent on the way</li>
+                <li><span className="text-green-600">●</span> Completed - Packages collected</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-green-500/10 border border-green-500/20 p-4 rounded-lg mt-4">
+            <p className="text-sm"><strong>✓ Tip:</strong> Group pickup requests by area and assign to agents already delivering in that zone for efficiency.</p>
+          </div>
+        </div>
+      </Card>
+
+      {/* Returns Management */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <RotateCcw className="h-5 w-5" />
+          Returns & Reverse Logistics
+        </h2>
+        <div className="space-y-3">
+          <p>Track and manage return orders:</p>
+          
+          <h3 className="font-semibold mt-4">Return Sources:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li><strong>Failed Delivery:</strong> After max delivery attempts</li>
+            <li><strong>Customer Return:</strong> Recipient initiates return</li>
+            <li><strong>Sender Recall:</strong> Sender requests return before delivery</li>
+            <li><strong>Refused:</strong> Recipient refused package</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Return Workflow:</h3>
+          <ol className="list-decimal list-inside space-y-2 ml-4">
+            <li>Access the "Returns" tab to see return orders</li>
+            <li>Review return reason and original order details</li>
+            <li>Arrange collection (agent pickup or citizen drop-off)</li>
+            <li>Track return to origin post office</li>
+            <li>Mark as processed when complete</li>
+          </ol>
+
+          <div className="bg-muted p-4 rounded-lg mt-4">
+            <h4 className="font-semibold">Return Statuses:</h4>
+            <ul className="text-sm mt-2 space-y-1">
+              <li><span className="text-yellow-600">●</span> Initiated - Return requested</li>
+              <li><span className="text-blue-600">●</span> Label Generated - Return label created</li>
+              <li><span className="text-orange-600">●</span> In Transit - Being returned</li>
+              <li><span className="text-green-600">●</span> Received - Back at origin office</li>
+              <li><span className="text-gray-600">●</span> Processed - Return completed</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+
+      {/* Bulk Import Review */}
+      <Card className="p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Upload className="h-5 w-5" />
+          Bulk Import Review
+        </h2>
+        <div className="space-y-3">
+          <p>Monitor and review bulk order imports:</p>
+          
+          <h3 className="font-semibold mt-4">Import Job Information:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li>Total rows in uploaded file</li>
+            <li>Successfully processed orders</li>
+            <li>Failed rows with error details</li>
+            <li>Processing status and time</li>
+          </ul>
+
+          <h3 className="font-semibold mt-4">Common Import Errors:</h3>
+          <ul className="list-disc list-inside space-y-1 ml-4">
+            <li><strong>Invalid UAC:</strong> Recipient address not found in system</li>
+            <li><strong>Missing Required Field:</strong> sender_name, recipient_name, etc.</li>
+            <li><strong>Invalid Package Type:</strong> Unrecognized package type value</li>
+            <li><strong>Format Error:</strong> CSV formatting issues</li>
+          </ul>
+
+          <div className="bg-yellow-50 dark:bg-yellow-500/10 border-l-4 border-yellow-500 p-4 mt-4">
+            <p className="text-sm text-yellow-800 dark:text-yellow-200"><strong>⚠️ Action:</strong> For failed imports, coordinate with clerks to correct data and re-import, or manually create individual orders.</p>
+          </div>
+        </div>
+      </Card>
+
       {/* Route Management */}
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -82,6 +200,7 @@ export function PostalDispatcherGuide() {
             <li>Group orders by geographic area</li>
             <li>Consider traffic patterns and delivery windows</li>
             <li>Place time-sensitive orders early in sequence</li>
+            <li>Include pickup requests in route planning</li>
           </ul>
 
           <h3 className="font-semibold mt-4">Map View:</h3>
@@ -93,7 +212,7 @@ export function PostalDispatcherGuide() {
           </ul>
 
           <div className="bg-muted p-4 rounded-lg mt-4">
-            <p className="text-sm"><strong>Tip:</strong> Use the map view to identify nearby deliveries and group them for the same agent to minimize travel time.</p>
+            <p className="text-sm"><strong>Tip:</strong> Use the map view to identify nearby deliveries and pickups, then group them for the same agent to minimize travel time.</p>
           </div>
         </div>
       </Card>
@@ -112,6 +231,7 @@ export function PostalDispatcherGuide() {
               <h4 className="font-semibold">Workload Metrics</h4>
               <ul className="list-disc list-inside text-sm mt-2 space-y-1">
                 <li>Active assignments count</li>
+                <li>Pending pickups count</li>
                 <li>Completed today count</li>
                 <li>Average delivery time</li>
                 <li>Success rate percentage</li>
@@ -128,7 +248,7 @@ export function PostalDispatcherGuide() {
           </div>
 
           <div className="bg-yellow-50 dark:bg-yellow-500/10 border-l-4 border-yellow-500 p-4 mt-4">
-            <p className="text-sm text-yellow-800 dark:text-yellow-200"><strong>⚠️ Balance:</strong> Avoid overloading single agents. Distribute orders evenly to maintain service quality and agent satisfaction.</p>
+            <p className="text-sm text-yellow-800 dark:text-yellow-200"><strong>⚠️ Balance:</strong> Avoid overloading single agents. Distribute orders and pickups evenly to maintain service quality and agent satisfaction.</p>
           </div>
         </div>
       </Card>
@@ -150,6 +270,7 @@ export function PostalDispatcherGuide() {
               { from: 'Out for Delivery', to: 'Delivered', actor: 'Agent completes delivery' },
               { from: 'Out for Delivery', to: 'Failed', actor: 'Delivery attempt failed' },
               { from: 'Failed', to: 'Out for Delivery', actor: 'Retry scheduled' },
+              { from: 'Failed (3x)', to: 'Return Initiated', actor: 'Auto-return triggered' },
             ].map((item, idx) => (
               <div key={idx} className="flex items-center gap-2 text-sm">
                 <span className="font-medium">{item.from}</span>
@@ -172,10 +293,14 @@ export function PostalDispatcherGuide() {
         <div className="space-y-3">
           <ul className="list-disc list-inside space-y-2 ml-4">
             <li>✅ Process assignment queue at start of each shift</li>
-            <li>✅ Group nearby deliveries for same agent</li>
+            <li>✅ Check recipient preferences before assignment</li>
+            <li>✅ Group nearby deliveries and pickups for same agent</li>
             <li>✅ Prioritize orders by deadline</li>
+            <li>✅ Schedule pickups within requested time windows</li>
             <li>✅ Monitor agent locations throughout day</li>
             <li>✅ Reassign failed deliveries promptly</li>
+            <li>✅ Track return orders to completion</li>
+            <li>✅ Review bulk import results for errors</li>
             <li>✅ Communicate special instructions to agents</li>
             <li>✅ Balance workload to prevent agent burnout</li>
             <li>✅ Review end-of-day reports for optimization</li>
