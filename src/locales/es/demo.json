@@ -385,113 +385,114 @@
     },
     "passportDeliveryCar": {
       "title": "Entrega Postal Gubernamental a Residencia del Ciudadano",
-      "context": "La Oficina de Inmigración necesita entregar un pasaporte recién emitido a la ciudadana Elena Nguema en su dirección CAR registrada. El agente de entrega postal usa el Módulo Postal ConEG para verificar la dirección, navegar a la ubicación y confirmar la entrega con prueba.",
-      "objective": "Usar el Módulo de Entrega Postal con datos de dirección CAR para entregar documentos gubernamentales oficiales",
-      "presenterNotes": "Este escenario demuestra el valor real de las direcciones CAR para la entrega de servicios gubernamentales. El UAC proporciona un identificador universal que asegura que los documentos lleguen a la persona correcta en la ubicación correcta. Las firmas digitales y la verificación GPS crean un registro de auditoría que protege tanto al ciudadano como a la agencia gubernamental. Este flujo de trabajo elimina entregas fallidas y reduce la carga administrativa.",
+      "context": "La Oficina de Inmigración entrega un pasaporte recién emitido a la oficina postal para su entrega a la ciudadana Elena Nguema. El Empleado Postal crea la orden, el Despachador la asigna a un agente, y el Agente de Entrega navega a la dirección CAR de Elena para completar la entrega con prueba.",
+      "objective": "Demostrar el flujo de trabajo postal completo: Empleado crea orden → Despachador asigna → Agente entrega",
+      "presenterNotes": "Este escenario muestra el flujo de trabajo postal correcto con separación de roles: el Empleado Postal maneja la entrada de órdenes, el Despachador gestiona asignaciones y rutas, el Agente realiza la entrega en campo. El UAC asegura búsqueda precisa de direcciones del registro CAR. Las firmas digitales y verificación GPS crean un registro de auditoría que protege tanto al ciudadano como al gobierno.",
       "actors": {
+        "clerk": { "role": "Empleado Postal", "name": "Carmen Santos" },
+        "dispatcher": { "role": "Despachador Postal", "name": "Luis Fernández" },
         "agent": { "role": "Agente de Entrega Postal", "name": "Roberto Obiang" },
-        "citizen": { "role": "Ciudadano/Destinatario", "name": "Elena Nguema" },
-        "office": { "role": "Oficina de Inmigración", "name": "Sistema" }
+        "citizen": { "role": "Ciudadano/Destinatario", "name": "Elena Nguema" }
       },
-      "modules": ["Portal Postal", "Verificación de Dirección", "Seguimiento de Entrega", "Prueba de Entrega"],
+      "modules": ["Portal Postal", "Gestión de Órdenes", "Asignación de Entregas", "Prueba de Entrega"],
       "steps": {
         "1": {
-          "action": "La Oficina de Inmigración crea orden de entrega con UAC de Elena: GQ-BN-MLO-ELEN-0089",
-          "screen": "Interfaz de creación de orden de entrega con campo UAC",
-          "notes": "Muestre cómo las agencias gubernamentales usan UAC para identificación de ciudadanos."
+          "action": "Carmen (Empleada Postal) inicia sesión en el Portal Postal",
+          "screen": "Página de autenticación, redirección al panel de Empleado Postal",
+          "notes": "Señale el acceso basado en roles - los empleados ven la interfaz de creación de órdenes."
         },
         "2": {
-          "action": "El sistema recupera automáticamente los detalles de dirección CAR para el UAC",
-          "screen": "Detalles de dirección completados: Calle, Ciudad, Región, coordenadas GPS",
-          "notes": "Explique la búsqueda automática de dirección del registro CAR."
+          "action": "Hace clic en \"Crear Orden de Entrega\" para el pasaporte de la Oficina de Inmigración",
+          "screen": "DeliveryOrderForm con campos de remitente y destinatario",
+          "notes": "Muestre cómo los empleados postales reciben paquetes de agencias gubernamentales."
         },
         "3": {
-          "action": "El agente de entrega Roberto inicia sesión con sus credenciales gubernamentales",
-          "screen": "Página de autenticación, redirección al panel de entrega",
-          "notes": "Señale el acceso basado en roles para personal de entrega."
+          "action": "Carmen ingresa el UAC del destinatario: GQ-BN-MLO-ELEN-0089",
+          "screen": "Campo de búsqueda de UAC con autocompletado",
+          "notes": "Demuestre la búsqueda de dirección basada en UAC del registro CAR."
         },
         "4": {
-          "action": "Roberto ve las asignaciones de entrega del día en su cola",
-          "screen": "Cola de entregas con elementos pendientes, el pasaporte de Elena en la parte superior",
-          "notes": "Muestre la priorización y programación de entregas."
+          "action": "El sistema valida el UAC y completa los detalles de dirección CAR de Elena",
+          "screen": "Detalles de dirección autocompletados: Calle, Ciudad, Región, coordenadas GPS",
+          "notes": "Explique que la validación automática de direcciones previene errores de entrega."
         },
         "5": {
-          "action": "Hace clic en la entrega de Elena para ver detalles completos",
-          "screen": "Tarjeta de detalle de entrega: nombre del destinatario, UAC, dirección completa, instrucciones especiales",
-          "notes": "Demuestre la información completa de entrega."
+          "action": "Carmen selecciona tipo de paquete: \"Certificado\" con verificación de ID requerida",
+          "screen": "Selector de tipo de paquete, casillas de opciones de seguridad",
+          "notes": "Muestre las opciones de seguridad para documentos gubernamentales sensibles."
         },
         "6": {
-          "action": "Roberto hace clic en \"Ver Dirección en Mapa\"",
-          "screen": "Mapa interactivo mostrando ubicación exacta con imágenes satelitales",
-          "notes": "Muestre la precisión GPS para entrega exacta."
+          "action": "Envía la orden - el estado cambia a \"Listo para Asignación\"",
+          "screen": "Mensaje de éxito con número de orden, insignia de estado",
+          "notes": "Señale el ciclo de vida de la orden: Creada → Lista → Asignada → Entregada."
         },
         "7": {
-          "action": "Hace clic en \"Navegar\" para obtener direcciones",
-          "screen": "La integración de navegación se abre (Apple Maps/Google Maps)",
-          "notes": "Demuestre el soporte de navegación multiplataforma."
+          "action": "Luis (Despachador Postal) inicia sesión y ve las órdenes listas para asignación",
+          "screen": "Panel del despachador con cola de órdenes filtrable",
+          "notes": "Los despachadores gestionan el flujo de trabajo de asignación."
         },
         "8": {
-          "action": "Roberto conduce a la ubicación siguiendo las direcciones GPS",
-          "screen": "Vista móvil con cuenta regresiva de ETA",
-          "notes": "Note: Seguimiento en tiempo real disponible para supervisores."
+          "action": "Selecciona la entrega del pasaporte de Elena y hace clic en \"Asignar\"",
+          "screen": "Detalle de orden con botón \"Asignar a Agente\"",
+          "notes": "Muestre el rol del despachador en la distribución de entregas."
         },
         "9": {
-          "action": "Al llegar, hace clic en \"Llegué a la Ubicación\"",
-          "screen": "Actualización de estado con confirmación GPS",
-          "notes": "El sistema verifica que el agente está dentro de la proximidad de la dirección."
+          "action": "Luis asigna la orden a Roberto (Agente de Entrega)",
+          "screen": "Menú desplegable de selector de agentes con agentes disponibles",
+          "notes": "Los despachadores ven agentes dentro de su ámbito geográfico."
         },
         "10": {
-          "action": "Roberto verifica que la dirección coincide con la ubicación física",
-          "screen": "Pantalla de confirmación de dirección con UAC y detalles de calle",
-          "notes": "Muestre el paso de confirmación visual para precisión de entrega."
+          "action": "Roberto (Agente de Entrega) inicia sesión y ve su nueva asignación",
+          "screen": "Panel del agente con tarjetas de entrega, la orden de Elena resaltada",
+          "notes": "Los agentes ven solo sus propias entregas asignadas."
         },
         "11": {
-          "action": "Toca el timbre y Elena responde",
-          "screen": "Aparece pantalla de verificación de destinatario",
-          "notes": "Explique la verificación de identidad antes de la entrega."
+          "action": "Hace clic en \"Mostrar Ruta\" para navegación en la aplicación",
+          "screen": "RouteMapView con ruta visual, distancia e instrucciones paso a paso",
+          "notes": "Demuestre la navegación en la aplicación usando OpenStreetMap/Leaflet."
         },
         "12": {
-          "action": "Roberto pide a Elena verificar su identidad (se muestra DNI Nacional)",
-          "screen": "Casilla de verificación de ID: \"Identidad del destinatario confirmada\"",
-          "notes": "Señale las medidas de seguridad para documentos sensibles."
+          "action": "Roberto conduce a la ubicación y hace clic en \"Llegué a la Ubicación\"",
+          "screen": "Actualización de estado con verificación GPS",
+          "notes": "El sistema confirma que el agente está dentro de la proximidad de la dirección."
         },
         "13": {
-          "action": "Elena confirma recepción firmando en la pantalla del dispositivo",
+          "action": "Verifica la identidad de Elena comprobando su DNI Nacional",
+          "screen": "Pantalla de verificación de ID: casilla \"Identidad del destinatario confirmada\"",
+          "notes": "Requerido para correo certificado y documentos sensibles."
+        },
+        "14": {
+          "action": "Elena firma en la pantalla del dispositivo para confirmar la recepción",
           "screen": "Panel de captura de firma con mensaje \"Firme aquí\"",
           "notes": "Muestre la captura de firma digital para prueba de entrega."
         },
-        "14": {
-          "action": "Roberto toma una foto de la entrega (opcional)",
-          "screen": "Captura de cámara con superposición de geolocalización",
-          "notes": "Explique la evidencia fotográfica para confirmación de entrega."
-        },
         "15": {
-          "action": "Hace clic en \"Confirmar Entrega\" para completar",
-          "screen": "Diálogo de confirmación de entrega con resumen",
-          "notes": "Muestre el paso final de confirmación."
+          "action": "Roberto captura foto como prueba de entrega",
+          "screen": "Captura de cámara con superposición de geolocalización",
+          "notes": "Evidencia fotográfica con coordenadas GPS para registro de auditoría."
         },
         "16": {
-          "action": "El sistema registra: hora de entrega, ubicación, firma del destinatario",
-          "screen": "Pantalla de éxito: \"Entrega completada exitosamente\"",
-          "notes": "Demuestre el registro de auditoría completo."
+          "action": "Hace clic en \"Confirmar Entrega\" para completar",
+          "screen": "Confirmación de entrega con resumen: hora, ubicación, firma",
+          "notes": "Muestre que la confirmación final crea un registro de auditoría completo."
         },
         "17": {
           "action": "Elena recibe notificación SMS/correo: \"Su pasaporte ha sido entregado\"",
           "screen": "Vista previa de notificación mostrando confirmación de entrega",
-          "notes": "Señale la notificación automática al ciudadano."
+          "notes": "Señale el sistema de notificación automática al ciudadano."
         },
         "18": {
-          "action": "La Oficina de Inmigración ve estado actualizado: \"Entregado\"",
-          "screen": "Vista de back-office con estado de entrega actualizado, marca de tiempo, firma",
-          "notes": "Muestre la visibilidad de seguimiento de extremo a extremo para el gobierno."
+          "action": "La Oficina de Inmigración puede rastrear el estado: \"Entregado\" con prueba",
+          "screen": "Vista de seguimiento con marca de tiempo de entrega e imagen de firma",
+          "notes": "Muestre la visibilidad de seguimiento de extremo a extremo para agencias gubernamentales."
         }
       },
       "outcomes": [
+        "Flujo de trabajo completo demostrado: Empleado → Despachador → Agente",
         "Pasaporte entregado con precisión a la dirección CAR registrada de Elena",
-        "Registro de auditoría completo: quién entregó, cuándo, dónde, con prueba",
-        "Ciudadana recibió notificación de entrega exitosa",
-        "Oficina de Inmigración tiene prueba digital de entrega con firma",
-        "Sin entregas fallidas debido a información de dirección incorrecta"
+        "Registro de auditoría completo: creador de orden, asignador, entregador, con marcas de tiempo",
+        "Ciudadana recibió notificación automática de entrega exitosa",
+        "Oficina de Inmigración tiene prueba digital con firma y foto"
       ]
     },
     "emergencyCall": {

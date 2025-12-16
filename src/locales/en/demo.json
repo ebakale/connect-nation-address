@@ -385,113 +385,114 @@
     },
     "passportDeliveryCar": {
       "title": "Government Postal Delivery to Citizen Residence",
-      "context": "The Immigration Office needs to deliver a newly issued passport to citizen Elena Nguema at her registered CAR address. The postal delivery agent uses the ConEG Postal Module to verify the address, navigate to the location, and confirm delivery with proof.",
-      "objective": "Use the Postal Delivery Module with CAR address data to deliver official government documents",
-      "presenterNotes": "This scenario demonstrates the real-world value of CAR addresses for government service delivery. The UAC provides a universal identifier that ensures documents reach the correct person at the correct location. Digital signatures and GPS verification create an audit trail that protects both the citizen and the government agency. This workflow eliminates failed deliveries and reduces administrative overhead.",
+      "context": "The Immigration Office delivers a newly issued passport to the post office for delivery to citizen Elena Nguema. The Postal Clerk creates the order, the Dispatcher assigns it to an agent, and the Delivery Agent navigates to Elena's CAR address to complete the delivery with proof.",
+      "objective": "Demonstrate the complete postal workflow: Clerk creates order → Dispatcher assigns → Agent delivers",
+      "presenterNotes": "This scenario shows the correct postal workflow with role separation: Postal Clerk handles order entry, Dispatcher manages assignments and routing, Agent performs field delivery. The UAC ensures accurate address lookup from the CAR registry. Digital signatures and GPS verification create an audit trail that protects both citizen and government.",
       "actors": {
+        "clerk": { "role": "Postal Clerk", "name": "Carmen Santos" },
+        "dispatcher": { "role": "Postal Dispatcher", "name": "Luis Fernández" },
         "agent": { "role": "Postal Delivery Agent", "name": "Roberto Obiang" },
-        "citizen": { "role": "Citizen/Recipient", "name": "Elena Nguema" },
-        "office": { "role": "Immigration Office", "name": "System" }
+        "citizen": { "role": "Citizen/Recipient", "name": "Elena Nguema" }
       },
-      "modules": ["Postal Portal", "Address Verification", "Delivery Tracking", "Proof of Delivery"],
+      "modules": ["Postal Portal", "Order Management", "Delivery Assignment", "Proof of Delivery"],
       "steps": {
         "1": {
-          "action": "Immigration Office creates delivery order with Elena's UAC: GQ-BN-MLO-ELEN-0089",
-          "screen": "Delivery order creation interface with UAC field",
-          "notes": "Show how government agencies use UAC for citizen identification."
+          "action": "Carmen (Postal Clerk) logs into the Postal Portal",
+          "screen": "Authentication page, redirect to Postal Clerk dashboard",
+          "notes": "Point out role-based access - clerks see order creation interface."
         },
         "2": {
-          "action": "System automatically retrieves CAR address details for the UAC",
-          "screen": "Address details populated: Street, City, Region, GPS coordinates",
-          "notes": "Explain automatic address lookup from CAR registry."
+          "action": "She clicks \"Create Delivery Order\" for the passport from Immigration Office",
+          "screen": "DeliveryOrderForm with sender and recipient fields",
+          "notes": "Show how postal clerks receive packages from government agencies."
         },
         "3": {
-          "action": "Delivery agent Roberto logs in with his government credentials",
-          "screen": "Authentication page, redirect to delivery dashboard",
-          "notes": "Point out role-based access for delivery personnel."
+          "action": "Carmen enters recipient UAC: GQ-BN-MLO-ELEN-0089",
+          "screen": "UAC lookup field with autocomplete",
+          "notes": "Demonstrate UAC-based address lookup from CAR registry."
         },
         "4": {
-          "action": "Roberto sees today's delivery assignments in his queue",
-          "screen": "Delivery queue with pending items, Elena's passport at top",
-          "notes": "Show delivery prioritization and scheduling."
+          "action": "System validates UAC and populates Elena's CAR address details",
+          "screen": "Address details auto-filled: Street, City, Region, GPS coordinates",
+          "notes": "Explain automatic address validation prevents delivery errors."
         },
         "5": {
-          "action": "He clicks on Elena's delivery to view full details",
-          "screen": "Delivery detail card: recipient name, UAC, full address, special instructions",
-          "notes": "Demonstrate comprehensive delivery information."
+          "action": "Carmen selects package type: \"Registered\" with ID verification required",
+          "screen": "Package type selector, security options checkboxes",
+          "notes": "Show security options for sensitive government documents."
         },
         "6": {
-          "action": "Roberto clicks \"View Address on Map\"",
-          "screen": "Interactive map showing exact location with satellite imagery",
-          "notes": "Show GPS precision for accurate delivery."
+          "action": "She submits the order - status becomes \"Ready for Assignment\"",
+          "screen": "Success message with order number, status badge",
+          "notes": "Point out order lifecycle: Created → Ready → Assigned → Delivered."
         },
         "7": {
-          "action": "He clicks \"Navigate\" to get directions",
-          "screen": "Navigation integration opens (Apple Maps/Google Maps)",
-          "notes": "Demonstrate cross-platform navigation support."
+          "action": "Luis (Postal Dispatcher) logs in and views orders ready for assignment",
+          "screen": "Dispatcher dashboard with filterable order queue",
+          "notes": "Dispatchers manage the assignment workflow."
         },
         "8": {
-          "action": "Roberto drives to the location following GPS directions",
-          "screen": "Mobile view with ETA countdown",
-          "notes": "Note: Real-time tracking available for supervisors."
+          "action": "He selects Elena's passport delivery and clicks \"Assign\"",
+          "screen": "Order detail with \"Assign to Agent\" button",
+          "notes": "Show dispatcher's role in routing deliveries."
         },
         "9": {
-          "action": "Upon arrival, he clicks \"Arrived at Location\"",
-          "screen": "Status update with GPS confirmation",
-          "notes": "System verifies agent is within proximity of address."
+          "action": "Luis assigns the order to Roberto (Delivery Agent)",
+          "screen": "Agent selector dropdown with available agents",
+          "notes": "Dispatchers see agents within their geographic scope."
         },
         "10": {
-          "action": "Roberto verifies the address matches physical location",
-          "screen": "Address confirmation screen with UAC and street details",
-          "notes": "Show visual confirmation step for delivery accuracy."
+          "action": "Roberto (Delivery Agent) logs in and sees his new assignment",
+          "screen": "Agent dashboard with delivery cards, Elena's order highlighted",
+          "notes": "Agents see only their own assigned deliveries."
         },
         "11": {
-          "action": "He rings doorbell and Elena answers",
-          "screen": "Recipient verification screen appears",
-          "notes": "Explain identity verification before handover."
+          "action": "He clicks \"Show Route\" for in-app navigation",
+          "screen": "RouteMapView with visual route, distance, and turn-by-turn directions",
+          "notes": "Demonstrate in-app routing using OpenStreetMap/Leaflet."
         },
         "12": {
-          "action": "Roberto asks Elena to verify her identity (National ID shown)",
-          "screen": "ID verification checkbox: \"Recipient identity confirmed\"",
-          "notes": "Point out security measures for sensitive documents."
+          "action": "Roberto drives to the location and clicks \"Arrived at Location\"",
+          "screen": "Status update with GPS verification",
+          "notes": "System confirms agent is within proximity of address."
         },
         "13": {
-          "action": "Elena confirms receipt by signing on the device screen",
+          "action": "He verifies Elena's identity by checking her National ID",
+          "screen": "ID verification screen: \"Recipient identity confirmed\" checkbox",
+          "notes": "Required for registered mail and sensitive documents."
+        },
+        "14": {
+          "action": "Elena signs on the device screen to confirm receipt",
           "screen": "Signature capture pad with \"Sign here\" prompt",
           "notes": "Show digital signature capture for proof of delivery."
         },
-        "14": {
-          "action": "Roberto takes a photo of the delivery (optional)",
-          "screen": "Camera capture with geolocation overlay",
-          "notes": "Explain photo evidence for delivery confirmation."
-        },
         "15": {
-          "action": "He clicks \"Confirm Delivery\" to complete",
-          "screen": "Delivery confirmation dialog with summary",
-          "notes": "Show final confirmation step."
+          "action": "Roberto captures photo proof of delivery",
+          "screen": "Camera capture with geolocation overlay",
+          "notes": "Photo evidence with GPS coordinates for audit trail."
         },
         "16": {
-          "action": "System records: delivery time, location, recipient signature",
-          "screen": "Success screen: \"Delivery completed successfully\"",
-          "notes": "Demonstrate complete audit trail."
+          "action": "He clicks \"Confirm Delivery\" to complete",
+          "screen": "Delivery confirmation with summary: time, location, signature",
+          "notes": "Show final confirmation creates complete audit record."
         },
         "17": {
           "action": "Elena receives SMS/email notification: \"Your passport has been delivered\"",
           "screen": "Notification preview showing delivery confirmation",
-          "notes": "Point out automatic citizen notification."
+          "notes": "Point out automatic citizen notification system."
         },
         "18": {
-          "action": "Immigration Office sees updated status: \"Delivered\"",
-          "screen": "Back-office view with delivery status updated, timestamp, signature",
-          "notes": "Show end-to-end tracking visibility for government."
+          "action": "Immigration Office can track status: \"Delivered\" with proof",
+          "screen": "Tracking view with delivery timestamp and signature image",
+          "notes": "Show end-to-end tracking visibility for government agencies."
         }
       },
       "outcomes": [
+        "Complete workflow demonstrated: Clerk → Dispatcher → Agent",
         "Passport delivered accurately to Elena's CAR-registered address",
-        "Complete audit trail: who delivered, when, where, with proof",
-        "Citizen received notification of successful delivery",
-        "Immigration Office has digital proof of delivery with signature",
-        "No failed deliveries due to incorrect address information"
+        "Full audit trail: order creator, assigner, deliverer, with timestamps",
+        "Citizen received automatic notification of successful delivery",
+        "Immigration Office has digital proof with signature and photo"
       ]
     },
     "emergencyCall": {

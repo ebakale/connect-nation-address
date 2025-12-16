@@ -385,113 +385,114 @@
     },
     "passportDeliveryCar": {
       "title": "Livraison Postale Gouvernementale à la Résidence du Citoyen",
-      "context": "Le Bureau de l'Immigration doit livrer un passeport nouvellement émis à la citoyenne Elena Nguema à son adresse CAR enregistrée. L'agent de livraison postale utilise le Module Postal ConEG pour vérifier l'adresse, naviguer vers l'emplacement et confirmer la livraison avec preuve.",
-      "objective": "Utiliser le Module de Livraison Postale avec les données d'adresse CAR pour livrer des documents gouvernementaux officiels",
-      "presenterNotes": "Ce scénario démontre la valeur réelle des adresses CAR pour la livraison de services gouvernementaux. L'UAC fournit un identifiant universel qui garantit que les documents atteignent la bonne personne au bon endroit. Les signatures numériques et la vérification GPS créent une piste d'audit qui protège à la fois le citoyen et l'agence gouvernementale. Ce flux de travail élimine les livraisons échouées et réduit les frais administratifs.",
+      "context": "Le Bureau de l'Immigration livre un passeport nouvellement émis au bureau de poste pour livraison à la citoyenne Elena Nguema. L'Employé Postal crée la commande, le Répartiteur l'assigne à un agent, et l'Agent de Livraison navigue vers l'adresse CAR d'Elena pour compléter la livraison avec preuve.",
+      "objective": "Démontrer le flux de travail postal complet: Employé crée commande → Répartiteur assigne → Agent livre",
+      "presenterNotes": "Ce scénario montre le flux de travail postal correct avec séparation des rôles: l'Employé Postal gère la saisie des commandes, le Répartiteur gère les assignations et les itinéraires, l'Agent effectue la livraison sur le terrain. L'UAC assure une recherche d'adresse précise depuis le registre CAR. Les signatures numériques et la vérification GPS créent une piste d'audit qui protège à la fois le citoyen et le gouvernement.",
       "actors": {
+        "clerk": { "role": "Employé Postal", "name": "Carmen Santos" },
+        "dispatcher": { "role": "Répartiteur Postal", "name": "Luis Fernández" },
         "agent": { "role": "Agent de Livraison Postale", "name": "Roberto Obiang" },
-        "citizen": { "role": "Citoyen/Destinataire", "name": "Elena Nguema" },
-        "office": { "role": "Bureau de l'Immigration", "name": "Système" }
+        "citizen": { "role": "Citoyen/Destinataire", "name": "Elena Nguema" }
       },
-      "modules": ["Portail Postal", "Vérification d'Adresse", "Suivi de Livraison", "Preuve de Livraison"],
+      "modules": ["Portail Postal", "Gestion des Commandes", "Assignation des Livraisons", "Preuve de Livraison"],
       "steps": {
         "1": {
-          "action": "Le Bureau de l'Immigration crée un ordre de livraison avec l'UAC d'Elena: GQ-BN-MLO-ELEN-0089",
-          "screen": "Interface de création d'ordre de livraison avec champ UAC",
-          "notes": "Montrez comment les agences gouvernementales utilisent l'UAC pour l'identification des citoyens."
+          "action": "Carmen (Employée Postale) se connecte au Portail Postal",
+          "screen": "Page d'authentification, redirection vers le tableau de bord Employé Postal",
+          "notes": "Soulignez l'accès basé sur les rôles - les employés voient l'interface de création de commandes."
         },
         "2": {
-          "action": "Le système récupère automatiquement les détails de l'adresse CAR pour l'UAC",
-          "screen": "Détails de l'adresse remplis: Rue, Ville, Région, coordonnées GPS",
-          "notes": "Expliquez la recherche automatique d'adresse depuis le registre CAR."
+          "action": "Elle clique sur \"Créer Commande de Livraison\" pour le passeport du Bureau de l'Immigration",
+          "screen": "DeliveryOrderForm avec champs expéditeur et destinataire",
+          "notes": "Montrez comment les employés postaux reçoivent les colis des agences gouvernementales."
         },
         "3": {
-          "action": "L'agent de livraison Roberto se connecte avec ses identifiants gouvernementaux",
-          "screen": "Page d'authentification, redirection vers le tableau de bord de livraison",
-          "notes": "Soulignez l'accès basé sur les rôles pour le personnel de livraison."
+          "action": "Carmen entre l'UAC du destinataire: GQ-BN-MLO-ELEN-0089",
+          "screen": "Champ de recherche UAC avec autocomplétion",
+          "notes": "Démontrez la recherche d'adresse basée sur l'UAC depuis le registre CAR."
         },
         "4": {
-          "action": "Roberto voit les affectations de livraison du jour dans sa file",
-          "screen": "File de livraison avec éléments en attente, le passeport d'Elena en haut",
-          "notes": "Montrez la priorisation et la planification des livraisons."
+          "action": "Le système valide l'UAC et remplit les détails de l'adresse CAR d'Elena",
+          "screen": "Détails de l'adresse auto-remplis: Rue, Ville, Région, coordonnées GPS",
+          "notes": "Expliquez que la validation automatique d'adresse prévient les erreurs de livraison."
         },
         "5": {
-          "action": "Il clique sur la livraison d'Elena pour voir les détails complets",
-          "screen": "Carte de détail de livraison: nom du destinataire, UAC, adresse complète, instructions spéciales",
-          "notes": "Démontrez les informations complètes de livraison."
+          "action": "Carmen sélectionne le type de colis: \"Recommandé\" avec vérification d'identité requise",
+          "screen": "Sélecteur de type de colis, cases à cocher des options de sécurité",
+          "notes": "Montrez les options de sécurité pour les documents gouvernementaux sensibles."
         },
         "6": {
-          "action": "Roberto clique sur \"Voir l'Adresse sur la Carte\"",
-          "screen": "Carte interactive montrant l'emplacement exact avec imagerie satellite",
-          "notes": "Montrez la précision GPS pour une livraison exacte."
+          "action": "Elle soumet la commande - le statut devient \"Prêt pour Assignation\"",
+          "screen": "Message de succès avec numéro de commande, badge de statut",
+          "notes": "Soulignez le cycle de vie de la commande: Créée → Prête → Assignée → Livrée."
         },
         "7": {
-          "action": "Il clique sur \"Naviguer\" pour obtenir les directions",
-          "screen": "L'intégration de navigation s'ouvre (Apple Maps/Google Maps)",
-          "notes": "Démontrez le support de navigation multiplateforme."
+          "action": "Luis (Répartiteur Postal) se connecte et voit les commandes prêtes pour assignation",
+          "screen": "Tableau de bord du répartiteur avec file de commandes filtrable",
+          "notes": "Les répartiteurs gèrent le flux de travail d'assignation."
         },
         "8": {
-          "action": "Roberto conduit vers l'emplacement en suivant les directions GPS",
-          "screen": "Vue mobile avec compte à rebours de l'ETA",
-          "notes": "Note: Suivi en temps réel disponible pour les superviseurs."
+          "action": "Il sélectionne la livraison du passeport d'Elena et clique sur \"Assigner\"",
+          "screen": "Détail de la commande avec bouton \"Assigner à l'Agent\"",
+          "notes": "Montrez le rôle du répartiteur dans la distribution des livraisons."
         },
         "9": {
-          "action": "À l'arrivée, il clique sur \"Arrivé à l'Emplacement\"",
-          "screen": "Mise à jour du statut avec confirmation GPS",
-          "notes": "Le système vérifie que l'agent est à proximité de l'adresse."
+          "action": "Luis assigne la commande à Roberto (Agent de Livraison)",
+          "screen": "Menu déroulant de sélection d'agent avec agents disponibles",
+          "notes": "Les répartiteurs voient les agents dans leur périmètre géographique."
         },
         "10": {
-          "action": "Roberto vérifie que l'adresse correspond à l'emplacement physique",
-          "screen": "Écran de confirmation d'adresse avec UAC et détails de la rue",
-          "notes": "Montrez l'étape de confirmation visuelle pour la précision de livraison."
+          "action": "Roberto (Agent de Livraison) se connecte et voit sa nouvelle assignation",
+          "screen": "Tableau de bord de l'agent avec cartes de livraison, la commande d'Elena mise en évidence",
+          "notes": "Les agents voient uniquement leurs propres livraisons assignées."
         },
         "11": {
-          "action": "Il sonne et Elena répond",
-          "screen": "L'écran de vérification du destinataire apparaît",
-          "notes": "Expliquez la vérification d'identité avant la remise."
+          "action": "Il clique sur \"Afficher l'Itinéraire\" pour la navigation dans l'application",
+          "screen": "RouteMapView avec itinéraire visuel, distance et directions étape par étape",
+          "notes": "Démontrez la navigation intégrée utilisant OpenStreetMap/Leaflet."
         },
         "12": {
-          "action": "Roberto demande à Elena de vérifier son identité (Carte d'identité nationale présentée)",
-          "screen": "Case à cocher de vérification d'identité: \"Identité du destinataire confirmée\"",
-          "notes": "Soulignez les mesures de sécurité pour les documents sensibles."
+          "action": "Roberto conduit vers l'emplacement et clique sur \"Arrivé à l'Emplacement\"",
+          "screen": "Mise à jour du statut avec vérification GPS",
+          "notes": "Le système confirme que l'agent est à proximité de l'adresse."
         },
         "13": {
-          "action": "Elena confirme la réception en signant sur l'écran de l'appareil",
+          "action": "Il vérifie l'identité d'Elena en vérifiant sa Carte d'Identité Nationale",
+          "screen": "Écran de vérification d'identité: case \"Identité du destinataire confirmée\"",
+          "notes": "Requis pour le courrier recommandé et les documents sensibles."
+        },
+        "14": {
+          "action": "Elena signe sur l'écran de l'appareil pour confirmer la réception",
           "screen": "Pavé de capture de signature avec message \"Signez ici\"",
           "notes": "Montrez la capture de signature numérique pour preuve de livraison."
         },
-        "14": {
-          "action": "Roberto prend une photo de la livraison (optionnel)",
-          "screen": "Capture de caméra avec superposition de géolocalisation",
-          "notes": "Expliquez la preuve photographique pour la confirmation de livraison."
-        },
         "15": {
-          "action": "Il clique sur \"Confirmer Livraison\" pour terminer",
-          "screen": "Dialogue de confirmation de livraison avec résumé",
-          "notes": "Montrez l'étape de confirmation finale."
+          "action": "Roberto capture une photo comme preuve de livraison",
+          "screen": "Capture de caméra avec superposition de géolocalisation",
+          "notes": "Preuve photographique avec coordonnées GPS pour piste d'audit."
         },
         "16": {
-          "action": "Le système enregistre: heure de livraison, emplacement, signature du destinataire",
-          "screen": "Écran de succès: \"Livraison effectuée avec succès\"",
-          "notes": "Démontrez la piste d'audit complète."
+          "action": "Il clique sur \"Confirmer Livraison\" pour terminer",
+          "screen": "Confirmation de livraison avec résumé: heure, emplacement, signature",
+          "notes": "Montrez que la confirmation finale crée un enregistrement d'audit complet."
         },
         "17": {
           "action": "Elena reçoit une notification SMS/email: \"Votre passeport a été livré\"",
           "screen": "Aperçu de notification montrant la confirmation de livraison",
-          "notes": "Soulignez la notification automatique au citoyen."
+          "notes": "Soulignez le système de notification automatique au citoyen."
         },
         "18": {
-          "action": "Le Bureau de l'Immigration voit le statut mis à jour: \"Livré\"",
-          "screen": "Vue back-office avec statut de livraison mis à jour, horodatage, signature",
-          "notes": "Montrez la visibilité de suivi de bout en bout pour le gouvernement."
+          "action": "Le Bureau de l'Immigration peut suivre le statut: \"Livré\" avec preuve",
+          "screen": "Vue de suivi avec horodatage de livraison et image de signature",
+          "notes": "Montrez la visibilité de suivi de bout en bout pour les agences gouvernementales."
         }
       },
       "outcomes": [
+        "Flux de travail complet démontré: Employé → Répartiteur → Agent",
         "Passeport livré avec précision à l'adresse CAR enregistrée d'Elena",
-        "Piste d'audit complète: qui a livré, quand, où, avec preuve",
-        "La citoyenne a reçu une notification de livraison réussie",
-        "Le Bureau de l'Immigration a une preuve numérique de livraison avec signature",
-        "Aucune livraison échouée due à des informations d'adresse incorrectes"
+        "Piste d'audit complète: créateur de commande, assignateur, livreur, avec horodatages",
+        "La citoyenne a reçu une notification automatique de livraison réussie",
+        "Le Bureau de l'Immigration a une preuve numérique avec signature et photo"
       ]
     },
     "emergencyCall": {

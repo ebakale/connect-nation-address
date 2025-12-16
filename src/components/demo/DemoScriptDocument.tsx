@@ -63,7 +63,7 @@ const scenarioConfig = [
   { id: 'municipality-validation', key: 'municipalityValidation', icon: Building2, stepsCount: 13, actorKeys: ['verifier', 'citizen'] },
   { id: 'business-verification', key: 'businessVerification', icon: Building2, stepsCount: 11, actorKeys: ['officer'] },
   { id: 'car-registration-household', key: 'carRegistrationHousehold', icon: Home, stepsCount: 20, actorKeys: ['citizen', 'spouse', 'verifier'] },
-  { id: 'passport-delivery-car', key: 'passportDeliveryCar', icon: Truck, stepsCount: 16, actorKeys: ['clerk', 'dispatcher', 'agent', 'citizen'] },
+  { id: 'passport-delivery-car', key: 'passportDeliveryCar', icon: Truck, stepsCount: 18, actorKeys: ['clerk', 'dispatcher', 'agent', 'citizen'] },
   { id: 'emergency-call', key: 'emergencyCall', icon: AlertTriangle, stepsCount: 11, actorKeys: ['reporter', 'dispatcher'] },
   { id: 'dispatcher-assignment', key: 'dispatcherAssignment', icon: Radio, stepsCount: 13, actorKeys: ['dispatcher', 'unit'] },
   { id: 'field-responder', key: 'fieldResponder', icon: MapPin, stepsCount: 16, actorKeys: ['officer', 'dispatcher'] },
