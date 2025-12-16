@@ -1145,6 +1145,54 @@
     "footer": {
       "closing": "Ces trois modules forment la fondation des services gouvernementaux numériques modernes, permettant une administration publique efficace et de meilleurs services aux citoyens.",
       "tagline": "ConEG - Connecter le Gouvernement, Autonomiser les Citoyens"
+    },
+    "nationalImpact": {
+      "title": "Impact National pour les Pays en Développement",
+      "subtitle": "Comment l'adressage numérique transforme les pays sans systèmes d'adresses traditionnels",
+      "context": "Dans des pays comme la Guinée Équatoriale, où l'adressage traditionnel des rues est limité et l'urbanisation croît rapidement, un système d'adresses numériques offre une opportunité de sauter des étapes pour établir une infrastructure moderne sans les décennies de développement requises par l'adressage conventionnel. Ce système permet des avantages immédiats dans l'économie, la société et les opérations gouvernementales.",
+      "economic": {
+        "title": "Avantages Économiques",
+        "benefits": [
+          "Inclusion Financière: Les citoyens peuvent ouvrir des comptes bancaires et accéder au crédit avec des adresses vérifiées, élargissant l'économie formelle",
+          "Croissance du Commerce Électronique: Les entreprises en ligne peuvent livrer de manière fiable partout, permettant l'entrepreneuriat numérique dans les zones rurales",
+          "Droits de Propriété: La documentation claire des adresses soutient l'enregistrement foncier et la vérification de propriété",
+          "Enregistrement des Entreprises: Les entreprises peuvent s'enregistrer formellement avec des adresses commerciales vérifiées pour les licences et la fiscalité",
+          "Efficacité Logistique: Les services de livraison réduisent les livraisons échouées de 40-60%, réduisant les coûts et permettant de nouveaux modèles commerciaux",
+          "Investissement Étranger: Les entreprises internationales gagnent confiance dans l'infrastructure locale pour les opérations de chaîne d'approvisionnement"
+        ]
+      },
+      "social": {
+        "title": "Avantages Sociaux",
+        "benefits": [
+          "Accès aux Soins de Santé: Les ambulances localisent les patients plus rapidement; les campagnes de santé peuvent cibler des communautés spécifiques avec précision",
+          "Planification Éducative: Les écoles peuvent être situées près des centres de population en utilisant des données résidentielles précises",
+          "Documentation d'Identité: Les citoyens peuvent obtenir des cartes d'identité, passeports et documents officiels avec des adresses vérifiées",
+          "Services Sociaux: Les programmes d'aide gouvernementale peuvent atteindre les bénéficiaires prévus avec précision",
+          "Participation Civique: L'inscription des électeurs et les processus électoraux deviennent plus précis et transparents",
+          "Développement Communautaire: Les urbanistes peuvent identifier les zones mal desservies pour l'investissement en infrastructure"
+        ]
+      },
+      "government": {
+        "title": "Avantages Gouvernementaux",
+        "benefits": [
+          "Perception Fiscale: Amélioration de la collecte des revenus avec des emplacements traçables d'entreprises et de propriétés",
+          "Précision du Recensement: Les données de population deviennent précises, permettant des décisions politiques basées sur des preuves",
+          "Prestation de Services: Les services gouvernementaux (eau, électricité, assainissement) peuvent être planifiés et fournis efficacement",
+          "Intervention d'Urgence: Police, pompiers et services médicaux répondent plus rapidement avec des données de localisation exactes",
+          "Planification Urbaine: Décisions basées sur les données pour les routes, services publics et installations publiques",
+          "Anti-Corruption: Des registres d'adresses transparents et vérifiables réduisent la fraude dans les transactions immobilières et commerciales"
+        ]
+      },
+      "potentialImpact": {
+        "title": "Avantages Projetés",
+        "stats": [
+          { "label": "Amélioration de l'Intervention d'Urgence", "value": "40-60%" },
+          { "label": "Augmentation du Taux de Succès des Livraisons", "value": "50-70%" },
+          { "label": "Croissance de l'Inclusion Financière", "value": "25-40%" },
+          { "label": "Amélioration des Revenus Gouvernementaux", "value": "15-25%" }
+        ]
+      },
+      "closing": "Un système d'adresses numériques positionne la Guinée Équatoriale comme leader régional en infrastructure de gouvernement numérique, démontrant que les pays en développement peuvent atteindre une prestation de services moderne sans reproduire des décennies d'évolution de l'adressage occidental."
     }
   }
 }

@@ -18,7 +18,13 @@ import {
   Building,
   Shield,
   Truck,
-  Phone
+  Phone,
+  TrendingUp,
+  Heart,
+  Landmark,
+  Briefcase,
+  GraduationCap,
+  Home
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { toast } from '@/hooks/use-toast';
@@ -379,12 +385,119 @@ export const ModulePresentationDocument: React.FC = () => {
                 </tbody>
               </table>
             </div>
+          </CardContent>
+        </Card>
 
-            <Separator className="my-6" />
+        {/* National Impact Section */}
+        <Card className="border-t-4 border-t-green-600">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-6 w-6 text-green-600" />
+              {t('modulePresentation.nationalImpact.title')}
+            </CardTitle>
+            <CardDescription>{t('modulePresentation.nationalImpact.subtitle')}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-8">
+            {/* Context */}
+            <div className="p-4 bg-muted/50 rounded-lg">
+              <p className="text-muted-foreground leading-relaxed">
+                {t('modulePresentation.nationalImpact.context')}
+              </p>
+            </div>
 
+            {/* Three Impact Areas */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Economic Impact */}
+              <Card className="border-l-4 border-l-green-600">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Briefcase className="h-5 w-5 text-green-600" />
+                    {t('modulePresentation.nationalImpact.economic.title')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3">
+                    {(t('modulePresentation.nationalImpact.economic.benefits', { returnObjects: true }) as string[]).map((benefit, index) => (
+                      <li key={index} className="flex items-start gap-2 text-sm">
+                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span>{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Social Impact */}
+              <Card className="border-l-4 border-l-blue-600">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Heart className="h-5 w-5 text-blue-600" />
+                    {t('modulePresentation.nationalImpact.social.title')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3">
+                    {(t('modulePresentation.nationalImpact.social.benefits', { returnObjects: true }) as string[]).map((benefit, index) => (
+                      <li key={index} className="flex items-start gap-2 text-sm">
+                        <CheckCircle className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <span>{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Government Impact */}
+              <Card className="border-l-4 border-l-primary">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Landmark className="h-5 w-5 text-primary" />
+                    {t('modulePresentation.nationalImpact.government.title')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3">
+                    {(t('modulePresentation.nationalImpact.government.benefits', { returnObjects: true }) as string[]).map((benefit, index) => (
+                      <li key={index} className="flex items-start gap-2 text-sm">
+                        <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                        <span>{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Key Statistics / Potential Impact */}
+            <div className="bg-gradient-to-r from-primary/5 to-green-600/5 p-6 rounded-lg">
+              <h4 className="font-semibold mb-4 flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-green-600" />
+                {t('modulePresentation.nationalImpact.potentialImpact.title')}
+              </h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {(t('modulePresentation.nationalImpact.potentialImpact.stats', { returnObjects: true }) as Array<{ label: string; value: string }>).map((stat, index) => (
+                  <div key={index} className="text-center p-3 bg-background rounded-lg">
+                    <div className="text-2xl font-bold text-primary">{stat.value}</div>
+                    <div className="text-xs text-muted-foreground">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Closing statement */}
+            <div className="text-center border-t pt-6">
+              <p className="text-muted-foreground">{t('modulePresentation.nationalImpact.closing')}</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Footer */}
+        <Card>
+          <CardContent className="py-6">
+            <Separator className="mb-6" />
             <div className="text-center text-muted-foreground text-sm">
               <p>{t('modulePresentation.footer.closing')}</p>
-              <p className="mt-2 font-medium">{t('modulePresentation.footer.tagline')}</p>
+              <p className="mt-2 font-medium text-primary">{t('modulePresentation.footer.tagline')}</p>
             </div>
           </CardContent>
         </Card>
