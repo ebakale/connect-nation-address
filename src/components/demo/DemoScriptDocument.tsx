@@ -20,9 +20,7 @@ import {
   Monitor,
   Home,
   Truck,
-  Package,
-  Phone,
-  RotateCcw
+  Package
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -65,14 +63,12 @@ const scenarioConfig = [
   { id: 'municipality-validation', key: 'municipalityValidation', icon: Building2, stepsCount: 13, actorKeys: ['verifier', 'citizen'] },
   { id: 'business-verification', key: 'businessVerification', icon: Building2, stepsCount: 11, actorKeys: ['officer'] },
   { id: 'car-registration-household', key: 'carRegistrationHousehold', icon: Home, stepsCount: 20, actorKeys: ['citizen', 'spouse', 'verifier'] },
-  { id: 'passport-delivery-car', key: 'passportDeliveryCar', icon: Truck, stepsCount: 16, actorKeys: ['agent', 'clerk', 'citizen', 'supervisor'] },
-  { id: 'emergency-address-linked', key: 'emergencyAddressLinked', icon: AlertTriangle, stepsCount: 14, actorKeys: ['citizen', 'operator'] },
-  { id: 'dispatcher-units', key: 'dispatcherUnits', icon: Radio, stepsCount: 13, actorKeys: ['dispatcher', 'supervisor', 'officer'] },
-  { id: 'field-responders', key: 'fieldResponders', icon: MapPin, stepsCount: 15, actorKeys: ['officer', 'partner', 'dispatcher'] },
-  { id: 'supervisor-reports', key: 'supervisorReports', icon: BarChart3, stepsCount: 11, actorKeys: ['supervisor'] },
-  { id: 'postal-delivery-workflow', key: 'postalDeliveryWorkflow', icon: Package, stepsCount: 18, actorKeys: ['clerk', 'dispatcher', 'agent', 'supervisor'] },
-  { id: 'pickup-request-workflow', key: 'pickupRequestWorkflow', icon: Phone, stepsCount: 12, actorKeys: ['citizen', 'dispatcher', 'agent'] },
-  { id: 'return-reverse-logistics', key: 'returnReverseLogistics', icon: RotateCcw, stepsCount: 10, actorKeys: ['citizen', 'clerk', 'agent'] },
+  { id: 'passport-delivery-car', key: 'passportDeliveryCar', icon: Truck, stepsCount: 18, actorKeys: ['agent', 'citizen', 'office'] },
+  { id: 'emergency-call', key: 'emergencyCall', icon: AlertTriangle, stepsCount: 11, actorKeys: ['reporter', 'dispatcher'] },
+  { id: 'dispatcher-assignment', key: 'dispatcherAssignment', icon: Radio, stepsCount: 13, actorKeys: ['dispatcher', 'unit'] },
+  { id: 'field-responder', key: 'fieldResponder', icon: MapPin, stepsCount: 16, actorKeys: ['officer', 'dispatcher'] },
+  { id: 'supervisor-monitoring', key: 'supervisorMonitoring', icon: BarChart3, stepsCount: 14, actorKeys: ['supervisor'] },
+  { id: 'postal-delivery-workflow', key: 'postalDeliveryWorkflow', icon: Package, stepsCount: 25, actorKeys: ['clerk', 'dispatcher', 'agent', 'supervisor', 'citizen'] },
 ];
 
 export function DemoScriptDocument() {
