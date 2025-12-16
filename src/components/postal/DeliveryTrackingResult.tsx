@@ -234,34 +234,44 @@ export const DeliveryTrackingResult: React.FC<DeliveryTrackingResultProps> = ({ 
       </Card>
 
       {/* Delivery Proof (if delivered) */}
-      {data.status === 'delivered' && data.proof && (
+      {data.status === 'delivered' && (
         <Card>
           <CardHeader>
             <CardTitle className="text-base">{t('tracking.deliveryProof')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {data.proof.received_by_name && (
-              <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">{t('tracking.receivedBy')}:</span>
-                <span className="font-medium">{data.proof.received_by_name}</span>
-              </div>
-            )}
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              <span className="text-muted-foreground">{t('tracking.deliveredAt')}:</span>
-              <span className="font-medium">
-                {format(new Date(data.proof.captured_at), 'MMM d, yyyy h:mm a')}
-              </span>
-            </div>
-            {data.proof.photo_url && (
-              <div className="mt-4">
-                <p className="text-sm text-muted-foreground mb-2">{t('tracking.proofPhoto')}:</p>
-                <img 
-                  src={data.proof.photo_url} 
-                  alt="Delivery proof" 
-                  className="rounded-lg max-w-xs border"
-                />
+            {data.proof ? (
+              <>
+                {data.proof.received_by_name && (
+                  <div className="flex items-center gap-2">
+                    <User className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">{t('tracking.receivedBy')}:</span>
+                    <span className="font-medium">{data.proof.received_by_name}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">{t('tracking.deliveredAt')}:</span>
+                  <span className="font-medium">
+                    {format(new Date(data.proof.captured_at), 'MMM d, yyyy h:mm a')}
+                  </span>
+                </div>
+                {data.proof.photo_url && (
+                  <div className="mt-4">
+                    <p className="text-sm text-muted-foreground mb-2">{t('tracking.proofPhoto')}:</p>
+                    <img 
+                      src={data.proof.photo_url} 
+                      alt="Delivery proof" 
+                      className="rounded-lg max-w-xs border"
+                    />
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-center py-4">
+                <Clock className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                <p className="text-muted-foreground">{t('tracking.proofNotAvailable')}</p>
+                <p className="text-sm text-muted-foreground mt-1">{t('tracking.proofPending')}</p>
               </div>
             )}
           </CardContent>

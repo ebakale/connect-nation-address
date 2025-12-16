@@ -313,6 +313,8 @@
     "receivedBy": "Reçu par",
     "deliveredAt": "Livré à",
     "proofPhoto": "Photo de livraison",
+    "proofNotAvailable": "Preuve non encore disponible",
+    "proofPending": "Confirmation de livraison en attente",
     "footer": "Service Postal du Gouvernement - Suivez vos livraisons en toute sécurité",
     "trackOrder": "Suivre la Commande",
     "enterOrderNumber": "Entrez le numéro de commande",

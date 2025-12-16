@@ -313,6 +313,8 @@
     "receivedBy": "Recibido por",
     "deliveredAt": "Entregado en",
     "proofPhoto": "Foto de entrega",
+    "proofNotAvailable": "Comprobante aún no disponible",
+    "proofPending": "Confirmación de entrega pendiente",
     "footer": "Servicio Postal del Gobierno - Rastrea tus entregas de forma segura",
     "trackOrder": "Rastrear Orden",
     "enterOrderNumber": "Ingrese número de orden",
