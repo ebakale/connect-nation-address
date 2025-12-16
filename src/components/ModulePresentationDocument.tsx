@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { toast } from '@/hooks/use-toast';
+import { ModulePresentationPowerPoint } from './ModulePresentationPowerPoint';
 
 export const ModulePresentationDocument: React.FC = () => {
   const { t, i18n } = useTranslation('demo');
@@ -201,8 +202,9 @@ export const ModulePresentationDocument: React.FC = () => {
               </Button>
               <Button variant="secondary" size="sm" onClick={handleExportPDF}>
                 <Download className="h-4 w-4 mr-1" />
-                {t('exportPDF')}
+                PDF
               </Button>
+              <ModulePresentationPowerPoint />
             </div>
           </div>
         </div>
