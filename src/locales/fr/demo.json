@@ -1193,6 +1193,57 @@
         ]
       },
       "closing": "Un système d'adresses numériques positionne la Guinée Équatoriale comme leader régional en infrastructure de gouvernement numérique, démontrant que les pays en développement peuvent atteindre une prestation de services moderne sans reproduire des décennies d'évolution de l'adressage occidental."
+    },
+    "nationalSecurity": {
+      "title": "Avantages pour la Sécurité Nationale",
+      "subtitle": "Comment l'adressage numérique renforce la sécurité nationale et la souveraineté",
+      "context": "Un système complet d'adresses numériques fournit une infrastructure critique pour les opérations de sécurité nationale. En sachant exactement qui vit où et en permettant une réponse d'urgence rapide, le système devient une pierre angulaire de la sécurité publique et de la coordination de la défense nationale.",
+      "border": {
+        "title": "Sécurité Frontalière et Immigration",
+        "benefits": [
+          "Vérification des Résidents: Les autorités peuvent vérifier où vivent réellement les étrangers et résidents, réduisant les établissements illégaux",
+          "Suivi de l'Immigration: Les adresses numériques sont liées aux visas et permis de séjour, permettant un meilleur contrôle de la conformité migratoire",
+          "Cartographie de la Population: Les forces de sécurité peuvent cartographier précisément la distribution de la population aux frontières et zones sensibles",
+          "Détection d'Activités Illégales: Des schémas d'adresses inhabituels peuvent signaler des routes de contrebande potentielles ou des établissements non autorisés"
+        ]
+      },
+      "lawEnforcement": {
+        "title": "Application de la Loi et Sécurité Publique",
+        "benefits": [
+          "Réponse Rapide: Police et forces de sécurité peuvent localiser n'importe quelle adresse en secondes, améliorant les temps d'intervention",
+          "Enquête Criminelle: L'historique des adresses aide à suivre les mouvements et établir des schémas dans les enquêtes criminelles",
+          "Exécution des Mandats: Des données d'adresses précises garantissent que les mandats sont exécutés aux bons endroits sans confusion",
+          "Police de Proximité: Les agents peuvent être affectés à des zones d'adresses spécifiques pour une couverture de quartier responsable",
+          "Localisation des Témoins et Victimes: Les procureurs peuvent contacter les témoins et victimes de manière fiable en utilisant des adresses vérifiées"
+        ]
+      },
+      "crisis": {
+        "title": "Gestion de Crise et Catastrophes",
+        "benefits": [
+          "Planification d'Évacuation: Des comptages de population précis par zone permettent une planification d'évacuation et une allocation d'abris exactes",
+          "Distribution des Ressources: Les fournitures d'urgence peuvent être distribuées systématiquement à toutes les adresses enregistrées",
+          "Recherche de Personnes Disparues: Lors de catastrophes, les registres d'adresses aident à identifier qui devrait être dans les zones affectées",
+          "Réseaux de Communication: Les autorités peuvent envoyer des alertes ciblées à des quartiers ou régions spécifiques"
+        ]
+      },
+      "dataSecurity": {
+        "title": "Souveraineté et Protection des Données",
+        "benefits": [
+          "Contrôle National: Les données d'adresses restent sous contrôle du gouvernement national, sans dépendre d'entreprises étrangères",
+          "Pistes d'Audit: Tout accès aux adresses est enregistré, créant une responsabilité sur qui consulte les données de localisation sensibles",
+          "Protection de la Vie Privée: Les citoyens contrôlent qui peut voir leurs informations d'adresse via les paramètres de confidentialité",
+          "Infrastructure Sécurisée: Les systèmes contrôlés par le gouvernement empêchent l'ingérence étrangère dans les données nationales critiques"
+        ]
+      },
+      "strategicValue": {
+        "title": "Valeur Stratégique de Sécurité",
+        "points": [
+          { "title": "Conscience Territoriale", "description": "Connaissance complète de qui vit où sur tout le territoire national" },
+          { "title": "Mobilisation Rapide", "description": "Les forces de sécurité peuvent être déployées à des emplacements exacts sans délais ni confusion" },
+          { "title": "Fondation du Renseignement", "description": "Les données d'adresses forment la couche de base pour toutes les opérations de sécurité et de renseignement" }
+        ]
+      },
+      "closing": "Un système national d'adresses numériques n'est pas simplement un outil administratif—c'est une infrastructure critique pour la sécurité nationale, fournissant la base pour protéger les citoyens, contrôler les frontières et maintenir l'ordre public."
     }
   }
 }

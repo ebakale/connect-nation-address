@@ -1193,6 +1193,57 @@
         ]
       },
       "closing": "Un sistema de direcciones digitales posiciona a Guinea Ecuatorial como líder regional en infraestructura de gobierno digital, demostrando que los países en desarrollo pueden lograr una prestación de servicios moderna sin replicar décadas de evolución del direccionamiento occidental."
+    },
+    "nationalSecurity": {
+      "title": "Beneficios para la Seguridad Nacional",
+      "subtitle": "Cómo el direccionamiento digital fortalece la seguridad nacional y la soberanía",
+      "context": "Un sistema integral de direcciones digitales proporciona infraestructura crítica para las operaciones de seguridad nacional. Al saber exactamente quién vive dónde y permitir una respuesta de emergencia rápida, el sistema se convierte en piedra angular de la seguridad pública y la coordinación de defensa nacional.",
+      "border": {
+        "title": "Seguridad Fronteriza e Inmigración",
+        "benefits": [
+          "Verificación de Residentes: Las autoridades pueden verificar dónde viven realmente los extranjeros y residentes, reduciendo asentamientos ilegales",
+          "Seguimiento de Inmigración: Las direcciones digitales se vinculan a visas y permisos de residencia, permitiendo mejor monitoreo del cumplimiento migratorio",
+          "Mapeo Poblacional: Las fuerzas de seguridad pueden mapear con precisión la distribución de la población en fronteras y áreas sensibles",
+          "Detección de Actividades Ilegales: Patrones de direcciones inusuales pueden señalar posibles rutas de contrabando o asentamientos no autorizados"
+        ]
+      },
+      "lawEnforcement": {
+        "title": "Aplicación de la Ley y Seguridad Pública",
+        "benefits": [
+          "Respuesta Rápida: Policía y fuerzas de seguridad pueden localizar cualquier dirección en segundos, mejorando tiempos de intervención",
+          "Investigación Criminal: El historial de direcciones ayuda a rastrear movimientos y establecer patrones en investigaciones criminales",
+          "Ejecución de Órdenes: Datos de direcciones precisos aseguran que las órdenes se ejecuten en ubicaciones correctas sin confusión",
+          "Policía Comunitaria: Los oficiales pueden ser asignados a zonas de direcciones específicas para cobertura de vecindario responsable",
+          "Localización de Testigos y Víctimas: Los fiscales pueden contactar testigos y víctimas de manera confiable usando direcciones verificadas"
+        ]
+      },
+      "crisis": {
+        "title": "Gestión de Crisis y Desastres",
+        "benefits": [
+          "Planificación de Evacuación: Conteos de población precisos por área permiten planificación de evacuación y asignación de refugios exacta",
+          "Distribución de Recursos: Los suministros de emergencia pueden distribuirse sistemáticamente a todas las direcciones registradas",
+          "Búsqueda de Personas Desaparecidas: Cuando ocurren desastres, los registros de direcciones ayudan a identificar quién debería estar en áreas afectadas",
+          "Redes de Comunicación: Las autoridades pueden enviar alertas dirigidas a vecindarios o regiones específicas"
+        ]
+      },
+      "dataSecurity": {
+        "title": "Soberanía y Protección de Datos",
+        "benefits": [
+          "Control Nacional: Los datos de direcciones permanecen bajo control del gobierno nacional, sin depender de empresas extranjeras",
+          "Rastros de Auditoría: Todo acceso a direcciones se registra, creando responsabilidad sobre quién consulta datos de ubicación sensibles",
+          "Protección de Privacidad: Los ciudadanos controlan quién puede ver su información de dirección a través de configuraciones de privacidad",
+          "Infraestructura Segura: Los sistemas controlados por el gobierno previenen interferencia extranjera en datos nacionales críticos"
+        ]
+      },
+      "strategicValue": {
+        "title": "Valor Estratégico de Seguridad",
+        "points": [
+          { "title": "Conciencia Territorial", "description": "Conocimiento completo de quién vive dónde en todo el territorio nacional" },
+          { "title": "Movilización Rápida", "description": "Las fuerzas de seguridad pueden desplegarse a ubicaciones exactas sin retrasos ni confusión" },
+          { "title": "Base de Inteligencia", "description": "Los datos de direcciones forman la capa base para todas las operaciones de seguridad e inteligencia" }
+        ]
+      },
+      "closing": "Un sistema nacional de direcciones digitales no es simplemente una herramienta administrativa—es infraestructura crítica para la seguridad nacional, proporcionando la base para proteger ciudadanos, controlar fronteras y mantener el orden público."
     }
   }
 }
