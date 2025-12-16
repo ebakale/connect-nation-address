@@ -82,6 +82,10 @@ Deno.serve(async (req) => {
 
     const isAdmin = userRoles?.some(r => ['admin', 'registrar', 'car_admin'].includes(r.role));
     const isVerifier = userRoles?.some(r => ['verifier', 'car_verifier', 'car_admin', 'registrar'].includes(r.role));
+    const isPostalStaff = userRoles?.some(r => ['postal_clerk', 'postal_dispatcher', 'postal_supervisor', 'postal_agent'].includes(r.role));
+    
+    // Postal staff can access private addresses for delivery purposes
+    const canAccessForDelivery = isPostalStaff && purpose === 'DELIVERY';
 
     // ========== SEARCH PROFILES (Account Holders) ==========
     const { data: profiles } = await supabase
@@ -188,9 +192,9 @@ Deno.serve(async (req) => {
           return false;
         }
 
-        // Check privacy level
-        if (isAdmin || isVerifier) {
-          return true; // Can see all
+        // Check privacy level - admins, verifiers, and postal staff for delivery can see all
+        if (isAdmin || isVerifier || canAccessForDelivery) {
+          return true; // Can see all addresses
         }
 
         // For regular users: must be PUBLIC or REGION_ONLY and searchable
@@ -199,8 +203,8 @@ Deno.serve(async (req) => {
       }).map(addr => {
         const addressData = addressMap.get(addr.uac);
         
-        // Redact based on privacy level if not admin/verifier
-        if (!isAdmin && !isVerifier && addr.privacy_level === 'REGION_ONLY') {
+        // Redact based on privacy level if not admin/verifier/postal
+        if (!isAdmin && !isVerifier && !canAccessForDelivery && addr.privacy_level === 'REGION_ONLY') {
           return {
             uac: addr.uac,
             city: addressData?.city || 'N/A',
@@ -282,7 +286,8 @@ Deno.serve(async (req) => {
           return false;
         }
 
-        if (isAdmin || isVerifier) {
+        // Admins, verifiers, and postal staff for delivery can see all
+        if (isAdmin || isVerifier || canAccessForDelivery) {
           return true;
         }
 
@@ -291,7 +296,7 @@ Deno.serve(async (req) => {
       }).map(addr => {
         const addressData = addressMap.get(addr.uac);
         
-        if (!isAdmin && !isVerifier && addr.privacy_level === 'REGION_ONLY') {
+        if (!isAdmin && !isVerifier && !canAccessForDelivery && addr.privacy_level === 'REGION_ONLY') {
           return {
             uac: addr.uac,
             city: addressData?.city || 'N/A',
