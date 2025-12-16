@@ -164,10 +164,28 @@ Deno.serve(async (req) => {
           .is('effective_to', null)
       : { data: [] };
 
+    // ========== GET GUARDIAN ADDRESSES FOR DEPENDENTS WITHOUT DIRECT ADDRESSES ==========
+    // This is critical: when a dependent has no direct addresses, we need guardian's addresses
+    const dependentsWithoutAddresses = (dependents || []).filter(
+      d => !dependentAddresses?.some(a => a.dependent_id === d.id) && d.guardian_person_id
+    );
+    const guardianPersonIdsForAddresses = dependentsWithoutAddresses.map(d => d.guardian_person_id).filter(Boolean);
+    
+    const { data: guardianAddressesForDependents } = guardianPersonIdsForAddresses.length > 0
+      ? await supabase
+          .from('citizen_address')
+          .select('*')
+          .in('person_id', guardianPersonIdsForAddresses)
+          .is('effective_to', null)
+      : { data: [] };
+
+    console.log(`Found ${dependentsWithoutAddresses.length} dependents without direct addresses, fetched ${guardianAddressesForDependents?.length || 0} guardian addresses`);
+
     // Combine all UACs for address details lookup
     const allUacs = [
       ...(profileAddresses?.map(ca => ca.uac) || []),
-      ...(dependentAddresses?.map(ca => ca.uac) || [])
+      ...(dependentAddresses?.map(ca => ca.uac) || []),
+      ...(guardianAddressesForDependents?.map(ca => ca.uac) || [])
     ].filter(Boolean);
 
     // ========== GET ADDRESS DETAILS ==========
@@ -241,32 +259,21 @@ Deno.serve(async (req) => {
     }).filter(r => r.address_count > 0);
 
     // ========== FORMAT DEPENDENT RESULTS ==========
-    // First, get guardian addresses for dependents without direct addresses
+    // Build guardian address map for dependents without direct addresses
     const guardianAddressMap = new Map<string, typeof profileAddresses>();
     for (const dependent of dependents || []) {
       const depAddrs = dependentAddresses?.filter(a => a.dependent_id === dependent.id) || [];
       if (depAddrs.length === 0 && dependent.guardian_person_id) {
-        // Get guardian's addresses for this dependent
-        const guardianAddrs = profileAddresses?.filter(a => a.person_id === dependent.guardian_person_id) || [];
+        // First try from pre-fetched guardian addresses for dependents
+        let guardianAddrs = guardianAddressesForDependents?.filter(a => a.person_id === dependent.guardian_person_id) || [];
+        // Fallback to profileAddresses if guardian was also in profile search results
+        if (guardianAddrs.length === 0) {
+          guardianAddrs = profileAddresses?.filter(a => a.person_id === dependent.guardian_person_id) || [];
+        }
         if (guardianAddrs.length > 0) {
           guardianAddressMap.set(dependent.id, guardianAddrs);
         }
       }
-    }
-
-    // Also fetch address details for guardian addresses not already in addressMap
-    const guardianUacs = Array.from(guardianAddressMap.values())
-      .flat()
-      .map(a => a.uac)
-      .filter(uac => !addressMap.has(uac));
-    
-    if (guardianUacs.length > 0) {
-      const { data: guardianAddressDetails } = await supabase
-        .from('addresses')
-        .select('uac, street, city, region, country, building, latitude, longitude')
-        .in('uac', guardianUacs);
-      
-      guardianAddressDetails?.forEach(a => addressMap.set(a.uac, a));
     }
 
     const dependentResults = (dependents || []).map(dependent => {
