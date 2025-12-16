@@ -993,5 +993,158 @@
         "Registro de auditoría completo con GPS, fotos, firmas y recibos COD"
       ]
     }
+  },
+
+  "modulePresentation": {
+    "title": "ConEG - Resumen de Módulos Gubernamentales",
+    "subtitle": "Plataforma Nacional de Servicios Digitales",
+    "exportSuccess": "PDF Exportado",
+    "exportSuccessDesc": "La presentación ha sido guardada como PDF",
+    "exportError": "Error en la exportación",
+    "tabLabels": {
+      "address": "Dirección",
+      "emergency": "Emergencia",
+      "postal": "Postal"
+    },
+    "introduction": {
+      "title": "Introducción a la Plataforma",
+      "description": "La Plataforma Nacional de Servicios Digitales ConEG integra tres módulos gubernamentales esenciales: Registro de Direcciones Digitales, Gestión de Emergencias y Entrega Postal Gubernamental. Juntos, estos módulos permiten direccionamiento estandarizado, respuesta de emergencia más rápida y servicios postales eficientes en todo el país."
+    },
+    "purposeLabel": "Propósito",
+    "functionalitiesLabel": "Funcionalidades Clave",
+    "scenariosLabel": "Escenarios Reales",
+    "benefitsLabel": "Beneficios e Impacto",
+    "labels": {
+      "module": "Módulo Gubernamental"
+    },
+    "modules": {
+      "digitalAddress": {
+        "name": "Módulo de Direcciones Digitales",
+        "purpose": "El Módulo de Direcciones Digitales crea y gestiona códigos de dirección únicos y estandarizados (UAC) para cada ubicación en el país. Permite a ciudadanos, empresas y servicios gubernamentales usar direcciones verificadas para banca, servicios públicos, documentación legal y servicios de emergencia.",
+        "functionalities": [
+          "Registrar nuevas direcciones residenciales y comerciales con coordenadas GPS",
+          "Generar Códigos de Dirección Unificados (UAC) únicos para cada ubicación",
+          "Verificar y aprobar solicitudes de direcciones mediante revisión oficial",
+          "Portal público de búsqueda de direcciones para empresas y servicios",
+          "Generación de códigos QR para verificación portátil de direcciones",
+          "Gestión de hogares y registro de miembros familiares",
+          "Controles de privacidad para visibilidad de direcciones residenciales"
+        ],
+        "scenarios": [
+          {
+            "title": "Ciudadano Registra Nuevo Hogar",
+            "description": "María González se muda a un nuevo vecindario. Inicia sesión en el portal, busca su dirección, crea una nueva solicitud de registro con ubicación GPS y foto de la propiedad. Un verificador municipal revisa y aprueba la solicitud, generando su código UAC oficial."
+          },
+          {
+            "title": "Banco Verifica Dirección del Cliente",
+            "description": "Una oficial de cumplimiento en BANKIA necesita verificar la dirección de un cliente antes de abrir una cuenta. Usa el portal público para buscar por código UAC, confirma que la dirección está verificada y descarga un código QR como prueba para registros de cumplimiento."
+          },
+          {
+            "title": "Oficial Municipal Aprueba Dirección",
+            "description": "Carlos, un Verificador NAR asignado a Bioko Norte, revisa solicitudes de direcciones pendientes en su cola. Verifica las coordenadas GPS en el mapa, revisa la foto de la propiedad y aprueba las direcciones verificadas que se les asignan códigos UAC automáticamente."
+          }
+        ],
+        "benefits": [
+          "Elimina la confusión de direcciones y fallas de entrega",
+          "Permite incorporación más rápida de clientes para bancos y servicios",
+          "Proporciona prueba legal de residencia para ciudadanos",
+          "Apoya a servicios de emergencia con datos de ubicación precisos",
+          "Reduce la carga administrativa con verificación digital"
+        ]
+      },
+      "emergency": {
+        "name": "Módulo de Gestión de Emergencias",
+        "purpose": "El Módulo de Gestión de Emergencias vincula llamadas de emergencia e incidentes a direcciones digitales, permitiendo despacho más rápido, navegación precisa y respuesta coordinada entre policía, bomberos y servicios médicos.",
+        "functionalities": [
+          "Reporte de incidentes de emergencia vinculados a direcciones verificadas",
+          "Despacho en tiempo real y asignación de unidades",
+          "Seguimiento de unidades basado en GPS y navegación",
+          "Monitoreo de supervisores y supervisión de incidentes",
+          "Solicitudes de respaldo y alertas de oficial caído",
+          "Captura de evidencia con fotos geoetiquetadas",
+          "Cronología de incidentes y registro de auditoría"
+        ],
+        "scenarios": [
+          {
+            "title": "Despachador Recibe Llamada de Emergencia",
+            "description": "Un despachador recibe una llamada de emergencia. El llamante proporciona su código UAC, que muestra instantáneamente su ubicación exacta en el mapa. El despachador asigna la unidad policial más cercana con un clic, y la unidad recibe instrucciones de navegación inmediatamente."
+          },
+          {
+            "title": "Oficial Navega al Incidente",
+            "description": "El oficial Roberto recibe una asignación de incidente en su dispositivo móvil. La aplicación muestra la dirección exacta, distancia y tiempo estimado de llegada. Usa la navegación integrada para llegar a la ubicación rápidamente, luego actualiza su estado a 'En Escena'."
+          },
+          {
+            "title": "Supervisor Monitorea Incidentes Activos",
+            "description": "La Supervisora de Policía Ana monitorea todos los incidentes activos en su región desde su panel. Ve las ubicaciones de unidades en tiempo real, revisa detalles de incidentes, aprueba solicitudes de respaldo y asegura la asignación adecuada de recursos durante una situación con múltiples incidentes."
+          }
+        ],
+        "benefits": [
+          "Reduce el tiempo de respuesta de emergencia con datos de ubicación precisos",
+          "Permite respuesta coordinada multi-agencia",
+          "Proporciona documentación completa de incidentes para procedimientos legales",
+          "Mejora la seguridad del oficial con sistema de solicitud de respaldo",
+          "Apoya decisiones de asignación de recursos basadas en datos"
+        ]
+      },
+      "postal": {
+        "name": "Módulo Postal Gubernamental",
+        "purpose": "El Módulo Postal Gubernamental permite a los servicios postales oficiales crear, asignar, rastrear y entregar paquetes usando el sistema nacional de direcciones digitales. Proporciona gestión completa del ciclo de vida de entrega desde la creación del pedido hasta la prueba de entrega.",
+        "functionalities": [
+          "Crear órdenes de entrega con direcciones UAC validadas",
+          "Asignar órdenes a agentes postales con optimización de rutas",
+          "Rastrear estado de entrega en tiempo real",
+          "Capturar prueba de entrega con fotos y firmas",
+          "Gestionar solicitudes de recogida de ciudadanos",
+          "Procesar devoluciones y paquetes no entregables",
+          "Cobro contra entrega (COD) y remesa"
+        ],
+        "scenarios": [
+          {
+            "title": "Empleado Postal Crea Orden de Entrega",
+            "description": "Carmen, una empleada postal, recibe una carta certificada. Busca el código UAC del destinatario, valida que la dirección existe en el sistema, ingresa los detalles del paquete y crea la orden de entrega. El sistema genera un número de seguimiento y etiqueta con código de barras."
+          },
+          {
+            "title": "Despachador Asigna Entregas",
+            "description": "Luis, un despachador postal, revisa las órdenes pendientes del día. Asigna lotes de entregas a agentes postales según zonas geográficas, establece niveles de prioridad para artículos urgentes y envía notificaciones a los agentes con sus rutas diarias."
+          },
+          {
+            "title": "Agente Completa Entrega",
+            "description": "Roberto, un agente postal, llega a la dirección de entrega usando la navegación de la aplicación. Verifica la identidad del destinatario, captura una foto del paquete entregado, obtiene una firma digital y marca la orden como entregada con confirmación GPS."
+          }
+        ],
+        "benefits": [
+          "Elimina fallas de entrega por direcciones incorrectas",
+          "Proporciona seguimiento transparente para ciudadanos y remitentes",
+          "Permite responsabilidad con prueba de entrega completa",
+          "Reduce costos operativos con enrutamiento optimizado",
+          "Apoya la recaudación de ingresos con gestión de COD"
+        ]
+      }
+    },
+    "summary": {
+      "title": "Beneficios Inter-Módulos",
+      "subtitle": "Cómo los tres módulos trabajan juntos",
+      "headers": {
+        "module": "Módulo",
+        "primaryBenefit": "Beneficio Principal",
+        "keyUsers": "Usuarios Clave"
+      },
+      "digitalAddress": {
+        "benefit": "Direccionamiento estandarizado para todos los servicios gubernamentales",
+        "users": "Ciudadanos, Empresas, Oficiales Municipales"
+      },
+      "emergency": {
+        "benefit": "Respuesta más rápida con datos de ubicación precisos",
+        "users": "Policía, Bomberos, Médicos, Despachadores"
+      },
+      "postal": {
+        "benefit": "Entrega confiable con seguimiento completo",
+        "users": "Personal Postal, Ciudadanos, Empresas"
+      }
+    },
+    "footer": {
+      "closing": "Estos tres módulos forman la base de los servicios gubernamentales digitales modernos, permitiendo administración pública eficiente y mejores servicios ciudadanos.",
+      "tagline": "ConEG - Conectando Gobierno, Empoderando Ciudadanos"
+    }
   }
 }

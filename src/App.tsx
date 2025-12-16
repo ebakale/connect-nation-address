@@ -22,6 +22,7 @@ import { UnitsAndProfilesPage } from "./pages/UnitsAndProfilesPage";
 import CitizenPortalUnified from "./pages/CitizenPortalUnified";
 import { DemoPresentationPage } from "./pages/DemoPresentationPage";
 import { DemoScriptPage } from "./pages/DemoScriptPage";
+import { ModulePresentationPage } from "./pages/ModulePresentationPage";
 import { BusinessAddressRegistrationForm } from "./components/BusinessAddressRegistrationForm";
 import MyBusinesses from "./pages/MyBusinesses";
 import PostalPage from "./pages/PostalPage";
@@ -72,6 +73,7 @@ const AppRoutes = () => {
         <Route path="/citizen" element={<CitizenPortalUnified />} />
         <Route path="/demo-presentation" element={<DemoPresentationPage />} />
         <Route path="/demo-script" element={<DemoScriptPage />} />
+        <Route path="/module-presentation" element={<ModulePresentationPage />} />
         <Route path="/documentation" element={<Documentation />} />
         <Route path="/track" element={<TrackDelivery />} />
         
