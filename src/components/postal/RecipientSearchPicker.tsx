@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { Search, MapPin, Check, Loader2, AlertCircle, User, Users, ToggleLeft, ToggleRight } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Search, MapPin, Check, Loader2, User, Users, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -85,6 +85,10 @@ export const RecipientSearchPicker: React.FC<RecipientSearchPickerProps> = ({
 
   const { searchAddresses } = useAddresses();
   const { toast } = useToast();
+  
+  // Use ref to avoid infinite loop - searchAddresses changes every render
+  const searchAddressesRef = useRef(searchAddresses);
+  searchAddressesRef.current = searchAddresses;
 
   // Format address for display
   const formatSelectedAddressDisplay = (address: { uac: string; street?: string; city?: string; recipientName?: string }) => {
@@ -94,50 +98,7 @@ export const RecipientSearchPicker: React.FC<RecipientSearchPickerProps> = ({
     return `${address.uac} - ${address.street || ''}, ${address.city || ''}`;
   };
 
-  // Address search (existing functionality)
-  const searchByAddress = useCallback(async (searchQuery: string) => {
-    try {
-      const results = await searchAddresses(searchQuery);
-      // Allow private addresses for postal delivery
-      setAddressResults(results);
-      setShowResults(true);
-    } catch (error) {
-      console.error('Address search error:', error);
-      toast({
-        title: t('common:error'),
-        description: t('recipient.searchError'),
-        variant: "destructive",
-      });
-    }
-  }, [searchAddresses, toast, t]);
-
-  // Name search using search-citizen-addresses edge function
-  const searchByName = useCallback(async (searchQuery: string) => {
-    try {
-      const { data, error } = await supabase.functions.invoke('search-citizen-addresses', {
-        body: {
-          query: searchQuery,
-          purpose: 'DELIVERY',
-          purposeDetails: 'Postal delivery order recipient search',
-          limit: 20,
-        },
-      });
-
-      if (error) throw error;
-
-      setPersonResults(data?.results || []);
-      setShowResults(true);
-    } catch (error) {
-      console.error('Name search error:', error);
-      toast({
-        title: t('common:error'),
-        description: t('recipient.searchError'),
-        variant: "destructive",
-      });
-    }
-  }, [toast, t]);
-
-  // Debounced search - use refs to avoid infinite loop from callback dependencies
+  // Debounced search - use ref to avoid infinite loop
   useEffect(() => {
     if (selectedAddress) {
       const expectedDisplay = formatSelectedAddressDisplay(selectedAddress);
@@ -157,7 +118,7 @@ export const RecipientSearchPicker: React.FC<RecipientSearchPickerProps> = ({
       setIsSearching(true);
       try {
         if (searchMode === 'address') {
-          const results = await searchAddresses(query);
+          const results = await searchAddressesRef.current(query);
           setAddressResults(results);
           setShowResults(true);
         } else {
@@ -181,7 +142,7 @@ export const RecipientSearchPicker: React.FC<RecipientSearchPickerProps> = ({
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [query, searchMode, selectedAddress, searchAddresses]);
+  }, [query, searchMode, selectedAddress]);
 
   // Handle address selection from address mode
   const handleAddressSelect = (address: any) => {
@@ -266,7 +227,7 @@ export const RecipientSearchPicker: React.FC<RecipientSearchPickerProps> = ({
     }
   };
 
-  const toggleSearchMode = () => {
+  const toggleSearchMode = async () => {
     const newMode = searchMode === 'address' ? 'name' : 'address';
     setSearchMode(newMode);
     setAddressResults([]);
@@ -276,11 +237,29 @@ export const RecipientSearchPicker: React.FC<RecipientSearchPickerProps> = ({
     // Re-trigger search if there's a query
     if (query.length >= 2) {
       setIsSearching(true);
-      if (newMode === 'address') {
-        searchByAddress(query).finally(() => setIsSearching(false));
-      } else {
-        searchByName(query).finally(() => setIsSearching(false));
+      try {
+        if (newMode === 'address') {
+          const results = await searchAddressesRef.current(query);
+          setAddressResults(results);
+          setShowResults(true);
+        } else {
+          const { data, error } = await supabase.functions.invoke('search-citizen-addresses', {
+            body: {
+              query,
+              purpose: 'DELIVERY',
+              purposeDetails: 'Postal delivery order recipient search',
+              limit: 20,
+            },
+          });
+          if (!error) {
+            setPersonResults(data?.results || []);
+            setShowResults(true);
+          }
+        }
+      } catch (error) {
+        console.error('Search error:', error);
       }
+      setIsSearching(false);
     }
   };
 
