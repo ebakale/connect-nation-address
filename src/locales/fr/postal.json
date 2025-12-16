@@ -236,6 +236,13 @@
     "uploadError": "Erreur de téléchargement de la photo",
     "cameraError": "Caméra non disponible",
     "uploaded": "Téléchargée",
+    "viewFullSize": "Cliquez pour voir en taille réelle",
+    "types": {
+      "photo": "Photo",
+      "signature": "Signature",
+      "id_verification": "Vérification d'ID",
+      "recipient_absent_note": "Destinataire Absent"
+    },
     "relationships": {
       "recipient": "Destinataire",
       "spouse": "Conjoint(e)",
