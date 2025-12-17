@@ -46,7 +46,9 @@
     "hide": "Ocultar",
     "details": "Detalles",
     "add": "Agregar",
-    "getDirections": "Obtener Direcciones"
+    "getDirections": "Obtener Direcciones",
+    "startOver": "Empezar de Nuevo",
+    "backToDashboard": "Volver al Panel"
   },
   "yes": "Sí",
   "no": "No",
