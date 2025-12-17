@@ -704,7 +704,8 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                                   
                                   const { error: flagError } = await supabase.rpc('flag_address_for_review', {
                                     p_address_id: selectedAddress.id,
-                                    p_reason: flagReason
+                                    p_reason: flagReason,
+                                    p_flagged_by: user?.id
                                   });
 
                                   if (flagError) {
@@ -860,7 +861,8 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
 
                                 const { error } = await supabase.rpc('flag_address_for_review', {
                                   p_address_id: selectedAddress.id,
-                                  p_reason: flagReason
+                                  p_reason: flagReason,
+                                  p_flagged_by: user?.id
                                 });
 
                                 if (error) throw error;

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 interface BulkQualityOperationsProps {
   onClose: () => void;
@@ -29,6 +30,7 @@ export function BulkQualityOperations({ onClose, onOperationComplete }: BulkQual
   const [pendingOperation, setPendingOperation] = useState<any>(null);
   const [operationResults, setOperationResults] = useState<any>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const bulkOperations = [
     {
@@ -198,7 +200,8 @@ export function BulkQualityOperations({ onClose, onOperationComplete }: BulkQual
       try {
         const { error: flagError } = await supabase.rpc('flag_address_for_review', {
           p_address_id: address.id,
-          p_reason: `Low quality score: ${address.completeness_score}%`
+          p_reason: `Low quality score: ${address.completeness_score}%`,
+          p_flagged_by: user?.id
         });
         
         if (!flagError) {
@@ -395,7 +398,8 @@ export function BulkQualityOperations({ onClose, onOperationComplete }: BulkQual
         try {
           const { error: flagError } = await supabase.rpc('flag_address_for_review', {
             p_address_id: address.id,
-            p_reason: flagReason
+            p_reason: flagReason,
+            p_flagged_by: user?.id
           });
           
           if (!flagError) {
