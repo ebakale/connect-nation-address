@@ -30,6 +30,7 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<google.maps.Map | null>(null);
+  const mapInitialized = useRef(false);
   const [mapType, setMapType] = useState<google.maps.MapTypeId | string>('satellite');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isApiReady, setIsApiReady] = useState(isGoogleMapsLoaded());
@@ -55,9 +56,20 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
   // Initialize map when API is ready
   useEffect(() => {
     if (!mapContainer.current || !isApiReady) return;
+    
+    // Prevent double initialization
+    if (mapInitialized.current) return;
+    
+    // Double-check the element exists in DOM
+    if (!document.body.contains(mapContainer.current)) {
+      console.warn('Map container not in DOM yet, skipping initialization');
+      return;
+    }
 
     const initializeMap = () => {
       try {
+        mapInitialized.current = true;
+        
         // Initialize map
         map.current = new google.maps.Map(mapContainer.current!, {
           center: { lat: latitude, lng: longitude },
@@ -111,11 +123,21 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
 
       } catch (err) {
         console.error('Error initializing Google Maps:', err);
+        mapInitialized.current = false;
       }
     };
 
     initializeMap();
-  }, [isApiReady, latitude, longitude, address]);
+    
+    // Cleanup function
+    return () => {
+      if (map.current) {
+        google.maps.event.clearInstanceListeners(map.current);
+        map.current = null;
+      }
+      mapInitialized.current = false;
+    };
+  }, [isApiReady, latitude, longitude, address.street, address.city, address.region, address.country, address.building]);
 
   // Effect to handle map style changes
   useEffect(() => {
