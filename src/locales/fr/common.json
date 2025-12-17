@@ -46,7 +46,9 @@
     "hide": "Masquer",
     "details": "Détails",
     "add": "Ajouter",
-    "getDirections": "Obtenir l'Itinéraire"
+    "getDirections": "Obtenir l'Itinéraire",
+    "startOver": "Recommencer",
+    "backToDashboard": "Retour au Tableau de Bord"
   },
   "yes": "Oui",
   "no": "Non",

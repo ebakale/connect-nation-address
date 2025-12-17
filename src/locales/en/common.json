@@ -46,7 +46,9 @@
     "hide": "Hide",
     "details": "Details",
     "add": "Add",
-    "getDirections": "Get Directions"
+    "getDirections": "Get Directions",
+    "startOver": "Start Over",
+    "backToDashboard": "Back to Dashboard"
   },
   "yes": "Yes",
   "no": "No",
