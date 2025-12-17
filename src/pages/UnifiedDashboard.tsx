@@ -454,6 +454,7 @@ const UnifiedDashboard = () => {
       case 'verification-tools': return t('dashboard:verificationTools');
       case 'residency-verification': return t('dashboard:residencyVerification');
       case 'residency-verification-dashboard': return t('dashboard:myVerificationRequests');
+      case 'my-address-requests': return t('dashboard:myAddressRequests');
       case 'citizen-address-portal': return t('dashboard:myAddressesCar');
       case 'my-deliveries': return t('dashboard:myDeliveries');
       case 'recent-searches': return t('dashboard:recentSearches');
@@ -482,6 +483,7 @@ const UnifiedDashboard = () => {
       case 'verification-tools': return t('dashboard:verificationToolsDescription');
       case 'residency-verification': return t('dashboard:manageResidencyVerifications');
       case 'residency-verification-dashboard': return t('dashboard:myVerificationRequestsDesc');
+      case 'my-address-requests': return t('dashboard:myAddressRequestsDesc');
       case 'citizen-address-portal': return t('dashboard:myAddressesCarDesc');
       case 'recent-searches': return t('dashboard:recentSearchesDesc');
       case 'saved-locations': return t('dashboard:savedLocationsDesc');
@@ -985,6 +987,7 @@ const UnifiedDashboard = () => {
         );
 
       case 'request-status':
+      case 'my-address-requests':
         return (
           <div className="max-w-4xl">
             <AddressRequestStatus />
