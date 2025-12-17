@@ -4194,25 +4194,10 @@ export type Database = {
         Returns: Json
       }
       delete_rejected_request: { Args: { p_request_id: string }; Returns: Json }
-      flag_address_for_review:
-        | {
-            Args: {
-              p_address_id: string
-              p_analysis?: Json
-              p_flagged_by?: string
-              p_reason: string
-              p_recommendations?: string[]
-            }
-            Returns: boolean
-          }
-        | {
-            Args: {
-              p_address_id: string
-              p_flagged_by?: string
-              p_reason: string
-            }
-            Returns: boolean
-          }
+      flag_address_for_review: {
+        Args: { p_address_id: string; p_flagged_by?: string; p_reason: string }
+        Returns: boolean
+      }
       flag_address_request_for_review: {
         Args: { p_flagged_by?: string; p_reason: string; p_request_id: string }
         Returns: boolean
