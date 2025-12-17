@@ -493,9 +493,27 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                       {/* Duplicate Analysis */}
                       {request.verification_analysis.duplicate_check && (
                         <div className="bg-orange-50 border border-orange-200 p-3 rounded">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Info className="h-4 w-4 text-orange-600" />
-                            <span className="text-sm font-medium text-orange-800">{t('duplicateCheckResults')}</span>
+                          <div className="flex items-center justify-between gap-2 mb-2">
+                            <div className="flex items-center gap-2">
+                              <Info className="h-4 w-4 text-orange-600" />
+                              <span className="text-sm font-medium text-orange-800">{t('duplicateCheckResults')}</span>
+                            </div>
+                            {request.verification_analysis.duplicate_check.has_duplicates && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDuplicateAnalysis(request.verification_analysis.duplicate_check);
+                                  setSelectedRequest(request);
+                                  setDuplicateDialogOpen(true);
+                                }}
+                                className="text-xs flex items-center gap-1 text-orange-700 border-orange-300 hover:bg-orange-100"
+                              >
+                                <Eye className="h-3 w-3" />
+                                {t('viewSimilarAddresses')}
+                              </Button>
+                            )}
                           </div>
                           
                           {request.verification_analysis.duplicate_check.has_duplicates ? (
@@ -757,7 +775,14 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
           onClose={handleCancelDuplicateApproval}
           duplicateAnalysis={duplicateAnalysis}
           onProceedAnyway={handleProceedWithDuplicates}
-          actionLabel="Approve Anyway"
+          onRejectAsDuplicate={() => {
+            setDuplicateDialogOpen(false);
+            if (selectedRequest) {
+              handleReject(selectedRequest);
+            }
+          }}
+          actionLabel={t('duplicates.proceedAnyway')}
+          requestCoordinates={selectedRequest ? { lat: selectedRequest.latitude, lng: selectedRequest.longitude } : undefined}
         />
       )}
     </>
