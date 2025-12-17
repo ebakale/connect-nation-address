@@ -270,6 +270,7 @@
   "workflow": "Workflow", 
   "management": "Management",
   "verification": "Verification",
+  "citizenAddressRegistry": "Citizen Address Registry",
   "administration": "Administration",
   "settings": "Settings",
   "searchPlaceholder": "Search by address, UAC code, or landmark...",

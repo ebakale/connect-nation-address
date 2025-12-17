@@ -1499,5 +1499,8 @@
   "verified": "Vérifié",
   "noPhoto": "Pas de Photo",
   "actions": "Actions",
-  "analyzed": "Analysé"
+  "analyzed": "Analysé",
+  "addressDetails": "Détails de l'Adresse",
+  "viewOnMap": "Voir sur la Carte",
+  "search": "Rechercher"
 }
