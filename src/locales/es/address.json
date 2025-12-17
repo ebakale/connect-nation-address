@@ -34,6 +34,12 @@
   "addSecondaryAddress": "Agregar Dirección Secundaria",
   "secondaryAddressDescription": "Las direcciones secundarias pueden incluir ubicaciones de trabajo, residencias temporales u otras ubicaciones relevantes.",
   "userRequestedRemoval": "Usuario solicitó eliminación",
+  "allRequests": "Todas las Solicitudes",
+  "rejectedOnly": "Solo Rechazadas",
+  "pending": "Pendiente",
+  "underReview": "En Revisión",
+  "approved": "Aprobado",
+  "completed": "Completado",
   "status": {
     "self_declared": "Auto Declarado",
     "confirmed": "Confirmado", 
