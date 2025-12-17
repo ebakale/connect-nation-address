@@ -84,7 +84,7 @@ export const UniversalLocationMap: React.FC<UniversalLocationMapProps> = ({
             </AlertDescription>
           </Alert>
         )}
-        <div className="relative h-64 sm:h-80 md:h-96 rounded-lg overflow-hidden">
+        <div className="relative h-full min-h-[300px] rounded-lg overflow-hidden">
           <Button
             variant="outline"
             size="sm"
