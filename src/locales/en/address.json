@@ -26,6 +26,12 @@
   "addSecondaryAddress": "Add Secondary Address",
   "secondaryAddressDescription": "Secondary addresses can include work locations, temporary residences, or other relevant locations.",
   "userRequestedRemoval": "User requested removal",
+  "allRequests": "All Requests",
+  "rejectedOnly": "Rejected Only",
+  "pending": "Pending",
+  "underReview": "Under Review",
+  "approved": "Approved",
+  "completed": "Completed",
   "status": {
     "self_declared": "Self Declared",
     "confirmed": "Confirmed",

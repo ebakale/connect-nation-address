@@ -26,6 +26,12 @@
   "addSecondaryAddress": "Ajouter Adresse Secondaire",
   "secondaryAddressDescription": "Les adresses secondaires peuvent inclure des lieux de travail, des résidences temporaires ou d'autres emplacements pertinents.",
   "userRequestedRemoval": "Suppression demandée par l'utilisateur",
+  "allRequests": "Toutes les Demandes",
+  "rejectedOnly": "Rejetées Uniquement",
+  "pending": "En Attente",
+  "underReview": "En Cours de Révision",
+  "approved": "Approuvé",
+  "completed": "Terminé",
   "status": {
     "self_declared": "Auto Déclaré",
     "confirmed": "Confirmé", 
