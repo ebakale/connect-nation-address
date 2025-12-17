@@ -1348,5 +1348,8 @@
   "verified": "Verified",
   "noPhoto": "No Photo",
   "actions": "Actions",
-  "analyzed": "Analyzed"
+  "analyzed": "Analyzed",
+  "addressDetails": "Address Details",
+  "viewOnMap": "View on Map",
+  "search": "Search"
 }
