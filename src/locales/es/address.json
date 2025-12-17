@@ -29,6 +29,8 @@
   "rejected": "Rechazadas",
   "rejectedRequests": "Solicitudes Rechazadas",
   "rejectedRequestsDescription": "Revise y reenvíe sus solicitudes de dirección rechazadas con correcciones",
+  "rejectionDetails": "Detalles del Rechazo",
+  "guidedResubmission": "Reenvío Guiado",
   "setPrimaryAddress": "Establecer Dirección Principal",
   "primaryAddressDescription": "Tu dirección principal es tu residencia principal. Solo puedes tener una dirección principal a la vez.",
   "addSecondaryAddress": "Agregar Dirección Secundaria",

@@ -21,6 +21,8 @@
   "rejected": "Rejetées",
   "rejectedRequests": "Demandes Rejetées",
   "rejectedRequestsDescription": "Examinez et resoumettez vos demandes d'adresse rejetées avec des corrections",
+  "rejectionDetails": "Détails du Rejet",
+  "guidedResubmission": "Resoumission Guidée",
   "setPrimaryAddress": "Définir Adresse Principale",
   "primaryAddressDescription": "Votre adresse principale est votre résidence principale. Vous ne pouvez avoir qu'une seule adresse principale à la fois.",
   "addSecondaryAddress": "Ajouter Adresse Secondaire",

@@ -21,6 +21,8 @@
   "rejected": "Rejected",
   "rejectedRequests": "Rejected Requests",
   "rejectedRequestsDescription": "Review and resubmit your rejected address requests with corrections",
+  "rejectionDetails": "Rejection Details",
+  "guidedResubmission": "Guided Resubmission",
   "setPrimaryAddress": "Set Primary Address",
   "primaryAddressDescription": "Your primary address is your main residence. You can only have one primary address at a time.",
   "addSecondaryAddress": "Add Secondary Address",

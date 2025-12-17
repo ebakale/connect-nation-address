@@ -245,7 +245,7 @@ export const AddressRequestStatus = () => {
                       <h4 className="font-medium mb-2">{t('requestDetails')}</h4>
                       <dl className="space-y-1">
                         <div className="flex justify-between">
-                          <dt className="text-muted-foreground">{t('status')}:</dt>
+                          <dt className="text-muted-foreground">{t('statusLabel')}:</dt>
                           <dd className="capitalize">{request.status}</dd>
                         </div>
                         <div className="flex justify-between">
@@ -355,7 +355,7 @@ export const AddressRequestStatus = () => {
                         <h4 className="font-medium mb-2">{t('requestDetails')}</h4>
                         <dl className="space-y-1">
                           <div className="flex justify-between">
-                            <dt className="text-muted-foreground">{t('status')}:</dt>
+                            <dt className="text-muted-foreground">{t('statusLabel')}:</dt>
                             <dd className="capitalize">{request.status}</dd>
                           </div>
                           <div className="flex justify-between">
