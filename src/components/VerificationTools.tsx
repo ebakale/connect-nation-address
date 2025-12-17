@@ -15,6 +15,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { UniversalLocationMap } from "@/components/UniversalLocationMap";
 import { FlaggedAddressManager } from "@/components/FlaggedAddressManager";
 import { useTranslation } from 'react-i18next';
+import { useGoogleMapsPreload } from '@/hooks/useGoogleMapsPreload';
 
 interface VerificationRecord {
   id: string;
@@ -73,6 +74,9 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
   const { user } = useAuth();
   const { roleMetadata, loading: roleLoading } = useUserRole();
   const { t } = useTranslation(['admin', 'common']);
+  
+  // Pre-load Google Maps in background when VerificationTools mounts
+  useGoogleMapsPreload(true);
 
   // Extract geographic scope from role metadata
   const geographicScope = roleMetadata.find(m => 

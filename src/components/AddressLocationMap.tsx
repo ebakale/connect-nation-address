@@ -1,9 +1,11 @@
 /// <reference types="google.maps" />
 import React, { useEffect, useRef, useState } from 'react';
-import { Loader } from '@googlemaps/js-api-loader';
 import { Button } from '@/components/ui/button';
 import { X, Satellite, Map as MapIcon, ExternalLink, Maximize2 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { 
+  loadGoogleMaps, 
+  isGoogleMapsLoaded 
+} from '@/services/googleMapsService';
 
 interface AddressLocationMapProps {
   latitude: number;
@@ -28,51 +30,39 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<google.maps.Map | null>(null);
-  const [googleMapsApiKey, setGoogleMapsApiKey] = useState<string>('');
-  const [mapType, setMapType] = useState<google.maps.MapTypeId>(google.maps.MapTypeId.SATELLITE);
+  const [mapType, setMapType] = useState<google.maps.MapTypeId | string>('satellite');
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isApiReady, setIsApiReady] = useState(false);
+  const [isApiReady, setIsApiReady] = useState(isGoogleMapsLoaded());
+  const [error, setError] = useState<string | null>(null);
 
-  // Fetch Google Maps API key from Supabase secrets
+  // Load Google Maps SDK using singleton service
   useEffect(() => {
-    const fetchGoogleMapsApiKey = async () => {
-      try {
-        const { data, error } = await supabase.functions.invoke('get-google-maps-token');
-        if (error) throw error;
-        setGoogleMapsApiKey(data.apiKey);
-        setIsApiReady(true);
-      } catch (error) {
-        console.error('Error fetching Google Maps API key:', error);
-        // Fallback: ask user to input token temporarily
-        const apiKey = prompt('Please enter your Google Maps API key:');
-        if (apiKey) {
-          setGoogleMapsApiKey(apiKey);
-          setIsApiReady(true);
-        }
-      }
-    };
+    if (isGoogleMapsLoaded()) {
+      setIsApiReady(true);
+      return;
+    }
 
-    fetchGoogleMapsApiKey();
+    loadGoogleMaps()
+      .then(() => {
+        setIsApiReady(true);
+      })
+      .catch((err) => {
+        console.error('Error loading Google Maps:', err);
+        setError(err.message || 'Failed to load Google Maps');
+      });
   }, []);
 
+  // Initialize map when API is ready
   useEffect(() => {
-    if (!mapContainer.current || !googleMapsApiKey || !isApiReady) return;
+    if (!mapContainer.current || !isApiReady) return;
 
-    const initializeMap = async () => {
+    const initializeMap = () => {
       try {
-        const loader = new Loader({
-          apiKey: googleMapsApiKey,
-          version: 'weekly',
-          libraries: ['places']
-        });
-
-        await loader.load();
-
         // Initialize map
         map.current = new google.maps.Map(mapContainer.current!, {
           center: { lat: latitude, lng: longitude },
           zoom: 16,
-          mapTypeId: mapType,
+          mapTypeId: mapType as google.maps.MapTypeId,
           mapTypeControl: false,
           streetViewControl: true,
           fullscreenControl: false,
@@ -119,18 +109,18 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
         // Show info window immediately
         infoWindow.open(map.current, marker);
 
-      } catch (error) {
-        console.error('Error initializing Google Maps:', error);
+      } catch (err) {
+        console.error('Error initializing Google Maps:', err);
       }
     };
 
     initializeMap();
-  }, [googleMapsApiKey, latitude, longitude, address, mapType, isApiReady]);
+  }, [isApiReady, latitude, longitude, address]);
 
   // Effect to handle map style changes
   useEffect(() => {
     if (map.current && isApiReady) {
-      map.current.setMapTypeId(mapType);
+      map.current.setMapTypeId(mapType as google.maps.MapTypeId);
     }
   }, [mapType, isApiReady]);
 
@@ -145,11 +135,17 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
 
   const toggleMapType = () => {
     setMapType(prevType => 
-      prevType === google.maps.MapTypeId.SATELLITE 
-        ? google.maps.MapTypeId.ROADMAP 
-        : google.maps.MapTypeId.SATELLITE
+      prevType === 'satellite' ? 'roadmap' : 'satellite'
     );
   };
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64 bg-muted rounded-lg">
+        <p className="text-muted-foreground">Error: {error}</p>
+      </div>
+    );
+  }
 
   if (!isApiReady) {
     return (
@@ -168,7 +164,7 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
         <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
           <div className="flex bg-background/95 backdrop-blur-sm rounded-md p-1">
             <Button
-              variant={mapType === google.maps.MapTypeId.SATELLITE ? 'default' : 'ghost'}
+              variant={mapType === 'satellite' ? 'default' : 'ghost'}
               size="sm"
               onClick={toggleMapType}
               className="touch-target rounded-r-none text-xs px-2 py-1"
@@ -177,7 +173,7 @@ export const AddressLocationMap: React.FC<AddressLocationMapProps> = ({
               <span className="ml-1 text-xs">Sat</span>
             </Button>
             <Button
-              variant={mapType === google.maps.MapTypeId.ROADMAP ? 'default' : 'ghost'}
+              variant={mapType === 'roadmap' ? 'default' : 'ghost'}
               size="sm"
               onClick={toggleMapType}
               className="touch-target rounded-l-none text-xs px-2 py-1"
