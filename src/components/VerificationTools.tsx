@@ -704,17 +704,7 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                                   
                                   const { error: flagError } = await supabase.rpc('flag_address_for_review', {
                                     p_address_id: selectedAddress.id,
-                                    p_reason: flagReason,
-                                    p_analysis: {
-                                      overallScore: data.overallScore,
-                                      accuracy: data.accuracy,
-                                      consistency: data.consistency,
-                                      validation: data.validation,
-                                      crossReference: data.crossReference,
-                                      analysisDate: new Date().toISOString(),
-                                      analysisTrigger: 'auto-verify'
-                                    },
-                                    p_recommendations: data.recommendations
+                                    p_reason: flagReason
                                   });
 
                                   if (flagError) {
@@ -868,20 +858,9 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
                                 const flagReason = prompt("Enter reason for flagging this address:");
                                 if (!flagReason) return;
 
-                                // Include current verification results if available
-                                const analysisData = coordVerificationResults ? {
-                                  manualFlag: true,
-                                  previousAccuracy: coordVerificationResults.accuracy,
-                                  previousConfidence: coordVerificationResults.confidence,
-                                  flaggedDate: new Date().toISOString(),
-                                  analysisTrigger: 'manual-flag'
-                                } : null;
-
                                 const { error } = await supabase.rpc('flag_address_for_review', {
                                   p_address_id: selectedAddress.id,
-                                  p_reason: flagReason,
-                                  p_analysis: analysisData,
-                                  p_recommendations: [`Manual flag: ${flagReason}`]
+                                  p_reason: flagReason
                                 });
 
                                 if (error) throw error;
