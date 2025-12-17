@@ -102,11 +102,11 @@ export const OSMMapView: React.FC<OSMMapViewProps> = ({
   };
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative h-full ${className}`}>
       <MapContainer
         center={mapCenter}
         zoom={zoom}
-        style={{ height: '100%', width: '100%', minHeight: '400px' }}
+        style={{ height: '100%', width: '100%', minHeight: '300px' }}
         className="rounded-lg z-0"
       >
         <TileLayer

@@ -1188,21 +1188,23 @@ export const VerificationTools = ({ onClose }: VerificationToolsProps) => {
             </DialogTitle>
           </DialogHeader>
           {selectedAddress && (
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
-              <div className="space-y-2">
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 h-full overflow-hidden">
+              <div className="flex flex-col space-y-2 min-h-0">
                 <div className="text-sm font-medium">{t('admin:interactiveVerificationMap')}</div>
-                <UniversalLocationMap
-                  latitude={selectedAddress.latitude}
-                  longitude={selectedAddress.longitude}
-                  address={{
-                    street: selectedAddress.street,
-                    city: selectedAddress.city,
-                    region: selectedAddress.region,
-                    country: selectedAddress.country,
-                  }}
-                  onClose={() => setVerificationMapOpen(false)}
-                  allowResize={false}
-                />
+                <div className="flex-1 min-h-[300px] lg:min-h-0">
+                  <UniversalLocationMap
+                    latitude={selectedAddress.latitude}
+                    longitude={selectedAddress.longitude}
+                    address={{
+                      street: selectedAddress.street,
+                      city: selectedAddress.city,
+                      region: selectedAddress.region,
+                      country: selectedAddress.country,
+                    }}
+                    onClose={() => setVerificationMapOpen(false)}
+                    allowResize={false}
+                  />
+                </div>
               </div>
               <div className="space-y-4">
                 <div className="text-sm font-medium">{t('admin:verificationChecklist')}</div>

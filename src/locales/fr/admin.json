@@ -1477,5 +1477,27 @@
     "systemHealth": "Santé",
     "managementTools": "Gestion",
     "privacy": "Confidentialité"
-  }
+  },
+  "searchForAddressesQualityControl": "Rechercher des adresses pour accéder aux outils de contrôle de qualité",
+  "coordinateVerificationMap": "Carte de Vérification des Coordonnées",
+  "interactiveVerificationMap": "Carte de Vérification Interactive",
+  "verificationChecklist": "Liste de Vérification",
+  "coordinateLocation": "Emplacement des Coordonnées",
+  "verifyPinCorrectBuilding": "Vérifier que le marqueur est placé sur le bon bâtiment",
+  "streetAccess": "Accès à la Rue",
+  "confirmAddressAccessible": "Confirmer que l'adresse est accessible depuis la rue",
+  "buildingType": "Type de Bâtiment",
+  "checkStructureMatches": "Vérifier si la structure correspond au type d'adresse",
+  "surroundingArea": "Zone Environnante",
+  "verifyConsistencyNeighborhood": "Vérifier la cohérence avec le quartier",
+  "currentCoordinates": "Coordonnées Actuelles",
+  "approveCoordinates": "Approuver les Coordonnées",
+  "addressLocationView": "Vue de l'Emplacement de l'Adresse",
+  "verificationStatus": "Statut de Vérification",
+  "coordinates": "Coordonnées",
+  "photoQuality": "Qualité de la Photo",
+  "verified": "Vérifié",
+  "noPhoto": "Pas de Photo",
+  "actions": "Actions",
+  "analyzed": "Analysé"
 }

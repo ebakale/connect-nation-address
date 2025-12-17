@@ -1326,5 +1326,27 @@
     "verificationTools": "Verification Tools",
     "addressVerificationManagement": "Address verification management",
     "bulkVerification": "Bulk Verification"
-  }
+  },
+  "searchForAddressesQualityControl": "Search for addresses to access quality control tools",
+  "coordinateVerificationMap": "Coordinate Verification Map",
+  "interactiveVerificationMap": "Interactive Verification Map",
+  "verificationChecklist": "Verification Checklist",
+  "coordinateLocation": "Coordinate Location",
+  "verifyPinCorrectBuilding": "Verify the pin is placed on the correct building",
+  "streetAccess": "Street Access",
+  "confirmAddressAccessible": "Confirm the address is accessible from the street",
+  "buildingType": "Building Type",
+  "checkStructureMatches": "Check if the structure matches the address type",
+  "surroundingArea": "Surrounding Area",
+  "verifyConsistencyNeighborhood": "Verify consistency with the neighborhood",
+  "currentCoordinates": "Current Coordinates",
+  "approveCoordinates": "Approve Coordinates",
+  "addressLocationView": "Address Location View",
+  "verificationStatus": "Verification Status",
+  "coordinates": "Coordinates",
+  "photoQuality": "Photo Quality",
+  "verified": "Verified",
+  "noPhoto": "No Photo",
+  "actions": "Actions",
+  "analyzed": "Analyzed"
 }
