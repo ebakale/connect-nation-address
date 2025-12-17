@@ -53,6 +53,9 @@
   "registerItNow": "Enregistrez-la maintenant",
   "addNewAddress": "Ajouter une Nouvelle Adresse",
   "registerResidentialBusiness": "Créez ou déclarez votre adresse résidentielle ou commerciale",
+  "registerAddress": "Enregistrer une Adresse",
+  "myAddressRequests": "Mes Demandes d'Adresse",
+  "myAddressRequestsDesc": "Voir le statut de vos demandes d'adresse soumises",
   "unitManagement": {
     "title": "Gestion des Unités",
     "description": "Gérer les unités d'urgence et les affectations d'officiers",

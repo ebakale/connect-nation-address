@@ -15,6 +15,7 @@ import {
   Phone,
   FileDown,
   FileCheck,
+  FileText,
   Crown,
   Star,
   Globe,
@@ -162,6 +163,13 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
       visible: isCitizen || isNARAuthority
     },
     {
+      id: 'my-address-requests',
+      title: t('myAddressRequests'),
+      icon: FileText,
+      onClick: () => handleItemClick('my-address-requests'),
+      visible: isCitizen
+    },
+    {
       id: 'address-search',
       title: t('addressSearch'),
       icon: Search,
@@ -278,7 +286,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   );
   
   const toolsItems = visibleItems.filter(item => 
-    ['unified-address-request', 'address-search', 'saved-addresses', 'my-businesses', 'my-deliveries', 'request-pickup', 'delivery-preferences'].includes(item.id)
+    ['unified-address-request', 'my-address-requests', 'address-search', 'saved-addresses', 'my-businesses', 'my-deliveries', 'request-pickup', 'delivery-preferences'].includes(item.id)
   );
   
   const settingsItems = visibleItems.filter(item => 

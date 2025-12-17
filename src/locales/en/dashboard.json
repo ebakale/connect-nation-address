@@ -187,6 +187,8 @@
   "deliveryPreferences": "Delivery Preferences",
   "deliveryPreferencesDesc": "Manage your delivery preferences and settings",
   "registerAddress": "Register Address",
+  "myAddressRequests": "My Address Requests",
+  "myAddressRequestsDesc": "View the status of your submitted address requests",
   "addressNotFound": "Can't find your address?",
   "registerItNow": "Register it now",
   "addNewAddress": "Add New Address",
