@@ -29,7 +29,7 @@ Deno.serve(async (req) => {
 
     console.log(`Tracking request for order: ${order_number}`);
 
-    // Fetch order with limited fields (privacy-conscious)
+    // Fetch order with full details for citizen view
     const { data: order, error: orderError } = await supabase
       .from('delivery_orders')
       .select(`
@@ -38,10 +38,23 @@ Deno.serve(async (req) => {
         status,
         recipient_name,
         recipient_phone,
+        recipient_address_uac,
         package_type,
         created_at,
         scheduled_date,
-        completed_at
+        completed_at,
+        sender_name,
+        sender_address_uac,
+        weight_grams,
+        dimensions_cm,
+        declared_value,
+        priority_level,
+        requires_signature,
+        requires_id_verification,
+        preferred_time_window,
+        special_instructions,
+        cod_required,
+        cod_amount
       `)
       .eq('order_number', order_number.trim().toUpperCase())
       .single();
@@ -89,15 +102,28 @@ Deno.serve(async (req) => {
       proof = proofData;
     }
 
-    // Build response with public-safe data only
+    // Build response with full data for citizen view
     const trackingData = {
       order_number: order.order_number,
       status: order.status,
       recipient_name: order.recipient_name,
+      recipient_address_uac: order.recipient_address_uac,
       package_type: order.package_type,
       created_at: order.created_at,
       scheduled_date: order.scheduled_date,
       completed_at: order.completed_at,
+      sender_name: order.sender_name,
+      sender_address_uac: order.sender_address_uac,
+      weight_grams: order.weight_grams,
+      dimensions_cm: order.dimensions_cm,
+      declared_value: order.declared_value,
+      priority_level: order.priority_level,
+      requires_signature: order.requires_signature,
+      requires_id_verification: order.requires_id_verification,
+      preferred_time_window: order.preferred_time_window,
+      special_instructions: order.special_instructions,
+      cod_required: order.cod_required,
+      cod_amount: order.cod_amount,
       status_logs: (statusLogs || []).map(log => ({
         status: log.new_status,
         changed_at: log.changed_at

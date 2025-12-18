@@ -10,9 +10,23 @@ export interface CitizenDelivery {
   recipient_name: string;
   recipient_address_uac: string;
   sender_name: string;
+  sender_address_uac: string | null;
   created_at: string;
   scheduled_date: string | null;
   completed_at: string | null;
+  // Package details
+  weight_grams: number | null;
+  dimensions_cm: string | null;
+  declared_value: number | null;
+  priority_level: number;
+  // Delivery requirements
+  requires_signature: boolean;
+  requires_id_verification: boolean;
+  preferred_time_window: string | null;
+  special_instructions: string | null;
+  // COD info
+  cod_required: boolean;
+  cod_amount: number | null;
   status_logs: Array<{
     status: string;
     changed_at: string;
@@ -106,9 +120,23 @@ export const useCitizenDeliveries = () => {
         recipient_name: order.recipient_name,
         recipient_address_uac: order.recipient_address_uac,
         sender_name: order.sender_name,
+        sender_address_uac: order.sender_address_uac,
         created_at: order.created_at,
         scheduled_date: order.scheduled_date,
         completed_at: order.completed_at,
+        // Package details
+        weight_grams: order.weight_grams,
+        dimensions_cm: order.dimensions_cm,
+        declared_value: order.declared_value,
+        priority_level: order.priority_level,
+        // Delivery requirements
+        requires_signature: order.requires_signature ?? false,
+        requires_id_verification: order.requires_id_verification ?? false,
+        preferred_time_window: order.preferred_time_window,
+        special_instructions: order.special_instructions,
+        // COD info
+        cod_required: order.cod_required ?? false,
+        cod_amount: order.cod_amount,
         status_logs: (statusLogs || [])
           .filter(log => log.order_id === order.id)
           .map(log => ({
