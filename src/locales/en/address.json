@@ -940,6 +940,12 @@
     "failedToSaveAddress": "Failed to save address"
   },
   "viewSimilarAddresses": "View Similar Addresses",
+  "duplicateCheckResults": "Duplicate Check Results",
+  "potentialDuplicatesDetected": "Potential duplicates detected",
+  "addressesFoundWithinRadius": "addresses found within radius",
+  "exactAddressMatches": "exact address matches",
+  "reviewRequiredForDuplicate": "Review required for potential duplicate",
+  "noDuplicatesFound": "No duplicates found",
   "duplicates": {
     "dialogTitle": "Potential Duplicate Addresses Detected",
     "summaryTitle": "Duplicate Check Summary",

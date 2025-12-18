@@ -1415,6 +1415,12 @@
     "failedToSaveAddress": "No se pudo guardar la dirección"
   },
   "viewSimilarAddresses": "Ver Direcciones Similares",
+  "duplicateCheckResults": "Resultados de Verificación de Duplicados",
+  "potentialDuplicatesDetected": "Posibles duplicados detectados",
+  "addressesFoundWithinRadius": "direcciones encontradas dentro del radio",
+  "exactAddressMatches": "coincidencias exactas de dirección",
+  "reviewRequiredForDuplicate": "Revisión requerida por posible duplicado",
+  "noDuplicatesFound": "No se encontraron duplicados",
   "duplicates": {
     "dialogTitle": "Direcciones Duplicadas Potenciales Detectadas",
     "summaryTitle": "Resumen de Verificación de Duplicados",
