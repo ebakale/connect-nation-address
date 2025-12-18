@@ -7,9 +7,10 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { CalendarDays, MapPin, MessageSquare, RefreshCw, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, FileText, AlertTriangle } from 'lucide-react';
+import { CalendarDays, MapPin, MessageSquare, RefreshCw, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, FileText, AlertTriangle, Copy, CheckCircle2, QrCode } from 'lucide-react';
 import { format } from 'date-fns';
 import { AddressResubmissionDialog } from '@/components/AddressResubmissionDialog';
+import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 
 interface AddressRequestData {
   id: string;
@@ -33,6 +34,8 @@ interface AddressRequestData {
   photo_url?: string;
   created_at: string;
   updated_at: string;
+  approved_address_id?: string;
+  approved_uac?: string;
 }
 
 const statusConfig: Record<string, { color: string; key: string }> = {
@@ -53,27 +56,66 @@ export const AddressRequestStatus = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+  const [copiedUac, setCopiedUac] = useState<string | null>(null);
   const [resubmissionDialog, setResubmissionDialog] = useState<{
     open: boolean;
     address: AddressRequestData | null;
   }>({ open: false, address: null });
+
+  const copyUacToClipboard = async (uac: string) => {
+    try {
+      await navigator.clipboard.writeText(uac);
+      setCopiedUac(uac);
+      toast({
+        title: t('common:success'),
+        description: t('toast.uacCopied'),
+      });
+      setTimeout(() => setCopiedUac(null), 2000);
+    } catch (error) {
+      toast({
+        title: t('common:error'),
+        description: t('copyFailed'),
+        variant: "destructive",
+      });
+    }
+  };
 
   const fetchRequests = async () => {
     if (!user) return;
 
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // Fetch requests with their approved address UACs
+      const { data: requestsData, error } = await supabase
         .from('address_requests')
-        .select('id, requester_id, country, region, city, street, building, latitude, longitude, address_type, description, justification, status, reviewer_notes, rejection_reason, rejection_notes, rejected_by, rejected_at, photo_url, created_at, updated_at')
+        .select('id, requester_id, country, region, city, street, building, latitude, longitude, address_type, description, justification, status, reviewer_notes, rejection_reason, rejection_notes, rejected_by, rejected_at, photo_url, created_at, updated_at, approved_address_id')
         .eq('requester_id', user.id)
         .order('created_at', { ascending: false });
       
       if (error) {
         throw error;
       }
+
+      // For approved requests with approved_address_id, fetch the UAC
+      const requestsWithUac = await Promise.all(
+        (requestsData || []).map(async (request) => {
+          if (request.status === 'approved' && request.approved_address_id) {
+            const { data: addressData } = await supabase
+              .from('addresses')
+              .select('uac')
+              .eq('id', request.approved_address_id)
+              .single();
+            
+            return {
+              ...request,
+              approved_uac: addressData?.uac || undefined
+            };
+          }
+          return request;
+        })
+      );
       
-      setRequests(data || []);
+      setRequests(requestsWithUac);
     } catch (error) {
       console.error('Error fetching address requests:', error);
       toast({
@@ -207,9 +249,10 @@ export const AddressRequestStatus = () => {
         <TabsContent value="all" className="space-y-4 mt-4">
           {currentDisplayRequests.map((request) => {
           const isExpanded = expandedCards.has(request.id);
+          const isApproved = request.status === 'approved';
           
           return (
-            <Card key={request.id} className="border-l-4 border-l-primary/20">
+            <Card key={request.id} className={`border-l-4 ${isApproved ? 'border-l-green-500' : 'border-l-primary/20'}`}>
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="space-y-1">
@@ -236,6 +279,42 @@ export const AddressRequestStatus = () => {
                     </Button>
                   </div>
                 </div>
+
+                {/* UAC Display for Approved Requests */}
+                {isApproved && request.approved_uac && (
+                  <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
+                        <div>
+                          <p className="text-xs text-green-700 dark:text-green-300 font-medium">{t('yourUAC')}</p>
+                          <p className="text-lg font-mono font-bold text-green-800 dark:text-green-200">{request.approved_uac}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => copyUacToClipboard(request.approved_uac!)}
+                          className="flex items-center gap-1"
+                        >
+                          {copiedUac === request.approved_uac ? (
+                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                          ) : (
+                            <Copy className="h-4 w-4" />
+                          )}
+                          {copiedUac === request.approved_uac ? t('common:copied') : t('common:buttons.copy')}
+                        </Button>
+                        <QRCodeGenerator 
+                          uac={request.approved_uac} 
+                          addressText={formatAddress(request)}
+                          variant="icon"
+                          size="sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </CardHeader>
 
               {isExpanded && (
@@ -256,6 +335,12 @@ export const AddressRequestStatus = () => {
                           <div className="flex justify-between">
                             <dt className="text-muted-foreground">{t('coordinates')}:</dt>
                             <dd>{request.latitude.toFixed(6)}, {request.longitude.toFixed(6)}</dd>
+                          </div>
+                        )}
+                        {isApproved && request.approved_uac && (
+                          <div className="flex justify-between">
+                            <dt className="text-muted-foreground">{t('uac')}:</dt>
+                            <dd className="font-mono font-semibold">{request.approved_uac}</dd>
                           </div>
                         )}
                       </dl>

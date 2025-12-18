@@ -765,6 +765,8 @@
   "reviewerNotes": "Notas del Revisor",
   "coordinates": "Coordenadas",
   "lastUpdated": "Última actualización: {{date}}",
+  "yourUAC": "Tu UAC",
+  "copyFailed": "Error al copiar al portapapeles",
   "previous": "Anterior",
   "next": "Siguiente",
   "pending": "Pendiente",

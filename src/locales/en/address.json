@@ -355,6 +355,8 @@
   "requestDetails": "Request Details",
   "justification": "Justification",
   "lastUpdated": "Last Updated",
+  "yourUAC": "Your UAC",
+  "copyFailed": "Failed to copy to clipboard",
   "pageXOfY": "Page {{current}} of {{total}}",
   "underReview": "Under Review",
   "completed": "Completed",
