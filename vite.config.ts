@@ -27,7 +27,13 @@ export default defineConfig(({ mode }) => ({
     exclude: [
       '@tanstack/react-query'
     ],
-    include: ['qrcode', 'react-leaflet', '@react-leaflet/core', 'leaflet']
+    include: [
+      'qrcode', 
+      'react-leaflet', 
+      '@react-leaflet/core', 
+      'leaflet',
+      '@googlemaps/js-api-loader'
+    ]
   },
   build: {
     rollupOptions: {
