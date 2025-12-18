@@ -426,7 +426,7 @@ export function BusinessAddressRequestCard({ request, onUpdate }: BusinessAddres
       <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('business:rejectBusinessRequest')}</DialogTitle>
+            <DialogTitle>{t('business:approval.rejectBusinessRequest')}</DialogTitle>
             <DialogDescription>{t('address:provideReasonForRejection')}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">

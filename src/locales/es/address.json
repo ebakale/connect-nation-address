@@ -222,6 +222,7 @@
   "review": "Revisar",
   "approve": "Aprobar",
   "reject": "Rechazar",
+  "confirmReject": "Confirmar Rechazo",
   "publish": "Publicar",
   "unpublish": "Despublicar",
   "verifyAddress": "Verificar dirección",
