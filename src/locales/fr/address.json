@@ -1022,6 +1022,7 @@
   "aiAnalysisComments.lowConfidenceRating": "Cote de faible confiance attribuée",
   "approve": "Approuver",
   "reject": "Rejeter",
+  "confirmReject": "Confirmer le Rejet",
   "showingFlaggedAddresses": "Affichage {{start}}-{{end}} de {{total}} adresses signalées",
   "flaggedRequestApproved": "Demande signalée approuvée avec succès",
   "failedToApproveFlagged": "Échec de l'approbation de la demande signalée",
