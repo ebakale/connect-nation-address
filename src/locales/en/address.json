@@ -356,6 +356,8 @@
   "justification": "Justification",
   "lastUpdated": "Last Updated",
   "yourUAC": "Your UAC",
+  "legacyApprovalTitle": "Legacy Approval",
+  "legacyApprovalMessage": "This request was approved before UAC tracking was implemented. Please check your addresses in the Address Search section.",
   "copyFailed": "Failed to copy to clipboard",
   "pageXOfY": "Page {{current}} of {{total}}",
   "underReview": "Under Review",

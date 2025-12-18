@@ -607,6 +607,8 @@
   "coordinates": "Coordonnées",
   "lastUpdated": "Dernière mise à jour : {{date}}",
   "yourUAC": "Votre UAC",
+  "legacyApprovalTitle": "Approbation Antérieure",
+  "legacyApprovalMessage": "Cette demande a été approuvée avant la mise en place du suivi UAC. Veuillez vérifier vos adresses dans la section Recherche.",
   "copyFailed": "Échec de la copie dans le presse-papiers",
   "previous": "Précédent",
   "next": "Suivant",
