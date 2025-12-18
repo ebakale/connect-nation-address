@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Search, AlertTriangle, CheckCircle2, XCircle, FileText, Globe, Wrench } from 'lucide-react';
+import { Search, AlertTriangle, CheckCircle2, XCircle, FileText, Globe, Wrench, Download, BarChart3 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { TranslationFixDialog } from './TranslationFixDialog';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,6 +22,8 @@ import adminEN from '../locales/en/admin.json';
 import countriesEN from '../locales/en/countries.json';
 import carEN from '../locales/en/car.json';
 import businessEN from '../locales/en/business.json';
+import postalEN from '../locales/en/postal.json';
+import demoEN from '../locales/en/demo.json';
 
 import commonES from '../locales/es/common.json';
 import authES from '../locales/es/auth.json';
@@ -32,6 +34,8 @@ import adminES from '../locales/es/admin.json';
 import countriesES from '../locales/es/countries.json';
 import carES from '../locales/es/car.json';
 import businessES from '../locales/es/business.json';
+import postalES from '../locales/es/postal.json';
+import demoES from '../locales/es/demo.json';
 
 import commonFR from '../locales/fr/common.json';
 import authFR from '../locales/fr/auth.json';
@@ -42,14 +46,16 @@ import adminFR from '../locales/fr/admin.json';
 import countriesFR from '../locales/fr/countries.json';
 import carFR from '../locales/fr/car.json';
 import businessFR from '../locales/fr/business.json';
+import postalFR from '../locales/fr/postal.json';
+import demoFR from '../locales/fr/demo.json';
 
 const translations = {
-  en: { common: commonEN, auth: authEN, dashboard: dashboardEN, address: addressEN, emergency: emergencyEN, admin: adminEN, countries: countriesEN, car: carEN, business: businessEN },
-  es: { common: commonES, auth: authES, dashboard: dashboardES, address: addressES, emergency: emergencyES, admin: adminES, countries: countriesES, car: carES, business: businessES },
-  fr: { common: commonFR, auth: authFR, dashboard: dashboardFR, address: addressFR, emergency: emergencyFR, admin: adminFR, countries: countriesFR, car: carFR, business: businessFR },
+  en: { common: commonEN, auth: authEN, dashboard: dashboardEN, address: addressEN, emergency: emergencyEN, admin: adminEN, countries: countriesEN, car: carEN, business: businessEN, postal: postalEN, demo: demoEN },
+  es: { common: commonES, auth: authES, dashboard: dashboardES, address: addressES, emergency: emergencyES, admin: adminES, countries: countriesES, car: carES, business: businessES, postal: postalES, demo: demoES },
+  fr: { common: commonFR, auth: authFR, dashboard: dashboardFR, address: addressFR, emergency: emergencyFR, admin: adminFR, countries: countriesFR, car: carFR, business: businessFR, postal: postalFR, demo: demoFR },
 };
 
-const namespaces = ['common', 'auth', 'dashboard', 'address', 'emergency', 'admin', 'countries', 'car', 'business'];
+const namespaces = ['common', 'auth', 'dashboard', 'address', 'emergency', 'admin', 'countries', 'car', 'business', 'postal', 'demo'];
 
 interface TranslationIssue {
   key: string;
@@ -188,6 +194,110 @@ export function TranslationAuditTool() {
     };
   }, [auditResults]);
 
+  // Structural comparison - identify orphaned vs missing keys
+  const structuralReport = useMemo(() => {
+    const enKeys = new Map<string, Set<string>>();
+    const esKeys = new Map<string, Set<string>>();
+    const frKeys = new Map<string, Set<string>>();
+
+    // Collect keys by namespace for each language
+    namespaces.forEach(ns => {
+      enKeys.set(ns, new Set(getAllKeys(translations.en[ns as keyof typeof translations.en])));
+      esKeys.set(ns, new Set(getAllKeys(translations.es[ns as keyof typeof translations.es])));
+      frKeys.set(ns, new Set(getAllKeys(translations.fr[ns as keyof typeof translations.fr])));
+    });
+
+    // Find orphaned keys (exist in ES or FR but NOT in EN)
+    const orphanedKeys: { namespace: string; key: string; existsIn: string[]; value: string }[] = [];
+    // Find missing keys (exist in EN but missing in ES or FR)
+    const missingFromES: { namespace: string; key: string; enValue: string }[] = [];
+    const missingFromFR: { namespace: string; key: string; enValue: string }[] = [];
+
+    namespaces.forEach(ns => {
+      const en = enKeys.get(ns) || new Set();
+      const es = esKeys.get(ns) || new Set();
+      const fr = frKeys.get(ns) || new Set();
+
+      // Orphaned: in ES but not EN
+      es.forEach(key => {
+        if (!en.has(key)) {
+          const existsIn = ['ES'];
+          if (fr.has(key)) existsIn.push('FR');
+          const value = getNestedValue(translations.es[ns as keyof typeof translations.es], key);
+          orphanedKeys.push({ namespace: ns, key, existsIn, value: typeof value === 'string' ? value : JSON.stringify(value) });
+        }
+      });
+
+      // Orphaned: in FR but not EN (and not already counted from ES)
+      fr.forEach(key => {
+        if (!en.has(key) && !es.has(key)) {
+          const value = getNestedValue(translations.fr[ns as keyof typeof translations.fr], key);
+          orphanedKeys.push({ namespace: ns, key, existsIn: ['FR'], value: typeof value === 'string' ? value : JSON.stringify(value) });
+        }
+      });
+
+      // Missing from ES: in EN but not ES
+      en.forEach(key => {
+        if (!es.has(key)) {
+          const enValue = getNestedValue(translations.en[ns as keyof typeof translations.en], key);
+          missingFromES.push({ namespace: ns, key, enValue: typeof enValue === 'string' ? enValue : JSON.stringify(enValue) });
+        }
+      });
+
+      // Missing from FR: in EN but not FR
+      en.forEach(key => {
+        if (!fr.has(key)) {
+          const enValue = getNestedValue(translations.en[ns as keyof typeof translations.en], key);
+          missingFromFR.push({ namespace: ns, key, enValue: typeof enValue === 'string' ? enValue : JSON.stringify(enValue) });
+        }
+      });
+    });
+
+    // Group by namespace for summary
+    const byNamespace = namespaces.map(ns => ({
+      namespace: ns,
+      enCount: enKeys.get(ns)?.size || 0,
+      esCount: esKeys.get(ns)?.size || 0,
+      frCount: frKeys.get(ns)?.size || 0,
+      orphanedCount: orphanedKeys.filter(k => k.namespace === ns).length,
+      missingESCount: missingFromES.filter(k => k.namespace === ns).length,
+      missingFRCount: missingFromFR.filter(k => k.namespace === ns).length,
+    }));
+
+    return {
+      orphanedKeys,
+      missingFromES,
+      missingFromFR,
+      byNamespace,
+      totalOrphaned: orphanedKeys.length,
+      totalMissingES: missingFromES.length,
+      totalMissingFR: missingFromFR.length,
+    };
+  }, []);
+
+  const exportStructuralReport = () => {
+    const report = {
+      generatedAt: new Date().toISOString(),
+      summary: {
+        totalOrphanedKeys: structuralReport.totalOrphaned,
+        totalMissingFromES: structuralReport.totalMissingES,
+        totalMissingFromFR: structuralReport.totalMissingFR,
+      },
+      byNamespace: structuralReport.byNamespace,
+      orphanedKeys: structuralReport.orphanedKeys,
+      missingFromES: structuralReport.missingFromES,
+      missingFromFR: structuralReport.missingFromFR,
+    };
+    
+    const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `translation-structural-report-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const commonPatterns = [
     { pattern: /\{t\(['"`]([^'"`]+)['"`]\)\}/g, description: 't() function calls', example: "{t('common:welcome')}" },
     { pattern: /t\(['"`]([^'"`:]+):([^'"`]+)['"`]\)/g, description: 'Namespaced translations', example: "t('address:title')" },
@@ -275,8 +385,9 @@ export function TranslationAuditTool() {
       </Alert>
 
       <Tabs defaultValue="issues">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
           <TabsTrigger value="issues">Translation Issues</TabsTrigger>
+          <TabsTrigger value="structural">Structural Report</TabsTrigger>
           <TabsTrigger value="patterns">Common Patterns</TabsTrigger>
           <TabsTrigger value="checklist">Component Checklist</TabsTrigger>
         </TabsList>
@@ -537,6 +648,199 @@ export function TranslationAuditTool() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="structural" className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold">Structural Comparison Report</h3>
+              <p className="text-sm text-muted-foreground">
+                Analysis of key structure differences between EN, ES, and FR translation files
+              </p>
+            </div>
+            <Button onClick={exportStructuralReport} variant="outline">
+              <Download className="w-4 h-4 mr-2" />
+              Export Report
+            </Button>
+          </div>
+
+          {/* Summary Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="border-l-4 border-l-purple-500">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Orphaned Keys</CardTitle>
+                <CardDescription>Keys in ES/FR but NOT in EN</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-purple-600">{structuralReport.totalOrphaned}</div>
+                <p className="text-xs text-muted-foreground mt-1">May need removal or addition to EN</p>
+              </CardContent>
+            </Card>
+            <Card className="border-l-4 border-l-orange-500">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Missing from ES</CardTitle>
+                <CardDescription>Keys in EN but NOT in ES</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-orange-600">{structuralReport.totalMissingES}</div>
+                <p className="text-xs text-muted-foreground mt-1">Need Spanish translation</p>
+              </CardContent>
+            </Card>
+            <Card className="border-l-4 border-l-blue-500">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Missing from FR</CardTitle>
+                <CardDescription>Keys in EN but NOT in FR</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-blue-600">{structuralReport.totalMissingFR}</div>
+                <p className="text-xs text-muted-foreground mt-1">Need French translation</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* By Namespace Breakdown */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="w-5 h-5" />
+                By Namespace Breakdown
+              </CardTitle>
+              <CardDescription>Key counts and differences per translation namespace</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-2 px-2">Namespace</th>
+                      <th className="text-right py-2 px-2">EN Keys</th>
+                      <th className="text-right py-2 px-2">ES Keys</th>
+                      <th className="text-right py-2 px-2">FR Keys</th>
+                      <th className="text-right py-2 px-2 text-purple-600">Orphaned</th>
+                      <th className="text-right py-2 px-2 text-orange-600">Missing ES</th>
+                      <th className="text-right py-2 px-2 text-blue-600">Missing FR</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {structuralReport.byNamespace.map(ns => (
+                      <tr key={ns.namespace} className="border-b hover:bg-muted/50">
+                        <td className="py-2 px-2 font-mono text-sm">{ns.namespace}</td>
+                        <td className="text-right py-2 px-2">{ns.enCount}</td>
+                        <td className="text-right py-2 px-2">{ns.esCount}</td>
+                        <td className="text-right py-2 px-2">{ns.frCount}</td>
+                        <td className="text-right py-2 px-2">
+                          {ns.orphanedCount > 0 && (
+                            <Badge variant="outline" className="text-purple-600">{ns.orphanedCount}</Badge>
+                          )}
+                        </td>
+                        <td className="text-right py-2 px-2">
+                          {ns.missingESCount > 0 && (
+                            <Badge variant="outline" className="text-orange-600">{ns.missingESCount}</Badge>
+                          )}
+                        </td>
+                        <td className="text-right py-2 px-2">
+                          {ns.missingFRCount > 0 && (
+                            <Badge variant="outline" className="text-blue-600">{ns.missingFRCount}</Badge>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Orphaned Keys Detail */}
+          {structuralReport.orphanedKeys.length > 0 && (
+            <Card className="border-purple-200">
+              <CardHeader>
+                <CardTitle className="text-purple-700">Orphaned Keys (ES/FR only, not in EN)</CardTitle>
+                <CardDescription>
+                  These keys exist in Spanish or French files but have no English equivalent. 
+                  Either add them to EN or remove them from ES/FR.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-[300px]">
+                  <div className="space-y-2">
+                    {structuralReport.orphanedKeys.slice(0, 100).map((item, idx) => (
+                      <div key={idx} className="p-2 bg-purple-50 rounded border border-purple-100">
+                        <div className="flex items-center gap-2">
+                          <code className="text-xs font-mono bg-purple-100 px-1 rounded">{item.namespace}:{item.key}</code>
+                          <Badge variant="secondary" className="text-xs">{item.existsIn.join(', ')}</Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1 truncate">{item.value}</p>
+                      </div>
+                    ))}
+                    {structuralReport.orphanedKeys.length > 100 && (
+                      <p className="text-sm text-muted-foreground text-center py-2">
+                        ... and {structuralReport.orphanedKeys.length - 100} more. Export report for full list.
+                      </p>
+                    )}
+                  </div>
+                </ScrollArea>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Missing from ES Detail */}
+          {structuralReport.missingFromES.length > 0 && (
+            <Card className="border-orange-200">
+              <CardHeader>
+                <CardTitle className="text-orange-700">Missing Spanish Translations</CardTitle>
+                <CardDescription>
+                  These keys exist in English but need Spanish translations.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-[300px]">
+                  <div className="space-y-2">
+                    {structuralReport.missingFromES.slice(0, 100).map((item, idx) => (
+                      <div key={idx} className="p-2 bg-orange-50 rounded border border-orange-100">
+                        <code className="text-xs font-mono bg-orange-100 px-1 rounded">{item.namespace}:{item.key}</code>
+                        <p className="text-xs text-muted-foreground mt-1 truncate">EN: {item.enValue}</p>
+                      </div>
+                    ))}
+                    {structuralReport.missingFromES.length > 100 && (
+                      <p className="text-sm text-muted-foreground text-center py-2">
+                        ... and {structuralReport.missingFromES.length - 100} more. Export report for full list.
+                      </p>
+                    )}
+                  </div>
+                </ScrollArea>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Missing from FR Detail */}
+          {structuralReport.missingFromFR.length > 0 && (
+            <Card className="border-blue-200">
+              <CardHeader>
+                <CardTitle className="text-blue-700">Missing French Translations</CardTitle>
+                <CardDescription>
+                  These keys exist in English but need French translations.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-[300px]">
+                  <div className="space-y-2">
+                    {structuralReport.missingFromFR.slice(0, 100).map((item, idx) => (
+                      <div key={idx} className="p-2 bg-blue-50 rounded border border-blue-100">
+                        <code className="text-xs font-mono bg-blue-100 px-1 rounded">{item.namespace}:{item.key}</code>
+                        <p className="text-xs text-muted-foreground mt-1 truncate">EN: {item.enValue}</p>
+                      </div>
+                    ))}
+                    {structuralReport.missingFromFR.length > 100 && (
+                      <p className="text-sm text-muted-foreground text-center py-2">
+                        ... and {structuralReport.missingFromFR.length - 100} more. Export report for full list.
+                      </p>
+                    )}
+                  </div>
+                </ScrollArea>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
       </Tabs>
 
