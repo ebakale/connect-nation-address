@@ -12,13 +12,13 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { usePickupRequests } from '@/hooks/usePickupRequests';
 import { useCitizenAddresses } from '@/hooks/useCAR';
+import { useAuth } from '@/hooks/useAuth';
 import { UACAddressPicker, SelectedAddress } from '@/components/UACAddressPicker';
 import { TimeWindow } from '@/types/postalEnhanced';
 import { CalendarIcon, Package, MapPin, Home, Search } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
-
 interface PickupRequestFormProps {
   open: boolean;
   onClose: () => void;
@@ -43,11 +43,13 @@ export const PickupRequestForm = ({ open, onClose }: PickupRequestFormProps) => 
   const { t } = useTranslation('postal');
   const { createRequest } = usePickupRequests();
   const { currentAddresses, loading: addressesLoading } = useCitizenAddresses();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<SelectedAddress | null>(null);
   const [preferredDate, setPreferredDate] = useState<Date | undefined>(undefined);
   const [addressMode, setAddressMode] = useState<'my-addresses' | 'search'>('my-addresses');
   const [myAddressDetails, setMyAddressDetails] = useState<AddressDetail[]>([]);
+  const [profileLoaded, setProfileLoaded] = useState(false);
 
   const [formData, setFormData] = useState({
     pickup_address_uac: '',
@@ -59,6 +61,32 @@ export const PickupRequestForm = ({ open, onClose }: PickupRequestFormProps) => 
     contact_phone: '',
     pickup_notes: '',
   });
+
+  // Fetch user profile to autofill contact info
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user || profileLoaded || !open) return;
+      
+      const { data } = await supabase
+        .from('profiles')
+        .select('full_name, phone')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (data) {
+        setFormData(prev => ({
+          ...prev,
+          contact_name: data.full_name || prev.contact_name,
+          contact_phone: data.phone || prev.contact_phone
+        }));
+        setProfileLoaded(true);
+      }
+    };
+    
+    if (open && !profileLoaded) {
+      fetchProfile();
+    }
+  }, [user, open, profileLoaded]);
 
   // Fetch address details for citizen's addresses
   useEffect(() => {
@@ -126,6 +154,23 @@ export const PickupRequestForm = ({ open, onClose }: PickupRequestFormProps) => 
 
   const timeWindows: TimeWindow[] = ['any', 'morning', 'afternoon', 'evening'];
 
+  const handleClose = () => {
+    setProfileLoaded(false);
+    setSelectedAddress(null);
+    setPreferredDate(undefined);
+    setFormData({
+      pickup_address_uac: '',
+      package_description: '',
+      package_count: 1,
+      estimated_weight_grams: undefined,
+      preferred_time_window: 'any',
+      contact_name: '',
+      contact_phone: '',
+      pickup_notes: '',
+    });
+    onClose();
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedAddress || !preferredDate || !formData.contact_name) return;
@@ -145,12 +190,12 @@ export const PickupRequestForm = ({ open, onClose }: PickupRequestFormProps) => 
     setLoading(false);
 
     if (success) {
-      onClose();
+      handleClose();
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -375,7 +420,7 @@ export const PickupRequestForm = ({ open, onClose }: PickupRequestFormProps) => 
 
           {/* Actions */}
           <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
-            <Button type="button" variant="outline" onClick={onClose} className="w-full sm:w-auto">
+            <Button type="button" variant="outline" onClick={handleClose} className="w-full sm:w-auto">
               {t('common:buttons.cancel')}
             </Button>
             <Button
