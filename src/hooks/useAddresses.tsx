@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { useUserRole } from './useUserRole';
@@ -114,7 +114,7 @@ export const useAddresses = () => {
     }
   };
 
-  const searchAddresses = async (query: string) => {
+  const searchAddresses = useCallback(async (query: string) => {
     try {
       const { data, error } = await supabase
         .rpc('search_addresses_safely', { search_query: query });
@@ -125,7 +125,7 @@ export const useAddresses = () => {
       console.error('Error searching addresses:', error);
       return [];
     }
-  };
+  }, []);
 
   const updateAddressStatus = async (addressId: string, updates: { verified?: boolean; public?: boolean }) => {
     if (!hasVerifierAccess) {

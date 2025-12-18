@@ -93,6 +93,7 @@ export const PickupRequestForm = ({ open, onClose }: PickupRequestFormProps) => 
                 }}
                 placeholder={t('pickup.searchAddress')}
                 showDescription={true}
+                allowPrivateAddresses={true}
               />
             </div>
           </div>
