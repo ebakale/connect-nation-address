@@ -136,7 +136,9 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
         });
       });
 
-      // Detect duplicate addresses
+      // Detect duplicate addresses using improved logic:
+      // 1. Very close coordinates (~50m) = likely same physical location regardless of address text
+      // 2. OR same address components + close coordinates (~100m)
       const processed = new Set();
       const duplicateGroups: any[] = [];
 
@@ -150,20 +152,35 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
           const compareAddress = allAddresses[i];
           if (processed.has(compareAddress.id)) continue;
 
-          // Check for duplicates using stricter criteria
-          const addressMatch = address.region === compareAddress.region && 
-                              address.city === compareAddress.city &&
-                              address.street === compareAddress.street &&
-                              address.building === compareAddress.building; // Include building in match
-          
-          // Precise coordinate proximity (within ~22 meters for true duplicates)
+          // Calculate coordinate distance
           const latDiff = Math.abs(address.latitude - compareAddress.latitude);
           const lngDiff = Math.abs(address.longitude - compareAddress.longitude);
-          const coordinateMatch = latDiff < 0.0002 && lngDiff < 0.0002;
+          
+          // Very close coordinates (~50 meters) - high confidence duplicate regardless of address text
+          // This catches addresses at same location with different street names (data entry variations)
+          const veryCloseCoordinates = latDiff < 0.00045 && lngDiff < 0.00045;
+          
+          // Address components match (handle NULL building values)
+          const regionMatch = address.region?.toLowerCase() === compareAddress.region?.toLowerCase();
+          const cityMatch = address.city?.toLowerCase() === compareAddress.city?.toLowerCase();
+          const streetMatch = address.street?.toLowerCase() === compareAddress.street?.toLowerCase();
+          const buildingMatch = (address.building ?? '') === (compareAddress.building ?? '');
+          const addressMatch = regionMatch && cityMatch && streetMatch && buildingMatch;
+          
+          // Looser coordinate match for addresses with same text (~100 meters)
+          const closeCoordinates = latDiff < 0.0009 && lngDiff < 0.0009;
 
-          // Only consider as duplicates if BOTH address AND coordinates match closely
-          if (addressMatch && coordinateMatch) {
-            duplicates.push(compareAddress);
+          // Detect as duplicate if EITHER:
+          // 1. Very close coordinates (regardless of address text) - likely same physical location
+          // 2. Same address components AND reasonably close coordinates
+          const isDuplicate = veryCloseCoordinates || (addressMatch && closeCoordinates);
+
+          if (isDuplicate) {
+            duplicates.push({
+              ...compareAddress,
+              matchReason: veryCloseCoordinates ? 'coordinate_match' : 'address_match',
+              distance: Math.sqrt(latDiff * latDiff + lngDiff * lngDiff) * 111000 // approx meters
+            });
             processed.add(compareAddress.id);
           }
         }
