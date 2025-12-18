@@ -13,10 +13,23 @@ interface TrackingData {
   order_number: string;
   status: string;
   recipient_name: string;
+  recipient_address_uac: string;
   package_type: string;
   created_at: string;
   scheduled_date: string | null;
   completed_at: string | null;
+  sender_name: string;
+  sender_address_uac?: string | null;
+  weight_grams?: number | null;
+  dimensions_cm?: string | null;
+  declared_value?: number | null;
+  priority_level?: number;
+  requires_signature?: boolean;
+  requires_id_verification?: boolean;
+  preferred_time_window?: string | null;
+  special_instructions?: string | null;
+  cod_required?: boolean;
+  cod_amount?: number | null;
   status_logs: Array<{
     status: string;
     changed_at: string;
