@@ -766,6 +766,8 @@
   "coordinates": "Coordenadas",
   "lastUpdated": "Última actualización: {{date}}",
   "yourUAC": "Tu UAC",
+  "legacyApprovalTitle": "Aprobación Anterior",
+  "legacyApprovalMessage": "Esta solicitud fue aprobada antes de que se implementara el seguimiento de UAC. Consulta tus direcciones en la sección de Búsqueda.",
   "copyFailed": "Error al copiar al portapapeles",
   "previous": "Anterior",
   "next": "Siguiente",

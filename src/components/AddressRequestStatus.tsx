@@ -315,6 +315,19 @@ export const AddressRequestStatus = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Legacy Approved Requests without UAC */}
+                {isApproved && !request.approved_uac && (
+                  <div className="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                      <div>
+                        <p className="text-sm text-amber-700 dark:text-amber-300 font-medium">{t('legacyApprovalTitle')}</p>
+                        <p className="text-xs text-amber-600 dark:text-amber-400">{t('legacyApprovalMessage')}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </CardHeader>
 
               {isExpanded && (
