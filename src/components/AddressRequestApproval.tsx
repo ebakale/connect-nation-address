@@ -491,20 +491,20 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                     <div className="space-y-3">
 
                       {/* Duplicate Analysis */}
-                      {request.verification_analysis.duplicate_check && (
+                      {request.verification_analysis.duplicateCheck && (
                         <div className="bg-orange-50 border border-orange-200 p-3 rounded">
                           <div className="flex items-center justify-between gap-2 mb-2">
                             <div className="flex items-center gap-2">
                               <Info className="h-4 w-4 text-orange-600" />
                               <span className="text-sm font-medium text-orange-800">{t('duplicateCheckResults')}</span>
                             </div>
-                            {request.verification_analysis.duplicate_check.has_duplicates && (
+                            {request.verification_analysis.duplicateCheck?.has_duplicates && (
                               <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  setDuplicateAnalysis(request.verification_analysis.duplicate_check);
+                                  setDuplicateAnalysis(request.verification_analysis.duplicateCheck);
                                   setSelectedRequest(request);
                                   setDuplicateDialogOpen(true);
                                 }}
@@ -516,17 +516,17 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
                             )}
                           </div>
                           
-                          {request.verification_analysis.duplicate_check.has_duplicates ? (
+                          {request.verification_analysis.duplicateCheck?.has_duplicates ? (
                             <div className="space-y-2">
                               <p className="text-xs text-orange-700 font-medium">{t('potentialDuplicatesDetected')}</p>
-                              {request.verification_analysis.duplicate_check.coordinate_duplicates?.count > 0 && (
+                              {request.verification_analysis.duplicateCheck?.coordinate_duplicates?.count > 0 && (
                                 <div className="text-xs text-orange-600">
-                                  • {request.verification_analysis.duplicate_check.coordinate_duplicates.count} {t('addressesFoundWithinRadius')}
+                                  • {request.verification_analysis.duplicateCheck.coordinate_duplicates.count} {t('addressesFoundWithinRadius')}
                                 </div>
                               )}
-                              {request.verification_analysis.duplicate_check.address_duplicates?.count > 0 && (
+                              {request.verification_analysis.duplicateCheck?.address_duplicates?.count > 0 && (
                                 <div className="text-xs text-orange-600">
-                                  • {request.verification_analysis.duplicate_check.address_duplicates.count} {t('exactAddressMatches')}
+                                  • {request.verification_analysis.duplicateCheck.address_duplicates.count} {t('exactAddressMatches')}
                                 </div>
                               )}
                               <p className="text-xs text-orange-600 italic mt-1">
