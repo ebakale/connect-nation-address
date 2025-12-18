@@ -606,6 +606,8 @@
   "reviewerNotes": "Notes du Réviseur",
   "coordinates": "Coordonnées",
   "lastUpdated": "Dernière mise à jour : {{date}}",
+  "yourUAC": "Votre UAC",
+  "copyFailed": "Échec de la copie dans le presse-papiers",
   "previous": "Précédent",
   "next": "Suivant",
   "pending": "En Attente",

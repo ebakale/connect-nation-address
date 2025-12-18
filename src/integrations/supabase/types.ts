@@ -61,6 +61,7 @@ export type Database = {
       address_requests: {
         Row: {
           address_type: string
+          approved_address_id: string | null
           auto_verification_analysis: Json | null
           auto_verification_score: number | null
           auto_verified_at: string | null
@@ -102,6 +103,7 @@ export type Database = {
         }
         Insert: {
           address_type?: string
+          approved_address_id?: string | null
           auto_verification_analysis?: Json | null
           auto_verification_score?: number | null
           auto_verified_at?: string | null
@@ -143,6 +145,7 @@ export type Database = {
         }
         Update: {
           address_type?: string
+          approved_address_id?: string | null
           auto_verification_analysis?: Json | null
           auto_verification_score?: number | null
           auto_verified_at?: string | null
@@ -183,6 +186,13 @@ export type Database = {
           verification_recommendations?: string[] | null
         }
         Relationships: [
+          {
+            foreignKeyName: "address_requests_approved_address_id_fkey"
+            columns: ["approved_address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "address_requests_intended_occupant_id_fkey"
             columns: ["intended_occupant_id"]
