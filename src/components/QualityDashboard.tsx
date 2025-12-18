@@ -155,19 +155,29 @@ export function QualityDashboard() {
           const compareAddress = allAddresses[i];
           if (processed.has(compareAddress.id)) continue;
 
-          // Check for duplicates using same criteria as QualityIssuesFixer
-          const addressMatch = address.region === compareAddress.region && 
-                              address.city === compareAddress.city &&
-                              address.street === compareAddress.street &&
-                              address.building === compareAddress.building;
-          
-          // Precise coordinate proximity (within ~22 meters for true duplicates)
+          // Calculate coordinate distance
           const latDiff = Math.abs(address.latitude - compareAddress.latitude);
           const lngDiff = Math.abs(address.longitude - compareAddress.longitude);
-          const coordinateMatch = latDiff < 0.0002 && lngDiff < 0.0002;
+          
+          // Very close coordinates (~50 meters) - high confidence duplicate regardless of address text
+          const veryCloseCoordinates = latDiff < 0.00045 && lngDiff < 0.00045;
+          
+          // Address components match (handle NULL building values)
+          const regionMatch = address.region?.toLowerCase() === compareAddress.region?.toLowerCase();
+          const cityMatch = address.city?.toLowerCase() === compareAddress.city?.toLowerCase();
+          const streetMatch = address.street?.toLowerCase() === compareAddress.street?.toLowerCase();
+          const buildingMatch = (address.building ?? '') === (compareAddress.building ?? '');
+          const addressMatch = regionMatch && cityMatch && streetMatch && buildingMatch;
+          
+          // Looser coordinate match for addresses with same text (~100 meters)
+          const closeCoordinates = latDiff < 0.0009 && lngDiff < 0.0009;
 
-          // Only consider as duplicates if BOTH address AND coordinates match closely
-          if (addressMatch && coordinateMatch) {
+          // Detect as duplicate if EITHER:
+          // 1. Very close coordinates (regardless of address text)
+          // 2. Same address components AND reasonably close coordinates
+          const isDuplicate = veryCloseCoordinates || (addressMatch && closeCoordinates);
+
+          if (isDuplicate) {
             duplicates.push(compareAddress);
             processed.add(compareAddress.id);
           }
