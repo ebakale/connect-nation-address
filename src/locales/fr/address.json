@@ -631,6 +631,8 @@
   "descriptionLabel": "Description",
   "originalJustification": "Justification Originale",
   "rejectionReason": "Raison du Rejet",
+  "provideReasonForRejection": "Veuillez fournir une raison pour rejeter cette demande",
+  "enterRejectionReason": "Entrez la raison du rejet...",
   "additionalNotes": "Notes Supplémentaires",
   "guideResubmission": "Guider la Resoumission",
   "resubmissionSuccessful": "Resoumission d'adresse envoyée avec succès",

@@ -584,6 +584,8 @@
   "descriptionLabel": "Description",
   "originalJustification": "Original Justification",
   "rejectionReason": "Rejection Reason",
+  "provideReasonForRejection": "Please provide a reason for rejecting this request",
+  "enterRejectionReason": "Enter rejection reason...",
   "additionalNotes": "Additional Notes",
   "guideResubmission": "Guide Resubmission",
   "recommendations.invalidCoordinateFormat": "Invalid coordinate format detected",

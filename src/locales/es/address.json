@@ -789,6 +789,8 @@
   "descriptionLabel": "Descripción",
   "originalJustification": "Justificación Original",
   "rejectionReason": "Razón del Rechazo",
+  "provideReasonForRejection": "Por favor proporcione una razón para rechazar esta solicitud",
+  "enterRejectionReason": "Ingrese el motivo de rechazo...",
   "additionalNotes": "Notas Adicionales",
   "guideResubmission": "Guiar Reenvío",
   "resubmissionSuccessful": "Reenvío de dirección enviado exitosamente",
