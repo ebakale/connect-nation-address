@@ -1259,6 +1259,12 @@
     "failedToSaveAddress": "Échec de l'enregistrement de l'adresse"
   },
   "viewSimilarAddresses": "Voir les Adresses Similaires",
+  "duplicateCheckResults": "Résultats de Vérification des Doublons",
+  "potentialDuplicatesDetected": "Doublons potentiels détectés",
+  "addressesFoundWithinRadius": "adresses trouvées dans le rayon",
+  "exactAddressMatches": "correspondances d'adresse exactes",
+  "reviewRequiredForDuplicate": "Examen requis pour doublon potentiel",
+  "noDuplicatesFound": "Aucun doublon trouvé",
   "duplicates": {
     "dialogTitle": "Adresses en Double Potentielles Détectées",
     "summaryTitle": "Résumé de la Vérification des Doublons",
