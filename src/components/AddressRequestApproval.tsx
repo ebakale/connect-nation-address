@@ -211,7 +211,7 @@ export function AddressRequestApproval({ requests, onUpdate }: AddressRequestApp
         onUpdate();
       } else if (result?.requires_review) {
         // Show duplicate analysis dialog
-        setDuplicateAnalysis(result.duplicate_analysis);
+        setDuplicateAnalysis(result.duplicate_check);
         setPendingApproval({ requestId, updatedData });
         setDuplicateDialogOpen(true);
       } else {
