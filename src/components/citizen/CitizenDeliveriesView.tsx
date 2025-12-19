@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
-import { Package, Truck, CheckCircle2, XCircle, Clock, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
+import { Package, Truck, CheckCircle2, XCircle, Clock, RotateCcw, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCitizenDeliveries, CitizenDelivery } from '@/hooks/useCitizenDeliveries';
-import { DeliveryTrackingResult } from '@/components/postal/DeliveryTrackingResult';
+import { CitizenDeliveryDetailSheet } from './CitizenDeliveryDetailSheet';
 
 const CitizenDeliveriesView: React.FC = () => {
   const { t, i18n } = useTranslation('postal');
   const { deliveries, loading, error, filter, setFilter, refetch } = useCitizenDeliveries();
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [selectedDelivery, setSelectedDelivery] = useState<CitizenDelivery | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -47,8 +48,9 @@ const CitizenDeliveriesView: React.FC = () => {
     }
   };
 
-  const handleToggleExpand = (id: string) => {
-    setExpandedId(expandedId === id ? null : id);
+  const handleOpenDetail = (delivery: CitizenDelivery) => {
+    setSelectedDelivery(delivery);
+    setDetailOpen(true);
   };
 
   if (loading) {
@@ -104,16 +106,31 @@ const CitizenDeliveriesView: React.FC = () => {
                   </p>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {deliveries.map((delivery) => (
-                    <DeliveryListItem
+                    <button
                       key={delivery.id}
-                      delivery={delivery}
-                      isExpanded={expandedId === delivery.id}
-                      onToggle={() => handleToggleExpand(delivery.id)}
-                      getStatusIcon={getStatusIcon}
-                      getStatusBadgeVariant={getStatusBadgeVariant}
-                    />
+                      onClick={() => handleOpenDetail(delivery)}
+                      className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors text-left border rounded-lg"
+                    >
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        {getStatusIcon(delivery.status)}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-mono text-sm font-medium">{delivery.order_number}</span>
+                            <Badge variant={getStatusBadgeVariant(delivery.status)} className="text-xs">
+                              {t(`status.${delivery.status}`)}
+                            </Badge>
+                          </div>
+                          <div className="text-sm text-muted-foreground flex flex-wrap gap-2">
+                            <span>{t(`package.types.${delivery.package_type}`)}</span>
+                            <span>•</span>
+                            <span>{format(new Date(delivery.created_at), 'MMM d, yyyy')}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                    </button>
                   ))}
                 </div>
               )}
@@ -121,89 +138,12 @@ const CitizenDeliveriesView: React.FC = () => {
           </Tabs>
         </CardContent>
       </Card>
-    </div>
-  );
-};
 
-interface DeliveryListItemProps {
-  delivery: CitizenDelivery;
-  isExpanded: boolean;
-  onToggle: () => void;
-  getStatusIcon: (status: string) => React.ReactNode;
-  getStatusBadgeVariant: (status: string) => 'default' | 'secondary' | 'destructive' | 'outline';
-}
-
-const DeliveryListItem: React.FC<DeliveryListItemProps> = ({
-  delivery,
-  isExpanded,
-  onToggle,
-  getStatusIcon,
-  getStatusBadgeVariant,
-}) => {
-  const { t } = useTranslation('postal');
-
-  return (
-    <div className="border rounded-lg overflow-hidden">
-      {/* Collapsed header */}
-      <button
-        onClick={onToggle}
-        className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors text-left"
-      >
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          {getStatusIcon(delivery.status)}
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-sm font-medium">{delivery.order_number}</span>
-              <Badge variant={getStatusBadgeVariant(delivery.status)} className="text-xs">
-                {t(`status.${delivery.status}`)}
-              </Badge>
-            </div>
-            <div className="text-sm text-muted-foreground flex flex-wrap gap-2">
-              <span>{t(`package.types.${delivery.package_type}`)}</span>
-              <span>•</span>
-              <span>{format(new Date(delivery.created_at), 'MMM d, yyyy')}</span>
-            </div>
-          </div>
-        </div>
-        {isExpanded ? (
-          <ChevronUp className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-        ) : (
-          <ChevronDown className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-        )}
-      </button>
-
-      {/* Expanded details */}
-      {isExpanded && (
-        <div className="border-t p-4 bg-muted/20">
-          <DeliveryTrackingResult
-            data={{
-              order_number: delivery.order_number,
-              status: delivery.status,
-              recipient_name: delivery.recipient_name,
-              recipient_address_uac: delivery.recipient_address_uac,
-              package_type: delivery.package_type,
-              created_at: delivery.created_at,
-              scheduled_date: delivery.scheduled_date,
-              completed_at: delivery.completed_at,
-              sender_name: delivery.sender_name,
-              sender_address_uac: delivery.sender_address_uac,
-              weight_grams: delivery.weight_grams,
-              dimensions_cm: delivery.dimensions_cm,
-              declared_value: delivery.declared_value,
-              priority_level: delivery.priority_level,
-              requires_signature: delivery.requires_signature,
-              requires_id_verification: delivery.requires_id_verification,
-              preferred_time_window: delivery.preferred_time_window,
-              special_instructions: delivery.special_instructions,
-              cod_required: delivery.cod_required,
-              cod_amount: delivery.cod_amount,
-              status_logs: delivery.status_logs,
-              proof: delivery.proof,
-            }}
-            onNewSearch={() => {}} // No-op since we're in list view
-          />
-        </div>
-      )}
+      <CitizenDeliveryDetailSheet
+        delivery={selectedDelivery}
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+      />
     </div>
   );
 };
