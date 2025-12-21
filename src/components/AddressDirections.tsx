@@ -14,11 +14,13 @@ import {
   ExternalLink,
   Target,
   Loader2,
-  CheckCircle
+  CheckCircle,
+  Map
 } from 'lucide-react';
 import { useAddresses } from '@/hooks/useAddresses';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
+import GoogleMapsDirectionsView from './GoogleMapsDirectionsView';
 
 interface SearchResult {
   uac: string;
@@ -45,6 +47,7 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
+  const [showInAppDirections, setShowInAppDirections] = useState(false);
   const { searchAddresses } = useAddresses();
   const { toast } = useToast();
   const { t } = useTranslation(['common', 'address']);
@@ -488,15 +491,29 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
 
         {/* Action Buttons */}
         <div className="flex flex-col gap-3">
+          {/* In-App Directions Button - Primary action */}
           <Button 
-            onClick={getDirections}
+            onClick={() => setShowInAppDirections(true)}
             disabled={originType === 'uac' && !originAddress}
             className="w-full flex items-center justify-center gap-2 h-12"
             size="lg"
           >
-            <Navigation className="h-5 w-5" />
+            <Map className="h-5 w-5" />
             <span className="font-semibold">
-              {t('address:directions.navigate')}
+              Navigate In-App
+            </span>
+          </Button>
+
+          {/* External Maps Button */}
+          <Button 
+            variant="outline"
+            onClick={getDirections}
+            disabled={originType === 'uac' && !originAddress}
+            className="w-full flex items-center justify-center gap-2"
+          >
+            <ExternalLink className="h-4 w-4" />
+            <span>
+              {t('address:directions.navigate')} (External App)
             </span>
           </Button>
 
@@ -537,6 +554,15 @@ const AddressDirections: React.FC<AddressDirectionsProps> = ({ destination, onCl
           </div>
         </div>
       </CardContent>
+
+      {/* In-App Google Maps Directions */}
+      {showInAppDirections && (
+        <GoogleMapsDirectionsView
+          destination={destination}
+          origin={originType === 'current' ? currentLocation : originAddress?.coordinates}
+          onClose={() => setShowInAppDirections(false)}
+        />
+      )}
     </Card>
   );
 };
