@@ -1,0 +1,450 @@
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { GoogleMap, DirectionsRenderer, Marker, useJsApiLoader } from '@react-google-maps/api';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import {
+  X,
+  Navigation,
+  MapPin,
+  Clock,
+  Route,
+  Loader2,
+  AlertCircle,
+  Car,
+  Footprints,
+  Bus,
+  ExternalLink,
+  LocateFixed,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
+import { fetchApiKey } from '@/services/googleMapsService';
+
+interface SearchResult {
+  uac: string;
+  readable: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+  type: string;
+  verified: boolean;
+}
+
+interface GoogleMapsDirectionsViewProps {
+  destination: SearchResult;
+  origin?: { lat: number; lng: number } | null;
+  onClose: () => void;
+}
+
+const libraries: ("places" | "geometry" | "drawing" | "visualization")[] = ['places'];
+
+const mapContainerStyle = {
+  width: '100%',
+  height: '100%',
+};
+
+const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
+  destination,
+  origin: providedOrigin,
+  onClose,
+}) => {
+  const { t } = useTranslation(['common', 'address']);
+  const { toast } = useToast();
+  const mapRef = useRef<google.maps.Map | null>(null);
+
+  const [apiKey, setApiKey] = useState<string | null>(null);
+  const [isLoadingKey, setIsLoadingKey] = useState(true);
+  const [userLocation, setUserLocation] = useState<google.maps.LatLngLiteral | null>(providedOrigin || null);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(!providedOrigin);
+  const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
+  const [isLoadingDirections, setIsLoadingDirections] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [travelMode, setTravelMode] = useState<google.maps.TravelMode | null>(null);
+  const [showSteps, setShowSteps] = useState(true);
+
+  // Fetch API key on mount
+  useEffect(() => {
+    const loadApiKey = async () => {
+      try {
+        const key = await fetchApiKey();
+        if (key) {
+          setApiKey(key);
+        } else {
+          setError('Google Maps API key not configured');
+        }
+      } catch (err) {
+        setError('Failed to load Google Maps API key');
+      } finally {
+        setIsLoadingKey(false);
+      }
+    };
+    loadApiKey();
+  }, []);
+
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: apiKey || '',
+    libraries,
+  });
+
+  // Set travel mode after Google Maps is loaded
+  useEffect(() => {
+    if (isLoaded && !travelMode) {
+      setTravelMode(google.maps.TravelMode.DRIVING);
+    }
+  }, [isLoaded, travelMode]);
+
+  // Get user location if not provided
+  useEffect(() => {
+    if (providedOrigin) {
+      setUserLocation(providedOrigin);
+      setIsLoadingLocation(false);
+      return;
+    }
+
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported');
+      setIsLoadingLocation(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        setIsLoadingLocation(false);
+      },
+      (err) => {
+        setError('Could not get your location. Please enable location access.');
+        setIsLoadingLocation(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  }, [providedOrigin]);
+
+  // Calculate route when we have both origin and destination
+  const calculateRoute = useCallback(async () => {
+    if (!userLocation || !isLoaded || !travelMode) return;
+
+    setIsLoadingDirections(true);
+    setError(null);
+
+    const directionsService = new google.maps.DirectionsService();
+
+    try {
+      const result = await directionsService.route({
+        origin: userLocation,
+        destination: destination.coordinates,
+        travelMode: travelMode,
+      });
+
+      setDirectionsResponse(result);
+    } catch (err: any) {
+      if (err.code === 'ZERO_RESULTS') {
+        setError('No route found between these locations');
+      } else {
+        setError('Could not calculate route. Please try again.');
+      }
+    } finally {
+      setIsLoadingDirections(false);
+    }
+  }, [userLocation, destination.coordinates, isLoaded, travelMode]);
+
+  // Calculate route when dependencies change
+  useEffect(() => {
+    if (userLocation && isLoaded && travelMode) {
+      calculateRoute();
+    }
+  }, [userLocation, isLoaded, travelMode, calculateRoute]);
+
+  const changeTravelMode = (mode: google.maps.TravelMode) => {
+    setTravelMode(mode);
+    setDirectionsResponse(null);
+  };
+
+  const openInExternalMaps = () => {
+    const destLat = destination.coordinates.lat;
+    const destLng = destination.coordinates.lng;
+    const userAgent = navigator.userAgent || navigator.vendor;
+
+    let url = '';
+    if (/iPad|iPhone|iPod/.test(userAgent)) {
+      url = userLocation
+        ? `maps://maps.apple.com/?saddr=${userLocation.lat},${userLocation.lng}&daddr=${destLat},${destLng}&dirflg=d`
+        : `maps://maps.apple.com/?daddr=${destLat},${destLng}&dirflg=d`;
+    } else if (/android/i.test(userAgent)) {
+      url = `google.navigation:q=${destLat},${destLng}&mode=d`;
+    } else {
+      url = userLocation
+        ? `https://www.google.com/maps/dir/${userLocation.lat},${userLocation.lng}/${destLat},${destLng}`
+        : `https://www.google.com/maps/dir//${destLat},${destLng}`;
+    }
+
+    window.open(url, '_blank');
+  };
+
+  const recenterMap = () => {
+    if (mapRef.current && userLocation) {
+      mapRef.current.panTo(userLocation);
+      mapRef.current.setZoom(14);
+    }
+  };
+
+  const routeLeg = directionsResponse?.routes[0]?.legs[0];
+
+  // Loading states
+  if (isLoadingKey) {
+    return (
+      <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
+          <p className="text-muted-foreground">Loading Google Maps...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!apiKey || loadError) {
+    return (
+      <div className="fixed inset-0 z-50 bg-background flex items-center justify-center p-4">
+        <Card className="max-w-md w-full">
+          <CardContent className="pt-6 text-center space-y-4">
+            <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
+            <h2 className="text-lg font-semibold">Unable to Load Maps</h2>
+            <p className="text-muted-foreground">
+              {error || 'Google Maps could not be loaded. Please try again later.'}
+            </p>
+            <Button onClick={onClose}>Close</Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 bg-background flex flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex items-center gap-3">
+          <Navigation className="h-5 w-5 text-primary" />
+          <div>
+            <h2 className="font-semibold text-sm sm:text-base">Directions</h2>
+            <p className="text-xs text-muted-foreground truncate max-w-[200px] sm:max-w-none">
+              To: {destination.uac}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={openInExternalMaps}>
+            <ExternalLink className="h-4 w-4 mr-1" />
+            <span className="hidden sm:inline">Open in Maps</span>
+          </Button>
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <X className="h-5 w-5" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Travel mode selector */}
+      <div className="flex items-center gap-2 p-3 border-b bg-muted/30">
+        <Button
+          variant={travelMode === google.maps?.TravelMode?.DRIVING ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => travelMode && changeTravelMode(google.maps.TravelMode.DRIVING)}
+          disabled={!isLoaded}
+        >
+          <Car className="h-4 w-4 mr-1" />
+          Drive
+        </Button>
+        <Button
+          variant={travelMode === google.maps?.TravelMode?.WALKING ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => travelMode && changeTravelMode(google.maps.TravelMode.WALKING)}
+          disabled={!isLoaded}
+        >
+          <Footprints className="h-4 w-4 mr-1" />
+          Walk
+        </Button>
+        <Button
+          variant={travelMode === google.maps?.TravelMode?.TRANSIT ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => travelMode && changeTravelMode(google.maps.TravelMode.TRANSIT)}
+          disabled={!isLoaded}
+        >
+          <Bus className="h-4 w-4 mr-1" />
+          Transit
+        </Button>
+      </div>
+
+      {/* Map container */}
+      <div className="flex-1 relative">
+        {isLoaded ? (
+          <GoogleMap
+            mapContainerStyle={mapContainerStyle}
+            center={userLocation || destination.coordinates}
+            zoom={14}
+            onLoad={(map) => {
+              mapRef.current = map;
+            }}
+            options={{
+              zoomControl: true,
+              streetViewControl: false,
+              mapTypeControl: false,
+              fullscreenControl: false,
+            }}
+          >
+            {/* Show directions or markers */}
+            {directionsResponse ? (
+              <DirectionsRenderer
+                directions={directionsResponse}
+                options={{
+                  suppressMarkers: false,
+                  polylineOptions: {
+                    strokeColor: '#3b82f6',
+                    strokeWeight: 5,
+                  },
+                }}
+              />
+            ) : (
+              <>
+                {userLocation && (
+                  <Marker
+                    position={userLocation}
+                    icon={{
+                      path: google.maps.SymbolPath.CIRCLE,
+                      scale: 8,
+                      fillColor: '#3b82f6',
+                      fillOpacity: 1,
+                      strokeColor: '#ffffff',
+                      strokeWeight: 2,
+                    }}
+                  />
+                )}
+                <Marker position={destination.coordinates} />
+              </>
+            )}
+          </GoogleMap>
+        ) : (
+          <div className="h-full flex items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        )}
+
+        {/* Recenter button */}
+        <Button
+          variant="secondary"
+          size="icon"
+          className="absolute bottom-4 right-4 shadow-lg"
+          onClick={recenterMap}
+        >
+          <LocateFixed className="h-4 w-4" />
+        </Button>
+
+        {/* Loading overlay */}
+        {(isLoadingLocation || isLoadingDirections) && (
+          <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
+            <div className="bg-background rounded-lg p-4 shadow-lg flex items-center gap-3">
+              <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              <span className="text-sm">
+                {isLoadingLocation ? 'Getting your location...' : 'Calculating route...'}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Error overlay */}
+        {error && !isLoadingLocation && !isLoadingDirections && (
+          <div className="absolute top-4 left-4 right-4">
+            <Card className="bg-destructive/10 border-destructive/20">
+              <CardContent className="p-3 flex items-center gap-2">
+                <AlertCircle className="h-4 w-4 text-destructive flex-shrink-0" />
+                <span className="text-sm text-destructive">{error}</span>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </div>
+
+      {/* Route summary and steps */}
+      {routeLeg && (
+        <div className="border-t bg-background max-h-[40%] flex flex-col">
+          {/* Summary */}
+          <div className="p-4 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Route className="h-4 w-4 text-primary" />
+                <span className="font-semibold">{routeLeg.distance?.text}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground">{routeLeg.duration?.text}</span>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowSteps(!showSteps)}
+            >
+              {showSteps ? (
+                <>
+                  Hide steps <ChevronDown className="h-4 w-4 ml-1" />
+                </>
+              ) : (
+                <>
+                  Show steps <ChevronUp className="h-4 w-4 ml-1" />
+                </>
+              )}
+            </Button>
+          </div>
+
+          {/* Turn-by-turn directions */}
+          {showSteps && (
+            <>
+              <Separator />
+              <ScrollArea className="flex-1 p-4">
+                <div className="space-y-3">
+                  {routeLeg.steps?.map((step, index) => (
+                    <div key={index} className="flex gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-xs font-medium text-primary">{index + 1}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p
+                          className="text-sm"
+                          dangerouslySetInnerHTML={{ __html: step.instructions }}
+                        />
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {step.distance?.text} · {step.duration?.text}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {/* Destination */}
+                  <div className="flex gap-3 pt-2">
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center">
+                      <MapPin className="h-3 w-3 text-green-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Arrive at destination</p>
+                      <p className="text-xs text-muted-foreground">{destination.readable}</p>
+                    </div>
+                  </div>
+                </div>
+              </ScrollArea>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default GoogleMapsDirectionsView;
