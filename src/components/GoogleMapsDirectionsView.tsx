@@ -61,6 +61,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [travelMode, setTravelMode] = useState<google.maps.TravelMode | null>(null);
   const [showSteps, setShowSteps] = useState(true);
+  const [isRendererReady, setIsRendererReady] = useState(false);
 
   // Load Google Maps using singleton service
   useEffect(() => {
@@ -255,14 +256,16 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
         strokeWeight: 5,
       },
     });
+    setIsRendererReady(true);
   }, [isLoaded, userLocation, destination.coordinates]);
 
   // Update map with directions or markers
   useEffect(() => {
-    if (!mapRef.current || !isLoaded) return;
+    if (!mapRef.current || !isLoaded || !isRendererReady) return;
 
     // Clear previous markers when showing directions
     if (directionsResponse && directionsRendererRef.current) {
+      console.log('Setting directions on renderer');
       directionsRendererRef.current.setDirections(directionsResponse);
       
       // Hide individual markers when directions are shown
@@ -305,7 +308,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
         destMarkerRef.current.setMap(mapRef.current);
       }
     }
-  }, [isLoaded, directionsResponse, userLocation, destination.coordinates]);
+  }, [isLoaded, isRendererReady, directionsResponse, userLocation, destination.coordinates]);
 
   // Cleanup on unmount
   useEffect(() => {
