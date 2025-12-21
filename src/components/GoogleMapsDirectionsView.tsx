@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { GoogleMap, DirectionsRenderer, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -21,9 +19,8 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
-import { fetchApiKey } from '@/services/googleMapsService';
+import { loadGoogleMaps, isGoogleMapsLoaded } from '@/services/googleMapsService';
 
 interface SearchResult {
   uac: string;
@@ -42,24 +39,20 @@ interface GoogleMapsDirectionsViewProps {
   onClose: () => void;
 }
 
-const libraries: ("places" | "geometry" | "drawing" | "visualization")[] = ['places'];
-
-const mapContainerStyle = {
-  width: '100%',
-  height: '100%',
-};
-
 const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
   destination,
   origin: providedOrigin,
   onClose,
 }) => {
   const { t } = useTranslation(['common', 'address']);
-  const { toast } = useToast();
   const mapRef = useRef<google.maps.Map | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const directionsRendererRef = useRef<google.maps.DirectionsRenderer | null>(null);
+  const userMarkerRef = useRef<google.maps.Marker | null>(null);
+  const destMarkerRef = useRef<google.maps.Marker | null>(null);
 
-  const [apiKey, setApiKey] = useState<string | null>(null);
-  const [isLoadingKey, setIsLoadingKey] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(isGoogleMapsLoaded());
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<google.maps.LatLngLiteral | null>(providedOrigin || null);
   const [isLoadingLocation, setIsLoadingLocation] = useState(!providedOrigin);
   const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
@@ -68,36 +61,23 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
   const [travelMode, setTravelMode] = useState<google.maps.TravelMode | null>(null);
   const [showSteps, setShowSteps] = useState(true);
 
-  // Fetch API key on mount
+  // Load Google Maps using singleton service
   useEffect(() => {
-    const loadApiKey = async () => {
-      try {
-        const key = await fetchApiKey();
-        if (key) {
-          setApiKey(key);
-        } else {
-          setError('Google Maps API key not configured');
-        }
-      } catch (err) {
-        setError('Failed to load Google Maps API key');
-      } finally {
-        setIsLoadingKey(false);
-      }
-    };
-    loadApiKey();
-  }, []);
-
-  const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: apiKey || '',
-    libraries,
-  });
-
-  // Set travel mode after Google Maps is loaded
-  useEffect(() => {
-    if (isLoaded && !travelMode) {
+    if (isGoogleMapsLoaded()) {
+      setIsLoaded(true);
       setTravelMode(google.maps.TravelMode.DRIVING);
+      return;
     }
-  }, [isLoaded, travelMode]);
+
+    loadGoogleMaps()
+      .then(() => {
+        setIsLoaded(true);
+        setTravelMode(google.maps.TravelMode.DRIVING);
+      })
+      .catch((err) => {
+        setLoadError(err.message || 'Failed to load Google Maps');
+      });
+  }, []);
 
   // Get user location if not provided
   useEffect(() => {
@@ -199,8 +179,93 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
 
   const routeLeg = directionsResponse?.routes[0]?.legs[0];
 
-  // Loading states
-  if (isLoadingKey) {
+  // Initialize map when loaded
+  useEffect(() => {
+    if (!isLoaded || !mapContainerRef.current || mapRef.current) return;
+
+    const map = new google.maps.Map(mapContainerRef.current, {
+      center: userLocation || destination.coordinates,
+      zoom: 14,
+      zoomControl: true,
+      streetViewControl: false,
+      mapTypeControl: false,
+      fullscreenControl: false,
+    });
+
+    mapRef.current = map;
+
+    // Create directions renderer
+    directionsRendererRef.current = new google.maps.DirectionsRenderer({
+      map,
+      suppressMarkers: false,
+      polylineOptions: {
+        strokeColor: '#3b82f6',
+        strokeWeight: 5,
+      },
+    });
+  }, [isLoaded, userLocation, destination.coordinates]);
+
+  // Update map with directions or markers
+  useEffect(() => {
+    if (!mapRef.current || !isLoaded) return;
+
+    // Clear previous markers when showing directions
+    if (directionsResponse && directionsRendererRef.current) {
+      directionsRendererRef.current.setDirections(directionsResponse);
+      
+      // Hide individual markers when directions are shown
+      if (userMarkerRef.current) userMarkerRef.current.setMap(null);
+      if (destMarkerRef.current) destMarkerRef.current.setMap(null);
+    } else {
+      // Show markers when no directions
+      if (directionsRendererRef.current) {
+        directionsRendererRef.current.setDirections({ routes: [] } as any);
+      }
+
+      // User location marker
+      if (userLocation) {
+        if (!userMarkerRef.current) {
+          userMarkerRef.current = new google.maps.Marker({
+            position: userLocation,
+            map: mapRef.current,
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE,
+              scale: 8,
+              fillColor: '#3b82f6',
+              fillOpacity: 1,
+              strokeColor: '#ffffff',
+              strokeWeight: 2,
+            },
+          });
+        } else {
+          userMarkerRef.current.setPosition(userLocation);
+          userMarkerRef.current.setMap(mapRef.current);
+        }
+      }
+
+      // Destination marker
+      if (!destMarkerRef.current) {
+        destMarkerRef.current = new google.maps.Marker({
+          position: destination.coordinates,
+          map: mapRef.current,
+        });
+      } else {
+        destMarkerRef.current.setMap(mapRef.current);
+      }
+    }
+  }, [isLoaded, directionsResponse, userLocation, destination.coordinates]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (userMarkerRef.current) userMarkerRef.current.setMap(null);
+      if (destMarkerRef.current) destMarkerRef.current.setMap(null);
+      if (directionsRendererRef.current) directionsRendererRef.current.setMap(null);
+    };
+  }, []);
+
+  // Loading state
+  if (!isLoaded && !loadError) {
     return (
       <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -211,7 +276,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
     );
   }
 
-  if (!apiKey || loadError) {
+  if (loadError) {
     return (
       <div className="fixed inset-0 z-50 bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
@@ -219,7 +284,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
             <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
             <h2 className="text-lg font-semibold">Unable to Load Maps</h2>
             <p className="text-muted-foreground">
-              {error || 'Google Maps could not be loaded. Please try again later.'}
+              {loadError || 'Google Maps could not be loaded. Please try again later.'}
             </p>
             <Button onClick={onClose}>Close</Button>
           </CardContent>
@@ -285,54 +350,10 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
 
       {/* Map container */}
       <div className="flex-1 relative">
-        {isLoaded ? (
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            center={userLocation || destination.coordinates}
-            zoom={14}
-            onLoad={(map) => {
-              mapRef.current = map;
-            }}
-            options={{
-              zoomControl: true,
-              streetViewControl: false,
-              mapTypeControl: false,
-              fullscreenControl: false,
-            }}
-          >
-            {/* Show directions or markers */}
-            {directionsResponse ? (
-              <DirectionsRenderer
-                directions={directionsResponse}
-                options={{
-                  suppressMarkers: false,
-                  polylineOptions: {
-                    strokeColor: '#3b82f6',
-                    strokeWeight: 5,
-                  },
-                }}
-              />
-            ) : (
-              <>
-                {userLocation && (
-                  <Marker
-                    position={userLocation}
-                    icon={{
-                      path: google.maps.SymbolPath.CIRCLE,
-                      scale: 8,
-                      fillColor: '#3b82f6',
-                      fillOpacity: 1,
-                      strokeColor: '#ffffff',
-                      strokeWeight: 2,
-                    }}
-                  />
-                )}
-                <Marker position={destination.coordinates} />
-              </>
-            )}
-          </GoogleMap>
-        ) : (
-          <div className="h-full flex items-center justify-center">
+        <div ref={mapContainerRef} className="w-full h-full" />
+
+        {!isLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-background">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         )}
