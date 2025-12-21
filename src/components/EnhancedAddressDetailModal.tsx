@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   MapPin, Navigation, Share2, QrCode, Copy, Check, 
   Phone, Mail, MessageCircle, ExternalLink, Route,
-  Clock, Shield, Target, Calculator, Loader2
+  Clock, Shield, Target, Calculator, Loader2, Map
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +17,7 @@ import { SaveLocationButton } from "@/components/SaveLocationButton";
 import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 import { useEnhancedGeolocation } from '@/hooks/useEnhancedGeolocation';
 import { supabase } from '@/integrations/supabase/client';
+import GoogleMapsDirectionsView from '@/components/GoogleMapsDirectionsView';
 
 interface AddressData {
   uac: string;
@@ -52,6 +53,8 @@ export const EnhancedAddressDetailModal: React.FC<EnhancedAddressDetailModalProp
     walking?: { distance: string; duration: string };
   }>({});
   const [loadingEstimates, setLoadingEstimates] = useState(false);
+  const [showInAppDirections, setShowInAppDirections] = useState(false);
+  const [directionsOrigin, setDirectionsOrigin] = useState<{ lat: number; lng: number; name: string } | undefined>(undefined);
   const { toast } = useToast();
   const { t } = useTranslation(['common', 'dashboard']);
   const { location, getCurrentPosition } = useEnhancedGeolocation({
@@ -257,6 +260,26 @@ Shared from Equatorial Guinea Address Portal`;
 
   const addressText = `${address.building ? address.building + ', ' : ''}${address.street}, ${address.city}, ${address.region}, ${address.country}`;
 
+  // Show in-app directions view when triggered
+  if (showInAppDirections) {
+    return (
+      <GoogleMapsDirectionsView
+        destination={{
+          uac: address.uac,
+          readable: addressText,
+          coordinates: {
+            lat: address.latitude,
+            lng: address.longitude
+          },
+          type: address.addressType,
+          verified: address.verified
+        }}
+        origin={directionsOrigin}
+        onClose={() => setShowInAppDirections(false)}
+      />
+    );
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -385,12 +408,15 @@ Shared from Equatorial Guinea Address Portal`;
               </CardHeader>
               <CardContent className="space-y-2 pt-2">
                 <Button 
-                  onClick={() => getDirections(true)}
+                  onClick={() => {
+                    setDirectionsOrigin(undefined);
+                    setShowInAppDirections(true);
+                  }}
                   className="w-full justify-start h-8 text-xs"
                   variant="default"
                   size="sm"
                 >
-                  <Route className="h-3 w-3 mr-1" />
+                  <Map className="h-3 w-3 mr-1" />
                   {t('common:directionsFromCurrentLocation')}
                 </Button>
 
@@ -405,7 +431,38 @@ Shared from Equatorial Guinea Address Portal`;
                       className="flex-1 h-7 text-xs"
                     />
                     <Button 
-                      onClick={() => getDirections(false, customFromUAC)}
+                      onClick={async () => {
+                        if (!customFromUAC.trim()) return;
+                        try {
+                          const { data: sourceAddress, error } = await supabase
+                            .from('addresses')
+                            .select('latitude, longitude, street, city')
+                            .eq('uac', customFromUAC)
+                            .single();
+
+                          if (error || !sourceAddress?.latitude || !sourceAddress?.longitude) {
+                            toast({
+                              title: t('common:error'),
+                              description: t('common:addressNotFound'),
+                              variant: 'destructive',
+                            });
+                            return;
+                          }
+
+                          setDirectionsOrigin({
+                            lat: sourceAddress.latitude,
+                            lng: sourceAddress.longitude,
+                            name: `${sourceAddress.street}, ${sourceAddress.city}`
+                          });
+                          setShowInAppDirections(true);
+                        } catch (err) {
+                          toast({
+                            title: t('common:error'),
+                            description: t('common:addressNotFound'),
+                            variant: 'destructive',
+                          });
+                        }
+                      }}
                       variant="outline"
                       disabled={!customFromUAC.trim()}
                       size="sm"
