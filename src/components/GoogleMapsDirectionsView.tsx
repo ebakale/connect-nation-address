@@ -50,6 +50,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
   const directionsRendererRef = useRef<google.maps.DirectionsRenderer | null>(null);
   const userMarkerRef = useRef<google.maps.Marker | null>(null);
   const destMarkerRef = useRef<google.maps.Marker | null>(null);
+  const hasCalculatedRef = useRef(false);
 
   const [isLoaded, setIsLoaded] = useState(isGoogleMapsLoaded());
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -180,14 +181,22 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
     });
   }, [userLocation, destination.coordinates, isLoaded, travelMode]);
 
-  // Calculate route when dependencies change
+  // Reset calculation flag when relevant deps change
   useEffect(() => {
-    if (userLocation && isLoaded && travelMode) {
+    hasCalculatedRef.current = false;
+  }, [userLocation?.lat, userLocation?.lng, travelMode]);
+
+  // Calculate route when dependencies change (only once per set of deps)
+  useEffect(() => {
+    if (userLocation && isLoaded && travelMode && !hasCalculatedRef.current) {
+      hasCalculatedRef.current = true;
       calculateRoute();
     }
-  }, [userLocation, isLoaded, travelMode, calculateRoute]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLocation, isLoaded, travelMode]);
 
   const changeTravelMode = (mode: google.maps.TravelMode) => {
+    hasCalculatedRef.current = false; // Allow recalculation for new mode
     setTravelMode(mode);
     setDirectionsResponse(null);
   };
