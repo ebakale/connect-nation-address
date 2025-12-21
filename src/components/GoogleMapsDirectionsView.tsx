@@ -266,6 +266,12 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
     // Clear previous markers when showing directions
     if (directionsResponse && directionsRendererRef.current) {
       console.log('Setting directions on renderer');
+      console.log('Map ref:', mapRef.current);
+      console.log('Renderer ref:', directionsRendererRef.current);
+      console.log('Routes count:', directionsResponse?.routes?.length);
+      
+      // CRITICAL: Ensure renderer is attached to the map before setting directions
+      directionsRendererRef.current.setMap(mapRef.current);
       directionsRendererRef.current.setDirections(directionsResponse);
       
       // Fit map to show the entire route
