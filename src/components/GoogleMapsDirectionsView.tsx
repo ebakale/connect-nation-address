@@ -109,8 +109,8 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
     );
   }, [providedOrigin]);
 
-  // Calculate route when we have both origin and destination
-  const calculateRoute = useCallback(async () => {
+  // Calculate route when we have both origin and destination (using callback-based API for reliability)
+  const calculateRoute = useCallback(() => {
     if (!userLocation || !isLoaded || !travelMode) {
       console.log('Cannot calculate route - missing:', { userLocation: !!userLocation, isLoaded, travelMode });
       return;
@@ -123,39 +123,61 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
     const directionsService = new google.maps.DirectionsService();
 
     // Timeout protection - 15 seconds
+    let timedOut = false;
     const timeoutId = setTimeout(() => {
+      timedOut = true;
       console.error('Route calculation timed out');
       setIsLoadingDirections(false);
       setError('Route calculation timed out. Please try again.');
     }, 15000);
 
-    try {
-      const result = await directionsService.route({
-        origin: userLocation,
-        destination: destination.coordinates,
-        travelMode: travelMode,
-      });
+    const request: google.maps.DirectionsRequest = {
+      origin: userLocation,
+      destination: destination.coordinates,
+      travelMode: travelMode,
+    };
 
+    // Use callback-based API (more reliable than Promise for error handling)
+    directionsService.route(request, (result, status) => {
       clearTimeout(timeoutId);
-      console.log('Route calculated successfully');
-      setDirectionsResponse(result);
-      setIsLoadingDirections(false);
-    } catch (err: any) {
-      clearTimeout(timeoutId);
-      console.error('Directions error:', err);
       
-      const errorStatus = err?.status || err?.code || '';
-      if (errorStatus === 'ZERO_RESULTS' || errorStatus === google.maps.DirectionsStatus.ZERO_RESULTS) {
-        setError('No route found between these locations');
-      } else if (errorStatus === 'NOT_FOUND') {
-        setError('Origin or destination could not be found');
-      } else if (errorStatus === 'REQUEST_DENIED') {
-        setError('Directions request was denied. Please check API configuration.');
-      } else {
-        setError(`Could not calculate route: ${errorStatus || 'Unknown error'}`);
+      // Ignore if already timed out
+      if (timedOut) {
+        console.log('Ignoring late response - already timed out');
+        return;
       }
-      setIsLoadingDirections(false);
-    }
+
+      console.log('Directions API response - status:', status);
+
+      if (status === google.maps.DirectionsStatus.OK && result) {
+        console.log('Route calculated successfully');
+        setDirectionsResponse(result);
+        setIsLoadingDirections(false);
+      } else {
+        console.error('Directions error - status:', status);
+
+        switch (status) {
+          case google.maps.DirectionsStatus.ZERO_RESULTS:
+            setError('No route found between these locations');
+            break;
+          case google.maps.DirectionsStatus.NOT_FOUND:
+            setError('Origin or destination could not be found');
+            break;
+          case google.maps.DirectionsStatus.REQUEST_DENIED:
+            setError('Directions API request denied. Please enable the Directions API in Google Cloud Console.');
+            break;
+          case google.maps.DirectionsStatus.OVER_QUERY_LIMIT:
+            setError('Too many requests. Please try again later.');
+            break;
+          case google.maps.DirectionsStatus.UNKNOWN_ERROR:
+            setError('Server error. Please try again.');
+            break;
+          default:
+            setError(`Could not calculate route: ${status}`);
+        }
+        setIsLoadingDirections(false);
+      }
+    });
   }, [userLocation, destination.coordinates, isLoaded, travelMode]);
 
   // Calculate route when dependencies change
