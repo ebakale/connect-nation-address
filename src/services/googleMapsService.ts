@@ -78,7 +78,7 @@ export const loadGoogleMaps = async (): Promise<typeof google.maps | null> => {
         loader = new Loader({
           apiKey,
           version: 'weekly',
-          libraries: ['places']
+          libraries: ['places', 'routes']
         });
       }
       
