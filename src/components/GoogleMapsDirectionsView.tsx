@@ -111,12 +111,23 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
 
   // Calculate route when we have both origin and destination
   const calculateRoute = useCallback(async () => {
-    if (!userLocation || !isLoaded || !travelMode) return;
+    if (!userLocation || !isLoaded || !travelMode) {
+      console.log('Cannot calculate route - missing:', { userLocation: !!userLocation, isLoaded, travelMode });
+      return;
+    }
 
+    console.log('Calculating route from', userLocation, 'to', destination.coordinates);
     setIsLoadingDirections(true);
     setError(null);
 
     const directionsService = new google.maps.DirectionsService();
+
+    // Timeout protection - 15 seconds
+    const timeoutId = setTimeout(() => {
+      console.error('Route calculation timed out');
+      setIsLoadingDirections(false);
+      setError('Route calculation timed out. Please try again.');
+    }, 15000);
 
     try {
       const result = await directionsService.route({
@@ -125,14 +136,24 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
         travelMode: travelMode,
       });
 
+      clearTimeout(timeoutId);
+      console.log('Route calculated successfully');
       setDirectionsResponse(result);
+      setIsLoadingDirections(false);
     } catch (err: any) {
-      if (err.code === 'ZERO_RESULTS') {
+      clearTimeout(timeoutId);
+      console.error('Directions error:', err);
+      
+      const errorStatus = err?.status || err?.code || '';
+      if (errorStatus === 'ZERO_RESULTS' || errorStatus === google.maps.DirectionsStatus.ZERO_RESULTS) {
         setError('No route found between these locations');
+      } else if (errorStatus === 'NOT_FOUND') {
+        setError('Origin or destination could not be found');
+      } else if (errorStatus === 'REQUEST_DENIED') {
+        setError('Directions request was denied. Please check API configuration.');
       } else {
-        setError('Could not calculate route. Please try again.');
+        setError(`Could not calculate route: ${errorStatus || 'Unknown error'}`);
       }
-    } finally {
       setIsLoadingDirections(false);
     }
   }, [userLocation, destination.coordinates, isLoaded, travelMode]);
