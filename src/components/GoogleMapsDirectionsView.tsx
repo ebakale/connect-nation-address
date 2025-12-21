@@ -268,6 +268,13 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
       console.log('Setting directions on renderer');
       directionsRendererRef.current.setDirections(directionsResponse);
       
+      // Fit map to show the entire route
+      const route = directionsResponse.routes[0];
+      if (route && route.bounds && mapRef.current) {
+        console.log('Fitting map to route bounds');
+        mapRef.current.fitBounds(route.bounds);
+      }
+      
       // Hide individual markers when directions are shown
       if (userMarkerRef.current) userMarkerRef.current.setMap(null);
       if (destMarkerRef.current) destMarkerRef.current.setMap(null);
