@@ -1,7 +1,9 @@
+import * as React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { ResponsiveTabsList } from "@/components/ui/responsive-tabs";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -211,116 +213,116 @@ export const PoliceAdminDashboard = () => {
       </div>
 
       {/* Admin Tabs */}
-      <Tabs defaultValue="users" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 gap-2 h-auto p-1">
-          <TabsTrigger value="users" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
-            <span className="hidden sm:inline">{t('emergency:policeAdminDashboard.userManagement')}</span>
-            <span className="sm:hidden">{t('emergency:policeAdminDashboard.users')}</span>
-          </TabsTrigger>
-          <TabsTrigger value="units" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
-            <span className="hidden sm:inline">{t('emergency:policeAdminDashboard.unitManagement')}</span>
-            <span className="sm:hidden">{t('emergency:policeAdminDashboard.units')}</span>
-          </TabsTrigger>
-          <TabsTrigger value="system" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
-            <span className="hidden sm:inline">{t('emergency:policeAdminDashboard.systemConfig')}</span>
-            <span className="sm:hidden">{t('emergency:policeAdminDashboard.config')}</span>
-          </TabsTrigger>
-          <TabsTrigger value="analytics" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
-            <span className="hidden sm:inline">{t('emergency:policeAdminDashboard.analytics')}</span>
-            <span className="sm:hidden">{t('emergency:policeAdminDashboard.stats')}</span>
-          </TabsTrigger>
-          <TabsTrigger value="audit" className="text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2">
-            <span className="hidden sm:inline">{t('emergency:policeAdminDashboard.auditLogs')}</span>
-            <span className="sm:hidden">{t('emergency:auditLog.logs')}</span>
-          </TabsTrigger>
-        </TabsList>
+      <PoliceAdminTabs t={t} />
+    </div>
+  );
+};
+
+// Extracted component for the tabs section
+const PoliceAdminTabs = ({ t }: { t: (key: string) => string }) => {
+  const [activeTab, setActiveTab] = React.useState('users');
+
+  const policeTabs = [
+    { value: 'users', label: t('emergency:policeAdminDashboard.userManagement') },
+    { value: 'units', label: t('emergency:policeAdminDashboard.unitManagement') },
+    { value: 'system', label: t('emergency:policeAdminDashboard.systemConfig') },
+    { value: 'analytics', label: t('emergency:policeAdminDashboard.analytics') },
+    { value: 'audit', label: t('emergency:policeAdminDashboard.auditLogs') },
+  ];
+
+  return (
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <ResponsiveTabsList
+        tabs={policeTabs}
+        value={activeTab}
+        onValueChange={setActiveTab}
+      />
         
-        <TabsContent value="users" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('emergency:policeAdminDashboard.policeUserManagement')}</CardTitle>
-              <CardDescription>
-                Police-specific user management. For comprehensive user and role management, use the main Admin Panel.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="p-4 border border-border rounded-lg bg-muted/20">
-                  <div className="flex items-center gap-3">
-                    <Shield className="h-8 w-8 text-muted-foreground" />
-                    <div>
-                      <h4 className="font-medium">Comprehensive Admin Functions</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Full user management, role assignment, and system administration are available in the main Admin Panel.
-                      </p>
-                    </div>
+      <TabsContent value="users" className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('emergency:policeAdminDashboard.policeUserManagement')}</CardTitle>
+            <CardDescription>
+              Police-specific user management. For comprehensive user and role management, use the main Admin Panel.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="p-4 border border-border rounded-lg bg-muted/20">
+                <div className="flex items-center gap-3">
+                  <Shield className="h-8 w-8 text-muted-foreground" />
+                  <div>
+                    <h4 className="font-medium">Comprehensive Admin Functions</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Full user management, role assignment, and system administration are available in the main Admin Panel.
+                    </p>
                   </div>
                 </div>
-                <UserManager />
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="units" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('emergency:policeAdminDashboard.policeUnitManagement')}</CardTitle>
-              <CardDescription>
-                {t('emergency:policeAdminDashboard.manageUnitsDescription')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <UnitManagement />
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="system" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('emergency:policeAdminDashboard.systemConfiguration')}</CardTitle>
-              <CardDescription>
-                {t('emergency:policeAdminDashboard.configureSystemDescription')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <SystemConfiguration />
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="analytics" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('emergency:policeAdminDashboard.policeAnalytics')}</CardTitle>
-              <CardDescription>
-                {t('emergency:policeAdminDashboard.viewMetricsDescription')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <PoliceAnalytics />
-            </CardContent>
-          </Card>
-        </TabsContent>
+              <UserManager />
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+      
+      <TabsContent value="units" className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('emergency:policeAdminDashboard.policeUnitManagement')}</CardTitle>
+            <CardDescription>
+              {t('emergency:policeAdminDashboard.manageUnitsDescription')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <UnitManagement />
+          </CardContent>
+        </Card>
+      </TabsContent>
+      
+      <TabsContent value="system" className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('emergency:policeAdminDashboard.systemConfiguration')}</CardTitle>
+            <CardDescription>
+              {t('emergency:policeAdminDashboard.configureSystemDescription')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SystemConfiguration />
+          </CardContent>
+        </Card>
+      </TabsContent>
+      
+      <TabsContent value="analytics" className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('emergency:policeAdminDashboard.policeAnalytics')}</CardTitle>
+            <CardDescription>
+              {t('emergency:policeAdminDashboard.viewMetricsDescription')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <PoliceAnalytics />
+          </CardContent>
+        </Card>
+      </TabsContent>
 
-        <TabsContent value="audit" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ScrollText className="h-5 w-5" />
-                {t('emergency:auditLog.title')}
-              </CardTitle>
-              <CardDescription>
-                {t('emergency:auditLog.description')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <AuditLogViewer />
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
+      <TabsContent value="audit" className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ScrollText className="h-5 w-5" />
+              {t('emergency:auditLog.title')}
+            </CardTitle>
+            <CardDescription>
+              {t('emergency:auditLog.description')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AuditLogViewer />
+          </CardContent>
+        </Card>
+      </TabsContent>
+    </Tabs>
   );
 };

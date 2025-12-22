@@ -15,7 +15,9 @@ import ApiWebhookManager from './ApiWebhookManager';
 import NotificationTester from './NotificationTester';
 import { GoogleMapsImporter } from './GoogleMapsImporter';
 import { NARCARTestPanel } from './NARCARTestPanel';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { ResponsiveTabsList } from '@/components/ui/responsive-tabs';
+import { useState } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield, Hash } from 'lucide-react';
 import { NARAuthorityManager } from './NARAuthorityManager';
@@ -53,44 +55,30 @@ const AdminPanel: React.FC = () => {
     );
   }
 
+  const [activeTab, setActiveTab] = useState('users');
+
+  const adminTabs = [
+    { value: 'users', label: t('userManagement') },
+    { value: 'permissions', label: t('permissions') },
+    { value: 'workflows', label: t('workflows') },
+    { value: 'nar-authorities', label: t('narAuthorities') },
+    { value: 'uac', label: t('uacSystem') },
+    { value: 'quality', label: t('qualityTab') },
+    { value: 'system-tools', label: t('systemTools') },
+    { value: 'translations', label: t('admin:translations') },
+    { value: 'documentation', label: t('admin:documentation') },
+    { value: 'api-webhooks', label: t('admin:apiWebhooks'), condition: hasNDAAAccess },
+  ];
+
   return (
     <div className="space-y-6 overflow-hidden">
-      <Tabs defaultValue="users" className="space-y-6">
-        <div className="border-b overflow-x-auto">
-          <TabsList className="h-auto p-1 bg-muted/50 flex flex-wrap gap-1 rounded-lg min-w-max sm:min-w-0">
-            <TabsTrigger value="users" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              {t('userManagement')}
-            </TabsTrigger>
-            <TabsTrigger value="permissions" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              {t('permissions')}
-            </TabsTrigger>
-            <TabsTrigger value="workflows" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              {t('workflows')}
-            </TabsTrigger>
-            <TabsTrigger value="nar-authorities" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              {t('narAuthorities')}
-            </TabsTrigger>
-            <TabsTrigger value="uac" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              {t('uacSystem')}
-            </TabsTrigger>
-            <TabsTrigger value="quality" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              {t('qualityTab')}
-            </TabsTrigger>
-            <TabsTrigger value="system-tools" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              {t('systemTools')}
-            </TabsTrigger>
-            <TabsTrigger value="translations" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              {t('admin:translations')}
-            </TabsTrigger>
-            <TabsTrigger value="documentation" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              {t('admin:documentation')}
-            </TabsTrigger>
-            {hasNDAAAccess && (
-              <TabsTrigger value="api-webhooks" className="text-xs sm:text-sm px-3 py-2 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                {t('admin:apiWebhooks')}
-              </TabsTrigger>
-            )}
-          </TabsList>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <div className="border-b">
+          <ResponsiveTabsList
+            tabs={adminTabs}
+            value={activeTab}
+            onValueChange={setActiveTab}
+          />
         </div>
         
         <TabsContent value="users">
