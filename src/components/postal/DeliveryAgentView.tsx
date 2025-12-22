@@ -10,12 +10,10 @@ import {
 } from 'lucide-react';
 import { useAgentDeliveries, AgentDelivery } from '@/hooks/useAgentDeliveries';
 import { DeliveryProofCapture, ProofData } from './DeliveryProofCapture';
-import { RouteMapView } from './RouteMapView';
+import { GoogleMapsRouteView } from './GoogleMapsRouteView';
 import { AgentPickupsList } from './AgentPickupsList';
 import { DeliveryStatus } from '@/types/postal';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
-import { openNavigation } from '@/lib/NavigationService';
 
 export const DeliveryAgentView = () => {
   const { t } = useTranslation('postal');
@@ -27,6 +25,7 @@ export const DeliveryAgentView = () => {
   });
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [routeMapDelivery, setRouteMapDelivery] = useState<AgentDelivery | null>(null);
+  const [navigateMapDelivery, setNavigateMapDelivery] = useState<AgentDelivery | null>(null);
   const [pickupStats, setPickupStats] = useState({ active: 0, completed: 0 });
 
   const handlePickupStatsUpdate = useCallback((active: number, completed: number) => {
@@ -87,42 +86,9 @@ export const DeliveryAgentView = () => {
     setActionLoading(null);
   };
 
-  const handleNavigate = async (delivery: AgentDelivery) => {
-    const uac = delivery.order.recipient_address_uac;
-    setActionLoading(`nav-${delivery.order.id}`);
-    
-    try {
-      // Lookup address coordinates from UAC
-      const { data: address, error } = await supabase
-        .from('addresses')
-        .select('latitude, longitude, street, city')
-        .eq('uac', uac)
-        .single();
-      
-      if (error || !address?.latitude || !address?.longitude) {
-        toast.error(t('agent.addressNotFound'));
-        setActionLoading(null);
-        return;
-      }
-      
-      // Open native maps app
-      const label = `${address.street}, ${address.city}`;
-      const success = await openNavigation({
-        latitude: Number(address.latitude),
-        longitude: Number(address.longitude),
-        label
-      });
-      
-      if (success) {
-        toast.info(`${t('agent.navigatingTo')} ${uac}`);
-      } else {
-        toast.error(t('agent.navigationFailed'));
-      }
-    } catch (err) {
-      toast.error(t('agent.navigationFailed'));
-    }
-    
-    setActionLoading(null);
+  const handleNavigate = (delivery: AgentDelivery) => {
+    // Show in-app Google Maps navigation instead of opening external maps
+    setNavigateMapDelivery(delivery);
   };
 
   const handleShowRoute = (delivery: AgentDelivery) => {
@@ -364,13 +330,23 @@ export const DeliveryAgentView = () => {
         />
       )}
 
-      {/* Route Map View */}
+      {/* Google Maps Route View (Show Route button) */}
       {routeMapDelivery && (
-        <RouteMapView
+        <GoogleMapsRouteView
           deliveryUAC={routeMapDelivery.order.recipient_address_uac}
           recipientName={routeMapDelivery.order.recipient_name}
           recipientAddress={routeMapDelivery.order.recipient_address_uac}
           onClose={() => setRouteMapDelivery(null)}
+        />
+      )}
+
+      {/* Google Maps Navigation View (Navigate button) */}
+      {navigateMapDelivery && (
+        <GoogleMapsRouteView
+          deliveryUAC={navigateMapDelivery.order.recipient_address_uac}
+          recipientName={navigateMapDelivery.order.recipient_name}
+          recipientAddress={navigateMapDelivery.order.recipient_address_uac}
+          onClose={() => setNavigateMapDelivery(null)}
         />
       )}
     </div>
