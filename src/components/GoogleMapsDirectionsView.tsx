@@ -265,10 +265,11 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
 
     mapRef.current = map;
 
-    // Create directions renderer
+    // Create directions renderer with preserveViewport to prevent automatic zoom changes
     directionsRendererRef.current = new google.maps.DirectionsRenderer({
       map,
       suppressMarkers: false,
+      preserveViewport: true, // CRITICAL: Prevents setDirections() from auto-fitting bounds
       polylineOptions: {
         strokeColor: '#3b82f6',
         strokeWeight: 5,
