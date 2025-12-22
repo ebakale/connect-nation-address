@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Package, MapPin, Play, CheckCircle, XCircle, 
-  RotateCcw, Navigation, Clock, AlertTriangle, Loader2, Route, Truck
+  RotateCcw, Navigation, Clock, AlertTriangle, Loader2, Truck
 } from 'lucide-react';
 import { useAgentDeliveries, AgentDelivery } from '@/hooks/useAgentDeliveries';
 import { DeliveryProofCapture, ProofData } from './DeliveryProofCapture';
@@ -25,7 +25,6 @@ export const DeliveryAgentView = () => {
   });
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [routeMapDelivery, setRouteMapDelivery] = useState<AgentDelivery | null>(null);
-  const [navigateMapDelivery, setNavigateMapDelivery] = useState<AgentDelivery | null>(null);
   const [pickupStats, setPickupStats] = useState({ active: 0, completed: 0 });
 
   const handlePickupStatsUpdate = useCallback((active: number, completed: number) => {
@@ -87,11 +86,6 @@ export const DeliveryAgentView = () => {
   };
 
   const handleNavigate = (delivery: AgentDelivery) => {
-    // Show in-app Google Maps navigation instead of opening external maps
-    setNavigateMapDelivery(delivery);
-  };
-
-  const handleShowRoute = (delivery: AgentDelivery) => {
     setRouteMapDelivery(delivery);
   };
 
@@ -252,25 +246,11 @@ export const DeliveryAgentView = () => {
                           <Button 
                             size="sm" 
                             variant="outline"
-                            onClick={() => handleShowRoute(delivery)}
-                            className="min-w-[44px]"
-                            title={t('delivery.showRoute')}
-                          >
-                            <Route className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
                             onClick={() => handleNavigate(delivery)}
-                            disabled={actionLoading === `nav-${delivery.order.id}`}
                             className="min-w-[44px]"
                             title={t('delivery.navigate')}
                           >
-                            {actionLoading === `nav-${delivery.order.id}` ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Navigation className="h-4 w-4" />
-                            )}
+                            <Navigation className="h-4 w-4" />
                           </Button>
                           <Button 
                             size="sm"
@@ -340,15 +320,6 @@ export const DeliveryAgentView = () => {
         />
       )}
 
-      {/* Google Maps Navigation View (Navigate button) */}
-      {navigateMapDelivery && (
-        <GoogleMapsRouteView
-          deliveryUAC={navigateMapDelivery.order.recipient_address_uac}
-          recipientName={navigateMapDelivery.order.recipient_name}
-          recipientAddress={navigateMapDelivery.order.recipient_address_uac}
-          onClose={() => setNavigateMapDelivery(null)}
-        />
-      )}
     </div>
   );
 };
