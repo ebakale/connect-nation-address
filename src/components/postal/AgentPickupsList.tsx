@@ -5,15 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   Package, MapPin, Play, CheckCircle, XCircle, 
-  Navigation, Clock, Phone, User, Loader2, Calendar
+  Navigation, Clock, Phone, Loader2, Calendar
 } from 'lucide-react';
 import { usePickupRequests } from '@/hooks/usePickupRequests';
 import { useAuth } from '@/hooks/useAuth';
 import { PickupRequest, PickupStatus } from '@/types/postalEnhanced';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
-import { openNavigation } from '@/lib/NavigationService';
 import { format } from 'date-fns';
+import { GoogleMapsRouteView } from './GoogleMapsRouteView';
 
 interface AgentPickupsListProps {
   onStatsUpdate?: (activeCount: number, completedCount: number) => void;
@@ -25,6 +24,7 @@ export const AgentPickupsList = ({ onStatsUpdate }: AgentPickupsListProps) => {
   const { requests, loading, fetchRequests, updateStatus } = usePickupRequests();
   const [activeTab, setActiveTab] = useState<'active' | 'completed'>('active');
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [routeMapPickup, setRouteMapPickup] = useState<PickupRequest | null>(null);
 
   // Fetch only pickups assigned to current agent
   useEffect(() => {
@@ -80,40 +80,8 @@ export const AgentPickupsList = ({ onStatsUpdate }: AgentPickupsListProps) => {
     setActionLoading(null);
   };
 
-  const handleNavigate = async (pickup: PickupRequest) => {
-    const uac = pickup.pickup_address_uac;
-    setActionLoading(`nav-${pickup.id}`);
-    
-    try {
-      const { data: address, error } = await supabase
-        .from('addresses')
-        .select('latitude, longitude, street, city')
-        .eq('uac', uac)
-        .single();
-      
-      if (error || !address?.latitude || !address?.longitude) {
-        toast.error(t('agent.addressNotFound'));
-        setActionLoading(null);
-        return;
-      }
-      
-      const label = `${address.street}, ${address.city}`;
-      const success = await openNavigation({
-        latitude: Number(address.latitude),
-        longitude: Number(address.longitude),
-        label
-      });
-      
-      if (success) {
-        toast.info(`${t('agent.navigatingTo')} ${uac}`);
-      } else {
-        toast.error(t('agent.navigationFailed'));
-      }
-    } catch (err) {
-      toast.error(t('agent.navigationFailed'));
-    }
-    
-    setActionLoading(null);
+  const handleNavigate = (pickup: PickupRequest) => {
+    setRouteMapPickup(pickup);
   };
 
   const getStatusBadge = (status: PickupStatus) => {
@@ -263,15 +231,10 @@ export const AgentPickupsList = ({ onStatsUpdate }: AgentPickupsListProps) => {
                       size="sm" 
                       variant="outline"
                       onClick={() => handleNavigate(pickup)}
-                      disabled={actionLoading === `nav-${pickup.id}`}
                       className="min-w-[44px]"
                       title={t('delivery.navigate')}
                     >
-                      {actionLoading === `nav-${pickup.id}` ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Navigation className="h-4 w-4" />
-                      )}
+                      <Navigation className="h-4 w-4" />
                     </Button>
                     <Button 
                       size="sm"
@@ -302,6 +265,16 @@ export const AgentPickupsList = ({ onStatsUpdate }: AgentPickupsListProps) => {
             </CardContent>
           </Card>
         ))
+      )}
+
+      {/* Google Maps Navigation View */}
+      {routeMapPickup && (
+        <GoogleMapsRouteView
+          deliveryUAC={routeMapPickup.pickup_address_uac}
+          recipientName={routeMapPickup.contact_name}
+          recipientAddress={routeMapPickup.pickup_address_uac}
+          onClose={() => setRouteMapPickup(null)}
+        />
       )}
     </div>
   );
