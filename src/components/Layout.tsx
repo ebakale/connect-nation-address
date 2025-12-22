@@ -20,6 +20,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
+import BottomNavigation from '@/components/BottomNavigation';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -174,7 +175,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage = 'dashboard', on
         )}
 
         {/* Main Content */}
-        <main className="flex-1 flex flex-col min-w-0 overflow-y-auto overflow-x-hidden">
+        <main className="flex-1 flex flex-col min-w-0 overflow-y-auto overflow-x-hidden pb-20 lg:pb-0">
           <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-hidden">
             <div className="max-w-7xl mx-auto w-full">
               {children}
@@ -182,6 +183,11 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage = 'dashboard', on
           </div>
         </main>
       </div>
+      
+      {/* Mobile Bottom Navigation */}
+      {onNavigate && (
+        <BottomNavigation currentPage={currentPage} onNavigate={onNavigate} />
+      )}
     </div>
   );
 };
