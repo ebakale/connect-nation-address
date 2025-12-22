@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { ResponsiveTabsList } from '@/components/ui/responsive-tabs';
 import { usePostalRole } from '@/hooks/usePostalRole';
 import { useDeliveryOrders } from '@/hooks/useDeliveryOrders';
 import { useAgentDeliveries } from '@/hooks/useAgentDeliveries';
@@ -98,63 +99,20 @@ export const PostalDashboard = () => {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 overflow-hidden">
-        <TabsList className="grid w-full grid-cols-2 sm:flex sm:flex-wrap h-auto gap-1 bg-muted/50 p-1 overflow-x-auto">
-          {!isPostalAgent && (
-            <TabsTrigger value="overview" className="text-xs sm:text-sm">
-              <Package className="h-4 w-4 mr-1 sm:mr-2" />
-              <span>{t('navigation.orders')}</span>
-            </TabsTrigger>
-          )}
-          
-          {isPostalAgent && (
-            <TabsTrigger value="my-deliveries" className="text-xs sm:text-sm">
-              <Truck className="h-4 w-4 mr-1 sm:mr-2" />
-              <span>{t('navigation.myDeliveries')}</span>
-            </TabsTrigger>
-          )}
-          
-          {canAssignOrders && (
-            <TabsTrigger value="assignments" className="text-xs sm:text-sm">
-              <Users className="h-4 w-4 mr-1 sm:mr-2" />
-              <span>{t('navigation.assignments')}</span>
-            </TabsTrigger>
-          )}
-
-          {canManagePickups && (
-            <TabsTrigger value="pickups" className="text-xs sm:text-sm">
-              <Calendar className="h-4 w-4 mr-1 sm:mr-2" />
-              <span>{t('pickup.title')}</span>
-            </TabsTrigger>
-          )}
-
-          {canManageReturns && (
-            <TabsTrigger value="returns" className="text-xs sm:text-sm">
-              <Undo2 className="h-4 w-4 mr-1 sm:mr-2" />
-              <span>{t('returns.title')}</span>
-            </TabsTrigger>
-          )}
-
-          {canManageCOD && (
-            <TabsTrigger value="cod" className="text-xs sm:text-sm">
-              <DollarSign className="h-4 w-4 mr-1 sm:mr-2" />
-              <span>{t('cod.title')}</span>
-            </TabsTrigger>
-          )}
-          
-          {canViewReports && (
-            <TabsTrigger value="reports" className="text-xs sm:text-sm">
-              <BarChart3 className="h-4 w-4 mr-1 sm:mr-2" />
-              <span>{t('navigation.reports')}</span>
-            </TabsTrigger>
-          )}
-
-          {(isPostalSupervisor || isAdmin) && (
-            <TabsTrigger value="admin" className="text-xs sm:text-sm">
-              <Settings className="h-4 w-4 mr-1 sm:mr-2" />
-              <span>{t('navigation.admin')}</span>
-            </TabsTrigger>
-          )}
-        </TabsList>
+        <ResponsiveTabsList
+          tabs={[
+            { value: 'overview', label: t('navigation.orders'), icon: <Package className="h-4 w-4" />, condition: !isPostalAgent },
+            { value: 'my-deliveries', label: t('navigation.myDeliveries'), icon: <Truck className="h-4 w-4" />, condition: isPostalAgent },
+            { value: 'assignments', label: t('navigation.assignments'), icon: <Users className="h-4 w-4" />, condition: canAssignOrders },
+            { value: 'pickups', label: t('pickup.title'), icon: <Calendar className="h-4 w-4" />, condition: canManagePickups },
+            { value: 'returns', label: t('returns.title'), icon: <Undo2 className="h-4 w-4" />, condition: canManageReturns },
+            { value: 'cod', label: t('cod.title'), icon: <DollarSign className="h-4 w-4" />, condition: canManageCOD },
+            { value: 'reports', label: t('navigation.reports'), icon: <BarChart3 className="h-4 w-4" />, condition: canViewReports },
+            { value: 'admin', label: t('navigation.admin'), icon: <Settings className="h-4 w-4" />, condition: isPostalSupervisor || isAdmin },
+          ]}
+          value={activeTab}
+          onValueChange={setActiveTab}
+        />
 
         {!isPostalAgent && (
           <TabsContent value="overview" className="space-y-4">
