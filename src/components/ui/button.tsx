@@ -38,12 +38,15 @@ const buttonVariants = cva(
       },
       size: {
         default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3 text-xs",
+        sm: "h-10 rounded-md px-3 text-xs", // Increased from h-9 for better touch
         lg: "h-11 rounded-md px-8",
         xl: "h-12 rounded-md px-10 text-base",
-        icon: "h-10 w-10",
-        "icon-sm": "h-8 w-8",
-        "icon-lg": "h-12 w-12",
+        icon: "h-10 w-10 min-w-[40px]",
+        "icon-sm": "h-9 w-9 min-w-[36px]", // Increased from h-8 for better touch
+        "icon-lg": "h-12 w-12 min-w-[48px]",
+        // Touch-optimized sizes (44px+ for mobile)
+        touch: "h-11 min-h-[44px] px-5 py-2.5",
+        "touch-icon": "h-11 w-11 min-h-[44px] min-w-[44px]",
       },
     },
     defaultVariants: {
