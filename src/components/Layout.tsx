@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
 import { useTranslation } from 'react-i18next';
+import { supabase } from '@/integrations/supabase/client';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -28,8 +29,28 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, currentPage = 'dashboard', onNavigate }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userProfile, setUserProfile] = useState<{ full_name: string | null } | null>(null);
   const { user, signOut } = useAuth();
   const { t } = useTranslation(['common']);
+
+  // Fetch user profile for full name
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user?.id) return;
+      
+      const { data } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (data) {
+        setUserProfile(data);
+      }
+    };
+    
+    fetchProfile();
+  }, [user?.id]);
 
   const navigation = [
     { name: 'Dashboard', id: 'dashboard', icon: Home },
@@ -85,7 +106,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage = 'dashboard', on
             </Badge>
             <div className="text-right hidden sm:block min-w-0">
               <p className="text-sm font-medium text-foreground truncate max-w-[150px]">
-                {user?.email?.split('@')[0] || 'User'}
+                {userProfile?.full_name || user?.email?.split('@')[0] || 'User'}
               </p>
               <p className="text-xs text-muted-foreground">EG Government</p>
             </div>

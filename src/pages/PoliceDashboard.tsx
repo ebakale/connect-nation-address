@@ -97,6 +97,26 @@ const PoliceDashboard = () => {
   const [userCity, setUserCity] = useState<string | null>(null);
   const [isDispatchSupervisor, setIsDispatchSupervisor] = useState<boolean>(false);
   const [showUnitLeadDashboard, setShowUnitLeadDashboard] = useState(false);
+  const [userProfile, setUserProfile] = useState<{ full_name: string | null } | null>(null);
+
+  // Fetch user profile for full name
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user?.id) return;
+      
+      const { data } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (data) {
+        setUserProfile(data);
+      }
+    };
+    
+    fetchProfile();
+  }, [user?.id]);
   // Set default tab based on user role
   useEffect(() => {
     if (!activeTab && role) {
@@ -689,6 +709,14 @@ const PoliceDashboard = () => {
 
             <div className="flex items-center gap-2 flex-shrink-0">
               <OfflineIndicator />
+              {/* User name display */}
+              {user && (
+                <div className="text-right hidden lg:block">
+                  <p className="text-sm font-medium whitespace-nowrap truncate max-w-[200px]">
+                    {userProfile?.full_name || user?.email?.split('@')[0] || 'User'}
+                  </p>
+                </div>
+              )}
               <Button variant="outline" size="sm" onClick={handleSignOut} className="flex items-center gap-1.5">
                 <LogOut className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline text-sm">{t('common:logout')}</span>

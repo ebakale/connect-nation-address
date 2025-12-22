@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { usePostalRole } from '@/hooks/usePostalRole';
 import { useAuth } from '@/hooks/useAuth';
 import { PostalDashboard } from '@/components/postal';
@@ -10,11 +11,32 @@ import { Badge } from '@/components/ui/badge';
 import Footer from '@/components/Footer';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
 import { LogOut, Mail } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const PostalPage = () => {
   const { t } = useTranslation('postal');
   const { hasPostalAccess, loading, isPostalClerk, isPostalAgent, isPostalDispatcher, isPostalSupervisor } = usePostalRole();
   const { user, signOut } = useAuth();
+  const [userProfile, setUserProfile] = useState<{ full_name: string | null } | null>(null);
+
+  // Fetch user profile for full name
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user?.id) return;
+      
+      const { data } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (data) {
+        setUserProfile(data);
+      }
+    };
+    
+    fetchProfile();
+  }, [user?.id]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -85,7 +107,7 @@ const PostalPage = () => {
                   {user && (
                     <div className="text-right hidden lg:block">
                       <p className="text-sm font-medium whitespace-nowrap truncate max-w-[200px]">
-                        {user.email}
+                        {userProfile?.full_name || user?.email?.split('@')[0] || 'User'}
                       </p>
                     </div>
                   )}
