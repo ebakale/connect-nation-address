@@ -51,6 +51,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
   const userMarkerRef = useRef<google.maps.Marker | null>(null);
   const destMarkerRef = useRef<google.maps.Marker | null>(null);
   const hasCalculatedRef = useRef(false);
+  const hasFittedBoundsRef = useRef(false);
 
   const [isLoaded, setIsLoaded] = useState(isGoogleMapsLoaded());
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -62,6 +63,11 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
   const [travelMode, setTravelMode] = useState<google.maps.TravelMode | null>(null);
   const [showSteps, setShowSteps] = useState(true);
   const [isRendererReady, setIsRendererReady] = useState(false);
+
+  // Reset hasFittedBoundsRef when route truly changes (new directions or travel mode change)
+  useEffect(() => {
+    hasFittedBoundsRef.current = false;
+  }, [directionsResponse?.routes?.[0]?.overview_polyline]);
 
   // Load Google Maps using singleton service
   useEffect(() => {
@@ -278,19 +284,17 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
     // Clear previous markers when showing directions
     if (directionsResponse && directionsRendererRef.current) {
       console.log('Setting directions on renderer');
-      console.log('Map ref:', mapRef.current);
-      console.log('Renderer ref:', directionsRendererRef.current);
-      console.log('Routes count:', directionsResponse?.routes?.length);
       
       // CRITICAL: Ensure renderer is attached to the map before setting directions
       directionsRendererRef.current.setMap(mapRef.current);
       directionsRendererRef.current.setDirections(directionsResponse);
       
-      // Fit map to show the entire route
+      // Only fit bounds ONCE when route first loads - prevents zoom snapping back
       const route = directionsResponse.routes[0];
-      if (route && route.bounds && mapRef.current) {
-        console.log('Fitting map to route bounds');
+      if (route && route.bounds && mapRef.current && !hasFittedBoundsRef.current) {
+        console.log('Fitting map to route bounds (first time only)');
         mapRef.current.fitBounds(route.bounds);
+        hasFittedBoundsRef.current = true;
       }
       
       // Hide individual markers when directions are shown
