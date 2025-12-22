@@ -28,6 +28,7 @@ const AdminPanel: React.FC = () => {
   const { t, i18n } = useTranslation('admin');
   const { user } = useUnifiedAuth();
   const { loading, hasAdminAccess, hasNDAAAccess, hasSystemAdminAccess } = useUserRole();
+  const [activeTab, setActiveTab] = useState('users');
 
   if (!user || !hasAdminAccess) {
     return (
@@ -54,8 +55,6 @@ const AdminPanel: React.FC = () => {
       </Card>
     );
   }
-
-  const [activeTab, setActiveTab] = useState('users');
 
   const adminTabs = [
     { value: 'users', label: t('userManagement') },
