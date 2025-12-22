@@ -252,6 +252,9 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
       },
       fullscreenControl: false,
       gestureHandling: 'greedy',
+      scrollwheel: true,
+      disableDoubleClickZoom: false,
+      draggable: true,
     });
 
     mapRef.current = map;
@@ -426,8 +429,8 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
       </div>
 
       {/* Map container */}
-      <div className="flex-1 relative">
-        <div ref={mapContainerRef} className="w-full h-full" />
+      <div className="flex-1 relative" style={{ touchAction: 'manipulation' }}>
+        <div ref={mapContainerRef} className="w-full h-full touch-manipulation" style={{ touchAction: 'manipulation' }} />
 
         {!isLoaded && (
           <div className="absolute inset-0 flex items-center justify-center bg-background">
