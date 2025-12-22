@@ -366,10 +366,15 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
             .eq('id', issue.data.id);
           if (error) throw error;
         } else if (issue.type === 'duplicate' && action === 'merge') {
-          // Delete all duplicates, keep the primary
+          // Merge duplicates: redirect references, then delete
+          const primaryId = issue.data.primary.id;
           console.log('Bulk merging duplicates for issue:', issue.id);
           let deletedCount = 0;
           for (const duplicate of issue.data.duplicates) {
+            // Redirect references to primary address
+            await supabase.from('address_requests').update({ approved_address_id: primaryId }).eq('approved_address_id', duplicate.id);
+            await supabase.from('address_audit_log').update({ address_id: primaryId }).eq('address_id', duplicate.id);
+            
             console.log('Bulk deleting duplicate:', duplicate.id);
             const { error } = await supabase
               .from('addresses')
@@ -409,13 +414,38 @@ export function QualityIssuesFixer({ onClose, onIssuesFixed }: QualityIssuesFixe
     try {
       setFixingIssues(true);
       
+      const primaryId = issue.data.primary.id;
       console.log('Merging duplicates for issue:', issue);
-      console.log('Primary address:', issue.data.primary);
+      console.log('Primary address:', primaryId);
       console.log('Duplicates to delete:', issue.data.duplicates);
       
-      // Delete all duplicates except the primary
       let deletedCount = 0;
       for (const duplicate of issue.data.duplicates) {
+        console.log('Processing duplicate:', duplicate.id);
+        
+        // Step 1: Redirect address_requests references to primary address
+        const { error: requestsError } = await supabase
+          .from('address_requests')
+          .update({ approved_address_id: primaryId })
+          .eq('approved_address_id', duplicate.id);
+        
+        if (requestsError) {
+          console.warn('Warning updating address_requests:', requestsError);
+          // Continue anyway - the SET NULL constraint will handle this
+        }
+        
+        // Step 2: Redirect address_audit_log references to primary address
+        const { error: auditError } = await supabase
+          .from('address_audit_log')
+          .update({ address_id: primaryId })
+          .eq('address_id', duplicate.id);
+        
+        if (auditError) {
+          console.warn('Warning updating address_audit_log:', auditError);
+          // Continue anyway - the SET NULL constraint will handle this
+        }
+        
+        // Step 3: Now delete the duplicate address
         console.log('Attempting to delete duplicate:', duplicate.id);
         const { error, data } = await supabase
           .from('addresses')
