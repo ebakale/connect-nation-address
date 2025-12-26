@@ -10,6 +10,7 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 **Region**: US-East (primary)
 **Status**: ✅ Production Ready
 **Last Updated**: December 2025
+**Infrastructure Version**: 4.0
 
 ---
 
@@ -25,12 +26,14 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 │  - Global CDN delivery                              │
 │  - Static asset hosting                             │
 │  - PWA capabilities                                 │
+│  - Responsive mobile-first UI                       │
+│  - Offline-first architecture                       │
 └─────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────┐
 │  API & Edge Functions Layer (Supabase)              │
 │  - PostgREST API (auto-generated)                   │
-│  - Deno Edge Functions (42+ deployed)               │
+│  - Deno Edge Functions (52+ deployed)               │
 │  - Real-time subscriptions (WebSocket)              │
 │  - Authentication service (GoTrue)                  │
 └─────────────────────────────────────────────────────┘
@@ -39,9 +42,10 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 │  Database Layer (Supabase PostgreSQL)               │
 │  - PostgreSQL 15+ with PostGIS                      │
 │  - Connection pooling (PgBouncer)                   │
-│  - Row Level Security (RLS)                         │
+│  - Row Level Security (243+ policies)               │
 │  - Automated backups                                │
-│  - 75+ tables                                       │
+│  - 72+ tables                                       │
+│  - 4 Security Invoker Views                         │
 └─────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────┐
@@ -49,6 +53,7 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 │  - S3-compatible object storage                     │
 │  - CDN-delivered assets                             │
 │  - Address photos and documents                     │
+│  - Delivery proof photos                            │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -61,15 +66,15 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 #### Core Infrastructure
 - **Supabase Project**: 1 production instance (calegudnfdbeznyiebbh)
 - **Database**: PostgreSQL 15+ (8GB included in Pro plan)
-- **Edge Functions**: 42+ deployed functions
-- **Storage Buckets**: 1 bucket (address-photos)
-- **Authentication**: Email/password with JWT
+- **Edge Functions**: 52+ deployed functions
+- **Storage Buckets**: 2 buckets (address-photos, delivery-proof)
+- **Authentication**: Email/password with JWT + offline fallback
 
-#### Database Schema (75+ tables)
+#### Database Schema (72+ tables)
 
 **Core Tables**:
 - `profiles` - User profiles and metadata
-- `user_roles` - Role assignments (20+ role types)
+- `user_roles` - Role assignments (24+ role types)
 - `user_role_metadata` - Geographic and domain scoping
 - `person` - Person records for CAR module
 - `provinces` - Geographic hierarchy (provinces)
@@ -99,6 +104,20 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 - `car_permissions` - CAR-specific permissions
 - `car_quality_metrics` - CAR analytics
 
+**Postal Delivery Module** (12+ tables):
+- `delivery_orders` - Package/letter delivery tracking
+- `delivery_assignments` - Agent route assignments
+- `delivery_status_logs` - Status change history
+- `delivery_proof` - Signature/photo proof of delivery
+- `delivery_preferences` - Recipient preferences
+- `postal_labels` - S10 international tracking labels
+- `postal_notifications` - Delivery notifications
+- `pickup_requests` - Citizen pickup scheduling
+- `return_orders` - Return processing
+- `cod_transactions` - Cash on delivery management
+- `bulk_import_jobs` - Bulk import tracking
+- `bulk_import_orders` - Imported order records
+
 **Emergency Module** (10+ tables):
 - `emergency_incidents` - Incident records
 - `emergency_units` - Police/fire units
@@ -107,19 +126,27 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 - `emergency_operator_sessions` - Operator tracking
 - `emergency_incident_logs` - Incident activity
 - `backup_metadata` - Backup tracking
+- `backup_acknowledgments` - Unit acknowledgments
 
-**Archive Tables** (3 tables):
+**Archive Tables** (4 tables):
 - `rejected_requests_archive` - Archived NAR rejections
 - `rejected_citizen_addresses_archive` - Archived CAR rejections
 - `rejected_verifications_archive` - Archived verification rejections
 - `cleanup_audit_log` - Retention enforcement log
 
-**External Integration** (3+ tables):
+**External Integration** (4+ tables):
 - `external_systems` - Partner system registry
 - `saved_locations` - User saved places
 - `recent_searches` - Search history (per user)
+- `api_keys` - API key management
 
-#### Edge Functions (42+)
+**Database Views** (4 security-invoker views):
+- `citizen_address_with_details` - CAR address details (security_invoker=true)
+- `my_person` - Current user's person record (security_invoker=true)
+- `current_citizen_addresses` - Active citizen addresses (security_invoker=true)
+- `citizen_address_manual_review_queue` - Manual review queue (security_invoker=true)
+
+#### Edge Functions (52+)
 
 **Address Management** (12 functions):
 - `address-search-api` - Public search endpoint
@@ -135,7 +162,18 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 - `search-citizen-addresses` - CAR search endpoint
 - `ml-address-validation` - ML-based validation
 
-**Emergency Management** (10 functions):
+**Postal Delivery Module** (9 functions):
+- `postal-analytics-api` - Delivery statistics and metrics
+- `postal-notifications` - Delivery notification dispatch
+- `track-delivery` - Public tracking endpoint
+- `bulk-import-orders` - Excel/CSV import processing
+- `seed-postal-users` - Demo postal user seeding
+- `seed-postal-orders` - Demo order seeding
+- `seed-citizen-deliveries` - Citizen delivery seeding
+- `fix-missing-nar-address` - Data repair utility
+- `system-config-api` - System configuration management
+
+**Emergency Management** (11 functions):
 - `process-emergency-alert` - Alert processing
 - `notify-emergency-operators` - Dispatcher alerts
 - `notify-incident-reporter` - Citizen updates
@@ -143,6 +181,7 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 - `decrypt-incident-data` - Secure data access
 - `police-incident-actions` - Incident operations
 - `police-operator-management` - Police user ops
+- `police-analytics-api` - Police analytics
 - `process-backup-request` - Backup coordination
 - `unit-communications` - Inter-unit messaging
 - `sms-fallback-service` - SMS notifications
@@ -175,6 +214,75 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 
 ---
 
+## Feature Modules
+
+### Postal Delivery Module (NEW)
+
+The Government Postal Delivery Module enables integration with national postal services for package and letter delivery using UAC-based addressing.
+
+**Key Features**:
+- **Order Management**: Create, track, and manage delivery orders
+- **S10 International Tracking**: UPU-compliant S10 barcode standard
+- **Agent Assignment**: Route optimization and agent workload balancing
+- **Proof of Delivery**: Signature capture, photo proof, ID verification
+- **COD (Cash on Delivery)**: XAF/EUR/USD currency support
+- **Bulk Import**: Excel/CSV import for batch order creation
+- **Returns Processing**: Return order workflow with pickup scheduling
+- **Pickup Requests**: Citizen-initiated pickup scheduling
+- **Real-time Notifications**: SMS/Email/Push delivery updates
+
+**User Roles**:
+- `postal_clerk` - Order intake and processing
+- `postal_dispatcher` - Route planning and assignment
+- `postal_supervisor` - Management and reporting
+- `postal_agent` - Delivery execution
+
+### Offline Capabilities (NEW)
+
+The system supports offline-first functionality for field operations:
+
+**Unified Authentication**:
+- Seamless online/offline mode switching
+- Local authentication with IndexedDB storage
+- Credential caching for offline access
+- Background sync when connectivity restored
+
+**Offline Data Storage**:
+- IndexedDB for local data persistence
+- Sync queue for pending operations
+- Conflict resolution on reconnect
+- Network status monitoring
+
+**Components**:
+- `useUnifiedAuth` - Unified auth provider (online/offline)
+- `useLocalAuth` - Local authentication hook
+- `useOffline` - Network status and sync management
+
+### Responsive Mobile-First UI (NEW)
+
+The frontend implements responsive design patterns:
+
+**ResponsiveTabsList Component**:
+- Desktop: Traditional horizontal tabs
+- Mobile: Dropdown selector (no horizontal scrolling)
+- Automatic breakpoint detection
+
+**Mobile Optimizations**:
+- Touch-friendly target sizes
+- Swipe gestures for navigation
+- Bottom sheet dialogs
+- Collapsible sidebars
+
+### Internationalization (i18n)
+
+**Translation System**:
+- 11 translation namespaces: common, auth, dashboard, address, emergency, admin, countries, car, business, postal, demo
+- 3 supported languages: English (en), Spanish (es), French (fr)
+- Dynamic translation fixes loaded from `translation_fixes` table
+- AI-powered translation suggestions
+
+---
+
 ## Cost Analysis
 
 ### Current Pricing (Supabase Pro Plan)
@@ -193,8 +301,8 @@ Includes:
 Current Usage Estimates:
   Database: ~6GB (within plan)
   Bandwidth: ~60GB/month (within plan)
-  Functions: ~75K invocations/month (within plan)
-  Storage: ~3GB photos (within plan)
+  Functions: ~100K invocations/month (within plan)
+  Storage: ~4GB photos (within plan)
   
 Estimated Monthly Cost: $25-40/month
 ```
@@ -238,8 +346,9 @@ Database:
   Connection Pool: 60 connections (Pro)
   Concurrent Users: 500+ simultaneous
   Read/Write IOPS: Provisioned based on size
-  Tables: 75+
-  RLS Policies: 100+
+  Tables: 72+
+  RLS Policies: 243+
+  Database Functions: 89+
 
 API Performance:
   REST API: <100ms response time
@@ -251,7 +360,7 @@ Edge Functions:
   Cold Start: 100-300ms
   Warm Execution: <10ms
   Concurrent Executions: 1000+
-  Functions Deployed: 42+
+  Functions Deployed: 52+
   Global Latency: <100ms (15+ edge locations)
 
 Storage:
@@ -294,12 +403,14 @@ Monitoring:
   - Monitor active user count
   - Review incident response times
   - Check retention job status
+  - Monitor postal delivery SLAs
 
 Maintenance:
   - Process pending address verifications
   - Review emergency incident logs
   - Check system health alerts
   - Validate data integrity
+  - Review postal agent assignments
 ```
 
 ### Weekly Operations
@@ -311,6 +422,7 @@ Quality Assurance:
   - Performance metric reports
   - Security review
   - Translation audit
+  - Postal delivery metrics review
 
 Database:
   - Review slow query logs
@@ -328,6 +440,7 @@ System Audit:
   - Geographic coverage analysis
   - Partner API usage review
   - Disaster recovery testing
+  - COD reconciliation audit
 
 Retention Enforcement:
   - archive_old_rejected_requests() execution
@@ -389,19 +502,21 @@ Database Migrations:
 
 ### Authentication & Authorization
 - JWT-based authentication (RS256)
-- Role-based access control (20+ roles)
+- Role-based access control (24+ roles)
 - Geographic scoping for field users
 - Verification domain scoping for verifiers
 - Session management with auto-refresh
-- Offline authentication support
+- Offline authentication support with IndexedDB
+- Unified auth provider (online/offline seamless)
 
 ### Database Security
-- Row Level Security on all 75+ tables
+- Row Level Security on all 72+ tables (243+ policies)
 - Geographic scope enforcement
 - Privacy level enforcement (CAR)
 - Encrypted at rest (AES-256)
 - Encrypted in transit (TLS 1.3)
 - Comprehensive audit logging
+- Security Invoker Views (4 views with security_invoker=true)
 
 ### Application Security
 - Input validation (Zod schemas)
@@ -432,6 +547,8 @@ Database Migrations:
   - Incidents resolved
   - Response times
   - Business registrations
+  - Postal deliveries (on-time vs delayed)
+  - COD collection rates
 
 ### Recommended Alerts
 - Database CPU > 80%
@@ -441,6 +558,7 @@ Database Migrations:
 - Backup failure
 - Retention job failure
 - Emergency response SLA breach
+- Postal delivery SLA breach
 
 ---
 
@@ -510,10 +628,15 @@ Mobile:
   - QR Scanner plugin
 
 Notifications:
-  - Email (Supabase Auth)
+  - Email (Resend API via postal-notifications)
   - In-app notifications (real-time)
   - SMS (planned integration)
   - Push notifications (via Capacitor)
+
+Postal Integration:
+  - S10 International Tracking (UPU standard)
+  - COD payment processing
+  - Bulk import (Excel/CSV)
 ```
 
 ---
@@ -532,12 +655,14 @@ Data:
   Addresses: Growing (NAR registry)
   CAR Declarations: Growing
   Business Listings: Growing
+  Delivery Orders: Growing
   Incidents: Monthly archives
 
 Storage:
-  Photos: ~3GB (compressed)
+  Photos: ~4GB (compressed)
   Documents: <1GB
-  Growth Rate: ~500MB/month
+  Delivery Proof: ~500MB
+  Growth Rate: ~750MB/month
 ```
 
 ### Scaling Triggers
@@ -563,13 +688,20 @@ Upgrade to Enterprise when:
 The Biakam National Address System is production-ready on a robust, scalable Supabase infrastructure. Current costs are minimal (~$25-40/month) with clear scaling paths to enterprise levels.
 
 **Current State (December 2025)**:
-- 75+ database tables
-- 42+ edge functions
-- 20+ user roles with geographic/domain scoping
+- 72+ database tables
+- 52+ edge functions
+- 24+ user roles with geographic/domain scoping
+- 243+ RLS policies
+- 4 security-invoker views
 - Auto-publishing policy (eliminates manual publication)
 - CAR auto-approval workflow
+- **Postal Delivery Module with COD, returns, and bulk import**
+- **Offline-first capabilities with unified auth**
+- **Responsive mobile-first UI**
+- **S10 international tracking standard**
 - Map fallback system (OSM when needed)
 - Automatic retention policy enforcement
+- 11 i18n namespaces (3 languages)
 
 **Strengths**:
 - Enterprise-grade security and compliance
@@ -578,15 +710,18 @@ The Biakam National Address System is production-ready on a robust, scalable Sup
 - Clear cost predictability
 - Excellent performance metrics
 - Comprehensive feature set
+- Offline-first architecture
+- Mobile-optimized responsive UI
 
 **Next Steps**:
 - Monitor growth and optimize as needed
 - Plan Team tier upgrade at 50K users
 - Consider enterprise plan at 500K+ users
-- Implement SMS notifications
-- Add advanced analytics dashboard
+- Implement SMS notifications expansion
+- Add real-time delivery tracking maps
+- Implement mobile push notifications
 
 ---
 
 *Last Updated: December 2025*
-*Infrastructure Version: 3.0*
+*Infrastructure Version: 4.0*
