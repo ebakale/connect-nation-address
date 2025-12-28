@@ -104,7 +104,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Notification processed: ${sendResult.message}`);
 
     return new Response(
-      JSON.stringify({ success: true, notification_id: notification.id, ...sendResult }),
+      JSON.stringify({ notification_id: notification.id, message: sendResult.message, success: sendResult.success }),
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   } catch (error: unknown) {
