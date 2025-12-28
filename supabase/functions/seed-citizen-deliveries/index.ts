@@ -284,10 +284,11 @@ serve(async (req) => {
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
     console.error('Unexpected error:', error);
     return new Response(
-      JSON.stringify({ error: 'Unexpected error', details: error.message }),
+      JSON.stringify({ error: 'Unexpected error', details: message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

@@ -74,12 +74,13 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
     );
-  } catch (error) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
     console.error('Error in save-translation-fix:', error);
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error.message 
+        error: message 
       }),
       {
         status: 400,
