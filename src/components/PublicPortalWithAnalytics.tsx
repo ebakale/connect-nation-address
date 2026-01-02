@@ -14,7 +14,7 @@ export const PublicPortalWithAnalytics: React.FC<PublicPortalWithAnalyticsProps>
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5">
       {/* Mobile Status Bar */}
-      <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b">
+      <div className="sticky top-safe z-50 bg-background/80 backdrop-blur-sm border-b">
         <div className="flex items-center justify-between p-2 max-w-md mx-auto">
           <div className="text-sm font-medium">ConnectNation Address</div>
           <OfflineIndicator />

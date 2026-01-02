@@ -72,7 +72,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage = 'dashboard', on
   return (
     <div className="mobile-viewport-stable bg-muted/30 flex flex-col overflow-x-hidden">
       {/* Government-style Header */}
-      <header className="gov-header-light sticky top-0 z-40 safe-area-inset-top">
+      <header className="gov-header-light sticky top-safe z-40">
         <div className="flex justify-between items-center h-14 px-4 sm:px-6">
           <div className="flex items-center gap-3 min-w-0">
             <Button

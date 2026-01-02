@@ -989,7 +989,7 @@ const Index = () => {
       </div>
 
       {/* Header */}
-      <header className="border-b border-primary/20 sticky top-0 glass backdrop-blur-xl z-50 shadow-glow">
+      <header className="border-b border-primary/20 sticky top-safe glass backdrop-blur-xl z-50 shadow-glow">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-center relative">
             <div className="flex flex-col items-center gap-2">

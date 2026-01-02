@@ -7,7 +7,7 @@ import { ArrowLeft } from 'lucide-react';
 export const DemoScriptPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+      <header className="sticky top-safe z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <Link 
             to="/documentation" 
