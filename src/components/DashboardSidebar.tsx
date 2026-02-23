@@ -59,6 +59,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0, activeIt
   const collapsed = state === 'collapsed';
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   
   const { 
