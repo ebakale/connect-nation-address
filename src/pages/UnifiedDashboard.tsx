@@ -1408,6 +1408,9 @@ const UnifiedDashboard = () => {
 
         {/* Onboarding Walkthrough */}
         <OnboardingWalkthrough onNavigate={handleSidebarNavigation} />
+
+        {/* Keyboard Shortcuts Dialog */}
+        <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
       </div>
     </SidebarProvider>
   );
