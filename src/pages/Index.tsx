@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3, Package, Truck } from 'lucide-react';
+import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3, Package, Truck, Target, Eye, Building, QrCode, Ambulance, Mail, LayoutDashboard, Clock, ArrowRight, Fingerprint } from 'lucide-react';
 import { ValuePropositionPDF } from '@/components/ValuePropositionPDF';
 import StoryboardsPDF from '@/components/StoryboardsPDF';
 import BusinessModelCanvasPDF from '@/components/BusinessModelCanvasPDF';
