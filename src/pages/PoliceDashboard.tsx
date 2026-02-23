@@ -1401,9 +1401,9 @@ const PoliceDashboard = () => {
           </div>
         )}
       </main>
+      <Footer />
       </div>
     </div>
-    <Footer />
     <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
     </SidebarProvider>
   );
