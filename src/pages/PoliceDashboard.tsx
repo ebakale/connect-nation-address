@@ -745,12 +745,6 @@ const PoliceDashboard = () => {
 
       {/* Main Content - Optimized Layout */}
       <main className="flex-1 px-2 sm:px-4 py-3 overflow-x-hidden animate-fade-in">
-        <DashboardBreadcrumb 
-          items={[
-            { label: t('policeCommandCenter') },
-          ]} 
-          className="mb-3 px-2"
-        />
         {/* Show admin panel directly if user has only admin access */}
         {hasPoliceAdminAccess && !isPoliceOperator && !isPoliceDispatcher && !isPoliceSupervisor ? (
           <div className="max-w-7xl mx-auto">
