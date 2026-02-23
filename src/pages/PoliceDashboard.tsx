@@ -22,9 +22,6 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { KeyboardShortcutsDialog } from '@/components/KeyboardShortcutsDialog';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { DashboardSidebar } from "@/components/DashboardSidebar";
-import { DashboardBreadcrumb } from "@/components/DashboardBreadcrumb";
 
 import IncidentMap from '@/components/IncidentMap';
 import IncidentList from '@/components/IncidentList';
