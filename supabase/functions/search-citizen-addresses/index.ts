@@ -363,7 +363,7 @@ Deno.serve(async (req) => {
 
     // Log the search
     await supabase.from('address_search_audit').insert({
-      searcher_user_id: user.id,
+      searcher_user_id: userId,
       search_query: query,
       search_purpose: purpose,
       purpose_details: purposeDetails || null,
