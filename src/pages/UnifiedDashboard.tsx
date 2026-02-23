@@ -1376,6 +1376,9 @@ const UnifiedDashboard = () => {
           onClose={() => setDeliveryPreferencesOpen(false)}
           addressUac={selectedAddressForPrefs}
         />
+
+        {/* Onboarding Walkthrough */}
+        <OnboardingWalkthrough onNavigate={handleSidebarNavigation} />
       </div>
     </SidebarProvider>
   );
