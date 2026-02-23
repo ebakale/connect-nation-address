@@ -776,7 +776,7 @@ const PoliceDashboard = () => {
               </div>
             )}
 
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3 overflow-hidden">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
               {/* Compact Tab Navigation */}
               {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher ? (
                 <TabsList className="grid grid-cols-2 gap-2 overflow-x-auto">
