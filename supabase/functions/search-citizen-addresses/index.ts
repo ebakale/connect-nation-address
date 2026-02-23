@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log(`Search by ${user.email}: "${query}" for purpose: ${purpose}`);
+    console.log(`Search by ${userEmail}: "${query}" for purpose: ${purpose}`);
 
     // Search for matching persons with privacy-filtered addresses
     const searchPattern = `%${query.trim()}%`;
