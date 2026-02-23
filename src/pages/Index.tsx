@@ -806,7 +806,7 @@ const Index = () => {
       </header>
 
       {/* Mobile Navigation */}
-      <nav className="lg:hidden border-b bg-card/95 backdrop-blur-md sticky top-[57px] z-40 overflow-x-auto">
+      <nav className="xl:hidden border-b bg-card/95 backdrop-blur-md sticky top-[53px] z-40 overflow-x-auto scrollbar-none">
         <div className="flex items-center gap-1 px-4 py-1.5 min-w-max">
           {navigationItems.map((item) => {
             const Icon = item.icon;
