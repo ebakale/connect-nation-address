@@ -303,8 +303,9 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
                     </div>
                   </div>
                 ))}
-              </div>
-            ) : (
+                </div>
+              </>
+            ) : !isSearching ? (
               <div className="p-4 sm:p-6 text-center text-muted-foreground">
                 <Search className="h-6 w-6 sm:h-8 sm:w-8 mx-auto mb-2 opacity-50" />
                 <p className="text-sm sm:text-base">{t('noAddressesFound', { query })}</p>
