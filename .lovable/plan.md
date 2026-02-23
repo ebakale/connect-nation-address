@@ -1,29 +1,27 @@
 
 
-## Remove the Unnecessary Sidebar from the Police Dashboard
+## Remove the Unnecessary Sidebar from the Postal Dashboard
 
 ### Problem
 
-The Police Dashboard currently includes the `DashboardSidebar` component, which belongs to the **address/citizen system** (showing items like "My Address Book", "Register Address", "Profile Settings"). This sidebar:
+The Postal Dashboard has the exact same issue we just fixed in the Police Dashboard: it includes the `DashboardSidebar` component showing address-system items ("My Address Book", "Register Address", etc.) that are completely unrelated to postal operations. The sidebar's `onNavigationClick` is even wired to an empty function `() => {}`, so clicking any item does nothing.
 
-- Has **nothing to do with police operations**
-- Causes **layout problems** (single-column rendering, overlap issues)
-- Confuses users by mixing unrelated navigation into the police command center
-- The police module already has its own **tab-based navigation** (Dispatch, Field, Coordination, Admin, etc.) which is the correct pattern
+The postal module already has its own comprehensive tab-based navigation (Orders, My Deliveries, Assignments, Pickups, Returns, COD, Reports, Admin) — the sidebar just adds clutter and potential layout issues.
 
 ### Solution
 
-Remove the `SidebarProvider`, `DashboardSidebar`, and `SidebarTrigger` from `PoliceDashboard.tsx` and restore a clean, standalone layout.
+Apply the same fix as the Police Dashboard: remove the sidebar and restore a clean standalone layout.
 
 ### Changes
 
-**File: `src/pages/PoliceDashboard.tsx`**
+**File: `src/pages/PostalPage.tsx`**
 
 1. Remove imports: `SidebarProvider`, `SidebarTrigger`, `DashboardSidebar`, `DashboardBreadcrumb`
 2. Remove the `<SidebarProvider>` wrapper and `<DashboardSidebar>` component
 3. Remove the `<SidebarTrigger>` from the header
-4. Simplify the layout back to a straightforward `min-h-screen` container without the sidebar flex structure
-5. Keep the existing tab-based navigation (`Tabs`/`TabsList`/`TabsTrigger`) which already handles all police-specific navigation
+4. Remove the `<DashboardBreadcrumb>` (not needed since postal has its own navigation context)
+5. Simplify the layout to a straightforward `min-h-screen flex flex-col` container
+6. Keep the existing header, `PostalDashboard` with its tab navigation, and footer
 
-This restores the police dashboard to a clean, self-contained module with its own header and tab navigation, matching the pattern described in the unified module navigation architecture.
+This mirrors the Police Dashboard cleanup and ensures both specialized modules follow the same clean, self-contained pattern.
 
