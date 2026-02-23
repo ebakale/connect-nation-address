@@ -678,7 +678,7 @@ const PoliceDashboard = () => {
   return (
     <SidebarProvider>
     <div className="min-h-screen flex w-full bg-background">
-      <DashboardSidebar onNavigationClick={() => {}} />
+      <DashboardSidebar onNavigationClick={(id) => navigate(`/dashboard?section=${id}`)} />
       <div className="flex-1 flex flex-col min-h-screen min-w-0">
       {/* Header - Government Emergency Styling */}
       <header className="sticky top-0 z-30 border-b bg-card/95 backdrop-blur-md shadow-sm transition-all duration-300">
