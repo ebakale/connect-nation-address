@@ -774,24 +774,92 @@ const Index = () => {
 
       case 'emergency':
         return (
-          <div className="space-y-8">
+          <div className="space-y-8 max-w-2xl mx-auto">
+            {/* Enhanced Header */}
             <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold text-red-600">{t('common:platform.emergencyAlertSystem')}</h2>
-              <p className="text-lg text-muted-foreground">
+              <Badge variant="destructive" className="text-xs tracking-wider uppercase">
+                {t('common:platform.criticalService', { defaultValue: 'Critical Service' })}
+              </Badge>
+              <div className="flex justify-center">
+                <div className="p-4 bg-destructive/10 rounded-full">
+                  <AlertTriangle className="h-10 w-10 text-destructive" />
+                </div>
+              </div>
+              <h2 className="text-3xl font-bold text-destructive">{t('common:platform.emergencyAlertSystem')}</h2>
+              <p className="text-muted-foreground max-w-md mx-auto">
                 {t('common:platform.emergencyAlertDescription')}
               </p>
-              {emergencyPrefilledData && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
-                  <p className="text-sm text-blue-800 font-medium">{t('common:platform.addressPrefilled')}:</p>
-                  <p className="text-sm text-blue-600">{emergencyPrefilledData.street}, {emergencyPrefilledData.city}</p>
-                  <p className="text-xs text-blue-500">UAC: {emergencyPrefilledData.uac}</p>
-                </div>
-              )}
             </div>
+
+            {/* Safety Tips Alert */}
+            <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-4 space-y-2">
+              <div className="flex items-center gap-2 text-destructive font-semibold text-sm">
+                <Info className="h-4 w-4" />
+                {t('common:platform.importantInfo', { defaultValue: 'Important Information' })}
+              </div>
+              <ul className="text-sm text-muted-foreground space-y-1.5 ml-6 list-disc">
+                <li>{t('common:platform.safetyTip1', { defaultValue: 'Call 114 for immediate life-threatening emergencies' })}</li>
+                <li>{t('common:platform.safetyTip2', { defaultValue: 'This form notifies local police dispatch automatically' })}</li>
+                <li>{t('common:platform.safetyTip3', { defaultValue: 'Your GPS location is shared with responders' })}</li>
+              </ul>
+            </div>
+
+            {/* Prefilled Address Enhancement */}
+            {emergencyPrefilledData && (
+              <Card className="border-info/30 bg-info/5">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-info/10 rounded-full shrink-0">
+                      <MapPin className="h-5 w-5 text-info" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground">
+                        {t('common:platform.addressPrefilled', { defaultValue: 'Address Prefilled from Search' })}
+                      </p>
+                      <p className="text-sm text-muted-foreground truncate">{emergencyPrefilledData.street}, {emergencyPrefilledData.city}</p>
+                      <p className="text-xs text-muted-foreground/70 mt-0.5">UAC: {emergencyPrefilledData.uac}</p>
+                    </div>
+                    <Button variant="ghost" size="sm" className="text-xs shrink-0" onClick={() => setActiveSection('public')}>
+                      {t('common:actions.change', { defaultValue: 'Change' })}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Emergency Form */}
             <EmergencyAlertProcessor 
               onSuccess={() => setActiveSection('overview')}
               prefilledAddress={emergencyPrefilledData}
             />
+
+            {/* Emergency Contacts Footer */}
+            <Separator />
+            <Card className="bg-muted/30">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-3 text-sm font-semibold text-foreground">
+                  <Phone className="h-4 w-4" />
+                  {t('common:platform.emergencyContacts', { defaultValue: 'Emergency Phone Numbers' })}
+                </div>
+                <div className="grid grid-cols-3 gap-3 text-center">
+                  <div className="space-y-1">
+                    <div className="text-lg font-bold text-destructive">114</div>
+                    <div className="text-xs text-muted-foreground">{t('common:platform.police', { defaultValue: 'Police' })}</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-lg font-bold text-destructive">115</div>
+                    <div className="text-xs text-muted-foreground">{t('common:platform.fire', { defaultValue: 'Fire' })}</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-lg font-bold text-destructive">116</div>
+                    <div className="text-xs text-muted-foreground">{t('common:platform.medical', { defaultValue: 'Medical' })}</div>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground mt-3 text-center">
+                  {t('common:platform.callVsForm', { defaultValue: 'For immediate danger, always call directly. Use this form for non-critical reports.' })}
+                </p>
+              </CardContent>
+            </Card>
           </div>
         );
         
