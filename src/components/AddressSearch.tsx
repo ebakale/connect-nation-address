@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Search, MapPin, Navigation } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAddresses } from '@/hooks/useAddresses';
@@ -208,7 +210,7 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
       <div className="flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
           <Textarea
-            placeholder={t('searchPlaceholder')}
+            placeholder="Try: UAC-CM-CE-YDE-001 or 'Rue de la Joie, Yaoundé'"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyPress={handleKeyPress}
@@ -236,8 +238,24 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
       {showResults && (
         <Card className="mt-2 border shadow-lg w-full">
           <CardContent className="p-0">
-            {results.length > 0 ? (
-              <div className="max-h-60 overflow-y-auto">
+            {isSearching ? (
+              <div className="p-3 space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="space-y-2">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-full" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                ))}
+              </div>
+            ) : results.length > 0 ? (
+              <>
+                <div className="px-3 pt-2 pb-1 flex items-center justify-between border-b">
+                  <Badge variant="secondary" className="text-xs">
+                    {results.length} {results.length === 1 ? 'result' : 'results'}
+                  </Badge>
+                </div>
+                <div className="max-h-60 overflow-y-auto">
                 {results.map((result, index) => (
                   <div
                     key={result.uac}
@@ -285,8 +303,9 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
                     </div>
                   </div>
                 ))}
-              </div>
-            ) : (
+                </div>
+              </>
+            ) : !isSearching ? (
               <div className="p-4 sm:p-6 text-center text-muted-foreground">
                 <Search className="h-6 w-6 sm:h-8 sm:w-8 mx-auto mb-2 opacity-50" />
                 <p className="text-sm sm:text-base">{t('noAddressesFound', { query })}</p>
@@ -304,7 +323,7 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
                   </div>
                 )}
               </div>
-            )}
+            ) : null}
           </CardContent>
         </Card>
       )}

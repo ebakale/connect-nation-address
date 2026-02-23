@@ -49,6 +49,7 @@ import EmergencyContacts from "@/components/EmergencyContacts";
 import { ReporterNotifications } from "@/components/ReporterNotifications";
 import { NotificationCenter } from "@/components/NotificationCenter";
 import { OnboardingWalkthrough } from "@/components/OnboardingWalkthrough";
+import { OfflineSyncQueue } from "@/components/OfflineSyncQueue";
 import UniversalDashboardLocationMap from "@/components/UniversalDashboardLocationMap";
 import { ResidencyVerificationManager } from "@/components/ResidencyVerificationManager";
 import { ResidencyVerificationDashboard } from "@/components/ResidencyVerificationDashboard";
@@ -1334,6 +1335,7 @@ const UnifiedDashboard = () => {
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <NotificationCenter />
+                <OfflineSyncQueue />
                 <OfflineIndicator />
                 {userProfile && (
                   <div className="text-right hidden lg:block">
