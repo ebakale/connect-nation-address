@@ -284,7 +284,9 @@ const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({
 
     } catch (error) {
       console.error('Error initializing Google Maps:', error);
-      setMapError('Failed to initialize map. Please check your connection.');
+      const msg = 'Failed to initialize map. Please check your connection.';
+      setMapError(msg);
+      onError?.(msg);
     }
   };
 
