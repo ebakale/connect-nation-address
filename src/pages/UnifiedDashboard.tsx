@@ -1373,18 +1373,10 @@ const UnifiedDashboard = () => {
                   <LanguageSwitcher />
                 </div>
                 <OfflineIndicator />
-                {userProfile && (
-                  <div className="text-right hidden lg:block ml-1">
-                    <p className="text-xs font-medium whitespace-nowrap truncate max-w-[120px]">{userProfile.full_name}</p>
-                    <div className="flex gap-0.5 justify-end">
-                      {userRoles.slice(0, 2).map((roleLabel, index) => (
-                        <Badge key={`${roleLabel}-${index}`} variant="secondary" className="text-[10px] px-1 py-0">
-                          {String(roleLabel)}
-                        </Badge>
-                      ))}
-                      {userRoles.length > 2 && <Badge variant="secondary" className="text-[10px] px-1 py-0">+{userRoles.length - 2}</Badge>}
-                    </div>
-                  </div>
+                {user && (
+                  <p className="text-xs font-medium whitespace-nowrap truncate max-w-[120px] hidden lg:block ml-1">
+                    {userProfile?.full_name || user?.email?.split('@')[0] || 'User'}
+                  </p>
                 )}
                 <Button 
                   variant="ghost" 
