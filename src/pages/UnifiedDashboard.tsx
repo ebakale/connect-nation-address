@@ -17,6 +17,7 @@ import Footer from '@/components/Footer';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
+import { DashboardBreadcrumb } from "@/components/DashboardBreadcrumb";
 
 import { useNavigate } from "react-router-dom";
 
