@@ -776,17 +776,17 @@ const PoliceDashboard = () => {
               </div>
             )}
 
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3 overflow-hidden">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
               {/* Compact Tab Navigation */}
               {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher ? (
-                <TabsList className="grid grid-cols-2 gap-2 overflow-x-auto">
+                <TabsList className="w-fit">
                   <TabsTrigger value="field" className="text-sm">
                     <Radio className="h-4 w-4 mr-2" />
                     {t('myUnit')}
                   </TabsTrigger>
                 </TabsList>
               ) : (
-                <TabsList className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 overflow-x-auto">
+                <TabsList className="flex flex-wrap gap-1 h-auto p-1">
                   {!hasPoliceAdminAccess && !isPoliceSupervisor && isPoliceOperator && (
                     <TabsTrigger value="field" className="text-sm">
                       <Radio className="h-4 w-4 mr-2" />
@@ -826,8 +826,8 @@ const PoliceDashboard = () => {
               )}
 
           {/* Field Operations Tab */}
-          <TabsContent value="field" className="space-y-6">
-            <div className="flex items-center flex-wrap gap-4 mb-4">
+          <TabsContent value="field" className="space-y-4">
+            <div className="flex items-center gap-3 flex-wrap">
               <Badge variant="outline" className="flex items-center gap-2">
                 <Radio className="h-3 w-3" />
                  {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher 
@@ -841,18 +841,18 @@ const PoliceDashboard = () => {
                    : t('manageUnitAssignments')
                  }
               </p>
-              
-              {/* Show Unit Lead Dashboard if user is a unit lead */}
-              {showUnitLeadDashboard && isUnitLead && userUnit && (
-                <UnitLeadDashboard 
-                  userUnit={userUnit}
-                  onRefresh={() => {
-                    fetchUserUnit();
-                    fetchUnitIncidents();
-                  }}
-                />
-              )}
             </div>
+            
+            {/* Show Unit Lead Dashboard if user is a unit lead */}
+            {showUnitLeadDashboard && isUnitLead && userUnit && (
+              <UnitLeadDashboard 
+                userUnit={userUnit}
+                onRefresh={() => {
+                  fetchUserUnit();
+                  fetchUnitIncidents();
+                }}
+              />
+            )}
             
             {/* Show standard field dashboard if not showing unit lead dashboard */}
             {!showUnitLeadDashboard && (
