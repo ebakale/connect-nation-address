@@ -37,6 +37,7 @@ interface NavigationGroup {
 interface DashboardSidebarProps {
   onNavigationClick: (id: string) => void;
   pendingCount?: number;
+  activeItemId?: string;
 }
 
 // Favorites persistence
