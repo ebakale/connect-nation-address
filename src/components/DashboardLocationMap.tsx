@@ -59,7 +59,8 @@ interface DashboardLocationMapProps {
 
 const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({ 
   searchedAddress, 
-  onAddressSearched 
+  onAddressSearched,
+  onError 
 }) => {
   const { t } = useTranslation('dashboard');
   const mapContainer = useRef<HTMLDivElement>(null);
