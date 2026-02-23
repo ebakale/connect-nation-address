@@ -72,7 +72,7 @@ const PostalPage = () => {
         <DashboardSidebar onNavigationClick={() => {}} />
         <div className="flex-1 flex flex-col min-h-screen min-w-0 overflow-hidden">
           {/* Header - consistent with other dashboards */}
-          <header className="border-b bg-card shadow-sm">
+          <header className="sticky top-0 z-30 border-b bg-card/95 backdrop-blur-md shadow-sm transition-all duration-300">
             <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 sm:gap-4 min-w-0">
