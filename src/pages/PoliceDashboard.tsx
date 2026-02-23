@@ -1395,10 +1395,8 @@ const PoliceDashboard = () => {
         )}
       </main>
       <Footer />
-      </div>
     </div>
     <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
-    </SidebarProvider>
   );
 };
 
