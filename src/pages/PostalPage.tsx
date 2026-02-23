@@ -10,6 +10,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Footer from '@/components/Footer';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
+import { NotificationCenter } from '@/components/NotificationCenter';
+import { OfflineSyncQueue } from '@/components/OfflineSyncQueue';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { KeyboardShortcutsDialog } from '@/components/KeyboardShortcutsDialog';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { LogOut, Mail } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { DashboardBreadcrumb } from '@/components/DashboardBreadcrumb';
@@ -19,6 +25,12 @@ const PostalPage = () => {
   const { hasPostalAccess, loading, isPostalClerk, isPostalAgent, isPostalDispatcher, isPostalSupervisor } = usePostalRole();
   const { user, signOut } = useAuth();
   const [userProfile, setUserProfile] = useState<{ full_name: string | null } | null>(null);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts([
+    { key: '/', ctrl: true, handler: () => setShortcutsOpen(true), description: 'Show shortcuts', category: 'General' },
+  ]);
 
   // Fetch user profile for full name
   useEffect(() => {
@@ -101,7 +113,13 @@ const PostalPage = () => {
                   )}
                 </div>
 
-                <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                  <NotificationCenter />
+                  <OfflineSyncQueue />
+                  <ThemeToggle />
+                  <div className="hidden sm:block">
+                    <LanguageSwitcher />
+                  </div>
                   <OfflineIndicator />
                   
                   {/* User info - hidden on small screens */}
@@ -114,13 +132,15 @@ const PostalPage = () => {
                   )}
                   
                   <Button 
-                    variant="outline" 
+                    variant="ghost" 
                     size="sm" 
                     onClick={handleSignOut} 
-                    className="flex items-center gap-1.5"
+                    className="flex items-center gap-1 shrink-0"
+                    aria-label={t('common:navigation.logout')}
+                    title={t('common:navigation.logout')}
                   >
-                    <LogOut className="h-3.5 w-3.5" />
-                    <span className="hidden sm:inline text-sm">{t('common:navigation.logout')}</span>
+                    <LogOut className="h-4 w-4" />
+                    <span className="hidden md:inline text-xs">{t('common:navigation.logout')}</span>
                   </Button>
                 </div>
               </div>
@@ -138,6 +158,7 @@ const PostalPage = () => {
           </main>
           <Footer />
         </div>
+        <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
       </div>
     </SidebarProvider>
   );

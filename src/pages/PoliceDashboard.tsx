@@ -16,6 +16,12 @@ import {
 import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
+import { NotificationCenter } from '@/components/NotificationCenter';
+import { OfflineSyncQueue } from '@/components/OfflineSyncQueue';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { KeyboardShortcutsDialog } from '@/components/KeyboardShortcutsDialog';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { DashboardBreadcrumb } from "@/components/DashboardBreadcrumb";
@@ -101,6 +107,12 @@ const PoliceDashboard = () => {
   const [isDispatchSupervisor, setIsDispatchSupervisor] = useState<boolean>(false);
   const [showUnitLeadDashboard, setShowUnitLeadDashboard] = useState(false);
   const [userProfile, setUserProfile] = useState<{ full_name: string | null } | null>(null);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts([
+    { key: '/', ctrl: true, handler: () => setShortcutsOpen(true), description: 'Show shortcuts', category: 'General' },
+  ]);
 
   // Fetch user profile for full name
   useEffect(() => {
@@ -713,7 +725,13 @@ const PoliceDashboard = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+              <NotificationCenter />
+              <OfflineSyncQueue />
+              <ThemeToggle />
+              <div className="hidden sm:block">
+                <LanguageSwitcher />
+              </div>
               <OfflineIndicator />
               {/* User name display */}
               {user && (
@@ -723,9 +741,16 @@ const PoliceDashboard = () => {
                   </p>
                 </div>
               )}
-              <Button variant="outline" size="sm" onClick={handleSignOut} className="flex items-center gap-1.5">
-                <LogOut className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline text-sm">{t('common:logout')}</span>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleSignOut} 
+                className="flex items-center gap-1 shrink-0"
+                aria-label={t('common:logout')}
+                title={t('common:logout')}
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden md:inline text-xs">{t('common:logout')}</span>
               </Button>
             </div>
           </div>
@@ -1387,6 +1412,7 @@ const PoliceDashboard = () => {
       </div>
     </div>
     <Footer />
+    <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
     </SidebarProvider>
   );
 };
