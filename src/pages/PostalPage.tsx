@@ -12,6 +12,7 @@ import Footer from '@/components/Footer';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
 import { LogOut, Mail } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { DashboardBreadcrumb } from '@/components/DashboardBreadcrumb';
 
 const PostalPage = () => {
   const { t } = useTranslation('postal');
@@ -71,7 +72,7 @@ const PostalPage = () => {
         <DashboardSidebar onNavigationClick={() => {}} />
         <div className="flex-1 flex flex-col min-h-screen min-w-0 overflow-hidden">
           {/* Header - consistent with other dashboards */}
-          <header className="border-b bg-card shadow-sm">
+          <header className="sticky top-0 z-30 border-b bg-card/95 backdrop-blur-md shadow-sm transition-all duration-300">
             <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 sm:gap-4 min-w-0">
@@ -126,7 +127,13 @@ const PostalPage = () => {
             </div>
           </header>
 
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full overflow-x-hidden">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full overflow-x-hidden animate-fade-in">
+            <DashboardBreadcrumb 
+              items={[
+                { label: t('title') },
+              ]} 
+              className="mb-4"
+            />
             <PostalDashboard />
           </main>
           <Footer />
