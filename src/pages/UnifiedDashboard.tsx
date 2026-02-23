@@ -1068,8 +1068,19 @@ const UnifiedDashboard = () => {
 
       case 'profile':
         return (
-          <div className="max-w-4xl">
+          <div className="max-w-4xl space-y-6">
             <ProfileEditor />
+            <div className="flex justify-center">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => window.dispatchEvent(new Event('show-onboarding'))}
+                className="gap-2 text-muted-foreground"
+              >
+                <Sparkles className="h-4 w-4" />
+                Show Tour Again
+              </Button>
+            </div>
           </div>
         );
 
