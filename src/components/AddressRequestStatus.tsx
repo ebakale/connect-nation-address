@@ -202,15 +202,15 @@ export const AddressRequestStatus = () => {
 
   if (requests.length === 0) {
     return (
-      <Card>
-        <CardContent className="py-8">
-          <div className="text-center">
-            <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">{t('noRequests')}</h3>
-            <p className="text-muted-foreground">{t('noRequestsDescription')}</p>
-          </div>
-        </CardContent>
-      </Card>
+      <EmptyState
+        icon={FileText}
+        title={t('noRequests')}
+        description={t('noRequestsDescription')}
+        action={{
+          label: t('registerFirstAddress', 'Register Your First Address'),
+          onClick: () => window.dispatchEvent(new CustomEvent('navigate-dashboard', { detail: 'unified-address-request' })),
+        }}
+      />
     );
   }
 

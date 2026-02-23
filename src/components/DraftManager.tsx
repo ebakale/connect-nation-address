@@ -241,17 +241,15 @@ const DraftManager = ({ onClose }: DraftManagerProps) => {
       </div>
 
       {itemCount === 0 ? (
-        <Card>
-          <CardContent className="text-center py-8">
-            <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">
-              {isFieldAgent ? t('dashboard:drafts.noPendingSubmissions') : t('dashboard:drafts.noDraftsYet')}
-            </h3>
-            <p className="text-muted-foreground">
-              {t('dashboard:drafts.startCapturingAddresses')}
-            </p>
-          </CardContent>
-        </Card>
+        <EmptyState
+          icon={Camera}
+          title={isFieldAgent ? t('dashboard:drafts.noPendingSubmissions') : t('dashboard:drafts.noDraftsYet')}
+          description={t('dashboard:drafts.startCapturingAddresses')}
+          action={{
+            label: t('dashboard:captureAddress', 'Capture Your First Address'),
+            onClick: () => window.dispatchEvent(new CustomEvent('navigate-dashboard', { detail: 'capture-address' })),
+          }}
+        />
       ) : isFieldAgent ? (
         // Field Agent view - pending requests
         <div className="grid gap-4">

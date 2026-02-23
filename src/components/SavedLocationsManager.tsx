@@ -145,21 +145,16 @@ export const SavedLocationsManager: React.FC<SavedLocationsManagerProps> = ({
 
       {/* Locations list */}
       {filteredLocations.length === 0 ? (
-        <Card>
-          <CardContent className="p-8 text-center">
-            <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium mb-2">{t('dashboard:noSavedAddresses')}</h3>
-            <p className="text-muted-foreground mb-4">
-              {searchTerm ? t('dashboard:noAddressesMatch') : t('dashboard:startByAdding')}
-            </p>
-            {!searchTerm && (
-              <Button onClick={() => setShowAddDialog(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                {t('dashboard:addAddress')}
-              </Button>
-            )}
-          </CardContent>
-        </Card>
+        <EmptyState
+          icon={Star}
+          title={t('dashboard:noSavedAddresses')}
+          description={searchTerm ? t('dashboard:noAddressesMatch') : t('dashboard:startByAdding')}
+          variant={searchTerm ? 'search' : 'default'}
+          action={!searchTerm ? {
+            label: t('dashboard:addAddress'),
+            onClick: () => setShowAddDialog(true),
+          } : undefined}
+        />
       ) : (
         <Accordion type="single" collapsible className="w-full space-y-2">
           {filteredLocations.map((location) => (
