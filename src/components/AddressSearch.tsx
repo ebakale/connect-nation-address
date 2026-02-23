@@ -210,7 +210,7 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
       <div className="flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
           <Textarea
-            placeholder={t('searchPlaceholder')}
+            placeholder="Try: UAC-CM-CE-YDE-001 or 'Rue de la Joie, Yaoundé'"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyPress={handleKeyPress}
