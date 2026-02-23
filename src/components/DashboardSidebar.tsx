@@ -53,7 +53,7 @@ function setFavorites(ids: string[]) {
   localStorage.setItem(FAVORITES_KEY, JSON.stringify(ids));
 }
 
-export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: DashboardSidebarProps) {
+export function DashboardSidebar({ onNavigationClick, pendingCount = 0, activeItemId = 'overview' }: DashboardSidebarProps) {
   const { t } = useTranslation('dashboard');
   const { state, setOpenMobile } = useSidebar();
   const collapsed = state === 'collapsed';
