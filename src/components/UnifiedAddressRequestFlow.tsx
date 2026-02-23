@@ -195,43 +195,45 @@ export function UnifiedAddressRequestFlow({
     setAddressCreationType(null);
   };
 
+  // Map flow states to step indices for the indicator
+  const flowStepMapping: Record<FlowState, number> = {
+    'lookup': 0,
+    'address-type-selection': 1,
+    'nar-request': 2,
+    'business-nar-creation': 2,
+    'awaiting-approval': 2,
+    'car-declaration': 3,
+    'business-declaration': 3,
+    'complete': 4,
+  };
+
+  const stepDefinitions = [
+    { label: t('address:unifiedFlow.step1'), icon: Search },
+    { label: t('address:unifiedFlow.selectAddressType'), icon: Building },
+    { label: declarationMode === 'business' ? t('address:unifiedFlow.createBusinessAddress') : t('address:unifiedFlow.createResidentialAddress'), icon: Home },
+    { label: declarationMode === 'business' ? t('address:unifiedFlow.declareAsBusiness') : t('address:unifiedFlow.declareAsCAR'), icon: Building },
+    { label: t('common:complete'), icon: CheckCircle },
+  ];
+
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
-      {/* Progress Header */}
+      {/* Step Indicator Header */}
       <Card>
         <CardHeader>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                {currentState === 'lookup' && <Search className="h-6 w-6 text-primary" />}
-                {currentState === 'address-type-selection' && <Building className="h-6 w-6 text-primary" />}
-                {currentState === 'nar-request' && <Home className="h-6 w-6 text-primary" />}
-                {currentState === 'business-nar-creation' && <Building className="h-6 w-6 text-primary" />}
-                {(currentState === 'car-declaration' || currentState === 'business-declaration') && 
-                  <Building className="h-6 w-6 text-primary" />}
-                {currentState === 'complete' && <CheckCircle className="h-6 w-6 text-success" />}
-                <div>
-                  <CardTitle>{t('address:unifiedFlow.title')}</CardTitle>
-                  <CardDescription>{getStepDescription()}</CardDescription>
-                </div>
+              <div>
+                <CardTitle>{t('address:unifiedFlow.title')}</CardTitle>
+                <CardDescription>{getStepDescription()}</CardDescription>
               </div>
               <Badge variant="outline" className="text-sm">
                 {Math.round(currentProgress)}%
               </Badge>
             </div>
-            <Progress value={currentProgress} className="h-2" />
-            <div className="flex items-center justify-between text-sm text-muted-foreground">
-              <span>{getStepTitle()}</span>
-              <span>
-                {currentState === 'complete' ? (
-                  <Badge variant="default" className="bg-success">
-                    {t('common:completed')}
-                  </Badge>
-                ) : (
-                  t('address:unifiedFlow.inProgress')
-                )}
-              </span>
-            </div>
+            <StepIndicator 
+              steps={stepDefinitions} 
+              currentStep={flowStepMapping[currentState]} 
+            />
           </div>
         </CardHeader>
       </Card>
