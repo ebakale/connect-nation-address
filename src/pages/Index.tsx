@@ -155,439 +155,214 @@ const Index = () => {
     switch (activeSection) {
       case 'overview':
         return (
-          <div className="space-y-16">
-            {/* Mobile-optimized Hero Section */}
-            <div className="relative min-h-[50vh] sm:min-h-[60vh] lg:min-h-[70vh] flex items-center justify-center overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/5 to-destructive/5 mobile-container">
-              {/* Background Pattern */}
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,hsl(var(--system-blue)/0.1),transparent_50%),radial-gradient(circle_at_70%_60%,hsl(var(--system-green)/0.1),transparent_50%),radial-gradient(circle_at_40%_80%,hsl(var(--system-red)/0.05),transparent_50%)]"></div>
-              
-              {/* Hero Image with overlay */}
+          <div className="space-y-12 sm:space-y-16">
+            {/* Hero Section - Clean & Professional */}
+            <section className="relative min-h-[50vh] sm:min-h-[60vh] flex items-center justify-center overflow-hidden rounded-2xl">
               <div 
                 className="absolute inset-0 bg-cover bg-center"
                 style={{ backgroundImage: `url(${heroImage})` }}
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40"></div>
               </div>
               
-              <div className="relative z-10 text-center mobile-spacing max-w-6xl mobile-container">
-                <div className="space-y-6 sm:space-y-8 animate-fade-in">
-                  {/* Badge */}
-                  <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white shadow-lg backdrop-blur-sm border border-white/20">
-                    <MapPin className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                    <span className="text-sm sm:text-base font-semibold">{t('common:platform.nationalDigitalServicesPlatform')}</span>
-                  </div>
-                  
-                  {/* Main Heading */}
-                  <div className="space-y-2 sm:space-y-3">
-                    <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent leading-tight mobile-container">
-                       <span className="block">{t('common:platform.connectEG')}</span>
-                        <span className="block text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-foreground/90 mt-1">
-                          {t('common:platform.nationalDigitalServicesPlatform')}
-                        </span>
-                    </h1>
-                  </div>
-                  
-                  {/* Subtitle */}
-                   <p className="text-sm sm:text-base md:text-lg lg:text-xl text-foreground/70 max-w-4xl mx-auto leading-relaxed font-light mobile-text-responsive mobile-container">
-                     {t('common:platform.conEGDescription')}
-                   </p>
-                   
-                   {/* CTA Buttons */}
-                   <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-4 sm:pt-6 mobile-container">
-                       <Button 
-                         onClick={() => navigate('/auth')} 
-                         className="touch-target px-8 py-4 text-base sm:text-lg font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-blue transition-all duration-200"
-                         size="lg"
-                       >
-                         <Shield className="h-5 w-5 sm:h-6 sm:w-6 mr-3" />
-                         <div className="flex flex-col items-start">
-                           <span>{t('common:platform.accessPlatform')}</span>
-                           <span className="text-xs text-white/80 font-normal">{t('common:platform.accessSubtitle')}</span>
-                         </div>
-                       </Button>
-                       <Button 
-                         onClick={() => setActiveSection('about')}
-                         variant="outline" 
-                         className="touch-target px-6 py-4 text-base sm:text-lg font-semibold border-2 border-muted-foreground/30 text-muted-foreground hover:bg-muted hover:text-foreground transition-all duration-200"
-                         size="lg"
-                       >
-                         <Globe className="h-5 w-5 sm:h-6 sm:w-6 mr-3" />
-                         {t('common:platform.learnMore')}
-                       </Button>
-                     </div>
-
+              <div className="relative z-10 text-center px-4 sm:px-8 max-w-4xl mx-auto py-12">
+                <Badge variant="outline" className="mb-6 px-4 py-1.5 text-sm font-medium border-primary/30 text-primary bg-primary/5">
+                  <MapPin className="h-3.5 w-3.5 mr-1.5" />
+                  {t('common:platform.nationalDigitalServicesPlatform')}
+                </Badge>
+                
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-4">
+                  {t('common:platform.connectEG')}
+                </h1>
+                
+                <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-8">
+                  {t('common:platform.conEGDescription')}
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button 
+                    onClick={() => navigate('/auth')} 
+                    size="lg"
+                    className="px-8 text-base font-semibold"
+                  >
+                    <LogIn className="h-5 w-5 mr-2" />
+                    {t('common:platform.accessPlatform')}
+                  </Button>
+                  <Button 
+                    onClick={() => setActiveSection('about')}
+                    variant="outline" 
+                    size="lg"
+                    className="px-8 text-base font-semibold"
+                  >
+                    <Globe className="h-5 w-5 mr-2" />
+                    {t('common:platform.learnMore')}
+                  </Button>
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* Core Modules Section */}
-            <div className="space-y-16">
-              <div className="text-center space-y-6">
-                <div className="inline-block p-3 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl">
-                  <div className="flex items-center gap-2 px-4 py-2">
-                    <div className="h-2 w-2 bg-primary rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium text-primary">{t('common:platform.tripleCorePlatform')}</span>
-                  </div>
-                </div>
-                <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent">
+            {/* Core Modules */}
+            <section className="space-y-10">
+              <div className="text-center space-y-3">
+                <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
                   {t('common:platform.coreFunctionalities')}
                 </h2>
-                <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                <p className="text-muted-foreground max-w-2xl mx-auto">
                   {t('common:platform.threeIntegratedSystems')}
                 </p>
               </div>
 
-              {/* Main Module Cards - Three Modules */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-                {/* Address Registry Module */}
-                <Card className="group relative overflow-hidden bg-gradient-to-br from-white to-primary/5 border-2 border-primary/10 hover:border-primary/30 shadow-xl hover:shadow-blue transform hover:scale-105 transition-all duration-300">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative h-48 bg-cover bg-center" style={{ backgroundImage: `url(${featureSearch})` }}>
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/40 to-transparent"></div>
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
-                          <MapPin className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-bold text-white">{t('address:addressRegistrySystem')}</h3>
-                          <p className="text-blue-100 text-sm">{t('address:digitalAddressingInfrastructure')}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <CardContent className="relative p-6">
-                    <div className="space-y-3">
-                      <p className="text-muted-foreground leading-relaxed text-sm">
-                        {t('address:comprehensiveDigitalAddressing')}
-                      </p>
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
-                          <span className="text-xs">{t('address:gpsBasedRegistrationPrecise')}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
-                          <span className="text-xs">{t('address:multiLevelVerificationNAR')}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
-                          <span className="text-xs">{t('address:uniqueUACCodesQR')}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Emergency Management Module */}
-                <Card className="group relative overflow-hidden bg-gradient-to-br from-white to-destructive/5 border-2 border-destructive/10 hover:border-destructive/30 shadow-xl hover:shadow-red transform hover:scale-105 transition-all duration-300">
-                  <div className="absolute inset-0 bg-gradient-to-br from-destructive/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative h-48 bg-cover bg-center" style={{ backgroundImage: `url(${featureEmergencyManagement})` }}>
-                    <div className="absolute inset-0 bg-gradient-to-t from-destructive/90 via-destructive/40 to-transparent"></div>
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
-                          <Shield className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-bold text-white">{t('emergency:management')}</h3>
-                          <p className="text-red-100 text-sm">{t('emergency:policeEmergencyServices')}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <CardContent className="relative p-6">
-                     <div className="space-y-3">
-                        <p className="text-muted-foreground leading-relaxed text-sm">
-                          {t('emergency:integratedEmergencyResponse')}
-                        </p>
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-destructive flex-shrink-0" />
-                            <span className="text-xs">{t('emergency:realtimeEmergencyAlerts')}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-destructive flex-shrink-0" />
-                            <span className="text-xs">{t('emergency:automatedPoliceDispatch')}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-destructive flex-shrink-0" />
-                            <span className="text-xs">{t('emergency:responseTimeTracking')}</span>
-                          </div>
-                        </div>
-                     </div>
-                  </CardContent>
-                </Card>
-
-                {/* Postal Delivery Module */}
-                <Card className="group relative overflow-hidden bg-gradient-to-br from-white to-secondary/5 border-2 border-secondary/10 hover:border-secondary/30 shadow-xl hover:shadow-green transform hover:scale-105 transition-all duration-300">
-                  <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative h-48 bg-cover bg-center" style={{ backgroundImage: `url(${featureRegistration})` }}>
-                    <div className="absolute inset-0 bg-gradient-to-t from-secondary/90 via-secondary/40 to-transparent"></div>
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
-                          <Package className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-bold text-white">{t('common:platform.postalDeliverySystem')}</h3>
-                          <p className="text-green-100 text-sm">{t('common:platform.governmentPostalServices')}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <CardContent className="relative p-6">
-                     <div className="space-y-3">
-                        <p className="text-muted-foreground leading-relaxed text-sm">
-                          {t('common:platform.postalDeliveryDescription')}
-                        </p>
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-secondary flex-shrink-0" />
-                            <span className="text-xs">{t('common:platform.uacAddressIntegration')}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-secondary flex-shrink-0" />
-                            <span className="text-xs">{t('common:platform.realTimeTracking')}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-secondary flex-shrink-0" />
-                            <span className="text-xs">{t('common:platform.proofOfDelivery')}</span>
-                          </div>
-                        </div>
-                     </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Additional Features Grid - Updated to match real system modules */}
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <Card className="group bg-gradient-to-br from-white to-secondary/5 border-2 border-secondary/10 hover:border-secondary/30 shadow-lg hover:shadow-green transform hover:scale-105 transition-all duration-300">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 bg-gradient-to-br from-secondary to-secondary/80 rounded-2xl">
-                        <Users className="h-6 w-6 text-white" />
+                {/* Address Registry */}
+                <Card className="overflow-hidden border hover:shadow-lg transition-shadow duration-300">
+                  <div className="relative h-44 bg-cover bg-center" style={{ backgroundImage: `url(${featureSearch})` }}>
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary/90 to-primary/30"></div>
+                    <div className="absolute bottom-4 left-4 flex items-center gap-2.5">
+                      <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+                        <MapPin className="h-5 w-5 text-white" />
                       </div>
-                      <CardTitle className="text-lg font-bold">{t('common:platform.multiLevelRoleSystem')}</CardTitle>
-                    </div>
-                  </CardHeader>
-                   <CardContent>
-                      <p className="text-muted-foreground leading-relaxed text-sm">
-                        {t('common:platform.citizensFieldAgentsVerifiersRegistrarsOperators')}
-                      </p>
-                   </CardContent>
-                </Card>
-
-                <Card className="group bg-gradient-to-br from-white to-primary/5 border-2 border-primary/10 hover:border-primary/30 shadow-lg hover:shadow-blue transform hover:scale-105 transition-all duration-300">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 bg-gradient-to-br from-primary to-primary/80 rounded-2xl">
-                        <FileText className="h-6 w-6 text-white" />
+                      <div>
+                        <h3 className="text-lg font-bold text-white">{t('address:addressRegistrySystem')}</h3>
+                        <p className="text-white/80 text-xs">{t('address:digitalAddressingInfrastructure')}</p>
                       </div>
-                      <CardTitle className="text-lg font-bold">{t('common:platform.advancedDigitalDocumentation')}</CardTitle>
                     </div>
-                  </CardHeader>
-                   <CardContent>
-                      <p className="text-muted-foreground leading-relaxed text-sm">
-                        {t('common:platform.uniqueUACCodesQRAutomatedPDFs')}
-                      </p>
-                   </CardContent>
-                </Card>
-
-                <Card className="group bg-gradient-to-br from-white to-destructive/5 border-2 border-destructive/10 hover:border-destructive/30 shadow-lg hover:shadow-red transform hover:scale-105 transition-all duration-300">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 bg-gradient-to-br from-destructive to-destructive/80 rounded-2xl">
-                        <BarChart3 className="h-6 w-6 text-white" />
-                      </div>
-                      <CardTitle className="text-lg font-bold">{t('common:platform.analyticsAndDashboards')}</CardTitle>
-                    </div>
-                  </CardHeader>
-                   <CardContent>
-                      <p className="text-muted-foreground leading-relaxed text-sm">
-                        {t('common:platform.realtimeMetricsCoverageReportsPerformanceAnalysis')}
-                      </p>
-                   </CardContent>
-                </Card>
-
-                <Card className="group bg-gradient-to-br from-white to-accent/5 border-2 border-accent/10 hover:border-accent/30 shadow-lg hover:shadow-yellow transform hover:scale-105 transition-all duration-300">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 bg-gradient-to-br from-accent to-accent/80 rounded-2xl">
-                        <Globe className="h-6 w-6 text-white" />
-                      </div>
-                      <CardTitle className="text-lg font-bold">{t('common:platform.multiLanguagePlatform')}</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                     <p className="text-muted-foreground leading-relaxed text-sm">
-                       {t('common:platform.completeLocalizationSpanishFrenchEnglish')}
-                     </p>
+                  </div>
+                  <CardContent className="p-5 space-y-3">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {t('address:comprehensiveDigitalAddressing')}
+                    </p>
+                    <ul className="space-y-1.5">
+                      {[t('address:gpsBasedRegistrationPrecise'), t('address:multiLevelVerificationNAR'), t('address:uniqueUACCodesQR')].map((item, i) => (
+                        <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <CheckCircle className="h-3.5 w-3.5 text-primary shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
                   </CardContent>
                 </Card>
 
-                <Card className="group bg-gradient-to-br from-white to-destructive/5 border-2 border-destructive/10 hover:border-destructive/30 shadow-lg hover:shadow-red transform hover:scale-105 transition-all duration-300">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 bg-gradient-to-br from-destructive to-destructive/80 rounded-2xl">
-                        <Shield className="h-6 w-6 text-white" />
+                {/* Emergency Management */}
+                <Card className="overflow-hidden border hover:shadow-lg transition-shadow duration-300">
+                  <div className="relative h-44 bg-cover bg-center" style={{ backgroundImage: `url(${featureEmergencyManagement})` }}>
+                    <div className="absolute inset-0 bg-gradient-to-t from-destructive/90 to-destructive/30"></div>
+                    <div className="absolute bottom-4 left-4 flex items-center gap-2.5">
+                      <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+                        <Shield className="h-5 w-5 text-white" />
                       </div>
-                      <CardTitle className="text-lg font-bold">{t('common:platform.emergencyIntegration')}</CardTitle>
+                      <div>
+                        <h3 className="text-lg font-bold text-white">{t('emergency:management')}</h3>
+                        <p className="text-white/80 text-xs">{t('emergency:policeEmergencyServices')}</p>
+                      </div>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                     <p className="text-muted-foreground leading-relaxed text-sm">
-                       {t('common:platform.unifiedSystemAddressesEmergencyResponse')}
-                     </p>
+                  </div>
+                  <CardContent className="p-5 space-y-3">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {t('emergency:integratedEmergencyResponse')}
+                    </p>
+                    <ul className="space-y-1.5">
+                      {[t('emergency:realtimeEmergencyAlerts'), t('emergency:automatedPoliceDispatch'), t('emergency:responseTimeTracking')].map((item, i) => (
+                        <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <CheckCircle className="h-3.5 w-3.5 text-destructive shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
                   </CardContent>
                 </Card>
 
-                <Card className="group bg-gradient-to-br from-white to-secondary/5 border-2 border-secondary/10 hover:border-secondary/30 shadow-lg hover:shadow-green transform hover:scale-105 transition-all duration-300">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 bg-gradient-to-br from-secondary to-secondary/80 rounded-2xl">
-                        <MapPin className="h-6 w-6 text-white" />
+                {/* Postal Delivery */}
+                <Card className="overflow-hidden border hover:shadow-lg transition-shadow duration-300">
+                  <div className="relative h-44 bg-cover bg-center" style={{ backgroundImage: `url(${featureRegistration})` }}>
+                    <div className="absolute inset-0 bg-gradient-to-t from-secondary/90 to-secondary/30"></div>
+                    <div className="absolute bottom-4 left-4 flex items-center gap-2.5">
+                      <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+                        <Package className="h-5 w-5 text-white" />
                       </div>
-                      <CardTitle className="text-lg font-bold">{t('common:platform.offlineCapabilities')}</CardTitle>
+                      <div>
+                        <h3 className="text-lg font-bold text-white">{t('common:platform.postalDeliverySystem')}</h3>
+                        <p className="text-white/80 text-xs">{t('common:platform.governmentPostalServices')}</p>
+                      </div>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                     <p className="text-muted-foreground leading-relaxed text-sm">
-                       {t('common:platform.fullFunctionalityWithoutConnectionRemoteAreas')}
-                     </p>
+                  </div>
+                  <CardContent className="p-5 space-y-3">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {t('common:platform.postalDeliveryDescription')}
+                    </p>
+                    <ul className="space-y-1.5">
+                      {[t('common:platform.uacAddressIntegration'), t('common:platform.realTimeTracking'), t('common:platform.proofOfDelivery')].map((item, i) => (
+                        <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <CheckCircle className="h-3.5 w-3.5 text-secondary shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
                   </CardContent>
                 </Card>
               </div>
-            </div>
+            </section>
 
-            {/* Objectives Section */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-background via-primary/5 to-secondary/5 border border-primary/10">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,hsl(var(--system-blue)/0.1),transparent_40%),radial-gradient(circle_at_80%_70%,hsl(var(--system-green)/0.1),transparent_40%)]"></div>
-              
-              <div className="relative p-8 md:p-12">
-                <div className="text-center space-y-6 mb-12">
-                  <div className="inline-block p-3 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl">
-                    <div className="flex items-center gap-2 px-4 py-2">
-                      <CheckCircle className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-medium text-primary">{t('common:platform.strategicGoals')}</span>
-                    </div>
-                   </div>
-                    <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-primary via-secondary to-destructive bg-clip-text text-transparent">
-                      {t('common:platform.platformObjectives')}
-                    </h2>
-                   <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                     {t('common:platform.transformingEquatorialGuineaExpanded')}
-                   </p>
-                </div>
-
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  <div className="group p-8 bg-gradient-to-br from-white to-primary/5 rounded-2xl border-2 border-primary/10 hover:border-primary/30 shadow-lg hover:shadow-blue transform hover:scale-105 transition-all duration-300">
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className="p-3 bg-gradient-to-br from-primary to-primary/80 rounded-2xl shadow-lg">
-                        <MapPin className="h-6 w-6 text-white" />
+            {/* Platform Capabilities */}
+            <section className="space-y-10">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {[
+                  { icon: Users, title: t('common:platform.multiLevelRoleSystem'), desc: t('common:platform.citizensFieldAgentsVerifiersRegistrarsOperators') },
+                  { icon: FileText, title: t('common:platform.advancedDigitalDocumentation'), desc: t('common:platform.uniqueUACCodesQRAutomatedPDFs') },
+                  { icon: BarChart3, title: t('common:platform.analyticsAndDashboards'), desc: t('common:platform.realtimeMetricsCoverageReportsPerformanceAnalysis') },
+                  { icon: Globe, title: t('common:platform.multiLanguagePlatform'), desc: t('common:platform.completeLocalizationSpanishFrenchEnglish') },
+                  { icon: Shield, title: t('common:platform.emergencyIntegration'), desc: t('common:platform.unifiedSystemAddressesEmergencyResponse') },
+                  { icon: MapPin, title: t('common:platform.offlineCapabilities'), desc: t('common:platform.fullFunctionalityWithoutConnectionRemoteAreas') },
+                ].map((feature, i) => (
+                  <Card key={i} className="border hover:shadow-md transition-shadow duration-200">
+                    <CardContent className="p-5 flex gap-4 items-start">
+                      <div className="p-2.5 bg-primary/10 rounded-lg shrink-0">
+                        <feature.icon className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('common:platform.digitalInfrastructure')}</h3>
-                        <div className="h-1 w-16 bg-gradient-to-r from-primary to-primary/60 rounded-full mb-3"></div>
+                        <h3 className="font-semibold text-sm mb-1">{feature.title}</h3>
+                        <p className="text-xs text-muted-foreground leading-relaxed">{feature.desc}</p>
                       </div>
-                    </div>
-                     <p className="text-muted-foreground leading-relaxed">
-                       {t('common:platform.establishComprehensiveAddressing')}
-                     </p>
-                  </div>
-                  
-                  <div className="group p-8 bg-gradient-to-br from-white to-destructive/5 rounded-2xl border-2 border-destructive/10 hover:border-destructive/30 shadow-lg hover:shadow-red transform hover:scale-105 transition-all duration-300">
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className="p-3 bg-gradient-to-br from-destructive to-destructive/80 rounded-2xl shadow-lg">
-                        <Shield className="h-6 w-6 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('common:platform.publicSafetyEnhancement')}</h3>
-                        <div className="h-1 w-16 bg-gradient-to-r from-destructive to-destructive/60 rounded-full mb-3"></div>
-                      </div>
-                    </div>
-                     <p className="text-muted-foreground leading-relaxed">
-                       {t('common:platform.modernizeEmergencyResponse')}
-                     </p>
-                  </div>
-
-                  <div className="group p-8 bg-gradient-to-br from-white to-secondary/5 rounded-2xl border-2 border-secondary/10 hover:border-secondary/30 shadow-lg hover:shadow-green transform hover:scale-105 transition-all duration-300">
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className="p-3 bg-gradient-to-br from-secondary to-secondary/80 rounded-2xl shadow-lg">
-                        <Users className="h-6 w-6 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('common:platform.citizenEmpowerment')}</h3>
-                        <div className="h-1 w-16 bg-gradient-to-r from-secondary to-secondary/60 rounded-full mb-3"></div>
-                      </div>
-                    </div>
-                     <p className="text-muted-foreground leading-relaxed">
-                       {t('common:platform.provideDirectAccessExpanded')}
-                     </p>
-                  </div>
-
-                  <div className="group p-8 bg-gradient-to-br from-white to-accent/5 rounded-2xl border-2 border-accent/10 hover:border-accent/30 shadow-lg hover:shadow-yellow transform hover:scale-105 transition-all duration-300">
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className="p-3 bg-gradient-to-br from-accent to-accent/80 rounded-2xl shadow-lg">
-                        <Package className="h-6 w-6 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('common:platform.serviceIntegration')}</h3>
-                        <div className="h-1 w-16 bg-gradient-to-r from-accent to-accent/60 rounded-full mb-3"></div>
-                      </div>
-                    </div>
-                     <p className="text-muted-foreground leading-relaxed">
-                       {t('common:platform.serviceIntegrationDesc')}
-                     </p>
-                  </div>
-                  
-                  <div className="group p-8 bg-gradient-to-br from-white to-destructive/5 rounded-2xl border-2 border-destructive/10 hover:border-destructive/30 shadow-lg hover:shadow-red transform hover:scale-105 transition-all duration-300">
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className="p-3 bg-gradient-to-br from-destructive to-destructive/80 rounded-2xl shadow-lg">
-                        <BarChart3 className="h-6 w-6 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('common:platform.smartUrbanPlanning')}</h3>
-                        <div className="h-1 w-16 bg-gradient-to-r from-destructive to-destructive/60 rounded-full mb-3"></div>
-                      </div>
-                    </div>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {t('common:platform.smartUrbanPlanningDesc')}
-                    </p>
-                  </div>
-                  
-                  <div className="group p-8 bg-gradient-to-br from-white to-primary/5 rounded-2xl border-2 border-primary/10 hover:border-primary/30 shadow-lg hover:shadow-blue transform hover:scale-105 transition-all duration-300">
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className="p-3 bg-gradient-to-br from-primary to-primary/80 rounded-2xl shadow-lg">
-                        <Shield className="h-6 w-6 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('common:platform.dataExcellenceQuality')}</h3>
-                        <div className="h-1 w-16 bg-gradient-to-r from-primary to-primary/60 rounded-full mb-3"></div>
-                      </div>
-                    </div>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {t('common:platform.ensureDataIntegrityAccuracySystemReliability')}
-                    </p>
-                  </div>
-                  
-                  <div className="group p-8 bg-gradient-to-br from-white to-secondary/5 rounded-2xl border-2 border-secondary/10 hover:border-secondary/30 shadow-lg hover:shadow-green transform hover:scale-105 transition-all duration-300">
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className="p-3 bg-gradient-to-br from-secondary to-secondary/80 rounded-2xl shadow-lg">
-                        <BarChart3 className="h-6 w-6 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-bold text-foreground mb-2">{t('common:platform.territorialCoverage')}</h3>
-                        <div className="h-1 w-16 bg-gradient-to-r from-secondary to-secondary/60 rounded-full mb-3"></div>
-                      </div>
-                    </div>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {t('common:platform.achieveComprehensiveNationalCoverageRemoteAreas')}
-                    </p>
-                  </div>
-                </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-            </div>
+            </section>
+
+            {/* Objectives */}
+            <section className="rounded-2xl border bg-muted/30 p-6 sm:p-10 space-y-8">
+              <div className="text-center space-y-3">
+                <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
+                  {t('common:platform.platformObjectives')}
+                </h2>
+                <p className="text-muted-foreground max-w-2xl mx-auto">
+                  {t('common:platform.transformingEquatorialGuineaExpanded')}
+                </p>
+              </div>
+
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {[
+                  { icon: MapPin, title: t('common:platform.digitalInfrastructure'), desc: t('common:platform.establishComprehensiveAddressing'), color: 'text-primary' },
+                  { icon: Shield, title: t('common:platform.publicSafetyEnhancement'), desc: t('common:platform.modernizeEmergencyResponse'), color: 'text-destructive' },
+                  { icon: Users, title: t('common:platform.citizenEmpowerment'), desc: t('common:platform.provideDirectAccessExpanded'), color: 'text-secondary' },
+                  { icon: Package, title: t('common:platform.serviceIntegration'), desc: t('common:platform.serviceIntegrationDesc'), color: 'text-accent-foreground' },
+                  { icon: BarChart3, title: t('common:platform.smartUrbanPlanning'), desc: t('common:platform.smartUrbanPlanningDesc'), color: 'text-primary' },
+                  { icon: Shield, title: t('common:platform.dataExcellenceQuality'), desc: t('common:platform.ensureDataIntegrityAccuracySystemReliability'), color: 'text-secondary' },
+                  { icon: BarChart3, title: t('common:platform.territorialCoverage'), desc: t('common:platform.achieveComprehensiveNationalCoverageRemoteAreas'), color: 'text-primary' },
+                ].map((obj, i) => (
+                  <Card key={i} className="border bg-background hover:shadow-md transition-shadow duration-200">
+                    <CardContent className="p-5">
+                      <div className="flex items-start gap-3 mb-3">
+                        <div className="p-2 bg-primary/10 rounded-lg shrink-0">
+                          <obj.icon className={`h-5 w-5 ${obj.color}`} />
+                        </div>
+                        <h3 className="font-semibold text-sm leading-snug">{obj.title}</h3>
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{obj.desc}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
           </div>
         );
 
