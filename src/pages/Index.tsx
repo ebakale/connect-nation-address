@@ -368,17 +368,47 @@ const Index = () => {
 
       case 'about':
         return (
-          <div className="space-y-8">
-             <div className="text-center space-y-4">
-               <h2 className="text-3xl font-bold">{t('common:navigation.about')}</h2>
-               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                 {t('common:platform.aboutConnectEG')}
-               </p>
-             </div>
+          <div className="space-y-10">
+            {/* Header with badge and icon */}
+            <div className="text-center space-y-4">
+              <Badge variant="secondary" className="mb-2">
+                <Shield className="h-3 w-3 mr-1" />
+                {translateKey('common:platform.governmentInitiative', 'Government Initiative')}
+              </Badge>
+              <h2 className="text-3xl font-bold text-foreground">{t('common:navigation.about')}</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                {t('common:platform.aboutConnectEG')}
+              </p>
+            </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              <Card className="shadow-card">
-                <CardHeader>
+            {/* Platform at a Glance - Statistics Row */}
+            <section className="space-y-4">
+              <h3 className="text-lg font-semibold text-foreground text-center">
+                {translateKey('common:platform.platformAtAGlance', 'Platform at a Glance')}
+              </h3>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  { icon: MapPin, value: '8', label: translateKey('common:platform.provincesCovered', 'Provinces Covered') },
+                  { icon: Fingerprint, value: '50,000+', label: translateKey('common:platform.registeredAddresses', 'Registered Addresses') },
+                  { icon: Clock, value: '<3 min', label: translateKey('common:platform.emergencyResponseTime', 'Avg. Response Time') },
+                  { icon: Users, value: '10,000+', label: translateKey('common:platform.activeUsers', 'Active Users') },
+                ].map((stat, i) => (
+                  <Card key={i} className="text-center">
+                    <CardContent className="pt-5 pb-4 px-3">
+                      <stat.icon className="h-5 w-5 mx-auto mb-2 text-primary" />
+                      <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+
+            {/* Mission & Vision - Enhanced */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card className="shadow-card border-l-4 border-l-primary">
+                <CardHeader className="flex flex-row items-center gap-3">
+                  <Target className="h-5 w-5 text-primary flex-shrink-0" />
                   <CardTitle>{t('common:platform.ourMission')}</CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -388,8 +418,9 @@ const Index = () => {
                 </CardContent>
               </Card>
 
-              <Card className="shadow-card">
-                <CardHeader>
+              <Card className="shadow-card border-l-4 border-l-secondary">
+                <CardHeader className="flex flex-row items-center gap-3">
+                  <Eye className="h-5 w-5 text-secondary-foreground flex-shrink-0" />
                   <CardTitle>{t('common:platform.ourVision')}</CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -400,24 +431,94 @@ const Index = () => {
               </Card>
             </div>
 
+            {/* How It Works */}
+            <section className="space-y-4">
+              <h3 className="text-lg font-semibold text-foreground text-center">
+                {translateKey('common:platform.howItWorks', 'How It Works')}
+              </h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  { step: 1, icon: MapPin, title: translateKey('common:platform.registerAddress', 'Register Your Address'), desc: translateKey('common:platform.registerAddressDesc', 'Submit your location with GPS coordinates for precise identification.') },
+                  { step: 2, icon: QrCode, title: translateKey('common:platform.receiveUAC', 'Receive Your UAC & QR'), desc: translateKey('common:platform.receiveUACDesc', 'Get a unique address code and scannable QR for instant verification.') },
+                  { step: 3, icon: CheckCircle, title: translateKey('common:platform.accessServices', 'Access Services'), desc: translateKey('common:platform.accessServicesDesc', 'Use your digital address for deliveries, emergencies, and government services.') },
+                ].map((item) => (
+                  <Card key={item.step} className="relative overflow-hidden">
+                    <div className="absolute top-3 right-3 text-4xl font-black text-muted/30 select-none">{item.step}</div>
+                    <CardContent className="pt-6 pb-5 space-y-3">
+                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <item.icon className="h-5 w-5 text-primary" />
+                      </div>
+                      <h4 className="font-semibold text-foreground">{item.title}</h4>
+                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+
+            {/* Key Partners - Enhanced */}
             <Card className="shadow-card">
               <CardHeader>
                 <CardTitle>{t('common:platform.keyPartners')}</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent>
                 <div className="grid md:grid-cols-3 gap-4">
-                  <div className="text-center p-4 border rounded-lg">
-                    <h3 className="font-semibold">{t('common:platform.ministryOfInterior')}</h3>
-                    <p className="text-sm text-muted-foreground">{t('common:platform.governmentOversightPolicy')}</p>
-                  </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <h3 className="font-semibold">{t('common:platform.localGovernments')}</h3>
-                    <p className="text-sm text-muted-foreground">{t('common:platform.provincialImplementation')}</p>
-                  </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <h3 className="font-semibold">{t('common:platform.technologyPartners')}</h3>
-                    <p className="text-sm text-muted-foreground">{t('common:platform.platformDevelopmentMaintenance')}</p>
-                  </div>
+                  {[
+                    { icon: Building, title: t('common:platform.ministryOfInterior'), desc: t('common:platform.governmentOversightPolicy') },
+                    { icon: MapPin, title: t('common:platform.localGovernments'), desc: t('common:platform.provincialImplementation') },
+                    { icon: Globe, title: t('common:platform.technologyPartners'), desc: t('common:platform.platformDevelopmentMaintenance') },
+                  ].map((partner, i) => (
+                    <div key={i} className="text-center p-5 border rounded-lg bg-muted/30">
+                      <partner.icon className="h-6 w-6 mx-auto mb-3 text-primary" />
+                      <h3 className="font-semibold text-foreground">{partner.title}</h3>
+                      <p className="text-sm text-muted-foreground mt-1">{partner.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Why ConEG? */}
+            <section className="space-y-4">
+              <h3 className="text-lg font-semibold text-foreground text-center">
+                {translateKey('common:platform.whyConEG', 'Why ConEG?')}
+              </h3>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  { icon: Fingerprint, title: translateKey('common:platform.digitalIdentity', 'Digital Identity'), desc: translateKey('common:platform.digitalIdentityDesc', 'A unique, verifiable code for every address in the country.') },
+                  { icon: Ambulance, title: translateKey('common:platform.fasterEmergency', 'Faster Emergency Response'), desc: translateKey('common:platform.fasterEmergencyDesc', 'Precise location data enables rapid dispatch and saves lives.') },
+                  { icon: Mail, title: translateKey('common:platform.reliableDelivery', 'Reliable Postal Delivery'), desc: translateKey('common:platform.reliableDeliveryDesc', 'Standardized addresses ensure packages reach the right destination.') },
+                  { icon: LayoutDashboard, title: translateKey('common:platform.urbanPlanning', 'Data-Driven Planning'), desc: translateKey('common:platform.urbanPlanningDesc', 'Rich geographic data supports infrastructure and urban development.') },
+                ].map((benefit, i) => (
+                  <Card key={i}>
+                    <CardContent className="pt-5 pb-4 space-y-2">
+                      <benefit.icon className="h-5 w-5 text-primary" />
+                      <h4 className="font-semibold text-sm text-foreground">{benefit.title}</h4>
+                      <p className="text-xs text-muted-foreground">{benefit.desc}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+
+            {/* Call to Action */}
+            <Card className="bg-primary/5 border-primary/20">
+              <CardContent className="py-8 text-center space-y-4">
+                <h3 className="text-xl font-bold text-foreground">
+                  {translateKey('common:platform.readyToStart', 'Ready to Get Started?')}
+                </h3>
+                <p className="text-muted-foreground max-w-lg mx-auto">
+                  {translateKey('common:platform.readyToStartDesc', 'Join thousands of citizens and institutions using ConEG for a connected, addressable nation.')}
+                </p>
+                <div className="flex flex-wrap justify-center gap-3">
+                  <Button onClick={() => navigate('/auth')}>
+                    <LogIn className="h-4 w-4 mr-1" />
+                    {translateKey('common:platform.accessPlatform', 'Access Platform')}
+                  </Button>
+                  <Button variant="outline" onClick={() => setActiveSection('search')}>
+                    <Search className="h-4 w-4 mr-1" />
+                    {translateKey('common:platform.searchAddresses', 'Search Addresses')}
+                  </Button>
                 </div>
               </CardContent>
             </Card>
