@@ -12,6 +12,7 @@ import Footer from '@/components/Footer';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
 import { LogOut, Mail } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { DashboardBreadcrumb } from '@/components/DashboardBreadcrumb';
 
 const PostalPage = () => {
   const { t } = useTranslation('postal');
