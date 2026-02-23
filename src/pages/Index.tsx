@@ -756,51 +756,60 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background relative overflow-x-hidden">
       {/* Header */}
-      <header className="border-b bg-card/95 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-1.5 rounded-lg bg-white shadow-sm border flex items-center justify-center">
-                <img src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" alt="BIAKAM Logo" className="h-7 object-contain" />
-              </div>
-              <span className="text-lg font-bold text-foreground hidden sm:block">{t('common:platform.conEGPlatform')}</span>
+      <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur-md shadow-sm transition-all duration-300">
+        <div className="flex items-center justify-between px-3 sm:px-4 lg:px-6 py-2.5 gap-2">
+          {/* Left: Logo + Title */}
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="p-1.5 bg-primary/10 rounded-lg shrink-0">
+              <img src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" alt="BIAKAM Logo" className="h-5 w-auto" />
             </div>
-            
-            {/* Desktop Navigation */}
-            <nav className="hidden xl:flex items-center gap-0.5">
-              {navigationItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => item.route ? navigate(item.route) : handleSectionChange(item.id)}
-                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-colors ${
-                      activeSection === item.id
-                        ? 'bg-primary/10 text-primary'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                    }`}
-                  >
-                    <Icon className="h-3.5 w-3.5" />
-                    <span>{translateKey(item.labelKey, getFallbackLabel(item.id))}</span>
-                  </button>
-                );
-              })}
-            </nav>
+            <div className="min-w-0">
+              <h1 className="text-sm sm:text-base font-bold text-foreground truncate leading-tight">
+                {t('common:platform.conEGPlatform')}
+              </h1>
+              <p className="text-[11px] text-muted-foreground hidden sm:block leading-tight">
+                {t('common:platform.nationalDigitalServicesPlatform')}
+              </p>
+            </div>
+          </div>
+          
+          {/* Center: Desktop Navigation */}
+          <nav className="hidden xl:flex items-center gap-0.5">
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => item.route ? navigate(item.route) : handleSectionChange(item.id)}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-colors ${
+                    activeSection === item.id
+                      ? 'bg-primary/10 text-primary'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                  }`}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  <span>{translateKey(item.labelKey, getFallbackLabel(item.id))}</span>
+                </button>
+              );
+            })}
+          </nav>
 
-            <div className="flex items-center gap-2">
+          {/* Right: Actions */}
+          <div className="flex items-center gap-1 shrink-0">
+            <div className="hidden md:block">
               <LanguageSwitcher />
-              {user ? (
-                <Button size="sm" onClick={() => navigate('/dashboard')}>
-                  <LogIn className="h-4 w-4 mr-1.5" />
-                  <span className="hidden sm:inline">{t('common:goToDashboard')}</span>
-                </Button>
-              ) : (
-                <Button size="sm" onClick={() => navigate('/auth')}>
-                  <LogIn className="h-4 w-4 mr-1.5" />
-                  <span className="hidden sm:inline">{t('common:auth.signIn')}</span>
-                </Button>
-              )}
             </div>
+            {user ? (
+              <Button size="sm" onClick={() => navigate('/dashboard')} className="h-8 text-xs">
+                <LogIn className="h-3.5 w-3.5 mr-1.5" />
+                <span className="hidden sm:inline">{t('common:goToDashboard')}</span>
+              </Button>
+            ) : (
+              <Button size="sm" onClick={() => navigate('/auth')} className="h-8 text-xs">
+                <LogIn className="h-3.5 w-3.5 mr-1.5" />
+                <span className="hidden sm:inline">{t('common:auth.signIn')}</span>
+              </Button>
+            )}
           </div>
         </div>
       </header>
