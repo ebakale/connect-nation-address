@@ -1384,9 +1384,10 @@ const PoliceDashboard = () => {
           </div>
         )}
       </main>
+      </div>
     </div>
     <Footer />
-    </>
+    </SidebarProvider>
   );
 };
 
