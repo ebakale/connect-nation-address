@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState } from 'react';
+import React, { Suspense, lazy, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMapProvider } from '@/hooks/useMapProvider';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -29,6 +29,13 @@ const UniversalDashboardLocationMap: React.FC<UniversalDashboardLocationMapProps
   const { t } = useTranslation('dashboard');
   const { provider, googleMapsError, isLoading, retryGoogleMaps } = useMapProvider();
   const [forceOSM, setForceOSM] = useState(false);
+  const [googleInitError, setGoogleInitError] = useState<string | null>(null);
+
+  const handleGoogleMapError = useCallback((error: string) => {
+    console.warn('Google Maps init failed, falling back to OSM:', error);
+    setGoogleInitError(error);
+    setForceOSM(true);
+  }, []);
 
   // Loading state
   if (isLoading) {
@@ -45,10 +52,11 @@ const UniversalDashboardLocationMap: React.FC<UniversalDashboardLocationMapProps
   }
 
   // Use OSM if forced or if Google Maps failed
+  const fallbackError = googleMapsError || googleInitError;
   if (forceOSM || provider === 'osm') {
     return (
       <div className="space-y-2">
-        {googleMapsError && (
+        {fallbackError && (
           <Alert variant="default" className="border-warning bg-warning/10">
             <MapPin className="h-4 w-4" />
             <AlertDescription className="flex items-center justify-between flex-wrap gap-2">
@@ -58,7 +66,11 @@ const UniversalDashboardLocationMap: React.FC<UniversalDashboardLocationMapProps
               <Button
                 size="sm"
                 variant="outline"
-                onClick={retryGoogleMaps}
+                onClick={() => {
+                  setForceOSM(false);
+                  setGoogleInitError(null);
+                  retryGoogleMaps();
+                }}
                 className="gap-1"
               >
                 <RefreshCw className="h-3 w-3" />
@@ -94,7 +106,7 @@ const UniversalDashboardLocationMap: React.FC<UniversalDashboardLocationMapProps
           </div>
         </div>
       }>
-        <GoogleDashboardLocationMap {...props} />
+        <GoogleDashboardLocationMap {...props} onError={handleGoogleMapError} />
       </Suspense>
     </div>
   );
