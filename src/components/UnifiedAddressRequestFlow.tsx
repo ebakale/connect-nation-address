@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { StepIndicator } from '@/components/ui/step-indicator';
 import { CheckCircle, Search, Home, Building, ArrowLeft, ArrowRight } from 'lucide-react';
 import { AddressLookupStep } from './AddressLookupStep';
 import { AddressRequestForm } from './AddressRequestForm';
