@@ -1335,6 +1335,7 @@ const UnifiedDashboard = () => {
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <NotificationCenter />
+                <OfflineSyncQueue />
                 <OfflineIndicator />
                 {userProfile && (
                   <div className="text-right hidden lg:block">
