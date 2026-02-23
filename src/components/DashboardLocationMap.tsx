@@ -54,6 +54,7 @@ interface SearchResult {
 interface DashboardLocationMapProps {
   searchedAddress?: SearchResult | null;
   onAddressSearched?: (address: SearchResult) => void;
+  onError?: (error: string) => void;
 }
 
 const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({ 
