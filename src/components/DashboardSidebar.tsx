@@ -290,7 +290,6 @@ function CollapsibleNavGroup({
   const [open, setOpen] = useState(defaultOpen);
 
   if (collapsed) {
-    // In collapsed mode, just show icons without group labels
     return (
       <SidebarGroup>
         <SidebarGroupContent>
@@ -304,16 +303,19 @@ function CollapsibleNavGroup({
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
-      <SidebarGroup>
+      <SidebarGroup className="border-b border-border/40 pb-2 last:border-b-0">
         <CollapsibleTrigger className="w-full">
-          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 py-2 flex items-center justify-between cursor-pointer hover:text-foreground transition-colors">
+          <SidebarGroupLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest px-3 py-2.5 flex items-center justify-between cursor-pointer hover:text-foreground transition-colors duration-200 group/label">
             <span>{label}</span>
-            <ChevronDown className={cn("h-3 w-3 transition-transform", open && "rotate-180")} />
+            <ChevronDown className={cn(
+              "h-3.5 w-3.5 transition-transform duration-300 text-muted-foreground/60 group-hover/label:text-muted-foreground",
+              open && "rotate-180"
+            )} />
           </SidebarGroupLabel>
         </CollapsibleTrigger>
-        <CollapsibleContent>
+        <CollapsibleContent className="transition-all duration-300 ease-in-out data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-0.5">
               {items.map(item => renderMenuItem(item))}
             </SidebarMenu>
           </SidebarGroupContent>
