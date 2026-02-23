@@ -725,7 +725,13 @@ const PoliceDashboard = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+              <NotificationCenter />
+              <OfflineSyncQueue />
+              <ThemeToggle />
+              <div className="hidden sm:block">
+                <LanguageSwitcher />
+              </div>
               <OfflineIndicator />
               {/* User name display */}
               {user && (
@@ -735,9 +741,16 @@ const PoliceDashboard = () => {
                   </p>
                 </div>
               )}
-              <Button variant="outline" size="sm" onClick={handleSignOut} className="flex items-center gap-1.5">
-                <LogOut className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline text-sm">{t('common:logout')}</span>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleSignOut} 
+                className="flex items-center gap-1 shrink-0"
+                aria-label={t('common:logout')}
+                title={t('common:logout')}
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden md:inline text-xs">{t('common:logout')}</span>
               </Button>
             </div>
           </div>
