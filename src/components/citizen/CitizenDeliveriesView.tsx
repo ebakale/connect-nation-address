@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCitizenDeliveries, CitizenDelivery } from '@/hooks/useCitizenDeliveries';
 import { CitizenDeliveryDetailSheet } from './CitizenDeliveryDetailSheet';
+import { EmptyState } from '@/components/ui/empty-state';
 
 const CitizenDeliveriesView: React.FC = () => {
   const { t, i18n } = useTranslation('postal');

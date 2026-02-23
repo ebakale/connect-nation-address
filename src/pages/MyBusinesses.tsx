@@ -49,6 +49,7 @@ import { Database } from "@/integrations/supabase/types";
 import { BreadcrumbNavigation } from "@/components/BreadcrumbNavigation";
 import { BusinessViewDialog } from "@/components/BusinessViewDialog";
 import { BusinessEditDialog } from "@/components/BusinessEditDialog";
+import { EmptyState } from "@/components/ui/empty-state";
 
 type OrganizationAddress = Database["public"]["Tables"]["organization_addresses"]["Row"] & {
   addresses?: {

@@ -11,6 +11,7 @@ import { MapPin, Edit, Trash2, Plus, Star, Tag, ExternalLink, User, Phone as Pho
 import { useSavedLocations, SavedLocation } from '@/hooks/useSavedLocations';
 import { useTranslation } from 'react-i18next';
 import { EnhancedAddressDetailModal } from '@/components/EnhancedAddressDetailModal';
+import { EmptyState } from '@/components/ui/empty-state';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 

@@ -11,6 +11,7 @@ import { CalendarDays, MapPin, MessageSquare, RefreshCw, ChevronLeft, ChevronRig
 import { format } from 'date-fns';
 import { AddressResubmissionDialog } from '@/components/AddressResubmissionDialog';
 import { QRCodeGenerator } from '@/components/QRCodeGenerator';
+import { EmptyState } from '@/components/ui/empty-state';
 
 interface AddressRequestData {
   id: string;
