@@ -664,13 +664,16 @@ const PoliceDashboard = () => {
   }
 
   return (
-    <>
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <SidebarProvider>
+    <div className="min-h-screen flex w-full bg-background overflow-x-hidden">
+      <DashboardSidebar onNavigationClick={() => {}} />
+      <div className="flex-1 flex flex-col min-h-screen min-w-0 overflow-hidden">
       {/* Header - Government Emergency Styling */}
-      <header className="border-b bg-card shadow-sm">
+      <header className="sticky top-0 z-30 border-b bg-card/95 backdrop-blur-md shadow-sm transition-all duration-300">
         <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+              <SidebarTrigger className="-ml-1 shrink-0" />
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="p-2 bg-primary/10 rounded-lg">
                   <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-primary flex-shrink-0" />
@@ -730,7 +733,13 @@ const PoliceDashboard = () => {
       </header>
 
       {/* Main Content - Optimized Layout */}
-      <main className="px-2 sm:px-4 py-3 overflow-x-hidden">
+      <main className="flex-1 px-2 sm:px-4 py-3 overflow-x-hidden animate-fade-in">
+        <DashboardBreadcrumb 
+          items={[
+            { label: t('policeCommandCenter') },
+          ]} 
+          className="mb-3 px-2"
+        />
         {/* Show admin panel directly if user has only admin access */}
         {hasPoliceAdminAccess && !isPoliceOperator && !isPoliceDispatcher && !isPoliceSupervisor ? (
           <div className="max-w-7xl mx-auto">
