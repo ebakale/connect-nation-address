@@ -826,8 +826,8 @@ const PoliceDashboard = () => {
               )}
 
           {/* Field Operations Tab */}
-          <TabsContent value="field" className="space-y-6">
-            <div className="flex items-center flex-wrap gap-4 mb-4">
+          <TabsContent value="field" className="space-y-4">
+            <div className="flex items-center gap-3 flex-wrap">
               <Badge variant="outline" className="flex items-center gap-2">
                 <Radio className="h-3 w-3" />
                  {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher 
@@ -841,18 +841,18 @@ const PoliceDashboard = () => {
                    : t('manageUnitAssignments')
                  }
               </p>
-              
-              {/* Show Unit Lead Dashboard if user is a unit lead */}
-              {showUnitLeadDashboard && isUnitLead && userUnit && (
-                <UnitLeadDashboard 
-                  userUnit={userUnit}
-                  onRefresh={() => {
-                    fetchUserUnit();
-                    fetchUnitIncidents();
-                  }}
-                />
-              )}
             </div>
+            
+            {/* Show Unit Lead Dashboard if user is a unit lead */}
+            {showUnitLeadDashboard && isUnitLead && userUnit && (
+              <UnitLeadDashboard 
+                userUnit={userUnit}
+                onRefresh={() => {
+                  fetchUserUnit();
+                  fetchUnitIncidents();
+                }}
+              />
+            )}
             
             {/* Show standard field dashboard if not showing unit lead dashboard */}
             {!showUnitLeadDashboard && (
