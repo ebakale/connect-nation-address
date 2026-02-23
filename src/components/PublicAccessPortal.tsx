@@ -9,7 +9,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   Search, MapPin, CheckCircle, AlertTriangle, Info, 
-  Navigation, Phone, Clock, Shield, Share2, QrCode, Mail, MessageCircle, ChevronDown
+  Navigation, Phone, Clock, Shield, Share2, QrCode, Mail, MessageCircle, ChevronDown,
+  Compass, Radio, Layers, Building, Globe, ExternalLink, Copy, Printer
 } from 'lucide-react';
 import { 
   Accordion,
@@ -57,12 +58,22 @@ interface PublicAccessPortalProps {
   onNavigateToEmergency?: (addressData?: PublicAddress) => void;
 }
 
+const getAddressTypeBorderColor = (addressType: string) => {
+  switch (addressType?.toLowerCase()) {
+    case 'residential': return 'border-l-blue-500';
+    case 'commercial': case 'business': return 'border-l-emerald-500';
+    case 'government': case 'institutional': return 'border-l-amber-500';
+    default: return 'border-l-primary';
+  }
+};
+
 export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortalProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<PublicAddress[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchMetadata, setSearchMetadata] = useState<any>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [hasSearched, setHasSearched] = useState(false);
   const { toast } = useToast();
   const { trackSearch } = useSearchAnalytics();
   const { location, getCurrentPosition } = useEnhancedGeolocation({
@@ -105,6 +116,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
     }
 
     setLoading(true);
+    setHasSearched(true);
     setCurrentPage(1); // Reset to first page on new search
     const searchStartTime = Date.now();
     
@@ -179,6 +191,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
   const handleQRScanResult = async (uac: string) => {
     setSearchQuery(uac);
     setCurrentPage(1); // Reset to first page on new search
+    setHasSearched(true);
     // Auto-search with the scanned UAC
     setLoading(true);
     const qrSearchStartTime = Date.now();
@@ -298,24 +311,59 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 pb-32">
       <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4 lg:py-8 max-w-4xl">
-        {/* Mobile-optimized Header */}
+        {/* Enhanced Header with Badge and Icon */}
         <div className="text-center mb-4 sm:mb-6 lg:mb-8">
+          <Badge variant="secondary" className="mb-3">
+            <Globe className="h-3 w-3 mr-1" />
+            {t('address:publicPortal.publicService', { defaultValue: 'Public Service' })}
+          </Badge>
           <h1 className="text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-foreground mb-2 mobile-line-clamp-2">
             {t('address:publicPortal.title')}
           </h1>
           <p className="text-xs sm:text-sm lg:text-lg text-muted-foreground mb-3 sm:mb-4 px-1 sm:px-2 mobile-line-clamp-3">
             {t('address:publicPortal.subtitle')}
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-1 sm:gap-2 lg:gap-4 text-xs sm:text-sm text-muted-foreground">
-            <span className="flex items-center justify-center gap-1">
-              <Shield className="h-3 w-3 sm:h-4 sm:w-4" />
-              {t('address:publicPortal.verifiedOnly')}
-            </span>
-            <span className="flex items-center justify-center gap-1">
-              <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
-              {t('address:publicPortal.gpsAvailable')}
-            </span>
-          </div>
+        </div>
+
+        {/* Quick Stats Bar */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4 sm:mb-6">
+          <Card className="text-center">
+            <CardContent className="p-2 sm:p-3">
+              <div className="flex items-center justify-center gap-1.5 mb-1">
+                <span className={`h-2 w-2 rounded-full ${location ? 'bg-emerald-500 animate-pulse' : 'bg-muted-foreground/40'}`} />
+                <span className="text-[10px] sm:text-xs font-medium text-muted-foreground">
+                  {t('address:publicPortal.gpsLabel', { defaultValue: 'GPS' })}
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm font-semibold text-foreground">
+                {location ? t('address:publicPortal.active', { defaultValue: 'Active' }) : t('address:publicPortal.inactive', { defaultValue: 'Inactive' })}
+              </p>
+            </CardContent>
+          </Card>
+          <Card className="text-center">
+            <CardContent className="p-2 sm:p-3">
+              <div className="flex items-center justify-center gap-1.5 mb-1">
+                <Compass className="h-3 w-3 text-muted-foreground" />
+                <span className="text-[10px] sm:text-xs font-medium text-muted-foreground">
+                  {t('address:publicPortal.radiusLabel', { defaultValue: 'Radius' })}
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm font-semibold text-foreground">10 km</p>
+            </CardContent>
+          </Card>
+          <Card className="text-center">
+            <CardContent className="p-2 sm:p-3">
+              <div className="flex items-center justify-center gap-1.5 mb-1">
+                <Layers className="h-3 w-3 text-muted-foreground" />
+                <span className="text-[10px] sm:text-xs font-medium text-muted-foreground">
+                  {t('address:publicPortal.addressesAvailable', { defaultValue: 'Addresses' })}
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm font-semibold text-foreground">
+                {searchResults.length > 0 ? searchResults.length.toLocaleString() : '—'}
+              </p>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Tabs for Addresses and Businesses */}
@@ -333,7 +381,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
 
           <TabsContent value="addresses" className="space-y-4">
 
-        {/* Mobile-optimized Search Section */}
+        {/* Improved Search Card */}
         <Card className="mb-4 sm:mb-6">
           <CardHeader className="p-3 sm:p-4 lg:p-6">
             <CardTitle className="flex items-center gap-2 text-sm sm:text-base lg:text-lg">
@@ -348,16 +396,23 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
             <div className="space-y-2 sm:space-y-3">
               <div className="w-full">
                 <Label htmlFor="search" className="text-xs sm:text-sm">{t('address:publicPortal.searchQueryLabel')}</Label>
-                <Input
-                  id="search"
-                  placeholder={t('address:publicPortal.searchPlaceholder')}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  className="w-full text-sm sm:text-base"
-                />
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="search"
+                    placeholder={t('address:publicPortal.searchPlaceholder')}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                    className="w-full text-sm sm:text-base pl-9"
+                  />
+                </div>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                  <Info className="h-3 w-3 flex-shrink-0" />
+                  {t('address:publicPortal.uacFormatTip', { defaultValue: 'UAC format: GQ-[Region]-[City]-[Number]. You can also search by street or city name.' })}
+                </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-2 w-full">
+              <div className="flex flex-row gap-2 w-full">
                 <QRCodeScanner 
                   onScanResult={handleQRScanResult}
                   variant="button"
@@ -365,36 +420,39 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
                 <Button 
                   onClick={handleSearch} 
                   disabled={loading}
-                  className="w-full sm:w-auto h-10"
+                  className="flex-1 sm:flex-none sm:w-auto h-10"
                 >
                   {loading ? t('address:publicPortal.searching') : t('common:buttons.search')}
                 </Button>
               </div>
             </div>
 
-            {/* Search Examples */}
+            {/* Enhanced Search Example Chips */}
             <div className="text-sm text-muted-foreground">
               <p className="mb-2">{t('address:publicPortal.exampleSearches')}</p>
               <div className="flex flex-col sm:flex-row flex-wrap gap-2">
                 <Badge 
                   variant="outline" 
-                  className="cursor-pointer hover:bg-muted text-center py-1"
+                  className="cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors text-center py-1.5 gap-1.5"
                   onClick={() => setSearchQuery('GQ-BN-MAL-')}
                 >
+                  <QrCode className="h-3 w-3" />
                   {t('address:publicPortal.exampleUac')}
                 </Badge>
                 <Badge 
                   variant="outline" 
-                  className="cursor-pointer hover:bg-muted text-center py-1"
+                  className="cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors text-center py-1.5 gap-1.5"
                   onClick={() => setSearchQuery('Malabo')}
                 >
+                  <Building className="h-3 w-3" />
                   {t('address:publicPortal.exampleCity')}
                 </Badge>
                 <Badge 
                   variant="outline" 
-                  className="cursor-pointer hover:bg-muted text-center py-1"
+                  className="cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors text-center py-1.5 gap-1.5"
                   onClick={() => setSearchQuery('Independence Avenue')}
                 >
+                  <MapPin className="h-3 w-3" />
                   {t('address:publicPortal.exampleStreet')}
                 </Badge>
               </div>
@@ -402,322 +460,299 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
           </CardContent>
         </Card>
 
+        {/* Empty State (before any search) */}
+        {!hasSearched && searchResults.length === 0 && !loading && (
+          <div className="text-center py-8 sm:py-12">
+            <div className="inline-flex items-center justify-center h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-primary/10 mb-4">
+              <MapPin className="h-8 w-8 sm:h-10 sm:w-10 text-primary" />
+            </div>
+            <h3 className="text-base sm:text-lg font-semibold text-foreground mb-1">
+              {t('address:publicPortal.startSearching', { defaultValue: 'Start searching' })}
+            </h3>
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-sm mx-auto">
+              {t('address:publicPortal.emptyStateDescription', { defaultValue: 'Search for any public address by UAC code, street name, or city. Scan a QR code for instant lookup.' })}
+            </p>
+          </div>
+        )}
 
         {/* Search Results */}
         {searchResults.length > 0 && (
-          <div className="space-y-4 pb-16">
+          <div className="space-y-3 pb-16">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl sm:text-2xl font-semibold">{`${t('address:searchResults')} (${searchResults.length})`}</h2>
-              <p className="text-sm text-muted-foreground">
+              <h2 className="text-lg sm:text-xl font-semibold">{`${t('address:searchResults')} (${searchResults.length})`}</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 {t('common:pagination.page', { defaultValue: 'Page' })} {currentPage} {t('common:pagination.of', { defaultValue: 'of' })} {totalPages}
               </p>
             </div>
             
-            <Accordion type="single" collapsible className="w-full space-y-2">
+            <div className="space-y-3">
               {paginatedResults.map((address, index) => (
-                <AccordionItem key={index} value={`item-${index}`} className="border rounded-lg px-4">
-                  <AccordionTrigger className="hover:no-underline py-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full pr-4 text-left gap-2">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-base sm:text-lg font-semibold text-foreground break-words">
-                          {address.building && `${address.building}, `}
-                          {address.street}
-                        </h3>
-                        <p className="text-sm text-muted-foreground break-words">
-                          {address.city}, {address.region}
-                        </p>
-                      </div>
-                      <div className="flex flex-wrap gap-2 sm:items-center">
-                        {address.verified && (
-                          <Badge variant="default" className="text-xs">
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            {t('address:verified')}
-                          </Badge>
-                        )}
-                        <span className="text-xs font-mono text-primary">{address.uac}</span>
-                      </div>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="pt-4 pb-2">
-                      <div className="grid gap-4 lg:grid-cols-3">
-                        {/* Address Information */}
-                        <div className="lg:col-span-2">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm mb-4">
-                            <div className="break-all">
-                              <span className="font-medium">{`${t('address:uac')}:`}</span> 
-                              <span className="ml-2 font-mono text-primary text-xs">{address.uac}</span>
-                            </div>
-                            <div>
-                              <span className="font-medium">{`${t('address:type')}:`}</span>
-                              <span className="ml-2 capitalize">{
-                                t(`address:addressType.${String(address.addressType).toLowerCase()}` as any, {
-                                  defaultValue: t(`address:${String(address.addressType).toLowerCase()}` as any, {
-                                    defaultValue: String(address.addressType),
-                                  }),
-                                })
-                              }</span>
-                            </div>
-                            <div className="break-all">
-                              <span className="font-medium">{`${t('address:coordinates')}:`}</span>
-                              <span className="ml-2 font-mono text-xs">
-                                {address.latitude.toFixed(5)}, {address.longitude.toFixed(5)}
-                              </span>
-                            </div>
-                            {address.distance && (
-                              <div>
-                                <span className="font-medium">{t('address:publicPortal.distanceLabel')}</span>
-                                <span className="ml-2">{formatDistance(address.distance)}</span>
-                              </div>
-                            )}
-                            <div className="sm:col-span-2">
-                              <Badge variant={getQualityColor(address.completenessScore)} className="text-xs">
-                                {t('address:publicPortal.percentComplete', { percent: address.completenessScore })}
+                <Card 
+                  key={index} 
+                  className={`border-l-4 ${getAddressTypeBorderColor(address.addressType)} overflow-hidden`}
+                >
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value={`item-${index}`} className="border-0">
+                      <AccordionTrigger className="hover:no-underline py-3 sm:py-4 px-3 sm:px-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full pr-4 text-left gap-2">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-sm sm:text-base font-semibold text-foreground break-words">
+                              {address.building && `${address.building}, `}
+                              {address.street}
+                            </h3>
+                            <p className="text-xs sm:text-sm text-muted-foreground break-words">
+                              {address.city}, {address.region}
+                            </p>
+                          </div>
+                          <div className="flex flex-wrap gap-2 sm:items-center">
+                            {address.verified && (
+                              <Badge variant="default" className="text-xs">
+                                <CheckCircle className="h-3 w-3 mr-1" />
+                                {t('address:verified')}
                               </Badge>
+                            )}
+                            {address.distance && (
+                              <Badge variant="info" className="text-xs">
+                                <Navigation className="h-3 w-3 mr-1" />
+                                {formatDistance(address.distance)}
+                              </Badge>
+                            )}
+                            <span className="text-xs font-mono text-primary">{address.uac}</span>
+                          </div>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="px-3 sm:px-4 pt-2 pb-3">
+                          <div className="grid gap-4 lg:grid-cols-3">
+                            {/* Address Information */}
+                            <div className="lg:col-span-2">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm mb-4">
+                                <div className="break-all">
+                                  <span className="font-medium">{`${t('address:uac')}:`}</span> 
+                                  <span className="ml-2 font-mono text-primary text-xs">{address.uac}</span>
+                                </div>
+                                <div>
+                                  <span className="font-medium">{`${t('address:type')}:`}</span>
+                                  <span className="ml-2 capitalize">{
+                                    t(`address:addressType.${String(address.addressType).toLowerCase()}` as any, {
+                                      defaultValue: t(`address:${String(address.addressType).toLowerCase()}` as any, {
+                                        defaultValue: String(address.addressType),
+                                      }),
+                                    })
+                                  }</span>
+                                </div>
+                                <div className="break-all">
+                                  <span className="font-medium">{`${t('address:coordinates')}:`}</span>
+                                  <span className="ml-2 font-mono text-xs">
+                                    {address.latitude.toFixed(5)}, {address.longitude.toFixed(5)}
+                                  </span>
+                                  <a
+                                    href={`https://www.google.com/maps?q=${address.latitude},${address.longitude}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex ml-1 text-primary hover:text-primary/80"
+                                    title={t('address:publicPortal.viewOnMap', { defaultValue: 'View on map' })}
+                                  >
+                                    <ExternalLink className="h-3 w-3" />
+                                  </a>
+                                </div>
+                                {address.distance && (
+                                  <div>
+                                    <span className="font-medium">{t('address:publicPortal.distanceLabel')}</span>
+                                    <span className="ml-2">{formatDistance(address.distance)}</span>
+                                  </div>
+                                )}
+                                <div className="sm:col-span-2">
+                                  <Badge variant={getQualityColor(address.completenessScore)} className="text-xs">
+                                    {t('address:publicPortal.percentComplete', { percent: address.completenessScore })}
+                                  </Badge>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Grouped Actions */}
+                            <div className="flex flex-col gap-3 mt-2 lg:mt-0">
+                              {/* Navigate */}
+                              <div>
+                                <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">
+                                  {t('address:publicPortal.navigateLabel', { defaultValue: 'Navigate' })}
+                                </p>
+                                <div className="grid grid-cols-2 lg:grid-cols-1 gap-1.5">
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    className="w-full justify-start text-xs h-8"
+                                    onClick={() => {
+                                      const url = `https://www.google.com/maps?q=${address.latitude},${address.longitude}`;
+                                      window.open(url, '_blank');
+                                    }}
+                                  >
+                                    <Navigation className="h-3.5 w-3.5 mr-1.5" />
+                                    {t('address:getDirections')}
+                                  </Button>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    className="w-full justify-start text-xs h-8"
+                                    onClick={() => {
+                                      const coords = `${address.latitude},${address.longitude}`;
+                                      navigator.clipboard.writeText(coords);
+                                      toast({
+                                        title: t('address:publicPortal.copiedTitle'),
+                                        description: t('address:publicPortal.coordinatesCopied'),
+                                      });
+                                    }}
+                                  >
+                                    <Copy className="h-3.5 w-3.5 mr-1.5" />
+                                    {t('address:copyCoordinates')}
+                                  </Button>
+                                </div>
+                              </div>
+
+                              {/* Share */}
+                              <div>
+                                <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">
+                                  {t('address:publicPortal.shareLabel', { defaultValue: 'Share' })}
+                                </p>
+                                <div className="grid grid-cols-2 lg:grid-cols-1 gap-1.5">
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    className="w-full justify-start text-xs h-8"
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(address.uac);
+                                      toast({
+                                        title: t('address:publicPortal.copiedTitle'),
+                                        description: t('address:publicPortal.uacCopied'),
+                                      });
+                                    }}
+                                  >
+                                    <Copy className="h-3.5 w-3.5 mr-1.5" />
+                                    {t('address:copyUac')}
+                                  </Button>
+
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    className="w-full justify-start text-xs h-8"
+                                    onClick={() => {
+                                      const printContent = `
+                                        <!DOCTYPE html>
+                                        <html>
+                                          <head>
+                                            <title>Address - ${address.uac}</title>
+                                            <style>
+                                              @page { size: landscape; margin: 0; }
+                                              * { margin: 0; padding: 0; box-sizing: border-box; }
+                                              body { margin: 0; padding: 40px; font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #f0f0f0; }
+                                              .print-card { background: #3d5a80; border: 20px solid white; box-shadow: inset 0 0 0 3px white, inset 0 0 0 4px #2c4a60; padding: 80px 100px; text-align: center; width: 800px; }
+                                              .coat-of-arms { width: 90px; height: auto; margin: 0 auto 50px; }
+                                              .uac-code { font-size: 56px; font-weight: bold; color: white; letter-spacing: 3px; margin: 60px 0; }
+                                              .qr-container { background: #e8dcc4; padding: 15px; display: inline-block; margin-top: 50px; }
+                                              .qr-container img { width: 180px; height: 180px; display: block; }
+                                              @media print { body { background: white; padding: 0; } }
+                                            </style>
+                                          </head>
+                                          <body>
+                                            <div class="print-card">
+                                              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Coat_of_arms_of_Equatorial_Guinea.svg/200px-Coat_of_arms_of_Equatorial_Guinea.svg.png" alt="Coat of Arms" class="coat-of-arms" />
+                                              <div class="uac-code">${address.uac}</div>
+                                              <div class="qr-container">
+                                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(address.uac)}" alt="QR Code" />
+                                              </div>
+                                            </div>
+                                          </body>
+                                        </html>
+                                      `;
+                                      const printWindow = window.open('', '_blank');
+                                      if (printWindow) {
+                                        printWindow.document.write(printContent);
+                                        printWindow.document.close();
+                                        printWindow.onload = () => { printWindow.print(); };
+                                      }
+                                    }}
+                                  >
+                                    <Printer className="h-3.5 w-3.5 mr-1.5" />
+                                    {t('address:publicPortal.printAddress', { defaultValue: t('common:buttons.print', { defaultValue: 'Print' }) })}
+                                  </Button>
+
+                                  <Dialog>
+                                    <DialogTrigger asChild>
+                                      <Button variant="outline" size="sm" className="w-full justify-start text-xs h-8 col-span-2 lg:col-span-1">
+                                        <Share2 className="h-3.5 w-3.5 mr-1.5" />
+                                        {t('address:publicPortal.shareAddress')}
+                                      </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="sm:max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+                                      <DialogHeader>
+                                        <DialogTitle>{t('address:publicPortal.shareAddress')}</DialogTitle>
+                                      </DialogHeader>
+                                      <div className="space-y-4">
+                                        <div className="flex flex-col items-center space-y-2">
+                                          <h4 className="text-sm font-medium">{t('common:qrCode')}</h4>
+                                          <QRCodeGenerator 
+                                            uac={address.uac}
+                                            addressText={`${address.building ? address.building + ', ' : ''}${address.street}, ${address.city}, ${address.region}`}
+                                            variant="button"
+                                            size="md"
+                                          />
+                                          <p className="text-xs text-muted-foreground text-center px-2">
+                                            {t('address:publicPortal.qrClickHint')}
+                                          </p>
+                                        </div>
+                                        <Separator />
+                                        <div className="grid grid-cols-1 gap-2">
+                                          <Button variant="outline" className="justify-start w-full" onClick={() => handleShare(address, 'whatsapp')}>
+                                            <MessageCircle className="h-4 w-4 mr-2" />
+                                            {t('address:publicPortal.shareViaWhatsApp')}
+                                          </Button>
+                                          <Button variant="outline" className="justify-start w-full" onClick={() => handleShare(address, 'email')}>
+                                            <Mail className="h-4 w-4 mr-2" />
+                                            {t('address:publicPortal.shareViaEmail')}
+                                          </Button>
+                                          <Button variant="outline" className="justify-start w-full" onClick={() => handleShare(address, 'copy')}>
+                                            <Share2 className="h-4 w-4 mr-2" />
+                                            {t('address:publicPortal.copyToClipboard')}
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    </DialogContent>
+                                  </Dialog>
+                                </div>
+                              </div>
+
+                              {/* Report */}
+                              <div>
+                                <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">
+                                  {t('address:publicPortal.reportLabel', { defaultValue: 'Report' })}
+                                </p>
+                                <Button 
+                                  variant="destructive" 
+                                  size="sm"
+                                  className="w-full justify-start text-xs h-8"
+                                  onClick={() => {
+                                    if (onNavigateToEmergency) {
+                                      onNavigateToEmergency(address);
+                                      toast({
+                                        title: t('address:publicPortal.navigatingToEmergencyTitle'),
+                                        description: t('address:publicPortal.navigatingToEmergencyDesc'),
+                                      });
+                                    }
+                                  }}
+                                >
+                                  <AlertTriangle className="h-3.5 w-3.5 mr-1.5" />
+                                  {t('address:publicPortal.reportIssueHere')}
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         </div>
-
-                        {/* Actions */}
-                        <div className="flex flex-col gap-2 mt-4 lg:mt-0">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="w-full justify-start"
-                        onClick={() => {
-                          const printContent = `
-                            <!DOCTYPE html>
-                            <html>
-                              <head>
-                                <title>Address - ${address.uac}</title>
-                                <style>
-                                  @page { 
-                                    size: landscape; 
-                                    margin: 0; 
-                                  }
-                                  * {
-                                    margin: 0;
-                                    padding: 0;
-                                    box-sizing: border-box;
-                                  }
-                                  body { 
-                                    margin: 0; 
-                                    padding: 40px;
-                                    font-family: Arial, sans-serif;
-                                    display: flex;
-                                    justify-content: center;
-                                    align-items: center;
-                                    min-height: 100vh;
-                                    background: #f0f0f0;
-                                  }
-                                  .print-card { 
-                                    background: #3d5a80;
-                                    border: 20px solid white;
-                                    box-shadow: 
-                                      inset 0 0 0 3px white,
-                                      inset 0 0 0 4px #2c4a60;
-                                    padding: 80px 100px;
-                                    text-align: center;
-                                    width: 800px;
-                                    position: relative;
-                                  }
-                                  .coat-of-arms { 
-                                    width: 90px; 
-                                    height: auto; 
-                                    margin: 0 auto 50px;
-                                  }
-                                  .uac-code { 
-                                    font-size: 56px; 
-                                    font-weight: bold; 
-                                    color: white;
-                                    letter-spacing: 3px;
-                                    margin: 60px 0;
-                                    font-family: Arial, sans-serif;
-                                  }
-                                  .qr-container { 
-                                    background: #e8dcc4;
-                                    padding: 15px;
-                                    display: inline-block;
-                                    margin-top: 50px;
-                                  }
-                                  .qr-container img { 
-                                    width: 180px; 
-                                    height: 180px;
-                                    display: block;
-                                  }
-                                  @media print {
-                                    body { 
-                                      background: white;
-                                      padding: 0;
-                                    }
-                                    .print-card {
-                                      box-shadow: 
-                                        inset 0 0 0 3px white,
-                                        inset 0 0 0 4px #2c4a60;
-                                    }
-                                  }
-                                </style>
-                              </head>
-                              <body>
-                                <div class="print-card">
-                                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Coat_of_arms_of_Equatorial_Guinea.svg/200px-Coat_of_arms_of_Equatorial_Guinea.svg.png" 
-                                       alt="Coat of Arms" 
-                                       class="coat-of-arms" />
-                                  <div class="uac-code">${address.uac}</div>
-                                  <div class="qr-container">
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(address.uac)}" 
-                                         alt="QR Code" />
-                                  </div>
-                                </div>
-                              </body>
-                            </html>
-                          `;
-                          const printWindow = window.open('', '_blank');
-                          if (printWindow) {
-                            printWindow.document.write(printContent);
-                            printWindow.document.close();
-                            printWindow.onload = () => {
-                              printWindow.print();
-                            };
-                          }
-                        }}
-                      >
-                        <QrCode className="h-4 w-4 mr-2" />
-                        {t('address:publicPortal.printAddress', { defaultValue: t('common:buttons.print', { defaultValue: 'Print' }) })}
-                      </Button>
-
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="w-full justify-start"
-                        onClick={() => {
-                          const url = `https://www.google.com/maps?q=${address.latitude},${address.longitude}`;
-                          window.open(url, '_blank');
-                        }}
-                      >
-                        <Navigation className="h-4 w-4 mr-2" />
-                        {t('address:getDirections')}
-                      </Button>
-                      
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="w-full justify-start"
-                        onClick={() => {
-                          navigator.clipboard.writeText(address.uac);
-                          toast({
-                            title: t('address:publicPortal.copiedTitle'),
-                            description: t('address:publicPortal.uacCopied'),
-                          });
-                        }}
-                      >
-                        <MapPin className="h-4 w-4 mr-2" />
-                        {t('address:copyUac')}
-                      </Button>
-
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="w-full justify-start"
-                        onClick={() => {
-                          const coords = `${address.latitude},${address.longitude}`;
-                          navigator.clipboard.writeText(coords);
-                          toast({
-            title: t('address:publicPortal.copiedTitle'),
-            description: t('address:publicPortal.coordinatesCopied'),
-                          });
-                        }}
-                      >
-                        <Navigation className="h-4 w-4 mr-2" />
-                        {t('address:copyCoordinates')}
-                      </Button>
-
-                      {/* Share Options */}
-                      <Dialog>
-                        <DialogTrigger asChild>
-            <Button variant="outline" size="sm" className="w-full justify-start">
-              <Share2 className="h-4 w-4 mr-2" />
-              {t('address:publicPortal.shareAddress')}
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-md mx-4 max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>{t('address:publicPortal.shareAddress')}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              {/* QR Code */}
-              <div className="flex flex-col items-center space-y-2">
-                <h4 className="text-sm font-medium">{t('common:qrCode')}</h4>
-                <QRCodeGenerator 
-                  uac={address.uac}
-                  addressText={`${address.building ? address.building + ', ' : ''}${address.street}, ${address.city}, ${address.region}`}
-                  variant="button"
-                  size="md"
-                />
-                <p className="text-xs text-muted-foreground text-center px-2">
-                  {t('address:publicPortal.qrClickHint')}
-                </p>
-              </div>
-              
-              <Separator />
-              
-              {/* Share Options */}
-              <div className="grid grid-cols-1 gap-2">
-                <Button
-                  variant="outline"
-                  className="justify-start w-full"
-                  onClick={() => handleShare(address, 'whatsapp')}
-                >
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  {t('address:publicPortal.shareViaWhatsApp')}
-                </Button>
-                
-                <Button
-                  variant="outline"
-                  className="justify-start w-full"
-                  onClick={() => handleShare(address, 'email')}
-                >
-                  <Mail className="h-4 w-4 mr-2" />
-                  {t('address:publicPortal.shareViaEmail')}
-                </Button>
-                
-                <Button
-                  variant="outline"
-                  className="justify-start w-full"
-                  onClick={() => handleShare(address, 'copy')}
-                >
-                  <Share2 className="h-4 w-4 mr-2" />
-                  {t('address:publicPortal.copyToClipboard')}
-                </Button>
-              </div>
-            </div>
-                        </DialogContent>
-                      </Dialog>
-
-                      <Button 
-                        variant="destructive" 
-                        size="sm"
-                        className="w-full justify-start"
-                        onClick={() => {
-                          if (onNavigateToEmergency) {
-                            onNavigateToEmergency(address);
-                            toast({
-                            title: t('address:publicPortal.navigatingToEmergencyTitle'),
-                            description: t('address:publicPortal.navigatingToEmergencyDesc'),
-                          });
-                        }
-                      }}
-                    >
-                      <AlertTriangle className="h-4 w-4 mr-2" />
-                          {t('address:publicPortal.reportIssueHere')}
-                        </Button>
-                      </div>
-                    </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </Card>
               ))}
-            </Accordion>
+            </div>
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
@@ -757,6 +792,21 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
             )}
           </div>
         )}
+
+        {/* No results after search */}
+        {hasSearched && searchResults.length === 0 && !loading && (
+          <div className="text-center py-8 sm:py-12">
+            <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-muted mb-4">
+              <Search className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-base sm:text-lg font-semibold text-foreground mb-1">
+              {t('common:messages.noResults', { defaultValue: 'No results found' })}
+            </h3>
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-sm mx-auto">
+              {t('address:publicPortal.noResultsDescription')}
+            </p>
+          </div>
+        )}
           </TabsContent>
 
           <TabsContent value="businesses">
@@ -764,10 +814,21 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
           </TabsContent>
         </Tabs>
 
-        {/* Footer */}
-        <div className="text-center mt-8 text-sm text-muted-foreground px-4">
-          <p className="mb-1">{t('address:publicPortal.footerAgencyName')}</p>
-          <p>{t('address:publicPortal.footerTagline')}</p>
+        {/* Enhanced Footer */}
+        <Separator className="mt-8 mb-4" />
+        <div className="text-center text-sm text-muted-foreground px-4 space-y-2">
+          <p className="font-medium">{t('address:publicPortal.footerAgencyName')}</p>
+          <p className="text-xs">{t('address:publicPortal.footerTagline')}</p>
+          <div className="flex items-center justify-center gap-4 text-xs pt-1">
+            <span className="flex items-center gap-1">
+              <Phone className="h-3 w-3" />
+              {t('address:publicPortal.emergencyNumber', { defaultValue: '112' })}
+            </span>
+            <span className="flex items-center gap-1">
+              <Info className="h-3 w-3" />
+              {t('address:publicPortal.needHelp', { defaultValue: 'Need help?' })}
+            </span>
+          </div>
         </div>
       </div>
     </div>
