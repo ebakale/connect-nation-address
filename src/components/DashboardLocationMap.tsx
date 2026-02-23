@@ -54,11 +54,13 @@ interface SearchResult {
 interface DashboardLocationMapProps {
   searchedAddress?: SearchResult | null;
   onAddressSearched?: (address: SearchResult) => void;
+  onError?: (error: string) => void;
 }
 
 const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({ 
   searchedAddress, 
-  onAddressSearched 
+  onAddressSearched,
+  onError 
 }) => {
   const { t } = useTranslation('dashboard');
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -109,7 +111,9 @@ const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({
         console.log('Google Maps API key fetched successfully');
       } catch (error) {
         console.error('Error fetching Google Maps API key:', error);
-        setMapError('Failed to load map API key. Please check your connection.');
+        const msg = 'Failed to load map API key. Please check your connection.';
+        setMapError(msg);
+        onError?.(msg);
       }
     };
 
@@ -280,7 +284,9 @@ const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({
 
     } catch (error) {
       console.error('Error initializing Google Maps:', error);
-      setMapError('Failed to initialize map. Please check your connection.');
+      const msg = 'Failed to initialize map. Please check your connection.';
+      setMapError(msg);
+      onError?.(msg);
     }
   };
 
