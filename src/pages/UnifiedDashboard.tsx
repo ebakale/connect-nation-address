@@ -1345,9 +1345,13 @@ const UnifiedDashboard = () => {
                   
                 </div>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                 <NotificationCenter />
                 <OfflineSyncQueue />
+                <ThemeToggle />
+                <div className="hidden sm:block">
+                  <LanguageSwitcher />
+                </div>
                 <OfflineIndicator />
                 {userProfile && (
                   <div className="text-right hidden lg:block">
