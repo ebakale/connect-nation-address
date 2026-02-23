@@ -111,7 +111,9 @@ const DashboardLocationMap: React.FC<DashboardLocationMapProps> = ({
         console.log('Google Maps API key fetched successfully');
       } catch (error) {
         console.error('Error fetching Google Maps API key:', error);
-        setMapError('Failed to load map API key. Please check your connection.');
+        const msg = 'Failed to load map API key. Please check your connection.';
+        setMapError(msg);
+        onError?.(msg);
       }
     };
 
