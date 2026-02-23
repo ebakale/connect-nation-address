@@ -210,6 +210,12 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
     <div className={cn("w-full max-w-2xl", className)}>
       <div className="flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
+          <div className="absolute left-2 top-1/2 -translate-y-1/2 z-10">
+            <ContextualHelp 
+              content="UAC format: UAC-[Country]-[Region]-[City]-[Number]. Example: UAC-CM-CE-YDE-001. You can also search by street name or city."
+              side="bottom"
+            />
+          </div>
           <Textarea
             placeholder="Try: UAC-CM-CE-YDE-001 or 'Rue de la Joie, Yaoundé'"
             value={query}
