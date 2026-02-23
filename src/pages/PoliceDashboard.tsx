@@ -1412,6 +1412,7 @@ const PoliceDashboard = () => {
       </div>
     </div>
     <Footer />
+    <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
     </SidebarProvider>
   );
 };
