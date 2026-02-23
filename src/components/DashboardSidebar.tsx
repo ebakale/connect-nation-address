@@ -1,43 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Home,
-  Search, 
-  Clock,
-  Camera,
-  CheckCircle,
-  MapPin,
-  BarChart3,
-  Settings,
-  Shield,
-  User,
-  Phone,
-  FileDown,
-  FileCheck,
-  FileText,
-  Crown,
-  Star,
-  Globe,
-  Building,
-  AlertCircle,
-  Package
+  Home, Search, Clock, Camera, CheckCircle, MapPin, BarChart3, Settings,
+  Shield, User, Phone, FileDown, FileCheck, FileText, Crown, Star, Globe,
+  Building, AlertCircle, Package, ChevronDown, Pin, PinOff
 } from 'lucide-react';
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
+  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
+  SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
 } from '@/components/ui/sidebar';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useAuth } from '@/hooks/useAuth';
 
 interface NavigationItem {
   id: string;
@@ -48,9 +27,29 @@ interface NavigationItem {
   badge?: number;
 }
 
+interface NavigationGroup {
+  key: string;
+  label: string;
+  items: NavigationItem[];
+  defaultOpen: boolean;
+}
+
 interface DashboardSidebarProps {
   onNavigationClick: (id: string) => void;
   pendingCount?: number;
+}
+
+// Favorites persistence
+const FAVORITES_KEY = 'sidebar_favorites';
+
+function getFavorites(): string[] {
+  try {
+    return JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
+  } catch { return []; }
+}
+
+function setFavorites(ids: string[]) {
+  localStorage.setItem(FAVORITES_KEY, JSON.stringify(ids));
 }
 
 export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: DashboardSidebarProps) {
@@ -59,285 +58,129 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   const collapsed = state === 'collapsed';
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const { user } = useAuth();
   
   const { 
-    isCitizen, 
-    isFieldAgent, 
-    isRegistrar,
-    isCarAdmin,
-    canVerifyNAR,
-    canVerifyCAR,
-    hasAdminAccess,
-    isAdmin,
-    hasNDAAAccess,
-    canVerifyAddresses,
-    isNARAuthority,
-    narAuthorityData
+    isCitizen, isFieldAgent, isRegistrar, isCarAdmin,
+    canVerifyNAR, canVerifyCAR, hasAdminAccess, isAdmin,
+    hasNDAAAccess, canVerifyAddresses, isNARAuthority, narAuthorityData
   } = useUserRole();
 
-  const handleItemClick = (id: string) => {
-    onNavigationClick(id);
-    if (isMobile) {
-      setOpenMobile(false);
-    }
-  };
+  const [favorites, setFavoritesState] = useState<string[]>(getFavorites);
 
-  // Consolidated single navigation structure with role-based visibility
+  const handleItemClick = useCallback((id: string) => {
+    onNavigationClick(id);
+    if (isMobile) setOpenMobile(false);
+  }, [onNavigationClick, isMobile, setOpenMobile]);
+
+  const toggleFavorite = useCallback((id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setFavoritesState(prev => {
+      const next = prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id];
+      setFavorites(next);
+      return next;
+    });
+  }, []);
+
+  // All navigation items
   const navigationItems: NavigationItem[] = [
-    {
-      id: 'overview',
-      title: t('dashboardOverview'),
-      icon: Home,
-      onClick: () => handleItemClick('overview'),
-      visible: true
-    },
-    {
-      id: 'nar-authority-dashboard',
-      title: t('narAuthorityDashboard'),
-      icon: Shield,
-      onClick: () => handleItemClick('nar-authority-dashboard'),
-      visible: isNARAuthority
-    },
-    {
-      id: 'verification-queue',
-      title: t('verificationQueue'),
-      icon: CheckCircle,
-      onClick: () => handleItemClick('verification-queue'),
-      visible: (isNARAuthority && narAuthorityData?.can_verify_addresses) || (canVerifyNAR && !isRegistrar && !isAdmin && !hasNDAAAccess),
-      badge: pendingCount
-    },
-    {
-      id: 'verification-tools',
-      title: t('verificationTools'),
-      icon: isNARAuthority ? FileCheck : AlertCircle,
-      onClick: () => handleItemClick('verification-tools'),
-      visible: (isNARAuthority && narAuthorityData?.can_verify_addresses) || (canVerifyNAR && !isAdmin && !hasNDAAAccess)
-    },
-    {
-      id: 'registrar-dashboard',
-      title: t('registrarDashboard'),
-      icon: Crown,
-      onClick: () => handleItemClick('registrar-dashboard'),
-      visible: isRegistrar
-    },
-    {
-      id: 'car-admin',
-      title: t('carAdministration'),
-      icon: Settings,
-      onClick: () => handleItemClick('car-admin'),
-      visible: isCarAdmin
-    },
-    {
-      id: 'residency-verification',
-      title: t('residencyVerification'),
-      icon: Shield,
-      onClick: () => handleItemClick('residency-verification'),
-      visible: isCarAdmin || canVerifyCAR || isRegistrar
-    },
-    {
-      id: 'capture-address',
-      title: t('captureAddress'),
-      icon: Camera,
-      onClick: () => handleItemClick('capture-address'),
-      visible: isFieldAgent
-    },
-    {
-      id: 'field-drafts',
-      title: t('myDrafts'),
-      icon: Clock,
-      onClick: () => handleItemClick('field-drafts'),
-      visible: isFieldAgent
-    },
-    {
-      id: 'field-map',
-      title: t('fieldMap.fieldMap'),
-      icon: MapPin,
-      onClick: () => handleItemClick('field-map'),
-      visible: isFieldAgent
-    },
-    {
-      id: 'unified-address-request',
-      title: t('registerAddress'),
-      icon: Home,
-      onClick: () => handleItemClick('unified-address-request'),
-      visible: isCitizen || isNARAuthority
-    },
-    {
-      id: 'my-address-requests',
-      title: t('myAddressRequests'),
-      icon: FileText,
-      onClick: () => handleItemClick('my-address-requests'),
-      visible: isCitizen
-    },
-    {
-      id: 'address-search',
-      title: t('addressSearch'),
-      icon: Search,
-      onClick: () => handleItemClick('address-search'),
-      visible: isCitizen || isNARAuthority
-    },
-    {
-      id: 'citizen-address-portal',
-      title: t('myAddressesCar'),
-      icon: User,
-      onClick: () => handleItemClick('citizen-address-portal'),
-      visible: isCitizen
-    },
-    {
-      id: 'residency-verification-dashboard',
-      title: t('myVerificationRequests'),
-      icon: FileDown,
-      onClick: () => handleItemClick('residency-verification-dashboard'),
-      visible: isCitizen
-    },
-    {
-      id: 'my-businesses',
-      title: t('myBusinesses'),
-      icon: Building,
-      onClick: () => navigate('/my-businesses'),
-      visible: isCitizen
-    },
-    {
-      id: 'my-deliveries',
-      title: t('myDeliveries'),
-      icon: Package,
-      onClick: () => handleItemClick('my-deliveries'),
-      visible: isCitizen
-    },
-    {
-      id: 'request-pickup',
-      title: t('requestPickup'),
-      icon: Package,
-      onClick: () => handleItemClick('request-pickup'),
-      visible: isCitizen
-    },
-    {
-      id: 'delivery-preferences',
-      title: t('deliveryPreferences'),
-      icon: Settings,
-      onClick: () => handleItemClick('delivery-preferences'),
-      visible: isCitizen
-    },
-    {
-      id: 'admin-panel',
-      title: t('admin'),
-      icon: Settings,
-      onClick: () => handleItemClick('admin-panel'),
-      visible: isAdmin || hasNDAAAccess
-    },
-    {
-      id: 'analytics',
-      title: t('analytics'),
-      icon: BarChart3,
-      onClick: () => handleItemClick('analytics'),
-      visible: hasAdminAccess
-    },
-    {
-      id: 'province-management',
-      title: t('provinceManagement'),
-      icon: Globe,
-      onClick: () => handleItemClick('province-management'),
-      visible: hasAdminAccess && !isAdmin && !hasNDAAAccess
-    },
-    {
-      id: 'saved-addresses',
-      title: t('savedAddresses'),
-      icon: Star,
-      onClick: () => handleItemClick('saved-addresses'),
-      visible: true
-    },
-    {
-      id: 'emergency-contacts',
-      title: t('emergencyContacts'),
-      icon: Phone,
-      onClick: () => handleItemClick('emergency-contacts'),
-      visible: isCitizen
-    },
-    {
-      id: 'profile',
-      title: t('profileSettings'),
-      icon: User,
-      onClick: () => handleItemClick('profile'),
-      visible: true
-    }
+    { id: 'overview', title: t('dashboardOverview'), icon: Home, onClick: () => handleItemClick('overview'), visible: true },
+    { id: 'nar-authority-dashboard', title: t('narAuthorityDashboard'), icon: Shield, onClick: () => handleItemClick('nar-authority-dashboard'), visible: isNARAuthority },
+    { id: 'verification-queue', title: t('verificationQueue'), icon: CheckCircle, onClick: () => handleItemClick('verification-queue'), visible: (isNARAuthority && narAuthorityData?.can_verify_addresses) || (canVerifyNAR && !isRegistrar && !isAdmin && !hasNDAAAccess), badge: pendingCount },
+    { id: 'verification-tools', title: t('verificationTools'), icon: isNARAuthority ? FileCheck : AlertCircle, onClick: () => handleItemClick('verification-tools'), visible: (isNARAuthority && narAuthorityData?.can_verify_addresses) || (canVerifyNAR && !isAdmin && !hasNDAAAccess) },
+    { id: 'registrar-dashboard', title: t('registrarDashboard'), icon: Crown, onClick: () => handleItemClick('registrar-dashboard'), visible: isRegistrar },
+    { id: 'car-admin', title: t('carAdministration'), icon: Settings, onClick: () => handleItemClick('car-admin'), visible: isCarAdmin },
+    { id: 'residency-verification', title: t('residencyVerification'), icon: Shield, onClick: () => handleItemClick('residency-verification'), visible: isCarAdmin || canVerifyCAR || isRegistrar },
+    { id: 'capture-address', title: t('captureAddress'), icon: Camera, onClick: () => handleItemClick('capture-address'), visible: isFieldAgent },
+    { id: 'field-drafts', title: t('myDrafts'), icon: Clock, onClick: () => handleItemClick('field-drafts'), visible: isFieldAgent },
+    { id: 'field-map', title: t('fieldMap.fieldMap'), icon: MapPin, onClick: () => handleItemClick('field-map'), visible: isFieldAgent },
+    { id: 'unified-address-request', title: t('registerAddress'), icon: Home, onClick: () => handleItemClick('unified-address-request'), visible: isCitizen || isNARAuthority },
+    { id: 'my-address-requests', title: t('myAddressRequests'), icon: FileText, onClick: () => handleItemClick('my-address-requests'), visible: isCitizen },
+    { id: 'address-search', title: t('addressSearch'), icon: Search, onClick: () => handleItemClick('address-search'), visible: isCitizen || isNARAuthority },
+    { id: 'citizen-address-portal', title: t('myAddressesCar'), icon: User, onClick: () => handleItemClick('citizen-address-portal'), visible: isCitizen },
+    { id: 'residency-verification-dashboard', title: t('myVerificationRequests'), icon: FileDown, onClick: () => handleItemClick('residency-verification-dashboard'), visible: isCitizen },
+    { id: 'my-businesses', title: t('myBusinesses'), icon: Building, onClick: () => navigate('/my-businesses'), visible: isCitizen },
+    { id: 'my-deliveries', title: t('myDeliveries'), icon: Package, onClick: () => handleItemClick('my-deliveries'), visible: isCitizen },
+    { id: 'request-pickup', title: t('requestPickup'), icon: Package, onClick: () => handleItemClick('request-pickup'), visible: isCitizen },
+    { id: 'delivery-preferences', title: t('deliveryPreferences'), icon: Settings, onClick: () => handleItemClick('delivery-preferences'), visible: isCitizen },
+    { id: 'admin-panel', title: t('admin'), icon: Settings, onClick: () => handleItemClick('admin-panel'), visible: isAdmin || hasNDAAAccess },
+    { id: 'analytics', title: t('analytics'), icon: BarChart3, onClick: () => handleItemClick('analytics'), visible: hasAdminAccess },
+    { id: 'province-management', title: t('provinceManagement'), icon: Globe, onClick: () => handleItemClick('province-management'), visible: hasAdminAccess && !isAdmin && !hasNDAAAccess },
+    { id: 'saved-addresses', title: t('savedAddresses'), icon: Star, onClick: () => handleItemClick('saved-addresses'), visible: true },
+    { id: 'emergency-contacts', title: t('emergencyContacts'), icon: Phone, onClick: () => handleItemClick('emergency-contacts'), visible: isCitizen },
+    { id: 'profile', title: t('profileSettings'), icon: User, onClick: () => handleItemClick('profile'), visible: true },
   ];
 
   const visibleItems = navigationItems.filter(item => item.visible);
+  const itemMap = new Map(visibleItems.map(i => [i.id, i]));
 
-  // Group items by category
-  const mainItems = visibleItems.filter(item => 
-    ['overview', 'nar-authority-dashboard', 'registrar-dashboard'].includes(item.id)
-  );
-  
-  const verificationItems = visibleItems.filter(item => 
-    ['verification-queue', 'verification-tools', 'residency-verification'].includes(item.id)
-  );
-  
-  const carItems = visibleItems.filter(item => 
-    ['car-admin', 'citizen-address-portal', 'residency-verification-dashboard'].includes(item.id)
-  );
-  
-  const fieldItems = visibleItems.filter(item => 
-    ['capture-address', 'field-drafts', 'field-map'].includes(item.id)
-  );
-  
-  const adminItems = visibleItems.filter(item => 
-    ['admin-panel', 'analytics', 'province-management'].includes(item.id)
-  );
-  
-  const toolsItems = visibleItems.filter(item => 
-    ['unified-address-request', 'my-address-requests', 'address-search', 'saved-addresses', 'my-businesses', 'my-deliveries', 'request-pickup', 'delivery-preferences'].includes(item.id)
-  );
-  
-  const settingsItems = visibleItems.filter(item => 
-    ['emergency-contacts', 'profile'].includes(item.id)
-  );
+  // Group definitions with role-based default open
+  const groupDefs: { key: string; label: string; ids: string[]; defaultOpen: boolean }[] = [
+    { key: 'main', label: t('main'), ids: ['overview', 'nar-authority-dashboard', 'registrar-dashboard'], defaultOpen: true },
+    { key: 'quickActions', label: t('quickActions', 'Quick Actions'), ids: ['unified-address-request', 'my-address-requests', 'address-search'], defaultOpen: isCitizen || isNARAuthority },
+    { key: 'verification', label: t('verification'), ids: ['verification-queue', 'verification-tools', 'residency-verification'], defaultOpen: canVerifyNAR || isNARAuthority || isCarAdmin },
+    { key: 'car', label: t('citizenAddressRegistry'), ids: ['car-admin', 'citizen-address-portal', 'residency-verification-dashboard'], defaultOpen: isCarAdmin },
+    { key: 'fieldWork', label: t('fieldWork'), ids: ['capture-address', 'field-drafts', 'field-map'], defaultOpen: isFieldAgent },
+    { key: 'deliveries', label: t('deliveries', 'Deliveries'), ids: ['my-deliveries', 'request-pickup', 'delivery-preferences'], defaultOpen: false },
+    { key: 'admin', label: t('administration'), ids: ['admin-panel', 'analytics', 'province-management'], defaultOpen: isAdmin || hasNDAAAccess },
+    { key: 'other', label: t('other', 'Other'), ids: ['saved-addresses', 'my-businesses'], defaultOpen: false },
+    { key: 'settings', label: t('settings'), ids: ['emergency-contacts', 'profile'], defaultOpen: false },
+  ];
 
-  const renderMenuGroup = (items: NavigationItem[], label: string) => {
-    if (items.length === 0) return null;
-    
-    return (
-      <SidebarGroup>
-        {!collapsed && (
-          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 py-2">
-            {label}
-          </SidebarGroupLabel>
+  // Build groups with only visible items
+  const groups: NavigationGroup[] = groupDefs
+    .map(g => ({
+      key: g.key,
+      label: g.label,
+      items: g.ids.map(id => itemMap.get(id)).filter(Boolean) as NavigationItem[],
+      defaultOpen: g.defaultOpen,
+    }))
+    .filter(g => g.items.length > 0);
+
+  // Favorites group
+  const favoriteItems = favorites.map(id => itemMap.get(id)).filter(Boolean) as NavigationItem[];
+
+  const renderMenuItem = (item: NavigationItem, showFavToggle = false) => (
+    <SidebarMenuItem key={item.id}>
+      <SidebarMenuButton
+        onClick={item.onClick}
+        className={cn(
+          "w-full justify-start h-10 rounded-md transition-colors",
+          "hover:bg-accent hover:text-accent-foreground text-foreground",
+          collapsed ? "px-2 justify-center" : "px-3"
         )}
-        <SidebarGroupContent>
-          <SidebarMenu>
-            {items.map((item) => (
-              <SidebarMenuItem key={item.id}>
-                <SidebarMenuButton
-                  onClick={item.onClick}
-                  className={cn(
-                    "w-full justify-start h-10 rounded-md transition-colors",
-                    "hover:bg-accent hover:text-accent-foreground",
-                    "text-foreground",
-                    collapsed ? "px-2 justify-center" : "px-3"
-                  )}
-                >
-                  <item.icon className={cn(
-                    "shrink-0 text-muted-foreground", 
-                    collapsed ? "h-5 w-5" : "h-4 w-4 mr-3"
-                  )} />
-                  {!collapsed && (
-                    <>
-                      <span className="flex-1 text-left text-sm">{item.title}</span>
-                      {item.badge && item.badge > 0 && (
-                        <Badge variant="pending" className="ml-2 h-5 min-w-[20px] justify-center">
-                          {item.badge}
-                        </Badge>
-                      )}
-                    </>
-                  )}
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
-    );
-  };
+      >
+        <item.icon className={cn("shrink-0 text-muted-foreground", collapsed ? "h-5 w-5" : "h-4 w-4 mr-3")} />
+        {!collapsed && (
+          <>
+            <span className="flex-1 text-left text-sm truncate">{item.title}</span>
+            {item.badge && item.badge > 0 && (
+              <Badge variant="pending" className="ml-2 h-5 min-w-[20px] justify-center">{item.badge}</Badge>
+            )}
+            {showFavToggle && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={(e) => toggleFavorite(item.id, e)}
+                    className="ml-1 p-1 rounded hover:bg-muted opacity-0 group-hover/item:opacity-100 transition-opacity"
+                  >
+                    {favorites.includes(item.id) ? (
+                      <PinOff className="h-3 w-3 text-muted-foreground" />
+                    ) : (
+                      <Pin className="h-3 w-3 text-muted-foreground" />
+                    )}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="text-xs">
+                  {favorites.includes(item.id) ? t('removeFavorite', 'Unpin') : t('addFavorite', 'Pin to top')}
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </>
+        )}
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  );
 
   return (
     <Sidebar className={cn(
@@ -376,7 +219,6 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
               </div>
             </div>
             
-            {/* Jurisdiction Badge for NAR Authority */}
             {isNARAuthority && (
               <div className="mt-3 p-2 bg-muted rounded-md">
                 <p className="text-xs text-muted-foreground mb-1">{t('jurisdiction')}</p>
@@ -390,16 +232,83 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
         )}
 
         {/* Navigation Groups */}
-        <div className="flex-1 overflow-y-auto px-2">
-          {renderMenuGroup(mainItems, t('main'))}
-          {renderMenuGroup(verificationItems, t('verification'))}
-          {renderMenuGroup(carItems, t('citizenAddressRegistry'))}
-          {renderMenuGroup(fieldItems, t('fieldWork'))}
-          {renderMenuGroup(adminItems, t('administration'))}
-          {renderMenuGroup(toolsItems, t('tools'))}
-          {renderMenuGroup(settingsItems, t('settings'))}
+        <div className="flex-1 overflow-y-auto px-2 space-y-1">
+          {/* Favorites Section */}
+          {favoriteItems.length > 0 && (
+            <SidebarGroup>
+              {!collapsed && (
+                <SidebarGroupLabel className="text-xs font-medium text-primary uppercase tracking-wider px-3 py-2 flex items-center gap-1">
+                  <Pin className="h-3 w-3" />
+                  {t('favorites', 'Pinned')}
+                </SidebarGroupLabel>
+              )}
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {favoriteItems.map(item => renderMenuItem(item))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          )}
+
+          {/* Collapsible Groups */}
+          {groups.map(group => (
+            <CollapsibleNavGroup
+              key={group.key}
+              label={group.label}
+              items={group.items}
+              defaultOpen={group.defaultOpen}
+              collapsed={collapsed}
+              renderMenuItem={(item) => renderMenuItem(item, true)}
+            />
+          ))}
         </div>
       </SidebarContent>
     </Sidebar>
+  );
+}
+
+// Collapsible navigation group sub-component
+function CollapsibleNavGroup({
+  label, items, defaultOpen, collapsed, renderMenuItem
+}: {
+  label: string;
+  items: NavigationItem[];
+  defaultOpen: boolean;
+  collapsed: boolean;
+  renderMenuItem: (item: NavigationItem) => React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+
+  if (collapsed) {
+    // In collapsed mode, just show icons without group labels
+    return (
+      <SidebarGroup>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            {items.map(item => renderMenuItem(item))}
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+    );
+  }
+
+  return (
+    <Collapsible open={open} onOpenChange={setOpen}>
+      <SidebarGroup>
+        <CollapsibleTrigger className="w-full">
+          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 py-2 flex items-center justify-between cursor-pointer hover:text-foreground transition-colors">
+            <span>{label}</span>
+            <ChevronDown className={cn("h-3 w-3 transition-transform", open && "rotate-180")} />
+          </SidebarGroupLabel>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {items.map(item => renderMenuItem(item))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </CollapsibleContent>
+      </SidebarGroup>
+    </Collapsible>
   );
 }
