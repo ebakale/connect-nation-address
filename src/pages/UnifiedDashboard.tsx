@@ -50,6 +50,10 @@ import { ReporterNotifications } from "@/components/ReporterNotifications";
 import { NotificationCenter } from "@/components/NotificationCenter";
 import { OnboardingWalkthrough } from "@/components/OnboardingWalkthrough";
 import { OfflineSyncQueue } from "@/components/OfflineSyncQueue";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { KeyboardShortcutsDialog } from "@/components/KeyboardShortcutsDialog";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import UniversalDashboardLocationMap from "@/components/UniversalDashboardLocationMap";
 import { ResidencyVerificationManager } from "@/components/ResidencyVerificationManager";
 import { ResidencyVerificationDashboard } from "@/components/ResidencyVerificationDashboard";
@@ -183,6 +187,14 @@ const UnifiedDashboard = () => {
   const [activeView, setActiveView] = useState('overview');
   const [selectedAddress, setSelectedAddress] = useState<SearchResult | null>(null);
   const [showMapView, setShowMapView] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts([
+    { key: 'k', ctrl: true, handler: () => setActiveView('address-search'), description: 'Open search', category: 'Navigation' },
+    { key: 'n', ctrl: true, handler: () => setActiveView('unified-address-request'), description: 'New request', category: 'Navigation' },
+    { key: '/', ctrl: true, handler: () => setShortcutsOpen(true), description: 'Show shortcuts', category: 'General' },
+  ]);
 
   // Postal/Pickup state
   const [pickupRequestOpen, setPickupRequestOpen] = useState(false);
@@ -1333,9 +1345,13 @@ const UnifiedDashboard = () => {
                   
                 </div>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                 <NotificationCenter />
                 <OfflineSyncQueue />
+                <ThemeToggle />
+                <div className="hidden sm:block">
+                  <LanguageSwitcher />
+                </div>
                 <OfflineIndicator />
                 {userProfile && (
                   <div className="text-right hidden lg:block">
@@ -1392,6 +1408,9 @@ const UnifiedDashboard = () => {
 
         {/* Onboarding Walkthrough */}
         <OnboardingWalkthrough onNavigate={handleSidebarNavigation} />
+
+        {/* Keyboard Shortcuts Dialog */}
+        <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
       </div>
     </SidebarProvider>
   );

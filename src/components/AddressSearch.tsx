@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ContextualHelp } from '@/components/ContextualHelp';
 import { useTranslation } from 'react-i18next';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -209,12 +210,18 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
     <div className={cn("w-full max-w-2xl", className)}>
       <div className="flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
+          <div className="absolute left-2 top-1/2 -translate-y-1/2 z-10">
+            <ContextualHelp 
+              content="UAC format: UAC-[Country]-[Region]-[City]-[Number]. Example: UAC-CM-CE-YDE-001. You can also search by street name or city."
+              side="bottom"
+            />
+          </div>
           <Textarea
             placeholder="Try: UAC-CM-CE-YDE-001 or 'Rue de la Joie, Yaoundé'"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="pr-10 min-h-[40px] max-h-[40px] resize-none overflow-hidden text-sm placeholder:text-xs"
+            className="pl-8 pr-10 min-h-[40px] max-h-[40px] resize-none overflow-hidden text-sm placeholder:text-xs"
             rows={1}
           />
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
