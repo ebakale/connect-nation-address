@@ -49,6 +49,7 @@ import { Database } from "@/integrations/supabase/types";
 import { BreadcrumbNavigation } from "@/components/BreadcrumbNavigation";
 import { BusinessViewDialog } from "@/components/BusinessViewDialog";
 import { BusinessEditDialog } from "@/components/BusinessEditDialog";
+import { EmptyState } from "@/components/ui/empty-state";
 
 type OrganizationAddress = Database["public"]["Tables"]["organization_addresses"]["Row"] & {
   addresses?: {
@@ -309,14 +310,15 @@ export default function MyBusinesses() {
       )}
 
       {businesses.length === 0 ? (
-        <Card className="p-12 text-center">
-          <Building2 className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-          <h2 className="text-xl font-semibold mb-2">{t('business:dashboard.noBusinesses')}</h2>
-          <p className="text-muted-foreground mb-6">{t('business:dashboard.getStarted')}</p>
-          <Button onClick={() => navigate('/business/register')}>
-            {t('business:dashboard.registerFirstBusiness')}
-          </Button>
-        </Card>
+        <EmptyState
+          icon={Building2}
+          title={t('business:dashboard.noBusinesses')}
+          description={t('business:dashboard.getStarted')}
+          action={{
+            label: t('business:dashboard.registerFirstBusiness'),
+            onClick: () => navigate('/business/register'),
+          }}
+        />
       ) : (
         <div className="space-y-4">
           {businesses.map((business) => {

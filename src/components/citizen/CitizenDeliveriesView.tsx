@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCitizenDeliveries, CitizenDelivery } from '@/hooks/useCitizenDeliveries';
 import { CitizenDeliveryDetailSheet } from './CitizenDeliveryDetailSheet';
+import { EmptyState } from '@/components/ui/empty-state';
 
 const CitizenDeliveriesView: React.FC = () => {
   const { t, i18n } = useTranslation('postal');
@@ -99,12 +100,16 @@ const CitizenDeliveriesView: React.FC = () => {
 
             <TabsContent value={filter} className="mt-0">
               {deliveries.length === 0 ? (
-                <div className="text-center py-12">
-                  <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">
-                    {t('myDeliveries.noDeliveries', 'No deliveries found')}
-                  </p>
-                </div>
+                <EmptyState
+                  icon={Package}
+                  title={t('myDeliveries.noDeliveries', 'No deliveries found')}
+                  description={t('myDeliveries.noDeliveriesDesc', 'Packages sent to your registered addresses will appear here')}
+                  action={{
+                    label: t('myDeliveries.requestPickup', 'Request a Pickup'),
+                    onClick: () => window.dispatchEvent(new CustomEvent('navigate-dashboard', { detail: 'request-pickup' })),
+                    variant: 'outline',
+                  }}
+                />
               ) : (
                 <div className="space-y-2">
                   {deliveries.map((delivery) => (

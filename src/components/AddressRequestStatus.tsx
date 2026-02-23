@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +11,7 @@ import { CalendarDays, MapPin, MessageSquare, RefreshCw, ChevronLeft, ChevronRig
 import { format } from 'date-fns';
 import { AddressResubmissionDialog } from '@/components/AddressResubmissionDialog';
 import { QRCodeGenerator } from '@/components/QRCodeGenerator';
+import { EmptyState } from '@/components/ui/empty-state';
 
 interface AddressRequestData {
   id: string;
@@ -202,15 +203,15 @@ export const AddressRequestStatus = () => {
 
   if (requests.length === 0) {
     return (
-      <Card>
-        <CardContent className="py-8">
-          <div className="text-center">
-            <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">{t('noRequests')}</h3>
-            <p className="text-muted-foreground">{t('noRequestsDescription')}</p>
-          </div>
-        </CardContent>
-      </Card>
+      <EmptyState
+        icon={FileText}
+        title={t('noRequests')}
+        description={t('noRequestsDescription')}
+        action={{
+          label: t('registerFirstAddress', 'Register Your First Address'),
+          onClick: () => window.dispatchEvent(new CustomEvent('navigate-dashboard', { detail: 'unified-address-request' })),
+        }}
+      />
     );
   }
 

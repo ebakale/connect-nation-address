@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Edit, Trash2, Send, MapPin, Clock, X, Eye } from "lucide-react";
+import { Edit, Trash2, Send, MapPin, Clock, X, Eye, Camera } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { supabase } from "@/integrations/supabase/client";
@@ -241,17 +242,15 @@ const DraftManager = ({ onClose }: DraftManagerProps) => {
       </div>
 
       {itemCount === 0 ? (
-        <Card>
-          <CardContent className="text-center py-8">
-            <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">
-              {isFieldAgent ? t('dashboard:drafts.noPendingSubmissions') : t('dashboard:drafts.noDraftsYet')}
-            </h3>
-            <p className="text-muted-foreground">
-              {t('dashboard:drafts.startCapturingAddresses')}
-            </p>
-          </CardContent>
-        </Card>
+        <EmptyState
+          icon={Camera}
+          title={isFieldAgent ? t('dashboard:drafts.noPendingSubmissions') : t('dashboard:drafts.noDraftsYet')}
+          description={t('dashboard:drafts.startCapturingAddresses')}
+          action={{
+            label: t('dashboard:captureAddress', 'Capture Your First Address'),
+            onClick: () => window.dispatchEvent(new CustomEvent('navigate-dashboard', { detail: 'capture-address' })),
+          }}
+        />
       ) : isFieldAgent ? (
         // Field Agent view - pending requests
         <div className="grid gap-4">
