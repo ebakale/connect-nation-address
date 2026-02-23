@@ -673,6 +673,7 @@ const PoliceDashboard = () => {
   }
 
   return (
+    <>
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header - Government Emergency Styling */}
       <header className="sticky top-0 z-30 border-b bg-card/95 backdrop-blur-md shadow-sm transition-all duration-300">
