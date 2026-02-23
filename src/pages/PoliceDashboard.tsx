@@ -677,9 +677,9 @@ const PoliceDashboard = () => {
 
   return (
     <SidebarProvider>
-    <div className="min-h-screen flex w-full bg-background overflow-x-hidden">
+    <div className="min-h-screen flex w-full bg-background">
       <DashboardSidebar onNavigationClick={() => {}} />
-      <div className="flex-1 flex flex-col min-h-screen min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-screen min-w-0">
       {/* Header - Government Emergency Styling */}
       <header className="sticky top-0 z-30 border-b bg-card/95 backdrop-blur-md shadow-sm transition-all duration-300">
         <div className="flex items-center justify-between px-3 sm:px-4 lg:px-6 py-2.5 gap-2">
