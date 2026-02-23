@@ -47,6 +47,7 @@ import { RolesDocumentGenerator } from "@/components/RolesDocumentGenerator";
 import { SystemManualPDF } from "@/components/SystemManualPDF";
 import EmergencyContacts from "@/components/EmergencyContacts";
 import { ReporterNotifications } from "@/components/ReporterNotifications";
+import { NotificationCenter } from "@/components/NotificationCenter";
 import UniversalDashboardLocationMap from "@/components/UniversalDashboardLocationMap";
 import { ResidencyVerificationManager } from "@/components/ResidencyVerificationManager";
 import { ResidencyVerificationDashboard } from "@/components/ResidencyVerificationDashboard";
@@ -1320,6 +1321,7 @@ const UnifiedDashboard = () => {
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
+                <NotificationCenter />
                 <OfflineIndicator />
                 {userProfile && (
                   <div className="text-right hidden lg:block">
