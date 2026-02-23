@@ -836,7 +836,7 @@ const Index = () => {
       )}
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 sm:py-12 relative z-10 overflow-hidden">
+      <main className="container mx-auto px-4 py-8 sm:py-12 overflow-hidden">
         <SectionTransition sectionKey={activeSection}>
           {renderContent()}
         </SectionTransition>
