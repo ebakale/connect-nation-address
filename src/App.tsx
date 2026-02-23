@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { UnifiedAuthProvider } from "@/hooks/useUnifiedAuth";
+import { ThemeProvider } from "next-themes";
 
 import { useUnifiedAuth } from "./hooks/useUnifiedAuth";
 import { OfflineIndicator } from "./components/OfflineIndicator";
