@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
     const { data: userRoles } = await supabase
       .from('user_roles')
       .select('role')
-      .eq('user_id', user.id);
+      .eq('user_id', userId);
 
     const isAdmin = userRoles?.some(r => ['admin', 'registrar', 'car_admin'].includes(r.role));
     const isVerifier = userRoles?.some(r => ['verifier', 'car_verifier', 'car_admin', 'registrar'].includes(r.role));
