@@ -323,7 +323,7 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
                   </div>
                 )}
               </div>
-            )}
+            ) : null}
           </CardContent>
         </Card>
       )}
