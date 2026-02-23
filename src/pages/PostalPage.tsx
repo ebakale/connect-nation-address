@@ -25,6 +25,12 @@ const PostalPage = () => {
   const { hasPostalAccess, loading, isPostalClerk, isPostalAgent, isPostalDispatcher, isPostalSupervisor } = usePostalRole();
   const { user, signOut } = useAuth();
   const [userProfile, setUserProfile] = useState<{ full_name: string | null } | null>(null);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts([
+    { key: '/', ctrl: true, handler: () => setShortcutsOpen(true), description: 'Show shortcuts', category: 'General' },
+  ]);
 
   // Fetch user profile for full name
   useEffect(() => {
