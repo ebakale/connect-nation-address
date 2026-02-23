@@ -779,7 +779,7 @@ const PoliceDashboard = () => {
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
               {/* Compact Tab Navigation */}
               {isPoliceOperator && !isPoliceSupervisor && !isPoliceDispatcher ? (
-                <TabsList className="grid grid-cols-2 gap-2 overflow-x-auto">
+                <TabsList className="w-fit">
                   <TabsTrigger value="field" className="text-sm">
                     <Radio className="h-4 w-4 mr-2" />
                     {t('myUnit')}
