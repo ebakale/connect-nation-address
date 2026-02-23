@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Home, Search, Clock, Camera, CheckCircle, MapPin, BarChart3, Settings,
   Shield, User, Phone, FileDown, FileCheck, FileText, Crown, Star, Globe,
