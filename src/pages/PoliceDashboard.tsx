@@ -22,9 +22,6 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { KeyboardShortcutsDialog } from '@/components/KeyboardShortcutsDialog';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { DashboardSidebar } from "@/components/DashboardSidebar";
-import { DashboardBreadcrumb } from "@/components/DashboardBreadcrumb";
 
 import IncidentMap from '@/components/IncidentMap';
 import IncidentList from '@/components/IncidentList';
@@ -676,16 +673,13 @@ const PoliceDashboard = () => {
   }
 
   return (
-    <SidebarProvider>
-    <div className="min-h-screen flex w-full bg-background">
-      <DashboardSidebar onNavigationClick={(id) => navigate(`/dashboard?section=${id}`)} />
-      <div className="flex-1 flex flex-col min-h-screen min-w-0">
+    <>
+    <div className="min-h-screen flex flex-col bg-background">
       {/* Header - Government Emergency Styling */}
       <header className="sticky top-0 z-30 border-b bg-card/95 backdrop-blur-md shadow-sm transition-all duration-300">
         <div className="flex items-center justify-between px-3 sm:px-4 lg:px-6 py-2.5 gap-2">
-          {/* Left: Trigger + Title + Badges */}
+          {/* Left: Title + Badges */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <SidebarTrigger className="-ml-1 shrink-0" />
             <div className="p-1.5 bg-primary/10 rounded-lg shrink-0">
               <Shield className="h-5 w-5 text-primary" />
             </div>
@@ -751,12 +745,6 @@ const PoliceDashboard = () => {
 
       {/* Main Content - Optimized Layout */}
       <main className="flex-1 px-2 sm:px-4 py-3 overflow-x-hidden animate-fade-in">
-        <DashboardBreadcrumb 
-          items={[
-            { label: t('policeCommandCenter') },
-          ]} 
-          className="mb-3 px-2"
-        />
         {/* Show admin panel directly if user has only admin access */}
         {hasPoliceAdminAccess && !isPoliceOperator && !isPoliceDispatcher && !isPoliceSupervisor ? (
           <div className="max-w-7xl mx-auto">
@@ -1402,10 +1390,9 @@ const PoliceDashboard = () => {
         )}
       </main>
       <Footer />
-      </div>
     </div>
     <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
-    </SidebarProvider>
+    </>
   );
 };
 
