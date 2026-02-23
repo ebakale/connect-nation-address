@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Home, Search, Clock, Camera, CheckCircle, MapPin, BarChart3, Settings,
   Shield, User, Phone, FileDown, FileCheck, FileText, Crown, Star, Globe,
@@ -59,6 +59,7 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0, activeIt
   const collapsed = state === 'collapsed';
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   
   const { 
@@ -70,9 +71,14 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0, activeIt
   const [favorites, setFavoritesState] = useState<string[]>(getFavorites);
 
   const handleItemClick = useCallback((id: string) => {
+    // If we're not on the dashboard page, navigate there with the section
+    if (location.pathname !== '/dashboard') {
+      navigate(`/dashboard`, { state: { section: id } });
+      return;
+    }
     onNavigationClick(id);
     if (isMobile) setOpenMobile(false);
-  }, [onNavigationClick, isMobile, setOpenMobile]);
+  }, [onNavigationClick, isMobile, setOpenMobile, location.pathname, navigate]);
 
   const toggleFavorite = useCallback((id: string, e: React.MouseEvent) => {
     e.stopPropagation();
