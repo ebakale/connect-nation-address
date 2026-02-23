@@ -1338,12 +1338,13 @@ const UnifiedDashboard = () => {
         
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Header */}
-          <header className="bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 sticky top-0 z-30">
-            <div className="flex items-center justify-between px-4 py-2.5 gap-2">
-              <div className="flex items-center gap-3 min-w-0 flex-1">
+          <header className="bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 sticky top-0 z-30 border-b border-border/50">
+            <div className="flex items-center justify-between px-3 sm:px-4 lg:px-6 py-2.5 gap-2">
+              {/* Left: Trigger + Title */}
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                 <SidebarTrigger className="-ml-1 shrink-0" />
-                <div className="min-w-0 flex-1 space-y-0.5">
-                  <h1 className="text-lg font-semibold leading-tight whitespace-nowrap truncate">{getViewTitle()}</h1>
+                <div className="min-w-0 space-y-0.5">
+                  <h1 className="text-sm sm:text-base font-bold leading-tight whitespace-nowrap truncate">{getViewTitle()}</h1>
                   {activeView !== 'overview' && (
                     <DashboardBreadcrumb 
                       items={[
@@ -1354,41 +1355,41 @@ const UnifiedDashboard = () => {
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+
+              {/* Right: Actions */}
+              <div className="flex items-center gap-1 shrink-0">
                 <NotificationCenter />
                 <OfflineSyncQueue />
                 <ThemeToggle />
-                <div className="hidden sm:block">
+                <div className="hidden md:block">
                   <LanguageSwitcher />
                 </div>
                 <OfflineIndicator />
                 {userProfile && (
-                  <div className="text-right hidden lg:block">
-                    <p className="text-sm font-medium whitespace-nowrap">{userProfile.full_name}</p>
-                    <div className="flex gap-1 justify-end">
+                  <div className="text-right hidden lg:block ml-1">
+                    <p className="text-xs font-medium whitespace-nowrap truncate max-w-[120px]">{userProfile.full_name}</p>
+                    <div className="flex gap-0.5 justify-end">
                       {userRoles.slice(0, 2).map((roleLabel, index) => (
-                        <Badge key={`${roleLabel}-${index}`} variant="secondary" className="text-xs">
+                        <Badge key={`${roleLabel}-${index}`} variant="secondary" className="text-[10px] px-1 py-0">
                           {String(roleLabel)}
                         </Badge>
                       ))}
-                      {userRoles.length > 2 && <Badge variant="secondary" className="text-xs">+{userRoles.length - 2}</Badge>}
+                      {userRoles.length > 2 && <Badge variant="secondary" className="text-[10px] px-1 py-0">+{userRoles.length - 2}</Badge>}
                     </div>
                   </div>
                 )}
                 <Button 
                   variant="ghost" 
-                  size="sm"
+                  size="icon"
                   onClick={signOut} 
-                  className="flex items-center gap-1 shrink-0"
+                  className="h-8 w-8 shrink-0"
                   aria-label={t('navigation.logout', { ns: 'common' })}
                   title={t('navigation.logout', { ns: 'common' })}
                 >
                   <LogOut className="h-4 w-4" />
-                  <span className="hidden md:inline text-xs">{t('navigation.logout', { ns: 'common' })}</span>
                 </Button>
               </div>
             </div>
-            <div className="border-b border-border/50"></div>
           </header>
 
           {/* Main Content */}

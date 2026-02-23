@@ -85,64 +85,52 @@ const PostalPage = () => {
         <div className="flex-1 flex flex-col min-h-screen min-w-0 overflow-hidden">
           {/* Header - consistent with other dashboards */}
           <header className="sticky top-0 z-30 border-b bg-card/95 backdrop-blur-md shadow-sm transition-all duration-300">
-            <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                  <SidebarTrigger className="-ml-1 shrink-0" />
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <Mail className="h-5 w-5 sm:h-6 sm:w-6 text-primary flex-shrink-0" />
-                    </div>
-                    <div className="min-w-0">
-                      <h1 className="text-base sm:text-lg md:text-xl font-bold text-foreground truncate">
-                        {t('title')}
-                      </h1>
-                      <p className="text-xs text-muted-foreground hidden sm:block">
-                        {t('module')}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  {/* Role Badge */}
-                  {roleBadge && (
-                    <div className="hidden md:flex">
-                      <Badge variant={roleBadge.variant} className="text-xs font-medium">
-                        {roleBadge.label}
-                      </Badge>
-                    </div>
-                  )}
+            <div className="flex items-center justify-between px-3 sm:px-4 lg:px-6 py-2.5 gap-2">
+              {/* Left: Trigger + Title + Badge */}
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                <SidebarTrigger className="-ml-1 shrink-0" />
+                <div className="p-1.5 bg-primary/10 rounded-lg shrink-0">
+                  <Mail className="h-5 w-5 text-primary" />
                 </div>
+                <div className="min-w-0">
+                  <h1 className="text-sm sm:text-base font-bold text-foreground truncate leading-tight">
+                    {t('title')}
+                  </h1>
+                  <p className="text-[11px] text-muted-foreground hidden sm:block leading-tight">
+                    {t('module')}
+                  </p>
+                </div>
+                {roleBadge && (
+                  <Badge variant={roleBadge.variant} className="text-[10px] font-medium hidden md:inline-flex shrink-0">
+                    {roleBadge.label}
+                  </Badge>
+                )}
+              </div>
 
-                <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-                  <NotificationCenter />
-                  <OfflineSyncQueue />
-                  <ThemeToggle />
-                  <div className="hidden sm:block">
-                    <LanguageSwitcher />
-                  </div>
-                  <OfflineIndicator />
-                  
-                  {/* User info - hidden on small screens */}
-                  {user && (
-                    <div className="text-right hidden lg:block">
-                      <p className="text-sm font-medium whitespace-nowrap truncate max-w-[200px]">
-                        {userProfile?.full_name || user?.email?.split('@')[0] || 'User'}
-                      </p>
-                    </div>
-                  )}
-                  
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={handleSignOut} 
-                    className="flex items-center gap-1 shrink-0"
-                    aria-label={t('common:navigation.logout')}
-                    title={t('common:navigation.logout')}
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span className="hidden md:inline text-xs">{t('common:navigation.logout')}</span>
-                  </Button>
+              {/* Right: Actions */}
+              <div className="flex items-center gap-1 shrink-0">
+                <NotificationCenter />
+                <OfflineSyncQueue />
+                <ThemeToggle />
+                <div className="hidden md:block">
+                  <LanguageSwitcher />
                 </div>
+                <OfflineIndicator />
+                {user && (
+                  <p className="text-xs font-medium whitespace-nowrap truncate max-w-[120px] hidden lg:block ml-1">
+                    {userProfile?.full_name || user?.email?.split('@')[0] || 'User'}
+                  </p>
+                )}
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={handleSignOut} 
+                  className="h-8 w-8 shrink-0"
+                  aria-label={t('common:navigation.logout')}
+                  title={t('common:navigation.logout')}
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           </header>
