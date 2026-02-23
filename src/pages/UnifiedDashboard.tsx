@@ -1393,10 +1393,17 @@ const UnifiedDashboard = () => {
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 overflow-x-hidden overflow-y-auto">
-            <div className="p-4 sm:p-6 max-w-full animate-fade-in">
-              {renderActiveView()}
-            </div>
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full overflow-x-hidden animate-fade-in">
+            <DashboardBreadcrumb 
+              items={activeView !== 'overview' ? [
+                { label: t('dashboard:title'), onClick: () => setActiveView('overview') },
+                { label: getViewTitle() }
+              ] : [
+                { label: t('dashboard:title') }
+              ]}
+              className="mb-4"
+            />
+            {renderActiveView()}
           </main>
         </div>
 
