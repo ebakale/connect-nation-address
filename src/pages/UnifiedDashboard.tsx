@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { 
   Shield, Users, Settings, BarChart3, LogOut, Search, FileText, Clock, AlertCircle,
   Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map, User, Phone,
-  Database, Network, Home, Building2, Plus, Package
+  Database, Network, Home, Building2, Plus, Package, Sparkles
 } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
@@ -48,6 +48,7 @@ import { SystemManualPDF } from "@/components/SystemManualPDF";
 import EmergencyContacts from "@/components/EmergencyContacts";
 import { ReporterNotifications } from "@/components/ReporterNotifications";
 import { NotificationCenter } from "@/components/NotificationCenter";
+import { OnboardingWalkthrough } from "@/components/OnboardingWalkthrough";
 import UniversalDashboardLocationMap from "@/components/UniversalDashboardLocationMap";
 import { ResidencyVerificationManager } from "@/components/ResidencyVerificationManager";
 import { ResidencyVerificationDashboard } from "@/components/ResidencyVerificationDashboard";
@@ -1067,8 +1068,19 @@ const UnifiedDashboard = () => {
 
       case 'profile':
         return (
-          <div className="max-w-4xl">
+          <div className="max-w-4xl space-y-6">
             <ProfileEditor />
+            <div className="flex justify-center">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => window.dispatchEvent(new Event('show-onboarding'))}
+                className="gap-2 text-muted-foreground"
+              >
+                <Sparkles className="h-4 w-4" />
+                Show Tour Again
+              </Button>
+            </div>
           </div>
         );
 
@@ -1375,6 +1387,9 @@ const UnifiedDashboard = () => {
           onClose={() => setDeliveryPreferencesOpen(false)}
           addressUac={selectedAddressForPrefs}
         />
+
+        {/* Onboarding Walkthrough */}
+        <OnboardingWalkthrough onNavigate={handleSidebarNavigation} />
       </div>
     </SidebarProvider>
   );
