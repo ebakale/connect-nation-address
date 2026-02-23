@@ -238,8 +238,24 @@ const AddressSearch: React.FC<AddressSearchProps> = ({ onSelectAddress, classNam
       {showResults && (
         <Card className="mt-2 border shadow-lg w-full">
           <CardContent className="p-0">
-            {results.length > 0 ? (
-              <div className="max-h-60 overflow-y-auto">
+            {isSearching ? (
+              <div className="p-3 space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="space-y-2">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-full" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                ))}
+              </div>
+            ) : results.length > 0 ? (
+              <>
+                <div className="px-3 pt-2 pb-1 flex items-center justify-between border-b">
+                  <Badge variant="secondary" className="text-xs">
+                    {results.length} {results.length === 1 ? 'result' : 'results'}
+                  </Badge>
+                </div>
+                <div className="max-h-60 overflow-y-auto">
                 {results.map((result, index) => (
                   <div
                     key={result.uac}
