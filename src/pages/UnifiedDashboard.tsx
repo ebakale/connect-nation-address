@@ -187,6 +187,14 @@ const UnifiedDashboard = () => {
   const [activeView, setActiveView] = useState('overview');
   const [selectedAddress, setSelectedAddress] = useState<SearchResult | null>(null);
   const [showMapView, setShowMapView] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts([
+    { key: 'k', ctrl: true, handler: () => setActiveView('address-search'), description: 'Open search', category: 'Navigation' },
+    { key: 'n', ctrl: true, handler: () => setActiveView('unified-address-request'), description: 'New request', category: 'Navigation' },
+    { key: '/', ctrl: true, handler: () => setShortcutsOpen(true), description: 'Show shortcuts', category: 'General' },
+  ]);
 
   // Postal/Pickup state
   const [pickupRequestOpen, setPickupRequestOpen] = useState(false);
