@@ -754,67 +754,83 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero relative overflow-x-hidden">
-      {/* Animated background elements */}
-      <div className="fixed inset-0 opacity-20">
-        <div className="absolute top-20 left-20 w-32 h-32 rounded-full bg-primary/20 animate-float"></div>
-        <div className="absolute top-40 right-32 w-24 h-24 rounded-full bg-cyan/20 animate-float" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute bottom-32 left-1/3 w-40 h-40 rounded-full bg-success/20 animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-20 right-20 w-20 h-20 rounded-full bg-warning/20 animate-float" style={{ animationDelay: '3s' }}></div>
-      </div>
-
+    <div className="min-h-screen bg-background relative overflow-x-hidden">
       {/* Header */}
-      <header className="border-b border-primary/20 sticky top-safe glass backdrop-blur-xl z-50 shadow-glow">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-center relative">
-            <div className="flex flex-col items-center gap-2">
-              <div className="p-2 rounded-xl bg-white shadow-lg flex items-center justify-center">
-                <img src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" alt="BIAKAM Logo" className="h-8 object-contain" />
+      <header className="border-b bg-card/95 backdrop-blur-md sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-1.5 rounded-lg bg-white shadow-sm border flex items-center justify-center">
+                <img src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" alt="BIAKAM Logo" className="h-7 object-contain" />
               </div>
-              <span className="text-xl sm:text-2xl font-bold text-gradient text-center">{t('common:platform.conEGPlatform')}</span>
+              <span className="text-lg font-bold text-foreground hidden sm:block">{t('common:platform.conEGPlatform')}</span>
             </div>
-            <div className="flex items-center gap-3 absolute right-0">
+            
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-1">
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => item.route ? navigate(item.route) : handleSectionChange(item.id)}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      activeSection === item.id
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{translateKey(item.labelKey, getFallbackLabel(item.id))}</span>
+                  </button>
+                );
+              })}
+            </nav>
+
+            <div className="flex items-center gap-2">
               <LanguageSwitcher />
+              {user ? (
+                <Button size="sm" onClick={() => navigate('/dashboard')}>
+                  <LogIn className="h-4 w-4 mr-1.5" />
+                  <span className="hidden sm:inline">{t('common:goToDashboard')}</span>
+                </Button>
+              ) : (
+                <Button size="sm" onClick={() => navigate('/auth')}>
+                  <LogIn className="h-4 w-4 mr-1.5" />
+                  <span className="hidden sm:inline">{t('common:auth.signIn')}</span>
+                </Button>
+              )}
             </div>
           </div>
         </div>
       </header>
 
-      {/* Navigation */}
-      <nav className="border-b border-primary/20 glass relative z-50">
-        <div className="container mx-auto px-4">
-          <div className="w-full flex flex-wrap items-center justify-center gap-2 sm:gap-4 overflow-x-hidden">
-            {navigationItems.map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    if (item.route) {
-                      navigate(item.route);
-                    } else {
-                      handleSectionChange(item.id);
-                    }
-                  }}
-                  className={`flex items-center gap-1 sm:gap-2 py-3 px-2 sm:px-3 border-b-2 text-xs sm:text-sm transition-all duration-300 animate-fade-in cursor-pointer hover:bg-primary/5 ${
-                    activeSection === item.id
-                      ? 'border-primary text-primary shadow-glow text-neon'
-                      : 'border-transparent text-muted-foreground hover:text-cyan hover:border-cyan/50'
-                  }`}
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <Icon className={`h-3 w-3 sm:h-4 sm:w-4 ${activeSection === item.id ? 'glow-pulse' : ''}`} />
-                  <span className="text-xs sm:text-sm whitespace-nowrap">{translateKey(item.labelKey, getFallbackLabel(item.id))}</span>
-                </button>
-              );
-            })}
-          </div>
+      {/* Mobile Navigation */}
+      <nav className="lg:hidden border-b bg-card/95 backdrop-blur-md sticky top-[57px] z-40 overflow-x-auto">
+        <div className="flex items-center gap-1 px-4 py-1.5 min-w-max">
+          {navigationItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.id}
+                onClick={() => item.route ? navigate(item.route) : handleSectionChange(item.id)}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium whitespace-nowrap transition-colors ${
+                  activeSection === item.id
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5" />
+                {translateKey(item.labelKey, getFallbackLabel(item.id))}
+              </button>
+            );
+          })}
         </div>
       </nav>
 
-      {/* Breadcrumb Navigation */}
+      {/* Breadcrumb */}
       {activeSection !== 'overview' && (
-        <div className="container mx-auto px-4 py-2 border-b border-muted">
+        <div className="container mx-auto px-4 py-2 border-b">
           <BreadcrumbNavigation items={getBreadcrumbItems()} />
         </div>
       )}
