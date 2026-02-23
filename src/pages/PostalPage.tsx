@@ -127,7 +127,13 @@ const PostalPage = () => {
             </div>
           </header>
 
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full overflow-x-hidden">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full overflow-x-hidden animate-fade-in">
+            <DashboardBreadcrumb 
+              items={[
+                { label: t('title') },
+              ]} 
+              className="mb-4"
+            />
             <PostalDashboard />
           </main>
           <Footer />
