@@ -234,19 +234,27 @@ const UnifiedDashboard = () => {
     fetchAddressDetails();
   }, [currentAddresses]);
 
+  // Read section from navigation state (e.g. coming from police dashboard sidebar)
+  const location = useLocation();
+  useEffect(() => {
+    const section = (location.state as any)?.section;
+    if (section) {
+      setActiveView(section);
+      // Clear the state so it doesn't persist on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
+
   // Auto-open specific dashboards for different roles
   useEffect(() => {
-    if (!loading) {
+    if (!loading && !(location.state as any)?.section) {
       if (isNARAuthority) {
-        // NAR authorities get their dedicated dashboard
         setActiveView('nar-authority-dashboard');
       } else if (isRegistrar && !hasAdminAccess) {
-        // Registrars go to their dedicated dashboard unless they're also admins
         setActiveView('registrar-dashboard');
       } else if (isResidencyVerifier) {
         setActiveView('residency-verification');
       }
-      // CAR Admin defaults to 'overview' which shows their role-specific stats
     }
   }, [loading, isNARAuthority, isRegistrar, hasAdminAccess, isResidencyVerifier]);
 
