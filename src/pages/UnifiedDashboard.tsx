@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { 
   Shield, Users, Settings, BarChart3, LogOut, Search, FileText, Clock, AlertCircle,
   Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map, User, Phone,
-  Database, Network, Home, Building2, Plus, Package
+  Database, Network, Home, Building2, Plus, Package, Sparkles
 } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
