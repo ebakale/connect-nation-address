@@ -37,6 +37,7 @@ interface NavigationGroup {
 interface DashboardSidebarProps {
   onNavigationClick: (id: string) => void;
   pendingCount?: number;
+  activeItemId?: string;
 }
 
 // Favorites persistence
@@ -52,7 +53,7 @@ function setFavorites(ids: string[]) {
   localStorage.setItem(FAVORITES_KEY, JSON.stringify(ids));
 }
 
-export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: DashboardSidebarProps) {
+export function DashboardSidebar({ onNavigationClick, pendingCount = 0, activeItemId = 'overview' }: DashboardSidebarProps) {
   const { t } = useTranslation('dashboard');
   const { state, setOpenMobile } = useSidebar();
   const collapsed = state === 'collapsed';
@@ -140,47 +141,56 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0 }: Dashbo
   // Favorites group
   const favoriteItems = favorites.map(id => itemMap.get(id)).filter(Boolean) as NavigationItem[];
 
-  const renderMenuItem = (item: NavigationItem, showFavToggle = false) => (
-    <SidebarMenuItem key={item.id}>
-      <SidebarMenuButton
-        onClick={item.onClick}
-        className={cn(
-          "w-full justify-start h-10 rounded-md transition-colors",
-          "hover:bg-accent hover:text-accent-foreground text-foreground",
-          collapsed ? "px-2 justify-center" : "px-3"
-        )}
-      >
-        <item.icon className={cn("shrink-0 text-muted-foreground", collapsed ? "h-5 w-5" : "h-4 w-4 mr-3")} />
-        {!collapsed && (
-          <>
-            <span className="flex-1 text-left text-sm truncate">{item.title}</span>
-            {item.badge && item.badge > 0 && (
-              <Badge variant="pending" className="ml-2 h-5 min-w-[20px] justify-center">{item.badge}</Badge>
-            )}
-            {showFavToggle && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={(e) => toggleFavorite(item.id, e)}
-                    className="ml-1 p-1 rounded hover:bg-muted opacity-0 group-hover/item:opacity-100 transition-opacity"
-                  >
-                    {favorites.includes(item.id) ? (
-                      <PinOff className="h-3 w-3 text-muted-foreground" />
-                    ) : (
-                      <Pin className="h-3 w-3 text-muted-foreground" />
-                    )}
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="text-xs">
-                  {favorites.includes(item.id) ? t('removeFavorite', 'Unpin') : t('addFavorite', 'Pin to top')}
-                </TooltipContent>
-              </Tooltip>
-            )}
-          </>
-        )}
-      </SidebarMenuButton>
-    </SidebarMenuItem>
-  );
+  const renderMenuItem = (item: NavigationItem, showFavToggle = false) => {
+    const isActive = activeItemId === item.id;
+    return (
+      <SidebarMenuItem key={item.id} className="group/item">
+        <SidebarMenuButton
+          onClick={item.onClick}
+          className={cn(
+            "w-full justify-start h-10 rounded-md transition-all duration-200",
+            collapsed ? "px-2 justify-center" : "px-3",
+            isActive
+              ? "bg-primary/10 text-primary font-medium border-l-3 border-primary rounded-l-none"
+              : "hover:bg-accent hover:text-accent-foreground text-foreground hover:translate-x-0.5"
+          )}
+        >
+          <item.icon className={cn(
+            "shrink-0 transition-colors duration-200",
+            collapsed ? "h-5 w-5" : "h-4 w-4 mr-3",
+            isActive ? "text-primary" : "text-muted-foreground group-hover/item:text-foreground"
+          )} />
+          {!collapsed && (
+            <>
+              <span className="flex-1 text-left text-sm truncate">{item.title}</span>
+              {item.badge && item.badge > 0 && (
+                <Badge variant="pending" className="ml-2 h-5 min-w-[20px] justify-center animate-scale-in">{item.badge}</Badge>
+              )}
+              {showFavToggle && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={(e) => toggleFavorite(item.id, e)}
+                      className="ml-1 p-1 rounded hover:bg-muted opacity-0 group-hover/item:opacity-100 transition-opacity"
+                    >
+                      {favorites.includes(item.id) ? (
+                        <PinOff className="h-3 w-3 text-muted-foreground" />
+                      ) : (
+                        <Pin className="h-3 w-3 text-muted-foreground" />
+                      )}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="text-xs">
+                    {favorites.includes(item.id) ? t('removeFavorite', 'Unpin') : t('addFavorite', 'Pin to top')}
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </>
+          )}
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    );
+  };
 
   return (
     <Sidebar className={cn(
@@ -280,7 +290,6 @@ function CollapsibleNavGroup({
   const [open, setOpen] = useState(defaultOpen);
 
   if (collapsed) {
-    // In collapsed mode, just show icons without group labels
     return (
       <SidebarGroup>
         <SidebarGroupContent>
@@ -294,16 +303,19 @@ function CollapsibleNavGroup({
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
-      <SidebarGroup>
+      <SidebarGroup className="border-b border-border/40 pb-2 last:border-b-0">
         <CollapsibleTrigger className="w-full">
-          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 py-2 flex items-center justify-between cursor-pointer hover:text-foreground transition-colors">
+          <SidebarGroupLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest px-3 py-2.5 flex items-center justify-between cursor-pointer hover:text-foreground transition-colors duration-200 group/label">
             <span>{label}</span>
-            <ChevronDown className={cn("h-3 w-3 transition-transform", open && "rotate-180")} />
+            <ChevronDown className={cn(
+              "h-3.5 w-3.5 transition-transform duration-300 text-muted-foreground/60 group-hover/label:text-muted-foreground",
+              open && "rotate-180"
+            )} />
           </SidebarGroupLabel>
         </CollapsibleTrigger>
-        <CollapsibleContent>
+        <CollapsibleContent className="transition-all duration-300 ease-in-out data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-0.5">
               {items.map(item => renderMenuItem(item))}
             </SidebarMenu>
           </SidebarGroupContent>
