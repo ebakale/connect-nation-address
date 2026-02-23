@@ -1338,30 +1338,22 @@ const UnifiedDashboard = () => {
         
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Header */}
-          <header className="sticky top-0 z-30 border-b bg-card/95 backdrop-blur-md shadow-sm transition-all duration-300">
+          <header className="bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 sticky top-0 z-30 border-b border-border/50">
             <div className="flex items-center justify-between px-3 sm:px-4 lg:px-6 py-2.5 gap-2">
-              {/* Left: Trigger + Title + Badge */}
+              {/* Left: Trigger + Title */}
               <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                 <SidebarTrigger className="-ml-1 shrink-0" />
-                <div className="p-1.5 bg-primary/10 rounded-lg shrink-0">
-                  <Home className="h-5 w-5 text-primary" />
+                <div className="min-w-0 space-y-0.5">
+                  <h1 className="text-sm sm:text-base font-bold leading-tight whitespace-nowrap truncate">{getViewTitle()}</h1>
+                  {activeView !== 'overview' && (
+                    <DashboardBreadcrumb 
+                      items={[
+                        { label: t('dashboard:title'), onClick: () => setActiveView('overview') },
+                        { label: getViewTitle() }
+                      ]}
+                    />
+                  )}
                 </div>
-                <div className="min-w-0">
-                  <h1 className="text-sm sm:text-base font-bold text-foreground truncate leading-tight">{getViewTitle()}</h1>
-                  <p className="text-[11px] text-muted-foreground hidden sm:block leading-tight">
-                    {t('dashboard:welcomeMessage')}
-                  </p>
-                </div>
-                {userRoles.length > 0 && (
-                  <div className="hidden lg:flex gap-1 shrink-0">
-                    {userRoles.slice(0, 2).map((roleLabel, index) => (
-                      <Badge key={`${roleLabel}-${index}`} variant="secondary" className="text-[10px] font-medium">
-                        {String(roleLabel)}
-                      </Badge>
-                    ))}
-                    {userRoles.length > 2 && <Badge variant="secondary" className="text-[10px] font-medium">+{userRoles.length - 2}</Badge>}
-                  </div>
-                )}
               </div>
 
               {/* Right: Actions */}
@@ -1373,10 +1365,18 @@ const UnifiedDashboard = () => {
                   <LanguageSwitcher />
                 </div>
                 <OfflineIndicator />
-                {user && (
-                  <p className="text-xs font-medium whitespace-nowrap truncate max-w-[120px] hidden lg:block ml-1">
-                    {userProfile?.full_name || user?.email?.split('@')[0] || 'User'}
-                  </p>
+                {userProfile && (
+                  <div className="text-right hidden lg:block ml-1">
+                    <p className="text-xs font-medium whitespace-nowrap truncate max-w-[120px]">{userProfile.full_name}</p>
+                    <div className="flex gap-0.5 justify-end">
+                      {userRoles.slice(0, 2).map((roleLabel, index) => (
+                        <Badge key={`${roleLabel}-${index}`} variant="secondary" className="text-[10px] px-1 py-0">
+                          {String(roleLabel)}
+                        </Badge>
+                      ))}
+                      {userRoles.length > 2 && <Badge variant="secondary" className="text-[10px] px-1 py-0">+{userRoles.length - 2}</Badge>}
+                    </div>
+                  </div>
                 )}
                 <Button 
                   variant="ghost" 
@@ -1393,17 +1393,10 @@ const UnifiedDashboard = () => {
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full overflow-x-hidden animate-fade-in">
-            <DashboardBreadcrumb 
-              items={activeView !== 'overview' ? [
-                { label: t('dashboard:title'), onClick: () => setActiveView('overview') },
-                { label: getViewTitle() }
-              ] : [
-                { label: t('dashboard:title') }
-              ]}
-              className="mb-4"
-            />
-            {renderActiveView()}
+          <main className="flex-1 overflow-x-hidden overflow-y-auto">
+            <div className="p-4 sm:p-6 max-w-full animate-fade-in">
+              {renderActiveView()}
+            </div>
           </main>
         </div>
 
