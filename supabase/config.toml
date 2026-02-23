@@ -65,3 +65,9 @@ verify_jwt = true
 
 [functions.bulk-import-orders]
 verify_jwt = true
+
+[functions.search-citizen-addresses]
+verify_jwt = false
+
+[functions.address-search-api]
+verify_jwt = false
