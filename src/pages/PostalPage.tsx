@@ -158,6 +158,7 @@ const PostalPage = () => {
           </main>
           <Footer />
         </div>
+        <KeyboardShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
       </div>
     </SidebarProvider>
   );
