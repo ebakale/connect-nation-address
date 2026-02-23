@@ -71,9 +71,14 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0, activeIt
   const [favorites, setFavoritesState] = useState<string[]>(getFavorites);
 
   const handleItemClick = useCallback((id: string) => {
+    // If we're not on the dashboard page, navigate there with the section
+    if (location.pathname !== '/dashboard') {
+      navigate(`/dashboard`, { state: { section: id } });
+      return;
+    }
     onNavigationClick(id);
     if (isMobile) setOpenMobile(false);
-  }, [onNavigationClick, isMobile, setOpenMobile]);
+  }, [onNavigationClick, isMobile, setOpenMobile, location.pathname, navigate]);
 
   const toggleFavorite = useCallback((id: string, e: React.MouseEvent) => {
     e.stopPropagation();
