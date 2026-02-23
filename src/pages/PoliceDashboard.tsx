@@ -786,7 +786,7 @@ const PoliceDashboard = () => {
                   </TabsTrigger>
                 </TabsList>
               ) : (
-                <TabsList className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 overflow-x-auto">
+                <TabsList className="flex flex-wrap gap-1 h-auto p-1">
                   {!hasPoliceAdminAccess && !isPoliceSupervisor && isPoliceOperator && (
                     <TabsTrigger value="field" className="text-sm">
                       <Radio className="h-4 w-4 mr-2" />
