@@ -1,66 +1,68 @@
 
 
-## Improve the "About" Section on the Landing Page
+## Improve the "Search Addresses" Page
 
 ### Current State
 
-The About section currently has only three elements:
-1. A heading with a brief description
-2. Two side-by-side cards for "Our Mission" and "Our Vision"
-3. A "Key Partners" card with three items in a grid
+The Search Addresses page (`PublicAccessPortal`) has a functional layout with:
+- A header with title and subtitle
+- A tabbed interface (Addresses / Businesses)
+- A search card with text input, QR scanner, and example badges
+- Accordion-based results with detailed address info and actions
+- Pagination and a footer
 
-It feels sparse and lacks visual engagement compared to the polished hero and overview sections.
+While functional, it feels utilitarian and lacks the visual polish applied to the Hero and About sections.
 
 ### Proposed Improvements
 
-#### 1. Add a visual header with an icon and styled badge
-Replace the plain text heading with a layout matching the overview section's style — include a badge (e.g., "Government Initiative"), an icon, and a more descriptive subtitle.
+#### 1. Enhanced Header with Icon and Badge
+Replace the plain text header with a styled layout matching the About section -- add a badge (e.g., "Public Service"), a prominent icon, and location status indicator showing whether GPS is active.
 
-#### 2. Add a "Platform at a Glance" statistics row
-Insert a row of 4 key statistics cards between the header and Mission/Vision, showing numbers like:
-- Total Provinces Covered
-- Registered Addresses
-- Emergency Response Time
-- Active Users
+#### 2. Quick Stats Bar
+Add a horizontal row below the header showing live context:
+- Current GPS status (active/inactive with colored dot)
+- Search radius indicator
+- Total public addresses available (placeholder number)
 
-These will use placeholder/illustrative numbers with icons, giving the page a sense of scale and authority.
+This gives users immediate confidence that the system is working.
 
-#### 3. Enhance Mission and Vision cards
-- Add relevant icons (e.g., a target icon for Mission, a telescope/eye icon for Vision)
-- Add a subtle colored left border to each card for visual distinction
+#### 3. Improved Search Card
+- Add a search icon inside the input field (left-aligned icon prefix) for a more modern look
+- Group the QR Scanner and Search button on the same row with equal sizing
+- Add a subtle "Tip" text below the input explaining UAC format
 
-#### 4. Add a "How It Works" section
-A 3-step visual flow showing:
-1. Register your address with GPS coordinates
-2. Receive your unique UAC code and QR
-3. Access government services, deliveries, and emergency response
+#### 4. Better Search Example Chips
+- Add icons to each example badge (QrCode for UAC, Building for city, MapPin for street)
+- Use a slightly more prominent styling with hover effects
 
-Each step in a numbered card with icon and brief description.
+#### 5. Empty State Illustration
+When no search has been performed yet, show an inviting empty state below the search card with:
+- A large MapPin icon
+- "Start searching" prompt text
+- Brief description of what users can find
 
-#### 5. Improve the Key Partners section
-- Add icons to each partner card (Building for Ministry, MapPin for Local Governments, Globe for Technology Partners)
-- Add a subtle background color to each card for visual grouping
+#### 6. Enhanced Results Cards
+- Replace the plain Accordion with cards that have a subtle left border color-coded by address type (residential = blue, commercial = green, government = amber)
+- Add a small map preview link icon next to coordinates
+- Show the distance badge more prominently when available (with a colored background)
 
-#### 6. Add a "Why ConEG?" section
-A new section with 4 benefit cards highlighting:
-- Digital Identity for every address
-- Faster emergency response
-- Reliable postal delivery
-- Data-driven urban planning
+#### 7. Improved Actions Section
+- Group actions into "Navigate", "Share", and "Report" categories with subtle section labels
+- Use icon-only buttons in a compact grid on mobile instead of full-width stacked buttons
 
-#### 7. Add a Call-to-Action at the bottom
-A banner encouraging users to sign up or explore the platform, with "Access Platform" and "Search Addresses" buttons.
+#### 8. Footer Enhancement
+- Add a subtle separator before the footer
+- Include a "Need help?" link and the emergency number
 
 ### Technical Details
 
-**File modified:** `src/pages/Index.tsx`
+**File modified:** `src/components/PublicAccessPortal.tsx`
 
-Changes are confined to the `case 'about':` block (lines 369-424). All new content will:
-- Use existing UI components (`Card`, `CardHeader`, `CardContent`, `Badge`, `Button`)
-- Use existing icons from `lucide-react`
-- Use existing translation keys where available, with new `t()` keys falling back gracefully via the `translateKey` helper
-- Follow the same clean, professional design patterns used in the overview section
-- Remain fully responsive with the existing grid system (`grid md:grid-cols-2 lg:grid-cols-3`)
-
-No new dependencies or files are needed.
+All changes are purely visual/layout improvements within the existing component:
+- Use existing UI components (`Card`, `Badge`, `Button`, `Separator`, `Alert`)
+- Use existing `lucide-react` icons (add `Compass`, `Radio`, `Layers` to imports)
+- Use existing translation keys with `defaultValue` fallbacks for any new strings
+- No new dependencies, files, APIs, or business logic changes
+- Preserve all existing functionality: search, QR scan, pagination, sharing, emergency navigation
+- Maintain responsive design with existing breakpoint patterns (`sm:`, `lg:`)
 
