@@ -49,7 +49,7 @@ class LocalAuthManager {
       const syncedUser: LocalUser = {
         id: supabaseUser.id,
         email: supabaseUser.email,
-        password_hash: 'synced_from_online', // Placeholder since we don't have the password
+        password_hash: existingUser?.password_hash || 'synced_from_online',
         role: this.mapSupabaseRoleToLocal(userRole),
         profile: {
           display_name: userProfile?.full_name || userProfile?.display_name || supabaseUser.user_metadata?.full_name || supabaseUser.email.split('@')[0],
@@ -70,6 +70,22 @@ class LocalAuthManager {
     } catch (error) {
       console.error('Failed to sync online user:', error);
       return { user: null, error: error as Error };
+    }
+  }
+
+  // Set an offline password for a synced user (must be called while online)
+  async setOfflinePassword(email: string, offlinePassword: string): Promise<{ error: Error | null }> {
+    try {
+      await offlineStorage.init();
+      const user = await offlineStorage.getLocalUser(email);
+      if (!user) {
+        throw new Error('User not found in offline storage');
+      }
+      user.password_hash = await this.hashPassword(offlinePassword);
+      await offlineStorage.saveLocalUser(user);
+      return { error: null };
+    } catch (error) {
+      return { error: error as Error };
     }
   }
 
@@ -106,12 +122,12 @@ class LocalAuthManager {
     
     if (!user) return false;
     
-    // If it's a synced user, allow any password (they'll use online auth when online)
+    // Synced users MUST set an offline password before they can sign in offline
     if (user.password_hash === 'synced_from_online') {
-      return true;
+      return false;
     }
     
-    // Otherwise check the actual password
+    // Check the actual password hash
     const hashedPassword = await this.hashPassword(password);
     return user.password_hash === hashedPassword;
   }
@@ -171,13 +187,11 @@ class LocalAuthManager {
         throw new Error('User not found');
       }
 
-      // Check password based on user type
+      // Synced users must set an offline password first
       let validPassword = false;
       if (user.password_hash === 'synced_from_online') {
-        // For synced users, accept any password in offline mode
-        validPassword = true;
+        throw new Error('Offline password not set. Please sign in online first and set an offline password.');
       } else {
-        // For local users, check actual password
         const password_hash = await this.hashPassword(password);
         validPassword = user.password_hash === password_hash;
       }

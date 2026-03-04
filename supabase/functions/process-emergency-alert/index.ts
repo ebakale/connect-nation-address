@@ -7,16 +7,29 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Simple encryption function (in production, use proper encryption libraries)
-function simpleEncrypt(text: string): string {
-  const key = Deno.env.get('ENCRYPTION_KEY') || 'fallback-key-not-secure';
-  return btoa(text + key).slice(0, -key.length);
-}
+// AES-256-GCM encryption using Web Crypto API
+async function encryptAES256GCM(plaintext: string): Promise<string> {
+  const keyHex = Deno.env.get('ENCRYPTION_KEY');
+  if (!keyHex || keyHex.length < 32) {
+    throw new Error('ENCRYPTION_KEY must be set and at least 32 characters');
+  }
 
-// Simple decryption function
-function simpleDecrypt(encrypted: string): string {
-  const key = Deno.env.get('ENCRYPTION_KEY') || 'fallback-key-not-secure';
-  return atob(encrypted + key).slice(0, -(key.length));
+  const encoder = new TextEncoder();
+  const keyMaterial = encoder.encode(keyHex.slice(0, 32));
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw', keyMaterial, { name: 'AES-GCM' }, false, ['encrypt']
+  );
+
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encrypted = await crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv }, cryptoKey, encoder.encode(plaintext)
+  );
+
+  // Return iv:ciphertext as base64
+  const combined = new Uint8Array(iv.length + new Uint8Array(encrypted).length);
+  combined.set(iv);
+  combined.set(new Uint8Array(encrypted), iv.length);
+  return btoa(String.fromCharCode(...combined));
 }
 
 serve(async (req) => {
@@ -42,19 +55,18 @@ serve(async (req) => {
 
     console.log('Processing emergency alert:', { emergencyType, latitude, longitude });
 
-    // Encrypt sensitive data
-    const encryptedMessage = simpleEncrypt(message);
-    const encryptedLatitude = simpleEncrypt(latitude.toString());
-    const encryptedLongitude = simpleEncrypt(longitude.toString());
-    const encryptedContactInfo = contactInfo ? simpleEncrypt(contactInfo) : null;
+    // Encrypt sensitive data with real AES-256-GCM
+    const encryptedMessage = await encryptAES256GCM(message);
+    const encryptedLatitude = await encryptAES256GCM(latitude.toString());
+    const encryptedLongitude = await encryptAES256GCM(longitude.toString());
+    const encryptedContactInfo = contactInfo ? await encryptAES256GCM(contactInfo) : null;
 
     // Set default priority to medium - operators should assign final priority
-    const priority = 3; // Default medium priority - operators will adjust as needed
+    const priority = 3;
 
     // Check for nearby addresses within 25 meters and generate proper UAC
     const findNearbyAddressAndGenerateUAC = async (latitude: number, longitude: number, incidentId: string) => {
       try {
-        // Search for addresses within approximately 25 meters (0.00025 degrees ≈ 28 meters)
         const { data: nearbyAddresses, error } = await supabase
           .from('addresses')
           .select('uac, latitude, longitude, building, street, city, region, country')
@@ -65,7 +77,6 @@ serve(async (req) => {
           .limit(5);
 
         if (!error && nearbyAddresses && nearbyAddresses.length > 0) {
-          // Calculate exact distances and find closest address
           let closestAddress = null;
           let minDistance = Infinity;
 
@@ -73,7 +84,7 @@ serve(async (req) => {
             const distance = Math.sqrt(
               Math.pow((latitude - parseFloat(addr.latitude.toString())) * 111000, 2) + 
               Math.pow((longitude - parseFloat(addr.longitude.toString())) * 111000, 2)
-            ); // Distance in meters
+            );
 
             if (distance <= 25 && distance < minDistance) {
               minDistance = distance;
@@ -96,13 +107,11 @@ serve(async (req) => {
           }
         }
 
-        // Generate new UAC using standard system for Equatorial Guinea emergency location
         const countryCode = 'GQ';
-        const regionCode = 'EMRG'; // Emergency region code
-        const cityCode = 'INC'; // Incident city code
+        const regionCode = 'EMRG';
+        const cityCode = 'INC';
         const sequence = incidentId.replace(/-/g, '').slice(0, 6).toUpperCase();
         
-        // Generate check digit
         const baseCode = `${countryCode}-${regionCode}-${cityCode}-${sequence}`;
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         let sum = 0;
@@ -126,7 +135,6 @@ serve(async (req) => {
         
       } catch (error) {
         console.error('Error finding nearby address or generating UAC:', error);
-        // Fallback UAC
         return {
           uac: `GQ-EMRG-INC-${incidentId.replace(/-/g, '').slice(0, 6).toUpperCase()}-FB`,
           addressData: null
@@ -134,17 +142,14 @@ serve(async (req) => {
       }
     };
 
-    // Create emergency incident with both encrypted and unencrypted location data
     const tempIncidentId = crypto.randomUUID();
     const uacResult = await findNearbyAddressAndGenerateUAC(latitude, longitude, tempIncidentId);
     
     // Auto-assign to available dispatcher in the city
     let assignedDispatcherId = null;
     try {
-      // Extract city from the incident location
-      const incidentCity = uacResult.addressData?.city || 'Bata'; // Default to Bata if no city found
+      const incidentCity = uacResult.addressData?.city || 'Bata';
       
-      // Find available dispatchers in the same city with least active incidents
       const { data: cityDispatchers } = await supabase
         .from('user_roles')
         .select(`
@@ -155,29 +160,27 @@ serve(async (req) => {
         .eq('role', 'police_dispatcher');
 
       if (cityDispatchers && cityDispatchers.length > 0) {
-        // Filter dispatchers by city and get their incident counts
-          const dispatcherCounts = await Promise.all(
-            cityDispatchers
-              .filter(d => d.user_role_metadata?.some(m => m.scope_value?.toLowerCase() === incidentCity.toLowerCase()))
-              .map(async (dispatcher) => {
-                const { count } = await supabase
-                  .from('emergency_incidents')
-                  .select('*', { count: 'exact', head: true })
-                  .eq('assigned_operator_id', dispatcher.user_id)
-                  .in('status', ['reported', 'dispatched', 'responding', 'on_scene']);
+        const dispatcherCounts = await Promise.all(
+          cityDispatchers
+            .filter(d => d.user_role_metadata?.some(m => m.scope_value?.toLowerCase() === incidentCity.toLowerCase()))
+            .map(async (dispatcher) => {
+              const { count } = await supabase
+                .from('emergency_incidents')
+                .select('*', { count: 'exact', head: true })
+                .eq('assigned_operator_id', dispatcher.user_id)
+                .in('status', ['reported', 'dispatched', 'responding', 'on_scene']);
 
-                const profiles = (dispatcher as any).profiles;
-                const fullName = Array.isArray(profiles) ? profiles[0]?.full_name : profiles?.full_name;
-                
-                return {
-                  user_id: dispatcher.user_id,
-                  count: count || 0,
-                  name: fullName
-                };
-              })
-          );
+              const profiles = (dispatcher as any).profiles;
+              const fullName = Array.isArray(profiles) ? profiles[0]?.full_name : profiles?.full_name;
+              
+              return {
+                user_id: dispatcher.user_id,
+                count: count || 0,
+                name: fullName
+              };
+            })
+        );
 
-        // Assign to dispatcher with least active incidents
         if (dispatcherCounts.length > 0) {
           const selectedDispatcher = dispatcherCounts.reduce((prev, current) => 
             current.count < prev.count ? current : prev
@@ -190,6 +193,7 @@ serve(async (req) => {
       console.warn('Failed to auto-assign dispatcher:', error);
     }
     
+    // Store sensitive data ONLY in encrypted fields — no plaintext duplicates
     const { data: incident, error: incidentError } = await supabase
       .from('emergency_incidents')
       .insert({
@@ -197,21 +201,19 @@ serve(async (req) => {
         emergency_type: emergencyType,
         priority_level: priority,
         assigned_operator_id: assignedDispatcherId,
-        // Keep encrypted fields for backup/audit purposes
+        // Encrypted fields only
         encrypted_latitude: encryptedLatitude,
         encrypted_longitude: encryptedLongitude,
         encrypted_message: encryptedMessage,
         encrypted_contact_info: encryptedContactInfo,
         language_code: language,
         status: 'reported',
-        // Store ALL data in unencrypted fields for immediate police access
+        // Non-sensitive operational fields
         location_latitude: latitude,
         location_longitude: longitude,
         location_address: `Emergency Location: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
         incident_uac: uacResult.uac,
-        incident_message: message,
-        reporter_contact_info: contactInfo,
-        // Populate structured address fields if nearby address found
+        // Structured address fields (non-sensitive public info)
         street: uacResult.addressData?.street || null,
         city: uacResult.addressData?.city || null,
         region: uacResult.addressData?.region || null,
@@ -245,8 +247,6 @@ serve(async (req) => {
     if (priority <= 2) {
       console.log('High priority incident - triggering immediate notifications');
       
-      // Here you would integrate with police dispatch systems
-      // For now, we'll create a notification record
       const notificationResponse = await supabase.functions.invoke('notify-emergency-operators', {
         body: {
           incidentId: incident.id,
@@ -259,7 +259,7 @@ serve(async (req) => {
       console.log('Notification response:', notificationResponse);
     }
 
-    // Send acknowledgment notification to all reporters (registered and unregistered)
+    // Send acknowledgment notification to all reporters
     console.log('Sending acknowledgment notification to reporter');
     
     const acknowledgmentResponse = await supabase.functions.invoke('notify-incident-reporter', {
@@ -271,7 +271,7 @@ serve(async (req) => {
 
     console.log('Acknowledgment notification response:', acknowledgmentResponse);
 
-    // SMS Fallback for offline scenarios (fallback in case notification system fails)
+    // SMS Fallback for offline scenarios
     if (contactInfo && contactInfo.includes('+')) {
       await supabase
         .from('sms_fallback_queue')
@@ -301,8 +301,7 @@ serve(async (req) => {
     console.error('Error processing emergency alert:', error);
     return new Response(
       JSON.stringify({ 
-        error: 'Failed to process emergency alert',
-        details: error instanceof Error ? error.message : String(error)
+        error: 'Failed to process emergency alert'
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
