@@ -49,7 +49,7 @@ class LocalAuthManager {
       const syncedUser: LocalUser = {
         id: supabaseUser.id,
         email: supabaseUser.email,
-        password_hash: 'synced_from_online', // Placeholder since we don't have the password
+        password_hash: existingUser?.password_hash || 'synced_from_online',
         role: this.mapSupabaseRoleToLocal(userRole),
         profile: {
           display_name: userProfile?.full_name || userProfile?.display_name || supabaseUser.user_metadata?.full_name || supabaseUser.email.split('@')[0],
@@ -70,6 +70,22 @@ class LocalAuthManager {
     } catch (error) {
       console.error('Failed to sync online user:', error);
       return { user: null, error: error as Error };
+    }
+  }
+
+  // Set an offline password for a synced user (must be called while online)
+  async setOfflinePassword(email: string, offlinePassword: string): Promise<{ error: Error | null }> {
+    try {
+      await offlineStorage.init();
+      const user = await offlineStorage.getLocalUser(email);
+      if (!user) {
+        throw new Error('User not found in offline storage');
+      }
+      user.password_hash = await this.hashPassword(offlinePassword);
+      await offlineStorage.saveLocalUser(user);
+      return { error: null };
+    } catch (error) {
+      return { error: error as Error };
     }
   }
 
