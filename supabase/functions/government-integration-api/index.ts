@@ -44,13 +44,31 @@ interface GovernmentAPIResponse {
 }
 
 const API_VERSION = '1.0'
-const VALID_API_KEYS = [
-  'gov_census_key_2024',
-  'postal_service_key_2024', 
-  'utilities_key_2024',
-  'emergency_services_key_2024',
-  'planning_dept_key_2024'
-]
+
+// Load API keys from environment secrets — one per government service
+function getValidApiKeys(): Record<string, string> {
+  return {
+    census: Deno.env.get('GOV_API_KEY_CENSUS') ?? '',
+    postal: Deno.env.get('GOV_API_KEY_POSTAL') ?? '',
+    utilities: Deno.env.get('GOV_API_KEY_UTILITIES') ?? '',
+    emergency: Deno.env.get('GOV_API_KEY_EMERGENCY') ?? '',
+    planning: Deno.env.get('GOV_API_KEY_PLANNING') ?? '',
+  }
+}
+
+function validateApiKey(apiKey: string | undefined, service: string): boolean {
+  if (!apiKey) return false
+  const keys = getValidApiKeys()
+  const expectedKey = keys[service]
+  if (!expectedKey) return false
+  // Constant-time comparison to prevent timing attacks
+  if (apiKey.length !== expectedKey.length) return false
+  let result = 0
+  for (let i = 0; i < apiKey.length; i++) {
+    result |= apiKey.charCodeAt(i) ^ expectedKey.charCodeAt(i)
+  }
+  return result === 0
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -74,8 +92,8 @@ serve(async (req) => {
       service, operation, data, filters, apiKey
     }: GovernmentAPIRequest = await req.json()
 
-    // API Key validation (in production, this would be more sophisticated)
-    if (!apiKey || !VALID_API_KEYS.includes(apiKey)) {
+    // Validate API key per service from environment secrets
+    if (!validateApiKey(apiKey, service)) {
       return new Response(
         JSON.stringify({ 
           success: false,
@@ -95,34 +113,28 @@ serve(async (req) => {
     console.log(`Government API request: ${service}/${operation}`, filters)
 
     let result: any = {}
-    let recordCount = 0
 
     switch (service) {
       case 'census':
         result = await handleCensusOperations(supabaseClient, operation, data, filters)
         break
-      
       case 'postal':
         result = await handlePostalOperations(supabaseClient, operation, data, filters)
         break
-      
       case 'utilities':
         result = await handleUtilitiesOperations(supabaseClient, operation, data, filters)
         break
-      
       case 'emergency':
         result = await handleEmergencyOperations(supabaseClient, operation, data, filters)
         break
-      
       case 'planning':
         result = await handlePlanningOperations(supabaseClient, operation, data, filters)
         break
-      
       default:
         throw new Error(`Unsupported service: ${service}`)
     }
 
-    recordCount = Array.isArray(result.data) ? result.data.length : (result.data ? 1 : 0)
+    const recordCount = Array.isArray(result.data) ? result.data.length : (result.data ? 1 : 0)
 
     const response: GovernmentAPIResponse = {
       success: true,
@@ -147,7 +159,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: false,
-        error: error.message,
+        error: 'Internal server error',
         metadata: {
           service: 'unknown',
           operation: 'unknown',
@@ -165,7 +177,6 @@ serve(async (req) => {
 async function handleCensusOperations(supabase: any, operation: string, data: any, filters: any) {
   switch (operation) {
     case 'lookup':
-      // Get addresses for census enumeration
       let query = supabase
         .from('addresses')
         .select(`
@@ -191,7 +202,6 @@ async function handleCensusOperations(supabase: any, operation: string, data: an
       }
 
     case 'bulk-export':
-      // Export all addresses for census planning
       const { data: bulkData, error: bulkError } = await supabase
         .from('addresses')
         .select('*')
@@ -210,7 +220,6 @@ async function handleCensusOperations(supabase: any, operation: string, data: an
 async function handlePostalOperations(supabase: any, operation: string, data: any, filters: any) {
   switch (operation) {
     case 'lookup':
-      // Address lookup for postal delivery
       const { data: postalData, error } = await supabase
         .from('addresses')
         .select(`
@@ -218,7 +227,7 @@ async function handlePostalOperations(supabase: any, operation: string, data: an
           latitude, longitude, verified, completeness_score
         `)
         .eq('verified', true)
-        .gte('completeness_score', 70) // High quality addresses only
+        .gte('completeness_score', 70)
         .limit(500)
 
       if (error) throw error
@@ -233,7 +242,6 @@ async function handlePostalOperations(supabase: any, operation: string, data: an
       }
 
     case 'verify':
-      // Verify address for postal services
       if (!data?.uac) throw new Error('UAC required for verification')
       
       const { data: verifyData, error: verifyError } = await supabase
@@ -262,7 +270,6 @@ async function handlePostalOperations(supabase: any, operation: string, data: an
 async function handleUtilitiesOperations(supabase: any, operation: string, data: any, filters: any) {
   switch (operation) {
     case 'lookup':
-      // Service connection planning
       const { data: utilityData, error } = await supabase
         .from('addresses')
         .select(`
@@ -292,7 +299,6 @@ async function handleUtilitiesOperations(supabase: any, operation: string, data:
 async function handleEmergencyOperations(supabase: any, operation: string, data: any, filters: any) {
   switch (operation) {
     case 'lookup':
-      // Emergency response address database
       const { data: emergencyData, error } = await supabase
         .from('addresses')
         .select(`
@@ -322,11 +328,9 @@ async function handleEmergencyOperations(supabase: any, operation: string, data:
 async function handlePlanningOperations(supabase: any, operation: string, data: any, filters: any) {
   switch (operation) {
     case 'lookup':
-      // Urban planning and development data
       const { data: planningData, error } = await supabase.rpc('coverage-analytics-api')
       if (error) throw error
 
-      // Get address density by region
       const { data: densityData, error: densityError } = await supabase
         .from('addresses')
         .select('region, city, address_type, latitude, longitude')
@@ -367,7 +371,6 @@ function generateResponseZone(region: string, city: string): string {
 }
 
 function calculateRouteWeight(lat: number, lng: number): number {
-  // Simplified route optimization weight based on coordinates
   return Math.round((Math.abs(lat) + Math.abs(lng)) * 100) % 10 + 1
 }
 
@@ -386,12 +389,7 @@ function assessConnectionFeasibility(address: any): 'high' | 'medium' | 'low' {
 }
 
 function estimateUtilityDemand(addressType: string): number {
-  const demands = {
-    'residential': 50,
-    'commercial': 200,
-    'industrial': 500,
-    'institutional': 150
-  }
+  const demands = { 'residential': 50, 'commercial': 200, 'industrial': 500, 'institutional': 150 }
   return demands[addressType as keyof typeof demands] || 25
 }
 
@@ -405,31 +403,23 @@ function assessCoordinateAccuracy(lat: number, lng: number): 'high' | 'medium' |
 
 function calculateAddressDensity(addresses: any[]): any {
   const regionDensity: Record<string, any> = {}
-  
   addresses.forEach(addr => {
     const key = `${addr.region}-${addr.city}`
     if (!regionDensity[key]) {
       regionDensity[key] = {
-        region: addr.region,
-        city: addr.city,
-        total: 0,
-        residential: 0,
-        commercial: 0,
-        industrial: 0,
-        coordinates: []
+        region: addr.region, city: addr.city, total: 0,
+        residential: 0, commercial: 0, industrial: 0, coordinates: []
       }
     }
     regionDensity[key].total++
     regionDensity[key][addr.address_type as keyof typeof regionDensity[key]]++
     regionDensity[key].coordinates.push([addr.latitude, addr.longitude])
   })
-  
   return Object.values(regionDensity)
 }
 
 function generateDevelopmentRecommendations(densityData: any[]): string[] {
-  const recommendations = []
-  
+  const recommendations: string[] = []
   densityData.forEach(area => {
     if (area.total < 50) {
       recommendations.push(`${area.city}: Consider infrastructure development - low address density`)
@@ -441,6 +431,5 @@ function generateDevelopmentRecommendations(densityData: any[]): string[] {
       recommendations.push(`${area.city}: Residential area - prioritize utilities and public services`)
     }
   })
-  
   return recommendations
 }

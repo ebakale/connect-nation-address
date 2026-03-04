@@ -171,13 +171,11 @@ class LocalAuthManager {
         throw new Error('User not found');
       }
 
-      // Check password based on user type
+      // Synced users must set an offline password first
       let validPassword = false;
       if (user.password_hash === 'synced_from_online') {
-        // For synced users, accept any password in offline mode
-        validPassword = true;
+        throw new Error('Offline password not set. Please sign in online first and set an offline password.');
       } else {
-        // For local users, check actual password
         const password_hash = await this.hashPassword(password);
         validPassword = user.password_hash === password_hash;
       }

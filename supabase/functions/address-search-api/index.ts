@@ -15,7 +15,7 @@ interface SearchRequest {
   coordinates?: {
     lat: number
     lng: number
-    radius?: number // in meters
+    radius?: number
   }
 }
 
@@ -33,7 +33,7 @@ interface SearchResponse {
     verified: boolean
     public: boolean
     completenessScore: number
-    distance?: number // in meters if coordinates provided
+    distance?: number
   }>
   totalCount: number
   searchMetadata: {
@@ -44,26 +44,43 @@ interface SearchResponse {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
 
   try {
     const startTime = performance.now()
-    
+
+    // --- Authentication: require valid JWT ---
+    const authHeader = req.headers.get('Authorization')
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Create client scoped to the caller's JWT (respects RLS)
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: authHeader } } }
     )
+
+    // Validate the JWT
+    const token = authHeader.replace('Bearer ', '')
+    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token)
+    if (claimsError || !claimsData?.claims) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid or expired token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
 
     if (req.method !== 'POST') {
       return new Response(
         JSON.stringify({ error: 'Method not allowed' }),
-        { 
-          status: 405, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
+        { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
@@ -72,10 +89,15 @@ serve(async (req) => {
     if (!query || query.trim().length === 0) {
       return new Response(
         JSON.stringify({ error: 'Search query is required' }),
-        { 
-          status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Input validation
+    if (query.length > 500) {
+      return new Response(
+        JSON.stringify({ error: 'Query too long' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
@@ -84,7 +106,6 @@ serve(async (req) => {
     let searchType = 'text'
     let searchResults: any[] = []
 
-    // Always start with text search for the query
     const { data: textSearchData, error: textSearchError } = await supabaseClient
       .rpc('search_addresses_safely', { search_query: query })
 
@@ -94,10 +115,8 @@ serve(async (req) => {
 
     searchResults = textSearchData || []
 
-    // If we have coordinates and got results, calculate distances and sort by proximity
     if (coordinates && searchResults.length > 0) {
       searchType = 'text-with-proximity'
-      
       searchResults = searchResults
         .map(address => {
           const distance = calculateDistance(
@@ -106,11 +125,9 @@ serve(async (req) => {
           )
           return { ...address, distance }
         })
-        .sort((a, b) => a.distance - b.distance) // Sort by closest first
-        // No limit applied - return all results
+        .sort((a, b) => a.distance - b.distance)
 
     } else if (coordinates && searchResults.length === 0) {
-      // If no text matches found, fall back to proximity search
       searchType = 'proximity-fallback'
       
       let proximityQuery = supabaseClient
@@ -124,24 +141,20 @@ serve(async (req) => {
       if (!includePrivate) {
         proximityQuery = proximityQuery.eq('public', true)
       }
-
       if (region) {
         proximityQuery = proximityQuery.ilike('region', `%${region}%`)
       }
-
       if (city) {
         proximityQuery = proximityQuery.ilike('city', `%${city}%`)
       }
 
       const { data: proximityData, error: proximityError } = await proximityQuery
-        // No limit applied - get all matching addresses
 
       if (proximityError) {
         throw proximityError
       }
 
-      // Calculate distances and filter by radius
-      const radius = coordinates.radius || 1000 // default 1km radius
+      const radius = coordinates.radius || 1000
       searchResults = (proximityData || [])
         .map(address => {
           const distance = calculateDistance(
@@ -152,10 +165,6 @@ serve(async (req) => {
         })
         .filter(address => address.distance <= radius)
         .sort((a, b) => a.distance - b.distance)
-        // No limit applied - return all results within radius
-    } else {
-      // Text search only, no coordinates - return all results
-      // No limit applied
     }
 
     // Apply additional filters
@@ -173,7 +182,6 @@ serve(async (req) => {
       )
     }
 
-    // Format results
     const formattedResults = filteredResults.map(address => ({
       uac: address.uac,
       street: address.street,
@@ -202,12 +210,6 @@ serve(async (req) => {
       }
     }
 
-    console.log('Search completed:', {
-      query,
-      resultCount: formattedResults.length,
-      executionTime: `${Math.round(executionTime)}ms`
-    })
-
     return new Response(
       JSON.stringify(response),
       { 
@@ -219,10 +221,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in address search:', error)
     return new Response(
-      JSON.stringify({ 
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : String(error)
-      }),
+      JSON.stringify({ error: 'Internal server error' }),
       { 
         status: 500, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
@@ -232,7 +231,7 @@ serve(async (req) => {
 })
 
 function calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const R = 6371e3 // Earth's radius in meters
+  const R = 6371e3
   const φ1 = lat1 * Math.PI / 180
   const φ2 = lat2 * Math.PI / 180
   const Δφ = (lat2 - lat1) * Math.PI / 180
