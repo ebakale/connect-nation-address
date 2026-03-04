@@ -106,12 +106,12 @@ class LocalAuthManager {
     
     if (!user) return false;
     
-    // If it's a synced user, allow any password (they'll use online auth when online)
+    // Synced users MUST set an offline password before they can sign in offline
     if (user.password_hash === 'synced_from_online') {
-      return true;
+      return false;
     }
     
-    // Otherwise check the actual password
+    // Check the actual password hash
     const hashedPassword = await this.hashPassword(password);
     return user.password_hash === hashedPassword;
   }
