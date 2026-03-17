@@ -44,7 +44,7 @@ const UniversalDashboardLocationMap: React.FC<UniversalDashboardLocationMapProps
         <div className="h-96 bg-muted/50 rounded-lg flex items-center justify-center">
           <div className="text-center space-y-2">
             <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto"></div>
-            <p className="text-sm text-muted-foreground">{t('loadingMap') || 'Loading map...'}</p>
+            <p className="text-sm text-muted-foreground">{t('map.loadingMap', 'Loading map...')}</p>
           </div>
         </div>
       </div>
