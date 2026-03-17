@@ -166,22 +166,22 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
 
         switch (status) {
           case google.maps.DirectionsStatus.ZERO_RESULTS:
-            setError('No route found between these locations');
+            setError(t('directions.errorNoRoute'));
             break;
           case google.maps.DirectionsStatus.NOT_FOUND:
-            setError('Origin or destination could not be found');
+            setError(t('directions.errorNotFound'));
             break;
           case google.maps.DirectionsStatus.REQUEST_DENIED:
-            setError('Directions API request denied. Please enable the Directions API in Google Cloud Console.');
+            setError(t('directions.errorRequestDenied'));
             break;
           case google.maps.DirectionsStatus.OVER_QUERY_LIMIT:
-            setError('Too many requests. Please try again later.');
+            setError(t('directions.errorOverQueryLimit'));
             break;
           case google.maps.DirectionsStatus.UNKNOWN_ERROR:
-            setError('Server error. Please try again.');
+            setError(t('directions.errorServer'));
             break;
           default:
-            setError(`Could not calculate route: ${status}`);
+            setError(t('directions.errorGeneric', { status }));
         }
         setIsLoadingDirections(false);
       }
