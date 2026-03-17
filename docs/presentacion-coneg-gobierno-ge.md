@@ -466,7 +466,7 @@ FASE 1 (Meses 1-6)          FASE 2 (Meses 7-12)        FASE 3 (Meses 13-18)
 
 ---
 
-## 13. Retorno de Inversión (ROI)
+## 14. Retorno de Inversión (ROI)
 
 ### Beneficios Cuantificables
 
