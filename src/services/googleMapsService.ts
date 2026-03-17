@@ -1,6 +1,7 @@
 /// <reference types="google.maps" />
 import { Loader } from '@googlemaps/js-api-loader';
 import { supabase } from '@/integrations/supabase/client';
+import i18n from '@/i18n/config';
 
 // Singleton state
 let cachedApiKey: string | null = null;
@@ -78,7 +79,8 @@ export const loadGoogleMaps = async (): Promise<typeof google.maps | null> => {
         loader = new Loader({
           apiKey,
           version: 'weekly',
-          libraries: ['places', 'routes']
+          libraries: ['places', 'routes'],
+          language: i18n.language.split('-')[0],
         });
       }
       

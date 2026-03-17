@@ -669,5 +669,29 @@
   "householdCreatedSuccessfully": "Household created successfully",
   "failedToCreateHousehold": "Failed to create household",
   "resultsFound": "{{count}} results found",
-  "resultsFound_one": "{{count}} result found"
+  "resultsFound_one": "{{count}} result found",
+  "directions": {
+    "title": "Directions",
+    "drive": "Drive",
+    "walk": "Walk",
+    "transit": "Transit",
+    "openInMaps": "Open in Maps",
+    "gettingLocation": "Getting your location...",
+    "calculatingRoute": "Calculating route...",
+    "hideSteps": "Hide steps",
+    "showSteps": "Show steps",
+    "arriveAtDestination": "Arrive at destination",
+    "loadingMaps": "Loading Google Maps...",
+    "unableToLoadMaps": "Unable to Load Maps",
+    "mapsLoadError": "Google Maps could not be loaded. Please try again later.",
+    "geolocationNotSupported": "Geolocation is not supported",
+    "locationAccessDenied": "Could not get your location. Please enable location access.",
+    "routeTimedOut": "Route calculation timed out. Please try again.",
+    "errorNoRoute": "No route found between these locations",
+    "errorNotFound": "Origin or destination could not be found",
+    "errorRequestDenied": "Directions request denied. Please try again later.",
+    "errorOverQueryLimit": "Too many requests. Please try again later.",
+    "errorServer": "Server error. Please try again.",
+    "errorGeneric": "Could not calculate route: {{status}}"
+  }
 }

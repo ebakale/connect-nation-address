@@ -44,7 +44,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
   origin: providedOrigin,
   onClose,
 }) => {
-  const { t } = useTranslation(['common', 'address']);
+  const { t } = useTranslation('common');
   const mapRef = useRef<google.maps.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const directionsRendererRef = useRef<google.maps.DirectionsRenderer | null>(null);
@@ -96,7 +96,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
     }
 
     if (!navigator.geolocation) {
-      setError('Geolocation is not supported');
+      setError(t('directions.geolocationNotSupported'));
       setIsLoadingLocation(false);
       return;
     }
@@ -110,7 +110,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
         setIsLoadingLocation(false);
       },
       (err) => {
-        setError('Could not get your location. Please enable location access.');
+        setError(t('directions.locationAccessDenied'));
         setIsLoadingLocation(false);
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
@@ -136,7 +136,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
       timedOut = true;
       console.error('Route calculation timed out');
       setIsLoadingDirections(false);
-      setError('Route calculation timed out. Please try again.');
+      setError(t('directions.routeTimedOut'));
     }, 15000);
 
     const request: google.maps.DirectionsRequest = {
@@ -166,22 +166,22 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
 
         switch (status) {
           case google.maps.DirectionsStatus.ZERO_RESULTS:
-            setError('No route found between these locations');
+            setError(t('directions.errorNoRoute'));
             break;
           case google.maps.DirectionsStatus.NOT_FOUND:
-            setError('Origin or destination could not be found');
+            setError(t('directions.errorNotFound'));
             break;
           case google.maps.DirectionsStatus.REQUEST_DENIED:
-            setError('Directions API request denied. Please enable the Directions API in Google Cloud Console.');
+            setError(t('directions.errorRequestDenied'));
             break;
           case google.maps.DirectionsStatus.OVER_QUERY_LIMIT:
-            setError('Too many requests. Please try again later.');
+            setError(t('directions.errorOverQueryLimit'));
             break;
           case google.maps.DirectionsStatus.UNKNOWN_ERROR:
-            setError('Server error. Please try again.');
+            setError(t('directions.errorServer'));
             break;
           default:
-            setError(`Could not calculate route: ${status}`);
+            setError(t('directions.errorGeneric', { status }));
         }
         setIsLoadingDirections(false);
       }
@@ -355,7 +355,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
       <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
-          <p className="text-muted-foreground">Loading Google Maps...</p>
+          <p className="text-muted-foreground">{t('directions.loadingMaps')}</p>
         </div>
       </div>
     );
@@ -367,11 +367,11 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
         <Card className="max-w-md w-full">
           <CardContent className="pt-6 text-center space-y-4">
             <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
-            <h2 className="text-lg font-semibold">Unable to Load Maps</h2>
+            <h2 className="text-lg font-semibold">{t('directions.unableToLoadMaps')}</h2>
             <p className="text-muted-foreground">
-              {loadError || 'Google Maps could not be loaded. Please try again later.'}
+              {loadError || t('directions.mapsLoadError')}
             </p>
-            <Button onClick={onClose}>Close</Button>
+            <Button onClick={onClose}>{t('buttons.close')}</Button>
           </CardContent>
         </Card>
       </div>
@@ -385,7 +385,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
         <div className="flex items-center gap-3">
           <Navigation className="h-5 w-5 text-primary" />
           <div>
-            <h2 className="font-semibold text-sm sm:text-base">Directions</h2>
+            <h2 className="font-semibold text-sm sm:text-base">{t('directions.title')}</h2>
             <p className="text-xs text-muted-foreground truncate max-w-[200px] sm:max-w-none">
               To: {destination.uac}
             </p>
@@ -394,7 +394,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={openInExternalMaps}>
             <ExternalLink className="h-4 w-4 mr-1" />
-            <span className="hidden sm:inline">Open in Maps</span>
+            <span className="hidden sm:inline">{t('directions.openInMaps')}</span>
           </Button>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-5 w-5" />
@@ -411,7 +411,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
           disabled={!isLoaded}
         >
           <Car className="h-4 w-4 mr-1" />
-          Drive
+          {t('directions.drive')}
         </Button>
         <Button
           variant={travelMode === google.maps?.TravelMode?.WALKING ? 'default' : 'outline'}
@@ -420,7 +420,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
           disabled={!isLoaded}
         >
           <Footprints className="h-4 w-4 mr-1" />
-          Walk
+          {t('directions.walk')}
         </Button>
         <Button
           variant={travelMode === google.maps?.TravelMode?.TRANSIT ? 'default' : 'outline'}
@@ -429,7 +429,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
           disabled={!isLoaded}
         >
           <Bus className="h-4 w-4 mr-1" />
-          Transit
+          {t('directions.transit')}
         </Button>
       </div>
 
@@ -459,7 +459,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
             <div className="bg-background rounded-lg p-4 shadow-lg flex items-center gap-3">
               <Loader2 className="h-5 w-5 animate-spin text-primary" />
               <span className="text-sm">
-                {isLoadingLocation ? 'Getting your location...' : 'Calculating route...'}
+                {isLoadingLocation ? t('directions.gettingLocation') : t('directions.calculatingRoute')}
               </span>
             </div>
           </div>
@@ -500,11 +500,11 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
             >
               {showSteps ? (
                 <>
-                  Hide steps <ChevronDown className="h-4 w-4 ml-1" />
+                  {t('directions.hideSteps')} <ChevronDown className="h-4 w-4 ml-1" />
                 </>
               ) : (
                 <>
-                  Show steps <ChevronUp className="h-4 w-4 ml-1" />
+                  {t('directions.showSteps')} <ChevronUp className="h-4 w-4 ml-1" />
                 </>
               )}
             </Button>
@@ -539,7 +539,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
                       <MapPin className="h-3 w-3 text-green-600" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium">Arrive at destination</p>
+                      <p className="text-sm font-medium">{t('directions.arriveAtDestination')}</p>
                       <p className="text-xs text-muted-foreground">{destination.readable}</p>
                     </div>
                   </div>
