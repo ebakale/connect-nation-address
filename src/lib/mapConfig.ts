@@ -1,6 +1,5 @@
 /// <reference types="google.maps" />
-import { Loader } from '@googlemaps/js-api-loader';
-import { supabase } from '@/integrations/supabase/client';
+import { fetchApiKey, loadGoogleMaps } from '@/services/googleMapsService';
 
 // Unified map configuration
 export const MAP_CONFIG = {
@@ -61,26 +60,16 @@ export const MAP_CONFIG = {
   }
 };
 
-// Unified Google Maps loader
+// Unified Google Maps loader - delegates to singleton service
 export const createMapLoader = async (): Promise<string> => {
-  try {
-    const { data, error } = await supabase.functions.invoke('get-google-maps-token');
-    if (error) throw error;
-    return data.apiKey;
-  } catch (error) {
-    console.error('Error fetching Google Maps API key:', error);
-    throw new Error('Failed to load Google Maps API key');
-  }
+  const apiKey = await fetchApiKey();
+  if (!apiKey) throw new Error('Failed to load Google Maps API key');
+  return apiKey;
 };
 
-// Initialize Google Maps with unified configuration
-export const initializeGoogleMaps = async (apiKey: string): Promise<void> => {
-  const loader = new Loader({
-    apiKey,
-    version: 'weekly',
-    libraries: ['places']
-  });
-  await loader.load();
+// Initialize Google Maps - delegates to singleton service (apiKey param ignored, service manages it)
+export const initializeGoogleMaps = async (_apiKey?: string): Promise<void> => {
+  await loadGoogleMaps();
 };
 
 // Create standardized map instance
