@@ -263,6 +263,7 @@ export const useCitizenAddresses = () => {
     addSecondaryAddress,
     retireAddress,
     lookupAddressByUAC,
+    searchAddressesByText,
     // Helper getters
     currentAddresses: getCurrentAddresses(),
     primaryAddress: getPrimaryAddress(),
