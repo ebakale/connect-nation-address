@@ -534,7 +534,7 @@ FASE 1 (Meses 1-6)          FASE 2 (Meses 7-12)        FASE 3 (Meses 13-18)
 
 ---
 
-## 16. Hoja de Ruta
+## 17. Hoja de Ruta
 
 ### 2026
 
