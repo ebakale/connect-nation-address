@@ -95,7 +95,7 @@ const UniversalDashboardLocationMap: React.FC<UniversalDashboardLocationMapProps
           className="text-xs text-muted-foreground gap-1"
         >
           <Map className="h-3 w-3" />
-          {t('switchToOpenStreetMap') || 'Switch to OpenStreetMap'}
+          {t('map.switchToOpenStreetMap', 'Switch to OpenStreetMap')}
         </Button>
       </div>
       <Suspense fallback={
