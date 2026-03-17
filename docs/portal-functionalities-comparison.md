@@ -353,11 +353,12 @@ The Citizen Portal requires user authentication and provides comprehensive addre
 ## Technical Implementation
 
 ### Public Portal
-- **Route**: `/public`
-- **Component**: `PublicAccessPortal.tsx`
+- **Route**: `/public` (also accessible from index page `/`)
+- **Component**: `PublicAccessPortal.tsx` (wrapped in `PublicPortalWithAnalytics`)
 - **Authentication**: None required
 - **Database Access**: Read-only via RLS policies
-- **API Access**: Public endpoints only
+- **API Access**: Public endpoints only (`address-search-api` with optional auth)
+- **Internationalization**: Fully internationalized (EN/ES/FR) - all UI labels, search stats, pagination, and status indicators use i18n translation keys
 
 ### Citizen Portal
 - **Route**: `/citizen`
