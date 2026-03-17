@@ -96,7 +96,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
     }
 
     if (!navigator.geolocation) {
-      setError('Geolocation is not supported');
+      setError(t('directions.geolocationNotSupported'));
       setIsLoadingLocation(false);
       return;
     }
