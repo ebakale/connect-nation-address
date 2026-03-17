@@ -488,7 +488,7 @@ FASE 1 (Meses 1-6)          FASE 2 (Meses 7-12)        FASE 3 (Meses 13-18)
 
 ---
 
-## 14. Casos de Uso Reales
+## 15. Casos de Uso Reales
 
 ### Caso 1: Emergencia Médica en Malabo
 
