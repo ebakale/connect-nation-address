@@ -500,11 +500,11 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
             >
               {showSteps ? (
                 <>
-                  Hide steps <ChevronDown className="h-4 w-4 ml-1" />
+                  {t('directions.hideSteps')} <ChevronDown className="h-4 w-4 ml-1" />
                 </>
               ) : (
                 <>
-                  Show steps <ChevronUp className="h-4 w-4 ml-1" />
+                  {t('directions.showSteps')} <ChevronUp className="h-4 w-4 ml-1" />
                 </>
               )}
             </Button>
