@@ -688,7 +688,7 @@ Upgrade to Enterprise when:
 
 The Biakam National Address System is production-ready on a robust, scalable Supabase infrastructure. Current costs are minimal (~$25-40/month) with clear scaling paths to enterprise levels.
 
-**Current State (December 2025)**:
+**Current State (March 2026)**:
 - 72+ database tables
 - 52+ edge functions
 - 24+ user roles with geographic/domain scoping
@@ -703,6 +703,8 @@ The Biakam National Address System is production-ready on a robust, scalable Sup
 - Map fallback system (OSM when needed)
 - Automatic retention policy enforcement
 - 11 i18n namespaces (3 languages)
+- **Public Portal fully internationalized** (ES/FR/EN)
+- **Address Search API supports unauthenticated public access**
 
 **Strengths**:
 - Enterprise-grade security and compliance
@@ -713,6 +715,7 @@ The Biakam National Address System is production-ready on a robust, scalable Sup
 - Comprehensive feature set
 - Offline-first architecture
 - Mobile-optimized responsive UI
+- Public-facing APIs accessible without authentication
 
 **Next Steps**:
 - Monitor growth and optimize as needed
@@ -724,5 +727,5 @@ The Biakam National Address System is production-ready on a robust, scalable Sup
 
 ---
 
-*Last Updated: December 2025*
-*Infrastructure Version: 4.0*
+*Last Updated: March 2026*
+*Infrastructure Version: 4.1*

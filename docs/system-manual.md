@@ -1085,7 +1085,7 @@ This eliminates manual publishing steps while respecting residential privacy.
 - **Authentication**: Supabase Auth (JWT-based)
 - **Database**: PostgreSQL with PostGIS extension
 - **Storage**: Supabase Storage (S3-compatible)
-- **Edge Functions**: Deno runtime (42+ functions)
+- **Edge Functions**: Deno runtime (52+ functions)
 - **Real-time**: WebSocket subscriptions
 
 #### Mobile

@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-This blueprint outlines the architecture, services, and migration strategy for hosting the Biakam National Address System on Amazon Web Services (AWS). The system comprises **72+ database tables**, **52+ Edge Functions**, **24+ user roles**, **243+ RLS policies**, and supports **11 i18n namespaces** with offline-first mobile capabilities.
+This blueprint outlines the architecture, services, and migration strategy for hosting the Biakam National Address System on Amazon Web Services (AWS). The system comprises **72+ database tables**, **52+ Edge Functions**, **24+ user roles**, **243+ RLS policies**, and supports **11 i18n namespaces** with offline-first mobile capabilities. Note: Some edge functions (e.g., `address-search-api`) support optional authentication for public-facing endpoints.
 
 ### Target Audience
 - Government IT departments
