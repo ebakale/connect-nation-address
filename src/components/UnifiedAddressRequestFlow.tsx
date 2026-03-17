@@ -342,10 +342,10 @@ export function UnifiedAddressRequestFlow({
               <div className="flex gap-2">
                 <Button onClick={handleReset} variant="outline" className="flex-1">
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  {t('common:startOver')}
+                  {t('common:buttons.startOver')}
                 </Button>
                 <Button onClick={onCancel} className="flex-1">
-                  {t('common:backToDashboard')}
+                  {t('common:buttons.backToDashboard')}
                 </Button>
               </div>
             </CardContent>
@@ -419,7 +419,7 @@ export function UnifiedAddressRequestFlow({
                   {t('address:unifiedFlow.registerAnother')}
                 </Button>
                 <Button onClick={handleComplete} className="flex-1">
-                  {t('common:backToDashboard')}
+                  {t('common:buttons.backToDashboard')}
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
               </div>
