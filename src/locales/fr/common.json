@@ -598,6 +598,7 @@
   "enableLocationForDistance": "Activer la localisation pour les informations de distance",
   "enableLocation": "Activer la Localisation",
   "auth": {
+    "signIn": "Se Connecter",
     "accessYourAccount": "Accédez à Votre Compte",
     "signInDescription": "Connectez-vous pour soumettre des demandes d’adresses, suivre vos soumissions et accéder au registre.",
     "newUser": "Nouvel Utilisateur ?",
