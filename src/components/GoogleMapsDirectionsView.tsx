@@ -110,7 +110,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
         setIsLoadingLocation(false);
       },
       (err) => {
-        setError('Could not get your location. Please enable location access.');
+        setError(t('directions.locationAccessDenied'));
         setIsLoadingLocation(false);
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
