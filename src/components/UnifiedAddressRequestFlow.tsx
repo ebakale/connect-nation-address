@@ -345,7 +345,7 @@ export function UnifiedAddressRequestFlow({
                   {t('common:buttons.startOver')}
                 </Button>
                 <Button onClick={onCancel} className="flex-1">
-                  {t('common:backToDashboard')}
+                  {t('common:buttons.backToDashboard')}
                 </Button>
               </div>
             </CardContent>
