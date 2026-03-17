@@ -280,6 +280,7 @@ The frontend implements responsive design patterns:
 - 3 supported languages: English (en), Spanish (es), French (fr)
 - Dynamic translation fixes loaded from `translation_fixes` table
 - AI-powered translation suggestions
+- **Full internationalization of Public Portal** (all UI text uses i18n keys including search stats, pagination, status labels)
 
 ---
 
