@@ -8,8 +8,8 @@ This document outlines the comprehensive security architecture implemented in th
 **Compliance**: SOC 2 Type II, GDPR, CCPA compliant infrastructure
 **Authentication**: Dual-mode (Online/Offline) with unified interface
 **Authorization**: 20+ distinct roles with geographic and domain scoping
-**Last Security Audit**: December 2025
-**Next Review**: March 2026
+**Last Security Audit**: March 2026
+**Next Review**: June 2026
 
 ---
 
