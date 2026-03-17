@@ -394,7 +394,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={openInExternalMaps}>
             <ExternalLink className="h-4 w-4 mr-1" />
-            <span className="hidden sm:inline">Open in Maps</span>
+            <span className="hidden sm:inline">{t('directions.openInMaps')}</span>
           </Button>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-5 w-5" />
