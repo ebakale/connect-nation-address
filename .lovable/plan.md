@@ -1,52 +1,72 @@
 
 
-## Add City/Street Search to Address Lookup
+## Improve the "Report Emergency" Page on the Landing Page
 
-### Current Behavior
-The `AddressLookupStep` only allows searching by exact UAC code via `lookupAddressByUAC`, which queries `addresses` table with `.eq('uac', uac)`.
+### Current State
 
-### Existing Infrastructure
-The database already has `search_addresses_safely` RPC that searches by UAC (exact match), street, city, and building (ILIKE). The `useAddresses` hook already wraps it as `searchAddresses`. So we just need to wire it into the UI.
+The emergency section (lines 775-796 in Index.tsx) is minimal:
+- A red heading and subtitle
+- An optional prefilled-address info box
+- The `EmergencyAlertProcessor` form component (a single card with type selector, description, contact, location, and submit)
 
-### Changes
+Both the Index wrapper and the form component lack the visual polish and informational richness applied to the About and Search sections.
 
-#### 1. Update `src/components/AddressLookupStep.tsx`
-- Add a **search mode toggle** (tabs or radio): "Search by UAC" vs "Search by City/Street"
-- In UAC mode: keep current exact-match behavior (`lookupAddressByUAC`)
-- In text search mode:
-  - Single input field for free-text query (city, street, building)
-  - Call `search_addresses_safely` RPC via supabase client
-  - Display a **list of matching results** (not just one) with street, city, region, UAC, verified badge
-  - User clicks a result to select it → triggers `onAddressFound(uac, details)`
-- Keep the "Create New Address" fallback when no results found in either mode
+### Proposed Improvements
 
-#### 2. Update `src/hooks/useCAR.tsx`
-- Add a `searchAddresses(query: string)` method that calls `supabase.rpc('search_addresses_safely', { search_query: query })` and returns the results array
-- Export it alongside `lookupAddressByUAC`
+#### 1. Styled Header with Badge and Icon (Index.tsx)
+Replace the plain red heading with a structured header matching other sections:
+- A "Critical Service" or "Emergency Services" badge in destructive red
+- A large `AlertTriangle` icon in a red circle
+- A more descriptive subtitle explaining the service
 
-#### 3. Add translation keys (en/es/fr `address.json`)
-- `unifiedFlow.searchByUAC` — "Search by UAC"
-- `unifiedFlow.searchByLocation` — "Search by City or Street"
-- `unifiedFlow.locationSearchPlaceholder` — "Enter city, street, or building name..."
-- `unifiedFlow.selectAddress` — "Select"
-- `unifiedFlow.multipleResultsFound` — "{{count}} addresses found"
-- `unifiedFlow.noResultsFound` — "No addresses found matching your search"
+#### 2. Important Info / Safety Tips Bar (Index.tsx)
+Add a highlighted alert box below the header with key safety information:
+- "Call 114 for immediate life-threatening emergencies"
+- "This form notifies local police dispatch automatically"
+- "Your GPS location is shared with responders"
 
-### UI Layout (text search mode)
-```text
-┌──────────────────────────────────────────┐
-│ [Search by UAC] [Search by City/Street]  │  ← Tabs
-├──────────────────────────────────────────┤
-│ [Enter city, street...________] [Search] │
-├──────────────────────────────────────────┤
-│ ▸ Calle Principal - Malabo, BN   GQ-...  │  ← clickable results
-│ ▸ Calle 30 de Junio - Bata, LI   GQ-... │
-│ ▸ ...                                     │
-└──────────────────────────────────────────┘
-```
+This sets expectations and provides critical context before the user fills the form.
 
-### Files Modified
-- `src/components/AddressLookupStep.tsx` — add tab toggle, text search mode with results list
-- `src/hooks/useCAR.tsx` — add `searchAddresses` method
-- `src/locales/en/address.json`, `src/locales/es/address.json`, `src/locales/fr/address.json` — new keys
+#### 3. Quick Emergency Type Buttons (EmergencyAlertProcessor.tsx)
+Above the existing form, add a row of large, tappable icon buttons for common emergency types (Fire, Medical, Police, Accident) so users can select with a single tap instead of opening a dropdown. Tapping one pre-selects the dropdown value. The dropdown remains as a fallback for less common types.
 
+#### 4. Enhanced Location Section (EmergencyAlertProcessor.tsx)
+- Show GPS status with a colored indicator dot (green = active, yellow = loading, red = unavailable)
+- Display a mini context card with coordinates and accuracy when location is available
+- Add a "Refresh Location" button alongside the existing "Get Current Location"
+
+#### 5. Visual Step Indicators (EmergencyAlertProcessor.tsx)
+Add subtle numbered step labels above each form section:
+- Step 1: Select Emergency Type
+- Step 2: Describe the Situation
+- Step 3: Your Location
+- Step 4: Send Alert
+
+This guides users through the form under stress.
+
+#### 6. Enhanced Submit Area (EmergencyAlertProcessor.tsx)
+- Add a small disclaimer text above the submit button: "By submitting, you confirm this is a genuine emergency"
+- Make the submit button larger and more prominent with a pulsing border effect
+- Show estimated response context after submission (e.g., "Alert sent - dispatchers notified")
+
+#### 7. Emergency Contacts Footer (Index.tsx)
+Below the form, add a compact footer card with:
+- Emergency phone numbers (Police: 114, Fire: 115, Medical: 116)
+- A note about when to call vs. when to use the form
+
+#### 8. Prefilled Address Enhancement (Index.tsx)
+When a prefilled address is present, show it more prominently with a map-pin icon, structured layout, and a small "Change" link that navigates back to search.
+
+### Technical Details
+
+**Files modified:**
+1. `src/pages/Index.tsx` -- the `case 'emergency':` block (lines 775-796): add header badge, safety tips alert, emergency contacts footer, and enhanced prefilled address display
+2. `src/components/EmergencyAlertProcessor.tsx` -- enhance the form UI with quick-select type buttons, step indicators, GPS status display, and improved submit area
+
+All changes are purely visual/layout:
+- Use existing UI components (`Card`, `Badge`, `Button`, `Alert`, `Separator`)
+- Use existing `lucide-react` icons (`Flame`, `Heart`, `Shield`, `Car`, `Phone`, `Info`, `Navigation`)
+- Use `t()` translation calls with `defaultValue` fallbacks for new strings
+- No new dependencies, APIs, database changes, or business logic modifications
+- Preserve all existing functionality: form submission, GPS detection, prefilled address flow, edge function invocation
+- Maintain responsive design with existing patterns
