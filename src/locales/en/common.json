@@ -598,6 +598,7 @@
   "enableLocationForDistance": "Enable location for distance info",
   "enableLocation": "Enable Location",
   "auth": {
+    "signIn": "Sign In",
     "accessYourAccount": "Access Your Account",
     "signInDescription": "Sign in to submit address requests, track your submissions, and access the registry.",
     "newUser": "New User?",
