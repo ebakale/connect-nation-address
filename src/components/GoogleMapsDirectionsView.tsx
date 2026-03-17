@@ -44,7 +44,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
   origin: providedOrigin,
   onClose,
 }) => {
-  const { t } = useTranslation(['common', 'address']);
+  const { t } = useTranslation('common');
   const mapRef = useRef<google.maps.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const directionsRendererRef = useRef<google.maps.DirectionsRenderer | null>(null);
