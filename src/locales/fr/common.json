@@ -667,5 +667,29 @@
   "householdCreatedSuccessfully": "Ménage créé avec succès",
   "failedToCreateHousehold": "Échec de la création du ménage",
   "resultsFound": "{{count}} résultats trouvés",
-  "resultsFound_one": "{{count}} résultat trouvé"
+  "resultsFound_one": "{{count}} résultat trouvé",
+  "directions": {
+    "title": "Itinéraire",
+    "drive": "Conduire",
+    "walk": "Marcher",
+    "transit": "Transport",
+    "openInMaps": "Ouvrir dans Maps",
+    "gettingLocation": "Obtention de votre position...",
+    "calculatingRoute": "Calcul de l'itinéraire...",
+    "hideSteps": "Masquer les étapes",
+    "showSteps": "Afficher les étapes",
+    "arriveAtDestination": "Arrivée à destination",
+    "loadingMaps": "Chargement de Google Maps...",
+    "unableToLoadMaps": "Impossible de charger la carte",
+    "mapsLoadError": "Google Maps n'a pas pu être chargé. Veuillez réessayer plus tard.",
+    "geolocationNotSupported": "La géolocalisation n'est pas prise en charge",
+    "locationAccessDenied": "Impossible d'obtenir votre position. Veuillez activer l'accès à la localisation.",
+    "routeTimedOut": "Le calcul de l'itinéraire a expiré. Veuillez réessayer.",
+    "errorNoRoute": "Aucun itinéraire trouvé entre ces emplacements",
+    "errorNotFound": "L'origine ou la destination n'a pas pu être trouvée",
+    "errorRequestDenied": "Demande d'itinéraire refusée. Veuillez réessayer plus tard.",
+    "errorOverQueryLimit": "Trop de requêtes. Veuillez réessayer plus tard.",
+    "errorServer": "Erreur du serveur. Veuillez réessayer.",
+    "errorGeneric": "Impossible de calculer l'itinéraire : {{status}}"
+  }
 }

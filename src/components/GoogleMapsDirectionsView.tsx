@@ -539,7 +539,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
                       <MapPin className="h-3 w-3 text-green-600" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium">Arrive at destination</p>
+                      <p className="text-sm font-medium">{t('directions.arriveAtDestination')}</p>
                       <p className="text-xs text-muted-foreground">{destination.readable}</p>
                     </div>
                   </div>

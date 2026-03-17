@@ -667,5 +667,29 @@
   "householdCreatedSuccessfully": "Hogar creado con éxito",
   "failedToCreateHousehold": "Error al crear hogar",
   "resultsFound": "{{count}} resultados encontrados",
-  "resultsFound_one": "{{count}} resultado encontrado"
+  "resultsFound_one": "{{count}} resultado encontrado",
+  "directions": {
+    "title": "Indicaciones",
+    "drive": "Conducir",
+    "walk": "Caminar",
+    "transit": "Transporte",
+    "openInMaps": "Abrir en Mapas",
+    "gettingLocation": "Obteniendo tu ubicación...",
+    "calculatingRoute": "Calculando ruta...",
+    "hideSteps": "Ocultar pasos",
+    "showSteps": "Mostrar pasos",
+    "arriveAtDestination": "Llegar al destino",
+    "loadingMaps": "Cargando Google Maps...",
+    "unableToLoadMaps": "No se pudo cargar el mapa",
+    "mapsLoadError": "No se pudo cargar Google Maps. Por favor, inténtalo de nuevo más tarde.",
+    "geolocationNotSupported": "La geolocalización no es compatible",
+    "locationAccessDenied": "No se pudo obtener tu ubicación. Por favor, habilita el acceso a la ubicación.",
+    "routeTimedOut": "El cálculo de la ruta expiró. Por favor, inténtalo de nuevo.",
+    "errorNoRoute": "No se encontró ruta entre estas ubicaciones",
+    "errorNotFound": "No se pudo encontrar el origen o el destino",
+    "errorRequestDenied": "Solicitud de indicaciones denegada. Por favor, inténtalo de nuevo más tarde.",
+    "errorOverQueryLimit": "Demasiadas solicitudes. Por favor, inténtalo de nuevo más tarde.",
+    "errorServer": "Error del servidor. Por favor, inténtalo de nuevo.",
+    "errorGeneric": "No se pudo calcular la ruta: {{status}}"
+  }
 }
