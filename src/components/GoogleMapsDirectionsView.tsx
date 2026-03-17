@@ -459,7 +459,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
             <div className="bg-background rounded-lg p-4 shadow-lg flex items-center gap-3">
               <Loader2 className="h-5 w-5 animate-spin text-primary" />
               <span className="text-sm">
-                {isLoadingLocation ? 'Getting your location...' : 'Calculating route...'}
+                {isLoadingLocation ? t('directions.gettingLocation') : t('directions.calculatingRoute')}
               </span>
             </div>
           </div>
