@@ -694,5 +694,11 @@
     "errorOverQueryLimit": "Too many requests. Please try again later.",
     "errorServer": "Server error. Please try again.",
     "errorGeneric": "Could not calculate route: {{status}}"
+  },
+  "pagination": {
+    "page": "Page",
+    "of": "of",
+    "previous": "Previous",
+    "next": "Next"
   }
 }
