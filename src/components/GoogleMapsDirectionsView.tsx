@@ -355,7 +355,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
       <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
-          <p className="text-muted-foreground">Loading Google Maps...</p>
+          <p className="text-muted-foreground">{t('directions.loadingMaps')}</p>
         </div>
       </div>
     );
