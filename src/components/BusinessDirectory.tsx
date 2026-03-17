@@ -179,7 +179,7 @@ export function BusinessDirectory() {
 
       {/* Results Count */}
       <p className="text-sm text-muted-foreground">
-        {t('search.resultsFound', { count: filteredBusinesses.length })}
+        {t('common:resultsFound', { count: filteredBusinesses.length, defaultValue: '{{count}} results found' })}
       </p>
 
       {filteredBusinesses.length === 0 ? (
