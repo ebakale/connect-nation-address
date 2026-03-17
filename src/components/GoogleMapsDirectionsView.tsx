@@ -136,7 +136,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
       timedOut = true;
       console.error('Route calculation timed out');
       setIsLoadingDirections(false);
-      setError('Route calculation timed out. Please try again.');
+      setError(t('directions.routeTimedOut'));
     }, 15000);
 
     const request: google.maps.DirectionsRequest = {
