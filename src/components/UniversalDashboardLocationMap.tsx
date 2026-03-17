@@ -74,7 +74,7 @@ const UniversalDashboardLocationMap: React.FC<UniversalDashboardLocationMapProps
                 className="gap-1"
               >
                 <RefreshCw className="h-3 w-3" />
-                {t('retryGoogleMaps') || 'Retry Google Maps'}
+                {t('map.retryGoogleMaps', 'Retry Google Maps')}
               </Button>
             </AlertDescription>
           </Alert>
