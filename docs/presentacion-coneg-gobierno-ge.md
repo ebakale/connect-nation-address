@@ -404,7 +404,36 @@ ConEG proporciona herramientas críticas para la seguridad del Estado:
 
 ---
 
-## 12. Modelo de Implementación
+## 12. Marco Legal y Regulatorio
+
+### Iniciativas Legislativas Necesarias
+
+Para garantizar el éxito y la sostenibilidad de ConEG, se requieren las siguientes iniciativas legislativas:
+
+| # | Iniciativa | Instrumento | Plazo |
+|---|-----------|-------------|-------|
+| 1 | **Decreto de Creación del SNDD** | Decreto Presidencial | Inmediato |
+| 2 | **Ley de Protección de Datos** | Ley Orgánica | 6 meses |
+| 3 | **Ley del Sistema Nacional de Direcciones** | Ley Orgánica | 9 meses |
+| 4 | **Decreto-Ley de Emergencias** | Decreto-Ley | 6 meses |
+| 5 | **Regulación Postal Digital** | Ley Ordinaria | 12 meses |
+| 6 | **Reforma Catastral** | Ley de Reforma | 18 meses |
+| 7 | **Decreto de Adopción Digital** | Decreto Presidencial | 12 meses |
+
+### Estrategia Recomendada
+
+```
+FASE 1 → Decreto Presidencial (inicio inmediato del piloto)
+FASE 2 → Leyes de protección y emergencias (durante el piloto)
+FASE 3 → Leyes sustantivas (tras evaluación del piloto)
+FASE 4 → Reformas sectoriales (expansión nacional)
+```
+
+> **Nota:** El piloto en Malabo puede iniciar con un simple Decreto Presidencial, sin necesidad de esperar la aprobación de todas las leyes. El documento detallado de propuestas legislativas está disponible en `docs/marco-legislativo-coneg.md`.
+
+---
+
+## 13. Modelo de Implementación
 
 ### Fases de Despliegue
 
