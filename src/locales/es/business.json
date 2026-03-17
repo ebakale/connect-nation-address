@@ -113,7 +113,9 @@
     "viewOnMap": "Ver en el Mapa",
     "publicService": "Servicio Público",
     "appointmentRequired": "Requiere Cita",
-    "accessible": "Accesible"
+    "accessible": "Accesible",
+    "resultsFound": "{{count}} resultados encontrados",
+    "resultsFound_one": "{{count}} resultado encontrado"
   },
   "dashboard": {
     "myBusinesses": "Mis Negocios",
