@@ -149,7 +149,7 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 #### Edge Functions (52+)
 
 **Address Management** (12 functions):
-- `address-search-api` - Public search endpoint
+- `address-search-api` - Public search endpoint (supports unauthenticated access for public addresses)
 - `address-validation-api` - Coordinate validation
 - `address-webhook-triggers` - Partner notifications
 - `auto-verify-address` - Automated verification
