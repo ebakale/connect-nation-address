@@ -350,5 +350,5 @@ A: Yes, submit an address change request. Requires re-verification.
 
 ---
 
-*Last Updated: December 2025*
-*Version: 1.0*
+*Last Updated: March 2026*
+*Version: 1.1*

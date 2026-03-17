@@ -1085,7 +1085,7 @@ This eliminates manual publishing steps while respecting residential privacy.
 - **Authentication**: Supabase Auth (JWT-based)
 - **Database**: PostgreSQL with PostGIS extension
 - **Storage**: Supabase Storage (S3-compatible)
-- **Edge Functions**: Deno runtime (42+ functions)
+- **Edge Functions**: Deno runtime (52+ functions)
 - **Real-time**: WebSocket subscriptions
 
 #### Mobile
@@ -1328,6 +1328,6 @@ auto_update_incident_status() → TRIGGER
 
 ---
 
-*Last Updated: December 2025*
-*System Version: 3.0*
-*Document Version: 3.0*
+*Last Updated: March 2026*
+*System Version: 4.1*
+*Document Version: 4.0*

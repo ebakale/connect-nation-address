@@ -409,5 +409,5 @@ For questions about data retention:
 
 ---
 
-*Last Updated: December 2025*
-*Version: 1.0*
+*Last Updated: March 2026*
+*Version: 1.1*

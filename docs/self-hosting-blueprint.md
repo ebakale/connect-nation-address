@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-This blueprint provides a comprehensive guide for self-hosting the Biakam National Address System using open-source technologies. The system comprises **72+ database tables**, **52+ Edge Functions**, **24+ user roles**, **243+ RLS policies**, and supports **11 i18n namespaces** with offline-first mobile capabilities.
+This blueprint provides a comprehensive guide for self-hosting the Biakam National Address System using open-source technologies. The system comprises **72+ database tables**, **52+ Edge Functions**, **24+ user roles**, **243+ RLS policies**, and supports **11 i18n namespaces** with offline-first mobile capabilities. Note: Some API endpoints (e.g., `address-search-api`) support optional authentication for public-facing access.
 
 ### Target Audience
 - Government data centers requiring full data sovereignty

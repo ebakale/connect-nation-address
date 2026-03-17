@@ -9,8 +9,8 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 **Hosting**: Lovable Cloud with Supabase backend
 **Region**: US-East (primary)
 **Status**: ✅ Production Ready
-**Last Updated**: December 2025
-**Infrastructure Version**: 4.0
+**Last Updated**: March 2026
+**Infrastructure Version**: 4.1
 
 ---
 
@@ -149,7 +149,7 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 #### Edge Functions (52+)
 
 **Address Management** (12 functions):
-- `address-search-api` - Public search endpoint
+- `address-search-api` - Public search endpoint (supports unauthenticated access for public addresses)
 - `address-validation-api` - Coordinate validation
 - `address-webhook-triggers` - Partner notifications
 - `auto-verify-address` - Automated verification
@@ -280,6 +280,7 @@ The frontend implements responsive design patterns:
 - 3 supported languages: English (en), Spanish (es), French (fr)
 - Dynamic translation fixes loaded from `translation_fixes` table
 - AI-powered translation suggestions
+- **Full internationalization of Public Portal** (all UI text uses i18n keys including search stats, pagination, status labels)
 
 ---
 
@@ -687,7 +688,7 @@ Upgrade to Enterprise when:
 
 The Biakam National Address System is production-ready on a robust, scalable Supabase infrastructure. Current costs are minimal (~$25-40/month) with clear scaling paths to enterprise levels.
 
-**Current State (December 2025)**:
+**Current State (March 2026)**:
 - 72+ database tables
 - 52+ edge functions
 - 24+ user roles with geographic/domain scoping
@@ -702,6 +703,8 @@ The Biakam National Address System is production-ready on a robust, scalable Sup
 - Map fallback system (OSM when needed)
 - Automatic retention policy enforcement
 - 11 i18n namespaces (3 languages)
+- **Public Portal fully internationalized** (ES/FR/EN)
+- **Address Search API supports unauthenticated public access**
 
 **Strengths**:
 - Enterprise-grade security and compliance
@@ -712,6 +715,7 @@ The Biakam National Address System is production-ready on a robust, scalable Sup
 - Comprehensive feature set
 - Offline-first architecture
 - Mobile-optimized responsive UI
+- Public-facing APIs accessible without authentication
 
 **Next Steps**:
 - Monitor growth and optimize as needed
@@ -723,5 +727,5 @@ The Biakam National Address System is production-ready on a robust, scalable Sup
 
 ---
 
-*Last Updated: December 2025*
-*Infrastructure Version: 4.0*
+*Last Updated: March 2026*
+*Infrastructure Version: 4.1*
