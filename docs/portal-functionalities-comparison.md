@@ -374,11 +374,18 @@ The Citizen Portal requires user authentication and provides comprehensive addre
 
 ---
 
+## Recent Updates (March 2026)
+
+### Public Portal Improvements
+- ✅ **Full Internationalization**: All UI text now uses i18n keys (EN/ES/FR), including search statistics, pagination, status labels, and business-related fields
+- ✅ **Unauthenticated Address Search**: `address-search-api` now supports optional authentication - unauthenticated users can search public/verified addresses; authenticated users get access to private address filtering
+- ✅ **Public Portal Analytics**: Wrapped in `PublicPortalWithAnalytics` component for usage tracking
+
 ## Future Enhancements
 
 ### Planned Features for Public Portal
 - Advanced search filters (by address type, verification date)
-- Multi-language support expansion
+- Multi-language support expansion (Portuguese planned)
 - Offline address caching
 - Public statistics dashboard
 - Community-reported address issues
@@ -391,7 +398,6 @@ The Citizen Portal requires user authentication and provides comprehensive addre
 - Address transfer on relocation
 - Integration with utility services
 - Property tax integration
-- Postal service integration
 - Real-time address status tracking
 - Mobile app with offline support
 
