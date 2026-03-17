@@ -385,7 +385,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
         <div className="flex items-center gap-3">
           <Navigation className="h-5 w-5 text-primary" />
           <div>
-            <h2 className="font-semibold text-sm sm:text-base">Directions</h2>
+            <h2 className="font-semibold text-sm sm:text-base">{t('directions.title')}</h2>
             <p className="text-xs text-muted-foreground truncate max-w-[200px] sm:max-w-none">
               To: {destination.uac}
             </p>
