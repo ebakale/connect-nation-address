@@ -367,11 +367,11 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
         <Card className="max-w-md w-full">
           <CardContent className="pt-6 text-center space-y-4">
             <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
-            <h2 className="text-lg font-semibold">Unable to Load Maps</h2>
+            <h2 className="text-lg font-semibold">{t('directions.unableToLoadMaps')}</h2>
             <p className="text-muted-foreground">
-              {loadError || 'Google Maps could not be loaded. Please try again later.'}
+              {loadError || t('directions.mapsLoadError')}
             </p>
-            <Button onClick={onClose}>Close</Button>
+            <Button onClick={onClose}>{t('buttons.close')}</Button>
           </CardContent>
         </Card>
       </div>
