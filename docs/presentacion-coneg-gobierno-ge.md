@@ -508,7 +508,7 @@ FASE 1 (Meses 1-6)          FASE 2 (Meses 7-12)        FASE 3 (Meses 13-18)
 
 ---
 
-## 15. Comparativa Internacional
+## 16. Comparativa Internacional
 
 ### Países sin Sistema Postal vs. Con ConEG
 
