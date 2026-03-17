@@ -1,6 +1,7 @@
 /// <reference types="google.maps" />
 import { Loader } from '@googlemaps/js-api-loader';
 import { supabase } from '@/integrations/supabase/client';
+import i18n from '@/i18n/config';
 
 // Singleton state
 let cachedApiKey: string | null = null;
