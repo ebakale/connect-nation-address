@@ -1,72 +1,50 @@
 
 
-## Improve the "Report Emergency" Page on the Landing Page
+## Internationalize Google Maps Directions View
 
-### Current State
+### Problem
+Two issues cause the directions view to always appear in English:
 
-The emergency section (lines 775-796 in Index.tsx) is minimal:
-- A red heading and subtitle
-- An optional prefilled-address info box
-- The `EmergencyAlertProcessor` form component (a single card with type selector, description, contact, location, and submit)
+1. **Google Maps SDK** is loaded without a `language` parameter, so it defaults to English for all map labels, route instructions, distance/duration text, and turn-by-turn steps.
+2. **`GoogleMapsDirectionsView.tsx`** has ~15 hardcoded English strings (e.g., "Directions", "Drive", "Walk", "Transit", "Getting your location...", "Calculating route...", "Hide steps", "Show steps", "Arrive at destination", "Open in Maps", "Loading Google Maps...", error messages, etc.).
 
-Both the Index wrapper and the form component lack the visual polish and informational richness applied to the About and Search sections.
+### Fix
 
-### Proposed Improvements
+#### 1. Pass language to Google Maps Loader (`src/services/googleMapsService.ts`)
+- Import `i18n` from `@/i18n/config`
+- Add `language: i18n.language.split('-')[0]` to the `Loader` constructor options
+- This makes the Google Maps SDK render all its native content (map labels, street names, directions instructions, distance/duration text) in the user's selected language
+- Since the loader is a singleton created once, if the language changes mid-session and maps haven't loaded yet, it picks up the current language; if already loaded, Google Maps caches it (acceptable trade-off)
 
-#### 1. Styled Header with Badge and Icon (Index.tsx)
-Replace the plain red heading with a structured header matching other sections:
-- A "Critical Service" or "Emergency Services" badge in destructive red
-- A large `AlertTriangle` icon in a red circle
-- A more descriptive subtitle explaining the service
+#### 2. Replace hardcoded strings in `GoogleMapsDirectionsView.tsx`
+The component already imports `useTranslation` but doesn't use `t()` for its UI strings. Replace all ~15 hardcoded English strings with `t()` calls using new keys under the `common` namespace (e.g., `directions.title`, `directions.drive`, `directions.walk`, `directions.transit`, `directions.gettingLocation`, `directions.calculatingRoute`, `directions.hideSteps`, `directions.showSteps`, `directions.arriveAtDestination`, `directions.openInMaps`, `directions.loadingMaps`, `directions.unableToLoadMaps`, `directions.geolocationNotSupported`, `directions.locationAccessDenied`, and error messages).
 
-#### 2. Important Info / Safety Tips Bar (Index.tsx)
-Add a highlighted alert box below the header with key safety information:
-- "Call 114 for immediate life-threatening emergencies"
-- "This form notifies local police dispatch automatically"
-- "Your GPS location is shared with responders"
+#### 3. Add translation keys to locale files
+Add a `directions` section to `src/locales/{en,es,fr}/common.json` with all the new keys and their translations.
 
-This sets expectations and provides critical context before the user fills the form.
+### Hardcoded strings to replace (line references in GoogleMapsDirectionsView.tsx)
+- L99: `'Geolocation is not supported'`
+- L113: `'Could not get your location...'`
+- L139: `'Route calculation timed out...'`
+- L169-183: Error messages (zero results, not found, denied, etc.)
+- L358: `'Loading Google Maps...'`
+- L370: `'Unable to Load Maps'`
+- L372: `'Google Maps could not be loaded...'`
+- L374: `'Close'`
+- L388: `'Directions'`
+- L397: `'Open in Maps'`
+- L414: `'Drive'`
+- L423: `'Walk'`
+- L432: `'Transit'`
+- L462: `'Getting your location...'` / `'Calculating route...'`
+- L503: `'Hide steps'`
+- L507: `'Show steps'`
+- L542: `'Arrive at destination'`
 
-#### 3. Quick Emergency Type Buttons (EmergencyAlertProcessor.tsx)
-Above the existing form, add a row of large, tappable icon buttons for common emergency types (Fire, Medical, Police, Accident) so users can select with a single tap instead of opening a dropdown. Tapping one pre-selects the dropdown value. The dropdown remains as a fallback for less common types.
+### Files Modified
+- `src/services/googleMapsService.ts` — add `language` param to Loader
+- `src/components/GoogleMapsDirectionsView.tsx` — replace all hardcoded strings with `t()` calls
+- `src/locales/en/common.json` — add `directions` section
+- `src/locales/es/common.json` — add `directions` section (Spanish)
+- `src/locales/fr/common.json` — add `directions` section (French)
 
-#### 4. Enhanced Location Section (EmergencyAlertProcessor.tsx)
-- Show GPS status with a colored indicator dot (green = active, yellow = loading, red = unavailable)
-- Display a mini context card with coordinates and accuracy when location is available
-- Add a "Refresh Location" button alongside the existing "Get Current Location"
-
-#### 5. Visual Step Indicators (EmergencyAlertProcessor.tsx)
-Add subtle numbered step labels above each form section:
-- Step 1: Select Emergency Type
-- Step 2: Describe the Situation
-- Step 3: Your Location
-- Step 4: Send Alert
-
-This guides users through the form under stress.
-
-#### 6. Enhanced Submit Area (EmergencyAlertProcessor.tsx)
-- Add a small disclaimer text above the submit button: "By submitting, you confirm this is a genuine emergency"
-- Make the submit button larger and more prominent with a pulsing border effect
-- Show estimated response context after submission (e.g., "Alert sent - dispatchers notified")
-
-#### 7. Emergency Contacts Footer (Index.tsx)
-Below the form, add a compact footer card with:
-- Emergency phone numbers (Police: 114, Fire: 115, Medical: 116)
-- A note about when to call vs. when to use the form
-
-#### 8. Prefilled Address Enhancement (Index.tsx)
-When a prefilled address is present, show it more prominently with a map-pin icon, structured layout, and a small "Change" link that navigates back to search.
-
-### Technical Details
-
-**Files modified:**
-1. `src/pages/Index.tsx` -- the `case 'emergency':` block (lines 775-796): add header badge, safety tips alert, emergency contacts footer, and enhanced prefilled address display
-2. `src/components/EmergencyAlertProcessor.tsx` -- enhance the form UI with quick-select type buttons, step indicators, GPS status display, and improved submit area
-
-All changes are purely visual/layout:
-- Use existing UI components (`Card`, `Badge`, `Button`, `Alert`, `Separator`)
-- Use existing `lucide-react` icons (`Flame`, `Heart`, `Shield`, `Car`, `Phone`, `Info`, `Navigation`)
-- Use `t()` translation calls with `defaultValue` fallbacks for new strings
-- No new dependencies, APIs, database changes, or business logic modifications
-- Preserve all existing functionality: form submission, GPS detection, prefilled address flow, edge function invocation
-- Maintain responsive design with existing patterns
