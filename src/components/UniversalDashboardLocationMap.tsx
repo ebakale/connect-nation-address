@@ -61,7 +61,7 @@ const UniversalDashboardLocationMap: React.FC<UniversalDashboardLocationMapProps
             <MapPin className="h-4 w-4" />
             <AlertDescription className="flex items-center justify-between flex-wrap gap-2">
               <span className="text-sm">
-                {t('usingOpenStreetMapFallback') || 'Using OpenStreetMap (Google Maps unavailable)'}
+                {t('map.usingOpenStreetMapFallback', 'Using OpenStreetMap (Google Maps unavailable)')}
               </span>
               <Button
                 size="sm"
