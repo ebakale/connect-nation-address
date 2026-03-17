@@ -22,12 +22,13 @@
 9. [Seguridad Nacional](#9-seguridad-nacional)
 10. [Cobertura Geográfica](#10-cobertura-geográfica)
 11. [Arquitectura Tecnológica](#11-arquitectura-tecnológica)
-12. [Modelo de Implementación](#12-modelo-de-implementación)
-13. [Retorno de Inversión (ROI)](#13-retorno-de-inversión-roi)
-14. [Casos de Uso Reales](#14-casos-de-uso-reales)
-15. [Comparativa Internacional](#15-comparativa-internacional)
-16. [Hoja de Ruta](#16-hoja-de-ruta)
-17. [Llamada a la Acción](#17-llamada-a-la-acción)
+12. [Marco Legal y Regulatorio](#12-marco-legal-y-regulatorio)
+13. [Modelo de Implementación](#13-modelo-de-implementación)
+14. [Retorno de Inversión (ROI)](#14-retorno-de-inversión-roi)
+15. [Casos de Uso Reales](#15-casos-de-uso-reales)
+16. [Comparativa Internacional](#16-comparativa-internacional)
+17. [Hoja de Ruta](#17-hoja-de-ruta)
+18. [Llamada a la Acción](#18-llamada-a-la-acción)
 
 ---
 
