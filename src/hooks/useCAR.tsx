@@ -235,6 +235,20 @@ export const useCitizenAddresses = () => {
     }
   };
 
+  // Search addresses by city, street, or building name
+  const searchAddressesByText = async (query: string) => {
+    try {
+      const { data, error } = await supabase
+        .rpc('search_addresses_safely', { search_query: query });
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error searching addresses:', error);
+      return [];
+    }
+  };
+
   // Helper functions
   const getCurrentAddresses = () => addresses.filter(addr => !addr.effective_to);
   const getPrimaryAddress = () => getCurrentAddresses().find(addr => addr.address_kind === 'PRIMARY');
