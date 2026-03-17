@@ -22,12 +22,13 @@
 9. [Seguridad Nacional](#9-seguridad-nacional)
 10. [Cobertura Geográfica](#10-cobertura-geográfica)
 11. [Arquitectura Tecnológica](#11-arquitectura-tecnológica)
-12. [Modelo de Implementación](#12-modelo-de-implementación)
-13. [Retorno de Inversión (ROI)](#13-retorno-de-inversión-roi)
-14. [Casos de Uso Reales](#14-casos-de-uso-reales)
-15. [Comparativa Internacional](#15-comparativa-internacional)
-16. [Hoja de Ruta](#16-hoja-de-ruta)
-17. [Llamada a la Acción](#17-llamada-a-la-acción)
+12. [Marco Legal y Regulatorio](#12-marco-legal-y-regulatorio)
+13. [Modelo de Implementación](#13-modelo-de-implementación)
+14. [Retorno de Inversión (ROI)](#14-retorno-de-inversión-roi)
+15. [Casos de Uso Reales](#15-casos-de-uso-reales)
+16. [Comparativa Internacional](#16-comparativa-internacional)
+17. [Hoja de Ruta](#17-hoja-de-ruta)
+18. [Llamada a la Acción](#18-llamada-a-la-acción)
 
 ---
 
@@ -404,7 +405,36 @@ ConEG proporciona herramientas críticas para la seguridad del Estado:
 
 ---
 
-## 12. Modelo de Implementación
+## 12. Marco Legal y Regulatorio
+
+### Iniciativas Legislativas Necesarias
+
+Para garantizar el éxito y la sostenibilidad de ConEG, se requieren las siguientes iniciativas legislativas:
+
+| # | Iniciativa | Instrumento | Plazo |
+|---|-----------|-------------|-------|
+| 1 | **Decreto de Creación del SNDD** | Decreto Presidencial | Inmediato |
+| 2 | **Ley de Protección de Datos** | Ley Orgánica | 6 meses |
+| 3 | **Ley del Sistema Nacional de Direcciones** | Ley Orgánica | 9 meses |
+| 4 | **Decreto-Ley de Emergencias** | Decreto-Ley | 6 meses |
+| 5 | **Regulación Postal Digital** | Ley Ordinaria | 12 meses |
+| 6 | **Reforma Catastral** | Ley de Reforma | 18 meses |
+| 7 | **Decreto de Adopción Digital** | Decreto Presidencial | 12 meses |
+
+### Estrategia Recomendada
+
+```
+FASE 1 → Decreto Presidencial (inicio inmediato del piloto)
+FASE 2 → Leyes de protección y emergencias (durante el piloto)
+FASE 3 → Leyes sustantivas (tras evaluación del piloto)
+FASE 4 → Reformas sectoriales (expansión nacional)
+```
+
+> **Nota:** El piloto en Malabo puede iniciar con un simple Decreto Presidencial, sin necesidad de esperar la aprobación de todas las leyes. El documento detallado de propuestas legislativas está disponible en `docs/marco-legislativo-coneg.md`.
+
+---
+
+## 13. Modelo de Implementación
 
 ### Fases de Despliegue
 
@@ -436,7 +466,7 @@ FASE 1 (Meses 1-6)          FASE 2 (Meses 7-12)        FASE 3 (Meses 13-18)
 
 ---
 
-## 13. Retorno de Inversión (ROI)
+## 14. Retorno de Inversión (ROI)
 
 ### Beneficios Cuantificables
 
@@ -458,7 +488,7 @@ FASE 1 (Meses 1-6)          FASE 2 (Meses 7-12)        FASE 3 (Meses 13-18)
 
 ---
 
-## 14. Casos de Uso Reales
+## 15. Casos de Uso Reales
 
 ### Caso 1: Emergencia Médica en Malabo
 
@@ -478,7 +508,7 @@ FASE 1 (Meses 1-6)          FASE 2 (Meses 7-12)        FASE 3 (Meses 13-18)
 
 ---
 
-## 15. Comparativa Internacional
+## 16. Comparativa Internacional
 
 ### Países sin Sistema Postal vs. Con ConEG
 
@@ -504,7 +534,7 @@ FASE 1 (Meses 1-6)          FASE 2 (Meses 7-12)        FASE 3 (Meses 13-18)
 
 ---
 
-## 16. Hoja de Ruta
+## 17. Hoja de Ruta
 
 ### 2026
 
@@ -533,7 +563,7 @@ FASE 1 (Meses 1-6)          FASE 2 (Meses 7-12)        FASE 3 (Meses 13-18)
 
 ---
 
-## 17. Llamada a la Acción
+## 18. Llamada a la Acción
 
 ### ¿Por qué ahora?
 
