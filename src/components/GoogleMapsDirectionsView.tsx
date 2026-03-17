@@ -411,7 +411,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
           disabled={!isLoaded}
         >
           <Car className="h-4 w-4 mr-1" />
-          Drive
+          {t('directions.drive')}
         </Button>
         <Button
           variant={travelMode === google.maps?.TravelMode?.WALKING ? 'default' : 'outline'}
@@ -420,7 +420,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
           disabled={!isLoaded}
         >
           <Footprints className="h-4 w-4 mr-1" />
-          Walk
+          {t('directions.walk')}
         </Button>
         <Button
           variant={travelMode === google.maps?.TravelMode?.TRANSIT ? 'default' : 'outline'}
@@ -429,7 +429,7 @@ const GoogleMapsDirectionsView: React.FC<GoogleMapsDirectionsViewProps> = ({
           disabled={!isLoaded}
         >
           <Bus className="h-4 w-4 mr-1" />
-          Transit
+          {t('directions.transit')}
         </Button>
       </div>
 
