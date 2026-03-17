@@ -692,5 +692,11 @@
     "errorOverQueryLimit": "Trop de requêtes. Veuillez réessayer plus tard.",
     "errorServer": "Erreur du serveur. Veuillez réessayer.",
     "errorGeneric": "Impossible de calculer l'itinéraire : {{status}}"
+  },
+  "pagination": {
+    "page": "Page",
+    "of": "de",
+    "previous": "Précédent",
+    "next": "Suivant"
   }
 }
