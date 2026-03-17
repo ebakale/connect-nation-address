@@ -51,32 +51,6 @@ serve(async (req) => {
   try {
     const startTime = performance.now()
 
-    // --- Authentication: require valid JWT ---
-    const authHeader = req.headers.get('Authorization')
-    if (!authHeader?.startsWith('Bearer ')) {
-      return new Response(
-        JSON.stringify({ error: 'Authentication required' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
-    }
-
-    // Create client scoped to the caller's JWT (respects RLS)
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: authHeader } } }
-    )
-
-    // Validate the JWT
-    const token = authHeader.replace('Bearer ', '')
-    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token)
-    if (claimsError || !claimsData?.claims) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid or expired token' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
-    }
-
     if (req.method !== 'POST') {
       return new Response(
         JSON.stringify({ error: 'Method not allowed' }),
@@ -84,7 +58,38 @@ serve(async (req) => {
       )
     }
 
-    const { query, limit, includePrivate = false, region, city, coordinates }: SearchRequest = await req.json()
+    // --- Authentication: optional ---
+    const authHeader = req.headers.get('Authorization')
+    let supabaseClient
+    let isAuthenticated = false
+
+    if (authHeader?.startsWith('Bearer ')) {
+      // Try to validate JWT
+      const candidateClient = createClient(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+        { global: { headers: { Authorization: authHeader } } }
+      )
+      const token = authHeader.replace('Bearer ', '')
+      const { data: claimsData, error: claimsError } = await candidateClient.auth.getClaims(token)
+      if (!claimsError && claimsData?.claims) {
+        supabaseClient = candidateClient
+        isAuthenticated = true
+      }
+    }
+
+    // Fallback: unauthenticated anon client
+    if (!supabaseClient) {
+      supabaseClient = createClient(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+      )
+    }
+
+    const { query, limit, includePrivate: rawIncludePrivate = false, region, city, coordinates }: SearchRequest = await req.json()
+
+    // Unauthenticated users can only search public addresses
+    const includePrivate = isAuthenticated ? rawIncludePrivate : false
 
     if (!query || query.trim().length === 0) {
       return new Response(
