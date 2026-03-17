@@ -607,7 +607,7 @@ Security Features:
 
 #### Function Security Example
 ```typescript
-// Edge function with security best practices
+// Edge function with security best practices (authenticated endpoint)
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -652,6 +652,52 @@ serve(async (req) => {
   const result = await processData(validated)
   
   return new Response(JSON.stringify(result), {
+    headers: { 'Content-Type': 'application/json', ...corsHeaders }
+  })
+})
+
+// Edge function with optional authentication (public endpoint)
+// Example: address-search-api - allows public searches, enhanced results for authenticated users
+serve(async (req) => {
+  // 1. CORS security
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
+  // 2. Optional authentication - try JWT if present
+  const authHeader = req.headers.get('Authorization')
+  let supabaseClient
+  let isAuthenticated = false
+
+  if (authHeader?.startsWith('Bearer ')) {
+    const candidateClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: authHeader } } }
+    )
+    const { data, error } = await candidateClient.auth.getUser()
+    if (!error && data?.user) {
+      supabaseClient = candidateClient
+      isAuthenticated = true
+    }
+  }
+
+  // 3. Fallback: unauthenticated anon client
+  if (!supabaseClient) {
+    supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    )
+  }
+
+  // 4. Scope results based on authentication
+  // Unauthenticated: public + verified addresses only
+  // Authenticated: can include private addresses if requested
+  const includePrivate = isAuthenticated ? body.includePrivate : false
+
+  // 5. Process and return results
+  const results = await searchAddresses(supabaseClient, query, includePrivate)
+  return new Response(JSON.stringify(results), {
     headers: { 'Content-Type': 'application/json', ...corsHeaders }
   })
 })
