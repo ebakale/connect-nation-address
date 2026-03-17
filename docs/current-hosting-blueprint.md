@@ -9,8 +9,8 @@ The Biakam National Address System is hosted on Supabase, a managed Backend-as-a
 **Hosting**: Lovable Cloud with Supabase backend
 **Region**: US-East (primary)
 **Status**: ✅ Production Ready
-**Last Updated**: December 2025
-**Infrastructure Version**: 4.0
+**Last Updated**: March 2026
+**Infrastructure Version**: 4.1
 
 ---
 
