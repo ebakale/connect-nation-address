@@ -988,6 +988,8 @@ Recovery Procedures:
 - ✅ GDPR compliance features
 - ✅ Data retention policy with automatic enforcement
 - ✅ Archive and anonymization workflow
+- ✅ Optional authentication for public-facing APIs (address-search-api)
+- ✅ Scope-based result filtering (unauthenticated users see only public/verified data)
 
 ### Recommended Enhancements
 
