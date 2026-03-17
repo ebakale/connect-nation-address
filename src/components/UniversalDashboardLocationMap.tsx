@@ -44,7 +44,7 @@ const UniversalDashboardLocationMap: React.FC<UniversalDashboardLocationMapProps
         <div className="h-96 bg-muted/50 rounded-lg flex items-center justify-center">
           <div className="text-center space-y-2">
             <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto"></div>
-            <p className="text-sm text-muted-foreground">{t('loadingMap') || 'Loading map...'}</p>
+            <p className="text-sm text-muted-foreground">{t('map.loadingMap', 'Loading map...')}</p>
           </div>
         </div>
       </div>
@@ -61,7 +61,7 @@ const UniversalDashboardLocationMap: React.FC<UniversalDashboardLocationMapProps
             <MapPin className="h-4 w-4" />
             <AlertDescription className="flex items-center justify-between flex-wrap gap-2">
               <span className="text-sm">
-                {t('usingOpenStreetMapFallback') || 'Using OpenStreetMap (Google Maps unavailable)'}
+                {t('map.usingOpenStreetMapFallback', 'Using OpenStreetMap (Google Maps unavailable)')}
               </span>
               <Button
                 size="sm"
@@ -74,7 +74,7 @@ const UniversalDashboardLocationMap: React.FC<UniversalDashboardLocationMapProps
                 className="gap-1"
               >
                 <RefreshCw className="h-3 w-3" />
-                {t('retryGoogleMaps') || 'Retry Google Maps'}
+                {t('map.retryGoogleMaps', 'Retry Google Maps')}
               </Button>
             </AlertDescription>
           </Alert>
@@ -95,14 +95,14 @@ const UniversalDashboardLocationMap: React.FC<UniversalDashboardLocationMapProps
           className="text-xs text-muted-foreground gap-1"
         >
           <Map className="h-3 w-3" />
-          {t('switchToOpenStreetMap') || 'Switch to OpenStreetMap'}
+          {t('map.switchToOpenStreetMap', 'Switch to OpenStreetMap')}
         </Button>
       </div>
       <Suspense fallback={
         <div className="h-96 bg-muted/50 rounded-lg flex items-center justify-center">
           <div className="text-center space-y-2">
             <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto"></div>
-            <p className="text-sm text-muted-foreground">{t('loadingGoogleMaps') || 'Loading Google Maps...'}</p>
+            <p className="text-sm text-muted-foreground">{t('map.loadingGoogleMaps', 'Loading Google Maps...')}</p>
           </div>
         </div>
       }>

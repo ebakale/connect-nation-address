@@ -665,5 +665,7 @@
   "memberAddedSuccessfully": "Membre ajouté au ménage avec succès",
   "failedToAddMember": "Échec de l'ajout du membre. Veuillez réessayer.",
   "householdCreatedSuccessfully": "Ménage créé avec succès",
-  "failedToCreateHousehold": "Échec de la création du ménage"
+  "failedToCreateHousehold": "Échec de la création du ménage",
+  "resultsFound": "{{count}} résultats trouvés",
+  "resultsFound_one": "{{count}} résultat trouvé"
 }

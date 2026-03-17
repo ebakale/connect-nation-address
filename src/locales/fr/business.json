@@ -113,7 +113,9 @@
     "viewOnMap": "Voir sur la Carte",
     "publicService": "Service Public",
     "appointmentRequired": "Rendez-vous Requis",
-    "accessible": "Accessible"
+    "accessible": "Accessible",
+    "resultsFound": "{{count}} résultats trouvés",
+    "resultsFound_one": "{{count}} résultat trouvé"
   },
   "dashboard": {
     "myBusinesses": "Mes Entreprises",

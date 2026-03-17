@@ -835,8 +835,11 @@
     "selectLocation": "Select Location",
     "selectedCoordinates": "Selected",
     "clickToSelect": "Click on the map to select a location",
-    "confirmLocation": "Confirm Location"
+    "confirmLocation": "Confirm Location",
+    "loadingMap": "Loading map...",
+    "loadingGoogleMaps": "Loading Google Maps..."
   },
+  "selectActionBelow": "Select an action below",
   "fieldWork": "Field Work",
   "residencyVerificationManager": "Residency Verification Manager",
   "myVerificationRequests": "My Verification Requests",

@@ -113,7 +113,9 @@
     "viewOnMap": "View on Map",
     "publicService": "Public Service",
     "appointmentRequired": "Appointment Required",
-    "accessible": "Accessible"
+    "accessible": "Accessible",
+    "resultsFound": "{{count}} results found",
+    "resultsFound_one": "{{count}} result found"
   },
   "dashboard": {
     "myBusinesses": "My Businesses",

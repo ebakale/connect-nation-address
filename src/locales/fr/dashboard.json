@@ -346,8 +346,11 @@
     "selectLocation": "Sélectionner un emplacement",
     "selectedCoordinates": "Sélectionné",
     "clickToSelect": "Cliquez sur la carte pour sélectionner un emplacement",
-    "confirmLocation": "Confirmer l'emplacement"
+    "confirmLocation": "Confirmer l'emplacement",
+    "loadingMap": "Chargement de la carte...",
+    "loadingGoogleMaps": "Chargement de Google Maps..."
   },
+  "selectActionBelow": "Sélectionnez une action ci-dessous",
   "systemIntegrationDesc": "Gérer les intégrations API, webhooks et connexions",
   "activeIntegrations": "Intégrations Actives",
   "workingProperly": "Fonctionne correctement",

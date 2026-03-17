@@ -667,5 +667,7 @@
   "memberAddedSuccessfully": "Member added to household successfully",
   "failedToAddMember": "Failed to add member. Please try again.",
   "householdCreatedSuccessfully": "Household created successfully",
-  "failedToCreateHousehold": "Failed to create household"
+  "failedToCreateHousehold": "Failed to create household",
+  "resultsFound": "{{count}} results found",
+  "resultsFound_one": "{{count}} result found"
 }

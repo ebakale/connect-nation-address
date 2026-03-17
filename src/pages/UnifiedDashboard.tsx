@@ -687,7 +687,7 @@ const UnifiedDashboard = () => {
               <Card className="col-span-full">
                 <CardHeader>
                   <CardTitle className="text-lg">{t('dashboard:quickActions')}</CardTitle>
-                  <p className="text-sm text-muted-foreground">{t('dashboard:selectActionBelow')}</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard:selectActionBelow', 'Select an action below')}</p>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   <Button

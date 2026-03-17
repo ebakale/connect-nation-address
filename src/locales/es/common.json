@@ -665,5 +665,7 @@
   "memberAddedSuccessfully": "Miembro agregado al hogar con éxito",
   "failedToAddMember": "Error al agregar miembro. Por favor, intenta de nuevo.",
   "householdCreatedSuccessfully": "Hogar creado con éxito",
-  "failedToCreateHousehold": "Error al crear hogar"
+  "failedToCreateHousehold": "Error al crear hogar",
+  "resultsFound": "{{count}} resultados encontrados",
+  "resultsFound_one": "{{count}} resultado encontrado"
 }
