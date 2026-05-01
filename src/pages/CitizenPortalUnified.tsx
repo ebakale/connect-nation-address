@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   MapPin, Search, FileText, Clock, LogOut, Phone, FileCheck,
   AlertCircle, User, Home, Settings, Users, Bell, Package, Truck,
-  ArrowRight, Info, Plus
+  ArrowRight, Info, Plus, Building2
 } from "lucide-react";
 
 // Hooks and Components
@@ -35,6 +35,7 @@ import { HouseholdManagement } from "@/components/HouseholdManagement";
 import CitizenDeliveriesView from "@/components/citizen/CitizenDeliveriesView";
 import { PickupRequestForm, DeliveryPreferencesForm } from "@/components/postal";
 import { MapErrorBoundary } from "@/components/ErrorBoundary";
+import { CitizenBusinessesTab } from "@/components/citizen/CitizenBusinessesTab";
 
 interface SearchResult {
   uac: string;
@@ -198,6 +199,10 @@ const CitizenPortalUnified = () => {
                   <TabsTrigger value="notifications" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
                     <Bell className="h-4 w-4 shrink-0" />
                     <span>Alerts</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="businesses" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
+                    <Building2 className="h-4 w-4 shrink-0" />
+                    <span>{t('business:dashboard.myBusinesses')}</span>
                   </TabsTrigger>
                 </>
               )}
@@ -534,6 +539,13 @@ const CitizenPortalUnified = () => {
           {isAuthenticated && (
             <TabsContent value="privacy" className="space-y-6">
               <AddressPrivacySettings />
+            </TabsContent>
+          )}
+
+          {/* My Businesses Tab */}
+          {isAuthenticated && (
+            <TabsContent value="businesses" className="space-y-6">
+              <CitizenBusinessesTab onRequestNewBusiness={() => setAddressFlowOpen(true)} />
             </TabsContent>
           )}
 
