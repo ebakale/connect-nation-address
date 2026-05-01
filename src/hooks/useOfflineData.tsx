@@ -158,7 +158,8 @@ export const useOfflineAddresses = () => {
 
   // Auto-sync when connectivity resumes
   useEffect(() => {
-    return registerOfflineSyncHandler(async () => { await syncAddresses(); });
+    const unsubscribe = registerOfflineSyncHandler(async () => { await syncAddresses(); });
+    return () => { unsubscribe; };
   }, [syncAddresses]);
 
   const getUnsyncedCount = async () => {
@@ -304,7 +305,8 @@ export const useOfflineIncidents = () => {
 
   // Auto-sync when connectivity resumes
   useEffect(() => {
-    return registerOfflineSyncHandler(async () => { await syncIncidents(); });
+    const unsubscribe = registerOfflineSyncHandler(async () => { await syncIncidents(); });
+    return () => { unsubscribe; };
   }, [syncIncidents]);
 
   const getUnsyncedCount = async () => {
