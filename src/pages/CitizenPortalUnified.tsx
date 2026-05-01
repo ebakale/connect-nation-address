@@ -120,44 +120,59 @@ const CitizenPortalUnified = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/8 via-background to-secondary/5">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">
-                {t('address:citizenPortal')}
-              </h1>
-              <p className="text-muted-foreground">
-                {isAuthenticated 
-                  ? t('dashboard:welcomeMessage') 
-                  : t('address:searchVerifiedAddresses')
-                }
-              </p>
-            </div>
-            <div className="flex gap-2 items-center">
-              {isAuthenticated ? (
-                <>
-                  {user?.profile?.full_name && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground mr-4">
-                      <User className="h-4 w-4" />
-                      <span>{user.profile.full_name}</span>
-                    </div>
-                  )}
-                  <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
-                    <LogOut className="h-4 w-4" />
-                    {t('auth:logout')}
-                  </Button>
-                </>
-              ) : (
-                <Button onClick={() => window.location.href = '/auth'} className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  {t('auth:login')}
-                </Button>
-              )}
+      {/* Government-style Header */}
+      <header className="gov-header-light sticky top-safe z-40">
+        <div className="flex justify-between items-center h-14 px-4 sm:px-6">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="p-1.5 bg-primary/10 rounded-lg shrink-0">
+                <img 
+                  src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" 
+                  alt="BIAKAM Logo" 
+                  className="h-6 w-auto" 
+                />
+              </div>
+              <div className="min-w-0 hidden sm:block">
+                <h1 className="text-base font-semibold text-foreground">ConEG</h1>
+                <p className="text-xs text-muted-foreground">{t('address:citizenPortal')}</p>
+              </div>
             </div>
           </div>
+
+          <div className="flex items-center gap-3 shrink-0">
+            <OfflineIndicator />
+            <Badge variant="success" className="hidden md:flex">
+              <Shield className="h-3 w-3 mr-1" />
+              Secure
+            </Badge>
+            {isAuthenticated ? (
+              <>
+                <div className="text-right hidden sm:block min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate max-w-[150px]">
+                    {user?.profile?.full_name || user?.email?.split('@')[0] || 'User'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">Citizen</p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={signOut}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </>
+            ) : (
+              <Button onClick={() => window.location.href = '/auth'} size="sm" className="flex items-center gap-2">
+                <User className="h-4 w-4" />
+                {t('auth:login')}
+              </Button>
+            )}
+          </div>
         </div>
+      </header>
+
+      <div className="container mx-auto px-4 py-6">
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
