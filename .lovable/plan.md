@@ -1,72 +1,61 @@
 
+# Mobile-First UX Improvements — Phase 2
 
-## Improve the "Report Emergency" Page on the Landing Page
+The previous round already delivered the biggest win: replacing the sidebar with a bottom tab bar and compact header for the citizen portal. This phase addresses the remaining issues from the assessment.
 
-### Current State
+## What's already done (no changes needed)
+- Bottom tab bar navigation for citizen portal (5 sections)
+- Compact 48px header with `MobileHeader` component
+- Admin/operator layouts kept desktop-oriented (correct — those are tablet/desktop tools)
+- Section-based grouping instead of 12 horizontal tabs
 
-The emergency section (lines 775-796 in Index.tsx) is minimal:
-- A red heading and subtitle
-- An optional prefilled-address info box
-- The `EmergencyAlertProcessor` form component (a single card with type selector, description, contact, location, and submit)
+## What this plan addresses
 
-Both the Index wrapper and the form component lack the visual polish and informational richness applied to the About and Search sections.
+### 1. Full-screen dialogs on mobile
 
-### Proposed Improvements
+Currently, complex flows (address registration, request submission, verification) open inside centered `Dialog` modals with `max-w-4xl max-h-[85vh] overflow-y-auto`. On a 375px screen this creates a scrollable box inside a scrollable page — confusing and cramped.
 
-#### 1. Styled Header with Badge and Icon (Index.tsx)
-Replace the plain red heading with a structured header matching other sections:
-- A "Critical Service" or "Emergency Services" badge in destructive red
-- A large `AlertTriangle` icon in a red circle
-- A more descriptive subtitle explaining the service
+**Fix**: Update the `DialogContent` component to go full-screen on mobile (`sm:` breakpoint and below). On desktop it stays a centered modal. This is a single change in `src/components/ui/dialog.tsx` that fixes all 5 dialogs at once.
 
-#### 2. Important Info / Safety Tips Bar (Index.tsx)
-Add a highlighted alert box below the header with key safety information:
-- "Call 114 for immediate life-threatening emergencies"
-- "This form notifies local police dispatch automatically"
-- "Your GPS location is shared with responders"
+Mobile behavior: `fixed inset-0 w-full h-full rounded-none`
+Desktop behavior: unchanged (centered, max-width, rounded)
 
-This sets expectations and provides critical context before the user fills the form.
+### 2. Better bottom nav labels
 
-#### 3. Quick Emergency Type Buttons (EmergencyAlertProcessor.tsx)
-Above the existing form, add a row of large, tappable icon buttons for common emergency types (Fire, Medical, Police, Accident) so users can select with a single tap instead of opening a dropdown. Tapping one pre-selects the dropdown value. The dropdown remains as a fallback for less common types.
+The current labels (Home / Search / Services / Alerts / Profile) are generic. The assessment suggests labels that match what citizens actually do:
 
-#### 4. Enhanced Location Section (EmergencyAlertProcessor.tsx)
-- Show GPS status with a colored indicator dot (green = active, yellow = loading, red = unavailable)
-- Display a mini context card with coordinates and accuracy when location is available
-- Add a "Refresh Location" button alongside the existing "Get Current Location"
+**Change to**: Home / Search / Deliveries / Household / More
 
-#### 5. Visual Step Indicators (EmergencyAlertProcessor.tsx)
-Add subtle numbered step labels above each form section:
-- Step 1: Select Emergency Type
-- Step 2: Describe the Situation
-- Step 3: Your Location
-- Step 4: Send Alert
+- **Home** — Primary/secondary addresses (the core)
+- **Search** — Public address lookup
+- **Deliveries** — Incoming packages, pickups, preferences (high-frequency for postal users)
+- **Household** — Household members management
+- **More** — Requests, Verification, Businesses, Privacy, Emergency, Sign Out (overflow menu)
 
-This guides users through the form under stress.
+This surfaces the two most-used authenticated features (deliveries, household) as top-level tabs instead of burying them under "Services" and "Home > pill".
 
-#### 6. Enhanced Submit Area (EmergencyAlertProcessor.tsx)
-- Add a small disclaimer text above the submit button: "By submitting, you confirm this is a genuine emergency"
-- Make the submit button larger and more prominent with a pulsing border effect
-- Show estimated response context after submission (e.g., "Alert sent - dispatchers notified")
+### 3. Touch target audit
 
-#### 7. Emergency Contacts Footer (Index.tsx)
-Below the form, add a compact footer card with:
-- Emergency phone numbers (Police: 114, Fire: 115, Medical: 116)
-- A note about when to call vs. when to use the form
+Ensure all interactive elements in the citizen portal meet the 44x44px minimum:
+- Bottom nav buttons: already 44px min (good)
+- Service grid buttons: add `min-h-[48px]`
+- Sub-nav pill buttons: increase from 36px to 44px height
+- Card action buttons: ensure `size="default"` not `size="sm"` for primary actions
 
-#### 8. Prefilled Address Enhancement (Index.tsx)
-When a prefilled address is present, show it more prominently with a map-pin icon, structured layout, and a small "Change" link that navigates back to search.
+### 4. Keyboard-aware form behavior
 
-### Technical Details
+Add a CSS utility for forms to handle the virtual keyboard pushing content up. Use `dvh` (dynamic viewport height) units where available, and ensure the bottom nav hides when an input is focused on mobile.
 
-**Files modified:**
-1. `src/pages/Index.tsx` -- the `case 'emergency':` block (lines 775-796): add header badge, safety tips alert, emergency contacts footer, and enhanced prefilled address display
-2. `src/components/EmergencyAlertProcessor.tsx` -- enhance the form UI with quick-select type buttons, step indicators, GPS status display, and improved submit area
+## Technical Changes
 
-All changes are purely visual/layout:
-- Use existing UI components (`Card`, `Badge`, `Button`, `Alert`, `Separator`)
-- Use existing `lucide-react` icons (`Flame`, `Heart`, `Shield`, `Car`, `Phone`, `Info`, `Navigation`)
-- Use `t()` translation calls with `defaultValue` fallbacks for new strings
-- No new dependencies, APIs, database changes, or business logic modifications
-- Preserve all existing functionality: form submission, GPS detection, prefilled address flow, edge function invocation
-- Maintain responsive design with existing patterns
+| File | Change |
+|------|--------|
+| `src/components/ui/dialog.tsx` | Make DialogContent full-screen below `sm:` breakpoint |
+| `src/components/citizen/CitizenBottomNav.tsx` | Change sections to home/search/deliveries/household/more |
+| `src/pages/CitizenPortalUnified.tsx` | Restructure sections to match new nav; add "More" overflow section |
+| `src/index.css` | Add `.keyboard-aware` utility class for form views |
+
+## What this does NOT change
+- Admin/operator layouts (sidebar, dense tables, analytics) — these are desktop/tablet tools
+- Business logic or database schema
+- Existing component APIs (AddressRequestForm, etc.)
