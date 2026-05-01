@@ -75,12 +75,13 @@ const CitizenPortalUnified = () => {
   const [deliveryPreferencesOpen, setDeliveryPreferencesOpen] = useState(false);
   const [selectedAddressForPrefs, setSelectedAddressForPrefs] = useState<string>('');
 
-  // Effect to set default tab based on auth status
+  // Set default tab to 'addresses' for authenticated users on initial load only
   useEffect(() => {
-    if (isAuthenticated && activeTab === 'public') {
+    if (isAuthenticated) {
       setActiveTab('addresses');
     }
-  }, [isAuthenticated, activeTab]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
 
   // CAR data is automatically fetched by the useCitizenAddresses hook
   // No need for a manual refetch here - it caused infinite loops
