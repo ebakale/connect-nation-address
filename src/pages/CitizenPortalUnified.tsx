@@ -200,6 +200,10 @@ const CitizenPortalUnified = () => {
                     <Bell className="h-4 w-4 shrink-0" />
                     <span>Alerts</span>
                   </TabsTrigger>
+                  <TabsTrigger value="businesses" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
+                    <Building2 className="h-4 w-4 shrink-0" />
+                    <span>{t('business:dashboard.myBusinesses')}</span>
+                  </TabsTrigger>
                 </>
               )}
               <TabsTrigger value="emergency" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap text-destructive data-[state=active]:bg-destructive data-[state=active]:text-destructive-foreground">
