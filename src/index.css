@@ -863,3 +863,43 @@
   background: transparent !important;
   border: none !important;
 }
+
+/* ============================================
+   KEYBOARD-AWARE MOBILE UTILITIES
+   ============================================ */
+
+/* Hide bottom nav when virtual keyboard is visible */
+@media (max-height: 500px) and (max-width: 640px) {
+  .fixed.bottom-0 {
+    display: none !important;
+  }
+  main {
+    padding-bottom: 1rem !important;
+  }
+}
+
+/* Use dynamic viewport height for full-screen overlays */
+@supports (height: 100dvh) {
+  [data-radix-popper-content-wrapper],
+  [role="dialog"] {
+    max-height: 100dvh;
+  }
+}
+
+/* Scroll active input into view above keyboard */
+@media (max-width: 640px) {
+  input:focus,
+  textarea:focus,
+  select:focus {
+    scroll-margin-bottom: 2rem;
+  }
+}
+
+/* Scrollbar hide utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
